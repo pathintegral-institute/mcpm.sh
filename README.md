@@ -1,31 +1,31 @@
 # MCPM - Model Context Protocol Package Manager
 
-MCPM is a Homebrew-like service and command-line interface for managing Model Context Protocol (MCP) servers and clients.
+MCPM is a Homebrew-like service and command-line interface for managing Model Context Protocol (MCP) configs and servers.
 
 ## Overview
 
-MCPM aims to simplify the installation, configuration, and management of Model Context Protocol clients with a focus on:
+MCPM aims to simplify the installation, configuration, and management of Model Context Protocol configs with a focus on:
 
-- Easy installation of Model Context Protocol clients via a simple CLI
-- Centralized management of client configurations
-- Seamless updates for installed clients
+- Easy installation of Model Context Protocol configs via a simple CLI
+- Centralized management of configurations
+- Seamless updates for installed configs
 - Server-side management capabilities
 
-## Supported Clients
+## Supported Configs
 
-Initial release will support:
+Initial release will support configs for:
 
 - Claude Desktop (Anthropic's Model Context Protocol client)
-- More Model Context Protocol clients coming soon...
+- More Model Context Protocol configs coming soon...
 
 ## Roadmap
 
 - [x] Landing page setup
 - [ ] CLI foundation
-- [ ] Package repository structure
-- [ ] Claude Desktop integration
+- [ ] Config repository structure
+- [ ] Claude Desktop config integration
 - [ ] Server management functionality
-- [ ] Additional client support
+- [ ] Additional config support
 
 ## Development
 
