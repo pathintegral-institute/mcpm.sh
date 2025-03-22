@@ -2,7 +2,6 @@
 MCP CLI - Main entry point for the Model Context Protocol Package Manager CLI
 """
 
-import sys
 import click
 from rich.console import Console
 from rich.table import Table
@@ -25,23 +24,20 @@ from mcp.commands import (
 console = Console()
 config_manager = ConfigManager()
 
-# Set -h as an alias for --help
-CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
+# Set -h as an alias for --help but we'll handle it ourselves
+CONTEXT_SETTINGS = dict(help_option_names=[])
 
 @click.group(context_settings=CONTEXT_SETTINGS, invoke_without_command=True)
+@click.option('-h', '--help', 'help_flag', is_flag=True, help='Show this message and exit.')
 @click.version_option(version=__version__)
 @click.pass_context
-def main(ctx):
+def main(ctx, help_flag):
     """MCP - Model Context Protocol Package Manager.
     
     A tool for managing MCP servers across various clients.
     """
-    # If no command was invoked, show the active client and complete command list
-    if ctx.invoked_subcommand is None:
-        # Check if help flag was used
-        if '--help' in sys.argv or '-h' in sys.argv:
-            # Let Click handle the help display
-            return
+    # If no command was invoked or help is requested, show our custom help
+    if ctx.invoked_subcommand is None or help_flag:
         
         # Get active client
         active_client = config_manager.get_active_client()
