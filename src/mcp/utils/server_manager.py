@@ -1,5 +1,5 @@
 """
-Server management utilities for MCPM
+Server management utilities for MCP
 """
 
 import logging

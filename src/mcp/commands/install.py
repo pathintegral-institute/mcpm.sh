@@ -1,13 +1,13 @@
 """
-Install command for MCPM
+Install command for MCP
 """
 
 import click
 from rich.console import Console
 from rich.progress import Progress
 
-from mcpm.utils.repository import RepositoryManager
-from mcpm.utils.config import ConfigManager
+from mcp.utils.repository import RepositoryManager
+from mcp.utils.config import ConfigManager
 
 console = Console()
 repo_manager = RepositoryManager()
@@ -21,9 +21,9 @@ def install(server_name, version, client=None):
     """Install an MCP server.
     
     Examples:
-        mcpm install filesystem
-        mcpm install filesystem --version=1.0.0
-        mcpm install filesystem --client=cursor
+        mcp install filesystem
+        mcp install filesystem --version=1.0.0
+        mcp install filesystem --client=cursor
     """
     if version:
         console.print(f"[bold green]Installing MCP server:[/] {server_name} (version {version})")
@@ -33,7 +33,7 @@ def install(server_name, version, client=None):
     # Check if already installed
     if config_manager.get_server_info(server_name):
         console.print(f"[yellow]Server '{server_name}' is already installed.[/]")
-        console.print("Use 'mcpm update' to update it to a newer version.")
+        console.print("Use 'mcp update' to update it to a newer version.")
         return
     
     # Search for the server
@@ -69,7 +69,7 @@ def install(server_name, version, client=None):
         "description": server_metadata["description"],
         "status": "stopped",
         "install_date": "2025-03-22",  # In a real implementation, use current date
-        "path": f"~/.config/mcpm/servers/{server_name}"
+        "path": f"~/.config/mcp/servers/{server_name}"
     }
     config_manager.register_server(server_name, server_info)
     

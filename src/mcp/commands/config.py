@@ -1,5 +1,5 @@
 """
-Configuration command for MCPM
+Configuration command for MCP
 """
 
 import os
@@ -10,7 +10,7 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.prompt import Confirm
 
-from mcpm.utils.claude_desktop import ClaudeDesktopManager
+from mcp.clients.claude_desktop import ClaudeDesktopManager
 
 console = Console()
 claude_manager = ClaudeDesktopManager()
@@ -21,13 +21,13 @@ claude_manager = ClaudeDesktopManager()
 def config(edit, create):
     """View or edit the active MCP client's configuration file.
     
-    The config command operates on the currently active MCP client (set via 'mcpm client').
+    The config command operates on the currently active MCP client (set via 'mcp client').
     By default, this is Claude Desktop, but can be changed to other supported clients.
     
     Examples:
-        mcpm config           # Show current client's config file location and content
-        mcpm config --edit   # Open the config file in your default editor
-        mcpm config --create # Create a basic config file if it doesn't exist
+        mcp config           # Show current client's config file location and content
+        mcp config --edit   # Open the config file in your default editor
+        mcp config --create # Create a basic config file if it doesn't exist
     """
     # Get the Claude Desktop config file path
     config_path = claude_manager.config_path

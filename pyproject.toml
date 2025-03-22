@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "mcpm"
+name = "mcp"
 version = "0.1.0"
 description = "Model Context Protocol Package Manager"
 readme = "README.md"
@@ -19,16 +19,16 @@ dependencies = [
 ]
 
 [project.scripts]
-mcpm = "mcpm.cli:main"
+mcp = "mcp.cli:main"
 
 [tool.hatch.build]
-packages = ["src/mcpm"]
+packages = ["src/mcp"]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/mcpm"]
+packages = ["src/mcp"]
 
 [tool.hatch.build.targets.sdist]
-packages = ["src/mcpm"]
+packages = ["src/mcp"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -1,12 +1,12 @@
 """
-Remove command for MCPM
+Remove command for MCP
 """
 
 import click
 from rich.console import Console
 from rich.prompt import Confirm
 
-from mcpm.utils.claude_desktop import ClaudeDesktopManager
+from mcp.clients.claude_desktop import ClaudeDesktopManager
 
 console = Console()
 claude_manager = ClaudeDesktopManager()
@@ -18,8 +18,8 @@ def remove(server_name, force):
     """Remove an installed MCP server.
     
     Examples:
-        mcpm remove filesystem
-        mcpm remove filesystem --force
+        mcp remove filesystem
+        mcp remove filesystem --force
     """
     # Check if the server exists in Claude Desktop
     server_info = claude_manager.get_server(server_name)

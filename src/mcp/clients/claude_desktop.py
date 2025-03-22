@@ -5,7 +5,7 @@ Claude Desktop integration utilities for MCPM
 import os
 import json
 import logging
-from typing import Dict, List, Optional, Any
+from typing import Dict, Optional, Any
 import platform
 
 logger = logging.getLogger(__name__)

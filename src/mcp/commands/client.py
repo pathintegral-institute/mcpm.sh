@@ -1,5 +1,5 @@
 """
-Client command for MCPM
+Client command for MCP
 """
 
 import click
@@ -7,7 +7,7 @@ from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
 
-from mcpm.utils.config import ConfigManager
+from mcp.utils.config import ConfigManager
 
 console = Console()
 config_manager = ConfigManager()
@@ -22,9 +22,9 @@ def client(client_name, list):
     If a client name is provided, sets it as the active client.
     
     Examples:
-        mcpm client         # Show current active client
-        mcpm client --list  # List all supported clients
-        mcpm client claude-desktop  # Set Claude Desktop as the active client
+        mcp client         # Show current active client
+        mcp client --list  # List all supported clients
+        mcp client claude-desktop  # Set Claude Desktop as the active client
     """
     # Get the list of supported clients
     supported_clients = config_manager.get_supported_clients()
@@ -53,11 +53,11 @@ def client(client_name, list):
         console.print("\nTo change the active client, run:")
         for client in sorted(supported_clients):
             if client != active_client:
-                console.print(f"  mcpm client {client}")
+                console.print(f"  mcp client {client}")
         
         # Display a note about using --list
         console.print("\nTo see all supported clients:")
-        console.print("  mcpm client --list")
+        console.print("  mcp client --list")
         return
     
     # Set the active client if provided
@@ -78,8 +78,8 @@ def client(client_name, list):
         
         # Provide information about what this means
         panel = Panel(
-            f"The active client ({client_name}) will be used for all MCPM operations.\n"
-            f"Commands like 'mcpm list', 'mcpm status', and 'mcpm install' will now operate on {client_name}.",
+            f"The active client ({client_name}) will be used for all MCP operations.\n"
+            f"Commands like 'mcp list', 'mcp status', and 'mcp install' will now operate on {client_name}.",
             title="Active Client Changed",
             border_style="green"
         )

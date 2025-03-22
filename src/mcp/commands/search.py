@@ -1,12 +1,12 @@
 """
-Search command for MCPM
+Search command for MCP
 """
 
 import click
 from rich.console import Console
 from rich.table import Table
 
-from mcpm.utils.repository import RepositoryManager
+from mcp.utils.repository import RepositoryManager
 
 console = Console()
 repo_manager = RepositoryManager()
@@ -18,9 +18,9 @@ def search(query, tags):
     """Search available MCP servers.
     
     Examples:
-        mcpm search
-        mcpm search filesystem
-        mcpm search --tags=file
+        mcp search
+        mcp search filesystem
+        mcp search --tags=file
     """
     if tags:
         console.print(f"[bold green]Searching for MCP servers with tag:[/] {tags}")

@@ -1,5 +1,5 @@
 """
-Status command for MCPM
+Status command for MCP
 """
 
 import os
@@ -9,7 +9,7 @@ from rich.table import Table
 from rich.panel import Panel
 from rich.markup import escape
 
-from mcpm.utils.claude_desktop import ClaudeDesktopManager
+from mcp.clients.claude_desktop import ClaudeDesktopManager
 
 console = Console()
 claude_manager = ClaudeDesktopManager()
@@ -20,8 +20,8 @@ def status(server_name):
     """Show status of MCP servers in Claude Desktop.
     
     Examples:
-        mcpm status
-        mcpm status filesystem
+        mcp status
+        mcp status filesystem
     """
     # First, check if Claude Desktop is installed
     if not claude_manager.is_claude_desktop_installed():
@@ -84,7 +84,7 @@ def status(server_name):
         
         if not claude_servers:
             console.print("[yellow]No MCP servers found in Claude Desktop configuration.[/]")
-            console.print("Use 'mcpm install <server>' to install a server.")
+            console.print("Use 'mcp install <server>' to install a server.")
             return
             
         # Display status for all servers
@@ -116,7 +116,8 @@ def status(server_name):
             )
         
         console.print(table)
-        console.print("\n[italic]Note: Restart Claude Desktop for configuration changes to take effect.[/]")
+        console.print("\n[italic yellow]Note: Full status checking functionality coming soon![/]")
+        console.print("[italic]Restart Claude Desktop for configuration changes to take effect.[/]")
 
 
 def _is_server_running(package_name):
@@ -128,6 +129,7 @@ def _is_server_running(package_name):
     Returns:
         bool: True if running, False otherwise
     """
-    # In a real implementation, this would check if the process is running
-    # For now, we'll mock that filesystem server is running and others are not
-    return "filesystem" in package_name
+    # This is a placeholder implementation
+    # Full process checking functionality will be implemented in a future release
+    # Currently returns False for all servers
+    return False

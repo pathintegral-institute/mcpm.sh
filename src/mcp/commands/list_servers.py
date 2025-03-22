@@ -1,5 +1,5 @@
 """
-List command for MCPM
+List command for MCP
 """
 
 import click
@@ -7,7 +7,7 @@ from rich.console import Console
 from rich.table import Table
 from rich.markup import escape
 
-from mcpm.utils.claude_desktop import ClaudeDesktopManager
+from mcp.clients.claude_desktop import ClaudeDesktopManager
 
 console = Console()
 claude_manager = ClaudeDesktopManager()
@@ -19,9 +19,9 @@ def list(available, outdated):
     """List all installed MCP servers.
     
     Examples:
-        mcpm list
-        mcpm list --available
-        mcpm list --outdated
+        mcp list
+        mcp list --available
+        mcp list --outdated
     """
     if available:
         console.print("[bold green]Available MCP servers:[/]")
@@ -103,7 +103,7 @@ def list(available, outdated):
         
         if not claude_servers:
             console.print("[yellow]No MCP servers found in Claude Desktop.[/]")
-            console.print("Use 'mcpm install <server>' to install a server.")
+            console.print("Use 'mcp install <server>' to install a server.")
             return
         
         # Count the configured servers

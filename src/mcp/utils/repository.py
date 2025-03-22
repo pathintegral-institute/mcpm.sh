@@ -1,5 +1,5 @@
 """
-Repository utilities for MCPM - handles server discovery and installation
+Repository utilities for MCP - handles server discovery and installation
 """
 
 import logging
@@ -8,7 +8,7 @@ from typing import Dict, List, Optional, Any
 logger = logging.getLogger(__name__)
 
 # Default repository URL
-DEFAULT_REPO_URL = "https://mcpm.sh/api/servers"
+DEFAULT_REPO_URL = "https://getmcp.sh/api/servers"
 
 class RepositoryManager:
     """Manages server repository operations"""

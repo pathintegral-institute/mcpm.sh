@@ -1,5 +1,5 @@
 """
-Configuration utilities for MCPM
+Configuration utilities for MCP
 """
 
 import os
@@ -10,12 +10,12 @@ from typing import Dict, List, Optional, Any
 logger = logging.getLogger(__name__)
 
 # Default configuration paths
-DEFAULT_CONFIG_DIR = os.path.expanduser("~/.config/mcpm")
+DEFAULT_CONFIG_DIR = os.path.expanduser("~/.config/mcp")
 DEFAULT_CONFIG_FILE = os.path.join(DEFAULT_CONFIG_DIR, "config.json")
 DEFAULT_SERVERS_DIR = os.path.join(DEFAULT_CONFIG_DIR, "servers")
 
 class ConfigManager:
-    """Manages MCPM configuration"""
+    """Manages MCP configuration"""
     
     def __init__(self, config_path: str = DEFAULT_CONFIG_FILE):
         self.config_path = config_path

@@ -1,5 +1,5 @@
 """
-Update command for MCPM
+Update command for MCP
 """
 
 import click
@@ -13,8 +13,8 @@ def update(server_name):
     """Update installed servers or a specific server.
     
     Examples:
-        mcpm update
-        mcpm update filesystem
+        mcp update
+        mcp update filesystem
     """
     if server_name:
         console.print(f"[bold green]Updating MCP server:[/] {server_name}")

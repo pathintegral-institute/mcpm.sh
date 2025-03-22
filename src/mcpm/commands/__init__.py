@@ -1,3 +1,0 @@
-"""
-MCPM commands package
-"""
