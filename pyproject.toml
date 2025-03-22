@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.8"
 license = "MIT"
 authors = [
-    {name = "MCPM Contributors"},
+    {name = "MCP Contributors"},
 ]
 dependencies = [
     "click>=8.1.3",

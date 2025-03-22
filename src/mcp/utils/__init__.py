@@ -1,3 +1,3 @@
 """
-MCPM utilities package
+MCP utilities package
 """

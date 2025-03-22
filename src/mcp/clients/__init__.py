@@ -1,3 +1,3 @@
 """
-Client integrations for MCPM - manages MCP client-specific configurations
+Client integrations for MCP - manages client-specific configurations
 """

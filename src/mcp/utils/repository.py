@@ -37,7 +37,7 @@ class RepositoryManager:
                 "display_name": "Filesystem",
                 "description": "Access to local files and directories",
                 "version": "1.0.0",
-                "author": "MCPM Team",
+                "author": "MCP Team",
                 "tags": ["files", "local", "essential"],
                 "clients": ["claude-desktop", "cursor", "windsurf"]
             },
@@ -46,7 +46,7 @@ class RepositoryManager:
                 "display_name": "Web Browser",
                 "description": "Control and interact with web browser",
                 "version": "0.9.2",
-                "author": "MCPM Team",
+                "author": "MCP Team",
                 "tags": ["web", "browser", "internet"],
                 "clients": ["claude-desktop", "windsurf"]
             },
@@ -55,7 +55,7 @@ class RepositoryManager:
                 "display_name": "Database Access",
                 "description": "Access SQL and NoSQL databases",
                 "version": "0.8.5",
-                "author": "MCPM Team",
+                "author": "MCP Team",
                 "tags": ["database", "sql", "nosql"],
                 "clients": ["claude-desktop", "cursor"]
             }

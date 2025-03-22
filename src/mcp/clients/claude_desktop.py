@@ -1,5 +1,5 @@
 """
-Claude Desktop integration utilities for MCPM
+Claude Desktop integration utilities for MCP
 """
 
 import os

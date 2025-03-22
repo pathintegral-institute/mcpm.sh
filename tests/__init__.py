@@ -1,1 +1,1 @@
-"""MCPM Test Suite"""
+"""MCP Test Suite"""

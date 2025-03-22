@@ -1,5 +1,5 @@
 """
-Pytest configuration for MCPM tests
+Pytest configuration for MCP tests
 """
 
 import os

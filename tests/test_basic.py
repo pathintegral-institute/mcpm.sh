@@ -1,9 +1,9 @@
 """
-Basic tests for MCPM
+Basic tests for MCP
 """
 
 import pytest
-from src.mcpm.cli import main
+from src.mcp.cli import main
 
 def test_cli_imports():
     """Test that the CLI can be imported"""
