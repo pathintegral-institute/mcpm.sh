@@ -14,7 +14,7 @@ from mcp.commands import (
     install,
     remove,
     list_servers,
-    config,
+    edit,
     status,
     toggle,
     server,
@@ -54,15 +54,16 @@ def main(ctx, help_flag):
             " ██║ ╚═╝ ██║╚██████╗██║                               ",
             " ╚═╝     ╚═╝ ╚═════╝╚═╝                               ",
             "",
-            f"The missing Model Context Protocol Manager v{__version__}",
-            "The USB Port Manager for AI Applications"
+            f"v{__version__}",
+            "Model Context Protocol Manager for all AI apps",
+            "Supports Claude Desktop, Windsurf, and more"
         ]
         
         # No need to convert to joined string since we're formatting directly in the panel
         
         # Create a panel with styled content
         panel = Panel(
-            f"[bold green]{logo[0]}\n{logo[1]}\n{logo[2]}\n{logo[3]}\n{logo[4]}\n{logo[5]}[/]\n\n[bold yellow]{logo[7]}[/]\n[italic blue]{logo[8]}[/]",
+            f"[bold green]{logo[0]}\n{logo[1]}\n{logo[2]}\n{logo[3]}\n{logo[4]}\n{logo[5]}[/]\n\n[bold yellow]{logo[7]}[/]\n[italic blue]{logo[8]}[/]\n[bold magenta]{logo[9]}[/]",
             border_style="bold cyan",
             expand=False,
             padding=(0, 2),
@@ -71,8 +72,20 @@ def main(ctx, help_flag):
         # Print the panel
         console.print(panel)
         
+        # Get information about installed clients
+        from mcp.utils.client_detector import detect_installed_clients
+        installed_clients = detect_installed_clients()
+        
         # Display active client information and main help
-        console.print(f"[bold magenta]Active client:[/] [yellow]{active_client}[/]")
+        client_status = "[green]✓[/]" if installed_clients.get(active_client, False) else "[yellow]⚠[/]"
+        console.print(f"[bold magenta]Active client:[/] [yellow]{active_client}[/] {client_status}")
+        
+        # Display all supported clients with their installation status
+        console.print("[bold]Supported clients:[/]")
+        for client, installed in installed_clients.items():
+            status = "[green]Installed[/]" if installed else "[gray]Not installed[/]"
+            active_marker = "[bold cyan]➤[/] " if client == active_client else "  "
+            console.print(f"{active_marker}{client}: {status}")
         console.print("")
         
         # Display usage info
@@ -91,7 +104,7 @@ def main(ctx, help_flag):
         console.print("[bold]Commands:[/]")
         commands_table = Table(show_header=False, box=None, padding=(0, 2, 0, 0))
         commands_table.add_row("  [cyan]client[/]", "Manage the active MCP client.")
-        commands_table.add_row("  [cyan]config[/]", "View or edit the active MCP client's configuration file.")
+        commands_table.add_row("  [cyan]edit[/]", "View or edit the active MCP client's configuration file.")
         commands_table.add_row("  [cyan]list[/]", "List all installed MCP servers.")
         commands_table.add_row("  [cyan]remove[/]", "Remove an installed MCP server.")
         commands_table.add_row("  [cyan]server[/]", "Manage MCP server processes.")
@@ -116,7 +129,7 @@ main.add_command(search.search)
 main.add_command(install.install)
 main.add_command(remove.remove)
 main.add_command(list_servers.list)
-main.add_command(config.config)
+main.add_command(edit.edit)
 main.add_command(status.status)
 main.add_command(toggle.toggle)
 main.add_command(server.server)

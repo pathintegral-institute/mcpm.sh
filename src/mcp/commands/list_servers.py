@@ -8,9 +8,13 @@ from rich.table import Table
 from rich.markup import escape
 
 from mcp.clients.claude_desktop import ClaudeDesktopManager
+from mcp.clients.windsurf import WindsurfManager
+from mcp.utils.config import ConfigManager
 
 console = Console()
+config_manager = ConfigManager()
 claude_manager = ClaudeDesktopManager()
+windsurf_manager = WindsurfManager()
 
 @click.command(name="list")
 @click.option("--available", is_flag=True, help="List all available MCP servers")
@@ -48,11 +52,26 @@ def list(available, outdated):
     elif outdated:
         console.print("[bold yellow]Checking for outdated MCP servers...[/]")
         
-        # Get Claude Desktop servers
-        claude_servers = claude_manager.get_servers()
+        # Get the active client and its corresponding manager
+        active_client = config_manager.get_active_client()
         
-        if not claude_servers:
-            console.print("[yellow]No MCP servers found in Claude Desktop.[/]")
+        # Select appropriate client manager based on active client
+        if active_client == "claude-desktop":
+            client_manager = claude_manager
+            client_name = "Claude Desktop"
+        elif active_client == "windsurf":
+            client_manager = windsurf_manager
+            client_name = "Windsurf"
+        else:
+            console.print(f"[bold red]Error:[/] Unsupported active client: {active_client}")
+            console.print("Please switch to a supported client using 'mcp client <client-name>'")
+            return
+        
+        # Get servers from active client
+        servers = client_manager.get_servers()
+        
+        if not servers:
+            console.print(f"[yellow]No MCP servers found in {client_name}.[/]")
             return
         
         # In a full implementation, this would check the repository for newer versions
@@ -67,7 +86,7 @@ def list(available, outdated):
         
         # Check for outdated servers
         outdated_servers = []
-        for server_name in claude_servers:
+        for server_name in servers:
             # Mock: filesystem has newer version available
             if server_name == "filesystem":
                 outdated_servers.append({
@@ -96,22 +115,37 @@ def list(available, outdated):
             console.print("[green]All MCP servers are up to date.[/]")
     
     else:
-        console.print("[bold green]MCP servers installed in Claude Desktop:[/]")
+        # Get the active client and its corresponding manager
+        active_client = config_manager.get_active_client()
         
-        # Get all servers from Claude Desktop config
-        claude_servers = claude_manager.get_servers()
+        # Select appropriate client manager based on active client
+        if active_client == "claude-desktop":
+            client_manager = claude_manager
+            client_name = "Claude Desktop"
+        elif active_client == "windsurf":
+            client_manager = windsurf_manager
+            client_name = "Windsurf"
+        else:
+            console.print(f"[bold red]Error:[/] Unsupported active client: {active_client}")
+            console.print("Please switch to a supported client using 'mcp client <client-name>'")
+            return
         
-        if not claude_servers:
-            console.print("[yellow]No MCP servers found in Claude Desktop.[/]")
+        console.print(f"[bold green]MCP servers installed in {client_name}:[/]")
+        
+        # Get all servers from active client config
+        servers = client_manager.get_servers()
+        
+        if not servers:
+            console.print(f"[yellow]No MCP servers found in {client_name}.[/]")
             console.print("Use 'mcp install <server>' to install a server.")
             return
         
         # Count the configured servers
-        server_count = len(claude_servers)
+        server_count = len(servers)
         console.print(f"[bold]Configured servers:[/] {server_count}\n")
         
         # Display detailed information for each server
-        for server_name, server_info in claude_servers.items():
+        for server_name, server_info in servers.items():
             # Server name and command
             console.print(f"[bold cyan]{server_name}[/]")
             command = server_info.get("command", "N/A")

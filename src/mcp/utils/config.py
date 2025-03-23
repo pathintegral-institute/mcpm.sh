@@ -7,6 +7,8 @@ import json
 import logging
 from typing import Dict, List, Optional, Any
 
+from mcp.utils.client_detector import detect_installed_clients, get_recommended_client
+
 logger = logging.getLogger(__name__)
 
 # Default configuration paths
@@ -45,20 +47,27 @@ class ConfigManager:
     
     def _default_config(self) -> Dict[str, Any]:
         """Create default configuration"""
+        # Detect installed clients and set a sensible default active client
+        installed_clients = detect_installed_clients()
+        recommended_client = get_recommended_client()
+        
         return {
             "version": "0.1.0",
             "servers_dir": self.servers_dir,
-            "active_client": "claude-desktop",
+            "active_client": recommended_client,
             "servers": {},
             "clients": {
                 "claude-desktop": {
-                    "enabled_servers": []
+                    "enabled_servers": [],
+                    "installed": installed_clients.get("claude-desktop", False)
                 },
                 "cursor": {
-                    "enabled_servers": []
+                    "enabled_servers": [],
+                    "installed": installed_clients.get("cursor", False)
                 },
                 "windsurf": {
-                    "enabled_servers": []
+                    "enabled_servers": [],
+                    "installed": installed_clients.get("windsurf", False)
                 }
             }
         }
