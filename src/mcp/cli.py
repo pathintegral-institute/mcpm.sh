@@ -1,5 +1,5 @@
 """
-MCP CLI - Main entry point for the Model Context Protocol Package Manager CLI
+MCP CLI - Main entry point for the MCP Manager CLI
 """
 
 import click
@@ -32,7 +32,7 @@ CONTEXT_SETTINGS = dict(help_option_names=[])
 @click.version_option(version=__version__)
 @click.pass_context
 def main(ctx, help_flag):
-    """MCP - Model Context Protocol Package Manager.
+    """MCP Manager - Model Context Protocol Management Tool.
     
     A tool for managing MCP servers across various clients.
     """
@@ -55,7 +55,7 @@ def main(ctx, help_flag):
             " ╚═╝     ╚═╝ ╚═════╝╚═╝                               ",
             "",
             f"v{__version__}",
-            "Model Context Protocol Manager for all AI apps",
+            "MCP Manager for all AI apps",
             "Supports Claude Desktop, Windsurf, and more"
         ]
         

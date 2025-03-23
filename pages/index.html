@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MCP - Model Context Protocol | getmcp.sh</title>
+    <title>MCP Manager - Model Context Protocol | getmcp.sh</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -13,11 +13,11 @@
             --bg-accent: #1a1d25;
             --text-primary: #e2e8f0;
             --text-secondary: #a0aec0;
-            --accent-color: #7c3aed;
-            --accent-light: #8b5cf6;
-            --accent-dark: #6d28d9;
-            --success: #10b981;
-            --code-bg: #1e1e2e;
+            --accent-color: #10b981;
+            --accent-light: #34d399;
+            --accent-dark: #047857;
+            --success: #059669;
+            --code-bg: #1a2e22;
             --card-border: #2d3748;
         }
         
@@ -33,8 +33,8 @@
             color: var(--text-primary);
             background-color: var(--bg-color);
             background-image: 
-                radial-gradient(circle at 25% 25%, rgba(124, 58, 237, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 75% 75%, rgba(124, 58, 237, 0.05) 0%, transparent 50%);
+                radial-gradient(circle at 25% 25%, rgba(16, 185, 129, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
             margin: 0;
             padding: 0;
             min-height: 100vh;
@@ -49,7 +49,7 @@
         header {
             text-align: center;
             padding: 3rem 0;
-            border-bottom: 1px solid rgba(124, 58, 237, 0.2);
+            border-bottom: 1px solid rgba(16, 185, 129, 0.2);
             margin-bottom: 3rem;
         }
         
@@ -174,7 +174,7 @@
             font-size: 0.9rem;
             text-align: center;
             padding: 2rem 0;
-            border-top: 1px solid rgba(124, 58, 237, 0.1);
+            border-top: 1px solid rgba(16, 185, 129, 0.1);
         }
         
         a {
@@ -212,54 +212,72 @@
     <div class="container">
         <header>
             <h1>MCP</h1>
-            <div class="tagline">The Model Context Protocol Manager</div>
+            <div class="tagline">Model Context Protocol Management Tool</div>
         </header>
 
         <div class="coming-soon">
             <h2>🚀 Quick Installation</h2>
             <p>Install MCP with a single command:</p>
             <code><span class="command-prompt">$</span> curl -sSL https://getmcp.sh/install | bash</code>
-            <p>MCP is a Homebrew-like service for managing Model Context Protocol (MCP) configs and servers.</p>
+            <p>MCP Manager is a Homebrew-like service for managing Model Context Protocol (MCP) servers across clients.</p>
         </div>
 
         <h2>What to Expect</h2>
+        <h2>Available Features</h2>
         <div class="features">
             <div class="feature">
-                <h3><span>🧩</span> Simple Config Installation</h3>
-                <p>Install Model Context Protocol configs with a single command:</p>
-                <code><span class="command-prompt">$</span> mcp install claude-config</code>
+                <h3><span>👥</span> Client Management</h3>
+                <p>Easily switch between and manage MCP clients:</p>
+                <code><span class="command-prompt">$</span> mcp client set claude-desktop</code>
             </div>
             
             <div class="feature">
-                <h3><span>🔄</span> Easy Updates</h3>
-                <p>Keep your MCP configs up to date effortlessly:</p>
-                <code><span class="command-prompt">$</span> mcp update</code>
-            </div>
-            
-            <div class="feature">
-                <h3><span>🔍</span> Config Discovery</h3>
-                <p>Find available Model Context Protocol configs:</p>
-                <code><span class="command-prompt">$</span> mcp search</code>
+                <h3><span>📋</span> Server Listing</h3>
+                <p>View all your installed MCP servers:</p>
+                <code><span class="command-prompt">$</span> mcp list</code>
             </div>
             
             <div class="feature">
                 <h3><span>⚙️</span> Server Management</h3>
-                <p>Streamlined configuration and management for Model Context Protocol servers:</p>
-                <code><span class="command-prompt">$</span> mcp server config</code>
+                <p>Control your MCP server processes with ease:</p>
+                <code><span class="command-prompt">$</span> mcp server start my-server</code>
+            </div>
+            
+            <div class="feature">
+                <h3><span>🔀</span> Server Toggling</h3>
+                <p>Enable or disable servers for specific clients:</p>
+                <code><span class="command-prompt">$</span> mcp toggle my-server</code>
+            </div>
+        </div>
+        
+        <h2>Coming Soon</h2>
+        <div class="features">
+            <div class="feature">
+                <h3><span>🧩</span> Simple Server Installation</h3>
+                <p>Install MCP servers with a single command:</p>
+                <code><span class="command-prompt">$</span> mcp install claude-config</code>
+            </div>
+            
+            <div class="feature">
+                <h3><span>🔍</span> Server Discovery</h3>
+                <p>Find available Model Context Protocol servers:</p>
+                <code><span class="command-prompt">$</span> mcp search</code>
             </div>
         </div>
 
         <div class="clients">
-            <h2>Supported Configs</h2>
-            <p>Our initial release will include config support for:</p>
+            <h2>Supported Clients</h2>
+            <p>MCP currently supports these AI clients:</p>
             <ul>
-                <li><strong>Claude Desktop</strong> - Configs for Anthropic's Model Context Protocol client</li>
-                <li><em>More Model Context Protocol configs coming soon...</em></li>
+                <li><strong>Claude Desktop</strong> - Anthropic's AI assistant</li>
+                <li><strong>Windsurf</strong> - The world's first agentic IDE</li>
+                <li><strong>Cursor</strong> - AI-enhanced code editor</li>
+                <li><em>More clients coming soon...</em></li>
             </ul>
         </div>
 
         <footer>
-            <p>© 2025 MCP Project | <a href="https://github.com/pathintegral-xyz/getmcp.sh">GitHub</a></p>
+            <p>© 2025 MCP Manager | <a href="https://github.com/pathintegral-xyz/getmcp.sh">GitHub</a></p>
         </footer>
     </div>
 </body>

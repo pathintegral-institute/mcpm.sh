@@ -1,7 +1,9 @@
 """
-MCP - Model Context Protocol Package Manager
+MCP Manager - Model Context Protocol Management Tool
 """
 
-# Import version from single source of truth
-import version
-__version__ = version.__version__
+# Import version from internal module
+from .version import __version__
+
+# Define what symbols are exported from this package
+__all__ = ["__version__"]

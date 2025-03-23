@@ -1,10 +1,10 @@
-# MCP - Model Context Protocol Package Manager
+# MCP Manager - Model Context Protocol Management Tool
 
-MCP is a Homebrew-like service and command-line interface for managing Model Context Protocol (MCP) servers across various MCP clients.
+MCP Manager is a Homebrew-like service and command-line interface for managing Model Context Protocol (MCP) servers across various MCP clients.
 
 ## Overview
 
-MCP aims to simplify the installation, configuration, and management of Model Context Protocol servers with a focus on:
+MCP Manager aims to simplify the installation, configuration, and management of Model Context Protocol servers with a focus on:
 
 - Easy installation of MCP servers via a simple CLI
 - Centralized management of server configurations across multiple clients
@@ -22,69 +22,51 @@ MCP will support managing MCP servers for the following clients:
 
 ## Command Line Interface (CLI)
 
-MCP provides a comprehensive CLI built with Python's Click framework. Below are the available commands:
+MCP Manager provides a comprehensive CLI built with Python's Click framework. Below are the available commands:
 
 ### Basic Commands
 
 ```
 mcp --help                  # Display help information and available commands
-mcp --version                # Display the current version of MCP
+mcp --version               # Display the current version of MCP
 ```
 
-### Search Commands
+### Available Commands
 
 ```
-mcp search [QUERY]           # Search available MCP servers
-mcp search --tags=TAG        # Search servers by tag
-```
+mcp client                  # Manage the active MCP client
+mcp client set CLIENT_NAME  # Set the active MCP client
+mcp client list             # List available MCP clients and their status
 
-### Installation Commands
+mcp edit                    # View or edit the active MCP client's configuration file
 
-```
-mcp install SERVER_NAME      # Install an MCP server
-mcp install SERVER_NAME --version=VERSION  # Install specific version
-mcp remove SERVER_NAME       # Remove an installed MCP server
-mcp update [SERVER_NAME]     # Update installed servers (or specific server)
-```
+mcp list                    # List all installed MCP servers
 
-### List Commands
+mcp remove SERVER_NAME      # Remove an installed MCP server
 
-```
-mcp list                     # List all installed MCP servers
-mcp list --available         # List all available MCP servers
-mcp list --outdated          # List installed servers with updates available
-```
-
-### Configuration Commands
-
-```
-mcp config SERVER_NAME       # Configure an installed MCP server
-mcp config --edit SERVER_NAME # Open server config in default editor
-mcp config --reset SERVER_NAME # Reset server config to defaults
-```
-
-### Status Commands
-
-```
-mcp status [SERVER_NAME]     # Show status of all or specific MCP servers
-mcp status --client=CLIENT_NAME  # Show status of MCP servers for a specific client
-mcp enable SERVER_NAME --client=CLIENT_NAME  # Enable an MCP server for a specific client
-mcp disable SERVER_NAME --client=CLIENT_NAME # Disable an MCP server for a specific client
-```
-
-### Server Management
-
-```
+mcp server                  # Manage MCP server processes
 mcp server start SERVER_NAME   # Start an MCP server
 mcp server stop SERVER_NAME    # Stop an MCP server
 mcp server restart SERVER_NAME # Restart an MCP server
-mcp server log SERVER_NAME     # View server logs
+mcp server status           # Show status of running MCP servers
+
+mcp toggle SERVER_NAME      # Toggle an MCP server on or off for a client
+```
+
+### Coming Soon Commands
+
+The following commands are planned for future releases:
+
+```
+mcp install SERVER_NAME     # Install an MCP server
+mcp search [QUERY]          # Search available MCP servers
+mcp status                  # Show status of MCP servers in Claude Desktop
 ```
 
 ## Roadmap
 
 - [x] Landing page setup
-- [ ] CLI foundation
+- [x] CLI foundation
 - [ ] Server repository structure
 - [ ] Claude Desktop client integration
 - [ ] Server management functionality
@@ -92,7 +74,7 @@ mcp server log SERVER_NAME     # View server logs
 
 ## Development
 
-This repository contains the CLI and service components for MCP, built with Python and Click following modern package development practices.
+This repository contains the CLI and service components for MCP Manager, built with Python and Click following modern package development practices.
 
 ### Development Requirements
 

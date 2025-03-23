@@ -9,7 +9,7 @@ if [ $# -ne 1 ]; then
 fi
 
 NEW_VERSION=$1
-VERSION_FILE="version.py"
+VERSION_FILE="src/mcp/version.py"
 
 # Update the version file
 echo '"""Single source of truth for MCP version."""

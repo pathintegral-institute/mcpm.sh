@@ -6,16 +6,16 @@ set -e
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
-BLUE='\033[0;34m'
-PURPLE='\033[0;35m'
+DARK_GREEN='\033[0;32m'
+LIGHT_GREEN='\033[1;32m'
 CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
-echo -e "${BLUE}┌─────────────────────────────────────────────┐${NC}"
-echo -e "${BLUE}│                                             │${NC}"
-echo -e "${BLUE}│  ${GREEN}MCP - Model Context Protocol Package Manager${BLUE}  │${NC}"
-echo -e "${BLUE}│                                             │${NC}"
-echo -e "${BLUE}└─────────────────────────────────────────────┘${NC}"
+echo -e "${DARK_GREEN}┌─────────────────────────────────────────────┐${NC}"
+echo -e "${DARK_GREEN}│                                             │${NC}"
+echo -e "${DARK_GREEN}│  ${LIGHT_GREEN}MCP - Model Context Protocol Manager${DARK_GREEN}  │${NC}"
+echo -e "${DARK_GREEN}│                                             │${NC}"
+echo -e "${DARK_GREEN}└─────────────────────────────────────────────┘${NC}"
 echo
 
 # Function to check if a command exists
@@ -25,7 +25,7 @@ command_exists() {
 
 # Function to print info message
 info() {
-    echo -e "${CYAN}INFO:${NC} $1"
+    echo -e "${DARK_GREEN}INFO:${NC} $1"
 }
 
 # Function to print error message
@@ -35,7 +35,7 @@ error() {
 
 # Function to print success message
 success() {
-    echo -e "${GREEN}SUCCESS:${NC} $1"
+    echo -e "${LIGHT_GREEN}SUCCESS:${NC} $1"
 }
 
 # Function to check Python version
@@ -79,18 +79,57 @@ ensure_pip() {
 install_mcp() {
     info "Installing MCP..."
     
-    if command_exists pipx; then
-        info "Using pipx to install MCP (recommended)..."
-        pipx install mcp
+    # Check if we're on macOS
+    if [[ "$(uname)" == "Darwin" ]]; then
+        # macOS installation path
+        if command_exists pipx; then
+            info "Using pipx to install MCP (recommended)..."
+            pipx install mcp
+        elif command_exists brew; then
+            info "pipx not found, installing it via Homebrew..."
+            brew install pipx
+            info "Now installing MCP with pipx..."
+            pipx install mcp
+        else
+            info "Creating a dedicated virtual environment for MCP..."
+            MCP_VENV="$HOME/.mcp-venv"
+            python3 -m venv "$MCP_VENV"
+            "$MCP_VENV/bin/pip" install mcp
+            
+            # Create symlinks to the user's bin directory
+            USER_BIN="$HOME/.local/bin"
+            mkdir -p "$USER_BIN"
+            ln -sf "$MCP_VENV/bin/mcp" "$USER_BIN/mcp"
+            
+            info "Installed MCP in a virtual environment at $MCP_VENV"
+            info "Added symlink to $USER_BIN/mcp"
+            
+            # Add PATH warning if needed
+            if ! echo "$PATH" | grep -q "$USER_BIN"; then
+                echo "Warning: $USER_BIN is not in your PATH"
+                echo "Add the following to your shell profile (~/.bashrc, ~/.zshrc, etc.):"
+                echo "  export PATH=\"$USER_BIN:\$PATH\""
+            fi
+        fi
     else
-        # Try to use pip in user mode first
-        python3 -m pip install --user mcp || {
-            info "Attempting system-wide installation with sudo..."
-            sudo python3 -m pip install mcp || {
+        # Non-macOS installation path - try standard methods
+        if command_exists pipx; then
+            info "Using pipx to install MCP (recommended)..."
+            pipx install mcp
+        else
+            # Try to use pip in user mode with appropriate flags
+            info "Installing with pip in user mode..."
+            python3 -m pip install --user mcp || {
                 error "Failed to install MCP. Please check your permissions and try again."
+                echo "You may want to try one of these alternatives:"
+                echo "  1. Install pipx (https://pypa.github.io/pipx/) and run: pipx install mcp"
+                echo "  2. Create a virtual environment and install there:"
+                echo "     python3 -m venv ~/.mcp-venv"
+                echo "     source ~/.mcp-venv/bin/activate"
+                echo "     pip install mcp"
                 exit 1
             }
-        }
+        fi
     fi
 }
 
@@ -100,12 +139,12 @@ verify_installation() {
         MCP_VERSION=$(mcp --version 2>/dev/null || echo "Unknown")
         success "MCP $MCP_VERSION has been successfully installed!"
         echo
-        echo -e "${PURPLE}To get started with MCP, try:${NC}"
-        echo -e "  ${CYAN}mcp --help${NC}         # Show available commands"
-        echo -e "  ${CYAN}mcp list --available${NC} # List available MCP servers"
-        echo -e "  ${CYAN}mcp install <server>${NC} # Install an MCP server"
+        echo -e "${DARK_GREEN}To get started with MCP, try:${NC}"
+        echo -e "  ${LIGHT_GREEN}mcp --help${NC}         # Show available commands"
+        echo -e "  ${LIGHT_GREEN}mcp list --available${NC} # List available MCP servers"
+        echo -e "  ${LIGHT_GREEN}mcp install <server>${NC} # Install an MCP server"
         echo
-        echo -e "For more information, visit ${BLUE}https://getmcp.sh${NC}"
+        echo -e "For more information, visit ${DARK_GREEN}https://getmcp.sh${NC}"
         echo
     else
         PATH_DIRS=$(echo $PATH | tr ':' '\n')
