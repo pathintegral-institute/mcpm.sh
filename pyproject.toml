@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "mcp"
-version = "1.0.0"
+dynamic = ["version"]
 description = "Model Context Protocol Package Manager"
 readme = "README.md"
 requires-python = ">=3.8"
@@ -29,6 +29,9 @@ packages = ["src/mcp"]
 
 [tool.hatch.build.targets.sdist]
 packages = ["src/mcp"]
+
+[tool.hatch.version]
+path = "version.py"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -157,6 +157,37 @@ getmcp.sh/
 - Add tests for new functionality in the `tests/` directory
 - Use the `test_cli.py` script for quick development testing
 
+
+### Version Management
+
+MCP uses a single source of truth pattern for version management to ensure consistency across all components.
+
+#### Version Structure
+
+- The canonical version is defined in `version.py` at the project root
+- `src/mcp/__init__.py` imports this version
+- `pyproject.toml` uses dynamic versioning to read from `version.py`
+- Git tags are created with the same version number prefixed with 'v' (e.g., v1.0.0)
+
+#### Updating the Version
+
+When releasing a new version:
+
+1. Use the provided version bump script
+   ```
+   ./bump_version.sh NEW_VERSION
+   # Example: ./bump_version.sh 1.1.0
+   ```
+
+2. Push the changes and tags
+   ```
+   git push && git push --tags
+   ```
+
+3. Create a GitHub release matching the new version
+
+This process ensures that the version is consistent in all places: code, package metadata, and git tags.
+
 ## License
 
 MIT

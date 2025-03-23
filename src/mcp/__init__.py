@@ -2,4 +2,6 @@
 MCP - Model Context Protocol Package Manager
 """
 
-__version__ = "1.0.0"
+# Import version from single source of truth
+import version
+__version__ = version.__version__
