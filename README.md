@@ -34,9 +34,9 @@ mcp --version               # Display the current version of MCP
 ### Available Commands
 
 ```
-mcp client                  # Manage the active MCP client
-mcp client set CLIENT_NAME  # Set the active MCP client
-mcp client list             # List available MCP clients and their status
+mcp client                  # Show the current active MCP client
+mcp client CLIENT_NAME      # Set a new active MCP client
+mcp client --list           # List all supported MCP clients and their status
 
 mcp edit                    # View or edit the active MCP client's configuration file
 
@@ -68,7 +68,6 @@ mcp status                  # Show status of MCP servers in Claude Desktop
 - [x] Landing page setup
 - [x] CLI foundation
 - [ ] Server repository structure
-- [ ] Claude Desktop client integration
 - [ ] Server management functionality
 - [ ] Additional client support
 
