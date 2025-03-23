@@ -19,6 +19,7 @@ from mcp.commands import (
     toggle,
     server,
     client,
+    inspector,
 )
 
 console = Console()
@@ -105,6 +106,7 @@ def main(ctx, help_flag):
         commands_table = Table(show_header=False, box=None, padding=(0, 2, 0, 0))
         commands_table.add_row("  [cyan]client[/]", "Manage the active MCP client.")
         commands_table.add_row("  [cyan]edit[/]", "View or edit the active MCP client's configuration file.")
+        commands_table.add_row("  [cyan]inspector[/]", "Launch the MCP Inspector UI to examine servers.")
         commands_table.add_row("  [cyan]list[/]", "List all installed MCP servers.")
         commands_table.add_row("  [cyan]remove[/]", "Remove an installed MCP server.")
         commands_table.add_row("  [cyan]server[/]", "Manage MCP server processes.")
@@ -134,6 +136,7 @@ main.add_command(status.status)
 main.add_command(toggle.toggle)
 main.add_command(server.server)
 main.add_command(client.client)
+main.add_command(inspector.inspector, name="inspector")
 
 if __name__ == "__main__":
     main()
