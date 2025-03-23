@@ -1,0 +1,138 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Colors for terminal output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+CYAN='\033[0;36m'
+NC='\033[0m' # No Color
+
+echo -e "${BLUE}┌─────────────────────────────────────────────┐${NC}"
+echo -e "${BLUE}│                                             │${NC}"
+echo -e "${BLUE}│  ${GREEN}MCP - Model Context Protocol Package Manager${BLUE}  │${NC}"
+echo -e "${BLUE}│                                             │${NC}"
+echo -e "${BLUE}└─────────────────────────────────────────────┘${NC}"
+echo
+
+# Function to check if a command exists
+command_exists() {
+    command -v "$1" >/dev/null 2>&1
+}
+
+# Function to print info message
+info() {
+    echo -e "${CYAN}INFO:${NC} $1"
+}
+
+# Function to print error message
+error() {
+    echo -e "${RED}ERROR:${NC} $1" >&2
+}
+
+# Function to print success message
+success() {
+    echo -e "${GREEN}SUCCESS:${NC} $1"
+}
+
+# Function to check Python version
+check_python() {
+    if ! command_exists python3; then
+        error "Python 3 is not installed. MCP requires Python 3.8 or higher."
+        echo "Please install Python 3.8+ and try again."
+        echo "Visit https://www.python.org/downloads/ for installation instructions."
+        exit 1
+    fi
+
+    # Check Python version
+    PYTHON_VERSION=$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
+    PYTHON_MAJOR=$(echo $PYTHON_VERSION | cut -d. -f1)
+    PYTHON_MINOR=$(echo $PYTHON_VERSION | cut -d. -f2)
+
+    if [ "$PYTHON_MAJOR" -lt 3 ] || ([ "$PYTHON_MAJOR" -eq 3 ] && [ "$PYTHON_MINOR" -lt 8 ]); then
+        error "Python version $PYTHON_VERSION detected, but MCP requires Python 3.8 or higher."
+        echo "Please upgrade your Python installation and try again."
+        exit 1
+    fi
+
+    info "Found Python $PYTHON_VERSION"
+}
+
+# Function to install or upgrade pip
+ensure_pip() {
+    if ! command_exists pip3; then
+        info "Installing pip..."
+        python3 -m ensurepip --upgrade || {
+            error "Failed to install pip. Please install pip manually and try again."
+            exit 1
+        }
+    else
+        info "Upgrading pip..."
+        python3 -m pip install --upgrade pip >/dev/null 2>&1 || true
+    fi
+}
+
+# Function to install MCP
+install_mcp() {
+    info "Installing MCP..."
+    
+    if command_exists pipx; then
+        info "Using pipx to install MCP (recommended)..."
+        pipx install mcp
+    else
+        # Try to use pip in user mode first
+        python3 -m pip install --user mcp || {
+            info "Attempting system-wide installation with sudo..."
+            sudo python3 -m pip install mcp || {
+                error "Failed to install MCP. Please check your permissions and try again."
+                exit 1
+            }
+        }
+    fi
+}
+
+# Function to verify installation
+verify_installation() {
+    if command_exists mcp; then
+        MCP_VERSION=$(mcp --version 2>/dev/null || echo "Unknown")
+        success "MCP $MCP_VERSION has been successfully installed!"
+        echo
+        echo -e "${PURPLE}To get started with MCP, try:${NC}"
+        echo -e "  ${CYAN}mcp --help${NC}         # Show available commands"
+        echo -e "  ${CYAN}mcp list --available${NC} # List available MCP servers"
+        echo -e "  ${CYAN}mcp install <server>${NC} # Install an MCP server"
+        echo
+        echo -e "For more information, visit ${BLUE}https://getmcp.sh${NC}"
+        echo
+    else
+        PATH_DIRS=$(echo $PATH | tr ':' '\n')
+        USER_BIN_DIR="$HOME/.local/bin"
+        
+        if ! echo "$PATH_DIRS" | grep -q "$USER_BIN_DIR"; then
+            info "MCP might be installed but not in your PATH."
+            echo "Try adding this to your shell profile (~/.bashrc, ~/.zshrc, etc.):"
+            echo "  export PATH=\"\$HOME/.local/bin:\$PATH\""
+            echo
+            echo "After that, restart your terminal or run:"
+            echo "  source ~/.bashrc  # or ~/.zshrc, etc."
+        else
+            error "Installation seems to have failed. Please try again or install manually:"
+            echo "  pip install mcp"
+        fi
+    fi
+}
+
+# Main installation process
+main() {
+    info "Starting MCP installation..."
+    check_python
+    ensure_pip
+    install_mcp
+    verify_installation
+}
+
+# Execute the installation
+main
