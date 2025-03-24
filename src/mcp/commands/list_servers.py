@@ -9,12 +9,14 @@ from rich.markup import escape
 
 from mcp.clients.claude_desktop import ClaudeDesktopManager
 from mcp.clients.windsurf import WindsurfManager
+from mcp.clients.cursor import CursorManager
 from mcp.utils.config import ConfigManager
 
 console = Console()
 config_manager = ConfigManager()
 claude_manager = ClaudeDesktopManager()
 windsurf_manager = WindsurfManager()
+cursor_manager = CursorManager()
 
 @click.command(name="list")
 @click.option("--available", is_flag=True, help="List all available MCP servers")
@@ -62,6 +64,9 @@ def list(available, outdated):
         elif active_client == "windsurf":
             client_manager = windsurf_manager
             client_name = "Windsurf"
+        elif active_client == "cursor":
+            client_manager = cursor_manager
+            client_name = "Cursor"
         else:
             console.print(f"[bold red]Error:[/] Unsupported active client: {active_client}")
             console.print("Please switch to a supported client using 'mcp client <client-name>'")
@@ -125,6 +130,9 @@ def list(available, outdated):
         elif active_client == "windsurf":
             client_manager = windsurf_manager
             client_name = "Windsurf"
+        elif active_client == "cursor":
+            client_manager = cursor_manager
+            client_name = "Cursor"
         else:
             console.print(f"[bold red]Error:[/] Unsupported active client: {active_client}")
             console.print("Please switch to a supported client using 'mcp client <client-name>'")

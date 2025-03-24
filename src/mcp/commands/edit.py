@@ -12,12 +12,14 @@ from rich.prompt import Confirm
 
 from mcp.clients.claude_desktop import ClaudeDesktopManager
 from mcp.clients.windsurf import WindsurfManager
+from mcp.clients.cursor import CursorManager
 from mcp.utils.config import ConfigManager
 
 console = Console()
 config_manager = ConfigManager()
 claude_manager = ClaudeDesktopManager()
 windsurf_manager = WindsurfManager()
+cursor_manager = CursorManager()
 
 @click.command()
 @click.option("--edit", is_flag=True, help="Open the active client's config in default editor")
@@ -47,6 +49,11 @@ def edit(edit, create):
         client_name = "Windsurf"
         install_url = "https://codeium.com/windsurf/download"
         is_installed_method = client_manager.is_windsurf_installed
+    elif active_client == "cursor":
+        client_manager = cursor_manager
+        client_name = "Cursor"
+        install_url = "https://cursor.sh/download"
+        is_installed_method = client_manager.is_cursor_installed
     else:
         console.print(f"[bold red]Error:[/] Unsupported active client: {active_client}")
         console.print("Please switch to a supported client using 'mcp client <client-name>'")

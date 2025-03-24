@@ -70,6 +70,7 @@ mcp status                  # Show status of MCP servers in Claude Desktop
 - [ ] Server repository structure
 - [ ] Server management functionality
 - [ ] Additional client support
+- [ ] MCP profiles - collections of tools that can be added to any clients with a single command
 
 ## Development
 

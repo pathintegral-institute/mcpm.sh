@@ -57,7 +57,7 @@ def main(ctx, help_flag):
             "",
             f"v{__version__}",
             "MCP Manager for all AI apps",
-            "Supports Claude Desktop, Windsurf, and more"
+            "Supports Claude Desktop, Windsurf, Cursor, and more"
         ]
         
         # No need to convert to joined string since we're formatting directly in the panel

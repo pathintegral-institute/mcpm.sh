@@ -7,6 +7,7 @@ from typing import Dict
 
 from mcp.clients.claude_desktop import CLAUDE_CONFIG_PATH
 from mcp.clients.windsurf import WINDSURF_CONFIG_PATH
+from mcp.clients.cursor import CURSOR_CONFIG_PATH
 
 def detect_installed_clients() -> Dict[str, bool]:
     """
@@ -18,10 +19,12 @@ def detect_installed_clients() -> Dict[str, bool]:
     claude_installed = os.path.isdir(os.path.dirname(CLAUDE_CONFIG_PATH))
     windsurf_installed = os.path.isdir(os.path.dirname(WINDSURF_CONFIG_PATH))
     
+    cursor_installed = os.path.isdir(os.path.dirname(CURSOR_CONFIG_PATH))
+    
     return {
         "claude-desktop": claude_installed,
         "windsurf": windsurf_installed,
-        "cursor": False  # Not implemented yet
+        "cursor": cursor_installed
     }
 
 def get_client_config_paths() -> Dict[str, str]:
@@ -33,7 +36,8 @@ def get_client_config_paths() -> Dict[str, str]:
     """
     return {
         "claude-desktop": CLAUDE_CONFIG_PATH,
-        "windsurf": WINDSURF_CONFIG_PATH
+        "windsurf": WINDSURF_CONFIG_PATH,
+        "cursor": CURSOR_CONFIG_PATH
     }
 
 def get_client_display_info() -> Dict[str, Dict[str, str]]:
@@ -57,7 +61,7 @@ def get_client_display_info() -> Dict[str, Dict[str, str]]:
         "cursor": {
             "name": "Cursor",
             "download_url": "https://cursor.sh/download",
-            "config_file": "" # Not implemented yet
+            "config_file": CURSOR_CONFIG_PATH
         }
     }
 
