@@ -67,8 +67,10 @@ mcp status                  # Show status of MCP servers in Claude Desktop
 
 - [x] Landing page setup
 - [x] CLI foundation
-- [ ] Server repository structure
+- [x] Search
+- [ ] Install
 - [ ] Server management functionality
+- [ ] Support SSE Server
 - [ ] Additional client support
 - [ ] MCP profiles - collections of tools that can be added to any clients with a single command
 

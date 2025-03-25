@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Background circle -->
+  <circle cx="16" cy="16" r="16" fill="#2E3440" />
+  
+  <!-- Command prompt and text -->
+  <text x="4" y="18" font-family="monospace" font-size="9" fill="#D8DEE9">></text>
+  <text x="9" y="18" font-family="monospace" font-size="8" fill="#88C0D0">mcpm</text>
+</svg>

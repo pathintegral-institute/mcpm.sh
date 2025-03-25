@@ -2,82 +2,113 @@
 Repository utilities for MCP - handles server discovery and installation
 """
 
+import json
 import logging
+import os
+from datetime import datetime
+from pathlib import Path
 from typing import Dict, List, Optional, Any
+import requests
 
 logger = logging.getLogger(__name__)
 
 # Default repository URL
-DEFAULT_REPO_URL = "https://getmcp.sh/api/servers"
+DEFAULT_REPO_URL = "https://getmcp.io/api/servers.json"
 
 class RepositoryManager:
     """Manages server repository operations"""
     
     def __init__(self, repo_url: str = DEFAULT_REPO_URL):
         self.repo_url = repo_url
+        self.servers_cache = None
+        self.last_refresh = None
     
-    def search_servers(self, query: Optional[str] = None, tags: Optional[str] = None) -> List[Dict[str, Any]]:
+    def _fetch_servers(self, force_refresh: bool = False) -> Dict[str, Dict[str, Any]]:
+        """
+        Fetch servers data from the repository
+        
+        Args:
+            force_refresh: Force a refresh of the cache
+            
+        Returns:
+            Dictionary of server data indexed by server name
+        """
+        # Return cached data if available and not forcing refresh
+        if self.servers_cache and not force_refresh and self.last_refresh:
+            # Cache for 1 hour
+            age = (datetime.now() - self.last_refresh).total_seconds()
+            if age < 3600:  # 1 hour in seconds
+                return self.servers_cache
+        
+        try:
+            response = requests.get(self.repo_url)
+            response.raise_for_status()
+            self.servers_cache = response.json()
+            self.last_refresh = datetime.now()
+            return self.servers_cache
+        except requests.RequestException as e:
+            logger.error(f"Failed to fetch servers from {self.repo_url}: {e}")
+            # Return empty dict if we can't fetch and have no cache
+            return self.servers_cache or {}
+    
+    def search_servers(self, query: Optional[str] = None, 
+                       tags: Optional[str] = None,
+                       category: Optional[str] = None) -> List[Dict[str, Any]]:
         """
         Search for available MCP servers
         
         Args:
             query: Optional search query
             tags: Optional tag to filter by
+            category: Optional category to filter by
             
         Returns:
             List of matching server metadata
         """
-        # In a real implementation, this would make API calls to the repository
-        # For now, we'll return mock data
-        
-        # Mock repository data
-        mock_servers = [
-            {
-                "name": "filesystem",
-                "display_name": "Filesystem",
-                "description": "Access to local files and directories",
-                "version": "1.0.0",
-                "author": "MCP Team",
-                "tags": ["files", "local", "essential"],
-                "clients": ["claude-desktop", "cursor", "windsurf"]
-            },
-            {
-                "name": "browser",
-                "display_name": "Web Browser",
-                "description": "Control and interact with web browser",
-                "version": "0.9.2",
-                "author": "MCP Team",
-                "tags": ["web", "browser", "internet"],
-                "clients": ["claude-desktop", "windsurf"]
-            },
-            {
-                "name": "database",
-                "display_name": "Database Access",
-                "description": "Access SQL and NoSQL databases",
-                "version": "0.8.5",
-                "author": "MCP Team",
-                "tags": ["database", "sql", "nosql"],
-                "clients": ["claude-desktop", "cursor"]
-            }
-        ]
+        servers_dict = self._fetch_servers()
+        results = list(servers_dict.values())
         
         # Filter by query if provided
-        results = mock_servers
         if query:
             query = query.lower()
-            results = [
-                server for server in results
-                if query in server["name"].lower() or
-                   query in server["description"].lower() or
-                   query in server["display_name"].lower()
-            ]
+            filtered_results = []
+            
+            for server in results:
+                # Check standard fields
+                if (query in server["name"].lower() or
+                    query in server.get("description", "").lower() or
+                    query in server.get("display_name", "").lower()):
+                    filtered_results.append(server)
+                    continue
+                    
+                # Check in tags
+                if "tags" in server and any(query in tag.lower() for tag in server["tags"]):
+                    filtered_results.append(server)
+                    continue
+                    
+                # Check in categories
+                if "categories" in server and any(query in cat.lower() for cat in server["categories"]):
+                    filtered_results.append(server)
+                    continue
+                    
+            results = filtered_results
         
         # Filter by tag if provided
         if tags:
             tags = tags.lower()
             results = [
                 server for server in results
-                if tags in [tag.lower() for tag in server["tags"]]
+                if "tags" in server and 
+                any(tags in tag.lower() for tag in server["tags"])
+            ]
+            
+        # Filter by category if provided
+        if category:
+            category = category.lower()
+            results = [
+                server for server in results
+                if "categories" in server and 
+                any(category in cat.lower() for cat in server["categories"])
             ]
         
         return results
@@ -92,17 +123,28 @@ class RepositoryManager:
         Returns:
             Server metadata or None if not found
         """
-        # In a real implementation, this would make an API call
-        # For now, we search in our mock data
-        for server in self.search_servers():
-            if server["name"] == server_name:
-                return server
-        return None
+        servers_dict = self._fetch_servers()
+        return servers_dict.get(server_name)
+    
+    def get_available_versions(self, server_name: str) -> List[str]:
+        """
+        Get available versions for a server
+        
+        Args:
+            server_name: Name of the server
+            
+        Returns:
+            List of available versions, currently just returns the current version
+        """
+        metadata = self.get_server_metadata(server_name)
+        if metadata and "version" in metadata:
+            return [metadata["version"]]
+        return []
     
     def download_server(self, server_name: str, version: Optional[str] = None, 
-                       dest_dir: str = None) -> Optional[Dict[str, Any]]:
+                       dest_dir: Optional[str] = None) -> Optional[Dict[str, Any]]:
         """
-        Download an MCP server
+        Download an MCP server package
         
         Args:
             server_name: Name of the server to download
@@ -112,9 +154,6 @@ class RepositoryManager:
         Returns:
             Server metadata if successful, None otherwise
         """
-        # In a real implementation, this would download the server package
-        # For now, we'll just return the metadata
-        
         metadata = self.get_server_metadata(server_name)
         if not metadata:
             logger.error(f"Server not found: {server_name}")
@@ -123,6 +162,20 @@ class RepositoryManager:
         if version and metadata["version"] != version:
             logger.error(f"Version {version} not found for server {server_name}")
             return None
+        
+        # Use the latest version if none specified
+        if not version:
+            version = metadata["version"]
             
+        # Create the destination directory if needed
+        if dest_dir:
+            os.makedirs(dest_dir, exist_ok=True)
+            
+        # Store the metadata in the destination directory
+        if dest_dir:
+            metadata_path = Path(dest_dir) / "metadata.json"
+            with open(metadata_path, "w") as f:
+                json.dump(metadata, f, indent=2)
+        
         logger.info(f"Downloaded server {server_name} v{metadata['version']}")
         return metadata
