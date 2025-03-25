@@ -1,5 +1,5 @@
 """
-Configuration utilities for MCP
+Configuration utilities for MCPM
 """
 
 import os
@@ -7,7 +7,7 @@ import json
 import logging
 from typing import Dict, List, Optional, Any
 
-from mcp.utils.client_detector import detect_installed_clients, get_recommended_client
+from mcpm.utils.client_detector import detect_installed_clients, get_recommended_client
 
 logger = logging.getLogger(__name__)
 
@@ -135,13 +135,13 @@ class ConfigManager:
         if server_name in disabled_servers:
             # Find the appropriate client manager to update config
             if client_name == "claude-desktop":
-                from mcp.clients.claude_desktop import ClaudeDesktopManager
+                from mcpm.clients.claude_desktop import ClaudeDesktopManager
                 client_manager = ClaudeDesktopManager()
             elif client_name == "windsurf":
-                from mcp.clients.windsurf import WindsurfManager
+                from mcpm.clients.windsurf import WindsurfManager
                 client_manager = WindsurfManager()
             elif client_name == "cursor":
-                from mcp.clients.cursor import CursorManager
+                from mcpm.clients.cursor import CursorManager
                 client_manager = CursorManager()
             else:
                 # Unknown client type, but we'll still track in our config
@@ -188,13 +188,13 @@ class ConfigManager:
             
             # Find the appropriate client manager to update config
             if client_name == "claude-desktop":
-                from mcp.clients.claude_desktop import ClaudeDesktopManager
+                from mcpm.clients.claude_desktop import ClaudeDesktopManager
                 client_manager = ClaudeDesktopManager()
             elif client_name == "windsurf":
-                from mcp.clients.windsurf import WindsurfManager
+                from mcpm.clients.windsurf import WindsurfManager
                 client_manager = WindsurfManager()
             elif client_name == "cursor":
-                from mcp.clients.cursor import CursorManager
+                from mcpm.clients.cursor import CursorManager
                 client_manager = CursorManager()
             else:
                 # Unknown client type, but we'll still track in our config

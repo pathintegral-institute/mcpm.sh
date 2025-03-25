@@ -1,5 +1,5 @@
 """
-Edit command for MCP (formerly config)
+Edit command for MCPM (formerly config)
 """
 
 import os
@@ -10,10 +10,10 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.prompt import Confirm
 
-from mcp.clients.claude_desktop import ClaudeDesktopManager
-from mcp.clients.windsurf import WindsurfManager
-from mcp.clients.cursor import CursorManager
-from mcp.utils.config import ConfigManager
+from mcpm.clients.claude_desktop import ClaudeDesktopManager
+from mcpm.clients.windsurf import WindsurfManager
+from mcpm.clients.cursor import CursorManager
+from mcpm.utils.config import ConfigManager
 
 console = Console()
 config_manager = ConfigManager()
@@ -27,13 +27,13 @@ cursor_manager = CursorManager()
 def edit(edit, create):
     """View or edit the active MCP client's configuration file.
     
-    The edit command operates on the currently active MCP client (set via 'mcp client').
+    The edit command operates on the currently active MCP client (set via 'mcpm client').
     By default, this is Claude Desktop, but can be changed to other supported clients.
     
     Examples:
-        mcp edit           # Show current client's config file location and content
-        mcp edit --edit    # Open the config file in your default editor
-        mcp edit --create  # Create a basic config file if it doesn't exist
+        mcpm edit           # Show current client's config file location and content
+        mcpm edit --edit    # Open the config file in your default editor
+        mcpm edit --create  # Create a basic config file if it doesn't exist
     """
     # Get the active client and its corresponding manager
     active_client = config_manager.get_active_client()
@@ -56,7 +56,7 @@ def edit(edit, create):
         is_installed_method = client_manager.is_cursor_installed
     else:
         console.print(f"[bold red]Error:[/] Unsupported active client: {active_client}")
-        console.print("Please switch to a supported client using 'mcp client <client-name>'")
+        console.print("Please switch to a supported client using 'mcpm client <client-name>'")
         return
     
     # Get the client config file path

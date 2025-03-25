@@ -1,8 +1,7 @@
 """
-Pytest configuration for MCP tests
+Pytest configuration for MCPM tests
 """
 
-import os
 import sys
 from pathlib import Path
 

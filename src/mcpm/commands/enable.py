@@ -1,12 +1,12 @@
 """
-Enable command for MCP
+Enable command for MCPM
 """
 
 import click
 from rich.console import Console
 
-from mcp.utils.config import ConfigManager
-from mcp.utils.server_manager import ServerManager
+from mcpm.utils.config import ConfigManager
+from mcpm.utils.server_manager import ServerManager
 
 console = Console()
 config_manager = ConfigManager()
@@ -19,7 +19,7 @@ def enable(server_name, client):
     """Enable an MCP server for a specific client.
     
     Examples:
-        mcp enable filesystem --client=claude-desktop
+        mcpm enable filesystem --client=claude-desktop
     """
     console.print(f"[bold green]Enabling MCP server:[/] {server_name} for client {client}")
     

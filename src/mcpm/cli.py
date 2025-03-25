@@ -1,15 +1,15 @@
 """
-MCP CLI - Main entry point for the MCP Manager CLI
+MCPM CLI - Main entry point for the Model Context Protocol Manager CLI
 """
 
 import click
 from rich.console import Console
 from rich.table import Table
 
-from mcp.utils.config import ConfigManager
+from mcpm.utils.config import ConfigManager
 
-from mcp import __version__
-from mcp.commands import (
+from mcpm import __version__
+from mcpm.commands import (
     search,
     install,
     remove,
@@ -33,7 +33,7 @@ CONTEXT_SETTINGS = dict(help_option_names=[])
 @click.version_option(version=__version__)
 @click.pass_context
 def main(ctx, help_flag):
-    """MCP Manager - Model Context Protocol Management Tool.
+    """MCPM - Model Context Protocol Manager.
     
     A tool for managing MCP servers across various clients.
     """
@@ -48,15 +48,15 @@ def main(ctx, help_flag):
         
         # Create bold ASCII art with thicker characters for a more striking appearance
         logo = [
-            " ███╗   ███╗ ██████╗██████╗                           ",
-            " ████╗ ████║██╔════╝██╔══██╗                          ",
-            " ██╔████╔██║██║     ██████╔╝                          ",
-            " ██║╚██╔╝██║██║     ██╔═══╝                           ",
-            " ██║ ╚═╝ ██║╚██████╗██║                               ",
-            " ╚═╝     ╚═╝ ╚═════╝╚═╝                               ",
+            " ███╗   ███╗ ██████╗██████╗ ███╗   ███╗             ",
+            " ████╗ ████║██╔════╝██╔══██╗████╗ ████║             ",
+            " ██╔████╔██║██║     ██████╔╝██╔████╔██║             ",
+            " ██║╚██╔╝██║██║     ██╔═══╝ ██║╚██╔╝██║             ",
+            " ██║ ╚═╝ ██║╚██████╗██║     ██║ ╚═╝ ██║             ",
+            " ╚═╝     ╚═╝ ╚═════╝╚═╝     ╚═╝     ╚═╝             ",
             "",
             f"v{__version__}",
-            "MCP Manager for all AI apps",
+            "Model Context Protocol Manager",
             "Supports Claude Desktop, Windsurf, Cursor, and more"
         ]
         
@@ -74,7 +74,7 @@ def main(ctx, help_flag):
         console.print(panel)
         
         # Get information about installed clients
-        from mcp.utils.client_detector import detect_installed_clients
+        from mcpm.utils.client_detector import detect_installed_clients
         installed_clients = detect_installed_clients()
         
         # Display active client information and main help
@@ -90,7 +90,7 @@ def main(ctx, help_flag):
         console.print("")
         
         # Display usage info
-        console.print("[bold green]Usage:[/] [white]mcp [OPTIONS] COMMAND [ARGS]...[/]")
+        console.print("[bold green]Usage:[/] [white]mcpm [OPTIONS] COMMAND [ARGS]...[/]")
         console.print("")
         console.print("[bold green]Description:[/] [white]A tool for managing MCP servers across various clients.[/]")
         console.print("")
@@ -104,9 +104,9 @@ def main(ctx, help_flag):
         # Display available commands in a table
         console.print("[bold]Commands:[/]")
         commands_table = Table(show_header=False, box=None, padding=(0, 2, 0, 0))
-        commands_table.add_row("  [cyan]client[/]", "Manage the active MCP client.")
-        commands_table.add_row("  [cyan]edit[/]", "View or edit the active MCP client's configuration file.")
-        commands_table.add_row("  [cyan]inspector[/]", "Launch the MCP Inspector UI to examine servers.")
+        commands_table.add_row("  [cyan]client[/]", "Manage the active MCPM client.")
+        commands_table.add_row("  [cyan]edit[/]", "View or edit the active MCPM client's configuration file.")
+        commands_table.add_row("  [cyan]inspector[/]", "Launch the MCPM Inspector UI to examine servers.")
         commands_table.add_row("  [cyan]install[/]", "Install an MCP server.")
         commands_table.add_row("  [cyan]list[/]", "List all installed MCP servers.")
         commands_table.add_row("  [cyan]remove[/]", "Remove an installed MCP server.")
@@ -124,7 +124,7 @@ def main(ctx, help_flag):
         
         # Additional helpful information
         console.print("")
-        console.print("[italic]Run [bold]mcp CLIENT -h[/] for more information on a command.[/]")
+        console.print("[italic]Run [bold]mcpm CLIENT -h[/] for more information on a command.[/]")
 
 # Register commands
 main.add_command(search.search)

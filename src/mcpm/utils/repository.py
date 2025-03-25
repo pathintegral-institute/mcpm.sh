@@ -1,5 +1,5 @@
 """
-Repository utilities for MCP - handles server discovery and installation
+Repository utilities for MCPM - handles server discovery and installation
 """
 
 import json

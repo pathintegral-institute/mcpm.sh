@@ -1,5 +1,5 @@
 """
-Status command for MCP
+Status command for MCPM
 """
 
 import os
@@ -9,7 +9,7 @@ from rich.table import Table
 from rich.panel import Panel
 from rich.markup import escape
 
-from mcp.clients.claude_desktop import ClaudeDesktopManager
+from mcpm.clients.claude_desktop import ClaudeDesktopManager
 
 console = Console()
 claude_manager = ClaudeDesktopManager()
@@ -20,8 +20,8 @@ def status(server_name):
     """Show status of MCP servers in Claude Desktop.
     
     Examples:
-        mcp status
-        mcp status filesystem
+        mcpm status
+        mcpm status filesystem
     """
     # First, check if Claude Desktop is installed
     if not claude_manager.is_claude_desktop_installed():
@@ -84,7 +84,7 @@ def status(server_name):
         
         if not claude_servers:
             console.print("[yellow]No MCP servers found in Claude Desktop configuration.[/]")
-            console.print("Use 'mcp install <server>' to install a server.")
+            console.print("Use 'mcpm install <server>' to install a server.")
             return
             
         # Display status for all servers

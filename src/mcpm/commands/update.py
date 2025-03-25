@@ -13,8 +13,8 @@ def update(server_name):
     """Update installed servers or a specific server.
     
     Examples:
-        mcp update
-        mcp update filesystem
+        mcpm update
+        mcpm update filesystem
     """
     if server_name:
         console.print(f"[bold green]Updating MCP server:[/] {server_name}")

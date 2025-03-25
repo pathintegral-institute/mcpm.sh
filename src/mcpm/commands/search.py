@@ -1,5 +1,5 @@
 """
-Search command for MCP - Search and display available MCP servers from the registry
+Search command for MCPM - Search and display available MCP servers from the registry
 """
 
 import click
@@ -7,8 +7,8 @@ from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
 
-from mcp.utils.repository import RepositoryManager
-from mcp.utils.config import ConfigManager
+from mcpm.utils.repository import RepositoryManager
+from mcpm.utils.config import ConfigManager
 
 console = Console()
 repo_manager = RepositoryManager()
@@ -27,12 +27,12 @@ def search(query, tags=None, category=None, detailed=False, installed=False, req
     Searches the MCP registry for available servers. Without arguments, lists all available servers.
     
     Examples:
-        mcp search                  # List all available servers
-        mcp search github           # Search for github server
-        mcp search --tags=time      # Find servers with 'time' tag
-        mcp search --category=api   # Find servers in 'api' category
-        mcp search --detailed       # Show detailed information
-        mcp search --installed      # Show only installed servers
+        mcpm search                  # List all available servers
+        mcpm search github           # Search for github server
+        mcpm search --tags=time      # Find servers with 'time' tag
+        mcpm search --category=api   # Find servers in 'api' category
+        mcpm search --detailed       # Show detailed information
+        mcpm search --installed      # Show only installed servers
     """
     # Show appropriate search message
     search_criteria = []

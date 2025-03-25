@@ -1,5 +1,5 @@
 """
-Tests for Windsurf client integration with MCP
+Tests for Windsurf client integration with MCPM
 """
 
 import os
@@ -8,12 +8,12 @@ import pytest
 import tempfile
 from unittest.mock import patch
 
-from mcp.clients.windsurf import WindsurfManager
-from mcp.utils.config import ConfigManager
+from mcpm.clients.windsurf import WindsurfManager
+from mcpm.utils.config import ConfigManager
 
 
 class TestWindsurfIntegration:
-    """Test Windsurf client integration with MCP"""
+    """Test Windsurf client integration with MCPM"""
 
     @pytest.fixture
     def temp_config_file(self):

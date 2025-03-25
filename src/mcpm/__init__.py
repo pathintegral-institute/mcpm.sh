@@ -1,5 +1,5 @@
 """
-MCP Manager - Model Context Protocol Management Tool
+MCPM - Model Context Protocol Manager
 """
 
 # Import version from internal module

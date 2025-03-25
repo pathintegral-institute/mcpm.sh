@@ -1,10 +1,10 @@
-# MCP Manager - Model Context Protocol Management Tool
+# MCPM - Model Context Protocol Manager
 
-MCP Manager is a Homebrew-like service and command-line interface for managing Model Context Protocol (MCP) servers across various MCP clients.
+MCPM is a Homebrew-like service and command-line interface for managing Model Context Protocol (MCP) servers across various MCP clients.
 
 ## Overview
 
-MCP Manager aims to simplify the installation, configuration, and management of Model Context Protocol servers with a focus on:
+MCPM aims to simplify the installation, configuration, and management of Model Context Protocol servers with a focus on:
 
 - Easy installation of MCP servers via a simple CLI
 - Centralized management of server configurations across multiple clients
@@ -13,7 +13,7 @@ MCP Manager aims to simplify the installation, configuration, and management of 
 
 ## Supported MCP Clients
 
-MCP will support managing MCP servers for the following clients:
+MCPM will support managing MCP servers for the following clients:
 
 - Claude Desktop (Anthropic)
 - Cursor
@@ -22,35 +22,35 @@ MCP will support managing MCP servers for the following clients:
 
 ## Command Line Interface (CLI)
 
-MCP Manager provides a comprehensive CLI built with Python's Click framework. Below are the available commands:
+MCPM provides a comprehensive CLI built with Python's Click framework. Below are the available commands:
 
 ### Basic Commands
 
 ```
-mcp --help                  # Display help information and available commands
-mcp --version               # Display the current version of MCP
+mcpm --help                  # Display help information and available commands
+mcpm --version               # Display the current version of MCPM
 ```
 
 ### Available Commands
 
 ```
-mcp client                  # Show the current active MCP client
-mcp client CLIENT_NAME      # Set a new active MCP client
-mcp client --list           # List all supported MCP clients and their status
+mcpm client                  # Show the current active MCP client
+mcpm client CLIENT_NAME      # Set a new active MCP client
+mcpm client --list           # List all supported MCP clients and their status
 
-mcp edit                    # View or edit the active MCP client's configuration file
+mcpm edit                    # View or edit the active MCP client's configuration file
 
-mcp list                    # List all installed MCP servers
+mcpm list                    # List all installed MCP servers
 
-mcp remove SERVER_NAME      # Remove an installed MCP server
+mcpm remove SERVER_NAME      # Remove an installed MCP server
 
-mcp server                  # Manage MCP server processes
-mcp server start SERVER_NAME   # Start an MCP server
-mcp server stop SERVER_NAME    # Stop an MCP server
-mcp server restart SERVER_NAME # Restart an MCP server
-mcp server status           # Show status of running MCP servers
+mcpm server                  # Manage MCP server processes
+mcpm server start SERVER_NAME   # Start an MCP server
+mcpm server stop SERVER_NAME    # Stop an MCP server
+mcpm server restart SERVER_NAME # Restart an MCP server
+mcpm server status           # Show status of running MCP servers
 
-mcp toggle SERVER_NAME      # Toggle an MCP server on or off for a client
+mcpm toggle SERVER_NAME      # Toggle an MCP server on or off for a client
 ```
 
 ### Coming Soon Commands
@@ -58,9 +58,9 @@ mcp toggle SERVER_NAME      # Toggle an MCP server on or off for a client
 The following commands are planned for future releases:
 
 ```
-mcp install SERVER_NAME     # Install an MCP server
-mcp search [QUERY]          # Search available MCP servers
-mcp status                  # Show status of MCP servers in Claude Desktop
+mcpm install SERVER_NAME     # Install an MCP server
+mcpm search [QUERY]          # Search available MCP servers
+mcpm status                  # Show status of MCP servers in Claude Desktop
 ```
 
 ## Roadmap

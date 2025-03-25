@@ -1,5 +1,5 @@
 """
-Install command for MCP
+Install command for MCPM
 """
 
 import os
@@ -13,9 +13,9 @@ from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.prompt import Confirm
 from rich.panel import Panel
 
-from mcp.utils.repository import RepositoryManager
-from mcp.utils.config import ConfigManager
-from mcp.utils.client_detector import detect_installed_clients
+from mcpm.utils.repository import RepositoryManager
+from mcpm.utils.config import ConfigManager
+from mcpm.utils.client_detector import detect_installed_clients
 
 console = Console()
 repo_manager = RepositoryManager()
@@ -28,15 +28,15 @@ def install(server_name, force=False):
     """Install an MCP server.
     
     Examples:
-        mcp install time
-        mcp install github
-        mcp install everything --force
+        mcpm install time
+        mcpm install github
+        mcpm install everything --force
     """
     # Check if already installed
     existing_server = config_manager.get_server_info(server_name)
     if existing_server and not force:
         console.print(f"[yellow]Server '{server_name}' is already installed (v{existing_server.get('version', 'unknown')}).[/]")
-        console.print("Use 'mcp install --force' to reinstall or 'mcp update' to update it to a newer version.")
+        console.print("Use 'mcpm install --force' to reinstall or 'mcpm update' to update it to a newer version.")
         return
     
     # Get server metadata from repository

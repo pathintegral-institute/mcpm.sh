@@ -1,5 +1,5 @@
 """
-Disable command for MCP
+Disable command for MCPM
 """
 
 import click
@@ -14,7 +14,7 @@ def disable(server_name, client):
     """Disable an MCP server for a specific client.
     
     Examples:
-        mcp disable filesystem --client=claude-desktop
+        mcpm disable filesystem --client=claude-desktop
     """
     console.print(f"[bold yellow]Disabling MCP server:[/] {server_name} for client {client}")
     

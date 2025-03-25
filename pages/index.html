@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MCP Manager - Model Context Protocol | getmcp.sh</title>
+    <title>MCPM - Model Context Protocol Manager | getmcp.sh</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -248,8 +248,8 @@
 <body>
     <div class="container">
         <header>
-            <h1>MCP</h1>
-            <div class="tagline">Model Context Protocol Management Tool</div>
+            <h1>MCPM</h1>
+            <div class="tagline">Model Context Protocol Manager</div>
             <div class="terminal-animation">
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 100">
   <!-- Terminal background -->
@@ -274,12 +274,12 @@
 
         <div class="coming-soon">
             <h2>🚀 Quick Installation</h2>
-            <p>Install MCP with a single command:</p>
+            <p>Install MCPM with a single command:</p>
             <div class="code-block">
                 <code><span class="command-prompt">$</span> curl -sSL https://getmcp.sh/install | bash</code>
                 <button class="copy-button" data-command="curl -sSL https://getmcp.sh/install | bash">📋</button>
             </div>
-            <p>MCP Manager is a Homebrew-like service for managing Model Context Protocol (MCP) servers across clients.</p>
+            <p>Model Context Protocol Manager (MCPM) is a Homebrew-like service for managing Model Context Protocol (MCP) servers across clients.</p>
         </div>
 
         <h2>Available Features</h2>
@@ -288,8 +288,8 @@
                 <h3><span>👥</span> Client Management</h3>
                 <p>Easily switch between and manage MCP clients:</p>
                 <div class="code-block">
-                    <code><span class="command-prompt">$</span> mcp client claude-desktop</code>
-                    <button class="copy-button" data-command="mcp client claude-desktop">📋</button>
+                    <code><span class="command-prompt">$</span> mcpm client claude-desktop</code>
+                    <button class="copy-button" data-command="mcpm client claude-desktop">📋</button>
                 </div>
             </div>
             
@@ -297,8 +297,8 @@
                 <h3><span>📋</span> Server Listing</h3>
                 <p>View all your installed MCP servers:</p>
                 <div class="code-block">
-                    <code><span class="command-prompt">$</span> mcp list</code>
-                    <button class="copy-button" data-command="mcp list">📋</button>
+                    <code><span class="command-prompt">$</span> mcpm list</code>
+                    <button class="copy-button" data-command="mcpm list">📋</button>
                 </div>
             </div>
             
@@ -306,8 +306,8 @@
                 <h3><span>⚙️</span> Server Management</h3>
                 <p>Control your MCP server processes with ease:</p>
                 <div class="code-block">
-                    <code><span class="command-prompt">$</span> mcp server start my-server</code>
-                    <button class="copy-button" data-command="mcp server start my-server">📋</button>
+                    <code><span class="command-prompt">$</span> mcpm server start my-server</code>
+                    <button class="copy-button" data-command="mcpm server start my-server">📋</button>
                 </div>
             </div>
             
@@ -315,8 +315,8 @@
                 <h3><span>🔀</span> Server Toggling</h3>
                 <p>Enable or disable servers for specific clients:</p>
                 <div class="code-block">
-                    <code><span class="command-prompt">$</span> mcp toggle my-server</code>
-                    <button class="copy-button" data-command="mcp toggle my-server">📋</button>
+                    <code><span class="command-prompt">$</span> mcpm toggle my-server</code>
+                    <button class="copy-button" data-command="mcpm toggle my-server">📋</button>
                 </div>
             </div>
         </div>
@@ -327,8 +327,8 @@
                 <h3><span>🧩</span> Simple Server Installation</h3>
                 <p>Install MCP servers with a single command:</p>
                 <div class="code-block">
-                    <code><span class="command-prompt">$</span> mcp install claude-config</code>
-                    <button class="copy-button" data-command="mcp install claude-config">📋</button>
+                    <code><span class="command-prompt">$</span> mcpm install claude-config</code>
+                    <button class="copy-button" data-command="mcpm install claude-config">📋</button>
                 </div>
             </div>
             
@@ -336,15 +336,15 @@
                 <h3><span>🔍</span> Server Discovery</h3>
                 <p>Find available Model Context Protocol servers:</p>
                 <div class="code-block">
-                    <code><span class="command-prompt">$</span> mcp search</code>
-                    <button class="copy-button" data-command="mcp search">📋</button>
+                    <code><span class="command-prompt">$</span> mcpm search</code>
+                    <button class="copy-button" data-command="mcpm search">📋</button>
                 </div>
             </div>
         </div>
 
         <div class="clients">
             <h2>Supported Clients</h2>
-            <p>MCP currently supports these AI clients:</p>
+            <p>MCPM currently supports these AI clients:</p>
             <ul>
                 <li><strong>Claude Desktop</strong> - Anthropic's AI assistant</li>
                 <li><strong>Windsurf</strong> - The world's first agentic IDE</li>
@@ -354,7 +354,7 @@
         </div>
 
         <footer>
-            <p>© 2025 MCP Manager | <a href="https://github.com/pathintegral-xyz/getmcp.sh">GitHub</a></p>
+            <p>© 2025 Model Context Protocol Manager | <a href="https://github.com/pathintegral-xyz/getmcp.sh">GitHub</a></p>
         </footer>
     </div>
     
@@ -402,7 +402,7 @@
             
             if (commandText && cursor) {
                 // Commands to type
-                const commands = [" search", " install", " list"];
+                const commands = [" mcpm search", " mcpm install", " mcpm list"];
                 let currentCommand = 0;
                 let charIndex = 0;
                 let isTyping = true;

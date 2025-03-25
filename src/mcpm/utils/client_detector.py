@@ -1,13 +1,13 @@
 """
-Client detector utility for MCP
+Client detector utility for MCPM
 """
 
 import os
 from typing import Dict
 
-from mcp.clients.claude_desktop import CLAUDE_CONFIG_PATH
-from mcp.clients.windsurf import WINDSURF_CONFIG_PATH
-from mcp.clients.cursor import CURSOR_CONFIG_PATH
+from mcpm.clients.claude_desktop import CLAUDE_CONFIG_PATH
+from mcpm.clients.windsurf import WINDSURF_CONFIG_PATH
+from mcpm.clients.cursor import CURSOR_CONFIG_PATH
 
 def detect_installed_clients() -> Dict[str, bool]:
     """

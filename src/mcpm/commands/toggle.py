@@ -1,12 +1,12 @@
 """
-Toggle command for MCP - enables or disables an MCP server
+Toggle command for MCPM - enables or disables an MCP server
 """
 
 import click
 from rich.console import Console
 
-from mcp.utils.config import ConfigManager
-from mcp.utils.server_manager import ServerManager
+from mcpm.utils.config import ConfigManager
+from mcpm.utils.server_manager import ServerManager
 
 console = Console()
 config_manager = ConfigManager()
@@ -22,8 +22,8 @@ def toggle(server_name, client):
     Disabled servers are stored in the MCP configuration and can be re-enabled later.
     
     Examples:
-        mcp toggle memory              # Toggle for active client
-        mcp toggle memory --client=claude-desktop
+        mcpm toggle memory              # Toggle for active client
+        mcpm toggle memory --client=claude-desktop
     """
     # Use active client if not specified
     if not client:

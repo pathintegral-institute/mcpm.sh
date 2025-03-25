@@ -1,3 +1,0 @@
-"""
-MCP commands package
-"""

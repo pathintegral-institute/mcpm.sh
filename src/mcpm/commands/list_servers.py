@@ -7,10 +7,10 @@ from rich.console import Console
 from rich.table import Table
 from rich.markup import escape
 
-from mcp.clients.claude_desktop import ClaudeDesktopManager
-from mcp.clients.windsurf import WindsurfManager
-from mcp.clients.cursor import CursorManager
-from mcp.utils.config import ConfigManager
+from mcpm.clients.claude_desktop import ClaudeDesktopManager
+from mcpm.clients.windsurf import WindsurfManager
+from mcpm.clients.cursor import CursorManager
+from mcpm.utils.config import ConfigManager
 
 console = Console()
 config_manager = ConfigManager()
@@ -25,9 +25,9 @@ def list(available, outdated):
     """List all installed MCP servers.
     
     Examples:
-        mcp list
-        mcp list --available
-        mcp list --outdated
+        mcpm list
+        mcpm list --available
+        mcpm list --outdated
     """
     if available:
         console.print("[bold green]Available MCP servers:[/]")
@@ -69,7 +69,7 @@ def list(available, outdated):
             client_name = "Cursor"
         else:
             console.print(f"[bold red]Error:[/] Unsupported active client: {active_client}")
-            console.print("Please switch to a supported client using 'mcp client <client-name>'")
+            console.print("Please switch to a supported client using 'mcpm client <client-name>'")
             return
         
         # Get servers from active client
@@ -135,7 +135,7 @@ def list(available, outdated):
             client_name = "Cursor"
         else:
             console.print(f"[bold red]Error:[/] Unsupported active client: {active_client}")
-            console.print("Please switch to a supported client using 'mcp client <client-name>'")
+            console.print("Please switch to a supported client using 'mcpm client <client-name>'")
             return
         
         console.print(f"[bold green]MCP servers installed in {client_name}:[/]")
@@ -145,7 +145,7 @@ def list(available, outdated):
         
         if not servers:
             console.print(f"[yellow]No MCP servers found in {client_name}.[/]")
-            console.print("Use 'mcp install <server>' to install a server.")
+            console.print("Use 'mcpm install <server>' to install a server.")
             return
         
         # Count the configured servers

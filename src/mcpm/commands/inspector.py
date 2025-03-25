@@ -1,5 +1,5 @@
 """
-MCP Inspector command for examining MCP servers through a user interface
+MCPM Inspector command for examining MCP servers through a user interface
 """
 
 import click
@@ -20,25 +20,25 @@ CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 @click.option("--yes", "-y", is_flag=True, help="Skip confirmation prompt")
 @click.help_option("-h", "--help")
 def inspector(args, yes):
-    """Launch the MCP Inspector UI to examine servers.
+    """Launch the MCPM Inspector UI to examine servers.
     
     EXAMPLES:
     
     Launch the Inspector UI with no arguments:
-        mcp inspector
+        mcpm inspector
     
     Launch the Inspector with custom arguments:
-        mcp inspector npx my-server --port 3000
+        mcpm inspector npx my-server --port 3000
     
     Use with NPM packages:
-        mcp inspector npx server-postgres
+        mcpm inspector npx server-postgres
     
     Use with Python packages:
-        mcp inspector uvx mcp-server-git
+        mcpm inspector uvx mcp-server-git
     """
     # Show header
     console.print(Panel.fit(
-        "[bold green]MCP Inspector[/]\n"
+        "[bold green]MCPM Inspector[/]\n"
         "Model Context Protocol Inspection Tool",
         border_style="cyan"
     ))
@@ -49,11 +49,11 @@ def inspector(args, yes):
             # Pass all arguments directly to the inspector
             arg_string = " ".join(args)
             cmd = f"npx @modelcontextprotocol/inspector {arg_string}"
-            console.print(f"[bold]Running MCP Inspector with arguments:[/] {arg_string}")
+            console.print(f"[bold]Running MCPM Inspector with arguments:[/] {arg_string}")
         else:
             # No arguments provided, prompt for confirmation
             if not yes:
-                click.echo("\nStarting MCP Inspector with no arguments.")
+                click.echo("\nStarting MCPM Inspector with no arguments.")
                 click.echo("This will launch the Inspector UI without a target server.")
                 if not click.confirm("Continue?", default=True):
                     console.print("[yellow]Inspector cancelled.[/]")
@@ -61,7 +61,7 @@ def inspector(args, yes):
             
             cmd = "npx @modelcontextprotocol/inspector"
             
-        console.print("[cyan]Starting MCP Inspector...[/]")
+        console.print("[cyan]Starting MCPM Inspector...[/]")
         console.print("The Inspector UI will open in your web browser.")
         console.print("[yellow]Press Ctrl+C to stop the Inspector.[/]")
         
@@ -78,7 +78,7 @@ def inspector(args, yes):
             try:
                 # Use subprocess.call for direct terminal I/O
                 # This is the simplest way to execute a command with inherited stdio
-                console.print("[bold green]Starting MCP Inspector...[/]")
+                console.print("[bold green]Starting MCPM Inspector...[/]")
                 console.print("[cyan]Press Ctrl+C to exit[/]")
                 sys.stdout.flush()
                 
@@ -113,22 +113,22 @@ def inspector(args, yes):
 def show_inspector_help():
     """Display detailed help for the inspector."""
     console.print(Panel.fit(
-        "[bold]MCP Inspector[/]\n\n"
+        "[bold]MCPM Inspector[/]\n\n"
         "The Inspector is a web UI tool that allows you to:\n"
         "- View server connections\n"
         "- Explore resources provided by the server\n"
         "- Test prompts with custom arguments\n"
         "- Execute tools with custom inputs\n"
         "- View server logs and notifications",
-        title="MCP Inspector Help",
+        title="MCPM Inspector Help",
         border_style="cyan"
     ))
     
     console.print("\n[bold]Documentation:[/] https://modelcontextprotocol.io/docs/tools/inspector")
     console.print("[bold]Usage examples:[/]\n")
-    console.print("  [cyan]mcp inspector filesystem[/]")
+    console.print("  [cyan]mcpm inspector filesystem[/]")
     console.print("    Launch Inspector for an installed server")
-    console.print("\n  [cyan]mcp inspector --package server-postgres --package-args \"postgres://127.0.0.1/testdb\"[/]")
+    console.print("\n  [cyan]mcpm inspector --package server-postgres --package-args \"postgres://127.0.0.1/testdb\"[/]")
     console.print("    Inspect an NPM package with arguments")
-    console.print("\n  [cyan]mcp inspector --python --package mcp-server-git[/]")
+    console.print("\n  [cyan]mcpm inspector --python --package mcp-server-git[/]")
     console.print("    Inspect a PyPI package")

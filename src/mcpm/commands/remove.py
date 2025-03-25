@@ -1,14 +1,14 @@
 """
-Remove command for MCP
+Remove command for MCPM
 """
 
 import click
 from rich.console import Console
 from rich.prompt import Confirm
 
-from mcp.clients.claude_desktop import ClaudeDesktopManager
-from mcp.clients.windsurf import WindsurfManager
-from mcp.utils.config import ConfigManager
+from mcpm.clients.claude_desktop import ClaudeDesktopManager
+from mcpm.clients.windsurf import WindsurfManager
+from mcpm.utils.config import ConfigManager
 
 console = Console()
 config_manager = ConfigManager()
@@ -22,8 +22,8 @@ def remove(server_name, force):
     """Remove an installed MCP server.
     
     Examples:
-        mcp remove filesystem
-        mcp remove filesystem --force
+        mcpm remove filesystem
+        mcpm remove filesystem --force
     """
     # Get the active client and its corresponding manager
     active_client = config_manager.get_active_client()
@@ -37,7 +37,7 @@ def remove(server_name, force):
         client_name = "Windsurf"
     else:
         console.print(f"[bold red]Error:[/] Unsupported active client: {active_client}")
-        console.print("Please switch to a supported client using 'mcp client <client-name>'")
+        console.print("Please switch to a supported client using 'mcpm client <client-name>'")
         return
     
     # Check if the server exists in the active client

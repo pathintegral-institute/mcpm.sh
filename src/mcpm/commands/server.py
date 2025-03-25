@@ -18,7 +18,7 @@ def start(server_name):
     """Start an MCP server.
     
     Examples:
-        mcp server start filesystem
+        mcpm server start filesystem
     """
     console.print(f"[bold green]Starting MCP server:[/] {server_name}")
     # Placeholder for server start functionality
@@ -30,7 +30,7 @@ def stop(server_name):
     """Stop an MCP server.
     
     Examples:
-        mcp server stop filesystem
+        mcpm server stop filesystem
     """
     console.print(f"[bold red]Stopping MCP server:[/] {server_name}")
     # Placeholder for server stop functionality
@@ -42,7 +42,7 @@ def restart(server_name):
     """Restart an MCP server.
     
     Examples:
-        mcp server restart filesystem
+        mcpm server restart filesystem
     """
     console.print(f"[bold yellow]Restarting MCP server:[/] {server_name}")
     # Placeholder for server restart functionality
@@ -56,9 +56,9 @@ def log(server_name, lines, follow):
     """View server logs.
     
     Examples:
-        mcp server log filesystem
-        mcp server log filesystem --lines=100
-        mcp server log filesystem --follow
+        mcpm server log filesystem
+        mcpm server log filesystem --lines=100
+        mcpm server log filesystem --follow
     """
     if follow:
         console.print(f"[bold green]Following logs for MCP server:[/] {server_name}")

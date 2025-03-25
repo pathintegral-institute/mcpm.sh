@@ -13,7 +13,7 @@ NC='\033[0m' # No Color
 
 echo -e "${DARK_GREEN}┌─────────────────────────────────────────────┐${NC}"
 echo -e "${DARK_GREEN}│                                             │${NC}"
-echo -e "${DARK_GREEN}│  ${LIGHT_GREEN}MCP - Model Context Protocol Manager${DARK_GREEN}  │${NC}"
+echo -e "${DARK_GREEN}│  ${LIGHT_GREEN}MCPM - Model Context Protocol Manager${DARK_GREEN} │${NC}"
 echo -e "${DARK_GREEN}│                                             │${NC}"
 echo -e "${DARK_GREEN}└─────────────────────────────────────────────┘${NC}"
 echo
@@ -83,26 +83,26 @@ install_mcp() {
     if [[ "$(uname)" == "Darwin" ]]; then
         # macOS installation path
         if command_exists pipx; then
-            info "Using pipx to install MCP (recommended)..."
-            pipx install mcp
+            info "Using pipx to install MCPM (recommended)..."
+            pipx install mcpm
         elif command_exists brew; then
             info "pipx not found, installing it via Homebrew..."
             brew install pipx
-            info "Now installing MCP with pipx..."
-            pipx install mcp
+            info "Now installing MCPM with pipx..."
+            pipx install mcpm
         else
-            info "Creating a dedicated virtual environment for MCP..."
-            MCP_VENV="$HOME/.mcp-venv"
-            python3 -m venv "$MCP_VENV"
-            "$MCP_VENV/bin/pip" install mcp
+            info "Creating a dedicated virtual environment for MCPM..."
+            MCPM_VENV="$HOME/.mcpm-venv"
+            python3 -m venv "$MCPM_VENV"
+            "$MCPM_VENV/bin/pip" install mcpm
             
             # Create symlinks to the user's bin directory
             USER_BIN="$HOME/.local/bin"
             mkdir -p "$USER_BIN"
-            ln -sf "$MCP_VENV/bin/mcp" "$USER_BIN/mcp"
+            ln -sf "$MCPM_VENV/bin/mcpm" "$USER_BIN/mcpm"
             
-            info "Installed MCP in a virtual environment at $MCP_VENV"
-            info "Added symlink to $USER_BIN/mcp"
+            info "Installed MCPM in a virtual environment at $MCPM_VENV"
+            info "Added symlink to $USER_BIN/mcpm"
             
             # Add PATH warning if needed
             if ! echo "$PATH" | grep -q "$USER_BIN"; then
@@ -114,19 +114,19 @@ install_mcp() {
     else
         # Non-macOS installation path - try standard methods
         if command_exists pipx; then
-            info "Using pipx to install MCP (recommended)..."
-            pipx install mcp
+            info "Using pipx to install MCPM (recommended)..."
+            pipx install mcpm
         else
             # Try to use pip in user mode with appropriate flags
             info "Installing with pip in user mode..."
-            python3 -m pip install --user mcp || {
-                error "Failed to install MCP. Please check your permissions and try again."
+            python3 -m pip install --user mcpm || {
+                error "Failed to install MCPM. Please check your permissions and try again."
                 echo "You may want to try one of these alternatives:"
-                echo "  1. Install pipx (https://pypa.github.io/pipx/) and run: pipx install mcp"
+                echo "  1. Install pipx (https://pypa.github.io/pipx/) and run: pipx install mcpm"
                 echo "  2. Create a virtual environment and install there:"
-                echo "     python3 -m venv ~/.mcp-venv"
-                echo "     source ~/.mcp-venv/bin/activate"
-                echo "     pip install mcp"
+                echo "     python3 -m venv ~/.mcpm-venv"
+                echo "     source ~/.mcpm-venv/bin/activate"
+                echo "     pip install mcpm"
                 exit 1
             }
         fi
@@ -135,14 +135,14 @@ install_mcp() {
 
 # Function to verify installation
 verify_installation() {
-    if command_exists mcp; then
-        MCP_VERSION=$(mcp --version 2>/dev/null || echo "Unknown")
-        success "MCP $MCP_VERSION has been successfully installed!"
+    if command_exists mcpm; then
+        MCPM_VERSION=$(mcpm --version 2>/dev/null || echo "Unknown")
+        success "MCPM $MCPM_VERSION has been successfully installed!"
         echo
-        echo -e "${DARK_GREEN}To get started with MCP, try:${NC}"
-        echo -e "  ${LIGHT_GREEN}mcp --help${NC}         # Show available commands"
-        echo -e "  ${LIGHT_GREEN}mcp list --available${NC} # List available MCP servers"
-        echo -e "  ${LIGHT_GREEN}mcp install <server>${NC} # Install an MCP server"
+        echo -e "${DARK_GREEN}To get started with MCPM, try:${NC}"
+        echo -e "  ${LIGHT_GREEN}mcpm --help${NC}         # Show available commands"
+        echo -e "  ${LIGHT_GREEN}mcpm list --available${NC} # List available MCP servers"
+        echo -e "  ${LIGHT_GREEN}mcpm install <server>${NC} # Install an MCP server"
         echo
         echo -e "For more information, visit ${DARK_GREEN}https://getmcp.sh${NC}"
         echo
@@ -151,7 +151,7 @@ verify_installation() {
         USER_BIN_DIR="$HOME/.local/bin"
         
         if ! echo "$PATH_DIRS" | grep -q "$USER_BIN_DIR"; then
-            info "MCP might be installed but not in your PATH."
+            info "MCPM might be installed but not in your PATH."
             echo "Try adding this to your shell profile (~/.bashrc, ~/.zshrc, etc.):"
             echo "  export PATH=\"\$HOME/.local/bin:\$PATH\""
             echo
@@ -159,7 +159,7 @@ verify_installation() {
             echo "  source ~/.bashrc  # or ~/.zshrc, etc."
         else
             error "Installation seems to have failed. Please try again or install manually:"
-            echo "  pip install mcp"
+            echo "  pip install mcpm"
         fi
     fi
 }
