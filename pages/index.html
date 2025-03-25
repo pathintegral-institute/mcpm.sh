@@ -72,6 +72,12 @@
             font-weight: 300;
         }
         
+        .terminal-animation {
+            margin: 2rem auto;
+            max-width: 400px;
+            width: 100%;
+        }
+        
         .coming-soon {
             background-color: var(--bg-accent);
             border: 1px solid var(--card-border);
@@ -244,6 +250,26 @@
         <header>
             <h1>MCP</h1>
             <div class="tagline">Model Context Protocol Management Tool</div>
+            <div class="terminal-animation">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 100">
+  <!-- Terminal background -->
+  <rect x="10" y="10" width="280" height="80" rx="5" ry="5" fill="#2E3440" />
+  
+  <!-- Static command prompt -->
+  <text x="30" y="55" font-family="monospace" font-size="24" fill="#D8DEE9">$</text>
+  <text x="55" y="55" font-family="monospace" font-size="24" fill="#88C0D0">mcpm</text>
+  
+  <!-- Animated command text -->
+  <text id="commandText" x="130" y="55" font-family="monospace" font-size="24" fill="#88C0D0"></text>
+  
+  <!-- Cursor -->
+  <rect id="cursor" x="130" y="40" width="2" height="24" fill="#D8DEE9">
+    <animate attributeName="opacity" values="1;0;1" dur="0.8s" repeatCount="indefinite" />
+  </rect>
+  
+  <!-- No script here - moved to document scripts -->
+</svg>
+            </div>
         </header>
 
         <div class="coming-soon">
@@ -369,6 +395,71 @@
                     }, 2000);
                 });
             });
+            
+            // Terminal animation script
+            const commandText = document.getElementById('commandText');
+            const cursor = document.getElementById('cursor');
+            
+            if (commandText && cursor) {
+                // Commands to type
+                const commands = [" search", " install", " list"];
+                let currentCommand = 0;
+                let charIndex = 0;
+                let isTyping = true;
+                const typingSpeed = 200;
+                const deleteSpeed = 150;
+                const pauseDuration = 1000;
+                
+                function updateCursor() {
+                    // Position cursor after the text
+                    if (commandText.getComputedTextLength) {
+                        cursor.setAttribute('x', 130 + commandText.getComputedTextLength());
+                    }
+                }
+                
+                function animateText() {
+                    const cmd = commands[currentCommand];
+                    
+                    if (isTyping) {
+                        // Typing forward
+                        charIndex++;
+                        commandText.textContent = cmd.substring(0, charIndex);
+                        
+                        if (charIndex >= cmd.length) {
+                            // Reached end of command, pause then start deleting
+                            isTyping = false;
+                            charIndex = cmd.length;
+                            setTimeout(animateText, pauseDuration);
+                            return;
+                        }
+                        
+                        setTimeout(animateText, typingSpeed);
+                    } else {
+                        // Deleting backward
+                        charIndex--;
+                        commandText.textContent = cmd.substring(0, charIndex);
+                        
+                        if (charIndex <= 0) {
+                            // Finished deleting, move to next command
+                            isTyping = true;
+                            charIndex = 0;
+                            currentCommand = (currentCommand + 1) % commands.length;
+                            setTimeout(animateText, typingSpeed);
+                            return;
+                        }
+                        
+                        setTimeout(animateText, deleteSpeed);
+                    }
+                    
+                    updateCursor();
+                }
+                
+                // Start animation
+                animateText();
+                
+                // Fix for SVG animation in some browsers
+                setInterval(updateCursor, 100);
+            }
         });
     </script>
 </body>
