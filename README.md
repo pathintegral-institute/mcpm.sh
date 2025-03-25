@@ -91,9 +91,9 @@ This repository contains the CLI and service components for MCP Manager, built w
 The project follows the modern src-based layout:
 
 ```
-getmcp.sh/
+mcpm.sh/
 ├── src/             # Source package directory
-│   └── mcp/         # Main package code
+│   └── mcpm/        # Main package code
 ├── tests/           # Test directory
 ├── test_cli.py      # Development CLI runner
 ├── pyproject.toml   # Project configuration
@@ -104,8 +104,8 @@ getmcp.sh/
 
 1. Clone the repository
    ```
-   git clone https://github.com/pathintegral-xyz/getmcp.sh.git
-   cd getmcp.sh
+   git clone https://github.com/getmcp-xyz/mcpm.sh.git
+   cd mcpm.sh
    ```
 
 2. Set up a virtual environment with uv

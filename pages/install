@@ -41,7 +41,7 @@ success() {
 # Function to check Python version
 check_python() {
     if ! command_exists python3; then
-        error "Python 3 is not installed. MCP requires Python 3.8 or higher."
+        error "Python 3 is not installed. MCPM requires Python 3.8 or higher."
         echo "Please install Python 3.8+ and try again."
         echo "Visit https://www.python.org/downloads/ for installation instructions."
         exit 1
@@ -75,9 +75,9 @@ ensure_pip() {
     fi
 }
 
-# Function to install MCP
+# Function to install MCPM
 install_mcp() {
-    info "Installing MCP..."
+    info "Installing MCPM..."
     
     # Check if we're on macOS
     if [[ "$(uname)" == "Darwin" ]]; then
@@ -144,7 +144,7 @@ verify_installation() {
         echo -e "  ${LIGHT_GREEN}mcpm list --available${NC} # List available MCP servers"
         echo -e "  ${LIGHT_GREEN}mcpm install <server>${NC} # Install an MCP server"
         echo
-        echo -e "For more information, visit ${DARK_GREEN}https://getmcp.sh${NC}"
+        echo -e "For more information, visit ${DARK_GREEN}https://mcpm.sh${NC}"
         echo
     else
         PATH_DIRS=$(echo $PATH | tr ':' '\n')
@@ -166,7 +166,7 @@ verify_installation() {
 
 # Main installation process
 main() {
-    info "Starting MCP installation..."
+    info "Starting MCPM installation..."
     check_python
     ensure_pip
     install_mcp
