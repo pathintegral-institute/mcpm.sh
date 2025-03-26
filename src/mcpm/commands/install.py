@@ -24,7 +24,8 @@ config_manager = ConfigManager()
 @click.command()
 @click.argument("server_name")
 @click.option("--force", is_flag=True, help="Force reinstall if server is already installed")
-def install(server_name, force=False):
+@click.option("--prefer", type=click.Choice(["uvx", "python", "docker", "npm", "cli"]), default=None, help="Preferred installation method")
+def install(server_name, force=False, prefer=None):
     """Install an MCP server.
     
     Examples:
@@ -87,7 +88,16 @@ def install(server_name, force=False):
     os.makedirs(server_dir, exist_ok=True)
     
     # Get installation instructions
-    installation = server_metadata.get("installation", {})
+    installations = server_metadata.get("installations", {})
+    
+    if installations.get(prefer):
+        installation = installations[prefer]
+    elif prefer is None:
+        installation = list(installations.values())[0]
+    else:
+        console.print(f"[yellow]Warning: No preferred installation method found. Using default method: {list(installations.keys())[0]}[/]")
+        installation = list(installations.values())[0]
+
     install_command = installation.get("command")
     install_args = installation.get("args", [])
     package_name = installation.get("package")
