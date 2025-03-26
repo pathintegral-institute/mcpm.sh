@@ -15,7 +15,6 @@ from mcpm.commands import (
     remove,
     list_servers,
     edit,
-    status,
     toggle,
     server,
     client,
@@ -115,12 +114,7 @@ def main(ctx, help_flag):
         commands_table.add_row("  [cyan]toggle[/]", "Toggle an MCP server on or off for a client.")
         console.print(commands_table)
         
-        # Display coming soon commands
-        console.print("")
-        console.print("[bold yellow]Coming Soon:[/]")
-        coming_soon_table = Table(show_header=False, box=None, padding=(0, 2, 0, 0))
-        coming_soon_table.add_row("  [yellow]status[/]", "Show status of MCP servers in Claude Desktop.")
-        console.print(coming_soon_table)
+
         
         # Additional helpful information
         console.print("")
@@ -132,7 +126,7 @@ main.add_command(install.install)
 main.add_command(remove.remove)
 main.add_command(list_servers.list)
 main.add_command(edit.edit)
-main.add_command(status.status)
+
 main.add_command(toggle.toggle)
 main.add_command(server.server)
 main.add_command(client.client)

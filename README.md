@@ -68,7 +68,7 @@ mcpm status                  # Show status of MCP servers in Claude Desktop
 - [x] Landing page setup
 - [x] CLI foundation
 - [x] Search
-- [ ] Install
+- [x] Install
 - [ ] Server management functionality
 - [ ] Support SSE Server
 - [ ] Additional client support

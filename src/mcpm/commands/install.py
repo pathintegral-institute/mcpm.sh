@@ -172,15 +172,19 @@ def install(server_name, force=False):
     
     # Handle client enablement - automatically enable for active client
     active_client = config_manager.get_active_client()
-    installed_clients = detect_installed_clients()
     
-    # Enable for active client if installed
-    if active_client and installed_clients.get(active_client, False):
+    # Always enable for active client, regardless of installation status
+    if active_client:
         success = config_manager.enable_server_for_client(server_name, active_client)
         if success:
             console.print(f"[green]Enabled {server_name} for active client: {active_client}[/]")
         else:
             console.print(f"[yellow]Failed to enable {server_name} for {active_client}[/]")
+        
+        # Show additional info about client installation if client isn't installed
+        installed_clients = detect_installed_clients()
+        if not installed_clients.get(active_client, False):
+            console.print(f"[dim]Note: {active_client} is configured but not detected as installed.[/]")
     
     # Display usage examples if available
     examples = server_metadata.get("examples", [])
