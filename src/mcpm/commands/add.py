@@ -12,7 +12,7 @@ from rich.prompt import Confirm
 
 from mcpm.utils.repository import RepositoryManager
 from mcpm.utils.server_config import ServerConfig
-from mcpm.utils.client_manager import get_active_client, get_active_client_manager, get_active_client_info
+from mcpm.utils.client_registry import ClientRegistry
 
 console = Console()
 repo_manager = RepositoryManager()
@@ -28,7 +28,7 @@ def add(server_name, force=False):
         mcpm add everything --force
     """
     # Get the active client info
-    client = get_active_client()
+    client = ClientRegistry.get_active_client()
     if not client:
         console.print("[bold red]Error:[/] No active client found.")
         console.print("Please set an active client with 'mcpm client set <client>'.")
@@ -36,7 +36,7 @@ def add(server_name, force=False):
     console.print(f"[yellow]Using active client: {client}[/]")
     
     # Get client manager
-    client_manager = get_active_client_manager()
+    client_manager = ClientRegistry.get_active_client_manager()
     if client_manager is None:
         console.print(f"[bold red]Error:[/] Unsupported client '{client}'.")
         return
@@ -70,7 +70,8 @@ def add(server_name, force=False):
         console.print(f"[dim]Author: {author_name} {author_url}[/]")
     
     # Get client display name from the utility
-    _, client_display_name, _ = get_active_client_info()
+    client_info = ClientRegistry.get_client_info(client)
+    client_display_name = client_info.get("name", client)
     
     # Confirm addition
     if not force and not Confirm.ask(f"Add this server to {client_display_name}?"):

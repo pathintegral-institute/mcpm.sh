@@ -24,6 +24,11 @@ else:
 class WindsurfManager(BaseClientManager):
     """Manages Windsurf MCP server configurations"""
     
+    # Client information
+    client_key = "windsurf"
+    display_name = "Windsurf"
+    download_url = "https://codeium.com/windsurf/download"
+    
     def __init__(self, config_path: str = WINDSURF_CONFIG_PATH):
         super().__init__(config_path)
         

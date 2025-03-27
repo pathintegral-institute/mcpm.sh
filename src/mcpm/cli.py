@@ -73,8 +73,8 @@ def main(ctx, help_flag):
         console.print(panel)
         
         # Get information about installed clients
-        from mcpm.utils.client_detector import detect_installed_clients
-        installed_clients = detect_installed_clients()
+        from mcpm.utils.client_registry import ClientRegistry
+        installed_clients = ClientRegistry.detect_installed_clients()
         
         # Display active client information and main help
         client_status = "[green]✓[/]" if installed_clients.get(active_client, False) else "[yellow]⚠[/]"

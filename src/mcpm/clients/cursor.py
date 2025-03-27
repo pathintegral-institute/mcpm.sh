@@ -24,6 +24,11 @@ else:
 class CursorManager(BaseClientManager):
     """Manages Cursor MCP server configurations"""
     
+    # Client information
+    client_key = "cursor"
+    display_name = "Cursor"
+    download_url = "https://cursor.sh/download"
+    
     def __init__(self, config_path: str = CURSOR_CONFIG_PATH):
         super().__init__(config_path)
     

@@ -8,6 +8,7 @@ from rich.table import Table
 from rich.panel import Panel
 
 from mcpm.utils.config import ConfigManager
+from mcpm.utils.client_registry import ClientRegistry
 
 console = Console()
 config_manager = ConfigManager()
@@ -27,7 +28,7 @@ def client(client_name, list):
         mcpm client claude-desktop  # Set Claude Desktop as the active client
     """
     # Get the list of supported clients
-    supported_clients = config_manager.get_supported_clients()
+    supported_clients = ClientRegistry.get_supported_clients()
     
     # List all supported clients if requested
     if list:
@@ -35,7 +36,7 @@ def client(client_name, list):
         table.add_column("Client Name", style="cyan")
         table.add_column("Status", style="green")
         
-        active_client = config_manager.get_active_client()
+        active_client = ClientRegistry.get_active_client()
         
         for client in sorted(supported_clients):
             status = "[bold green]ACTIVE[/]" if client == active_client else ""
@@ -46,7 +47,7 @@ def client(client_name, list):
     
     # If no client name specified, show the current active client
     if not client_name:
-        active_client = config_manager.get_active_client()
+        active_client = ClientRegistry.get_active_client()
         console.print(f"Current active client: [bold cyan]{active_client}[/]")
         
         # Display some helpful information about setting clients
@@ -67,12 +68,12 @@ def client(client_name, list):
         return
     
     # Set the active client
-    if client_name == config_manager.get_active_client():
+    if client_name == ClientRegistry.get_active_client():
         console.print(f"[bold yellow]Note:[/] {client_name} is already the active client")
         return
     
     # Attempt to set the active client
-    success = config_manager.set_active_client(client_name)
+    success = ClientRegistry.set_active_client(client_name)
     if success:
         console.print(f"[bold green]Success:[/] Active client set to {client_name}")
         

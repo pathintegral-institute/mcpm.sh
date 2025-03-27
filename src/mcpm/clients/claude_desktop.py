@@ -24,6 +24,11 @@ else:
 class ClaudeDesktopManager(BaseClientManager):
     """Manages Claude Desktop MCP server configurations"""
     
+    # Client information
+    client_key = "claude-desktop"
+    display_name = "Claude Desktop"
+    download_url = "https://claude.ai/download"
+    
     def __init__(self, config_path: str = CLAUDE_CONFIG_PATH):
         super().__init__(config_path)
     

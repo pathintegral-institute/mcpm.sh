@@ -7,7 +7,7 @@ import json
 import logging
 from typing import Dict, List, Any
 
-from mcpm.utils.client_detector import detect_installed_clients, get_recommended_client
+# Client detection will be handled by ClientRegistry
 
 logger = logging.getLogger(__name__)
 
@@ -48,9 +48,12 @@ class ConfigManager:
     
     def _default_config(self) -> Dict[str, Any]:
         """Create default configuration"""
-        # Detect installed clients and set a sensible default active client
-        installed_clients = detect_installed_clients()
-        recommended_client = get_recommended_client()
+        # We'll import here to avoid circular imports
+        from mcpm.utils.client_registry import ClientRegistry
+        
+        # Get recommended client from registry
+        recommended_client = ClientRegistry.get_recommended_client()
+        installed_clients = ClientRegistry.detect_installed_clients()
         
         return {
             "version": "0.2.0",
@@ -88,16 +91,9 @@ class ConfigManager:
         Returns:
             BaseClientManager or None if client not supported
         """
-        if client_name == "claude-desktop":
-            from mcpm.clients.claude_desktop import ClaudeDesktopManager
-            return ClaudeDesktopManager()
-        elif client_name == "windsurf":
-            from mcpm.clients.windsurf import WindsurfManager
-            return WindsurfManager()
-        elif client_name == "cursor":
-            from mcpm.clients.cursor import CursorManager
-            return CursorManager()
-        return None
+        # We'll import here to avoid circular imports
+        from mcpm.utils.client_registry import ClientRegistry
+        return ClientRegistry.get_client_manager(client_name)
         
 
         
@@ -117,4 +113,6 @@ class ConfigManager:
     
     def get_supported_clients(self) -> List[str]:
         """Get a list of supported client names"""
-        return list(self._config.get("clients", {}).keys())
+        # We'll import here to avoid circular imports
+        from mcpm.utils.client_registry import ClientRegistry
+        return ClientRegistry.get_supported_clients()

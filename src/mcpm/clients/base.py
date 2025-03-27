@@ -14,6 +14,11 @@ logger = logging.getLogger(__name__)
 class BaseClientManager:
     """Base class for all client managers providing a common interface"""
     
+    # Client information properties
+    client_key = ""         # Client identifier (e.g., "claude-desktop")
+    display_name = ""      # Human-readable name (e.g., "Claude Desktop")
+    download_url = ""      # URL to download the client
+    
     def __init__(self, config_path: str):
         """Initialize with a configuration path"""
         self.config_path = config_path
@@ -192,15 +197,27 @@ class BaseClientManager:
         # To be implemented by subclasses
         raise NotImplementedError("Subclasses must implement remove_server")
     
+    def get_client_info(self) -> Dict[str, str]:
+        """Get information about this client
+        
+        Returns:
+            Dict: Information about the client including display name, download URL, and config path
+        """
+        return {
+            "name": self.display_name,
+            "download_url": self.download_url,
+            "config_file": self.config_path
+        }
+    
     def is_client_installed(self) -> bool:
         """Check if this client is installed
         
         Returns:
             bool: True if client is installed, False otherwise
         """
-        # Default implementation - can be overridden by subclasses
-        client_dir = os.path.dirname(self.config_path)
-        return os.path.isdir(client_dir)
+        # Default implementation checks if the config directory exists
+        # Can be overridden by subclasses
+        return os.path.isdir(os.path.dirname(self.config_path))
         
     def disable_server(self, server_name: str) -> bool:
         """Temporarily disable (stash) a server without removing its configuration

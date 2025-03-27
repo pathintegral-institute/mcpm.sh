@@ -10,7 +10,7 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.prompt import Confirm
 
-from mcpm.utils.client_manager import get_active_client_info
+from mcpm.utils.client_registry import ClientRegistry
 
 console = Console()
 
@@ -29,7 +29,10 @@ def edit(edit, create):
         mcpm edit --create  # Create a basic config file if it doesn't exist
     """
     # Get the active client manager and related information
-    client_manager, client_name, install_url = get_active_client_info()
+    client_manager = ClientRegistry.get_active_client_manager()
+    client = ClientRegistry.get_active_client()
+    client_info = ClientRegistry.get_client_info(client)
+    client_name = client_info.get("name", client)
     
     # Check if client is supported
     if client_manager is None:
