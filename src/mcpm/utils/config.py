@@ -5,14 +5,14 @@ Configuration utilities for MCPM
 import os
 import json
 import logging
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional
 
 # Client detection will be handled by ClientRegistry
 
 logger = logging.getLogger(__name__)
 
 # Default configuration paths
-DEFAULT_CONFIG_DIR = os.path.expanduser("~/.config/mcp")
+DEFAULT_CONFIG_DIR = os.path.expanduser("~/.config/mcpm")
 DEFAULT_CONFIG_FILE = os.path.join(DEFAULT_CONFIG_DIR, "config.json")
 
 class ConfigManager:
@@ -48,28 +48,9 @@ class ConfigManager:
     
     def _default_config(self) -> Dict[str, Any]:
         """Create default configuration"""
-        # We'll import here to avoid circular imports
-        from mcpm.utils.client_registry import ClientRegistry
-        
-        # Get recommended client from registry
-        recommended_client = ClientRegistry.get_recommended_client()
-        installed_clients = ClientRegistry.detect_installed_clients()
-        
-        return {
-            "version": "0.2.0",
-            "active_client": recommended_client,
-            "clients": {
-                "claude-desktop": {
-                    "installed": installed_clients.get("claude-desktop", False)
-                },
-                "cursor": {
-                    "installed": installed_clients.get("cursor", False)
-                },
-                "windsurf": {
-                    "installed": installed_clients.get("windsurf", False)
-                }
-            }
-        }
+        # Return empty config - don't set any defaults
+        # User will be prompted to set a client when needed
+        return {}
     
     def _save_config(self) -> None:
         """Save current configuration to file"""
@@ -98,12 +79,23 @@ class ConfigManager:
 
         
     def get_active_client(self) -> str:
-        """Get the name of the currently active client"""
-        return self._config.get("active_client", "claude-desktop")
+        """Get the name of the currently active client or None if not set"""
+        return self._config.get("active_client")
     
-    def set_active_client(self, client_name: str) -> bool:
+    def set_active_client(self, client_name: Optional[str]) -> bool:
         """Set the active client"""
-        if client_name not in self._config.get("clients", {}):
+        # Allow setting to None to clear the active client
+        if client_name is None:
+            if "active_client" in self._config:
+                del self._config["active_client"]
+                self._save_config()
+            return True
+            
+        # Get supported clients
+        from mcpm.utils.client_registry import ClientRegistry
+        supported_clients = ClientRegistry.get_supported_clients()
+        
+        if client_name not in supported_clients:
             logger.error(f"Unknown client: {client_name}")
             return False
         

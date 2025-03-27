@@ -36,6 +36,22 @@ def main(ctx, help_flag):
     
     A tool for managing MCP servers across various clients.
     """
+    # Check if a command is being executed (and it's not help, no command, or the client command)
+    if ctx.invoked_subcommand and ctx.invoked_subcommand != 'client' and not help_flag:
+        # Check if active client is set
+        active_client = config_manager.get_active_client()
+        if not active_client:
+            console.print("[bold red]Error:[/] No active client set.")
+            console.print("Please run 'mcpm client <client-name>' to set an active client.")
+            console.print("Available clients:")
+            
+            # Show available clients
+            from mcpm.utils.client_registry import ClientRegistry
+            for client in ClientRegistry.get_supported_clients():
+                console.print(f"  - {client}")
+            
+            # Exit with error
+            ctx.exit(1)
     # If no command was invoked or help is requested, show our custom help
     if ctx.invoked_subcommand is None or help_flag:
         
@@ -77,15 +93,11 @@ def main(ctx, help_flag):
         installed_clients = ClientRegistry.detect_installed_clients()
         
         # Display active client information and main help
-        client_status = "[green]✓[/]" if installed_clients.get(active_client, False) else "[yellow]⚠[/]"
-        console.print(f"[bold magenta]Active client:[/] [yellow]{active_client}[/] {client_status}")
-        
-        # Display all supported clients with their installation status
-        console.print("[bold]Supported clients:[/]")
-        for client, installed in installed_clients.items():
-            status = "[green]Installed[/]" if installed else "[gray]Not installed[/]"
-            active_marker = "[bold cyan]➤[/] " if client == active_client else "  "
-            console.print(f"{active_marker}{client}: {status}")
+        if active_client:
+            client_status = "[green]✓[/]" if installed_clients.get(active_client, False) else "[yellow]⚠[/]"
+            console.print(f"[bold magenta]Active client:[/] [yellow]{active_client}[/] {client_status}")
+        else:
+            console.print("[bold red]No active client set![/] Please run 'mcpm client <client-name>' to set one.")
         console.print("")
         
         # Display usage info

@@ -129,6 +129,9 @@ class ClientRegistry:
             BaseClientManager: Client manager instance for the active client, or None if not found
         """
         active_client = cls.get_active_client()
+        if not active_client:
+            return None
+            
         return cls.get_client_manager(active_client)
     
     @classmethod
@@ -146,8 +149,8 @@ class ClientRegistry:
             if installed:
                 return client
         
-        # Default to claude-desktop if nothing is installed
-        return "claude-desktop"
+        # Return None if no clients are installed
+        return None
     
     @classmethod
     def get_supported_clients(cls) -> List[str]:

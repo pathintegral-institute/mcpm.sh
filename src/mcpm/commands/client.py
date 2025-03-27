@@ -34,15 +34,37 @@ def client(client_name, list):
     if list:
         table = Table(title="Supported MCP Clients")
         table.add_column("Client Name", style="cyan")
+        table.add_column("Installation", style="yellow")
         table.add_column("Status", style="green")
         
         active_client = ClientRegistry.get_active_client()
+        installed_clients = ClientRegistry.detect_installed_clients()
         
         for client in sorted(supported_clients):
-            status = "[bold green]ACTIVE[/]" if client == active_client else ""
-            table.add_row(client, status)
+            # Determine installation status
+            installed = installed_clients.get(client, False)
+            install_status = "[green]Installed[/]" if installed else "[gray]Not installed[/]"
+            
+            # Determine active status
+            active_status = "[bold green]ACTIVE[/]" if client == active_client else ""
+            
+            # Get client info for more details
+            client_info = ClientRegistry.get_client_info(client)
+            display_name = client_info.get("name", client)
+            
+            table.add_row(f"{display_name} ({client})", install_status, active_status)
             
         console.print(table)
+        
+        # Add helpful instructions for non-installed clients
+        non_installed = [c for c, installed in installed_clients.items() if not installed]
+        if non_installed:
+            console.print("\n[italic]To use a non-installed client, you need to install it first.[/]")
+            for client in non_installed:
+                info = ClientRegistry.get_client_info(client)
+                if "download_url" in info:
+                    console.print(f"[yellow]{info.get('name', client)}[/]: {info['download_url']}")
+        
         return
     
     # If no client name specified, show the current active client
