@@ -12,52 +12,35 @@ from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.prompt import Confirm
 
 from mcpm.utils.repository import RepositoryManager
-from mcpm.clients.windsurf import WindsurfManager
-from mcpm.clients.claude_desktop import ClaudeDesktopManager 
-from mcpm.clients.cursor import CursorManager
 from mcpm.utils.server_config import ServerConfig
-from mcpm.utils.config import ConfigManager
+from mcpm.utils.client_manager import get_active_client, get_active_client_manager, get_active_client_info
 
 console = Console()
 repo_manager = RepositoryManager()
-config_manager = ConfigManager()
-
-# Map of client names to their manager classes
-CLIENT_MANAGERS = {
-    "windsurf": WindsurfManager,
-    "claude-desktop": ClaudeDesktopManager,
-    "cursor": CursorManager
-}
 
 @click.command()
 @click.argument("server_name")
-@click.option("--client", "-c", help="Client to add the server to (windsurf, claude-desktop, cursor)")
 @click.option("--force", is_flag=True, help="Force reinstall if server is already installed")
-def add(server_name, client=None, force=False):
+def add(server_name, force=False):
     """Add an MCP server to a client configuration.
     
     Examples:
         mcpm add time
-        mcpm add github --client windsurf
         mcpm add everything --force
     """
-    # If no client is specified, use the active client
+    # Get the active client info
+    client = get_active_client()
     if not client:
-        client = config_manager.get_active_client()
-        if not client:
-            console.print("[bold red]Error:[/] No active client found.")
-            console.print("Please specify a client with --client option or set an active client with 'mcpm client set <client>'.")
-            return
-        console.print(f"[yellow]Using active client: {client}[/]")
-    
-    # Verify client is valid
-    if client not in CLIENT_MANAGERS:
-        console.print(f"[bold red]Error:[/] Unsupported client '{client}'.")
-        console.print(f"Supported clients: {', '.join(CLIENT_MANAGERS.keys())}")
+        console.print("[bold red]Error:[/] No active client found.")
+        console.print("Please set an active client with 'mcpm client set <client>'.")
         return
+    console.print(f"[yellow]Using active client: {client}[/]")
     
-    # Initialize client manager
-    client_manager = CLIENT_MANAGERS[client]()
+    # Get client manager
+    client_manager = get_active_client_manager()
+    if client_manager is None:
+        console.print(f"[bold red]Error:[/] Unsupported client '{client}'.")
+        return
     
     # Check if server already exists in client config
     existing_server = client_manager.get_server(server_name)
@@ -87,8 +70,11 @@ def add(server_name, client=None, force=False):
         author_url = author_info.get("url", "")
         console.print(f"[dim]Author: {author_name} {author_url}[/]")
     
+    # Get client display name from the utility
+    _, client_display_name, _ = get_active_client_info()
+    
     # Confirm addition
-    if not force and not Confirm.ask(f"Add this server to {client}?"):
+    if not force and not Confirm.ask(f"Add this server to {client_display_name}?"):
         console.print("[yellow]Operation cancelled.[/]")
         return
     
@@ -343,9 +329,8 @@ def add(server_name, client=None, force=False):
     success = client_manager.add_server(server_config)
     
     if success:
-        # Update the central tracking of enabled servers for this client
-        config_manager.enable_server_for_client(server_name, client)
-        console.print(f"[bold green]Successfully added {display_name} v{version} to {client}![/]")
+        # Server has been successfully added to the client configuration
+        console.print(f"[bold green]Successfully added {display_name} v{version} to {client_display_name}![/]")
         
         # Display usage examples if available
         examples = server_metadata.get("examples", [])

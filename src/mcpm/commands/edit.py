@@ -10,16 +10,9 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.prompt import Confirm
 
-from mcpm.clients.claude_desktop import ClaudeDesktopManager
-from mcpm.clients.windsurf import WindsurfManager
-from mcpm.clients.cursor import CursorManager
-from mcpm.utils.config import ConfigManager
+from mcpm.utils.client_manager import get_active_client_info
 
 console = Console()
-config_manager = ConfigManager()
-claude_manager = ClaudeDesktopManager()
-windsurf_manager = WindsurfManager()
-cursor_manager = CursorManager()
 
 @click.command()
 @click.option("--edit", is_flag=True, help="Open the active client's config in default editor")
@@ -35,27 +28,12 @@ def edit(edit, create):
         mcpm edit --edit    # Open the config file in your default editor
         mcpm edit --create  # Create a basic config file if it doesn't exist
     """
-    # Get the active client and its corresponding manager
-    active_client = config_manager.get_active_client()
+    # Get the active client manager and related information
+    client_manager, client_name, install_url = get_active_client_info()
     
-    # Select appropriate client manager based on active client
-    if active_client == "claude-desktop":
-        client_manager = claude_manager
-        client_name = "Claude Desktop"
-        install_url = "https://claude.ai/download"
-        is_installed_method = client_manager.is_claude_desktop_installed
-    elif active_client == "windsurf":
-        client_manager = windsurf_manager
-        client_name = "Windsurf"
-        install_url = "https://codeium.com/windsurf/download"
-        is_installed_method = client_manager.is_windsurf_installed
-    elif active_client == "cursor":
-        client_manager = cursor_manager
-        client_name = "Cursor"
-        install_url = "https://cursor.sh/download"
-        is_installed_method = client_manager.is_cursor_installed
-    else:
-        console.print(f"[bold red]Error:[/] Unsupported active client: {active_client}")
+    # Check if client is supported
+    if client_manager is None:
+        console.print("[bold red]Error:[/] Unsupported active client")
         console.print("Please switch to a supported client using 'mcpm client <client-name>'")
         return
     
@@ -63,9 +41,8 @@ def edit(edit, create):
     config_path = client_manager.config_path
     
     # Check if the client is installed
-    if not is_installed_method():
+    if not client_manager.is_client_installed():
         console.print(f"[bold red]Error:[/] {client_name} installation not detected.")
-        console.print(f"Please download and install {client_name} from {install_url}")
         return
         
     # Check if config file exists
