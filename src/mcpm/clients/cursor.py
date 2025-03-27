@@ -3,9 +3,11 @@ Cursor client configuration for MCP
 """
 
 import os
-import json
 import logging
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any
+
+from mcpm.clients.base import BaseClientManager
+from mcpm.utils.server_config import ServerConfig
 
 # Cursor stores MCP configuration in:
 # - Project config: .cursor/mcp.json in the project directory
@@ -31,78 +33,98 @@ def get_project_config_path(project_dir: str) -> str:
     return os.path.join(project_dir, ".cursor", "mcp.json")
 
 
-class CursorManager:
+class CursorManager(BaseClientManager):
     """Manages Cursor client configuration for MCP"""
     
-    def __init__(self):
-        self.config_path = CURSOR_CONFIG_PATH
+    def __init__(self, config_path: str = CURSOR_CONFIG_PATH):
+        super().__init__(config_path)
+    
+    def _get_empty_config(self) -> Dict[str, Any]:
+        """Get empty config structure for Cursor"""
+        return {"mcpServers": {}}
+    
+    def _add_server_config(self, server_name: str, server_config: Dict[str, Any]) -> bool:
+        """Add or update an MCP server in Cursor config using raw config dictionary
+        
+        Note: This is an internal method that should generally not be called directly.
+        Use add_server with a ServerConfig object instead for better type safety and validation.
+        
+        Args:
+            server_name: Name of the server
+            server_config: Server configuration dictionary
+            
+        Returns:
+            bool: Success or failure
+        """
+        config = self._load_config()
+        
+        # Initialize mcpServers if it doesn't exist
+        if "mcpServers" not in config:
+            config["mcpServers"] = {}
+            
+        # Add or update the server
+        config["mcpServers"][server_name] = server_config
+        
+        return self._save_config(config)
+        
+    def add_server(self, server_config: ServerConfig) -> bool:
+        """Add or update a server using a ServerConfig object
+        
+        This is the preferred method for adding servers as it ensures proper type safety
+        and validation through the ServerConfig object.
+        
+        Args:
+            server_config: ServerConfig object
+            
+        Returns:
+            bool: Success or failure
+        """
+        client_config = self._convert_to_client_format(server_config)
+        return self._add_server_config(server_config.name, client_config)
+    
+    def _convert_to_client_format(self, server_config: ServerConfig) -> Dict[str, Any]:
+        """Convert ServerConfig to Cursor format
+        
+        Args:
+            server_config: StandardServer configuration
+            
+        Returns:
+            Dict containing Cursor-specific configuration
+        """
+        return server_config.to_cursor_format()
+    
+    def _convert_from_client_format(self, server_name: str, client_config: Dict[str, Any]) -> ServerConfig:
+        """Convert Cursor format to ServerConfig
+        
+        Args:
+            server_name: Name of the server
+            client_config: Cursor-specific configuration
+            
+        Returns:
+            ServerConfig object
+        """
+        return ServerConfig.from_cursor_format(server_name, client_config)
+    
+    def remove_server(self, server_name: str) -> bool:
+        """Remove an MCP server from Cursor config
+        
+        Args:
+            server_name: Name of the server to remove
+            
+        Returns:
+            bool: Success or failure
+        """
+        config = self._load_config()
+        
+        if "mcpServers" not in config or server_name not in config["mcpServers"]:
+            logger.warning(f"Server not found in Cursor config: {server_name}")
+            return False
+            
+        # Remove the server
+        del config["mcpServers"][server_name]
+        
+        return self._save_config(config)
     
     def is_cursor_installed(self) -> bool:
         """Check if Cursor is installed"""
-        return os.path.isdir(os.path.dirname(self.config_path))
-    
-    def read_config(self) -> Optional[Dict[str, Any]]:
-        """Read the Cursor MCP configuration"""
-        if not os.path.exists(self.config_path):
-            return None
-            
-        try:
-            with open(self.config_path, 'r') as f:
-                return json.load(f)
-        except json.JSONDecodeError:
-            logger.error(f"Error parsing Cursor config file: {self.config_path}")
-            return None
-        except Exception as e:
-            logger.error(f"Error reading Cursor config file: {str(e)}")
-            return None
-    
-    def write_config(self, config: Dict[str, Any]) -> bool:
-        """Write the Cursor MCP configuration"""
-        try:
-            # Create directory if it doesn't exist
-            os.makedirs(os.path.dirname(self.config_path), exist_ok=True)
-            
-            with open(self.config_path, 'w') as f:
-                json.dump(config, f, indent=2)
-            return True
-        except Exception as e:
-            logger.error(f"Error writing Cursor config file: {str(e)}")
-            return False
-    
-    def create_default_config(self) -> Dict[str, Any]:
-        """Create a default Cursor MCP configuration"""
-        return {
-            "mcpServers": {}
-        }
-    
-    def sync_mcp_servers(self, servers: List[Dict[str, Any]]) -> bool:
-        """Sync MCP servers to Cursor configuration"""
-        config = self.read_config() or self.create_default_config()
-        
-        # Update mcpServers section
-        for server in servers:
-            name = server.get("name")
-            if name:
-                config.setdefault("mcpServers", {})[name] = {
-                    "command": server.get("command", ""),
-                    "args": server.get("args", []),
-                }
-                
-                # Add environment variables if present
-                if "env" in server and server["env"]:
-                    config["mcpServers"][name]["env"] = server["env"]
-        
-        # Write updated config
-        return self.write_config(config)
-        
-    def get_servers(self) -> Dict[str, Any]:
-        """Get MCP servers from Cursor configuration
-        
-        Returns:
-            Dict[str, Any]: Dictionary mapping server names to their configurations
-        """
-        config = self.read_config()
-        if not config:
-            return {}
-            
-        return config.get("mcpServers", {})
+        return self.is_client_installed()

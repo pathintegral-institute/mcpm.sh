@@ -4,14 +4,12 @@ Install command for MCPM
 
 import os
 import json
-import subprocess
 from datetime import datetime
 
 import click
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.prompt import Confirm
-from rich.panel import Panel
 
 from mcpm.utils.repository import RepositoryManager
 from mcpm.utils.config import ConfigManager
@@ -25,13 +23,22 @@ config_manager = ConfigManager()
 @click.argument("server_name")
 @click.option("--force", is_flag=True, help="Force reinstall if server is already installed")
 def install(server_name, force=False):
-    """Install an MCP server.
+    """[DEPRECATED] Install an MCP server.
+    
+    This command is deprecated. Please use 'mcpm add' instead, which directly
+    adds servers to client configurations without using a global config.
     
     Examples:
-        mcpm install time
-        mcpm install github
-        mcpm install everything --force
+        mcpm add time
+        mcpm add github
+        mcpm add everything --force
     """
+    # Show deprecation warning
+    console.print("[bold yellow]WARNING: The 'install' command is deprecated![/]")
+    console.print("[yellow]Please use 'mcpm add' instead, which adds servers directly to client configurations.[/]")
+    console.print("[yellow]Run 'mcpm add --help' for more information.[/]")
+    console.print("")
+    
     # Check if already installed
     existing_server = config_manager.get_server_info(server_name)
     if existing_server and not force:
@@ -58,24 +65,26 @@ def install(server_name, force=False):
     version = available_version
     
     # Display server information
-    console.print(Panel(
-        f"[bold]{display_name}[/] [dim]v{version}[/]\n" +
-        f"[italic]{description}[/]\n\n" +
-        f"Author: {author_name}\n" +
-        f"License: {license_info}",
-        title="Server Information",
-        border_style="green",
-    ))
+    console.print("\n[bold cyan]Server Information[/]")
+    console.print(f"[bold]{display_name}[/] [dim]v{version}[/]")
+    console.print(f"[italic]{description}[/]")
+    console.print()
+    console.print(f"Author: {author_name}")
+    console.print(f"License: {license_info}")
+    console.print()
     
-    # Check for API key requirements
-    requirements = server_metadata.get("requirements", {})
-    needs_api_key = requirements.get("api_key", False)
-    auth_type = requirements.get("authentication")
+    # Check for required arguments in the new schema
+    arguments = server_metadata.get("arguments", {})
+    required_args = {k: v for k, v in arguments.items() if v.get("required", False)}
+    needs_api_key = len(required_args) > 0
     
     if needs_api_key:
-        console.print("[yellow]Note:[/] This server requires an API key or authentication.")
-        if auth_type:
-            console.print(f"Authentication type: [bold]{auth_type}[/]")
+        console.print("\n[yellow]Note:[/] This server requires the following arguments:")
+        for arg_name, arg_info in required_args.items():
+            description = arg_info.get("description", "")
+            example = arg_info.get("example", "")
+            example_text = f" (e.g. '{example}')" if example else ""
+            console.print(f"  [bold]{arg_name}[/]: {description}{example_text}")
     
     # Installation preparation
     if not force and existing_server:
@@ -86,16 +95,69 @@ def install(server_name, force=False):
     server_dir = os.path.expanduser(f"~/.config/mcp/servers/{server_name}")
     os.makedirs(server_dir, exist_ok=True)
     
-    # Get installation instructions
-    installation = server_metadata.get("installation", {})
-    install_command = installation.get("command")
-    install_args = installation.get("args", [])
-    package_name = installation.get("package")
-    env_vars = installation.get("env", {})
+    # Get installation instructions from the new 'installations' field
+    installations = server_metadata.get("installations", {})
+    
+    # Fall back to legacy 'installation' field if needed
+    if not installations:
+        installation = server_metadata.get("installation", {})
+        if installation and installation.get("command") and installation.get("args"):
+            installations = {"default": installation}
+    
+    if not installations:
+        console.print(f"[bold red]Error:[/] No installation methods found for server '{server_name}'.")        
+        return
+    
+    # Find recommended installation method or default to the first one
+    selected_method = None
+    method_key = None
+    
+    # First check for a recommended method
+    for key, method in installations.items():
+        if method.get("recommended", False):
+            selected_method = method
+            method_key = key
+            break
+    
+    # If no recommended method found, use the first one
+    if not selected_method:
+        method_key = next(iter(installations))
+        selected_method = installations[method_key]
+    
+    # If multiple methods are available and not forced, offer selection
+    if len(installations) > 1 and not force:
+        console.print("\n[bold]Available installation methods:[/]")
+        methods_list = []
+        
+        for i, (key, method) in enumerate(installations.items(), 1):
+            install_type = method.get("type", "unknown")
+            description = method.get("description", f"{install_type} installation")
+            recommended = " [green](recommended)[/]" if method.get("recommended", False) else ""
+            
+            console.print(f"  {i}. [cyan]{key}[/]: {description}{recommended}")
+            methods_list.append(key)
+        
+        # Ask user to select a method
+        try:
+            selection = click.prompt("\nSelect installation method", type=int, default=methods_list.index(method_key) + 1)
+            if 1 <= selection <= len(methods_list):
+                method_key = methods_list[selection - 1]
+                selected_method = installations[method_key]
+        except (ValueError, click.Abort):
+            console.print("[yellow]Using default installation method.[/]")
+    
+    # Extract installation details
+    install_type = selected_method.get("type")
+    install_command = selected_method.get("command")
+    install_args = selected_method.get("args", [])
+    package_name = selected_method.get("package")
+    env_vars = selected_method.get("env", {})
     
     if not install_command or not install_args:
-        console.print(f"[bold red]Error:[/] Invalid installation information for server '{server_name}'.")
+        console.print(f"[bold red]Error:[/] Invalid installation information for method '{method_key}'.")        
         return
+    
+    console.print(f"\n[green]Using {install_type} installation method: [bold]{method_key}[/][/]")
     
     # Download and install server
     with Progress(
@@ -110,48 +172,46 @@ def install(server_name, force=False):
         with open(metadata_path, "w") as f:
             json.dump(server_metadata, f, indent=2)
         
-        # Install using the specified command and args
-        progress.add_task(f"Installing {server_name} v{version}...", total=None)
+        # Configure the server (do not execute installation command)
+        progress.add_task(f"Configuring {server_name} v{version}...", total=None)
         
-        try:
-            # Prepare environment variables
-            env = os.environ.copy()
-            
-            # Replace variable placeholders with values from environment
-            for key, value in env_vars.items():
-                if isinstance(value, str) and value.startswith("${"): 
-                    env_var_name = value[2:-1]  # Extract variable name from ${NAME}
-                    env_value = os.environ.get(env_var_name, "")
-                    env[key] = env_value
+        # Process environment variables to store in config
+        processed_env = {}
+        
+        for key, value in env_vars.items():
+            if isinstance(value, str) and value.startswith("${") and value.endswith("}"): 
+                env_var_name = value[2:-1]  # Extract variable name from ${NAME}
+                is_required = env_var_name in required_args
+                
+                # For required arguments, prompt the user if not in environment
+                env_value = os.environ.get(env_var_name, "")
+                
+                if not env_value and is_required:
+                    console.print(f"[yellow]Warning:[/] Required argument {env_var_name} is not set in environment")
                     
-                    # Warn if variable is not set
-                    if not env_value and needs_api_key:
-                        console.print(f"[yellow]Warning:[/] Environment variable {env_var_name} is not set")
+                    # Prompt for the value
+                    arg_info = required_args[env_var_name]
+                    description = arg_info.get("description", "")
+                    try:
+                        user_value = click.prompt(
+                            f"Enter value for {env_var_name} ({description})", 
+                            hide_input="token" in env_var_name.lower() or "key" in env_var_name.lower()
+                        )
+                        processed_env[key] = user_value
+                    except click.Abort:
+                        console.print("[yellow]Will store the reference to environment variable instead.[/]")
+                        processed_env[key] = value  # Store the reference as-is
                 else:
-                    env[key] = value
-            
-            # Run installation command
-            if install_command:
-                full_command = [install_command] + install_args
-                console.print(f"Running: [dim]{' '.join(full_command)}[/]")
-                
-                # Capture installation process output
-                result = subprocess.run(
-                    full_command,
-                    env=env,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    text=True,
-                    check=False
-                )
-                
-                if result.returncode != 0:
-                    console.print(f"[bold red]Installation failed with error code {result.returncode}[/]")
-                    console.print(f"[red]{result.stderr}[/]")
-                    return
-        except Exception as e:
-            console.print(f"[bold red]Error during installation:[/] {str(e)}")
-            return
+                    # Store reference to environment variable
+                    processed_env[key] = value
+            else:
+                processed_env[key] = value
+        
+        # Display the installation command (for information only)
+        if install_command:
+            full_command = [install_command] + install_args
+            console.print(f"[dim]Installation command: {' '.join(full_command)}[/]")
+            console.print("[green]Server has been configured and added to client.[/]")
     
     # Create server configuration
     server_info = {
@@ -164,6 +224,12 @@ def install(server_name, force=False):
         "path": server_dir,
         "package": package_name
     }
+    
+    # Add installation method information if available
+    if method_key:
+        server_info["installation_method"] = method_key
+    if install_type:
+        server_info["installation_type"] = install_type
     
     # Register the server in our config
     config_manager.register_server(server_name, server_info)

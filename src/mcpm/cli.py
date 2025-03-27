@@ -19,6 +19,7 @@ from mcpm.commands import (
     server,
     client,
     inspector,
+    add,
 )
 
 console = Console()
@@ -103,10 +104,11 @@ def main(ctx, help_flag):
         # Display available commands in a table
         console.print("[bold]Commands:[/]")
         commands_table = Table(show_header=False, box=None, padding=(0, 2, 0, 0))
+        commands_table.add_row("  [cyan]add[/]", "Add an MCP server directly to a client.")
         commands_table.add_row("  [cyan]client[/]", "Manage the active MCPM client.")
         commands_table.add_row("  [cyan]edit[/]", "View or edit the active MCPM client's configuration file.")
         commands_table.add_row("  [cyan]inspector[/]", "Launch the MCPM Inspector UI to examine servers.")
-        commands_table.add_row("  [cyan]install[/]", "Install an MCP server.")
+        commands_table.add_row("  [cyan]install[/]", "[yellow][DEPRECATED][/] Install an MCP server (use add instead).")
         commands_table.add_row("  [cyan]list[/]", "List all installed MCP servers.")
         commands_table.add_row("  [cyan]remove[/]", "Remove an installed MCP server.")
         commands_table.add_row("  [cyan]search[/]", "Search available MCP servers.")
@@ -124,6 +126,7 @@ def main(ctx, help_flag):
 main.add_command(search.search)
 main.add_command(install.install)
 main.add_command(remove.remove)
+main.add_command(add.add)
 main.add_command(list_servers.list)
 main.add_command(edit.edit)
 
