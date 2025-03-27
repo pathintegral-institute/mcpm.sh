@@ -4,7 +4,6 @@ Add command for adding MCP servers directly to client configurations
 
 import os
 import json
-from datetime import datetime
 
 import click
 from rich.console import Console
@@ -94,8 +93,7 @@ def add(server_name, force=False):
     
     # If no installation information is available, create minimal default values
     # This allows us to add the server config without full installation details
-    method_key = "default"
-    install_type = "manual"
+    installation_method = "manual"  # Single consolidated concept
     install_command = "echo"
     install_args = [f"Server {server_name} added to configuration"]
     package_name = None
@@ -106,19 +104,19 @@ def add(server_name, force=False):
     selected_method = None  # Initialize selected_method to None to avoid UnboundLocalError
     if installations:
         # Find recommended installation method or default to the first one
-        method_key = "default"
+        method_id = "default"  # ID of the method in the config
         
         # First check for a recommended method
         for key, method in installations.items():
             if method.get("recommended", False):
                 selected_method = method
-                method_key = key
+                method_id = key
                 break
         
         # If no recommended method found, use the first one
         if not selected_method and installations:
-            method_key = next(iter(installations))
-            selected_method = installations[method_key]
+            method_id = next(iter(installations))
+            selected_method = installations[method_id]
         
         # If multiple methods are available and not forced, offer selection
         if len(installations) > 1 and not force:
@@ -126,8 +124,8 @@ def add(server_name, force=False):
             methods_list = []
             
             for i, (key, method) in enumerate(installations.items(), 1):
-                install_type = method.get("type", "unknown")
-                description = method.get("description", f"{install_type} installation")
+                method_type = method.get("type", "unknown")
+                description = method.get("description", f"{method_type} installation")
                 recommended = " [green](recommended)[/]" if method.get("recommended", False) else ""
                 
                 console.print(f"  {i}. [cyan]{key}[/]: {description}{recommended}")
@@ -135,23 +133,27 @@ def add(server_name, force=False):
             
             # Ask user to select a method
             try:
-                selection = click.prompt("\nSelect installation method", type=int, default=methods_list.index(method_key) + 1)
+                selection = click.prompt("\nSelect installation method", type=int, default=methods_list.index(method_id) + 1)
                 if 1 <= selection <= len(methods_list):
-                    method_key = methods_list[selection - 1]
-                    selected_method = installations[method_key]
+                    method_id = methods_list[selection - 1]
+                    selected_method = installations[method_id]
             except (ValueError, click.Abort):
                 console.print("[yellow]Using default installation method.[/]")
         
         # Extract installation details
         if selected_method:
-            install_type = selected_method.get("type", install_type)
+            # Use the method's type as the installation method if available, otherwise use the key
+            installation_method = selected_method.get("type")
+            if not installation_method or installation_method == "unknown":
+                installation_method = method_id
+                
             install_command = selected_method.get("command", install_command)
             install_args = selected_method.get("args", install_args)
             package_name = selected_method.get("package", package_name)
             env_vars = selected_method.get("env", env_vars)
             required_args = server_metadata.get("required_args", required_args)
         
-        console.print(f"\n[green]Using {install_type} installation method: [bold]{method_key}[/][/]")
+        console.print(f"\n[green]Using [bold]{installation_method}[/] installation method[/]")
     
     # Configure the server
     with Progress(
@@ -311,18 +313,13 @@ def add(server_name, force=False):
     # Create server configuration using ServerConfig
     server_config = ServerConfig(
         name=server_name,
-        path=server_dir,
         display_name=display_name,
         description=description,
-        version=version,
-        status="stopped",
         command=mcp_command,  # Use the actual MCP server command
         args=mcp_args,        # Use the actual MCP server arguments
         env_vars=processed_env,
-        install_date=datetime.now().strftime("%Y-%m-%d"),
-        package=package_name,
-        installation_method=method_key,
-        installation_type=install_type
+        # Use the simplified installation method
+        installation = installation_method
     )
     
     # Add the server to the client configuration

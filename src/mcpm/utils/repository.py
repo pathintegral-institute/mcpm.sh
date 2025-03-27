@@ -51,16 +51,12 @@ class RepositoryManager:
             # Return empty dict if we can't fetch and have no cache
             return self.servers_cache or {}
     
-    def search_servers(self, query: Optional[str] = None, 
-                       tags: Optional[str] = None,
-                       category: Optional[str] = None) -> List[Dict[str, Any]]:
+    def search_servers(self, query: Optional[str] = None) -> List[Dict[str, Any]]:
         """
         Search for available MCP servers
         
         Args:
             query: Optional search query
-            tags: Optional tag to filter by
-            category: Optional category to filter by
             
         Returns:
             List of matching server metadata
@@ -93,23 +89,7 @@ class RepositoryManager:
                     
             results = filtered_results
         
-        # Filter by tag if provided
-        if tags:
-            tags = tags.lower()
-            results = [
-                server for server in results
-                if "tags" in server and 
-                any(tags in tag.lower() for tag in server["tags"])
-            ]
-            
-        # Filter by category if provided
-        if category:
-            category = category.lower()
-            results = [
-                server for server in results
-                if "categories" in server and 
-                any(category in cat.lower() for cat in server["categories"])
-            ]
+        # No additional filtering by tags or category in the new simplified architecture
         
         return results
     

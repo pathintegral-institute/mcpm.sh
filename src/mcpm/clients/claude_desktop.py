@@ -29,7 +29,10 @@ class ClaudeDesktopManager(BaseClientManager):
     
     def _get_empty_config(self) -> Dict[str, Any]:
         """Get empty config structure for Claude Desktop"""
-        return {"mcpServers": {}}
+        return {
+            "mcpServers": {},
+            "disabledServers": {}
+        }
     
     def _add_server_config(self, server_name: str, server_config: Dict[str, Any]) -> bool:
         """Add or update an MCP server in Claude Desktop config using raw config dictionary
@@ -92,7 +95,7 @@ class ClaudeDesktopManager(BaseClientManager):
             
         # Add additional metadata fields for display in Claude Desktop
         # Fields that are None will be automatically excluded by JSON serialization
-        for field in ["name", "display_name", "description", "version", "status", "path", "install_date"]:
+        for field in ["name", "display_name", "description", "installation"]:
             value = getattr(server_config, field, None)
             if value is not None:
                 result[field] = value
@@ -122,8 +125,7 @@ class ClaudeDesktopManager(BaseClientManager):
             server_data["env_vars"] = client_config["env"]
             
         # Add additional metadata fields if present
-        for field in ["display_name", "description", "version", "status", "path", "install_date", 
-                     "package", "installation_method", "installation_type"]:
+        for field in ["display_name", "description", "installation"]:
             if field in client_config:
                 server_data[field] = client_config[field]
                 
@@ -140,6 +142,74 @@ class ClaudeDesktopManager(BaseClientManager):
             ServerConfig object
         """
         return self.from_claude_desktop_format(server_name, client_config)
+    
+    def disable_server(self, server_name: str) -> bool:
+        """Temporarily disable (stash) a server without removing its configuration
+        
+        Args:
+            server_name: Name of the server to disable
+            
+        Returns:
+            bool: Success or failure
+        """
+        config = self._load_config()
+        
+        # Check if the server exists in active servers
+        if "mcpServers" not in config or server_name not in config["mcpServers"]:
+            logger.warning(f"Server '{server_name}' not found in active servers")
+            return False
+        
+        # Initialize disabledServers if it doesn't exist
+        if "disabledServers" not in config:
+            config["disabledServers"] = {}
+        
+        # Store the server config in disabled servers
+        config["disabledServers"][server_name] = config["mcpServers"][server_name]
+        
+        # Remove from active servers
+        del config["mcpServers"][server_name]
+        
+        return self._save_config(config)
+    
+    def enable_server(self, server_name: str) -> bool:
+        """Re-enable (pop) a previously disabled server
+        
+        Args:
+            server_name: Name of the server to enable
+            
+        Returns:
+            bool: Success or failure
+        """
+        config = self._load_config()
+        
+        # Check if the server exists in disabled servers
+        if "disabledServers" not in config or server_name not in config["disabledServers"]:
+            logger.warning(f"Server '{server_name}' not found in disabled servers")
+            return False
+        
+        # Initialize mcpServers if it doesn't exist
+        if "mcpServers" not in config:
+            config["mcpServers"] = {}
+        
+        # Move the server config from disabled to active
+        config["mcpServers"][server_name] = config["disabledServers"][server_name]
+        
+        # Remove from disabled servers
+        del config["disabledServers"][server_name]
+        
+        return self._save_config(config)
+    
+    def is_server_disabled(self, server_name: str) -> bool:
+        """Check if a server is currently disabled (stashed)
+        
+        Args:
+            server_name: Name of the server to check
+            
+        Returns:
+            bool: True if server is disabled, False otherwise
+        """
+        config = self._load_config()
+        return "disabledServers" in config and server_name in config["disabledServers"]
     
     def remove_server(self, server_name: str) -> bool:
         """Remove an MCP server from Claude Desktop config

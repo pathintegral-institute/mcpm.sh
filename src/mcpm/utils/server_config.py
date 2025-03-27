@@ -22,8 +22,7 @@ class ServerConfig:
     
     # Fields that should be optional in serializations
     OPTIONAL_FIELDS: ClassVar[List[str]] = [
-        "display_name", "description", "version", "status", "path",
-        "install_date", "package", "installation_method", "installation_type"
+        "display_name", "description", "installation"
     ]
     
     def __init__(
@@ -34,13 +33,7 @@ class ServerConfig:
         env_vars: Optional[Dict[str, str]] = None,
         display_name: Optional[str] = None,
         description: Optional[str] = None,
-        version: Optional[str] = None,
-        status: Optional[str] = None,
-        path: Optional[str] = None,
-        install_date: Optional[str] = None,
-        package: Optional[str] = None,
-        installation_method: Optional[str] = None,
-        installation_type: Optional[str] = None
+        installation: Optional[str] = None
     ):
         """Initialize a standard server configuration"""
         self.name = name
@@ -49,13 +42,7 @@ class ServerConfig:
         self.env_vars = env_vars or {}
         self.display_name = display_name or name
         self.description = description or ""
-        self.version = version or "unknown"
-        self.status = status or "stopped"
-        self.path = path
-        self.install_date = install_date
-        self.package = package
-        self.installation_method = installation_method
-        self.installation_type = installation_type
+        self.installation = installation
         
     @classmethod
     def from_dict(cls: Type[T], data: Dict[str, Any]) -> T:

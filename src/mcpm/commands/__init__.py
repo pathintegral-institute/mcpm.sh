@@ -8,10 +8,11 @@ __all__ = [
     "edit",
     "inspector",
     "list",
+    "pop",
     "remove",
     "search",
     "server",
-    "toggle"
+    "stash"
 ]
 
 # All command modules
@@ -20,7 +21,8 @@ from . import client
 from . import edit
 from . import inspector
 from . import list
+from . import pop
 from . import remove
 from . import search
 from . import server
-from . import toggle
+from . import stash

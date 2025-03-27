@@ -201,3 +201,39 @@ class BaseClientManager:
         # Default implementation - can be overridden by subclasses
         client_dir = os.path.dirname(self.config_path)
         return os.path.isdir(client_dir)
+        
+    def disable_server(self, server_name: str) -> bool:
+        """Temporarily disable (stash) a server without removing its configuration
+        
+        Args:
+            server_name: Name of the server to disable
+            
+        Returns:
+            bool: Success or failure
+        """
+        # To be implemented by subclasses
+        raise NotImplementedError("Subclasses must implement disable_server")
+    
+    def enable_server(self, server_name: str) -> bool:
+        """Re-enable (pop) a previously disabled server
+        
+        Args:
+            server_name: Name of the server to enable
+            
+        Returns:
+            bool: Success or failure
+        """
+        # To be implemented by subclasses
+        raise NotImplementedError("Subclasses must implement enable_server")
+    
+    def is_server_disabled(self, server_name: str) -> bool:
+        """Check if a server is currently disabled (stashed)
+        
+        Args:
+            server_name: Name of the server to check
+            
+        Returns:
+            bool: True if server is disabled, False otherwise
+        """
+        # To be implemented by subclasses
+        raise NotImplementedError("Subclasses must implement is_server_disabled")

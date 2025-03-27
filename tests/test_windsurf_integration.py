@@ -70,13 +70,12 @@ class TestWindsurfIntegration:
         """Create a sample ServerConfig for testing"""
         return ServerConfig(
             name="sample-server",
-            path="/path/to/sample/server",
             display_name="Sample Server",
             description="A sample server for testing",
-            version="1.2.0",
             command="npx",
             args=["-y", "@modelcontextprotocol/sample-server"],
-            env_vars={"API_KEY": "sample-key"}
+            env_vars={"API_KEY": "sample-key"},
+            installation="default:npm"
         )
     
     @pytest.fixture
@@ -114,7 +113,8 @@ class TestWindsurfIntegration:
             "env": {
                 "GOOGLE_MAPS_API_KEY": "test-key"
             },
-            "path": "/path/to/google-maps"
+            # No longer including 'path' since it's removed from ServerConfig
+            "installation": "default:npm"
         }
         
         success = windsurf_manager._add_server_config("google-maps", new_server)
@@ -131,7 +131,7 @@ class TestWindsurfIntegration:
         new_server = {
             "command": "npx",
             "args": ["-y", "@modelcontextprotocol/server-test"],
-            "path": "/path/to/server"
+            "installation": "default:npm"  # Using installation instead of path
         }
         
         success = empty_windsurf_manager._add_server_config("test-server", new_server)
@@ -196,9 +196,9 @@ class TestWindsurfIntegration:
             "command": "npx",
             "args": ["-y", "@modelcontextprotocol/server-test"],
             "env": {"TEST_KEY": "test-value"},
-            "path": "/path/to/server",
+            "path": "/path/to/server",  # Old field that will be handled differently now
             "display_name": "test-convert",  # Updated to match the server name
-            "version": "1.0.0"
+            "version": "1.0.0"  # Old field that will be handled differently now
         }
         
         server_config = windsurf_manager._convert_from_client_format("test-convert", windsurf_config)
@@ -210,7 +210,10 @@ class TestWindsurfIntegration:
         assert server_config.command == "npx"
         assert server_config.args == ["-y", "@modelcontextprotocol/server-test"]
         assert server_config.env_vars["TEST_KEY"] == "test-value"
-        assert server_config.path == "/path/to/server"
+        # No longer check for removed fields
+        # instead, ensure installation information is available if applicable
+        if hasattr(server_config, "installation"):
+            assert server_config.installation is not None
     
     def test_get_server_configs(self, windsurf_manager, sample_server_config):
         """Test retrieving all servers as ServerConfig objects"""
@@ -280,8 +283,8 @@ class TestWindsurfIntegration:
         # Verify we get an empty dict, not None
         assert isinstance(servers, dict)
             
-    def test_config_manager_integration(self, config_manager):
-        """Test ConfigManager integration with Windsurf client"""
+    def test_config_manager_integration(self, config_manager, windsurf_manager, sample_server_config):
+        """Test ConfigManager integration with Windsurf client in distributed architecture"""
         # Make sure Windsurf is in supported clients
         supported_clients = config_manager.get_supported_clients()
         assert "windsurf" in supported_clients
@@ -291,19 +294,19 @@ class TestWindsurfIntegration:
         assert success
         assert config_manager.get_active_client() == "windsurf"
         
-        # Test server enabling/disabling for Windsurf
-        config_manager.register_server("test-server", {"command": "npx", "path": "/path/to/server"})
-        success = config_manager.enable_server_for_client("test-server", "windsurf")
-        assert success
+        # In the new architecture, we use the client manager directly to manage servers
+        # Using the internal method for test purposes (would normally use add_server with ServerConfig)
+        test_server_name = "test-server"
+        server_info = {"command": "npx", "args": ["-p", "9000"]}
+        windsurf_manager._add_server_config(test_server_name, server_info)
         
-        # Check if server was enabled
-        windsurf_servers = config_manager.get_client_servers("windsurf")
-        assert "test-server" in windsurf_servers
+        # Check if server was added
+        windsurf_servers = windsurf_manager.get_servers()
+        assert test_server_name in windsurf_servers
         
-        # Test disabling
-        success = config_manager.disable_server_for_client("test-server", "windsurf")
-        assert success
+        # Test removing the server
+        windsurf_manager.remove_server(test_server_name)
         
-        # Check if server was disabled
-        windsurf_servers = config_manager.get_client_servers("windsurf")
-        assert "test-server" not in windsurf_servers
+        # Check if server was removed
+        windsurf_servers = windsurf_manager.get_servers()
+        assert test_server_name not in windsurf_servers

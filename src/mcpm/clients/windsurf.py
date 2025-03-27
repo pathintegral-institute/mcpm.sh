@@ -123,10 +123,26 @@ class WindsurfManager(BaseClientManager):
             server_data["env_vars"] = client_config["env"]
         
         # Add additional metadata fields if present
-        for field in ["display_name", "description", "version", "status", "path", "install_date", 
-                     "package", "installation_method", "installation_type"]:
+        for field in ["display_name", "description", "installation"]:
             if field in client_config:
                 server_data[field] = client_config[field]
+                
+        # For backward compatibility, if path, version, etc. are in the config
+        # but not in ServerConfig anymore, store the installation info
+        if "installation" not in server_data:
+            install_details = []
+            # Check for explicit installation fields
+            if "installation_method" in client_config:
+                install_details.append(client_config["installation_method"])
+            if "installation_type" in client_config:
+                install_details.append(client_config["installation_type"])
+                
+            # If no explicit installation info but has legacy fields,
+            # create a generic installation value
+            if not install_details and ("path" in client_config or "version" in client_config):
+                server_data["installation"] = "legacy:import"
+            elif install_details:
+                server_data["installation"] = ":".join(install_details)
             
         return ServerConfig.from_dict(server_data)
     
