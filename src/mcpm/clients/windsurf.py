@@ -4,7 +4,7 @@ Windsurf integration utilities for MCP
 
 import os
 import logging
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, Optional, List, Union
 import platform
 
 from mcpm.clients.base import BaseClientManager
@@ -77,17 +77,31 @@ class WindsurfManager(BaseClientManager):
     def _convert_to_client_format(self, server_config: ServerConfig) -> Dict[str, Any]:
         """Convert ServerConfig to Windsurf format
         
+        Following the official Windsurf MCP format as documented at
+        https://docs.codeium.com/windsurf/mcp
+        
         Args:
-            server_config: StandardServer configuration
+            server_config: ServerConfig object
             
         Returns:
             Dict containing Windsurf-specific configuration
         """
-        # Use the to_windsurf_format method which now handles all required fields
-        # This includes command, args, env, path and other metadata fields
-        return server_config.to_windsurf_format()
+        # Include only the essential MCP execution fields that Windsurf requires
+        # according to the documentation example: command, args, and env
+        result = {
+            "command": server_config.command,
+            "args": server_config.args,
+        }
+        
+        # Add filtered environment variables if present
+        non_empty_env = server_config.get_filtered_env_vars()
+        if non_empty_env:
+            result["env"] = non_empty_env
+            
+        return result
     
-    def _convert_from_client_format(self, server_name: str, client_config: Dict[str, Any]) -> ServerConfig:
+    @classmethod
+    def from_windsurf_format(cls, server_name: str, client_config: Dict[str, Any]) -> ServerConfig:
         """Convert Windsurf format to ServerConfig
         
         Args:
@@ -97,9 +111,43 @@ class WindsurfManager(BaseClientManager):
         Returns:
             ServerConfig object
         """
-        # Simply use the ServerConfig.from_windsurf_format method
-        # This internally calls from_dict which handles conversion of env to env_vars
-        return ServerConfig.from_windsurf_format(server_name, client_config)
+        # Create a dictionary that ServerConfig.from_dict can work with
+        server_data = {
+            "name": server_name,
+            "command": client_config.get("command", ""),
+            "args": client_config.get("args", []),
+        }
+        
+        # Add environment variables if present
+        if "env" in client_config:
+            server_data["env_vars"] = client_config["env"]
+        
+        # Add additional metadata fields if present
+        for field in ["display_name", "description", "version", "status", "path", "install_date", 
+                     "package", "installation_method", "installation_type"]:
+            if field in client_config:
+                server_data[field] = client_config[field]
+            
+        return ServerConfig.from_dict(server_data)
+    
+    def _convert_from_client_format(self, server_name: str, client_config: Union[Dict[str, Any], ServerConfig]) -> ServerConfig:
+        """Convert Windsurf format to ServerConfig
+        
+        Args:
+            server_name: Name of the server
+            client_config: Windsurf-specific configuration or ServerConfig object
+            
+        Returns:
+            ServerConfig object
+        """
+        # If client_config is already a ServerConfig, just return it
+        if isinstance(client_config, ServerConfig):
+            # Ensure the name is set correctly
+            if client_config.name != server_name:
+                client_config.name = server_name
+            return client_config
+        # Otherwise, convert from dict format
+        return self.from_windsurf_format(server_name, client_config)
     
     def remove_server(self, server_name: str) -> bool:
         """Remove an MCP server from Windsurf config
@@ -112,8 +160,14 @@ class WindsurfManager(BaseClientManager):
         """
         config = self._load_config()
         
-        if "mcpServers" not in config or server_name not in config["mcpServers"]:
-            logger.warning(f"Server not found in Windsurf config: {server_name}")
+        # Check if mcpServers exists
+        if "mcpServers" not in config:
+            logger.warning(f"Cannot remove server {server_name}: mcpServers section doesn't exist")
+            return False
+            
+        # Check if the server exists
+        if server_name not in config["mcpServers"]:
+            logger.warning(f"Server {server_name} not found in Windsurf config")
             return False
             
         # Remove the server
@@ -121,55 +175,41 @@ class WindsurfManager(BaseClientManager):
         
         return self._save_config(config)
     
-    def is_windsurf_installed(self) -> bool:
-        """Check if Windsurf is installed
+    def get_server(self, server_name: str) -> Optional[ServerConfig]:
+        """Get a server configuration from Windsurf
         
+        Args:
+            server_name: Name of the server
+            
         Returns:
-            bool: True if Windsurf is installed, False otherwise
-        """
-        return self.is_client_installed()
-    
-    def get_servers(self) -> Dict[str, Any]:
-        """Get all MCP servers from the Windsurf config
-        
-        Returns:
-            Dict of server configurations by name
+            ServerConfig object if found, None otherwise
         """
         config = self._load_config()
-        return config.get("mcpServers", {})
-    
-    def get_server(self, server_name: str) -> Optional[Dict[str, Any]]:
-        """Get a specific MCP server from the Windsurf config
         
-        Args:
-            server_name: Name of the server to retrieve
-            
-        Returns:
-            Server configuration dictionary or None if not found
-        """
-        servers = self.get_servers()
-        return servers.get(server_name)
-    
-    def get_server_config(self, server_name: str) -> Optional[ServerConfig]:
-        """Get a specific MCP server config as a ServerConfig object
-        
-        Args:
-            server_name: Name of the server to retrieve
-            
-        Returns:
-            ServerConfig object or None if server not found
-        """
-        client_config = self.get_server(server_name)
-        if client_config is None:
+        # Check if mcpServers exists
+        if "mcpServers" not in config:
+            logger.warning(f"Cannot get server {server_name}: mcpServers section doesn't exist")
             return None
+            
+        # Check if the server exists
+        if server_name not in config["mcpServers"]:
+            logger.debug(f"Server {server_name} not found in Windsurf config")
+            return None
+            
+        # Get the server config and convert to StandardServer
+        client_config = config["mcpServers"][server_name]
         return self._convert_from_client_format(server_name, client_config)
     
-    def get_server_configs(self) -> List[ServerConfig]:
-        """Get all MCP server configs as ServerConfig objects
+    def list_servers(self) -> List[str]:
+        """List all MCP servers in Windsurf config
         
         Returns:
-            List of ServerConfig objects
+            List of server names
         """
-        servers = self.get_servers()
-        return [self._convert_from_client_format(name, config) 
-                for name, config in servers.items()]
+        config = self._load_config()
+        
+        # Check if mcpServers exists
+        if "mcpServers" not in config:
+            return []
+            
+        return list(config["mcpServers"].keys())

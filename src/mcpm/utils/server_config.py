@@ -1,176 +1,125 @@
 """
-Standard server configuration model for MCP.
-Provides a consistent interface for server configurations across all clients.
+Server configuration utilities for MCPM
 """
 
-import datetime
-from dataclasses import dataclass, field, asdict
-from typing import Dict, List, Optional, Any
+import os
+from typing import Dict, Any, List, Optional, ClassVar, Type, TypeVar
 
+T = TypeVar('T', bound='ServerConfig')
 
-@dataclass
 class ServerConfig:
-    """Standard model for MCP server configuration"""
+    """Standard server configuration object that is client-agnostic
     
-    # Required fields
-    name: str
-    path: str 
+    This class provides a common representation of server configurations
+    that can be used across different clients. Client-specific formatting
+    should be implemented in each client manager class.
+    """
     
-    # Optional fields with defaults
-    display_name: str = ""
-    description: str = ""
-    version: str = "1.0.0"
-    status: str = "stopped"  # stopped, running
-    command: str = ""
-    args: List[str] = field(default_factory=list)
-    env_vars: Dict[str, str] = field(default_factory=dict)
-    install_date: str = field(default_factory=lambda: datetime.date.today().isoformat())
-    installation_method: str = ""
-    installation_type: str = ""
-    package: Optional[str] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    # Fields that should be included in all serializations
+    REQUIRED_FIELDS: ClassVar[List[str]] = [
+        "name", "command", "args", "env_vars"
+    ]
     
-    def to_dict(self) -> Dict[str, Any]:
-        """Convert to dictionary representation"""
-        return asdict(self)
+    # Fields that should be optional in serializations
+    OPTIONAL_FIELDS: ClassVar[List[str]] = [
+        "display_name", "description", "version", "status", "path",
+        "install_date", "package", "installation_method", "installation_type"
+    ]
     
+    def __init__(
+        self,
+        name: str,
+        command: str,
+        args: List[str],
+        env_vars: Optional[Dict[str, str]] = None,
+        display_name: Optional[str] = None,
+        description: Optional[str] = None,
+        version: Optional[str] = None,
+        status: Optional[str] = None,
+        path: Optional[str] = None,
+        install_date: Optional[str] = None,
+        package: Optional[str] = None,
+        installation_method: Optional[str] = None,
+        installation_type: Optional[str] = None
+    ):
+        """Initialize a standard server configuration"""
+        self.name = name
+        self.command = command
+        self.args = args
+        self.env_vars = env_vars or {}
+        self.display_name = display_name or name
+        self.description = description or ""
+        self.version = version or "unknown"
+        self.status = status or "stopped"
+        self.path = path
+        self.install_date = install_date
+        self.package = package
+        self.installation_method = installation_method
+        self.installation_type = installation_type
+        
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'ServerConfig':
-        """Create ServerConfig from dictionary
+    def from_dict(cls: Type[T], data: Dict[str, Any]) -> T:
+        """Create a ServerConfig from a dictionary
         
         Args:
-            data: Dictionary with server configuration data
+            data: Dictionary containing server configuration
             
         Returns:
             ServerConfig object
         """
-        # Handle potential key differences in source data
-        server_data = data.copy()
+        # Filter the dictionary to include only the fields we care about
+        filtered_data = {}
         
-        # Handle environment variables from different formats
-        if "env" in server_data and "env_vars" not in server_data:
-            server_data["env_vars"] = server_data.pop("env")
-        
-        # Set name from the dictionary key if not in the data
-        if "name" not in server_data and server_data.get("display_name"):
-            server_data["name"] = server_data["display_name"].lower().replace(" ", "-")
-            
-        # Remove any keys that aren't in the dataclass to avoid unexpected keyword arguments
-        valid_fields = {field.name for field in cls.__dataclass_fields__.values()}
-        filtered_data = {k: v for k, v in server_data.items() if k in valid_fields}
+        # Add all required and optional fields that are present
+        for field in cls.REQUIRED_FIELDS + cls.OPTIONAL_FIELDS:
+            if field in data:
+                filtered_data[field] = data[field]
         
         return cls(**filtered_data)
     
-    def to_windsurf_format(self) -> Dict[str, Any]:
-        """Convert to Windsurf client format
+    def get_filtered_env_vars(self) -> Dict[str, str]:
+        """Get filtered environment variables with empty values removed
         
-        Following the official Windsurf MCP format as documented at
-        https://docs.codeium.com/windsurf/mcp
+        This is a common utility for clients to filter out empty environment 
+        variables, regardless of client-specific formatting.
         
         Returns:
-            Dictionary in Windsurf format with only essential fields
+            Dictionary of non-empty environment variables
         """
-        # Include only the essential MCP execution fields that Windsurf requires
-        # according to the documentation example: command, args, and env
-        result = {
-            "command": self.command,
-            "args": self.args,
-        }
-        
-        # Add environment variables if present
-        if self.env_vars:
-            result["env"] = self.env_vars
+        if not self.env_vars:
+            return {}
             
+        # Filter out empty environment variables
+        non_empty_env = {}
+        for key, value in self.env_vars.items():
+            # For environment variable references like ${VAR_NAME}, check if the variable exists
+            # and has a non-empty value. If it doesn't exist or is empty, exclude it.
+            if value is not None and isinstance(value, str):
+                if value.startswith("${") and value.endswith("}"):
+                    # Extract the variable name from ${VAR_NAME}
+                    env_var_name = value[2:-1]
+                    env_value = os.environ.get(env_var_name, "")
+                    # Only include if the variable has a value in the environment
+                    if env_value.strip() != "":
+                        non_empty_env[key] = value
+                # For regular values, only include if they're not empty
+                elif value.strip() != "":
+                    non_empty_env[key] = value
+                    
+        return non_empty_env
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to a dictionary with all fields
+        
+        Returns:
+            Dictionary representation of this ServerConfig
+        """
+        result = {}
+        
+        # Include all fields, filtering out None values
+        for field in self.REQUIRED_FIELDS + self.OPTIONAL_FIELDS:
+            value = getattr(self, field, None)
+            if value is not None:
+                result[field] = value
+                
         return result
-    
-    def to_claude_desktop_format(self) -> Dict[str, Any]:
-        """Convert to Claude Desktop client format
-        
-        Returns:
-            Dictionary in Claude Desktop format
-        """
-        return {
-            "name": self.name,
-            "display_name": self.display_name or f"{self.name.title()} MCP Server",
-            "version": self.version,
-            "description": self.description,
-            "status": self.status,
-            "install_date": self.install_date,
-            "path": self.path,
-            "command": self.command,
-            "args": self.args,
-            "env": self.env_vars
-        }
-    
-    def to_cursor_format(self) -> Dict[str, Any]:
-        """Convert to Cursor client format
-        
-        Returns:
-            Dictionary in Cursor format
-        """
-        return {
-            "name": self.name,
-            "display_name": self.display_name or f"{self.name.title()} MCP Server",
-            "version": self.version,
-            "description": self.description,
-            "status": self.status,
-            "path": self.path,
-            "command": self.command,
-            "args": self.args,
-            "env": self.env_vars
-        }
-    
-    @classmethod
-    def from_windsurf_format(cls, name: str, data: Dict[str, Any]) -> 'ServerConfig':
-        """Create ServerConfig from Windsurf format
-        
-        Args:
-            name: Server name
-            data: Windsurf format server data
-            
-        Returns:
-            ServerConfig object
-        """
-        server_data = data.copy()
-        server_data["name"] = name
-        
-        # Handle required fields that might be missing in the Windsurf format
-        # Path is required by ServerConfig but not part of the Windsurf MCP format
-        if "path" not in server_data:
-            server_data["path"] = f"/path/to/{name}"
-            
-        # Convert environment variables if present
-        if "env" in server_data and "env_vars" not in server_data:
-            server_data["env_vars"] = server_data.pop("env")
-        
-        return cls.from_dict(server_data)
-    
-    @classmethod
-    def from_claude_desktop_format(cls, name: str, data: Dict[str, Any]) -> 'ServerConfig':
-        """Create ServerConfig from Claude Desktop format
-        
-        Args:
-            name: Server name
-            data: Claude Desktop format server data
-            
-        Returns:
-            ServerConfig object
-        """
-        server_data = data.copy()
-        server_data["name"] = name
-        return cls.from_dict(server_data)
-    
-    @classmethod
-    def from_cursor_format(cls, name: str, data: Dict[str, Any]) -> 'ServerConfig':
-        """Create ServerConfig from Cursor format
-        
-        Args:
-            name: Server name
-            data: Cursor format server data
-            
-        Returns:
-            ServerConfig object
-        """
-        server_data = data.copy()
-        server_data["name"] = name
-        return cls.from_dict(server_data)

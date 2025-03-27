@@ -11,7 +11,6 @@ from mcpm.utils.config import ConfigManager
 from mcpm import __version__
 from mcpm.commands import (
     search,
-    install,
     remove,
     list_servers,
     edit,
@@ -108,7 +107,6 @@ def main(ctx, help_flag):
         commands_table.add_row("  [cyan]client[/]", "Manage the active MCPM client.")
         commands_table.add_row("  [cyan]edit[/]", "View or edit the active MCPM client's configuration file.")
         commands_table.add_row("  [cyan]inspector[/]", "Launch the MCPM Inspector UI to examine servers.")
-        commands_table.add_row("  [cyan]install[/]", "[yellow][DEPRECATED][/] Install an MCP server (use add instead).")
         commands_table.add_row("  [cyan]list[/]", "List all installed MCP servers.")
         commands_table.add_row("  [cyan]remove[/]", "Remove an installed MCP server.")
         commands_table.add_row("  [cyan]search[/]", "Search available MCP servers.")
@@ -124,7 +122,6 @@ def main(ctx, help_flag):
 
 # Register commands
 main.add_command(search.search)
-main.add_command(install.install)
 main.add_command(remove.remove)
 main.add_command(add.add)
 main.add_command(list_servers.list)

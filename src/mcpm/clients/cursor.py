@@ -1,40 +1,28 @@
 """
-Cursor client configuration for MCP
+Cursor integration utilities for MCP
 """
 
 import os
 import logging
-from typing import Dict, Any
+import platform
+from typing import Dict, Any, Optional, List
 
 from mcpm.clients.base import BaseClientManager
 from mcpm.utils.server_config import ServerConfig
 
-# Cursor stores MCP configuration in:
-# - Project config: .cursor/mcp.json in the project directory
-# - Global config: ~/.cursor/mcp.json in the home directory
-
-# Global config path for Cursor
-HOME_DIR = os.path.expanduser("~")
-CURSOR_CONFIG_PATH = os.path.join(HOME_DIR, ".cursor", "mcp.json")
-
 logger = logging.getLogger(__name__)
 
-# Get the project config path for Cursor
-def get_project_config_path(project_dir: str) -> str:
-    """
-    Get the project-specific MCP configuration path for Cursor
-    
-    Args:
-        project_dir (str): Project directory path
-        
-    Returns:
-        str: Path to the project-specific MCP configuration file
-    """
-    return os.path.join(project_dir, ".cursor", "mcp.json")
-
+# Cursor config paths based on platform
+if platform.system() == "Darwin":  # macOS
+    CURSOR_CONFIG_PATH = os.path.expanduser("~/Library/Application Support/Cursor/User/mcp_config.json")
+elif platform.system() == "Windows":
+    CURSOR_CONFIG_PATH = os.path.join(os.environ.get("APPDATA", ""), "Cursor", "User", "mcp_config.json")
+else:
+    # Linux
+    CURSOR_CONFIG_PATH = os.path.expanduser("~/.config/Cursor/User/mcp_config.json")
 
 class CursorManager(BaseClientManager):
-    """Manages Cursor client configuration for MCP"""
+    """Manages Cursor MCP server configurations"""
     
     def __init__(self, config_path: str = CURSOR_CONFIG_PATH):
         super().__init__(config_path)
@@ -86,12 +74,60 @@ class CursorManager(BaseClientManager):
         """Convert ServerConfig to Cursor format
         
         Args:
-            server_config: StandardServer configuration
+            server_config: ServerConfig object
             
         Returns:
             Dict containing Cursor-specific configuration
         """
-        return server_config.to_cursor_format()
+        # Base result containing essential execution information
+        result = {
+            "command": server_config.command,
+            "args": server_config.args,
+        }
+        
+        # Add filtered environment variables if present
+        non_empty_env = server_config.get_filtered_env_vars()
+        if non_empty_env:
+            result["env"] = non_empty_env
+            
+        # Add additional metadata fields for display in Cursor
+        # Fields that are None will be automatically excluded by JSON serialization
+        for field in ["name", "display_name", "description", "version", "status", "path", "install_date"]:
+            value = getattr(server_config, field, None)
+            if value is not None:
+                result[field] = value
+                
+        return result
+    
+    @classmethod
+    def from_cursor_format(cls, server_name: str, client_config: Dict[str, Any]) -> ServerConfig:
+        """Convert Cursor format to ServerConfig
+        
+        Args:
+            server_name: Name of the server
+            client_config: Cursor-specific configuration
+            
+        Returns:
+            ServerConfig object
+        """
+        # Create a dictionary that ServerConfig.from_dict can work with
+        server_data = {
+            "name": server_name,
+            "command": client_config.get("command", ""),
+            "args": client_config.get("args", []),
+        }
+        
+        # Add environment variables if present
+        if "env" in client_config:
+            server_data["env_vars"] = client_config["env"]
+            
+        # Add additional metadata fields if present
+        for field in ["display_name", "description", "version", "status", "path", "install_date", 
+                     "package", "installation_method", "installation_type"]:
+            if field in client_config:
+                server_data[field] = client_config[field]
+                
+        return ServerConfig.from_dict(server_data)
     
     def _convert_from_client_format(self, server_name: str, client_config: Dict[str, Any]) -> ServerConfig:
         """Convert Cursor format to ServerConfig
@@ -103,7 +139,7 @@ class CursorManager(BaseClientManager):
         Returns:
             ServerConfig object
         """
-        return ServerConfig.from_cursor_format(server_name, client_config)
+        return self.from_cursor_format(server_name, client_config)
     
     def remove_server(self, server_name: str) -> bool:
         """Remove an MCP server from Cursor config
@@ -116,8 +152,14 @@ class CursorManager(BaseClientManager):
         """
         config = self._load_config()
         
-        if "mcpServers" not in config or server_name not in config["mcpServers"]:
-            logger.warning(f"Server not found in Cursor config: {server_name}")
+        # Check if mcpServers exists
+        if "mcpServers" not in config:
+            logger.warning(f"Cannot remove server {server_name}: mcpServers section doesn't exist")
+            return False
+            
+        # Check if the server exists
+        if server_name not in config["mcpServers"]:
+            logger.warning(f"Server {server_name} not found in Cursor config")
             return False
             
         # Remove the server
@@ -125,6 +167,41 @@ class CursorManager(BaseClientManager):
         
         return self._save_config(config)
     
-    def is_cursor_installed(self) -> bool:
-        """Check if Cursor is installed"""
-        return self.is_client_installed()
+    def get_server(self, server_name: str) -> Optional[ServerConfig]:
+        """Get a server configuration from Cursor
+        
+        Args:
+            server_name: Name of the server
+            
+        Returns:
+            ServerConfig object if found, None otherwise
+        """
+        config = self._load_config()
+        
+        # Check if mcpServers exists
+        if "mcpServers" not in config:
+            logger.warning(f"Cannot get server {server_name}: mcpServers section doesn't exist")
+            return None
+            
+        # Check if the server exists
+        if server_name not in config["mcpServers"]:
+            logger.debug(f"Server {server_name} not found in Cursor config")
+            return None
+            
+        # Get the server config and convert to StandardServer
+        client_config = config["mcpServers"][server_name]
+        return self._convert_from_client_format(server_name, client_config)
+    
+    def list_servers(self) -> List[str]:
+        """List all MCP servers in Cursor config
+        
+        Returns:
+            List of server names
+        """
+        config = self._load_config()
+        
+        # Check if mcpServers exists
+        if "mcpServers" not in config:
+            return []
+            
+        return list(config["mcpServers"].keys())

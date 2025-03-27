@@ -5,7 +5,7 @@ Claude Desktop integration utilities for MCP
 import os
 import logging
 import platform
-from typing import Dict, Any
+from typing import Dict, Any, Optional, List
 
 from mcpm.clients.base import BaseClientManager
 from mcpm.utils.server_config import ServerConfig
@@ -74,12 +74,60 @@ class ClaudeDesktopManager(BaseClientManager):
         """Convert ServerConfig to Claude Desktop format
         
         Args:
-            server_config: StandardServer configuration
+            server_config: ServerConfig object
             
         Returns:
             Dict containing Claude Desktop-specific configuration
         """
-        return server_config.to_claude_desktop_format()
+        # Base result containing essential execution information
+        result = {
+            "command": server_config.command,
+            "args": server_config.args,
+        }
+        
+        # Add filtered environment variables if present
+        non_empty_env = server_config.get_filtered_env_vars()
+        if non_empty_env:
+            result["env"] = non_empty_env
+            
+        # Add additional metadata fields for display in Claude Desktop
+        # Fields that are None will be automatically excluded by JSON serialization
+        for field in ["name", "display_name", "description", "version", "status", "path", "install_date"]:
+            value = getattr(server_config, field, None)
+            if value is not None:
+                result[field] = value
+                
+        return result
+    
+    @classmethod
+    def from_claude_desktop_format(cls, server_name: str, client_config: Dict[str, Any]) -> ServerConfig:
+        """Convert Claude Desktop format to ServerConfig
+        
+        Args:
+            server_name: Name of the server
+            client_config: Claude Desktop-specific configuration
+            
+        Returns:
+            ServerConfig object
+        """
+        # Create a dictionary that ServerConfig.from_dict can work with
+        server_data = {
+            "name": server_name,
+            "command": client_config.get("command", ""),
+            "args": client_config.get("args", []),
+        }
+        
+        # Add environment variables if present
+        if "env" in client_config:
+            server_data["env_vars"] = client_config["env"]
+            
+        # Add additional metadata fields if present
+        for field in ["display_name", "description", "version", "status", "path", "install_date", 
+                     "package", "installation_method", "installation_type"]:
+            if field in client_config:
+                server_data[field] = client_config[field]
+                
+        return ServerConfig.from_dict(server_data)
     
     def _convert_from_client_format(self, server_name: str, client_config: Dict[str, Any]) -> ServerConfig:
         """Convert Claude Desktop format to ServerConfig
@@ -91,14 +139,27 @@ class ClaudeDesktopManager(BaseClientManager):
         Returns:
             ServerConfig object
         """
-        return ServerConfig.from_claude_desktop_format(server_name, client_config)
+        return self.from_claude_desktop_format(server_name, client_config)
     
     def remove_server(self, server_name: str) -> bool:
-        """Remove an MCP server from Claude Desktop config"""
+        """Remove an MCP server from Claude Desktop config
+        
+        Args:
+            server_name: Name of the server to remove
+            
+        Returns:
+            bool: Success or failure
+        """
         config = self._load_config()
         
-        if "mcpServers" not in config or server_name not in config["mcpServers"]:
-            logger.warning(f"Server not found in Claude Desktop config: {server_name}")
+        # Check if mcpServers exists
+        if "mcpServers" not in config:
+            logger.warning(f"Cannot remove server {server_name}: mcpServers section doesn't exist")
+            return False
+            
+        # Check if the server exists
+        if server_name not in config["mcpServers"]:
+            logger.warning(f"Server {server_name} not found in Claude Desktop config")
             return False
             
         # Remove the server
@@ -106,6 +167,41 @@ class ClaudeDesktopManager(BaseClientManager):
         
         return self._save_config(config)
     
-    def is_claude_desktop_installed(self) -> bool:
-        """Check if Claude Desktop is installed"""
-        return self.is_client_installed()
+    def get_server(self, server_name: str) -> Optional[ServerConfig]:
+        """Get a server configuration from Claude Desktop
+        
+        Args:
+            server_name: Name of the server
+            
+        Returns:
+            ServerConfig object if found, None otherwise
+        """
+        config = self._load_config()
+        
+        # Check if mcpServers exists
+        if "mcpServers" not in config:
+            logger.warning(f"Cannot get server {server_name}: mcpServers section doesn't exist")
+            return None
+            
+        # Check if the server exists
+        if server_name not in config["mcpServers"]:
+            logger.debug(f"Server {server_name} not found in Claude Desktop config")
+            return None
+            
+        # Get the server config and convert to StandardServer
+        client_config = config["mcpServers"][server_name]
+        return self._convert_from_client_format(server_name, client_config)
+    
+    def list_servers(self) -> List[str]:
+        """List all MCP servers in Claude Desktop config
+        
+        Returns:
+            List of server names
+        """
+        config = self._load_config()
+        
+        # Check if mcpServers exists
+        if "mcpServers" not in config:
+            return []
+            
+        return list(config["mcpServers"].keys())

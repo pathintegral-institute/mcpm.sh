@@ -103,7 +103,7 @@ def add(server_name, client=None, force=False):
     os.makedirs(server_dir, exist_ok=True)
     
     # Extract installation information
-    installations = server_metadata.get("install", {})
+    installations = server_metadata.get("installations", {})
     version = available_version
     
     # If no installation information is available, create minimal default values
@@ -117,9 +117,9 @@ def add(server_name, client=None, force=False):
     required_args = {}
     
     # Process installation information if available
+    selected_method = None  # Initialize selected_method to None to avoid UnboundLocalError
     if installations:
         # Find recommended installation method or default to the first one
-        selected_method = None
         method_key = "default"
         
         # First check for a recommended method
@@ -182,11 +182,99 @@ def add(server_name, client=None, force=False):
         # Configure the server
         progress.add_task(f"Configuring {server_name} v{version}...", total=None)
         
+        # Get all available arguments from the server metadata
+        all_arguments = server_metadata.get("arguments", {})
+        
         # Process environment variables to store in config
         processed_env = {}
         
+        # First, prompt for all defined arguments even if they're not in env_vars
+        progress.stop()
+        if all_arguments:
+            console.print("\n[bold]Configure server arguments:[/]")
+            
+            for arg_name, arg_info in all_arguments.items():
+                description = arg_info.get("description", "")
+                is_required = arg_info.get("required", False)
+                example = arg_info.get("example", "")
+                example_text = f" (example: {example})" if example else ""
+                
+                # Build prompt text
+                prompt_text = f"Enter value for {arg_name}{example_text}"
+                if description:
+                    prompt_text += f"\n{description}"
+                
+                # Add required indicator
+                if is_required:
+                    prompt_text += " (required)"
+                else:
+                    prompt_text += " (optional, press Enter to skip)"
+                
+                # Check if the argument is already set in environment
+                env_value = os.environ.get(arg_name, "")
+                
+                if env_value:
+                    # Show the existing value as default
+                    console.print(f"[green]Found {arg_name} in environment: {env_value}[/]")
+                    try:
+                        user_value = click.prompt(
+                            prompt_text,
+                            default=env_value,
+                            hide_input="token" in arg_name.lower() or "key" in arg_name.lower() or "secret" in arg_name.lower()
+                        )
+                        if user_value != env_value:
+                            # User provided a different value
+                            processed_env[arg_name] = user_value
+                        else:
+                            # User kept the environment value
+                            processed_env[arg_name] = f"${{{arg_name}}}"
+                    except click.Abort:
+                        # Keep environment reference on abort
+                        processed_env[arg_name] = f"${{{arg_name}}}"
+                else:
+                    # No environment value
+                    try:
+                        if is_required:
+                            # Required argument must have a value
+                            user_value = click.prompt(
+                                prompt_text,
+                                hide_input="token" in arg_name.lower() or "key" in arg_name.lower() or "secret" in arg_name.lower()
+                            )
+                            processed_env[arg_name] = user_value
+                        else:
+                            # Optional argument can be skipped
+                            user_value = click.prompt(
+                                prompt_text,
+                                default="",
+                                show_default=False,
+                                hide_input="token" in arg_name.lower() or "key" in arg_name.lower() or "secret" in arg_name.lower()
+                            )
+                            # Only add non-empty values to the environment
+                            if user_value and user_value.strip():
+                                processed_env[arg_name] = user_value
+                            # Explicitly don't add anything if the user leaves it blank
+                    except click.Abort:
+                        if is_required:
+                            console.print(f"[yellow]Warning: Required argument {arg_name} not provided.[/]")
+                            # Store as environment reference even if missing
+                            processed_env[arg_name] = f"${{{arg_name}}}"
+            
+            # Resume progress display
+            progress = Progress(
+                SpinnerColumn(),
+                TextColumn("[bold green]{task.description}[/]"),
+                console=console
+            )
+            progress.start()
+            progress.add_task(f"Configuring {server_name} v{version}...", total=None)
+        
+        # Now process any remaining environment variables from the installation method
         for key, value in env_vars.items():
-            if isinstance(value, str) and value.startswith("${") and value.endswith("}"): 
+            # Skip if we already processed this key
+            if key in processed_env:
+                continue
+                
+            if isinstance(value, str) and value.startswith("${") and value.endswith("}"):
                 env_var_name = value[2:-1]  # Extract variable name from ${NAME}
                 is_required = env_var_name in required_args
                 
@@ -194,10 +282,11 @@ def add(server_name, client=None, force=False):
                 env_value = os.environ.get(env_var_name, "")
                 
                 if not env_value and is_required:
+                    progress.stop()
                     console.print(f"[yellow]Warning:[/] Required argument {env_var_name} is not set in environment")
                     
                     # Prompt for the value
-                    arg_info = required_args[env_var_name]
+                    arg_info = required_args.get(env_var_name, {})
                     description = arg_info.get("description", "")
                     try:
                         user_value = click.prompt(
@@ -208,12 +297,31 @@ def add(server_name, client=None, force=False):
                     except click.Abort:
                         console.print("[yellow]Will store the reference to environment variable instead.[/]")
                         processed_env[key] = value  # Store the reference as-is
+                    
+                    # Resume progress
+                    progress = Progress(
+                        SpinnerColumn(),
+                        TextColumn("[bold green]{task.description}[/]"),
+                        console=console
+                    )
+                    progress.start()
+                    progress.add_task(f"Configuring {server_name} v{version}...", total=None)
                 else:
                     # Store reference to environment variable
                     processed_env[key] = value
             else:
                 processed_env[key] = value
         
+    # Get actual MCP execution command, args, and env from the selected installation method
+    # This ensures we use the actual server command information instead of placeholders
+    if selected_method:
+        mcp_command = selected_method.get("command", install_command)
+        mcp_args = selected_method.get("args", install_args)
+        # Env vars are already processed above
+    else:
+        mcp_command = install_command
+        mcp_args = install_args
+
     # Create server configuration using ServerConfig
     server_config = ServerConfig(
         name=server_name,
@@ -222,8 +330,8 @@ def add(server_name, client=None, force=False):
         description=description,
         version=version,
         status="stopped",
-        command=install_command,
-        args=install_args,
+        command=mcp_command,  # Use the actual MCP server command
+        args=mcp_args,        # Use the actual MCP server arguments
         env_vars=processed_env,
         install_date=datetime.now().strftime("%Y-%m-%d"),
         package=package_name,
