@@ -5,15 +5,11 @@ Remove command for MCPM
 import click
 from rich.console import Console
 from rich.prompt import Confirm
+from rich.markup import escape
 
-from mcpm.clients.claude_desktop import ClaudeDesktopManager
-from mcpm.clients.windsurf import WindsurfManager
-from mcpm.utils.config import ConfigManager
+from mcpm.utils.client_manager import get_active_client_info
 
 console = Console()
-config_manager = ConfigManager()
-claude_manager = ClaudeDesktopManager()
-windsurf_manager = WindsurfManager()
 
 @click.command()
 @click.argument("server_name")
@@ -25,18 +21,12 @@ def remove(server_name, force):
         mcpm remove filesystem
         mcpm remove filesystem --force
     """
-    # Get the active client and its corresponding manager
-    active_client = config_manager.get_active_client()
+    # Get the active client manager and related information
+    client_manager, client_name, _ = get_active_client_info()
     
-    # Select appropriate client manager based on active client
-    if active_client == "claude-desktop":
-        client_manager = claude_manager
-        client_name = "Claude Desktop"
-    elif active_client == "windsurf":
-        client_manager = windsurf_manager
-        client_name = "Windsurf"
-    else:
-        console.print(f"[bold red]Error:[/] Unsupported active client: {active_client}")
+    # Check if client is supported
+    if client_manager is None:
+        console.print("[bold red]Error:[/] Unsupported active client")
         console.print("Please switch to a supported client using 'mcpm client <client-name>'")
         return
     
@@ -46,9 +36,38 @@ def remove(server_name, force):
         console.print(f"[bold red]Error:[/] Server '{server_name}' not found in {client_name}.")
         return
     
+    # Display server information before removal
+    console.print(f"\n[bold cyan]Server information for:[/] {server_name}")
+    
+    # Server command
+    command = getattr(server_info, "command", "N/A")
+    console.print(f"  Command: [green]{command}[/]")
+    
+    # Display arguments
+    args = getattr(server_info, "args", [])
+    if args:
+        console.print("  Arguments:")
+        for i, arg in enumerate(args):
+            console.print(f"    {i}: [yellow]{escape(arg)}[/]")
+        
+        # Get package name (usually the second argument)
+        if len(args) > 1:
+            console.print(f"  Package: [magenta]{args[1]}[/]")
+    
+    # Display environment variables
+    env_vars = getattr(server_info, "env", {})
+    if env_vars and len(env_vars) > 0:
+        console.print("  Environment Variables:")
+        for key, value in env_vars.items():
+            console.print(f"    [bold blue]{key}[/] = [green]\"{value}\"[/]")
+    else:
+        console.print("  Environment Variables: [italic]None[/]")
+    
+    console.print("  " + "-" * 50)
+    
     # Get confirmation if --force is not used
     if not force:
-        console.print(f"[bold yellow]Are you sure you want to remove:[/] {server_name}")
+        console.print(f"\n[bold yellow]Are you sure you want to remove:[/] {server_name}")
         console.print("[italic]To bypass this confirmation, use --force[/]")
         # Use Rich's Confirm for a better user experience
         confirmed = Confirm.ask("Proceed with removal?")

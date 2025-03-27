@@ -12,7 +12,7 @@ from mcpm import __version__
 from mcpm.commands import (
     search,
     remove,
-    list_servers,
+    list,
     edit,
     toggle,
     server,
@@ -124,7 +124,7 @@ def main(ctx, help_flag):
 main.add_command(search.search)
 main.add_command(remove.remove)
 main.add_command(add.add)
-main.add_command(list_servers.list)
+main.add_command(list.list)
 main.add_command(edit.edit)
 
 main.add_command(toggle.toggle)

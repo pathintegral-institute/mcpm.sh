@@ -7,16 +7,9 @@ from rich.console import Console
 from rich.table import Table
 from rich.markup import escape
 
-from mcpm.clients.claude_desktop import ClaudeDesktopManager
-from mcpm.clients.windsurf import WindsurfManager
-from mcpm.clients.cursor import CursorManager
-from mcpm.utils.config import ConfigManager
+from mcpm.utils.client_manager import get_active_client_info
 
 console = Console()
-config_manager = ConfigManager()
-claude_manager = ClaudeDesktopManager()
-windsurf_manager = WindsurfManager()
-cursor_manager = CursorManager()
 
 @click.command(name="list")
 @click.option("--available", is_flag=True, help="List all available MCP servers")
@@ -54,21 +47,12 @@ def list(available, outdated):
     elif outdated:
         console.print("[bold yellow]Checking for outdated MCP servers...[/]")
         
-        # Get the active client and its corresponding manager
-        active_client = config_manager.get_active_client()
+        # Get the active client manager and information
+        client_manager, client_name, _ = get_active_client_info()
         
-        # Select appropriate client manager based on active client
-        if active_client == "claude-desktop":
-            client_manager = claude_manager
-            client_name = "Claude Desktop"
-        elif active_client == "windsurf":
-            client_manager = windsurf_manager
-            client_name = "Windsurf"
-        elif active_client == "cursor":
-            client_manager = cursor_manager
-            client_name = "Cursor"
-        else:
-            console.print(f"[bold red]Error:[/] Unsupported active client: {active_client}")
+        # Check if client is supported
+        if client_manager is None:
+            console.print("[bold red]Error:[/] Unsupported active client")
             console.print("Please switch to a supported client using 'mcpm client <client-name>'")
             return
         
@@ -120,21 +104,12 @@ def list(available, outdated):
             console.print("[green]All MCP servers are up to date.[/]")
     
     else:
-        # Get the active client and its corresponding manager
-        active_client = config_manager.get_active_client()
+        # Get the active client manager and information
+        client_manager, client_name, _ = get_active_client_info()
         
-        # Select appropriate client manager based on active client
-        if active_client == "claude-desktop":
-            client_manager = claude_manager
-            client_name = "Claude Desktop"
-        elif active_client == "windsurf":
-            client_manager = windsurf_manager
-            client_name = "Windsurf"
-        elif active_client == "cursor":
-            client_manager = cursor_manager
-            client_name = "Cursor"
-        else:
-            console.print(f"[bold red]Error:[/] Unsupported active client: {active_client}")
+        # Check if client is supported
+        if client_manager is None:
+            console.print("[bold red]Error:[/] Unsupported active client")
             console.print("Please switch to a supported client using 'mcpm client <client-name>'")
             return
         
