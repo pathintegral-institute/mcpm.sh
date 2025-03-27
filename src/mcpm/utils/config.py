@@ -96,8 +96,33 @@ class ConfigManager:
         """Get servers enabled for a specific client"""
         return self._config.get("clients", {}).get(client_name, {}).get("enabled_servers", [])
     
+    def _get_client_manager(self, client_name: str):
+        """Get the appropriate client manager for a client
+        
+        Args:
+            client_name: Name of the client
+            
+        Returns:
+            BaseClientManager or None if client not supported
+        """
+        if client_name == "claude-desktop":
+            from mcpm.clients.claude_desktop import ClaudeDesktopManager
+            return ClaudeDesktopManager()
+        elif client_name == "windsurf":
+            from mcpm.clients.windsurf import WindsurfManager
+            return WindsurfManager()
+        elif client_name == "cursor":
+            from mcpm.clients.cursor import CursorManager
+            return CursorManager()
+        return None
+        
     def register_server(self, server_name: str, server_info: Dict[str, Any]) -> None:
-        """Register a new server"""
+        """[DEPRECATED] Register a new server
+        
+        This method is maintained for backward compatibility. New code should use
+        the client manager's add_server method directly.
+        """
+        logger.warning("register_server is deprecated. Use client_manager.add_server() instead.")
         self._config.setdefault("servers", {})[server_name] = server_info
         self._save_config()
     
@@ -116,46 +141,24 @@ class ConfigManager:
     def enable_server_for_client(self, server_name: str, client_name: str) -> bool:
         """Enable a server for a specific client
         
-        If the server was previously disabled for this client, its configuration
-        will be restored from the disabled_servers section.
-        """
-        if server_name not in self._config.get("servers", {}):
-            logger.error(f"Server not installed: {server_name}")
-            return False
+        Simply adds the server name to the client's enabled_servers list in the central config.
+        The actual server configuration is stored in each client's own config files.
         
+        Args:
+            server_name: Name of the server to enable
+            client_name: Name of the client to enable the server for
+            
+        Returns:
+            bool: True if successfully enabled, False otherwise
+        """
         if client_name not in self._config.get("clients", {}):
             logger.error(f"Unknown client: {client_name}")
             return False
         
         client_config = self._config["clients"][client_name]
         enabled_servers = client_config.setdefault("enabled_servers", [])
-        disabled_servers = client_config.setdefault("disabled_servers", {})
         
-        # Check if we have the server in disabled servers and can restore its config
-        if server_name in disabled_servers:
-            # Find the appropriate client manager to update config
-            if client_name == "claude-desktop":
-                from mcpm.clients.claude_desktop import ClaudeDesktopManager
-                client_manager = ClaudeDesktopManager()
-            elif client_name == "windsurf":
-                from mcpm.clients.windsurf import WindsurfManager
-                client_manager = WindsurfManager()
-            elif client_name == "cursor":
-                from mcpm.clients.cursor import CursorManager
-                client_manager = CursorManager()
-            else:
-                # Unknown client type, but we'll still track in our config
-                pass
-                
-            # If we have a client manager, update its config
-            if 'client_manager' in locals():
-                server_config = disabled_servers[server_name]
-                server_list = [server_config]
-                client_manager.sync_mcp_servers(server_list)
-                
-            # Remove from disabled list
-            del disabled_servers[server_name]
-        
+        # Add to enabled list if not already there
         if server_name not in enabled_servers:
             enabled_servers.append(server_name)
             self._save_config()
@@ -165,8 +168,15 @@ class ConfigManager:
     def disable_server_for_client(self, server_name: str, client_name: str) -> bool:
         """Disable a server for a specific client
         
-        This saves the server's configuration to the disabled_servers section
-        so it can be restored later if re-enabled.
+        Removes the server from the enabled_servers list and calls the client manager
+        to remove it from the client's config file.
+        
+        Args:
+            server_name: Name of the server to disable
+            client_name: Name of the client to disable the server for
+            
+        Returns:
+            bool: True if successfully disabled, False otherwise
         """
         if client_name not in self._config.get("clients", {}):
             logger.error(f"Unknown client: {client_name}")
@@ -174,46 +184,21 @@ class ConfigManager:
         
         client_config = self._config["clients"][client_name]
         enabled_servers = client_config.get("enabled_servers", [])
-        disabled_servers = client_config.setdefault("disabled_servers", {})
         
         # Only proceed if the server is currently enabled
         if server_name in enabled_servers:
-            # Save the server configuration to disabled_servers
-            server_info = self._config.get("servers", {}).get(server_name, {})
-            if server_info:
-                disabled_servers[server_name] = server_info.copy()
-            
             # Remove from enabled list
             enabled_servers.remove(server_name)
-            
-            # Find the appropriate client manager to update config
-            if client_name == "claude-desktop":
-                from mcpm.clients.claude_desktop import ClaudeDesktopManager
-                client_manager = ClaudeDesktopManager()
-            elif client_name == "windsurf":
-                from mcpm.clients.windsurf import WindsurfManager
-                client_manager = WindsurfManager()
-            elif client_name == "cursor":
-                from mcpm.clients.cursor import CursorManager
-                client_manager = CursorManager()
-            else:
-                # Unknown client type, but we'll still track in our config
-                pass
-            
-            # If we have a client manager, update its config to remove the server
-            if 'client_manager' in locals():
-                # Get current client config
-                client_config = client_manager.read_config() or {}
-                
-                # For cursor, the structure is slightly different
-                if client_name == "cursor" and "mcpServers" in client_config:
-                    if server_name in client_config["mcpServers"]:
-                        del client_config["mcpServers"][server_name]
-                        client_manager.write_config(client_config)
-                
             self._save_config()
+            
+            # Use the client manager to update the client's config
+            client_manager = self._get_client_manager(client_name)
+            if client_manager:
+                client_manager.remove_server(server_name)
+            
+            return True
         
-        return True
+        return False
         
     def get_active_client(self) -> str:
         """Get the name of the currently active client"""
