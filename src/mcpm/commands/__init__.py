@@ -11,7 +11,6 @@ __all__ = [
     "pop",
     "remove",
     "search",
-    "server",
     "stash"
 ]
 
@@ -24,5 +23,5 @@ from . import list
 from . import pop
 from . import remove
 from . import search
-from . import server
+
 from . import stash

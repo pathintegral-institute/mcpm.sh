@@ -16,7 +16,6 @@ from mcpm.commands import (
     edit,
     stash,
     pop,
-    server,
     client,
     inspector,
     add,
@@ -111,7 +110,6 @@ def main(ctx, help_flag):
         commands_table.add_row("  [cyan]list[/]", "List all installed MCP servers.")
         commands_table.add_row("  [cyan]remove[/]", "Remove an installed MCP server.")
         commands_table.add_row("  [cyan]search[/]", "Search available MCP servers.")
-        commands_table.add_row("  [cyan]server[/]", "Manage MCP server processes.")
         commands_table.add_row("  [cyan]stash[/]", "Temporarily store a server configuration aside.")
         commands_table.add_row("  [cyan]pop[/]", "Restore a previously stashed server configuration.")
         console.print(commands_table)
@@ -131,7 +129,7 @@ main.add_command(edit.edit)
 
 main.add_command(stash.stash)
 main.add_command(pop.pop)
-main.add_command(server.server)
+
 main.add_command(client.client)
 main.add_command(inspector.inspector, name="inspector")
 
