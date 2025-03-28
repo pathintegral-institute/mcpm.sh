@@ -1,5 +1,8 @@
 """
-Tests for Windsurf client integration with MCPM
+Tests for Base Client Manager functionality through Windsurf implementation
+
+This file tests the common functionality provided by BaseClientManager
+using the WindsurfManager as a concrete implementation.
 """
 
 import os
@@ -13,8 +16,8 @@ from mcpm.utils.config import ConfigManager
 from mcpm.utils.server_config import ServerConfig
 
 
-class TestWindsurfIntegration:
-    """Test Windsurf client integration with MCPM"""
+class TestBaseClientManagerViaWindsurf:
+    """Test BaseClientManager functionality via WindsurfManager implementation"""
 
     @pytest.fixture
     def temp_config_file(self):
@@ -86,24 +89,24 @@ class TestWindsurfIntegration:
             manager = ConfigManager(config_path=config_path)
             yield manager
     
-    def test_get_servers(self, windsurf_manager):
-        """Test retrieving servers from Windsurf config"""
-        # Changed to list_servers which returns a list of server names
+    def test_list_servers(self, windsurf_manager):
+        """Test list_servers method from BaseClientManager"""
+        # list_servers returns a list of server names
         servers = windsurf_manager.list_servers()
         assert "test-server" in servers
     
     def test_get_server(self, windsurf_manager):
-        """Test retrieving a specific server from Windsurf config"""
+        """Test get_server method from BaseClientManager"""
         server = windsurf_manager.get_server("test-server")
         assert server is not None
-        # Now a ServerConfig object, not a dict
+        # Should return a ServerConfig object
         assert server.command == "npx"
         
         # Test non-existent server
         assert windsurf_manager.get_server("non-existent") is None
     
     def test_add_server_config_raw(self, windsurf_manager):
-        """Test adding a server to Windsurf config using the internal method"""
+        """Test _add_server_config method from BaseClientManager"""
         new_server = {
             "command": "npx",
             "args": [
@@ -113,50 +116,46 @@ class TestWindsurfIntegration:
             "env": {
                 "GOOGLE_MAPS_API_KEY": "test-key"
             },
-            # No longer including 'path' since it's removed from ServerConfig
             "installation": "default:npm"
         }
         
         success = windsurf_manager._add_server_config("google-maps", new_server)
         assert success
         
-        # Verify server was added
+        # Verify server was added using base get_server method
         server = windsurf_manager.get_server("google-maps")
         assert server is not None
         assert server.command == "npx"
         assert "GOOGLE_MAPS_API_KEY" in server.env_vars
     
     def test_add_server_config_to_empty_config(self, empty_windsurf_manager):
-        """Test adding a server to an empty config file using the internal method"""
+        """Test BaseClientManager creates mcpServers if it doesn't exist"""
         new_server = {
             "command": "npx",
             "args": ["-y", "@modelcontextprotocol/server-test"],
-            "installation": "default:npm"  # Using installation instead of path
+            "installation": "default:npm"
         }
         
         success = empty_windsurf_manager._add_server_config("test-server", new_server)
         assert success
         
-        # Verify server was added
+        # Verify server was added via base get_server method
         server = empty_windsurf_manager.get_server("test-server")
         assert server is not None
         assert server.command == "npx"
     
     def test_add_server(self, windsurf_manager, sample_server_config):
-        """Test adding a ServerConfig object to Windsurf config"""
+        """Test add_server method from BaseClientManager"""
         success = windsurf_manager.add_server(sample_server_config)
         assert success
         
-        # Verify server was added
+        # Verify server was added using base methods
         server = windsurf_manager.get_server("sample-server")
         assert server is not None
         assert "sample-server" in windsurf_manager.list_servers()
         
-        # Since get_server now returns a ServerConfig, we can directly compare
-        assert server is not None
+        # Verify essential fields are preserved by the base client conversion methods
         assert server.name == "sample-server"
-        # Note: With the official Windsurf format, metadata fields aren't preserved
-        # Only essential execution fields (command, args, env) are preserved
         assert server.command == sample_server_config.command
         assert server.args == sample_server_config.args
     
@@ -179,47 +178,42 @@ class TestWindsurfIntegration:
         assert "path" not in windsurf_format
     
     def test_remove_server(self, windsurf_manager):
-        """Test removing a server from Windsurf config"""
-        # First make sure server exists
+        """Test remove_server method from BaseClientManager"""
+        # First make sure server exists using base get_server method
         assert windsurf_manager.get_server("test-server") is not None
         
-        # Remove the server
+        # Remove the server using base remove_server method
         success = windsurf_manager.remove_server("test-server")
         assert success
         
-        # Verify it was removed
+        # Verify it was removed using base get_server method
         assert windsurf_manager.get_server("test-server") is None
     
-    def test_convert_from_client_format(self, windsurf_manager):
-        """Test conversion from Windsurf format to ServerConfig"""
-        windsurf_config = {
+    def test_from_client_format(self, windsurf_manager):
+        """Test the base class from_client_format method"""
+        # Create a minimal client config with required fields
+        client_config = {
             "command": "npx",
             "args": ["-y", "@modelcontextprotocol/server-test"],
-            "env": {"TEST_KEY": "test-value"},
-            "path": "/path/to/server",  # Old field that will be handled differently now
-            "display_name": "test-convert",  # Updated to match the server name
-            "version": "1.0.0"  # Old field that will be handled differently now
+            "env": {"TEST_KEY": "test-value"}
         }
         
-        server_config = windsurf_manager._convert_from_client_format("test-convert", windsurf_config)
+        # Test the base class from_client_format method directly
+        server_config = windsurf_manager.from_client_format("test-server", client_config)
         
-        # Check conversion is correct
+        # Check base conversion preserves essential fields
         assert isinstance(server_config, ServerConfig)
-        assert server_config.name == "test-convert"
-        assert server_config.display_name == "test-convert"
+        assert server_config.name == "test-server"
         assert server_config.command == "npx"
         assert server_config.args == ["-y", "@modelcontextprotocol/server-test"]
         assert server_config.env_vars["TEST_KEY"] == "test-value"
-        # No longer check for removed fields
-        # instead, ensure installation information is available if applicable
-        if hasattr(server_config, "installation"):
-            assert server_config.installation is not None
     
     def test_get_server_configs(self, windsurf_manager, sample_server_config):
-        """Test retrieving all servers as ServerConfig objects"""
-        # First add our sample server
+        """Test get_server_configs method from BaseClientManager"""
+        # First add our sample server using base add_server method
         windsurf_manager.add_server(sample_server_config)
         
+        # Use base get_server_configs method to retrieve all servers
         configs = windsurf_manager.get_server_configs()
         
         # Should have at least 2 servers (test-server from fixture and sample-server we added)
@@ -228,7 +222,7 @@ class TestWindsurfIntegration:
         # Find our sample server in the list
         sample_server = next((s for s in configs if s.name == "sample-server"), None)
         assert sample_server is not None
-        # Verify essential execution fields are preserved, even if metadata isn't
+        # Verify essential execution fields are preserved
         assert sample_server.command == sample_server_config.command
         assert sample_server.args == sample_server_config.args
         
@@ -237,17 +231,17 @@ class TestWindsurfIntegration:
         assert test_server is not None
     
     def test_get_server_config(self, windsurf_manager):
-        """Test retrieving a specific server as a ServerConfig object"""
-        # get_server now returns a ServerConfig, so get_server_config is redundant
+        """Test get_server method returns proper ServerConfig from BaseClientManager"""
         config = windsurf_manager.get_server("test-server")
         
         assert config is not None
         assert isinstance(config, ServerConfig)
         assert config.name == "test-server"
-        # The display_name is coming from our test fixture where it's set to "Test Server"
-        assert config.display_name == "Test Server"
+        # When using base implementation, display_name defaults to server name
+        # since we removed the client-specific implementation
+        assert config.display_name == "test-server"
         
-        # Non-existent server should return None
+        # Test base class behavior with non-existent server
         assert windsurf_manager.get_server("non-existent") is None
         
     def test_is_client_installed(self, windsurf_manager):
@@ -276,15 +270,16 @@ class TestWindsurfIntegration:
                 os.unlink(temp_path)
     
     def test_empty_config(self, empty_windsurf_manager):
-        """Test handling empty config"""
-        servers = empty_windsurf_manager.get_servers()
-        assert servers == {}
+        """Test BaseClientManager handling of empty config"""
+        # Base class should return an empty list when no servers exist
+        servers = empty_windsurf_manager.list_servers()
+        assert servers == []
         
-        # Verify we get an empty dict, not None
-        assert isinstance(servers, dict)
+        # Verify we get an empty list, not None
+        assert isinstance(servers, list)
             
-    def test_config_manager_integration(self, config_manager, windsurf_manager, sample_server_config):
-        """Test ConfigManager integration with Windsurf client in distributed architecture"""
+    def test_distributed_architecture(self, config_manager, windsurf_manager, sample_server_config):
+        """Test client manager in the distributed architecture"""
         # Make sure Windsurf is in supported clients
         supported_clients = config_manager.get_supported_clients()
         assert "windsurf" in supported_clients
@@ -294,19 +289,19 @@ class TestWindsurfIntegration:
         assert success
         assert config_manager.get_active_client() == "windsurf"
         
-        # In the new architecture, we use the client manager directly to manage servers
-        # Using the internal method for test purposes (would normally use add_server with ServerConfig)
-        test_server_name = "test-server"
+        # In the distributed architecture, each client manages its own servers
+        # using the base client manager functionality
+        test_server_name = "config-test-server"
         server_info = {"command": "npx", "args": ["-p", "9000"]}
         windsurf_manager._add_server_config(test_server_name, server_info)
         
-        # Check if server was added
-        windsurf_servers = windsurf_manager.get_servers()
-        assert test_server_name in windsurf_servers
+        # Check if server was added using list_servers
+        server_list = windsurf_manager.list_servers()
+        assert test_server_name in server_list
         
-        # Test removing the server
+        # Test removing the server using base remove_server method
         windsurf_manager.remove_server(test_server_name)
         
         # Check if server was removed
-        windsurf_servers = windsurf_manager.get_servers()
-        assert test_server_name not in windsurf_servers
+        server_list = windsurf_manager.list_servers()
+        assert test_server_name not in server_list

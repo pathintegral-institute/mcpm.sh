@@ -126,7 +126,7 @@ def list(available, outdated):
         
         if not servers:
             console.print(f"[yellow]No MCP servers found in {client_name}.[/]")
-            console.print("Use 'mcpm install <server>' to install a server.")
+            console.print("Use 'mcpm add <server>' to add a server.")
             return
         
         # Count the configured servers

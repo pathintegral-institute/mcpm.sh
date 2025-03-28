@@ -5,10 +5,9 @@ Claude Desktop integration utilities for MCP
 import os
 import logging
 import platform
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any
 
 from mcpm.clients.base import BaseClientManager
-from mcpm.utils.server_config import ServerConfig
 
 logger = logging.getLogger(__name__)
 
@@ -39,122 +38,16 @@ class ClaudeDesktopManager(BaseClientManager):
             "disabledServers": {}
         }
     
-    def _add_server_config(self, server_name: str, server_config: Dict[str, Any]) -> bool:
-        """Add or update an MCP server in Claude Desktop config using raw config dictionary
+    # Uses base class implementation of _add_server_config
         
-        Note: This is an internal method that should generally not be called directly.
-        Use add_server with a ServerConfig object instead for better type safety and validation.
-        
-        Args:
-            server_name: Name of the server
-            server_config: Server configuration dictionary
-            
-        Returns:
-            bool: Success or failure
-        """
-        config = self._load_config()
-        
-        # Initialize mcpServers if it doesn't exist
-        if "mcpServers" not in config:
-            config["mcpServers"] = {}
-            
-        # Add or update the server
-        config["mcpServers"][server_name] = server_config
-        
-        return self._save_config(config)
-        
-    def add_server(self, server_config: ServerConfig) -> bool:
-        """Add or update a server using a ServerConfig object
-        
-        This is the preferred method for adding servers as it ensures proper type safety
-        and validation through the ServerConfig object.
-        
-        Args:
-            server_config: ServerConfig object
-            
-        Returns:
-            bool: Success or failure
-        """
-        client_config = self._convert_to_client_format(server_config)
-        return self._add_server_config(server_config.name, client_config)
+    # Uses base class implementation of add_server
     
-    def _convert_to_client_format(self, server_config: ServerConfig) -> Dict[str, Any]:
-        """Convert ServerConfig to Claude Desktop format
-        
-        Args:
-            server_config: ServerConfig object
-            
-        Returns:
-            Dict containing Claude Desktop-specific configuration
-        """
-        # Base result containing essential execution information
-        result = {
-            "command": server_config.command,
-            "args": server_config.args,
-        }
-        
-        # Add filtered environment variables if present
-        non_empty_env = server_config.get_filtered_env_vars()
-        if non_empty_env:
-            result["env"] = non_empty_env
-            
-        # Add additional metadata fields for display in Claude Desktop
-        # Fields that are None will be automatically excluded by JSON serialization
-        for field in ["name", "display_name", "description", "installation"]:
-            value = getattr(server_config, field, None)
-            if value is not None:
-                result[field] = value
-                
-        return result
+    # Uses the base class implementation of _convert_to_client_format
+    # which handles the core fields (command, args, env)
     
-    @classmethod
-    def from_claude_desktop_format(cls, server_name: str, client_config: Dict[str, Any]) -> ServerConfig:
-        """Convert Claude Desktop format to ServerConfig
-        
-        Args:
-            server_name: Name of the server
-            client_config: Claude Desktop-specific configuration
-            
-        Returns:
-            ServerConfig object
-        """
-        # Create a dictionary that ServerConfig.from_dict can work with
-        server_data = {
-            "name": server_name,
-            "command": client_config.get("command", ""),
-            "args": client_config.get("args", []),
-        }
-        
-        # Add environment variables if present
-        if "env" in client_config:
-            server_data["env_vars"] = client_config["env"]
-            
-        # Add additional metadata fields if present
-        for field in ["display_name", "description", "installation"]:
-            if field in client_config:
-                server_data[field] = client_config[field]
-                
-        return ServerConfig.from_dict(server_data)
+    # Uses base class implementation via from_client_format
     
-    def _convert_from_client_format(self, server_name: str, client_config: Any) -> ServerConfig:
-        """Convert Claude Desktop format to ServerConfig
-        
-        Args:
-            server_name: Name of the server
-            client_config: Claude Desktop-specific configuration or ServerConfig object
-            
-        Returns:
-            ServerConfig object
-        """
-        # If client_config is already a ServerConfig object, just return it
-        if isinstance(client_config, ServerConfig):
-            # Ensure the name is set correctly
-            if client_config.name != server_name:
-                client_config.name = server_name
-            return client_config
-            
-        # Otherwise, convert from dict format
-        return self.from_claude_desktop_format(server_name, client_config)
+    # Uses base class implementation of _convert_from_client_format
     
     def disable_server(self, server_name: str) -> bool:
         """Temporarily disable (stash) a server without removing its configuration
@@ -224,67 +117,8 @@ class ClaudeDesktopManager(BaseClientManager):
         config = self._load_config()
         return "disabledServers" in config and server_name in config["disabledServers"]
     
-    def remove_server(self, server_name: str) -> bool:
-        """Remove an MCP server from Claude Desktop config
-        
-        Args:
-            server_name: Name of the server to remove
-            
-        Returns:
-            bool: Success or failure
-        """
-        config = self._load_config()
-        
-        # Check if mcpServers exists
-        if "mcpServers" not in config:
-            logger.warning(f"Cannot remove server {server_name}: mcpServers section doesn't exist")
-            return False
-            
-        # Check if the server exists
-        if server_name not in config["mcpServers"]:
-            logger.warning(f"Server {server_name} not found in Claude Desktop config")
-            return False
-            
-        # Remove the server
-        del config["mcpServers"][server_name]
-        
-        return self._save_config(config)
+    # Uses base class implementation of remove_server
     
-    def get_server(self, server_name: str) -> Optional[ServerConfig]:
-        """Get a server configuration from Claude Desktop
-        
-        Args:
-            server_name: Name of the server
-            
-        Returns:
-            ServerConfig object if found, None otherwise
-        """
-        config = self._load_config()
-        
-        # Check if mcpServers exists
-        if "mcpServers" not in config:
-            logger.warning(f"Cannot get server {server_name}: mcpServers section doesn't exist")
-            return None
-            
-        # Check if the server exists
-        if server_name not in config["mcpServers"]:
-            logger.debug(f"Server {server_name} not found in Claude Desktop config")
-            return None
-            
-        # Get the server config and convert to StandardServer
-        client_config = config["mcpServers"][server_name]
-        return self._convert_from_client_format(server_name, client_config)
+    # Uses base class implementation of get_server
     
-    def list_servers(self) -> List[str]:
-        """List all MCP servers in Claude Desktop config
-        
-        Returns:
-            List of server names
-        """
-        config = self._load_config()
-        
-        # Check if mcpServers exists
-        if "mcpServers" not in config:
-            return []
-            
-        return list(config["mcpServers"].keys())
+    # Uses base class implementation of list_servers
