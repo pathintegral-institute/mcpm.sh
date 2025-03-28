@@ -136,16 +136,24 @@ class ClaudeDesktopManager(BaseClientManager):
                 
         return ServerConfig.from_dict(server_data)
     
-    def _convert_from_client_format(self, server_name: str, client_config: Dict[str, Any]) -> ServerConfig:
+    def _convert_from_client_format(self, server_name: str, client_config: Any) -> ServerConfig:
         """Convert Claude Desktop format to ServerConfig
         
         Args:
             server_name: Name of the server
-            client_config: Claude Desktop-specific configuration
+            client_config: Claude Desktop-specific configuration or ServerConfig object
             
         Returns:
             ServerConfig object
         """
+        # If client_config is already a ServerConfig object, just return it
+        if isinstance(client_config, ServerConfig):
+            # Ensure the name is set correctly
+            if client_config.name != server_name:
+                client_config.name = server_name
+            return client_config
+            
+        # Otherwise, convert from dict format
         return self.from_claude_desktop_format(server_name, client_config)
     
     def disable_server(self, server_name: str) -> bool:

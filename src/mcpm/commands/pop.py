@@ -1,13 +1,15 @@
-"""
-Pop command for MCPM - restores previously stashed server configuration
+"""Pop command for MCPM - restores previously stashed server configuration
 """
 
+import logging
 import click
 from rich.console import Console
 
 from mcpm.utils.client_registry import ClientRegistry
+from mcpm.utils.config import ConfigManager
 
 console = Console()
+logger = logging.getLogger(__name__)
 
 @click.command()
 @click.argument("server_name")
@@ -32,16 +34,29 @@ def pop(server_name):
         console.print("Please switch to a supported client using 'mcpm client <client-name>'")
         return
     
-    # Check if the server exists in the stashed configurations
-    if not client_manager.is_server_disabled(server_name):
-        console.print(f"[bold red]Error:[/] Server '{server_name}' not found in stashed configurations.")
+    # Access the global config manager
+    config_manager = ConfigManager()
+    
+    # Check if the server is stashed for this client
+    if not config_manager.is_server_stashed(client, server_name):
+        console.print(f"[bold red]Error:[/] Server '{server_name}' not found in stashed configurations for {client_name}.")
         return
     
-    # Pop (re-enable) the server
-    success = client_manager.enable_server(server_name)
+    # Get the server configuration from global stashed servers
+    server_data = config_manager.pop_server(client, server_name)
+    if not server_data:
+        console.print(f"[bold red]Error:[/] Failed to retrieve stashed configuration for server '{server_name}'.")
+        return
+    
+    # Convert the server configuration to the client's format and add it back
+    # to the active servers
+    server_config = client_manager._convert_from_client_format(server_name, server_data)
+    success = client_manager.add_server(server_config)
     
     if success:
         console.print(f"[bold green]Restored[/] MCP server '{server_name}' for {client_name}")
         console.print("Remember to restart the client for changes to take effect.")
     else:
+        # If adding failed, re-stash the server to avoid data loss
+        config_manager.stash_server(client, server_name, server_data)
         console.print(f"[bold red]Failed to restore[/] '{server_name}' for {client_name}.")
