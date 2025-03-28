@@ -11,15 +11,6 @@ from mcpm.clients.base import BaseClientManager
 
 logger = logging.getLogger(__name__)
 
-# Claude Desktop config paths based on platform
-if platform.system() == "Darwin":  # macOS
-    CLAUDE_CONFIG_PATH = os.path.expanduser("~/Library/Application Support/Claude/claude_desktop_config.json")
-elif platform.system() == "Windows":
-    CLAUDE_CONFIG_PATH = os.path.join(os.environ.get("APPDATA", ""), "Claude", "claude_desktop_config.json")
-else:
-    # Linux (unsupported by Claude Desktop currently, but future-proofing)
-    CLAUDE_CONFIG_PATH = os.path.expanduser("~/.config/Claude/claude_desktop_config.json")
-
 class ClaudeDesktopManager(BaseClientManager):
     """Manages Claude Desktop MCP server configurations"""
     
@@ -28,8 +19,25 @@ class ClaudeDesktopManager(BaseClientManager):
     display_name = "Claude Desktop"
     download_url = "https://claude.ai/download"
     
-    def __init__(self, config_path: str = CLAUDE_CONFIG_PATH):
-        super().__init__(config_path)
+    def __init__(self, config_path=None):
+        """Initialize the Claude Desktop client manager
+        
+        Args:
+            config_path: Optional path to the config file. If not provided, uses default path.
+        """
+        super().__init__()
+        
+        if config_path:
+            self.config_path = config_path
+        else:
+            # Set config path based on detected platform
+            if self._system == "Darwin":  # macOS
+                self.config_path = os.path.expanduser("~/Library/Application Support/Claude/claude_desktop_config.json")
+            elif self._system == "Windows":
+                self.config_path = os.path.join(os.environ.get("APPDATA", ""), "Claude", "claude_desktop_config.json")
+            else:
+                # Linux (unsupported by Claude Desktop currently, but future-proofing)
+                self.config_path = os.path.expanduser("~/.config/Claude/claude_desktop_config.json")
     
     def _get_empty_config(self) -> Dict[str, Any]:
         """Get empty config structure for Claude Desktop"""
@@ -37,17 +45,6 @@ class ClaudeDesktopManager(BaseClientManager):
             "mcpServers": {},
             "disabledServers": {}
         }
-    
-    # Uses base class implementation of _add_server_config
-        
-    # Uses base class implementation of add_server
-    
-    # Uses the base class implementation of _convert_to_client_format
-    # which handles the core fields (command, args, env)
-    
-    # Uses base class implementation via from_client_format
-    
-    # Uses base class implementation of _convert_from_client_format
     
     def disable_server(self, server_name: str) -> bool:
         """Temporarily disable (stash) a server without removing its configuration

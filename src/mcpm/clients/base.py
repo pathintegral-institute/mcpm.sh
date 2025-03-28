@@ -5,7 +5,8 @@ Base client manager module that defines the interface for all client managers.
 import os
 import json
 import logging
-from typing import Dict, Optional, Any, List
+import platform
+from typing import Dict, Optional, Any, List, Union
 
 from mcpm.utils.server_config import ServerConfig
 
@@ -19,24 +20,33 @@ class BaseClientManager:
     display_name = ""      # Human-readable name (e.g., "Claude Desktop")
     download_url = ""      # URL to download the client
     
-    def __init__(self, config_path: str):
-        """Initialize with a configuration path"""
-        self.config_path = config_path
+    def __init__(self):
+        """Initialize the client manager
+        """
+        self.config_path = None  # To be set by subclasses
         self._config = None
+        self._system = platform.system()
     
     def _load_config(self) -> Dict[str, Any]:
         """Load client configuration file
         
         Returns:
-            Dict containing the client configuration
+            Dict containing the client configuration with at least {"mcpServers": {}}
         """
+        # Create empty config with the correct structure
+        empty_config = {"mcpServers": {}}
+        
         if not os.path.exists(self.config_path):
             logger.warning(f"Client config file not found at: {self.config_path}")
-            return self._get_empty_config()
+            return empty_config
             
         try:
             with open(self.config_path, 'r') as f:
-                return json.load(f)
+                config = json.load(f)
+                # Ensure mcpServers section exists
+                if "mcpServers" not in config:
+                    config["mcpServers"] = {}
+                return config
         except json.JSONDecodeError:
             logger.error(f"Error parsing client config file: {self.config_path}")
             
@@ -50,7 +60,7 @@ class BaseClientManager:
                     logger.error(f"Failed to backup corrupt file: {str(e)}")
             
             # Return empty config
-            return self._get_empty_config()
+            return empty_config
     
     def _save_config(self, config: Dict[str, Any]) -> bool:
         """Save configuration to client config file
@@ -72,14 +82,7 @@ class BaseClientManager:
             logger.error(f"Error saving client config: {str(e)}")
             return False
     
-    def _get_empty_config(self) -> Dict[str, Any]:
-        """Get an empty config structure for this client
-        
-        Returns:
-            Dict containing empty configuration structure
-        """
-        # To be overridden by subclasses
-        return {"mcpServers": {}}
+
     
     def get_servers(self) -> Dict[str, Any]:
         """Get all MCP servers configured for this client
@@ -109,48 +112,39 @@ class BaseClientManager:
             
         # Get the server config and convert to ServerConfig
         client_config = servers[server_name]
-        return self._convert_from_client_format(server_name, client_config)
+        return self.from_client_format(server_name, client_config)
     
-    def _add_server_config(self, server_name: str, server_config: Dict[str, Any]) -> bool:
-        """Add or update an MCP server in client config using raw config dictionary
+    def add_server(self, server_config: Union[ServerConfig, Dict[str, Any]], name: Optional[str] = None) -> bool:
+        """Add or update a server in the client config
         
-        Note: This is an internal method that should generally not be called directly.
-        Use add_server with a ServerConfig object instead for better type safety and validation.
+        Can accept either a ServerConfig object or a raw dictionary in client format.
+        When using a dictionary, a name must be provided.
         
         Args:
-            server_name: Name of the server
-            server_config: Server configuration dictionary
+            server_config: ServerConfig object or dictionary in client format
+            name: Required server name when using dictionary format
             
         Returns:
             bool: Success or failure
         """
-        config = self._load_config()
+        # Handle direct dictionary input
+        if isinstance(server_config, dict):
+            if name is None:
+                raise ValueError("Name must be provided when using dictionary format")
+            server_name = name
+            client_config = server_config  # Already in client format
+        # Handle ServerConfig objects
+        else:
+            server_name = server_config.name
+            client_config = self.to_client_format(server_config)
         
-        # Initialize mcpServers if it doesn't exist
-        if "mcpServers" not in config:
-            config["mcpServers"] = {}
-            
-        # Add or update the server
-        config["mcpServers"][server_name] = server_config
+        # Update config directly
+        config = self._load_config()
+        config["mcpServers"][server_name] = client_config
         
         return self._save_config(config)
-        
-    def add_server(self, server_config: ServerConfig) -> bool:
-        """Add or update a server using a ServerConfig object
-        
-        This is the preferred method for adding servers as it ensures proper type safety
-        and validation through the ServerConfig object.
-        
-        Args:
-            server_config: StandardServer configuration object
-            
-        Returns:
-            bool: Success or failure
-        """
-        # Default implementation - can be overridden by subclasses
-        return self._add_server_config(server_config.name, self._convert_to_client_format(server_config))
     
-    def _convert_to_client_format(self, server_config: ServerConfig) -> Dict[str, Any]:
+    def to_client_format(self, server_config: ServerConfig) -> Dict[str, Any]:
         """Convert ServerConfig to client-specific format with common core fields
         
         This base implementation provides the common core fields (command, args, env)
@@ -202,28 +196,7 @@ class BaseClientManager:
             
         return ServerConfig.from_dict(server_data)
     
-    def _convert_from_client_format(self, server_name: str, client_config: Any) -> ServerConfig:
-        """Convert client-specific format to ServerConfig
-        
-        This default implementation handles the case where client_config might be a ServerConfig already
-        or needs to be converted using from_client_format.
-        
-        Args:
-            server_name: Name of the server
-            client_config: Client-specific configuration or ServerConfig object
-            
-        Returns:
-            ServerConfig object
-        """
-        # If client_config is already a ServerConfig object, just return it
-        if isinstance(client_config, ServerConfig):
-            # Ensure the name is set correctly
-            if client_config.name != server_name:
-                client_config.name = server_name
-            return client_config
-        
-        # Otherwise, convert from dict format
-        return self.from_client_format(server_name, client_config)
+
         
     def list_servers(self) -> List[str]:
         """List all MCP servers in client config
@@ -231,39 +204,11 @@ class BaseClientManager:
         Returns:
             List of server names
         """
-        config = self._load_config()
-        
-        # Check if mcpServers exists
-        if "mcpServers" not in config:
-            return []
-            
-        return list(config["mcpServers"].keys())
+        return list(self.get_servers().keys())
     
-    def get_server_configs(self) -> List[ServerConfig]:
-        """Get all MCP servers as ServerConfig objects
-        
-        Returns:
-            List of ServerConfig objects
-        """
-        servers = self.get_servers()
-        return [
-            self._convert_from_client_format(name, config) 
-            for name, config in servers.items()
-        ]
+
     
-    def get_server_config(self, server_name: str) -> Optional[ServerConfig]:
-        """Get a specific MCP server as a ServerConfig object
-        
-        Args:
-            server_name: Name of the server
-            
-        Returns:
-            ServerConfig or None if not found
-        """
-        server = self.get_server(server_name)
-        if server:
-            return self._convert_from_client_format(server_name, server)
-        return None
+
     
     def remove_server(self, server_name: str) -> bool:
         """Remove an MCP server from client config
@@ -274,19 +219,15 @@ class BaseClientManager:
         Returns:
             bool: Success or failure
         """
-        config = self._load_config()
+        servers = self.get_servers()
         
-        # Check if mcpServers exists
-        if "mcpServers" not in config:
-            logger.warning(f"Cannot remove server {server_name}: mcpServers section doesn't exist")
-            return False
-            
         # Check if the server exists
-        if server_name not in config["mcpServers"]:
+        if server_name not in servers:
             logger.warning(f"Server {server_name} not found in {self.display_name} config")
             return False
             
-        # Remove the server
+        # Load full config and remove the server
+        config = self._load_config()
         del config["mcpServers"][server_name]
         
         return self._save_config(config)
@@ -312,39 +253,3 @@ class BaseClientManager:
         # Default implementation checks if the config directory exists
         # Can be overridden by subclasses
         return os.path.isdir(os.path.dirname(self.config_path))
-        
-    def disable_server(self, server_name: str) -> bool:
-        """Temporarily disable (stash) a server without removing its configuration
-        
-        Args:
-            server_name: Name of the server to disable
-            
-        Returns:
-            bool: Success or failure
-        """
-        # To be implemented by subclasses
-        raise NotImplementedError("Subclasses must implement disable_server")
-    
-    def enable_server(self, server_name: str) -> bool:
-        """Re-enable (pop) a previously disabled server
-        
-        Args:
-            server_name: Name of the server to enable
-            
-        Returns:
-            bool: Success or failure
-        """
-        # To be implemented by subclasses
-        raise NotImplementedError("Subclasses must implement enable_server")
-    
-    def is_server_disabled(self, server_name: str) -> bool:
-        """Check if a server is currently disabled (stashed)
-        
-        Args:
-            server_name: Name of the server to check
-            
-        Returns:
-            bool: True if server is disabled, False otherwise
-        """
-        # To be implemented by subclasses
-        raise NotImplementedError("Subclasses must implement is_server_disabled")

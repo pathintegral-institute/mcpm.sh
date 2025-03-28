@@ -35,7 +35,7 @@ def stash(server_name):
         return
     
     # Check if the server exists in the active client
-    server_config = client_manager.get_server_config(server_name)
+    server_config = client_manager.get_server(server_name)
     if not server_config:
         console.print(f"[bold red]Error:[/] Server '{server_name}' not found in {client_name}.")
         return

@@ -50,7 +50,7 @@ def pop(server_name):
     
     # Convert the server configuration to the client's format and add it back
     # to the active servers
-    server_config = client_manager._convert_from_client_format(server_name, server_data)
+    server_config = client_manager.from_client_format(server_name, server_data)
     success = client_manager.add_server(server_config)
     
     if success:

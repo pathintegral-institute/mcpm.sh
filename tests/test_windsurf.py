@@ -105,8 +105,8 @@ class TestBaseClientManagerViaWindsurf:
         # Test non-existent server
         assert windsurf_manager.get_server("non-existent") is None
     
-    def test_add_server_config_raw(self, windsurf_manager):
-        """Test _add_server_config method from BaseClientManager"""
+    def test_add_server_with_dict(self, windsurf_manager):
+        """Test add_server method with dictionary input"""
         new_server = {
             "command": "npx",
             "args": [
@@ -119,7 +119,7 @@ class TestBaseClientManagerViaWindsurf:
             "installation": "default:npm"
         }
         
-        success = windsurf_manager._add_server_config("google-maps", new_server)
+        success = windsurf_manager.add_server(new_server, name="google-maps")
         assert success
         
         # Verify server was added using base get_server method
@@ -128,7 +128,7 @@ class TestBaseClientManagerViaWindsurf:
         assert server.command == "npx"
         assert "GOOGLE_MAPS_API_KEY" in server.env_vars
     
-    def test_add_server_config_to_empty_config(self, empty_windsurf_manager):
+    def test_add_server_to_empty_config(self, empty_windsurf_manager):
         """Test BaseClientManager creates mcpServers if it doesn't exist"""
         new_server = {
             "command": "npx",
@@ -136,7 +136,7 @@ class TestBaseClientManagerViaWindsurf:
             "installation": "default:npm"
         }
         
-        success = empty_windsurf_manager._add_server_config("test-server", new_server)
+        success = empty_windsurf_manager.add_server(new_server, name="test-server")
         assert success
         
         # Verify server was added via base get_server method
@@ -161,7 +161,7 @@ class TestBaseClientManagerViaWindsurf:
     
     def test_convert_to_client_format(self, windsurf_manager, sample_server_config):
         """Test conversion from ServerConfig to Windsurf format"""
-        windsurf_format = windsurf_manager._convert_to_client_format(sample_server_config)
+        windsurf_format = windsurf_manager.to_client_format(sample_server_config)
         
         # Check the format follows official Windsurf MCP format (command, args, env only)
         assert "command" in windsurf_format
@@ -208,13 +208,15 @@ class TestBaseClientManagerViaWindsurf:
         assert server_config.args == ["-y", "@modelcontextprotocol/server-test"]
         assert server_config.env_vars["TEST_KEY"] == "test-value"
     
-    def test_get_server_configs(self, windsurf_manager, sample_server_config):
-        """Test get_server_configs method from BaseClientManager"""
+    def test_get_all_servers_as_configs(self, windsurf_manager, sample_server_config):
+        """Test getting all servers and converting them to ServerConfig objects"""
         # First add our sample server using base add_server method
         windsurf_manager.add_server(sample_server_config)
         
-        # Use base get_server_configs method to retrieve all servers
-        configs = windsurf_manager.get_server_configs()
+        # Get all servers and convert them to ServerConfig objects
+        servers = windsurf_manager.get_servers()
+        configs = [windsurf_manager.from_client_format(name, config) 
+                  for name, config in servers.items()]
         
         # Should have at least 2 servers (test-server from fixture and sample-server we added)
         assert len(configs) >= 2
@@ -230,8 +232,8 @@ class TestBaseClientManagerViaWindsurf:
         test_server = next((s for s in configs if s.name == "test-server"), None)
         assert test_server is not None
     
-    def test_get_server_config(self, windsurf_manager):
-        """Test get_server method returns proper ServerConfig from BaseClientManager"""
+    def test_get_server_returns_server_config(self, windsurf_manager):
+        """Test get_server method returns proper ServerConfig object"""
         config = windsurf_manager.get_server("test-server")
         
         assert config is not None
@@ -293,7 +295,7 @@ class TestBaseClientManagerViaWindsurf:
         # using the base client manager functionality
         test_server_name = "config-test-server"
         server_info = {"command": "npx", "args": ["-p", "9000"]}
-        windsurf_manager._add_server_config(test_server_name, server_info)
+        windsurf_manager.add_server(server_info, name=test_server_name)
         
         # Check if server was added using list_servers
         server_list = windsurf_manager.list_servers()
