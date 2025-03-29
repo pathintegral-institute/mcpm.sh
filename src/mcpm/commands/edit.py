@@ -15,18 +15,18 @@ from mcpm.utils.client_registry import ClientRegistry
 console = Console()
 
 @click.command()
-@click.option("--edit", is_flag=True, help="Open the active client's config in default editor")
-@click.option("--create", is_flag=True, help="Create a basic config file if it doesn't exist")
-def edit(edit, create):
+def edit():
     """View or edit the active MCP client's configuration file.
     
     The edit command operates on the currently active MCP client (set via 'mcpm client').
     By default, this is Claude Desktop, but can be changed to other supported clients.
     
+    The command will automatically display the config file content when it exists,
+    and offer to create it when it doesn't exist. You'll also be prompted if you
+    want to open the file in your default editor.
+    
     Examples:
-        mcpm edit           # Show current client's config file location and content
-        mcpm edit --edit    # Open the config file in your default editor
-        mcpm edit --create  # Create a basic config file if it doesn't exist
+        mcpm edit  # Show current client's config file and offer to edit it
     """
     # Get the active client manager and related information
     client_manager = ClientRegistry.get_active_client_manager()
@@ -55,8 +55,8 @@ def edit(edit, create):
     console.print(f"[bold]{client_name} config file:[/] {config_path}")
     console.print(f"[bold]Status:[/] {'[green]Exists[/]' if config_exists else '[yellow]Does not exist[/]'}\n")
     
-    # Create config file if requested and it doesn't exist
-    if not config_exists and create:
+    # Create config file if it doesn't exist and user confirms
+    if not config_exists:
         console.print(f"[bold yellow]Creating new {client_name} config file...[/]")
         
         # Create a basic config template
@@ -136,31 +136,10 @@ def edit(edit, create):
         except Exception as e:
             console.print(f"[bold red]Error reading config file:[/] {str(e)}")
     
-    # Prompt to edit if file exists, or if we need to create it
-    should_edit = edit
-    if not should_edit and config_exists:
+    # Prompt to edit if file exists
+    should_edit = False
+    if config_exists:
         should_edit = Confirm.ask("Would you like to open this file in your default editor?")
-    elif not config_exists and not create:
-        should_create = Confirm.ask("Config file doesn't exist. Would you like to create it?")
-        if should_create:
-            # Create a basic config template
-            basic_config = {
-                "mcpServers": {}
-            }
-            
-            # Create the directory if it doesn't exist
-            os.makedirs(os.path.dirname(config_path), exist_ok=True)
-            
-            # Write the template to file
-            try:
-                with open(config_path, 'w') as f:
-                    json.dump(basic_config, f, indent=2)
-                console.print("[green]Successfully created config file![/]")
-                should_edit = Confirm.ask("Would you like to open it in your default editor?")
-                config_exists = True
-            except Exception as e:
-                console.print(f"[bold red]Error creating config file:[/] {str(e)}")
-                return
     
     # Open in default editor if requested
     if should_edit and config_exists:
