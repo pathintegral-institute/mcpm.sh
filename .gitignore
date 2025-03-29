@@ -61,3 +61,8 @@ logs/
 
 # MCP specific
 .mcp/
+
+# jekyll
+_site/
+.jekyll-cache/
+.jekyll-metadata

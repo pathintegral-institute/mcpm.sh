@@ -1,0 +1,16 @@
+# Basic Jekyll Configuration
+title: MCPM - Model Context Protocol Manager
+description: Homebrew-like service for managing MCP servers
+url: ""
+baseurl: ""
+
+# Build settings
+markdown: kramdown
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+
+# Set to true since we want to serve raw HTML files
+include: ["*.html"]

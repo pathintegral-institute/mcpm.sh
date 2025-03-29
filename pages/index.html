@@ -10,16 +10,19 @@
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
     <style>
         :root {
-            --bg-color: #0f1117;
-            --bg-accent: #1a1d25;
+            --bg-color: #242830; /* Clean grey background */
+            --bg-accent: #2e3238; /* Slightly darker grey for accent areas */
             --text-primary: #e2e8f0;
             --text-secondary: #a0aec0;
-            --accent-color: #10b981;
-            --accent-light: #34d399;
-            --accent-dark: #047857;
-            --success: #059669;
-            --code-bg: #1a2e22;
-            --card-border: #2d3748;
+            --accent-color: #09784C; /* Deep green brand color */
+            --accent-light: #5CD951; /* Light green brand color */
+            --accent-dark: #09784C; /* Deep green brand color, darker version */
+            --accent-highlight: #FF84BD; /* Pink brand color */
+            --success: #5CD951; /* Light green brand color */
+            --warning: #FEBF00; /* Yellow/amber brand color */
+            --code-bg: #1e2124; /* Darker code background */
+            --card-border: #3a3e45;
+            --gradient-bg: linear-gradient(to right, #242830, #2e3238);
         }
         
         * {
@@ -33,9 +36,7 @@
             line-height: 1.6;
             color: var(--text-primary);
             background-color: var(--bg-color);
-            background-image: 
-                radial-gradient(circle at 25% 25%, rgba(16, 185, 129, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 75% 75%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+            background-image: none; /* Removed gradient for cleaner look */
             margin: 0;
             padding: 0;
             min-height: 100vh;
@@ -50,15 +51,18 @@
         header {
             text-align: center;
             padding: 3rem 0;
-            border-bottom: 1px solid rgba(16, 185, 129, 0.2);
+            border-bottom: 1px solid var(--card-border);
             margin-bottom: 3rem;
+            background: var(--bg-color);
+            border-radius: 0; /* Sharp corners */
+            box-shadow: none; /* Removed for cleaner look */
         }
         
         h1 {
             font-size: 3.5rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
-            background: linear-gradient(90deg, var(--accent-color), var(--accent-light));
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-highlight));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -76,15 +80,16 @@
             margin: 2rem auto;
             max-width: 400px;
             width: 100%;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
         }
         
         .coming-soon {
-            background-color: var(--bg-accent);
+            background: var(--bg-accent);
             border: 1px solid var(--card-border);
-            border-radius: 12px;
+            border-radius: 0; /* Sharp corners */
             padding: 2rem;
             margin: 2rem 0;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: none;
         }
         
         h2 {
@@ -100,10 +105,10 @@
             position: absolute;
             bottom: -8px;
             left: 0;
-            height: 3px;
+            height: 2px;
             width: 60px;
-            background: linear-gradient(90deg, var(--accent-color), transparent);
-            border-radius: 3px;
+            background: var(--accent-color);
+            border-radius: 0; /* Sharp corners */
         }
         
         .features {
@@ -114,16 +119,18 @@
         }
         
         .feature {
-            background-color: var(--bg-accent);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
+            background: var(--bg-accent);
+            border-left: 3px solid var(--accent-color); /* Clean left border accent */
+            border-radius: 0; /* Sharp corners */
             padding: 1.5rem;
             transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: none;
         }
         
         .feature:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            border-left: 3px solid var(--accent-light);
         }
         
         h3 {
@@ -142,17 +149,23 @@
         .code-block {
             position: relative;
             margin: 1rem 0;
+            box-shadow: none;
+            border-radius: 0; /* Sharp corners */
+            overflow: hidden;
+            border-left: 3px solid var(--accent-color);
         }
         
         code {
             background-color: var(--code-bg);
             padding: 0.75rem 1rem;
-            border-radius: 8px;
+            border-radius: 0; /* Sharp corners */
             font-family: 'Fira Code', monospace;
             display: block;
             overflow-x: auto;
-            border-left: 3px solid var(--accent-color);
-            padding-right: 40px; /* Space for the copy button */
+            border-left: none; /* Removed since parent has border */
+            padding-right: 45px; /* Space for the copy button */
+            font-size: 0.95rem;
+            line-height: 1.5;
         }
         
         .copy-button {
@@ -163,12 +176,12 @@
             background-color: var(--accent-dark);
             color: var(--text-primary);
             border: none;
-            border-radius: 4px;
-            padding: 4px 8px;
-            font-size: 0.8rem;
+            border-radius: 0; /* Sharp corners */
+            padding: 6px 10px;
+            font-size: 0.85rem;
             cursor: pointer;
-            opacity: 0.7;
-            transition: opacity 0.2s, background-color 0.2s;
+            opacity: 0.8;
+            transition: all 0.2s ease;
         }
         
         .copy-button:hover {
@@ -181,11 +194,12 @@
         }
         
         .clients {
-            background-color: var(--bg-accent);
+            background: var(--bg-accent);
             border: 1px solid var(--card-border);
-            border-radius: 12px;
+            border-radius: 0; /* Sharp corners */
             padding: 2rem;
             margin: 2rem 0;
+            box-shadow: none;
         }
         
         ul {
@@ -211,22 +225,23 @@
             font-size: 0.9rem;
             text-align: center;
             padding: 2rem 0;
-            border-top: 1px solid rgba(16, 185, 129, 0.1);
+            border-top: 1px solid var(--card-border);
+            background: var(--bg-accent);
         }
         
         a {
-            color: var(--accent-light);
+            color: var(--accent-highlight);
             text-decoration: none;
             transition: color 0.2s;
         }
         
         a:hover {
-            color: var(--accent-color);
+            color: var(--accent-light);
             text-decoration: underline;
         }
         
         .command-prompt {
-            color: var(--success);
+            color: var(--warning);
             font-weight: 600;
         }
         
@@ -253,21 +268,27 @@
             <div class="terminal-animation">
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 100">
   <!-- Terminal background -->
-  <rect x="10" y="10" width="280" height="80" rx="5" ry="5" fill="#2E3440" />
+  <rect x="10" y="10" width="280" height="80" rx="0" ry="0" fill="#2e3238" />
+  
+  <!-- Terminal header -->
+  <rect x="10" y="10" width="280" height="20" rx="0" ry="0" fill="#242830" />
+  
+  <!-- Window buttons, kept round for recognizability -->
+  <circle cx="25" cy="20" r="4" fill="#FF5F57"/>
+  <circle cx="40" cy="20" r="4" fill="#FEBC2E"/>
+  <circle cx="55" cy="20" r="4" fill="#28C840"/>
   
   <!-- Static command prompt -->
-  <text x="30" y="55" font-family="monospace" font-size="24" fill="#D8DEE9">$</text>
-  <text x="55" y="55" font-family="monospace" font-size="24" fill="#88C0D0">mcpm</text>
+  <text x="30" y="55" font-family="monospace" font-size="24" fill="#e2e8f0">$</text>
+  <text x="55" y="55" font-family="monospace" font-size="24" fill="#5CD951">mcpm</text>
   
   <!-- Animated command text -->
-  <text id="commandText" x="130" y="55" font-family="monospace" font-size="24" fill="#88C0D0"></text>
+  <text id="commandText" x="130" y="55" font-family="monospace" font-size="24" fill="#FF84BD"></text>
   
   <!-- Cursor -->
-  <rect id="cursor" x="130" y="40" width="2" height="24" fill="#D8DEE9">
+  <rect id="cursor" x="130" y="40" width="2" height="24" fill="#FEBF00">
     <animate attributeName="opacity" values="1;0;1" dur="0.8s" repeatCount="indefinite" />
   </rect>
-  
-  <!-- No script here - moved to document scripts -->
 </svg>
             </div>
         </header>
@@ -303,41 +324,80 @@
             </div>
             
             <div class="feature">
-                <h3><span>⚙️</span> Server Management</h3>
-                <p>Control your MCP server processes with ease:</p>
-                <div class="code-block">
-                    <code><span class="command-prompt">$</span> mcpm server start my-server</code>
-                    <button class="copy-button" data-command="mcpm server start my-server">📋</button>
-                </div>
-            </div>
-            
-            <div class="feature">
-                <h3><span>🔀</span> Server Toggling</h3>
-                <p>Enable or disable servers for specific clients:</p>
-                <div class="code-block">
-                    <code><span class="command-prompt">$</span> mcpm toggle my-server</code>
-                    <button class="copy-button" data-command="mcpm toggle my-server">📋</button>
-                </div>
-            </div>
-        </div>
-        
-        <h2>Coming Soon</h2>
-        <div class="features">
-            <div class="feature">
-                <h3><span>🧩</span> Simple Server Installation</h3>
-                <p>Install MCP servers with a single command:</p>
-                <div class="code-block">
-                    <code><span class="command-prompt">$</span> mcpm install claude-config</code>
-                    <button class="copy-button" data-command="mcpm install claude-config">📋</button>
-                </div>
-            </div>
-            
-            <div class="feature">
                 <h3><span>🔍</span> Server Discovery</h3>
                 <p>Find available Model Context Protocol servers:</p>
                 <div class="code-block">
                     <code><span class="command-prompt">$</span> mcpm search</code>
                     <button class="copy-button" data-command="mcpm search">📋</button>
+                </div>
+            </div>
+            
+            <div class="feature">
+                <h3><span>➕</span> Add Servers</h3>
+                <p>Add MCP servers directly to your client:</p>
+                <div class="code-block">
+                    <code><span class="command-prompt">$</span> mcpm add my-server</code>
+                    <button class="copy-button" data-command="mcpm add my-server">📋</button>
+                </div>
+            </div>
+        </div>
+        
+        <h2>More Powerful Features</h2>
+        <div class="features">
+            <div class="feature">
+                <h3><span>🗑️</span> Remove Servers</h3>
+                <p>Remove installed MCP servers when no longer needed:</p>
+                <div class="code-block">
+                    <code><span class="command-prompt">$</span> mcpm remove my-server</code>
+                    <button class="copy-button" data-command="mcpm remove my-server">📋</button>
+                </div>
+            </div>
+            
+            <div class="feature">
+                <h3><span>⚙️</span> Configuration</h3>
+                <p>Edit and manage your MCPM configuration:</p>
+                <div class="code-block">
+                    <code><span class="command-prompt">$</span> mcpm config</code>
+                    <button class="copy-button" data-command="mcpm config">📋</button>
+                </div>
+            </div>
+
+            <div class="feature">
+                <h3><span>🔎</span> Inspector</h3>
+                <p>Launch the UI to examine installed servers:</p>
+                <div class="code-block">
+                    <code><span class="command-prompt">$</span> mcpm inspector</code>
+                    <button class="copy-button" data-command="mcpm inspector">📋</button>
+                </div>
+            </div>
+            
+            <div class="feature">
+                <h3><span>📝</span> Edit Configuration</h3>
+                <p>View or edit your client's configuration:</p>
+                <div class="code-block">
+                    <code><span class="command-prompt">$</span> mcpm edit</code>
+                    <button class="copy-button" data-command="mcpm edit">📋</button>
+                </div>
+            </div>
+        </div>
+
+        <h2>Save & Restore Configurations</h2>
+        <div class="features">
+            <div class="feature">
+                <h3><span>💾</span> Stash Servers</h3>
+                <p>Temporarily store server configurations:</p>
+                <div class="code-block">
+                    <code><span class="command-prompt">$</span> mcpm stash my-server</code>
+                    <button class="copy-button" data-command="mcpm stash my-server">📋</button>
+                </div>
+            </div>
+            
+            <div class="feature">
+                <h3><span>♻️</span> Restore Servers</h3>
+                <p>Restore previously stashed configurations:</p>
+                <div class="code-block">
+                    <code><span class="command-prompt">$</span> mcpm pop my-server</code>
+                    <button class="copy-button" data-command="mcpm pop my-server">📋</button>
                 </div>
             </div>
         </div>
@@ -401,8 +461,8 @@
             const cursor = document.getElementById('cursor');
             
             if (commandText && cursor) {
-                // Commands to type
-                const commands = [" search", " add", " list", " remove", "stash", "pop"];
+                // Commands to type - updated to match actual CLI commands
+                const commands = [" search", " add", " list", " remove", " edit", " stash", " pop"];
                 let currentCommand = 0;
                 let charIndex = 0;
                 let isTyping = true;
