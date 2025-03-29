@@ -67,17 +67,24 @@ class ServerConfig(BaseModel):
         # We keep it for backwards compatibility
         return self.model_dump(exclude_none=True)
     
-    def get_filtered_env_vars(self) -> Dict[str, str]:
+    def get_filtered_env_vars(self, env: Dict[str, str]) -> Dict[str, str]:
         """Get filtered environment variables with empty values removed
         
         This is a utility for clients to filter out empty environment 
         variables, regardless of client-specific formatting.
+        
+        Args:
+            env: Dictionary of environment variables to use for resolving
+                 ${VAR_NAME} references.
         
         Returns:
             Dictionary of non-empty environment variables
         """
         if not self.env_vars:
             return {}
+            
+        # Use provided environment without falling back to os.environ
+        environment = env
             
         # Filter out empty environment variables
         non_empty_env = {}
@@ -88,7 +95,7 @@ class ServerConfig(BaseModel):
                 if value.startswith("${") and value.endswith("}"):
                     # Extract the variable name from ${VAR_NAME}
                     env_var_name = value[2:-1]
-                    env_value = os.environ.get(env_var_name, "")
+                    env_value = environment.get(env_var_name, "")
                     # Only include if the variable has a value in the environment
                     if env_value.strip() != "":
                         non_empty_env[key] = value

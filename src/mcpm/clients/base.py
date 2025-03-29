@@ -164,7 +164,7 @@ class BaseClientManager:
         }
         
         # Add filtered environment variables if present
-        non_empty_env = server_config.get_filtered_env_vars()
+        non_empty_env = server_config.get_filtered_env_vars(os.environ)
         if non_empty_env:
             result["env"] = non_empty_env
                 
