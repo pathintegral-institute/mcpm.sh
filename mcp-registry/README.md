@@ -14,7 +14,7 @@ Browse the `servers` directory to find MCP servers that match your needs. Each s
 
 ### Installing Servers
 
-Various MCP management tools can use this registry to install and configure servers. One such tool is [getmcp.sh](https://getmcp.io), a Homebrew-like package manager for MCP servers.
+Various MCP management tools can use this registry to install and configure servers. One such tool is [getmcp.sh](https://mcpm.sh), a Homebrew-like package manager for MCP servers.
 
 ## Adding Your Server
 

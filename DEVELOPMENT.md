@@ -1,6 +1,6 @@
-# Development Guide for getmcp.io
+# Development Guide for mcpm.sh
 
-This guide covers how to set up and run the getmcp.io website locally for development.
+This guide covers how to set up and run the mcpm.sh website locally for development.
 
 ## Prerequisites
 

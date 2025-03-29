@@ -1,10 +1,10 @@
-# getmcp.io Website Pages
+# mcpm.sh Website Pages
 
-This directory contains the Jekyll website for getmcp.io.
+This directory contains the Jekyll website for mcpm.sh.
 
 ## Local Development
 
-The getmcp.io website is built using Jekyll. The easiest way to run the development server locally is using Docker, which avoids having to install Ruby and all dependencies on your machine.
+The mcpm.sh website is built using Jekyll. The easiest way to run the development server locally is using Docker, which avoids having to install Ruby and all dependencies on your machine.
 
 ### Prerequisites
 

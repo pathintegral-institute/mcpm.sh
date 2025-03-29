@@ -1,6 +1,6 @@
-# Contributing to getmcp.io
+# Contributing to mcpm.sh
 
-Thank you for considering contributing to getmcp.io! This document outlines the process for adding or updating MCP servers in the registry.
+Thank you for considering contributing to mcpm.sh! This document outlines the process for adding or updating MCP servers in the registry.
 
 ## Adding a New Server
 
@@ -72,7 +72,7 @@ python scripts/prepare.py mcp-registry pages --validate-only
 
 ## Website Development
 
-If you want to contribute to the getmcp.io website itself:
+If you want to contribute to the mcpm.sh website itself:
 
 1. Fork and clone the repository
 2. Run the development server:
@@ -87,7 +87,7 @@ If you want to contribute to the getmcp.io website itself:
 
 ## Design Guidelines
 
-getmcp.io follows a minimal, clean design philosophy:
+mcpm.sh follows a minimal, clean design philosophy:
 
 - Stick to a minimal black and white color scheme
 - Focus on functionality and readability

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo -e "\n📦 Setting up getmcp.io development environment...\n"
+echo -e "\n📦 Setting up mcpm.sh development environment...\n"
 
 # Check if Docker is installed and running
 if ! docker info &> /dev/null; then

@@ -16,7 +16,7 @@ from mcpm.utils.config import DEFAULT_CONFIG_DIR
 logger = logging.getLogger(__name__)
 
 # Default repository URL
-DEFAULT_REPO_URL = "https://getmcp.io/api/servers.json"
+DEFAULT_REPO_URL = "https://mcpm.sh/api/servers.json"
 
 # Default cache file path
 DEFAULT_CACHE_FILE = os.path.join(DEFAULT_CONFIG_DIR, "servers_cache.json")
