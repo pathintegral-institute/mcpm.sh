@@ -10,18 +10,70 @@ from pathlib import Path
 from typing import Dict, List, Optional, Any
 import requests
 
+# Import ConfigManager to get the config directory
+from mcpm.utils.config import DEFAULT_CONFIG_DIR
+
 logger = logging.getLogger(__name__)
 
 # Default repository URL
 DEFAULT_REPO_URL = "https://getmcp.io/api/servers.json"
 
+# Default cache file path
+DEFAULT_CACHE_FILE = os.path.join(DEFAULT_CONFIG_DIR, "servers_cache.json")
+
 class RepositoryManager:
     """Manages server repository operations"""
     
-    def __init__(self, repo_url: str = DEFAULT_REPO_URL):
+    def __init__(self, repo_url: str = DEFAULT_REPO_URL, cache_file: str = DEFAULT_CACHE_FILE):
         self.repo_url = repo_url
+        self.cache_file = cache_file
         self.servers_cache = None
         self.last_refresh = None
+        
+        # Ensure cache directory exists
+        os.makedirs(os.path.dirname(self.cache_file), exist_ok=True)
+        
+        # Load cache from file if available
+        self._load_cache_from_file()
+    
+    def _load_cache_from_file(self) -> None:
+        """
+        Load servers cache from file if it exists
+        """
+        if os.path.exists(self.cache_file):
+            try:
+                with open(self.cache_file, 'r') as f:
+                    cache_data = json.load(f)
+                    self.servers_cache = cache_data.get('servers')
+                    
+                    # Parse the last_refresh timestamp if it exists
+                    last_refresh_str = cache_data.get('last_refresh')
+                    if last_refresh_str:
+                        self.last_refresh = datetime.fromisoformat(last_refresh_str)
+                    
+                    logger.debug(f"Loaded servers cache from {self.cache_file}")
+            except (json.JSONDecodeError, ValueError) as e:
+                logger.error(f"Error parsing cache file: {self.cache_file}: {e}")
+                self.servers_cache = None
+                self.last_refresh = None
+    
+    def _save_cache_to_file(self) -> None:
+        """
+        Save servers cache to file
+        """
+        if self.servers_cache and self.last_refresh:
+            try:
+                cache_data = {
+                    'servers': self.servers_cache,
+                    'last_refresh': self.last_refresh.isoformat()
+                }
+                
+                with open(self.cache_file, 'w') as f:
+                    json.dump(cache_data, f, indent=2)
+                    
+                logger.debug(f"Saved servers cache to {self.cache_file}")
+            except Exception as e:
+                logger.error(f"Failed to save cache to {self.cache_file}: {e}")
     
     def _fetch_servers(self, force_refresh: bool = False) -> Dict[str, Dict[str, Any]]:
         """
@@ -45,6 +97,10 @@ class RepositoryManager:
             response.raise_for_status()
             self.servers_cache = response.json()
             self.last_refresh = datetime.now()
+            
+            # Save the updated cache to file
+            self._save_cache_to_file()
+            
             return self.servers_cache
         except requests.RequestException as e:
             logger.error(f"Failed to fetch servers from {self.repo_url}: {e}")
@@ -105,35 +161,4 @@ class RepositoryManager:
         """
         servers_dict = self._fetch_servers()
         return servers_dict.get(server_name)
-    
-    # Version-related method removed
-    
-    def download_server(self, server_name: str, 
-                       dest_dir: Optional[str] = None) -> Optional[Dict[str, Any]]:
-        """
-        Download an MCP server package
-        
-        Args:
-            server_name: Name of the server to download
-            dest_dir: Directory to download to
-            
-        Returns:
-            Server metadata if successful, None otherwise
-        """
-        metadata = self.get_server_metadata(server_name)
-        if not metadata:
-            logger.error(f"Server not found: {server_name}")
-            return None
-            
-        # Create the destination directory if needed
-        if dest_dir:
-            os.makedirs(dest_dir, exist_ok=True)
-            
-        # Store the metadata in the destination directory
-        if dest_dir:
-            metadata_path = Path(dest_dir) / "metadata.json"
-            with open(metadata_path, "w") as f:
-                json.dump(metadata, f, indent=2)
-        
-        logger.info(f"Downloaded server {server_name}")
-        return metadata
+
