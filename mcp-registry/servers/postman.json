@@ -1,0 +1,33 @@
+{
+  "name": "postman",
+  "display_name": "Postman MCP Server",
+  "description": "MCP server for running Postman Collections locally via Newman. Allows for simple execution of Postman Server and returns the results of whether the collection passed all the tests.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shannonlal/mcp-postman"
+  },
+  "homepage": "https://github.com/shannonlal/mcp-postman",
+  "author": {
+    "name": "shannonlal"
+  },
+  "license": "ISC",
+  "categories": [
+    "API Testing",
+    "Automation"
+  ],
+  "tags": [
+    "Postman",
+    "Newman",
+    "API"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "https://github.com/shannonlal/mcp-postman"
+      ]
+    }
+  }
+}

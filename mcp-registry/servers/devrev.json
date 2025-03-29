@@ -1,0 +1,35 @@
+{
+  "name": "devrev",
+  "display_name": "DevRev MCP Server",
+  "description": "An MCP server to integrate with DevRev APIs to search through your DevRev Knowledge Graph where objects can be imported from diff. sources listed [here](https://devrev.ai/docs/import#available-sources).",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kpsunil97/devrev-mcp-server"
+  },
+  "homepage": "https://github.com/kpsunil97/devrev-mcp-server",
+  "author": {
+    "name": "kpsunil97"
+  },
+  "license": "MIT",
+  "categories": [
+    "DevRev",
+    "Server"
+  ],
+  "tags": [
+    "devrev",
+    "server",
+    "search"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "devrev-mcp"
+      ],
+      "env": {
+        "DEVREV_API_KEY": "${DEVREV_API_KEY}"
+      }
+    }
+  }
+}

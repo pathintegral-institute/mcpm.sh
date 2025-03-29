@@ -1,0 +1,67 @@
+{
+  "name": "rijksmuseum",
+  "display_name": "Rijksmuseum MCP Server",
+  "description": "Interface with the Rijksmuseum API to search artworks, retrieve artwork details, access image tiles, and explore user collections.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/r-huijts/rijksmuseum-mcp"
+  },
+  "homepage": "https://github.com/r-huijts/rijksmuseum-mcp",
+  "author": {
+    "name": "r-huijts"
+  },
+  "license": "MIT",
+  "categories": [
+    "art",
+    "museum"
+  ],
+  "tags": [
+    "collection",
+    "Rijksmuseum"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-server-rijksmuseum"
+      ],
+      "env": {
+        "RIJKSMUSEUM_API_KEY": "your_api_key_here"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Artwork Discovery",
+      "description": "Queries related to discovering artworks in the museum's collection.",
+      "prompt": "\"Show me all paintings by Rembrandt from the 1640s\""
+    },
+    {
+      "title": "Artwork Analysis",
+      "description": "Queries related to analyzing specific artworks.",
+      "prompt": "\"Tell me everything about The Night Watch\""
+    },
+    {
+      "title": "Artist Research",
+      "description": "Queries focused on researching artists and their works.",
+      "prompt": "\"Create a timeline of Rembrandt's self-portraits\""
+    },
+    {
+      "title": "Thematic Exploration",
+      "description": "Queries that explore themes in the artworks.",
+      "prompt": "\"Find all artworks depicting biblical scenes\""
+    },
+    {
+      "title": "Collection Analysis",
+      "description": "Queries about user-curated collections.",
+      "prompt": "\"Show me the most popular user-curated collections\""
+    },
+    {
+      "title": "Visual Details",
+      "description": "Queries for examining visual details in artworks.",
+      "prompt": "\"Let me examine the details in the background of The Night Watch\""
+    }
+  ]
+}

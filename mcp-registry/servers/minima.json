@@ -1,0 +1,36 @@
+{
+  "name": "minima",
+  "display_name": "Minima",
+  "description": "MCP server for RAG on local files",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dmayboroda/minima"
+  },
+  "homepage": "https://github.com/dmayboroda/minima",
+  "author": {
+    "name": "dmayboroda"
+  },
+  "license": "MPLv2",
+  "categories": [
+    "RAG",
+    "On-Premises",
+    "Containers"
+  ],
+  "tags": [
+    "ChatGPT",
+    "Integration",
+    "Local",
+    "Open Source"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/dmayboroda/minima.git",
+        "minima"
+      ]
+    }
+  }
+}

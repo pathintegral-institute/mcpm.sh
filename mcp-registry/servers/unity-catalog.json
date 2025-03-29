@@ -1,0 +1,55 @@
+{
+  "name": "unity-catalog",
+  "display_name": "An Unity Catalog MCP server",
+  "description": "An MCP server that enables LLMs to interact with Unity Catalog AI, supporting CRUD operations on Unity Catalog Functions and executing them as MCP tools.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ognis1205/mcp-server-unitycatalog"
+  },
+  "homepage": "https://github.com/ognis1205/mcp-server-unitycatalog",
+  "author": {
+    "name": "ognis1205"
+  },
+  "license": "MIT",
+  "categories": [
+    "Database"
+  ],
+  "tags": [
+    "Unity Catalog",
+    "API",
+    "Functions"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/ognis1205/mcp-server-unitycatalog",
+        "mcp-server-unitycatalog",
+        "--uc_server",
+        "<your unity catalog url>",
+        "--uc_catalog",
+        "<your catalog name>",
+        "--uc_schema",
+        "<your schema name>"
+      ]
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "mcp/unitycatalog",
+        "--uc_server",
+        "<your unity catalog url>",
+        "--uc_catalog",
+        "<your catalog name>",
+        "--uc_schema",
+        "<your schema name>"
+      ]
+    }
+  }
+}

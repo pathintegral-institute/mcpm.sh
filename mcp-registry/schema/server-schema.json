@@ -1,0 +1,160 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MCP Server Manifest",
+  "description": "Schema for MCP server manifest files",
+  "type": "object",
+  "required": [
+    "name",
+    "display_name",
+    "description",
+    "repository",
+    "license",
+    "installations"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Server name in kebab-case format",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "display_name": {
+      "type": "string",
+      "description": "Human-readable server name"
+    },
+    "description": {
+      "type": "string",
+      "description": "Brief description of the server's functionality"
+    },
+    "repository": {
+      "type": "object",
+      "required": ["type", "url"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["git"]
+        },
+        "url": {
+          "type": "string"
+        }
+      }
+    },
+    "homepage": {
+      "type": "string"
+    },
+    "author": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      }
+    },
+    "license": {
+      "type": "string"
+    },
+    "categories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "arguments": {
+      "type": "object",
+      "description": "Configuration arguments required by the server",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["description", "required"],
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "Human-readable description of the argument"
+          },
+          "required": {
+            "type": "boolean",
+            "description": "Whether this argument is required for the server to function"
+          },
+          "example": {
+            "type": "string",
+            "description": "Example value for this argument"
+          }
+        }
+      }
+    },
+    "installations": {
+      "type": "object",
+      "description": "Different methods to install and run this server",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["type", "command", "args"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Type of installation method",
+            "enum": ["npm", "python", "docker", "cli", "uvx", "custom"]
+          },
+          "command": {
+            "type": "string",
+            "description": "Command to run the server"
+          },
+          "args": {
+            "type": "array",
+            "description": "Arguments to pass to the command",
+            "items": {
+              "type": "string"
+            }
+          },
+          "package": {
+            "type": "string",
+            "description": "Package name (for npm, pip, etc.)"
+          },
+          "env": {
+            "type": "object",
+            "description": "Environment variables to set",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "description": {
+            "type": "string",
+            "description": "Human-readable description of this installation method"
+          },
+          "recommended": {
+            "type": "boolean",
+            "description": "Whether this is the recommended installation method"
+          }
+        }
+      }
+    },
+    "examples": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["title", "description", "prompt"],
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "prompt": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

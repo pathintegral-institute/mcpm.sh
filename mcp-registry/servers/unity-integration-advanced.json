@@ -1,0 +1,48 @@
+{
+  "name": "unity-integration-advanced",
+  "display_name": "Unity MCP Integration",
+  "description": "Advanced Unity3d Game Engine MCP which supports ,Execution of Any Editor Related Code Directly Inside of Unity, Fetch Logs, Get Editor State and Allow File Access of the Project making it much more useful in Script Editing or asset creation.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/quazaai/UnityMCPIntegration"
+  },
+  "homepage": "https://github.com/quazaai/UnityMCPIntegration",
+  "author": {
+    "name": "quazaai"
+  },
+  "license": "MIT",
+  "categories": [
+    "Unity",
+    "AI"
+  ],
+  "tags": [
+    "Unity",
+    "Integration",
+    "AI"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "https://github.com/quazaai/UnityMCPIntegration"
+      ],
+      "env": {
+        "MCP_WEBSOCKET_PORT": "5010"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Get Unity Editor State",
+      "description": "Retrieve comprehensive information about the current Unity project and editor state.",
+      "prompt": "get_editor_state()"
+    },
+    {
+      "title": "Execute C# Code",
+      "description": "Run specific C# code directly within the Unity Editor.",
+      "prompt": "execute_editor_command('Debug.Log(\"Hello, World!\");')"
+    }
+  ]
+}

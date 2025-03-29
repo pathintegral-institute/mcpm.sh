@@ -1,0 +1,47 @@
+{
+  "name": "placid-app",
+  "display_name": "Placid.app MCP Server",
+  "description": "Generate image and video creatives using Placid.app templates",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/felores/placid-mcp-server"
+  },
+  "homepage": "https://github.com/felores/placid-mcp-server",
+  "author": {
+    "name": "felores"
+  },
+  "license": "MIT",
+  "categories": [
+    "API"
+  ],
+  "tags": [
+    "Placid",
+    "Templates",
+    "Image Generation",
+    "Video Generation"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "@felores/placid-mcp-server"
+      ],
+      "env": {
+        "PLACID_API_TOKEN": "your-api-token"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Generate Video Example",
+      "description": "Example usage for generating a video using Placid templates.",
+      "prompt": "{\"template_id\":\"template-uuid\",\"layers\":{\"MEDIA\":{\"video\":\"https://example.com/video.mp4\"},\"PHOTO\":{\"image\":\"https://example.com/photo.jpg\"},\"LOGO\":{\"image\":\"https://example.com/logo.png\"},\"HEADLINE\":{\"text\":\"My Video Title\"}},\"audio\":\"https://example.com/background.mp3\",\"audio_duration\":\"auto\"}"
+    },
+    {
+      "title": "Generate Image Example",
+      "description": "Example usage for generating an image using Placid templates.",
+      "prompt": "{\"template_id\":\"template-uuid\",\"layers\":{\"headline\":{\"text\":\"Welcome to My App\"},\"background\":{\"image\":\"https://example.com/bg.jpg\"}}}"
+    }
+  ]
+}

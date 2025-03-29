@@ -1,0 +1,76 @@
+{
+  "name": "github",
+  "display_name": "GitHub MCP Server",
+  "description": "MCP Server for the GitHub API, enabling file operations, repository management, search functionality, and more.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/modelcontextprotocol/servers"
+  },
+  "homepage": "https://github.com/modelcontextprotocol/servers/tree/main/src/github#readme",
+  "author": {
+    "name": "MCP Team"
+  },
+  "license": "MIT",
+  "categories": [
+    "api",
+    "development",
+    "utility"
+  ],
+  "tags": [
+    "github",
+    "code",
+    "repository",
+    "git"
+  ],
+  "arguments": {
+    "GITHUB_TOKEN": {
+      "description": "GitHub Personal Access Token with appropriate permissions for the repositories you want to access",
+      "required": true,
+      "example": "ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    }
+  },
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "package": "@modelcontextprotocol/server-github",
+      "env": {
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+      },
+      "description": "Install and run using NPX",
+      "recommended": true
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "GITHUB_PERSONAL_ACCESS_TOKEN",
+        "mcp/github"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      },
+      "description": "Run with Docker"
+    }
+  },
+  "examples": [
+    {
+      "title": "Search GitHub repositories",
+      "description": "Find repositories related to machine learning",
+      "prompt": "Find GitHub repositories about machine learning with more than 1000 stars."
+    },
+    {
+      "title": "View repository contents",
+      "description": "Browse files in a GitHub repository",
+      "prompt": "Show me the main Python files in the Hugging Face transformers repository."
+    }
+  ]
+}

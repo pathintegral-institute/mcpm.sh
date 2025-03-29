@@ -1,0 +1,71 @@
+{
+  "name": "aws-athena",
+  "display_name": "AWS Athena MCP",
+  "description": "A MCP server for AWS Athena to run SQL queries on Glue Catalog.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lishenxydlgzs/aws-athena-mcp"
+  },
+  "homepage": "https://github.com/lishenxydlgzs/aws-athena-mcp",
+  "author": {
+    "name": "lishenxydlgzs"
+  },
+  "license": "MIT",
+  "categories": [
+    "database",
+    "AWS"
+  ],
+  "tags": [
+    "athena",
+    "sql",
+    "aws"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@lishenxydlgzs/aws-athena-mcp"
+      ],
+      "env": {
+        "OUTPUT_S3_PATH": "${OUTPUT_S3_PATH}",
+        "AWS_REGION": "${AWS_REGION}",
+        "AWS_PROFILE": "${AWS_PROFILE}",
+        "AWS_ACCESS_KEY_ID": "${AWS_ACCESS_KEY_ID}",
+        "AWS_SECRET_ACCESS_KEY": "${AWS_SECRET_ACCESS_KEY}",
+        "AWS_SESSION_TOKEN": "${AWS_SESSION_TOKEN}",
+        "QUERY_TIMEOUT_MS": "300000",
+        "MAX_RETRIES": "100",
+        "RETRY_DELAY_MS": "500"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Show All Databases",
+      "description": "Lists all databases in Athena",
+      "prompt": "{\"database\": \"default\", \"query\": \"SHOW DATABASES\"}"
+    },
+    {
+      "title": "List Tables in a Database",
+      "description": "Shows all tables in the default database",
+      "prompt": "{\"database\": \"default\", \"query\": \"SHOW TABLES\"}"
+    },
+    {
+      "title": "Get Table Schema",
+      "description": "Fetches the schema of the asin_sitebestimg table",
+      "prompt": "{\"database\": \"default\", \"query\": \"DESCRIBE default.asin_sitebestimg\"}"
+    },
+    {
+      "title": "Table Rows Preview",
+      "description": "Shows some rows from my_database.mytable",
+      "prompt": "{\"database\": \"my_database\", \"query\": \"SELECT * FROM my_table LIMIT 10\", \"maxRows\": 10}"
+    },
+    {
+      "title": "Advanced Query with Filtering and Aggregation",
+      "description": "Finds the average price by category for in-stock products",
+      "prompt": "{\"database\": \"my_database\", \"query\": \"SELECT category, COUNT(*) as count, AVG(price) as avg_price FROM products WHERE in_stock = true GROUP BY category ORDER BY count DESC\", \"maxRows\": 100}"
+    }
+  ]
+}

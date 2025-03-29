@@ -1,0 +1,45 @@
+{
+  "name": "dicom",
+  "display_name": "DICOM Model Context Protocol Server",
+  "description": "An MCP server to query and retrieve medical images and for parsing and reading dicom-encapsulated documents (pdf etc.).",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ChristianHinge/dicom-mcp"
+  },
+  "homepage": "https://github.com/ChristianHinge/dicom-mcp",
+  "author": {
+    "name": "ChristianHinge",
+    "url": "https://github.com/ChristianHinge"
+  },
+  "license": "MIT",
+  "categories": [
+    "DICOM",
+    "Medical",
+    "AI"
+  ],
+  "tags": [
+    "DICOM",
+    "Medical Imaging",
+    "AI",
+    "PDF Extraction"
+  ],
+  "examples": [
+    {
+      "title": "List available DICOM nodes",
+      "description": "Retrieve and display all configured DICOM nodes and calling AE titles.",
+      "prompt": "list_dicom_nodes()"
+    }
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/ChristianHinge/dicom-mcp",
+        "dicom-mcp",
+        "/path/to/configuration.yaml"
+      ]
+    }
+  }
+}

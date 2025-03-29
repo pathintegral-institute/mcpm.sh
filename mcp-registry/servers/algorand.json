@@ -1,0 +1,44 @@
+{
+  "name": "algorand",
+  "display_name": "Algorand MCP Implementation",
+  "description": "A comprehensive MCP server for tooling interactions (40+) and resource accessibility (60+) plus many useful prompts for interacting with the Algorand blockchain.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoPlausible/algorand-mcp"
+  },
+  "homepage": "https://github.com/GoPlausible/algorand-mcp",
+  "author": {
+    "name": "GoPlausible",
+    "email": "support@goplausible.com",
+    "url": "https://goplausible.com"
+  },
+  "license": "MIT",
+  "categories": [
+    "Blockchain"
+  ],
+  "tags": [
+    "Algorand",
+    "Blockchain",
+    "Node.js"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@GoPlausible/algorand-mcp"
+      ],
+      "env": {
+        "NFD_API_KEY": "",
+        "NFD_API_URL": "https://testnet-api.algonode.cloud",
+        "ALGORAND_ALGOD": "https://testnet-api.algonode.cloud",
+        "ALGORAND_TOKEN": "",
+        "ALGORAND_INDEXER": "https://testnet-idx.algonode.cloud",
+        "ALGORAND_INDEXER_API": "https://testnet-idx.algonode.cloud/v2",
+        "ALGORAND_INDEXER_PORT": "",
+        "ALGORAND_NETWORK": "testnet"
+      }
+    }
+  }
+}

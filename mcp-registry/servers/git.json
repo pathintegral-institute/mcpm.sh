@@ -1,0 +1,55 @@
+{
+  "name": "git",
+  "display_name": "mcp-server-git",
+  "description": "Tools to read, search, and manipulate Git repositories",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/modelcontextprotocol/servers"
+  },
+  "homepage": "https://github.com/modelcontextprotocol/servers/blob/main/src/git",
+  "author": {
+    "name": "modelcontextprotocol"
+  },
+  "license": "MIT",
+  "categories": [
+    "Git"
+  ],
+  "tags": [
+    "Git",
+    "Server",
+    "Automation"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "mcp-server-git",
+        "--repository",
+        "${GIT_REPO_PATH}"
+      ]
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "--mount",
+        "type=bind,src=${GIT_REPO_PATH},dst=${GIT_REPO_PATH}",
+        "mcp/git"
+      ]
+    },
+    "python": {
+      "type": "python",
+      "command": "python",
+      "args": [
+        "-m",
+        "mcp_server_git",
+        "--repository",
+        "${GIT_REPO_PATH}"
+      ]
+    }
+  }
+}

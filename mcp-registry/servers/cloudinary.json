@@ -1,0 +1,44 @@
+{
+  "name": "cloudinary",
+  "display_name": "Cloudinary MCP Server",
+  "description": "Cloudinary Model Context Protocol Server to upload media to Cloudinary and get back the media link and details.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/felores/cloudinary-mcp-server"
+  },
+  "homepage": "https://github.com/felores/cloudinary-mcp-server",
+  "author": {
+    "name": "felores"
+  },
+  "license": "MIT",
+  "categories": [
+    "Media",
+    "Image Processing"
+  ],
+  "tags": [
+    "cloudinary",
+    "images",
+    "videos"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "@felores/cloudinary-mcp-server@latest"
+      ],
+      "env": {
+        "CLOUDINARY_CLOUD_NAME": "${CLOUDINARY_CLOUD_NAME}",
+        "CLOUDINARY_API_KEY": "${CLOUDINARY_API_KEY}",
+        "CLOUDINARY_API_SECRET": "${CLOUDINARY_API_SECRET}"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Upload an Image",
+      "description": "This example demonstrates how to upload an image to Cloudinary.",
+      "prompt": "use_mcp_tool({ server_name: 'cloudinary', tool_name: 'upload', arguments: { file: 'path/to/image.jpg', resource_type: 'image', public_id: 'my-custom-id' }});"
+    }
+  ]
+}

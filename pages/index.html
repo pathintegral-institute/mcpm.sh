@@ -1,3 +1,5 @@
+---
+---
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,23 +9,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    {% include favicon.html %}
     <style>
-        :root {
-            --bg-color: #242830; /* Clean grey background */
-            --bg-accent: #2e3238; /* Slightly darker grey for accent areas */
-            --text-primary: #e2e8f0;
-            --text-secondary: #a0aec0;
-            --accent-color: #09784C; /* Deep green brand color */
-            --accent-light: #5CD951; /* Light green brand color */
-            --accent-dark: #09784C; /* Deep green brand color, darker version */
-            --accent-highlight: #FF84BD; /* Pink brand color */
-            --success: #5CD951; /* Light green brand color */
-            --warning: #FEBF00; /* Yellow/amber brand color */
-            --code-bg: #1e2124; /* Darker code background */
-            --card-border: #3a3e45;
-            --gradient-bg: linear-gradient(to right, #242830, #2e3238);
-        }
+        {% include colors.css %}
         
         * {
             margin: 0;
@@ -261,35 +249,37 @@
     </style>
 </head>
 <body>
+    {% include nav.html %}
+    
     <div class="container">
         <header>
-            <h1>MCPM</h1>
+            <h1>MCP Manager</h1>
             <div class="tagline">Model Context Protocol Manager</div>
             <div class="terminal-animation">
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 100">
-  <!-- Terminal background -->
-  <rect x="10" y="10" width="280" height="80" rx="0" ry="0" fill="#2e3238" />
-  
-  <!-- Terminal header -->
-  <rect x="10" y="10" width="280" height="20" rx="0" ry="0" fill="#242830" />
-  
-  <!-- Window buttons, kept round for recognizability -->
-  <circle cx="25" cy="20" r="4" fill="#FF5F57"/>
-  <circle cx="40" cy="20" r="4" fill="#FEBC2E"/>
-  <circle cx="55" cy="20" r="4" fill="#28C840"/>
-  
-  <!-- Static command prompt -->
-  <text x="30" y="55" font-family="monospace" font-size="24" fill="#e2e8f0">$</text>
-  <text x="55" y="55" font-family="monospace" font-size="24" fill="#5CD951">mcpm</text>
-  
-  <!-- Animated command text -->
-  <text id="commandText" x="130" y="55" font-family="monospace" font-size="24" fill="#FF84BD"></text>
-  
-  <!-- Cursor -->
-  <rect id="cursor" x="130" y="40" width="2" height="24" fill="#FEBF00">
-    <animate attributeName="opacity" values="1;0;1" dur="0.8s" repeatCount="indefinite" />
-  </rect>
-</svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 100">
+                    <!-- Terminal background -->
+                    <rect x="10" y="10" width="280" height="80" rx="0" ry="0" fill="#2e3238" />
+                    
+                    <!-- Terminal header -->
+                    <rect x="10" y="10" width="280" height="20" rx="0" ry="0" fill="#242830" />
+                    
+                    <!-- Window buttons, kept round for recognizability -->
+                    <circle cx="25" cy="20" r="4" fill="#FF5F57"/>
+                    <circle cx="40" cy="20" r="4" fill="#FEBC2E"/>
+                    <circle cx="55" cy="20" r="4" fill="#28C840"/>
+                    
+                    <!-- Static command prompt - properly aligned with cursor -->
+                    <text x="30" y="60" font-family="monospace" font-size="24" fill="#e2e8f0">$</text>
+                    <text x="55" y="60" font-family="monospace" font-size="24" fill="#5CD951">mcpm</text>
+                    
+                    <!-- Animated command text - properly aligned with cursor -->
+                    <text id="commandText" x="130" y="60" font-family="monospace" font-size="24" fill="#FF84BD"></text>
+                    
+                    <!-- Cursor -->
+                    <rect id="cursor" x="130" y="40" width="2" height="24" fill="#FEBF00">
+                        <animate attributeName="opacity" values="1;0;1" dur="0.8s" repeatCount="indefinite" />
+                    </rect>
+                </svg>
             </div>
         </header>
 
@@ -412,11 +402,10 @@
                 <li><em>More clients coming soon...</em></li>
             </ul>
         </div>
-
-        <footer>
-            <p>© 2025 Model Context Protocol Manager | <a href="https://github.com/getmcp-xyz/mcpm.sh">GitHub</a></p>
-        </footer>
     </div>
+    
+    {% include footer.html %}
+    {% include github-corner.html %}
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {

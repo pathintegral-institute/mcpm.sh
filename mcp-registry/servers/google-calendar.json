@@ -1,0 +1,60 @@
+{
+  "name": "google-calendar",
+  "display_name": "Google Calendar MCP Server",
+  "description": "Google Calendar MCP Server for managing Google calendar events. Also supports searching for events by attributes like title and location.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nspady/google-calendar-mcp"
+  },
+  "homepage": "https://github.com/nspady/google-calendar-mcp",
+  "author": {
+    "name": "nspady"
+  },
+  "license": "MIT",
+  "categories": [
+    "Productivity",
+    "Calendar",
+    "Integration"
+  ],
+  "tags": [
+    "Google Calendar",
+    "event management"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "https://github.com/nspady/google-calendar-mcp"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "Add Event from Screenshot",
+      "description": "Add events from screenshots and images",
+      "prompt": "Add this event to my calendar based on the attached screenshot."
+    },
+    {
+      "title": "Check Upcoming Events",
+      "description": "Discover upcoming events outside usual routines",
+      "prompt": "What events do I have coming up this week that aren't part of my usual routine?"
+    },
+    {
+      "title": "Check Attendance",
+      "description": "Identify events with unaccepted invitations",
+      "prompt": "Which events tomorrow have attendees who have not accepted the invitation?"
+    },
+    {
+      "title": "Auto Coordinate Events",
+      "description": "Create events based on the available times provided",
+      "prompt": "Here's some available that was provided to me by someone. Take a look at the available times and create an event that is free on my work calendar."
+    },
+    {
+      "title": "Check Availability",
+      "description": "Provide your availability checking both calendars",
+      "prompt": "Please provide availability looking at both my personal and work calendar for this upcoming week."
+    }
+  ]
+}

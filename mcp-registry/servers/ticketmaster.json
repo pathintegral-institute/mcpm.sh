@@ -1,0 +1,49 @@
+{
+  "name": "ticketmaster",
+  "display_name": "Ticketmaster MCP Server",
+  "description": "Search for events, venues, and attractions through the Ticketmaster Discovery API",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/delorenj/mcp-server-ticketmaster"
+  },
+  "homepage": "https://github.com/delorenj/mcp-server-ticketmaster",
+  "author": {
+    "name": "delorenj"
+  },
+  "license": "MIT",
+  "categories": [
+    "Events",
+    "API"
+  ],
+  "tags": [
+    "ticketmaster",
+    "events",
+    "venues",
+    "attractions"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@delorenj/mcp-server-ticketmaster"
+      ],
+      "env": {
+        "TICKETMASTER_API_KEY": "your-api-key-here"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Structured JSON Output",
+      "description": "Example of structured JSON output for searching events.",
+      "prompt": "<use_mcp_tool>\n<server_name>ticketmaster</server_name>\n<tool_name>search_ticketmaster</tool_name>\n<arguments>\n{\n  \"type\": \"event\",\n  \"keyword\": \"concert\",\n  \"startDate\": \"2025-02-01\",\n  \"endDate\": \"2025-02-28\",\n  \"city\": \"New York\",\n  \"stateCode\": \"NY\"\n}\n</arguments>\n</use_mcp_tool>"
+    },
+    {
+      "title": "Human-Readable Text Output",
+      "description": "Example of human-readable text output for searching events.",
+      "prompt": "<use_mcp_tool>\n<server_name>ticketmaster</server_name>\n<tool_name>search_ticketmaster</tool_name>\n<arguments>\n{\n  \"type\": \"event\",\n  \"keyword\": \"concert\",\n  \"startDate\": \"2025-02-01\",\n  \"endDate\": \"2025-02-28\",\n  \"city\": \"New York\",\n  \"stateCode\": \"NY\",\n  \"format\": \"text\"\n}\n</arguments>\n</use_mcp_tool>"
+    }
+  ]
+}

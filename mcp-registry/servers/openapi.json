@@ -1,0 +1,44 @@
+{
+  "name": "openapi",
+  "display_name": "OpenAPI MCP Server",
+  "description": "Interact with [OpenAPI](https://www.openapis.org/) APIs.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/snaggle-ai/openapi-mcp-server"
+  },
+  "homepage": "https://github.com/snaggle-ai/openapi-mcp-server",
+  "author": {
+    "name": "snaggle-ai"
+  },
+  "license": "MIT",
+  "categories": [
+    "API",
+    "OpenAPI"
+  ],
+  "tags": [
+    "openapi",
+    "api exploration"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "openapi-mcp-server"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "Finding information about an API",
+      "description": "Ask Claude to find information about specific APIs.",
+      "prompt": "Find information about the Stripe API."
+    },
+    {
+      "title": "Explaining API usage",
+      "description": "Request explanations on using specific endpoints.",
+      "prompt": "Explain how to use the GitHub API's repository endpoints."
+    }
+  ]
+}

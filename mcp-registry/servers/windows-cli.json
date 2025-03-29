@@ -1,0 +1,43 @@
+{
+  "name": "windows-cli",
+  "display_name": "Windows CLI MCP Server",
+  "description": "MCP server for secure command-line interactions on Windows systems, enabling controlled access to PowerShell, CMD, and Git Bash shells.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SimonB97/win-cli-mcp-server"
+  },
+  "homepage": "https://github.com/SimonB97/win-cli-mcp-server",
+  "author": {
+    "name": "SimonB97"
+  },
+  "license": "MIT",
+  "categories": [
+    "CLI",
+    "Windows"
+  ],
+  "tags": [
+    "CLI",
+    "Windows",
+    "Security",
+    "SSH"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@simonb97/server-win-cli",
+        "--config",
+        "path/to/your/config.json"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "Usage with Claude Desktop",
+      "description": "Add MCP server configuration to Claude Desktop.",
+      "prompt": "\n{\n  \"mcpServers\": {\n    \"windows-cli\": {\n      \"command\": \"npx\",\n      \"args\": [\"-y\", \"@simonb97/server-win-cli\"]\n    }\n  }\n}\n"
+    }
+  ]
+}

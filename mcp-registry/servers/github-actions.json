@@ -1,0 +1,48 @@
+{
+  "name": "github-actions",
+  "display_name": "GitHub Actions MCP Server",
+  "description": "A Model Context Protocol (MCP) server for interacting with Github Actions.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ko1ynnky/github-actions-mcp-server"
+  },
+  "homepage": "https://github.com/ko1ynnky/github-actions-mcp-server",
+  "author": {
+    "name": "ko1ynnky"
+  },
+  "license": "MIT",
+  "categories": [
+    "GitHub",
+    "API"
+  ],
+  "tags": [
+    "GitHub Actions",
+    "Workflow Management",
+    "Automation"
+  ],
+  "examples": [
+    {
+      "title": "List Workflows",
+      "description": "List workflows in a GitHub repository.",
+      "prompt": "const result = await listWorkflows({ owner: 'your-username', repo: 'your-repository' });"
+    },
+    {
+      "title": "Trigger Workflow",
+      "description": "Trigger a workflow in a GitHub repository.",
+      "prompt": "const result = await triggerWorkflow({ owner: 'your-username', repo: 'your-repository', workflowId: 'ci.yml', ref: 'main', inputs: { environment: 'production' }});"
+    }
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "https://github.com/ko1ynnky/github-actions-mcp-server"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "<YOUR_TOKEN>"
+      }
+    }
+  }
+}

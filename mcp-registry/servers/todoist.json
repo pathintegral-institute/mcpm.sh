@@ -1,0 +1,63 @@
+{
+  "name": "todoist",
+  "display_name": "Todoist MCP Server",
+  "description": "Interact with Todoist to manage your tasks.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/abhiz123/todoist-mcp-server"
+  },
+  "homepage": "https://github.com/abhiz123/todoist-mcp-server",
+  "author": {
+    "name": "abhiz123"
+  },
+  "license": "MIT",
+  "categories": [
+    "Productivity",
+    "TODO List"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@abhiz123/todoist-mcp-server"
+      ],
+      "env": {
+        "TODOIST_API_TOKEN": "your_api_token_here"
+      }
+    }
+  },
+  "tags": [
+    "task management",
+    "todoist",
+    "natural language processing"
+  ],
+  "examples": [
+    {
+      "title": "Creating Tasks",
+      "description": "Example commands for creating tasks",
+      "prompt": "\"Create task 'Team Meeting'\""
+    },
+    {
+      "title": "Getting Tasks",
+      "description": "Example commands for retrieving tasks",
+      "prompt": "\"Show all my tasks\""
+    },
+    {
+      "title": "Updating Tasks",
+      "description": "Example commands for updating tasks",
+      "prompt": "\"Update documentation task to be due next week\""
+    },
+    {
+      "title": "Completing Tasks",
+      "description": "Example commands for completing tasks",
+      "prompt": "\"Mark the PR review task as complete\""
+    },
+    {
+      "title": "Deleting Tasks",
+      "description": "Example commands for deleting tasks",
+      "prompt": "\"Delete the PR review task\""
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "name": "openrpc",
+  "display_name": "OpenRPC MCP Server",
+  "description": "Interact with and discover JSON-RPC APIs via [OpenRPC](https://open-rpc.org/).",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shanejonas/openrpc-mpc-server"
+  },
+  "homepage": "https://github.com/shanejonas/openrpc-mpc-server",
+  "author": {
+    "name": "shanejonas"
+  },
+  "license": "MIT",
+  "categories": [
+    "JSON-RPC"
+  ],
+  "tags": [
+    "OpenRPC",
+    "JSON-RPC"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "openrpc-mpc-server"
+      ]
+    }
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "name": "dataset-viewer",
+  "display_name": "Dataset Viewer MCP Server",
+  "description": "Browse and analyze Hugging Face datasets with features like search, filtering, statistics, and data export",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/privetin/dataset-viewer"
+  },
+  "homepage": "https://github.com/privetin/dataset-viewer",
+  "author": {
+    "name": "privetin",
+    "url": "https://github.com/privetin"
+  },
+  "license": "MIT",
+  "categories": [
+    "data",
+    "API"
+  ],
+  "tags": [
+    "Hugging Face",
+    "datasets",
+    "data analysis"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/privetin/dataset-viewer",
+        "dataset-viewer"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "Validate a dataset",
+      "description": "Check if a dataset exists and is accessible.",
+      "prompt": "{\"dataset\": \"stanfordnlp/imdb\"}"
+    },
+    {
+      "title": "Get dataset information",
+      "description": "Retrieve detailed information about a dataset.",
+      "prompt": "{\"dataset\": \"stanfordnlp/imdb\"}"
+    },
+    {
+      "title": "Search dataset contents",
+      "description": "Search for text within a dataset.",
+      "prompt": "{\"dataset\": \"stanfordnlp/imdb\",\"config\": \"plain_text\",\"split\": \"train\",\"query\": \"great movie\"}"
+    },
+    {
+      "title": "Filter and sort rows",
+      "description": "Filter rows using SQL-like conditions and sort them.",
+      "prompt": "{\"dataset\": \"stanfordnlp/imdb\",\"config\": \"plain_text\",\"split\": \"train\",\"where\": \"label = 'positive'\",\"orderby\": \"text DESC\",\"page\": 0}"
+    },
+    {
+      "title": "Get dataset statistics",
+      "description": "Get statistics about a dataset split.",
+      "prompt": "{\"dataset\": \"stanfordnlp/imdb\",\"config\": \"plain_text\",\"split\": \"train\"}"
+    }
+  ]
+}

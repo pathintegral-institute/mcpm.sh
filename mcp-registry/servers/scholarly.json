@@ -1,0 +1,41 @@
+{
+  "name": "scholarly",
+  "display_name": "mcp-scholarly",
+  "description": "A MCP server to search for scholarly and academic articles.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adityak74/mcp-scholarly"
+  },
+  "homepage": "https://github.com/adityak74/mcp-scholarly",
+  "author": {
+    "name": "adityak74"
+  },
+  "license": "MIT",
+  "categories": [
+    "Scholarly",
+    "Academic"
+  ],
+  "tags": [
+    "scholarly",
+    "academic"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "mcp-scholarly"
+      ]
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "mcp/scholarly"
+      ]
+    }
+  }
+}

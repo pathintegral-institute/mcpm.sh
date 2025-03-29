@@ -1,0 +1,50 @@
+{
+  "name": "everart",
+  "display_name": "EverArt MCP Server",
+  "description": "AI image generation using various models",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/modelcontextprotocol/servers"
+  },
+  "homepage": "https://github.com/modelcontextprotocol/servers/blob/main/src/everart",
+  "author": {
+    "name": "modelcontextprotocol"
+  },
+  "license": "[NOT GIVEN]",
+  "categories": [
+    "image generation"
+  ],
+  "tags": [
+    "EverArt",
+    "API",
+    "Claude Desktop"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-everart"
+      ],
+      "env": {
+        "EVERART_API_KEY": "${EVERART_API_KEY}"
+      }
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "EVERART_API_KEY",
+        "mcp/everart"
+      ],
+      "env": {
+        "EVERART_API_KEY": "${EVERART_API_KEY}"
+      }
+    }
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "name": "terminal-control",
+  "display_name": "Terminal Controller for MCP",
+  "description": "A MCP server that enables secure terminal command execution, directory navigation, and file system operations through a standardized interface.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GongRzhe/terminal-controller-mcp"
+  },
+  "homepage": "https://github.com/GongRzhe/terminal-controller-mcp",
+  "author": {
+    "name": "GongRzhe"
+  },
+  "license": "MIT",
+  "categories": [
+    "Utility",
+    "Terminal"
+  ],
+  "tags": [
+    "terminal",
+    "command execution",
+    "file management",
+    "cross-platform"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "terminal-controller"
+      ]
+    },
+    "python": {
+      "type": "python",
+      "command": "python",
+      "args": [
+        "-m",
+        "terminal_controller"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "Run Command Example",
+      "description": "Run the command `ls -la` in the current directory",
+      "prompt": "Run the command `ls -la` in the current directory"
+    },
+    {
+      "title": "Navigate Directory Example",
+      "description": "Navigate to my Documents folder",
+      "prompt": "Navigate to my Documents folder"
+    },
+    {
+      "title": "Show Downloads Example",
+      "description": "Show me the contents of my Downloads directory",
+      "prompt": "Show me the contents of my Downloads directory"
+    },
+    {
+      "title": "Recent Commands Example",
+      "description": "Show me my recent command history",
+      "prompt": "Show me my recent command history"
+    }
+  ]
+}

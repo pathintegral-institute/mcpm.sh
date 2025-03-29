@@ -1,0 +1,33 @@
+{
+  "name": "google-tasks",
+  "display_name": "Google Tasks MCP Server",
+  "description": "Google Tasks API Model Context Protocol Server.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zcaceres/gtasks-mcp"
+  },
+  "homepage": "https://github.com/zcaceres/gtasks-mcp",
+  "author": {
+    "name": "zcaceres"
+  },
+  "license": "MIT",
+  "categories": [
+    "productivity",
+    "task management"
+  ],
+  "tags": [
+    "google",
+    "tasks",
+    "productivity"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "https://github.com/zcaceres/gtasks-mcp"
+      ]
+    }
+  }
+}

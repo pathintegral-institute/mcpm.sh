@@ -1,0 +1,36 @@
+{
+  "name": "gmail-headless",
+  "display_name": "MCP Headless Gmail Server",
+  "description": "Remote hostable MCP server that can get and send Gmail messages without local credential or file system setup.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/baryhuang/mcp-headless-gmail"
+  },
+  "homepage": "https://github.com/baryhuang/mcp-headless-gmail",
+  "author": {
+    "name": "baryhuang"
+  },
+  "license": "MIT",
+  "categories": [
+    "Email",
+    "Gmail"
+  ],
+  "tags": [
+    "Gmail",
+    "Headless",
+    "Docker",
+    "API"
+  ],
+  "installations": {
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "buryhuang/mcp-headless-gmail:latest"
+      ]
+    }
+  }
+}

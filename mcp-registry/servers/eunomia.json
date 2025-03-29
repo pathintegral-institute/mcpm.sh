@@ -1,0 +1,32 @@
+{
+  "name": "eunomia",
+  "display_name": "Eunomia MCP Server",
+  "description": "Extension of the Eunomia framework that connects Eunomia instruments with MCP servers",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/whataboutyou-ai/eunomia-MCP-server"
+  },
+  "homepage": "https://github.com/whataboutyou-ai/eunomia-MCP-server",
+  "author": {
+    "name": "whataboutyou-ai"
+  },
+  "license": "Apache-2.0",
+  "categories": [
+    "Data Governance"
+  ],
+  "tags": [
+    "Eunomia",
+    "Data Governance"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/whataboutyou-ai/eunomia-MCP-server",
+        "orchestra_server"
+      ]
+    }
+  }
+}

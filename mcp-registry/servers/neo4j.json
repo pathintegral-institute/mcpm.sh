@@ -1,0 +1,59 @@
+{
+  "name": "neo4j",
+  "display_name": "MCP Neo4j Server",
+  "description": "A community built server that interacts with Neo4j Graph Database.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/da-okazaki/mcp-neo4j-server"
+  },
+  "homepage": "https://github.com/da-okazaki/mcp-neo4j-server",
+  "author": {
+    "name": "da-okazaki"
+  },
+  "license": "MIT",
+  "categories": [
+    "database",
+    "Neo4j"
+  ],
+  "tags": [
+    "neo4j",
+    "database"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@alanse/mcp-neo4j-server"
+      ],
+      "env": {
+        "NEO4J_URI": "${NEO4J_URI}",
+        "NEO4J_USERNAME": "${NEO4J_USERNAME}",
+        "NEO4J_PASSWORD": "${NEO4J_PASSWORD}"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Querying Data",
+      "description": "Ask questions about the data, e.g., 'Show me all employees in the Sales department'.",
+      "prompt": "User: \"Show me all employees in the Sales department\""
+    },
+    {
+      "title": "Creating Data",
+      "description": "Instruct the bot to create new entities, e.g., 'Add a new person named John Doe who is 30 years old'.",
+      "prompt": "User: \"Add a new person named John Doe who is 30 years old\""
+    },
+    {
+      "title": "Creating Relationships",
+      "description": "Request to establish relationships between entities, e.g., 'Make John Doe friends with Jane Smith'.",
+      "prompt": "User: \"Make John Doe friends with Jane Smith\""
+    },
+    {
+      "title": "Complex Operations",
+      "description": "Perform comprehensive queries like 'Find all products purchased by customers who live in New York'.",
+      "prompt": "User: \"Find all products purchased by customers who live in New York\""
+    }
+  ]
+}

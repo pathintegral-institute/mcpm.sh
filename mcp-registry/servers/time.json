@@ -1,0 +1,85 @@
+{
+  "name": "time",
+  "display_name": "Time MCP Server",
+  "description": "A Model Context Protocol server that provides time and timezone conversion capabilities. It automatically detects the system's timezone and offers tools for getting current time and converting between timezones.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/modelcontextprotocol/servers"
+  },
+  "homepage": "https://github.com/modelcontextprotocol/servers/tree/main/src/time#readme",
+  "author": {
+    "name": "MCP Team"
+  },
+  "license": "MIT",
+  "categories": [
+    "utility",
+    "time"
+  ],
+  "tags": [
+    "time",
+    "timezone",
+    "date",
+    "converter"
+  ],
+  "arguments": {
+    "TZ": {
+      "description": "Environment variable to override the system's default timezone",
+      "required": false,
+      "example": "America/New_York"
+    }
+  },
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "mcp-server-time"
+      ],
+      "env": {
+        "TZ": "${TZ}"
+      },
+      "description": "Install and run using uvx (recommended)",
+      "recommended": true
+    },
+    "python": {
+      "type": "python",
+      "command": "python",
+      "args": [
+        "-m",
+        "mcp_server_time"
+      ],
+      "env": {
+        "TZ": "${TZ}"
+      },
+      "description": "Run with Python module (requires pip install)"
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "TZ",
+        "mcp/time"
+      ],
+      "env": {
+        "TZ": "${TZ}"
+      },
+      "description": "Run with Docker"
+    }
+  },
+  "examples": [
+    {
+      "title": "Current time",
+      "description": "Get the current time in a specific timezone",
+      "prompt": "What time is it in Tokyo right now?"
+    },
+    {
+      "title": "Time conversion",
+      "description": "Convert time between timezones",
+      "prompt": "Convert 3:30 PM EST to Paris time."
+    }
+  ]
+}

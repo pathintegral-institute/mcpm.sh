@@ -1,0 +1,63 @@
+{
+  "name": "linear",
+  "display_name": "Linear MCP Server",
+  "description": "Allows LLM to interact with Linear's API for project management, including searching, creating, and updating issues.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jerhadf/linear-mcp-server"
+  },
+  "homepage": "https://github.com/jerhadf/linear-mcp-server",
+  "author": {
+    "name": "jerhadf"
+  },
+  "license": "MIT",
+  "categories": [
+    "integration",
+    "api"
+  ],
+  "tags": [
+    "linear",
+    "issue tracking",
+    "LLM"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "linear-mcp-server"
+      ],
+      "env": {
+        "LINEAR_API_KEY": "${LINEAR_API_KEY}"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Show me all my high-priority issues",
+      "description": "Execute the search_issues tool and/or linear-user:///{userId}/assigned to find issues assigned to the user with priority 1",
+      "prompt": "Show me all my high-priority issues"
+    },
+    {
+      "title": "Create a bug report",
+      "description": "Use create_issue to create a new high-priority issue with appropriate details and status tracking.",
+      "prompt": "Based on what I've told you about this bug already, make a bug report for the authentication system"
+    },
+    {
+      "title": "Find all in-progress frontend tasks",
+      "description": "Use search_issues to locate frontend-related issues with in progress status.",
+      "prompt": "Find all in progress frontend tasks"
+    },
+    {
+      "title": "Get summary of recent updates",
+      "description": "Use search_issues to identify relevant issue(s) and fetch the issue details.",
+      "prompt": "Give me a summary of recent updates on the issues for mobile app development"
+    },
+    {
+      "title": "Analyze current workload for the mobile team",
+      "description": "Combine linear-team:///{teamId}/issues and search_issues to analyze issue distribution and priorities across the mobile team.",
+      "prompt": "What's the current workload for the mobile team?"
+    }
+  ]
+}

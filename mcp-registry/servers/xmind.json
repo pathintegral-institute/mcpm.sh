@@ -1,0 +1,52 @@
+{
+  "name": "xmind",
+  "display_name": "MCP XMind Server",
+  "description": "Read and search through your XMind directory containing XMind files.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apeyroux/mcp-xmind"
+  },
+  "homepage": "https://github.com/apeyroux/mcp-xmind",
+  "license": "MIT",
+  "author": {
+    "name": "apeyroux"
+  },
+  "categories": [
+    "Productivity",
+    "Analysis"
+  ],
+  "tags": [
+    "XMind",
+    "Mind Mapping",
+    "Analysis",
+    "Productivity"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@41px/mcp-xmind",
+        "/Users/alex/XMind"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "Search for Nodes",
+      "description": "Searches through the mind map for specific nodes based on the query parameters.",
+      "prompt": "{\"name\": \"search_nodes\", \"arguments\": {\"path\": \"/path/to/file.xmind\", \"query\": \"project\", \"searchIn\": [\"title\", \"notes\"], \"caseSensitive\": false}}"
+    },
+    {
+      "title": "Extract Node",
+      "description": "Extracts a node from the mind map based on a search query.",
+      "prompt": "{\"name\": \"extract_node\", \"arguments\": {\"path\": \"/path/to/file.xmind\", \"searchQuery\": \"Feature > API\"}}"
+    },
+    {
+      "title": "List Tasks",
+      "description": "Lists TODO tasks from the mind map.",
+      "prompt": "{\"name\": \"get_todo_tasks\", \"arguments\": {\"path\": \"/path/to/file.xmind\"}}"
+    }
+  ]
+}

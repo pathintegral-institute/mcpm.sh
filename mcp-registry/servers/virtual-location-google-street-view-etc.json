@@ -1,0 +1,71 @@
+{
+  "name": "virtual-location-google-street-view-etc",
+  "display_name": "Virtual Traveling Bot",
+  "description": "Integrates Google Map, Google Street View, PixAI, Stability.ai, ComfyUI API and Bluesky to provide a virtual location simulation in LLM (written in Effect.ts)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mfukushim/map-traveler-mcp"
+  },
+  "homepage": "https://github.com/mfukushim/map-traveler-mcp",
+  "author": {
+    "name": "mfukushim"
+  },
+  "license": "MIT",
+  "categories": [
+    "Travel",
+    "Virtual Reality"
+  ],
+  "tags": [
+    "Google Maps",
+    "Avatar",
+    "Virtual Travel"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@mfukushim/map-traveler-mcp"
+      ],
+      "env": {
+        "GoogleMapApi_key": "(Google Map API key)",
+        "mapApi_url": "(Optional: Map API custom endpoint. Example: direction=https://xxxx,places=https://yyyy )",
+        "time_scale": "(Optional:Scale of travel time on real roads duration. default 4)",
+        "sqlite_path": "(db save path: e.g. %USERPROFILE%/Desktop/traveler.sqlite ,$HOME/traveler.sqlite )",
+        "rembg_path": "(absolute path of the installed rembg cli)",
+        "remBgUrl": "(rembg API URL)",
+        "pixAi_key": "(pixAi API key)",
+        "sd_key": "(or Stability.ai image generation API key",
+        "pixAi_modelId": "(Optional: pixAi ModelId, if not set use default model 1648918127446573124 ",
+        "comfy_url": "(Option: Generate image using ComfyUI API at specified URL. Example: http://192.168.1.100:8188)",
+        "comfy_workflow_t2i": "(Optional: Path to API workflow file when using text to image with ComfyUI. If not specified: assets/comfy/t2i_sample.json)",
+        "comfy_workflow_i2i": "(Optional: Path of API workflow file when image to image in ComfyUI. If not specified: assets/comfy/i2i_sample.json)",
+        "comfy_params": "(Optional: Variable values to send to the workflow via comfyUI API)",
+        "fixed_model_prompt": "(Optional: Fixed avatar generation prompt. You will no longer be able to change your avatar during conversations.)",
+        "bodyAreaRatio": "(Optional: Acceptable avatar image area ratio. default 0.042)",
+        "bodyHWRatio": "(Optional: Acceptable avatar image aspect ratios. default 1.5~2.3)",
+        "bodyWindowRatioW": "(Optional: Avatar composite window horizontal ratio. default 0.5)",
+        "bodyWindowRatioH": "(Optional: Avatar composite window aspect ratio. default 0.75)",
+        "bs_id": "(Bluesky sns registration address)",
+        "bs_pass": "(bluesky sns password)",
+        "bs_handle": "(bluesky sns handle name: e.g. xxxxxxxx.bsky.social )",
+        "filter_tools": "(Optional: Directly filter the tools to be used. All are available if not specified. e.g. tips,set_traveler_location)",
+        "moveMode": "(Option: Specify whether the movement mode is realtime or skip. default realtime)",
+        "image_width": "(Option: Output image width (pixels) Default is 512)"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Travel to Tokyo",
+      "description": "Instruct the avatar to travel to Tokyo Station.",
+      "prompt": "Go to Tokyo Station."
+    },
+    {
+      "title": "Current Location Info",
+      "description": "Get the current location information of the avatar.",
+      "prompt": "Where are you now?"
+    }
+  ]
+}

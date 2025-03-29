@@ -1,0 +1,34 @@
+{
+  "name": "aws",
+  "display_name": "AWS MCP Server",
+  "description": "Perform operations on your AWS resources using an LLM.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rishikavikondala/mcp-server-aws"
+  },
+  "homepage": "https://github.com/rishikavikondala/mcp-server-aws",
+  "author": {
+    "name": "rishikavikondala"
+  },
+  "license": "MIT",
+  "categories": [
+    "AWS",
+    "Server"
+  ],
+  "tags": [
+    "s3",
+    "dynamodb",
+    "aws"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--directory",
+        "/path/to/repo/mcp-server-aws",
+        "mcp-server-aws"
+      ]
+    }
+  }
+}

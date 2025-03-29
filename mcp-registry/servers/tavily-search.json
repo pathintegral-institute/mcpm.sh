@@ -1,0 +1,68 @@
+{
+  "name": "tavily-search",
+  "display_name": "Tavily MCP Server",
+  "description": "An MCP server for Tavily's search & news API, with explicit site inclusions/exclusions",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RamXX/mcp-tavily"
+  },
+  "homepage": "https://github.com/RamXX/mcp-tavily",
+  "author": {
+    "name": "RamXX"
+  },
+  "license": "MIT",
+  "categories": [
+    "AI",
+    "Web Search",
+    "Development"
+  ],
+  "tags": [
+    "AI",
+    "Search"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "mcp_server_tavily"
+      ],
+      "env": {
+        "TAVILY_API_KEY": "your_api_key_here"
+      }
+    },
+    "python": {
+      "type": "python",
+      "command": "python",
+      "args": [
+        "-m",
+        "mcp_server_tavily"
+      ],
+      "env": {
+        "TAVILY_API_KEY": "your_api_key_here"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Regular Web Search",
+      "description": "Perform a standard web search using Tavily's capabilities.",
+      "prompt": "Tell me about Anthropic's newly released MCP protocol"
+    },
+    {
+      "title": "Domain Filtering Report",
+      "description": "Generate a report filtering specific domains.",
+      "prompt": "Tell me about redwood trees. Please use MLA format in markdown syntax and include the URLs in the citations. Exclude Wikipedia sources."
+    },
+    {
+      "title": "Direct Answer Search",
+      "description": "Use answer search mode for getting direct answers.",
+      "prompt": "I want a concrete answer backed by current web sources: What is the average lifespan of redwood trees?"
+    },
+    {
+      "title": "News Search",
+      "description": "Retrieve recent news articles on specific topics.",
+      "prompt": "Give me the top 10 AI-related news in the last 5 days."
+    }
+  ]
+}

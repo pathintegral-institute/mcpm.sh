@@ -1,0 +1,31 @@
+{
+  "name": "obsidian-markdown-notes",
+  "display_name": "Obsidian Model Context Protocol",
+  "description": "Read and search through your Obsidian vault or any directory containing Markdown notes",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/calclavia/mcp-obsidian"
+  },
+  "homepage": "https://github.com/calclavia/mcp-obsidian",
+  "author": {
+    "name": "calclavia"
+  },
+  "license": "APGL-3.0",
+  "categories": [
+    "Connector",
+    "Markdown"
+  ],
+  "tags": [
+    "obsidian"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "https://github.com/smithery-ai/mcp-obsidian.git"
+      ]
+    }
+  }
+}

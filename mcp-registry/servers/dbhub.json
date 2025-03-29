@@ -1,0 +1,53 @@
+{
+  "name": "dbhub",
+  "display_name": "DBHub",
+  "description": "Universal database MCP server connecting to MySQL, PostgreSQL, SQLite, DuckDB and etc.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bytebase/dbhub"
+  },
+  "homepage": "https://github.com/bytebase/dbhub/",
+  "author": {
+    "name": "bytebase"
+  },
+  "license": "MIT",
+  "categories": [
+    "Database",
+    "Gateway"
+  ],
+  "tags": [
+    "Database Gateway",
+    "PostgreSQL",
+    "MySQL",
+    "SQL Server",
+    "SQLite"
+  ],
+  "installations": {
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "bytebase/dbhub",
+        "--transport",
+        "stdio",
+        "--dsn",
+        "${DATABASE_URL}"
+      ]
+    },
+    "npx": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@bytebase/dbhub",
+        "--transport",
+        "stdio",
+        "--dsn",
+        "${DATABASE_URL}"
+      ]
+    }
+  }
+}

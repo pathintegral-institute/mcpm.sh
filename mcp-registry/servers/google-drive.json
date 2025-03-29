@@ -1,0 +1,47 @@
+{
+  "name": "google-drive",
+  "display_name": "Google Drive Server",
+  "description": "File access and search capabilities for Google Drive",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/modelcontextprotocol/servers"
+  },
+  "homepage": "https://github.com/modelcontextprotocol/servers/blob/main/src/gdrive",
+  "author": {
+    "name": "modelcontextprotocol"
+  },
+  "license": "MIT",
+  "categories": [
+    "cloud storage",
+    "file management"
+  ],
+  "tags": [
+    "google drive",
+    "files",
+    "API"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-gdrive"
+      ]
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-v",
+        "mcp-gdrive:/gdrive-server",
+        "-e",
+        "GDRIVE_CREDENTIALS_PATH=/gdrive-server/credentials.json",
+        "mcp/gdrive"
+      ]
+    }
+  }
+}

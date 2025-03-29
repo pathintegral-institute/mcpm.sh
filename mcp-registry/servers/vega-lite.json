@@ -1,0 +1,47 @@
+{
+  "name": "vega-lite",
+  "display_name": "Data Visualization MCP Server",
+  "description": "Generate visualizations from fetched data using the VegaLite format and renderer.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/isaacwasserman/mcp-vegalite-server"
+  },
+  "homepage": "https://github.com/isaacwasserman/mcp-vegalite-server",
+  "author": {
+    "name": "isaacwasserman"
+  },
+  "license": "[NOT GIVEN]",
+  "categories": [
+    "data visualization",
+    "Vega-Lite"
+  ],
+  "tags": [
+    "visualization",
+    "data",
+    "vega-lite"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "https://github.com/isaacwasserman/mcp-vegalite-server",
+        "--output_type",
+        "png"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "Saving Data",
+      "description": "Use the save_data tool to save a table of data for visualization.",
+      "prompt": "save_data(name='my_table', data=[{'x': 1, 'y': 2}, {'x': 2, 'y': 3}])"
+    },
+    {
+      "title": "Visualizing Data",
+      "description": "Use the visualize_data tool to visualize saved data using Vega-Lite syntax.",
+      "prompt": "visualize_data(data_name='my_table', vegalite_specification='{\"mark\": \"point\", \"encoding\": {\"x\":{\"field\":\"x\",\"type\":\"quantitative\"},\"y\":{\"field\":\"y\",\"type\":\"quantitative\"}}}')"
+    }
+  ]
+}

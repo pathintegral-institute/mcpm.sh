@@ -1,0 +1,34 @@
+{
+  "name": "opendota",
+  "display_name": "OpenDota MCP Server",
+  "description": "Interact with OpenDota API to retrieve Dota 2 match data, player statistics, and more.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/asusevski/opendota-mcp-server"
+  },
+  "homepage": "https://github.com/asusevski/opendota-mcp-server",
+  "author": {
+    "name": "asusevski"
+  },
+  "license": "MIT",
+  "categories": [
+    "API",
+    "Gaming"
+  ],
+  "tags": [
+    "Dota 2",
+    "API",
+    "Gaming",
+    "Statistics"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "git+https://github.com/asusevski/opendota-mcp-server.git",
+        "src/opendota_server/server"
+      ]
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "name": "image-generation",
+  "display_name": "Image Generation MCP Server",
+  "description": "This MCP server provides image generation capabilities using the Replicate Flux model.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GongRzhe/Image-Generation-MCP-Server"
+  },
+  "homepage": "https://github.com/GongRzhe/Image-Generation-MCP-Server",
+  "author": {
+    "name": "GongRzhe"
+  },
+  "license": "MIT",
+  "categories": [
+    "image generation"
+  ],
+  "tags": [
+    "image",
+    "generation",
+    "flux",
+    "Replicate"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "@gongrzhe/image-gen-server"
+      ],
+      "env": {
+        "REPLICATE_API_TOKEN": "your-replicate-api-token",
+        "MODEL": "alternative-model-name"
+      }
+    }
+  }
+}

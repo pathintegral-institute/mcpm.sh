@@ -1,0 +1,54 @@
+{
+  "name": "ergo-blockchain-mcp",
+  "display_name": "Ergo MCP",
+  "description": "-An MCP server to integrate Ergo Blockchain Node and Explorer APIs for checking address balances, analyzing transactions, viewing transaction history, performing forensic analysis of addresses, searching for tokens, and monitoring network status.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/marctheshark3/ergo-mcp"
+  },
+  "homepage": "https://github.com/marctheshark3/ergo-mcp",
+  "author": {
+    "name": "marctheshark3"
+  },
+  "license": "MIT",
+  "categories": [
+    "Blockchain",
+    "Server"
+  ],
+  "tags": [
+    "Ergo",
+    "Blockchain",
+    "Python",
+    "API"
+  ],
+  "examples": [
+    {
+      "title": "Running the MCP Server as a Module",
+      "description": "Run the server using Python module command.",
+      "prompt": "```bash\n# Make sure your virtual environment is activated:\n# Using the full path (recommended):\n/path/to/your/project/.venv/bin/python -m ergo_explorer\n\n# Or with activated virtual environment:\npython -m ergo_explorer\n```"
+    },
+    {
+      "title": "Running Tests",
+      "description": "Execute tests using pytest framework.",
+      "prompt": "```bash\n# Run all tests\npython -m pytest\n\n# Run specific test files\npython -m pytest tests/unit/test_address_tools.py\n```"
+    }
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/marctheshark3/ergo-mcp",
+        "ergo_explorer"
+      ],
+      "env": {
+        "SERVER_HOST": "<YOUR_HOST>",
+        "SERVER_PORT": "<YOUR_PORT>",
+        "SERVER_WORKERS": "<YOUR_WORKERS>",
+        "ERGO_NODE_API": "<YOUR_ERGO_NODE_API>",
+        "ERGO_NODE_API_KEY": "<YOUR_ERGO_NODE_API_KEY>"
+      }
+    }
+  }
+}

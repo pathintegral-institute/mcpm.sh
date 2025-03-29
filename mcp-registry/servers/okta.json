@@ -1,0 +1,74 @@
+{
+  "name": "okta",
+  "display_name": "Okta MCP Server",
+  "description": "Interact with Okta API.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kapilduraphe/okta-mcp-server"
+  },
+  "homepage": "https://github.com/kapilduraphe/okta-mcp-server",
+  "author": {
+    "name": "kapilduraphe"
+  },
+  "license": "MIT",
+  "categories": [
+    "user-management",
+    "api"
+  ],
+  "tags": [
+    "Okta",
+    "user management",
+    "group management"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "https://github.com/kapilduraphe/okta-mcp-server"
+      ],
+      "env": {
+        "OKTA_ORG_URL": "${OKTA_ORG_URL}",
+        "OKTA_API_TOKEN": "${OKTA_API_TOKEN}"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Show user details",
+      "description": "Retrieve details for a specific user.",
+      "prompt": "Show me details for user with userId XXXX"
+    },
+    {
+      "title": "Check user status",
+      "description": "Get the status of a specific user.",
+      "prompt": "What's the status of user john.doe@company.com"
+    },
+    {
+      "title": "Last login info",
+      "description": "Find out when a user last logged in.",
+      "prompt": "When was the last login for user jane.smith@organization.com"
+    },
+    {
+      "title": "List users by department",
+      "description": "Get a list of all users in the marketing department.",
+      "prompt": "List all users in the marketing department"
+    },
+    {
+      "title": "Find recent users",
+      "description": "Retrieve users created in the last month.",
+      "prompt": "Find users created in the last month"
+    },
+    {
+      "title": "Show user groups",
+      "description": "List all groups in the Okta organization.",
+      "prompt": "Show me all the groups in my Okta organization"
+    },
+    {
+      "title": "Admin groups",
+      "description": "List groups that contain the word 'admin'.",
+      "prompt": "List groups containing the word 'admin'"
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "name": "azure-adx",
+  "display_name": "Azure Data Explorer MCP Server",
+  "description": "Query and analyze Azure Data Explorer databases.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pab1it0/adx-mcp-server"
+  },
+  "homepage": "https://github.com/pab1it0/adx-mcp-server",
+  "author": {
+    "name": "pab1it0"
+  },
+  "license": "MIT",
+  "categories": [
+    "data",
+    "query"
+  ],
+  "tags": [
+    "Azure",
+    "KQL",
+    "Data Explorer"
+  ],
+  "installations": {
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "-e",
+        "ADX_CLUSTER_URL",
+        "-e",
+        "ADX_DATABASE",
+        "adx-mcp-server"
+      ],
+      "env": {
+        "ADX_CLUSTER_URL": "${ADX_CLUSTER_URL}",
+        "ADX_DATABASE": "${ADX_DATABASE}"
+      }
+    }
+  }
+}

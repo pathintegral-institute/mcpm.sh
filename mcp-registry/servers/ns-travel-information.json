@@ -1,0 +1,59 @@
+{
+  "name": "ns-travel-information",
+  "display_name": "NS Travel Information MCP Server",
+  "description": "Access Dutch Railways (NS) real-time train travel information and disruptions through the official NS API.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/r-huijts/ns-mcp-server"
+  },
+  "homepage": "https://github.com/r-huijts/ns-mcp-server",
+  "author": {
+    "name": "r-huijts"
+  },
+  "license": "MIT",
+  "categories": [
+    "Transport",
+    "Travel Information"
+  ],
+  "tags": [
+    "NS",
+    "Train",
+    "Travel",
+    "Information"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "ns-mcp-server"
+      ],
+      "env": {
+        "NS_API_KEY": "${NS_API_KEY}"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Check train status",
+      "description": "Ask if the 8:15 train from Almere to Amsterdam is running on time.",
+      "prompt": "Is my usual 8:15 train from Almere to Amsterdam running on time?"
+    },
+    {
+      "title": "Inquire about delays",
+      "description": "Find out if there are any delays on a specific route.",
+      "prompt": "Are there any delays on the Rotterdam-Den Haag route today?"
+    },
+    {
+      "title": "Alternative routes",
+      "description": "Seek alternative routes in case of maintenance on the direct line.",
+      "prompt": "What's the best alternative route to Utrecht if there's maintenance on the direct line?"
+    },
+    {
+      "title": "Get ticket price",
+      "description": "Ask for ticket prices for travel between cities.",
+      "prompt": "How much does a first-class ticket from Amsterdam to Rotterdam cost?"
+    }
+  ]
+}

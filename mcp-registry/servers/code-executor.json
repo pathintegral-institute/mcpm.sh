@@ -1,0 +1,44 @@
+{
+  "name": "code-executor",
+  "display_name": "MCP Code Executor",
+  "description": "An MCP server that allows LLMs to execute Python code within a specified Conda environment.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bazinga012/mcp_code_executor"
+  },
+  "homepage": "https://github.com/bazinga012/mcp_code_executor",
+  "author": {
+    "name": "bazinga012"
+  },
+  "license": "MIT",
+  "categories": [
+    "Server",
+    "Code Execution"
+  ],
+  "tags": [
+    "Python",
+    "Conda",
+    "Execution"
+  ],
+  "examples": [
+    {
+      "title": "Execute Python Code",
+      "description": "An example of executing Python code using MCP Code Executor",
+      "prompt": "Please execute the following code: print('Hello, World!')"
+    }
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "https://github.com/bazinga012/mcp_code_executor"
+      ],
+      "env": {
+        "CODE_STORAGE_DIR": "/path/to/code/storage",
+        "CONDA_ENV_NAME": "your-conda-env"
+      }
+    }
+  }
+}

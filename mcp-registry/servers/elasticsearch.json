@@ -1,0 +1,36 @@
+{
+  "name": "elasticsearch",
+  "display_name": "Elasticsearch MCP Server",
+  "description": "MCP server implementation that provides Elasticsearch interaction.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cr7258/elasticsearch-mcp-server"
+  },
+  "homepage": "https://github.com/cr7258/elasticsearch-mcp-server",
+  "author": {
+    "name": "cr7258"
+  },
+  "license": "Apache License Version 2.0",
+  "categories": [
+    "Elasticsearch",
+    "Server"
+  ],
+  "tags": [
+    "elasticsearch",
+    "server"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "elasticsearch-mcp-server"
+      ],
+      "env": {
+        "ELASTIC_HOST": "${ELASTIC_HOST}",
+        "ELASTIC_USERNAME": "${ELASTIC_USERNAME}",
+        "ELASTIC_PASSWORD": "${ELASTIC_PASSWORD}"
+      }
+    }
+  }
+}

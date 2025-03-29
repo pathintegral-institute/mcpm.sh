@@ -1,0 +1,46 @@
+{
+  "name": "xcodebuild",
+  "display_name": "xcodebuild MCP Server",
+  "description": "\ud83c\udf4e Build iOS Xcode workspace/project and feed back errors to llm.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ShenghaiWang/xcodebuild"
+  },
+  "homepage": "https://github.com/ShenghaiWang/xcodebuild",
+  "author": {
+    "name": "ShenghaiWang"
+  },
+  "license": "MIT",
+  "categories": [
+    "iOS",
+    "Development"
+  ],
+  "tags": [
+    "xcode",
+    "mcpxcodebuild"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "mcpxcodebuild"
+      ]
+    },
+    "python": {
+      "type": "python",
+      "command": "python",
+      "args": [
+        "-m",
+        "mcpxcodebuild"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "Build iOS Project",
+      "description": "Builds the iOS Xcode workspace/project located at a specified folder.",
+      "prompt": "build --folder /path/to/your/project"
+    }
+  ]
+}

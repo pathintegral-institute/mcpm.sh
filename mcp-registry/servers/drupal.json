@@ -1,0 +1,38 @@
+{
+  "name": "drupal",
+  "display_name": "MCP Server for Drupal",
+  "description": "Server for interacting with [Drupal](https://www.drupal.org/project/mcp) using STDIO transport layer.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Omedia/mcp-server-drupal"
+  },
+  "homepage": "https://github.com/Omedia/mcp-server-drupal",
+  "author": {
+    "name": "Omedia"
+  },
+  "license": "MIT",
+  "categories": [
+    "CMS",
+    "Server"
+  ],
+  "tags": [
+    "Drupal",
+    "TypeScript"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "deno",
+        "run",
+        "-A",
+        "jsr:@omedia/mcp-server-drupal@${VERSION}",
+        "--drupal-url",
+        "${DRUPAL_BASE_URL}"
+      ],
+      "env": {}
+    }
+  }
+}

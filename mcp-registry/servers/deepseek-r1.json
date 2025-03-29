@@ -1,0 +1,35 @@
+{
+  "name": "deepseek-r1",
+  "display_name": "Deepseek R1 MCP Server",
+  "description": "A Model Context Protocol (MCP) server implementation connecting Claude Desktop with DeepSeek's language models (R1/V3)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/66julienmartin/MCP-server-Deepseek_R1"
+  },
+  "homepage": "https://github.com/66julienmartin/MCP-server-Deepseek_R1",
+  "author": {
+    "name": "66julienmartin",
+    "url": "https://github.com/66julienmartin"
+  },
+  "license": "MIT",
+  "categories": [
+    "Deepseek"
+  ],
+  "tags": [
+    "Deepseek",
+    "LLM"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "https://github.com/66julienmartin/MCP-server-Deepseek_R1"
+      ],
+      "env": {
+        "DEEPSEEK_API_KEY": "your-api-key"
+      }
+    }
+  }
+}

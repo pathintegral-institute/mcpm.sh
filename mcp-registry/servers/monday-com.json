@@ -1,0 +1,48 @@
+{
+  "name": "monday-com",
+  "display_name": "Monday.com MCP Server",
+  "description": "MCP Server to interact with Monday.com boards and items.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sakce/mcp-server-monday"
+  },
+  "homepage": "https://github.com/sakce/mcp-server-monday",
+  "author": {
+    "name": "sakce"
+  },
+  "license": "MIT",
+  "categories": [
+    "productivity"
+  ],
+  "tags": [
+    "monday.com",
+    "API"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "mcp-server-monday"
+      ],
+      "env": {
+        "MONDAY_API_KEY": "${MONDAY_API_KEY}",
+        "MONDAY_WORKSPACE_NAME": "${MONDAY_WORKSPACE_NAME}"
+      }
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "-e",
+        "MONDAY_API_KEY=${MONDAY_API_KEY}",
+        "-e",
+        "MONDAY_WORKSPACE_NAME=${MONDAY_WORKSPACE_NAME}",
+        "sakce/mcp-server-monday"
+      ]
+    }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "name": "airbnb",
+  "display_name": "Airbnb MCP Server",
+  "description": "Provides tools to search Airbnb and get listing details.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/openbnb-org/mcp-server-airbnb"
+  },
+  "homepage": "https://github.com/openbnb-org/mcp-server-airbnb",
+  "author": {
+    "name": "openbnb-org"
+  },
+  "license": "MIT",
+  "categories": [
+    "Travel",
+    "Accommodation"
+  ],
+  "tags": [
+    "Airbnb",
+    "search",
+    "listings"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@openbnb/mcp-server-airbnb"
+      ],
+      "description": "Run with npx (requires npm install)"
+    }
+  },
+  "examples": [
+    {
+      "title": "Search for Airbnb Listings",
+      "description": "Search for listings in a specified location.",
+      "prompt": "Search for listings in New York"
+    },
+    {
+      "title": "Get Listing Details",
+      "description": "Retrieve details for a specific listing.",
+      "prompt": "Get details for listing 12345"
+    }
+  ]
+}

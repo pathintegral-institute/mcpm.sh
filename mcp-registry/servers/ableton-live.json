@@ -1,0 +1,45 @@
+{
+  "name": "ableton-live",
+  "display_name": "Ableton Live MCP Server",
+  "description": "an MCP server to control Ableton Live.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Simon-Kansara/ableton-live-mcp-server"
+  },
+  "homepage": "https://github.com/Simon-Kansara/ableton-live-mcp-server",
+  "author": {
+    "name": "Simon Kansara"
+  },
+  "license": "MIT",
+  "categories": [
+    "Audio",
+    "Live Performance"
+  ],
+  "tags": [
+    "Ableton Live",
+    "OSC",
+    "Music"
+  ],
+  "installations": {
+    "custom": {
+      "type": "python",
+      "command": "python",
+      "args": [
+        "mcp_ableton_server.py"
+      ],
+      "description": "Run with Python module (requires git clone)"
+    }
+  },
+  "examples": [
+    {
+      "title": "Prepare a rock band set for recording",
+      "description": "In Claude desktop, ask Claude to prepare a set to record a rock band.",
+      "prompt": "_Prepare a set to record a rock band_"
+    },
+    {
+      "title": "Set input routing for tracks",
+      "description": "Set the input routing channel of all tracks that have 'voice' in their name to Ext. In 2.",
+      "prompt": "_Set the input routing channel of all tracks that have 'voice' in their name to Ext. In 2_"
+    }
+  ]
+}

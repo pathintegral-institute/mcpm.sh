@@ -1,0 +1,32 @@
+{
+  "name": "blender",
+  "display_name": "Blender MCP",
+  "description": "Blender integration allowing prompt enabled 3D scene creation, modeling and manipulation.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ahujasid/blender-mcp"
+  },
+  "homepage": "https://github.com/ahujasid/blender-mcp",
+  "author": {
+    "name": "ahujasid"
+  },
+  "license": "MIT",
+  "categories": [
+    "3D Modeling",
+    "AI Integration"
+  ],
+  "tags": [
+    "Blender",
+    "Claude AI",
+    "3D Modeling"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "blender-mcp"
+      ]
+    }
+  }
+}

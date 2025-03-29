@@ -1,0 +1,48 @@
+{
+  "name": "typesense",
+  "display_name": "Typesense MCP Server",
+  "description": "A Model Context Protocol (MCP) server implementation that provides AI models with access to Typesense search capabilities. This server enables LLMs to discover, search, and analyze data stored in Typesense collections.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/suhail-ak-s/mcp-typesense-server"
+  },
+  "homepage": "https://github.com/suhail-ak-s/mcp-typesense-server",
+  "author": {
+    "name": "suhail-ak-s"
+  },
+  "license": "MIT",
+  "categories": [
+    "Search",
+    "AI"
+  ],
+  "tags": [
+    "Typesense",
+    "Server",
+    "Search"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "typesense-mcp-server",
+        "--host",
+        "your-typesense-host",
+        "--port",
+        "8108",
+        "--protocol",
+        "http",
+        "--api-key",
+        "your-api-key"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "Example Usage with Claude Desktop",
+      "description": "Configuration for using Typesense MCP Server with Claude Desktop.",
+      "prompt": "{\"mcpServers\": {\"typesense\": {\"command\": \"npx\",\"args\": [\"-y\",\"typesense-mcp-server\",\"--host\", \"your-typesense-host\",\"--port\", \"8108\",\"--protocol\", \"http\",\"--api-key\", \"your-api-key\"]}}}"
+    }
+  ]
+}

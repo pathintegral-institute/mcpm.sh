@@ -1,0 +1,36 @@
+{
+  "name": "pushover",
+  "display_name": "Pushover Notification",
+  "description": "Send instant notifications to your devices using [Pushover.net](https://pushover.net/)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ashiknesin/pushover-mcp"
+  },
+  "homepage": "https://github.com/ashiknesin/pushover-mcp",
+  "author": {
+    "name": "ashiknesin"
+  },
+  "license": "MIT",
+  "categories": [
+    "notification"
+  ],
+  "tags": [
+    "pushover",
+    "notifications"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "pushover-mcp@latest",
+        "start",
+        "--token",
+        "YOUR_TOKEN",
+        "--user",
+        "YOUR_USER"
+      ]
+    }
+  }
+}

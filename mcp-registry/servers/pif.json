@@ -1,0 +1,46 @@
+{
+  "name": "pif",
+  "display_name": "MCP-PIF Server",
+  "description": "A Personal Intelligence Framework (PIF), providing tools for file operations, structured reasoning, and journal-based documentation to support continuity and evolving human-AI collaboration across sessions.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hungryrobot1/MCP-PIF"
+  },
+  "homepage": "https://github.com/hungryrobot1/MCP-PIF",
+  "author": {
+    "name": "hungryrobot1"
+  },
+  "license": "MIT",
+  "categories": [
+    "AI",
+    "Development",
+    "Framework"
+  ],
+  "tags": [
+    "PIF",
+    "TypeScript",
+    "Node.js"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "https://github.com/hungryrobot1/MCP-PIF"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "Reasoning Example",
+      "description": "Create a structured thought pattern.",
+      "prompt": "reason: { thoughts: [{ content: 'Initial observation' }, { content: 'Building on previous thought', relationType: 'sequence', relationTo: 0 }] }"
+    },
+    {
+      "title": "Journal Creation Example",
+      "description": "Document development for future reference.",
+      "prompt": "journal_create: { title: 'Implementation Pattern', content: 'Insights about development...', tags: ['development', 'patterns'] }"
+    }
+  ]
+}

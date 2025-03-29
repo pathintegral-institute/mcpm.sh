@@ -1,0 +1,59 @@
+{
+  "name": "fetch",
+  "display_name": "Fetch MCP Server",
+  "description": "A server that flexibly fetches HTML, JSON, Markdown, or plaintext.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zcaceres/fetch-mcp"
+  },
+  "homepage": "https://github.com/zcaceres/fetch-mcp",
+  "author": {
+    "name": "zcaceres"
+  },
+  "license": "MIT",
+  "categories": [
+    "Web",
+    "Content Fetching"
+  ],
+  "tags": [
+    "fetch",
+    "web",
+    "api",
+    "html",
+    "json",
+    "markdown",
+    "plain text"
+  ],
+  "examples": [
+    {
+      "title": "Fetch HTML",
+      "description": "Fetch a website and return the content as HTML",
+      "prompt": "fetch_html(url: string, headers?: object) -> string"
+    },
+    {
+      "title": "Fetch JSON",
+      "description": "Fetch a JSON file from a URL",
+      "prompt": "fetch_json(url: string, headers?: object) -> object"
+    },
+    {
+      "title": "Fetch Plain Text",
+      "description": "Fetch a website and return the content as plain text",
+      "prompt": "fetch_txt(url: string, headers?: object) -> string"
+    },
+    {
+      "title": "Fetch Markdown",
+      "description": "Fetch a website and return the content as Markdown",
+      "prompt": "fetch_markdown(url: string, headers?: object) -> string"
+    }
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "https://github.com/zcaceres/fetch-mcp"
+      ]
+    }
+  }
+}

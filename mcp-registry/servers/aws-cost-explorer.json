@@ -1,0 +1,86 @@
+{
+  "name": "aws-cost-explorer",
+  "display_name": "AWS Cost Explorer and Amazon Bedrock",
+  "description": "Optimize your AWS spend (including Amazon Bedrock spend) with this MCP server by examining spend across regions, services, instance types and foundation models ([demo video](https://www.youtube.com/watch?v=WuVOmYLRFmI&feature=youtu.be)).",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aarora79/aws-cost-explorer-mcp-server"
+  },
+  "homepage": "https://github.com/aarora79/aws-cost-explorer-mcp-server",
+  "author": {
+    "name": "aarora79"
+  },
+  "license": "MIT",
+  "categories": [
+    "AWS",
+    "Cost Management"
+  ],
+  "tags": [
+    "Cost Explorer",
+    "Amazon Bedrock",
+    "AWS"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--directory",
+        "/path/to/aws-cost-explorer-mcp-server",
+        "run",
+        "server.py"
+      ],
+      "env": {
+        "AWS_ACCESS_KEY_ID": "${AWS_ACCESS_KEY_ID}",
+        "AWS_SECRET_ACCESS_KEY": "${AWS_SECRET_ACCESS_KEY}",
+        "AWS_REGION": "${AWS_REGION}",
+        "BEDROCK_LOG_GROUP_NAME": "${BEDROCK_LOG_GROUP_NAME}",
+        "MCP_TRANSPORT": "stdio"
+      }
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "AWS_ACCESS_KEY_ID",
+        "-e",
+        "AWS_SECRET_ACCESS_KEY",
+        "-e",
+        "AWS_REGION",
+        "-e",
+        "BEDROCK_LOG_GROUP_NAME",
+        "-e",
+        "MCP_TRANSPORT",
+        "aws-cost-explorer-mcp:latest"
+      ],
+      "env": {
+        "AWS_ACCESS_KEY_ID": "${AWS_ACCESS_KEY_ID}",
+        "AWS_SECRET_ACCESS_KEY": "${AWS_SECRET_ACCESS_KEY}",
+        "AWS_REGION": "${AWS_REGION}",
+        "BEDROCK_LOG_GROUP_NAME": "${BEDROCK_LOG_GROUP_NAME}",
+        "MCP_TRANSPORT": "stdio"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Get EC2 Spending",
+      "description": "Retrieve the EC2 spending data for the previous day.",
+      "prompt": "What was my EC2 spend yesterday?"
+    },
+    {
+      "title": "Analyze Spending",
+      "description": "Analyze spending by region for the past 14 days.",
+      "prompt": "Analyze my spending by region for the past 14 days."
+    },
+    {
+      "title": "Show Top Services",
+      "description": "Show me my top 5 AWS services by cost for the last month.",
+      "prompt": "Show me my top 5 AWS services by cost for the last month."
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "name": "home-assistant",
+  "display_name": "Hass-MCP",
+  "description": "Docker-ready MCP server for Home Assistant with entity management, domain summaries, automation support, and guided conversations. Includes pre-built container images for easy installation.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/voska/hass-mcp"
+  },
+  "homepage": "https://github.com/voska/hass-mcp",
+  "author": {
+    "name": "voska"
+  },
+  "license": "MIT",
+  "categories": [
+    "Home Automation",
+    "AI Integration"
+  ],
+  "tags": [
+    "Home Assistant",
+    "Claude",
+    "LLM",
+    "Automation"
+  ],
+  "installations": {
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "HA_URL",
+        "-e",
+        "HA_TOKEN",
+        "voska/hass-mcp"
+      ],
+      "env": {
+        "HA_URL": "http://homeassistant.local:8123",
+        "HA_TOKEN": "YOUR_LONG_LIVED_TOKEN"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Get Current State",
+      "description": "Retrieve the current state of a specific device.",
+      "prompt": "What's the current state of my living room lights?"
+    },
+    {
+      "title": "Turn Off Lights",
+      "description": "Command to turn off lights in a specific area.",
+      "prompt": "Turn off all the lights in the kitchen"
+    },
+    {
+      "title": "List Temperature Sensors",
+      "description": "List all sensors related to temperature readings.",
+      "prompt": "List all my sensors that contain temperature data"
+    },
+    {
+      "title": "Climate Summary",
+      "description": "Get a summary of climate-related entities.",
+      "prompt": "Give me a summary of my climate entities"
+    },
+    {
+      "title": "Create Automation",
+      "description": "Create an automation based on a specific condition.",
+      "prompt": "Create an automation that turns on the lights at sunset"
+    },
+    {
+      "title": "Troubleshoot Automation",
+      "description": "Help troubleshoot an automation issue.",
+      "prompt": "Help me troubleshoot why my bedroom motion sensor automation isn't working"
+    },
+    {
+      "title": "Search Entities",
+      "description": "Search for specific entities related to a query.",
+      "prompt": "Search for entities related to my living room"
+    }
+  ]
+}

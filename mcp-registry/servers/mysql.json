@@ -1,0 +1,38 @@
+{
+  "name": "mysql",
+  "display_name": "MySQL MCP Server",
+  "description": "MySQL database integration in Python with configurable access controls and schema inspection",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/designcomputer/mysql_mcp_server"
+  },
+  "homepage": "https://github.com/designcomputer/mysql_mcp_server",
+  "author": {
+    "name": "designcomputer"
+  },
+  "license": "MIT",
+  "categories": [
+    "Database",
+    "MySQL"
+  ],
+  "tags": [
+    "MySQL",
+    "Database Access"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "mysql_mcp_server"
+      ],
+      "env": {
+        "MYSQL_HOST": "localhost",
+        "MYSQL_PORT": "3306",
+        "MYSQL_USER": "your_username",
+        "MYSQL_PASSWORD": "your_password",
+        "MYSQL_DATABASE": "your_database"
+      }
+    }
+  }
+}

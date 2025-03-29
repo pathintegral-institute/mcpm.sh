@@ -1,0 +1,34 @@
+{
+  "name": "glean",
+  "display_name": "Glean",
+  "description": "A server that uses Glean API to search and chat.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/longyi1207/glean-mcp-server"
+  },
+  "homepage": "https://github.com/longyi1207/glean-mcp-server",
+  "author": {
+    "name": "longyi1207",
+    "url": "https://github.com/longyi1207"
+  },
+  "license": "MIT",
+  "categories": [
+    "api"
+  ],
+  "tags": [
+    "glean",
+    "search",
+    "chat",
+    "docker"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "https://github.com/longyi1207/glean-mcp-server"
+      ]
+    }
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "name": "brave-search",
+  "display_name": "Brave Search MCP Server",
+  "description": "Web and local search using Brave's Search API",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/modelcontextprotocol/servers"
+  },
+  "homepage": "https://github.com/modelcontextprotocol/servers/blob/main/src/brave-search",
+  "author": {
+    "name": "modelcontextprotocol"
+  },
+  "license": "MIT",
+  "categories": [
+    "search",
+    "api"
+  ],
+  "tags": [
+    "brave",
+    "search",
+    "web",
+    "local"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-brave-search"
+      ],
+      "env": {
+        "BRAVE_API_KEY": "${BRAVE_API_KEY}"
+      }
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "BRAVE_API_KEY",
+        "mcp/brave-search"
+      ],
+      "env": {
+        "BRAVE_API_KEY": "${BRAVE_API_KEY}"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Web Search Example",
+      "description": "Execute a web search with pagination and filtering.",
+      "prompt": "brave_web_search(query=\"example search\", count=10, offset=0)"
+    },
+    {
+      "title": "Local Search Example",
+      "description": "Search for local businesses and services.",
+      "prompt": "brave_local_search(query=\"restaurants near me\", count=5)"
+    }
+  ]
+}

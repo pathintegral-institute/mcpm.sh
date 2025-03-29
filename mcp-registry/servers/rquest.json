@@ -1,0 +1,52 @@
+{
+  "name": "rquest",
+  "display_name": "MCP Rquest",
+  "description": "An MCP server providing realistic browser-like HTTP request capabilities with accurate TLS/JA3/JA4 fingerprints for bypassing anti-bot measures.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xxxbrian/mcp-rquest"
+  },
+  "homepage": "https://github.com/xxxbrian/mcp-rquest",
+  "author": {
+    "name": "xxxbrian"
+  },
+  "license": "MIT",
+  "categories": [
+    "HTTP",
+    "Browser Emulation",
+    "Document Conversion"
+  ],
+  "tags": [
+    "http",
+    "request",
+    "llm",
+    "browser",
+    "emulation",
+    "pdf",
+    "markdown"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "mcp-rquest"
+      ]
+    },
+    "python": {
+      "type": "python",
+      "command": "python",
+      "args": [
+        "-m",
+        "mcp-rquest"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "Convert HTML or PDF to Markdown",
+      "description": "Use the get_stored_response_with_markdown tool to convert HTML or PDF responses to Markdown for better processing by LLMs.",
+      "prompt": "get_stored_response_with_markdown('document.pdf')"
+    }
+  ]
+}

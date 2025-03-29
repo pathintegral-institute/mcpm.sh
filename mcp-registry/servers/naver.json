@@ -1,0 +1,57 @@
+{
+  "name": "naver",
+  "display_name": "Naver MCP Server",
+  "description": "This MCP server provides tools to interact with various Naver services, such as searching blogs, news, books, and more.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pfldy2850/py-mcp-naver"
+  },
+  "homepage": "https://github.com/pfldy2850/py-mcp-naver",
+  "author": {
+    "name": "pfldy2850"
+  },
+  "license": "MIT",
+  "categories": [
+    "API",
+    "Naver",
+    "OpenAPI"
+  ],
+  "tags": [
+    "Naver",
+    "API",
+    "OpenAPI",
+    "Search"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/pfldy2850/py-mcp-naver.git",
+        "src/server.py"
+      ],
+      "env": {
+        "NAVER_CLIENT_ID": "${NAVER_CLIENT_ID}",
+        "NAVER_CLIENT_SECRET": "${NAVER_CLIENT_SECRET}"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Search Blog Posts",
+      "description": "Search blog posts on Naver using a query.",
+      "prompt": "search_blog('your query here')"
+    },
+    {
+      "title": "Search News Articles",
+      "description": "Search news articles on Naver using a query.",
+      "prompt": "search_news('your query here')"
+    },
+    {
+      "title": "Search Books",
+      "description": "Search books on Naver using a query.",
+      "prompt": "search_book('your query here')"
+    }
+  ]
+}

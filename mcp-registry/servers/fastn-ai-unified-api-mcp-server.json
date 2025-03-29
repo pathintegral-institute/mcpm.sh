@@ -1,0 +1,37 @@
+{
+  "name": "fastn-ai-unified-api-mcp-server",
+  "display_name": "Fastn Server",
+  "description": "A remote, dynamic MCP server with a unified API that connects to 1,000+ tools, actions, and workflows, featuring built-in authentication and monitoring.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fastnai/mcp-fastn"
+  },
+  "homepage": "https://github.com/fastnai/mcp-fastn",
+  "author": {
+    "name": "fastnai"
+  },
+  "license": "MIT",
+  "categories": [
+    "API"
+  ],
+  "tags": [
+    "Fastn",
+    "Dynamic Tool Registration",
+    "API-Driven Operations"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/fastnai/mcp-fastn",
+        "fastn-server.py",
+        "--api_key",
+        "YOUR_API_KEY",
+        "--space_id",
+        "YOUR_WORKSPACE_ID"
+      ]
+    }
+  }
+}

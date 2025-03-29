@@ -1,0 +1,51 @@
+{
+  "name": "everything",
+  "display_name": "Everything MCP Server",
+  "description": "This MCP server exercises all the features of the MCP protocol. It is a test server for builders of MCP clients.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/modelcontextprotocol/servers"
+  },
+  "homepage": "https://github.com/modelcontextprotocol/servers/tree/main/src/everything#readme",
+  "author": {
+    "name": "MCP Team"
+  },
+  "license": "MIT",
+  "categories": [
+    "development",
+    "testing"
+  ],
+  "tags": [
+    "testing",
+    "reference",
+    "example",
+    "demo"
+  ],
+  "arguments": {},
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-everything"
+      ],
+      "package": "@modelcontextprotocol/server-everything",
+      "env": {},
+      "description": "Install and run using NPX",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Test tool usage",
+      "description": "Test various tools provided by the server",
+      "prompt": "Show me how to use the different tools in this MCP server."
+    },
+    {
+      "title": "Test resources",
+      "description": "Demonstrate accessing resources",
+      "prompt": "Demonstrate how to access and use resources from this MCP server."
+    }
+  ]
+}

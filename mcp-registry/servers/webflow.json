@@ -1,0 +1,46 @@
+{
+  "name": "webflow",
+  "display_name": "Webflow MCP Server",
+  "description": "Interfact with the Webflow APIs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kapilduraphe/webflow-mcp-server"
+  },
+  "homepage": "https://github.com/kapilduraphe/webflow-mcp-server",
+  "author": {
+    "name": "kapilduraphe"
+  },
+  "license": "MIT",
+  "categories": [
+    "web"
+  ],
+  "tags": [
+    "webflow",
+    "api"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "https://github.com/kapilduraphe/webflow-mcp-server"
+      ],
+      "env": {
+        "WEBFLOW_API_TOKEN": "your-api-token"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Get Sites",
+      "description": "Retrieve a list of all Webflow sites accessible to the authenticated user.",
+      "prompt": "get_sites"
+    },
+    {
+      "title": "Get Site",
+      "description": "Retrieve detailed information about a specific Webflow site by ID.",
+      "prompt": "get_site siteId"
+    }
+  ]
+}

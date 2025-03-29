@@ -1,0 +1,25 @@
+name: Validate Server Manifests
+
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_call:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate Server JSON Files
+        uses: cardinalby/schema-validator-action@v3
+        with:
+          # Path to files to validate (glob pattern)
+          file: 'mcp-registry/servers/*.json'
+          # Schema file to validate against
+          schema: 'mcp-registry/schema/server-schema.json'
+          # Mode (lax, spec, default, strong)
+          mode: 'default'
+          # Experimental: fix schema formats if needed
+          fixSchemas: 'false'

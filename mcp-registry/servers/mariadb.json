@@ -1,0 +1,47 @@
+{
+  "name": "mariadb",
+  "display_name": "MCP Server for MariaDB",
+  "description": "MariaDB database integration with configurable access controls in Python.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/abel9851/mcp-server-mariadb"
+  },
+  "homepage": "https://github.com/abel9851/mcp-server-mariadb",
+  "author": {
+    "name": "abel9851"
+  },
+  "license": "MIT",
+  "categories": [
+    "Database"
+  ],
+  "tags": [
+    "MariaDB",
+    "Data Retrieval"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "mcp-server-mariadb",
+        "--host",
+        "${DB_HOST}",
+        "--port",
+        "${DB_PORT}",
+        "--user",
+        "${DB_USER}",
+        "--password",
+        "${DB_PASSWORD}",
+        "--database",
+        "${DB_NAME}"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "Query Database",
+      "description": "Example of executing a read-only operation against MariaDB.",
+      "prompt": "Execute read-only operations against your MariaDB database."
+    }
+  ]
+}

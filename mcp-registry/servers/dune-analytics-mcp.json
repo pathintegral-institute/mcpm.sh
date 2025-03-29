@@ -1,0 +1,49 @@
+{
+  "name": "dune-analytics-mcp",
+  "display_name": "Dune Analytics MCP Server",
+  "description": "A mcp server that bridges Dune Analytics data to AI agents.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kukapay/dune-analytics-mcp"
+  },
+  "homepage": "https://github.com/kukapay/dune-analytics-mcp",
+  "author": {
+    "name": "Kukapay"
+  },
+  "license": "MIT",
+  "categories": [
+    "Analytics",
+    "Data Processing"
+  ],
+  "tags": [
+    "Dune",
+    "Analytics",
+    "AI agents"
+  ],
+  "examples": [
+    {
+      "title": "Get Latest Result",
+      "description": "Retrieves the latest results of a specified Dune query.",
+      "prompt": "get_latest_result(query_id=4853921)"
+    },
+    {
+      "title": "Run Query",
+      "description": "Executes a Dune query and returns the results.",
+      "prompt": "run_query(query_id=1215383)"
+    }
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/kukapay/dune-analytics-mcp",
+        "main.py"
+      ],
+      "env": {
+        "DUNE_API_KEY": "<YOUR_DUNE_API_KEY>"
+      }
+    }
+  }
+}

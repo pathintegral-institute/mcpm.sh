@@ -66,3 +66,4 @@ logs/
 _site/
 .jekyll-cache/
 .jekyll-metadata
+_dev/

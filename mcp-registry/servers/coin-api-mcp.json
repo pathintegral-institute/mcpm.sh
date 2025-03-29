@@ -1,0 +1,48 @@
+{
+  "name": "coin-api-mcp",
+  "display_name": "Coin MCP Server",
+  "description": "Provides access to [coinmarketcap](https://coinmarketcap.com/) cryptocurrency data.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/longmans/coin_api_mcp"
+  },
+  "homepage": "https://github.com/longmans/coin_api_mcp",
+  "author": {
+    "name": "longmans"
+  },
+  "license": "MIT",
+  "categories": [
+    "Cryptocurrency",
+    "API"
+  ],
+  "tags": [
+    "CoinMarketCap",
+    "Cryptocurrency",
+    "Data"
+  ],
+  "installations": {
+    "python": {
+      "type": "python",
+      "command": "python",
+      "args": [
+        "-m",
+        "coin_api_mcp"
+      ],
+      "env": {
+        "COINMARKETCAP_API_KEY": "${COINMARKETCAP_API_KEY}"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Fetch List of Coins",
+      "description": "Retrieve a paginated list of all active cryptocurrencies with market data.",
+      "prompt": "Call `listing-coins` to get the latest cryptocurrency listings."
+    },
+    {
+      "title": "Get Coin Information",
+      "description": "Retrieve detailed information about a specific cryptocurrency by its ID or symbol.",
+      "prompt": "Call `get-coin-info` using the cryptocurrency ID."
+    }
+  ]
+}

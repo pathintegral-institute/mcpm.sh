@@ -1,0 +1,40 @@
+{
+  "name": "whois-mcp",
+  "display_name": "Whois MCP",
+  "description": "MCP server that performs whois lookup against domain, IP, ASN and TLD.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bharathvaj-ganesan/whois-mcp"
+  },
+  "homepage": "https://github.com/bharathvaj-ganesan/whois-mcp",
+  "author": {
+    "name": "bharathvaj-ganesan"
+  },
+  "license": "MIT",
+  "categories": [
+    "Networking",
+    "Lookup"
+  ],
+  "tags": [
+    "whois",
+    "domain",
+    "tools"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@bharathvaj/whois-mcp@latest"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "Look up WHOIS information",
+      "description": "Using the Whois MCP to find out domain details.",
+      "prompt": "What can you tell me about example.com?"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "name": "snowflake",
+  "display_name": "Snowflake MCP Server",
+  "description": "This MCP server enables LLMs to interact with Snowflake databases, allowing for secure and controlled data operations.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/isaacwasserman/mcp-snowflake-server"
+  },
+  "homepage": "https://github.com/isaacwasserman/mcp-snowflake-server",
+  "author": {
+    "name": "isaacwasserman"
+  },
+  "license": "NOT GIVEN",
+  "categories": [
+    "database"
+  ],
+  "tags": [
+    "snowflake",
+    "sql",
+    "database"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "mcp_snowflake_server",
+        "--account",
+        "the_account",
+        "--warehouse",
+        "the_warehouse",
+        "--user",
+        "the_user",
+        "--password",
+        "their_password",
+        "--role",
+        "the_role",
+        "--database",
+        "the_database",
+        "--schema",
+        "the_schema"
+      ]
+    }
+  }
+}

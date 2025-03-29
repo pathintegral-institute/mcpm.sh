@@ -1,0 +1,32 @@
+{
+  "name": "json",
+  "display_name": "JSON Model Context Protocol Server",
+  "description": "JSON handling and processing server with advanced query capabilities using JSONPath syntax and support for array, string, numeric, and date operations.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GongRzhe/JSON-MCP-Server"
+  },
+  "homepage": "https://github.com/GongRzhe/JSON-MCP-Server",
+  "author": {
+    "name": "GongRzhe"
+  },
+  "license": "MIT",
+  "categories": [
+    "data manipulation",
+    "server"
+  ],
+  "tags": [
+    "json",
+    "data querying",
+    "standardized tools"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "@gongrzhe/server-json-mcp@1.0.3"
+      ]
+    }
+  }
+}

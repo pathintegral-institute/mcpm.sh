@@ -1,0 +1,46 @@
+{
+  "name": "sqlite",
+  "display_name": "SQLite MCP Server",
+  "description": "Database interaction and business intelligence capabilities",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/modelcontextprotocol/servers"
+  },
+  "homepage": "https://github.com/modelcontextprotocol/servers/blob/main/src/sqlite",
+  "author": {
+    "name": "modelcontextprotocol"
+  },
+  "license": "MIT",
+  "categories": [
+    "database",
+    "business intelligence"
+  ],
+  "tags": [
+    "sqlite",
+    "database",
+    "business insights"
+  ],
+  "installations": {
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "-v",
+        "mcp-test:/mcp",
+        "mcp/sqlite",
+        "--db-path",
+        "/mcp/test.db"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "Interactive SQL Analysis",
+      "description": "Guides users through database operations and insights generation.",
+      "prompt": "mcp-demo -topic [business_domain]"
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "name": "postgresql",
+  "display_name": "PostgreSQL",
+  "description": "Read-only database access with schema inspection",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/modelcontextprotocol/servers"
+  },
+  "license": "MIT",
+  "categories": [
+    "Database"
+  ],
+  "tags": [
+    "PostgreSQL",
+    "Database",
+    "Read-Only"
+  ],
+  "author": {
+    "name": "modelcontextprotocol"
+  },
+  "homepage": "https://github.com/modelcontextprotocol/servers/blob/main/src/postgres",
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-postgres",
+        "postgresql://localhost/mydb"
+      ]
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "mcp/postgres",
+        "postgresql://host.docker.internal:5432/mydb"
+      ]
+    }
+  }
+}

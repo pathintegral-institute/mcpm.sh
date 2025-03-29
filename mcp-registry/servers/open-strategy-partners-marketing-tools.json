@@ -1,0 +1,57 @@
+{
+  "name": "open-strategy-partners-marketing-tools",
+  "display_name": "Open Strategy Partners Marketing Tools for LLMs",
+  "description": "Content editing codes, value map, and positioning tools for product marketing.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/open-strategy-partners/osp_marketing_tools"
+  },
+  "homepage": "https://github.com/open-strategy-partners/osp_marketing_tools",
+  "author": {
+    "name": "open-strategy-partners"
+  },
+  "license": "CC-BY-SA-4.0",
+  "categories": [
+    "Marketing",
+    "Content Creation",
+    "SEO"
+  ],
+  "tags": [
+    "LLM",
+    "Technical Writing",
+    "Optimization"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/open-strategy-partners/osp_marketing_tools@main",
+        "osp_marketing_tools"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "Value Map Generation",
+      "description": "Generate an OSP value map for a product with specified features for a target audience.",
+      "prompt": "Generate an OSP value map for CloudDeploy, focusing on DevOps engineers with these key features: - Automated deployment pipeline - Infrastructure as code support - Real-time monitoring - Multi-cloud compatibility."
+    },
+    {
+      "title": "Meta Information Creation",
+      "description": "Create optimized metadata for an article based on a specific topic and audience.",
+      "prompt": "Use the OSP meta tool to generate metadata for an article about containerization best practices. Primary keyword: 'Docker containers', audience: system administrators, content type: technical guide."
+    },
+    {
+      "title": "Content Editing",
+      "description": "Review technical content using OSP editing codes for improvements.",
+      "prompt": "Review this technical content using OSP editing codes: Kubernetes helps you manage containers. It's really good at what it does. You can use it to deploy your apps and make them run better."
+    },
+    {
+      "title": "Technical Writing",
+      "description": "Apply the OSP writing guide to create a document for a specific audience.",
+      "prompt": "Apply the OSP writing guide to create a tutorial about setting up a CI/CD pipeline for junior developers."
+    }
+  ]
+}

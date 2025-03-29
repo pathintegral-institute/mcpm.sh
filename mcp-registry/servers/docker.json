@@ -1,0 +1,43 @@
+{
+  "name": "docker",
+  "display_name": "MCP Server for Docker",
+  "description": "Integrate with Docker to manage containers, images, volumes, and networks.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckreiling/mcp-server-docker"
+  },
+  "license": "MIT",
+  "examples": [
+    {
+      "title": "Deploy an nginx container",
+      "description": "Deploy an nginx container exposing it on port 9000",
+      "prompt": "name: `nginx`, containers: \"deploy an nginx container exposing it on port 9000\""
+    },
+    {
+      "title": "Deploy a WordPress and MySQL container",
+      "description": "Deploy a WordPress container and a supporting MySQL container, exposing WordPress on port 9000",
+      "prompt": "name: `wordpress`, containers: \"deploy a WordPress container and a supporting MySQL container, exposing Wordpress on port 9000\""
+    }
+  ],
+  "categories": [
+    "Docker"
+  ],
+  "tags": [
+    "Docker",
+    "Container",
+    "Image",
+    "Volume",
+    "Network"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/ckreiling/mcp-server-docker",
+        "mcp-server-docker"
+      ]
+    }
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "name": "mongodb-lens",
+  "display_name": "MongoDB Lens",
+  "description": "Full Featured MCP Server for MongoDB Databases.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/furey/mongodb-lens"
+  },
+  "homepage": "https://github.com/furey/mongodb-lens",
+  "author": {
+    "name": "furey"
+  },
+  "license": "MIT",
+  "categories": [
+    "database"
+  ],
+  "tags": [
+    "mongodb",
+    "server"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "mongodb-lens@latest",
+        "mongodb://your-connection-string"
+      ],
+      "env": {
+        "CONFIG_LOG_LEVEL": "verbose"
+      }
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "--network=host",
+        "--pull=always",
+        "-e",
+        "CONFIG_LOG_LEVEL='verbose'",
+        "furey/mongodb-lens",
+        "mongodb://your-connection-string"
+      ]
+    }
+  }
+}

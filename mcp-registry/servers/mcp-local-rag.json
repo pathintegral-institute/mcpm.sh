@@ -1,0 +1,34 @@
+{
+  "name": "mcp-local-rag",
+  "display_name": "MCP Local RAG",
+  "description": "\"primitive\" RAG-like web search model context protocol (MCP) server that runs locally using Google's MediaPipe Text Embedder and DuckDuckGo Search. \u2728 no APIs required \u2728.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nkapila6/mcp-local-rag"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "nkapila6"
+  },
+  "homepage": "https://github.com/nkapila6/mcp-local-rag",
+  "categories": [
+    "Search",
+    "RAG"
+  ],
+  "tags": [
+    "RAG",
+    "Search"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--python=3.10",
+        "--from",
+        "git+https://github.com/nkapila6/mcp-local-rag",
+        "mcp-local-rag"
+      ]
+    }
+  }
+}

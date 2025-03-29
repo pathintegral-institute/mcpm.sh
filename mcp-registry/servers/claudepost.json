@@ -1,0 +1,50 @@
+{
+  "name": "claudepost",
+  "display_name": "Claude Post Email Management",
+  "description": "ClaudePost enables seamless email management for Gmail, offering secure features like email search, reading, and sending.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ZilongXue/claude-post"
+  },
+  "homepage": "https://github.com/ZilongXue/claude-post",
+  "author": {
+    "name": "Zilong Xue"
+  },
+  "license": "MIT",
+  "categories": [
+    "Email",
+    "Productivity"
+  ],
+  "tags": [
+    "Email Management",
+    "Natural Language Processing"
+  ],
+  "examples": [
+    {
+      "title": "Search Emails",
+      "description": "Search for emails using natural language commands.",
+      "prompt": "Show me emails from last week."
+    },
+    {
+      "title": "Read Email Content",
+      "description": "Request to read specific email content.",
+      "prompt": "Show me the content of email #12345."
+    },
+    {
+      "title": "Send Emails",
+      "description": "Send emails using voice commands.",
+      "prompt": "I want to send an email to john@example.com."
+    }
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/ZilongXue/claude-post",
+        "src/email_client"
+      ]
+    }
+  }
+}

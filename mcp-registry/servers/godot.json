@@ -1,0 +1,55 @@
+{
+  "name": "godot",
+  "display_name": "Godot MCP",
+  "description": "A MCP server providing comprehensive Godot engine integration for project editing, debugging, and scene management.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Coding-Solo/godot-mcp"
+  },
+  "homepage": "https://github.com/Coding-Solo/godot-mcp",
+  "author": {
+    "name": "Coding Solo",
+    "url": "https://github.com/Coding-Solo"
+  },
+  "license": "MIT",
+  "categories": [
+    "Game Development"
+  ],
+  "tags": [
+    "Godot",
+    "AI",
+    "Game"
+  ],
+  "examples": [
+    {
+      "title": "Launch Godot Editor",
+      "description": "Launch the Godot editor for a specific project.",
+      "prompt": "Launch the Godot editor for my project at /path/to/project"
+    },
+    {
+      "title": "Run Godot Project",
+      "description": "Execute Godot projects in debug mode.",
+      "prompt": "Run my Godot project and show me any errors"
+    },
+    {
+      "title": "Get Project Info",
+      "description": "Retrieve detailed information about the project structure.",
+      "prompt": "Get information about my Godot project structure"
+    },
+    {
+      "title": "Debug Assistance",
+      "description": "Help debug errors in Godot projects.",
+      "prompt": "Help me debug this error in my Godot project: [paste error]"
+    }
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "https://github.com/Coding-Solo/godot-mcp"
+      ]
+    }
+  }
+}

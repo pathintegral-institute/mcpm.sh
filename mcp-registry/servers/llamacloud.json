@@ -1,0 +1,35 @@
+{
+  "name": "llamacloud",
+  "display_name": "LlamaCloud MCP Server",
+  "description": "Integrate the data stored in a managed index on [LlamaCloud](https://cloud.llamaindex.ai/)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/run-llama/mcp-server-llamacloud"
+  },
+  "homepage": "https://github.com/run-llama/mcp-server-llamacloud",
+  "author": {
+    "name": "run-llama"
+  },
+  "license": "MIT",
+  "categories": [
+    "Tools"
+  ],
+  "tags": [
+    "LlamaCloud",
+    "TypeScript"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@llamaindex/mcp-server-llamacloud"
+      ],
+      "env": {
+        "LLAMA_CLOUD_PROJECT_NAME": "${LLAMA_CLOUD_PROJECT_NAME}",
+        "LLAMA_CLOUD_API_KEY": "${LLAMA_CLOUD_API_KEY}"
+      }
+    }
+  }
+}

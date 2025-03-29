@@ -1,0 +1,36 @@
+{
+  "name": "deepseek-mcp-server",
+  "display_name": "DeepSeek MCP Server",
+  "description": "Model Context Protocol server integrating DeepSeek's advanced language models, in addition to [other useful API endpoints](https://github.com/DMontgomery40/deepseek-mcp-server?tab=readme-ov-file#features)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DMontgomery40/deepseek-mcp-server"
+  },
+  "homepage": "https://github.com/DMontgomery40/deepseek-mcp-server",
+  "author": {
+    "name": "DMontgomery40"
+  },
+  "license": "MIT",
+  "categories": [
+    "API",
+    "Server"
+  ],
+  "tags": [
+    "DeepSeek",
+    "API",
+    "Language Model"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "deepseek-mcp-server"
+      ],
+      "env": {
+        "DEEPSEEK_API_KEY": "${DEEPSEEK_API_KEY}"
+      }
+    }
+  }
+}

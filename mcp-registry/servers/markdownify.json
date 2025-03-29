@@ -1,0 +1,35 @@
+{
+  "name": "markdownify",
+  "display_name": "Markdownify MCP Server",
+  "description": "MCP to convert almost anything to Markdown (PPTX, HTML, PDF, Youtube Transcripts and more)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zcaceres/mcp-markdownify-server"
+  },
+  "homepage": "https://github.com/zcaceres/mcp-markdownify-server",
+  "license": "MIT",
+  "categories": [
+    "Conversion",
+    "Markdown"
+  ],
+  "tags": [
+    "markdown",
+    "conversion"
+  ],
+  "author": {
+    "name": "zcaceres"
+  },
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "https://github.com/zcaceres/mcp-markdownify-server"
+      ],
+      "env": {
+        "UV_PATH": "${UV_PATH}"
+      }
+    }
+  }
+}

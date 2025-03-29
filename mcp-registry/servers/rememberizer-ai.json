@@ -1,0 +1,35 @@
+{
+  "name": "rememberizer-ai",
+  "display_name": "Rememberizer MCP Server",
+  "description": "An MCP server designed for interacting with the Rememberizer data source, facilitating enhanced knowledge retrieval.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/skydeckai/mcp-server-rememberizer"
+  },
+  "homepage": "https://github.com/skydeckai/mcp-server-rememberizer",
+  "author": {
+    "name": "skydeckai"
+  },
+  "license": "MIT",
+  "categories": [
+    "Server"
+  ],
+  "tags": [
+    "Rememberizer",
+    "Document Management",
+    "Knowledge Management",
+    "API"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "mcp-server-rememberizer"
+      ],
+      "env": {
+        "REMEMBERIZER_API_TOKEN": "your_rememberizer_api_token"
+      }
+    }
+  }
+}

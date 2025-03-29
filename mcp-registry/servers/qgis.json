@@ -1,0 +1,40 @@
+{
+  "name": "qgis",
+  "display_name": "QGIS Model Context Protocol Integration",
+  "description": "connects QGIS to Claude AI through the MCP. This integration enables prompt-assisted project creation, layer loading, code execution, and more.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jjsantos01/qgis_mcp"
+  },
+  "homepage": "https://github.com/jjsantos01/qgis_mcp",
+  "author": {
+    "name": "jjsantos01"
+  },
+  "license": "MIT",
+  "categories": [
+    "GIS",
+    "AI Integration",
+    "Plugin"
+  ],
+  "tags": [
+    "QGIS"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "https://github.com/jjsantos01/qgis_mcp",
+        "src/qgis_mcp/qgis_mcp_server.py"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "Demo Command Sequence",
+      "description": "A series of commands to demonstrate the QGIS MCP integration.",
+      "prompt": "1. Ping to check the connection. If it works, continue with the following steps.\n2. Create a new project and save it at: \"C:/Users/USER/GitHub/qgis_mcp/data/cdmx.qgz\"\n3. Load the vector layer: \"C:/Users/USER/GitHub/qgis_mcp/data/cdmx/mgpc_2019.shp\" and name it \"Colonias\".\n4. Load the raster layer: \"C:/Users/USER/GitHub/qgis_mcp/data/09014.tif\" and name it \"BJ\".\n5. Zoom to the \"BJ\" layer.\n6. Execute the centroid algorithm on the \"Colonias\" layer. Skip the geometry check. Save the output to \"colonias_centroids.geojson\".\n7. Execute code to create a choropleth map using the \"POB2010\" field in the \"Colonias\" layer. Use the quantile classification method with 5 classes and the Spectral color ramp.\n8. Render the map to \"C:/Users/USER/GitHub/qgis_mcp/data/cdmx.png\"\n9. Save the project."
+    }
+  ]
+}

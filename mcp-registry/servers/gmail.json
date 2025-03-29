@@ -1,0 +1,46 @@
+{
+  "name": "gmail",
+  "display_name": "Gmail AutoAuth MCP Server",
+  "description": "A Model Context Protocol (MCP) server for Gmail integration in Claude Desktop with auto authentication support.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GongRzhe/Gmail-MCP-Server"
+  },
+  "homepage": "https://github.com/GongRzhe/Gmail-MCP-Server",
+  "author": {
+    "name": "GongRzhe"
+  },
+  "license": "MIT",
+  "categories": [
+    "Email",
+    "Gmail"
+  ],
+  "tags": [
+    "gmail",
+    "autoauth",
+    "claude"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "@gongrzhe/server-gmail-autoauth-mcp"
+      ]
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-v",
+        "mcp-gmail:/gmail-server",
+        "-e",
+        "${GMAIL_CREDENTIALS_PATH}=/gmail-server/credentials.json",
+        "mcp/gmail"
+      ]
+    }
+  }
+}

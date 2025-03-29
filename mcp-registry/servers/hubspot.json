@@ -1,0 +1,51 @@
+{
+  "name": "hubspot",
+  "display_name": "HubSpot MCP Server",
+  "description": "HubSpot CRM integration for managing contacts and companies. Create and retrieve CRM data directly through Claude chat.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/buryhuang/mcp-hubspot"
+  },
+  "homepage": "https://github.com/buryhuang/mcp-hubspot",
+  "author": {
+    "name": "buryhuang"
+  },
+  "license": "MIT",
+  "categories": [
+    "CRM",
+    "Integration"
+  ],
+  "tags": [
+    "HubSpot",
+    "API",
+    "AI",
+    "CRM",
+    "Integration"
+  ],
+  "installations": {
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "HUBSPOT_ACCESS_TOKEN=your_access_token_here",
+        "buryhuang/mcp-hubspot:latest"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "Create HubSpot contacts from LinkedIn",
+      "description": "This prompt allows you to create contacts in HubSpot by parsing information from a LinkedIn profile.",
+      "prompt": "Create HubSpot contacts and companies from following:\n\nJohn Doe\nSoftware Engineer at Tech Corp\nSan Francisco Bay Area \u2022 500+ connections\n\nExperience\nTech Corp\nSoftware Engineer\nJan 2020 - Present \u00b7 4 yrs\nSan Francisco, California\n\nPrevious Company Inc.\nSenior Developer\n2018 - 2020 \u00b7 2 yrs\n\nEducation\nUniversity of California, Berkeley\nComputer Science, BS\n2014 - 2018"
+    },
+    {
+      "title": "Get latest company activities",
+      "description": "Use this prompt to get the latest activities related to your company in HubSpot.",
+      "prompt": "What's happening latestly with my pipeline?"
+    }
+  ]
+}

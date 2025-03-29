@@ -1,0 +1,37 @@
+{
+  "name": "dify",
+  "display_name": "Dify MCP Server",
+  "description": "A simple implementation of an MCP server for dify workflows.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YanxingLiu/dify-mcp-server"
+  },
+  "homepage": "https://github.com/YanxingLiu/dify-mcp-server",
+  "author": {
+    "name": "YanxingLiu"
+  },
+  "license": "MIT",
+  "categories": [
+    "Server",
+    "Workflows"
+  ],
+  "tags": [
+    "dify",
+    "server",
+    "workflows"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/YanxingLiu/dify-mcp-server",
+        "dify_mcp_server"
+      ],
+      "env": {
+        "CONFIG_PATH": "${CONFIG_PATH}"
+      }
+    }
+  }
+}

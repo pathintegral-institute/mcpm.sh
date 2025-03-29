@@ -1,0 +1,31 @@
+{
+  "name": "hyperliquid",
+  "display_name": "Hyperliquid MCP Server",
+  "description": "An MCP server implementation that integrates the Hyperliquid SDK for exchange data.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mektigboy/server-hyperliquid"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "mektigboy"
+  },
+  "homepage": "https://github.com/mektigboy/server-hyperliquid",
+  "categories": [
+    "Exchange"
+  ],
+  "tags": [
+    "Hyperliquid",
+    "Exchange"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@mektigboy/server-hyperliquid"
+      ]
+    }
+  }
+}

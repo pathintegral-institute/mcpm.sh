@@ -10,6 +10,7 @@ MCPM aims to simplify the installation, configuration, and management of Model C
 - Centralized management of server configurations across multiple clients
 - Seamless updates for installed servers
 - Server-side management capabilities
+- Registry of available MCP servers
 
 ## Supported MCP Clients
 
@@ -53,15 +54,9 @@ mcpm server status           # Show status of running MCP servers
 mcpm toggle SERVER_NAME      # Toggle an MCP server on or off for a client
 ```
 
-### Coming Soon Commands
+### Registry
 
-The following commands are planned for future releases:
-
-```
-mcpm install SERVER_NAME     # Install an MCP server
-mcpm search [QUERY]          # Search available MCP servers
-mcpm status                  # Show status of MCP servers in Claude Desktop
-```
+The MCP Registry is a central repository of available MCP servers that can be installed using MCPM. The registry is available at [mcpm.sh/registry](https://mcpm.sh/registry).
 
 ## Roadmap
 
@@ -69,6 +64,7 @@ mcpm status                  # Show status of MCP servers in Claude Desktop
 - [x] CLI foundation
 - [x] Search
 - [x] Install
+- [x] Registry integration
 - [ ] Server management functionality
 - [ ] Support SSE Server
 - [ ] Additional client support
@@ -97,6 +93,9 @@ mcpm.sh/
 ├── tests/           # Test directory
 ├── test_cli.py      # Development CLI runner
 ├── pyproject.toml   # Project configuration
+├── pages/           # Website content
+│   └── registry/    # Registry website
+├── mcp-registry/    # MCP Registry data
 └── README.md        # Documentation
 ```
 

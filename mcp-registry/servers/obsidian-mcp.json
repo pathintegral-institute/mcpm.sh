@@ -1,0 +1,48 @@
+{
+  "name": "obsidian-mcp",
+  "display_name": "Obsidian MCP Server",
+  "description": "(by Steven Stavrakis) An MCP server for Obsidian.md with tools for searching, reading, writing, and organizing notes.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/StevenStavrakis/obsidian-mcp"
+  },
+  "homepage": "https://github.com/StevenStavrakis/obsidian-mcp",
+  "author": {
+    "name": "StevenStavrakis"
+  },
+  "license": "MIT",
+  "categories": [
+    "Productivity",
+    "Notes"
+  ],
+  "tags": [
+    "Obsidian",
+    "AI",
+    "Notes",
+    "Productivity"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "obsidian-mcp",
+        "/path/to/your/vault",
+        "/path/to/your/vault2"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "Read a note",
+      "description": "Read the contents of a note.",
+      "prompt": "read-note('note-id')"
+    },
+    {
+      "title": "Create a new note",
+      "description": "Create a new note in the vault.",
+      "prompt": "create-note('note-name', 'note-content')"
+    }
+  ]
+}

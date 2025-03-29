@@ -1,0 +1,41 @@
+{
+  "name": "oceanbase",
+  "display_name": "OceanBase MCP Server",
+  "description": "(by yuanoOo) A Model Context Protocol (MCP) server that enables secure interaction with OceanBase databases.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yuanoOo/oceanbase_mcp_server"
+  },
+  "homepage": "https://github.com/yuanoOo/oceanbase_mcp_server",
+  "author": {
+    "name": "yuanoOo"
+  },
+  "license": "Apache-2.0",
+  "categories": [
+    "Database",
+    "Server"
+  ],
+  "tags": [
+    "OceanBase",
+    "SQL",
+    "Security"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/yuanoOo/oceanbase_mcp_server.git",
+        "oceanbase_mcp_server"
+      ],
+      "env": {
+        "OB_HOST": "localhost",
+        "OB_PORT": "2881",
+        "OB_USER": "your_username",
+        "OB_PASSWORD": "your_password",
+        "OB_DATABASE": "your_database"
+      }
+    }
+  }
+}

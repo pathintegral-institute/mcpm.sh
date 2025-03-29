@@ -1,0 +1,47 @@
+{
+  "name": "xiyan-mcp-server",
+  "display_name": "XiYan MCP Server",
+  "description": "An MCP server that supports fetching data from a database using natural language queries, powered by XiyanSQL as the text-to-SQL LLM.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/XGenerationLab/xiyan_mcp_server"
+  },
+  "homepage": "https://github.com/XGenerationLab/xiyan_mcp_server",
+  "author": {
+    "name": "XGenerationLab"
+  },
+  "license": "Apache-2.0",
+  "categories": [
+    "Database"
+  ],
+  "tags": [
+    "database",
+    "sql",
+    "database"
+  ],
+  "installations": {
+    "python": {
+      "type": "python",
+      "command": "python",
+      "args": [
+        "-m",
+        "xiyan_mcp_server"
+      ],
+      "env": {
+        "YML": "PATH/TO/YML"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Installing from pip",
+      "description": "You can install the server through pip, and it will install the latest version.",
+      "prompt": "pip install xiyan-mcp-server"
+    },
+    {
+      "title": "Running the server",
+      "description": "After installing, you can run the server using a yml configuration file.",
+      "prompt": "env YML=path/to/yml python -m xiyan_mcp_server"
+    }
+  ]
+}

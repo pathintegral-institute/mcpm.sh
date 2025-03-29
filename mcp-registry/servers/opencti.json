@@ -1,0 +1,53 @@
+{
+  "name": "opencti",
+  "display_name": "OpenCTI MCP Server",
+  "description": "Interact with OpenCTI platform to retrieve threat intelligence data including reports, indicators, malware and threat actors.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Spathodea-Network/opencti-mcp"
+  },
+  "homepage": "https://github.com/Spathodea-Network/opencti-mcp",
+  "author": {
+    "name": "Spathodea-Network"
+  },
+  "license": "MIT",
+  "categories": [
+    "Threat Intelligence",
+    "Cyber Security"
+  ],
+  "tags": [
+    "OpenCTI",
+    "Threat Intelligence"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "https://github.com/Spathodea-Network/opencti-mcp"
+      ],
+      "env": {
+        "OPENCTI_URL": "${OPENCTI_URL}",
+        "OPENCTI_TOKEN": "${OPENCTI_TOKEN}"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Get Latest Reports",
+      "description": "Retrieves the most recent threat intelligence reports.",
+      "prompt": "{ \"name\": \"get_latest_reports\", \"arguments\": { \"first\": 10 } }"
+    },
+    {
+      "title": "Search Malware",
+      "description": "Searches for malware information in the OpenCTI database.",
+      "prompt": "{ \"name\": \"search_malware\", \"arguments\": { \"query\": \"ransomware\" } }"
+    },
+    {
+      "title": "User Management - List Users",
+      "description": "Lists all users in the system.",
+      "prompt": "{ \"name\": \"list_users\", \"arguments\": {} }"
+    }
+  ]
+}

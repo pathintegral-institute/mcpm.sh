@@ -1,0 +1,33 @@
+{
+  "name": "openapi-schema",
+  "display_name": "OpenAPI Schema Model Context Protocol Server",
+  "description": "Allow LLMs to explore large [OpenAPI](https://www.openapis.org/) schemas without bloating the context.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hannesj/mcp-openapi-schema"
+  },
+  "homepage": "https://github.com/hannesj/mcp-openapi-schema",
+  "author": {
+    "name": "hannesj"
+  },
+  "license": "[NOT GIVEN]",
+  "categories": [
+    "API",
+    "Development"
+  ],
+  "tags": [
+    "OpenAPI",
+    "LLM"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-openapi-schema",
+        "/ABSOLUTE/PATH/TO/openapi.yaml"
+      ]
+    }
+  }
+}

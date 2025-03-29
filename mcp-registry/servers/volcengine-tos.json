@@ -1,0 +1,48 @@
+{
+  "name": "volcengine-tos",
+  "display_name": "TOS MCP Server",
+  "description": "A sample MCP server for VolcEngine TOS that flexibly get objects from TOS.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dinghuazhou/sample-mcp-server-tos"
+  },
+  "author": {
+    "name": "dinghuazhou"
+  },
+  "license": "MIT",
+  "categories": [
+    "Data Retrieval"
+  ],
+  "tags": [
+    "TOS",
+    "Volcengine",
+    "Data"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "tos-mcp-server"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "List Buckets",
+      "description": "Returns a list of all buckets owned by the authenticated sender of the request",
+      "prompt": "ListBuckets"
+    },
+    {
+      "title": "List Objects in a Bucket",
+      "description": "Returns some or all (up to 1,000) of the objects in a bucket with each request",
+      "prompt": "ListObjectsV2"
+    },
+    {
+      "title": "Get an Object",
+      "description": "Retrieves an object from volcengine TOS.",
+      "prompt": "GetObject"
+    }
+  ],
+  "homepage": "https://github.com/dinghuazhou/sample-mcp-server-tos"
+}

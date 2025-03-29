@@ -1,0 +1,31 @@
+{
+  "name": "code-sandbox-mcp",
+  "display_name": "Code Sandbox MCP",
+  "description": "An MCP server to create secure code sandbox environment for executing code within Docker containers.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Automata-Labs-team/code-sandbox-mcp"
+  },
+  "homepage": "https://github.com/Automata-Labs-team/code-sandbox-mcp",
+  "author": {
+    "name": "Automata-Labs-team"
+  },
+  "license": "MIT",
+  "installations": {
+    "custom": {
+      "type": "custom",
+      "command": "/path/to/code-sandbox-mcp",
+      "args": [],
+      "env": {}
+    }
+  },
+  "categories": [
+    "Development Tools",
+    "AI Tools"
+  ],
+  "tags": [
+    "Docker",
+    "Sandbox",
+    "Code Execution"
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "name": "airtable",
+  "display_name": "Airtable MCP Server",
+  "description": "Airtable Model Context Protocol Server.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/felores/airtable-mcp"
+  },
+  "author": {
+    "name": "felores"
+  },
+  "license": "MIT",
+  "categories": [
+    "API",
+    "Data Management"
+  ],
+  "tags": [
+    "Airtable",
+    "Database",
+    "API"
+  ],
+  "arguments": {
+    "AIRTABLE_API_KEY": {
+      "description": "Airtable API key for authenticating with the Airtable API",
+      "required": true,
+      "example": "pat.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    }
+  },
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@felores/airtable-mcp-server"
+      ],
+      "env": {
+        "AIRTABLE_API_KEY": "${AIRTABLE_API_KEY}"
+      },
+      "description": "Run with npx (requires npm install)"
+    }
+  },
+  "homepage": "https://github.com/felores/airtable-mcp"
+}

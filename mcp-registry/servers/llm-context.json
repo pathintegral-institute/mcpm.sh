@@ -1,0 +1,37 @@
+{
+  "name": "llm-context",
+  "display_name": "LLM Context",
+  "description": "Provides a repo-packing MCP tool with configurable profiles that specify file inclusion/exclusion patterns and optional prompts.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cyberchitta/llm-context.py"
+  },
+  "homepage": "https://github.com/cyberchitta/llm-context.py",
+  "author": {
+    "name": "cyberchitta"
+  },
+  "license": "Apache 2.0",
+  "categories": [
+    "Development Tools",
+    "AI",
+    "Chat Interfaces"
+  ],
+  "tags": [
+    "LLM",
+    "Context Injection",
+    "Development",
+    "ChatGPT",
+    "Productivity"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "llm-context",
+        "lc-mcp"
+      ]
+    }
+  }
+}

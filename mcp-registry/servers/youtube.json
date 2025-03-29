@@ -1,0 +1,44 @@
+{
+  "name": "youtube",
+  "display_name": "YouTube MCP Server",
+  "description": "Comprehensive YouTube API integration for video management, Shorts creation, and analytics.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ZubeidHendricks/youtube-mcp-server"
+  },
+  "homepage": "https://github.com/ZubeidHendricks/youtube-mcp-server",
+  "author": {
+    "name": "ZubeidHendricks"
+  },
+  "license": "MIT",
+  "categories": [
+    "youtube",
+    "api"
+  ],
+  "tags": [
+    "youtube",
+    "video",
+    "transcripts",
+    "api"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-youtube"
+      ],
+      "env": {
+        "YOUTUBE_API_KEY": "<YOUR_API_KEY>"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Managing Videos",
+      "description": "Example code for managing videos using the YouTube MCP Server.",
+      "prompt": "// Get video details\nconst video = await youtube.videos.getVideo({\n  videoId: \"video-id\"\n});"
+    }
+  ]
+}

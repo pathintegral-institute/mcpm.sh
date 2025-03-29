@@ -1,0 +1,43 @@
+{
+  "name": "chatsum",
+  "display_name": "MCP Server Chat Summary",
+  "description": "Query and Summarize chat messages with LLM. by [mcpso](https://mcp.so/)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mcpso/mcp-server-chatsum"
+  },
+  "homepage": "https://github.com/mcpso/mcp-server-chatsum",
+  "author": {
+    "name": "idoubi",
+    "url": "https://bento.me/idoubi"
+  },
+  "license": "MIT",
+  "categories": [
+    "chat",
+    "summarization"
+  ],
+  "tags": [
+    "chat",
+    "summary"
+  ],
+  "examples": [
+    {
+      "title": "Summarize Chat Messages",
+      "description": "Use this prompt to summarize chat messages based on given parameters.",
+      "prompt": "Summarize these messages: [...]"
+    }
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "https://github.com/mcpso/mcp-server-chatsum"
+      ],
+      "env": {
+        "CHAT_DB_PATH": "path-to/mcp-server-chatsum/chatbot/data/chat.db"
+      }
+    }
+  }
+}

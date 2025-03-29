@@ -1,0 +1,51 @@
+{
+  "name": "video-editor",
+  "display_name": "Video Editor MCP Server",
+  "description": "A Model Context Protocol Server to add, edit, and search videos with [Video Jungle](https://www.video-jungle.com/).",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/burningion/video-editing-mcp"
+  },
+  "homepage": "https://github.com/burningion/video-editing-mcp",
+  "author": {
+    "name": "burningion"
+  },
+  "license": "MIT",
+  "categories": [
+    "Video Editing"
+  ],
+  "tags": [
+    "video",
+    "editing",
+    "API"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/burningion/video-editing-mcp",
+        "video-editor-mcp",
+        "YOURAPIKEY"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "Add Video Example",
+      "description": "Shows how to add a video from a URL.",
+      "prompt": "can you download the video at https://www.youtube.com/shorts/RumgYaH5XYw and name it fly traps?"
+    },
+    {
+      "title": "Search Videos Example",
+      "description": "Example of searching videos with a keyword.",
+      "prompt": "can you search my videos for fly traps?"
+    },
+    {
+      "title": "Generate Edit Example",
+      "description": "Creates an edit from found video segments.",
+      "prompt": "can you create an edit of all the times the video says \"fly trap\"?"
+    }
+  ]
+}

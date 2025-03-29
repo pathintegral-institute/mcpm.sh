@@ -1,0 +1,30 @@
+{
+  "name": "scrapling-fetch",
+  "display_name": "Scrapling Fetch MCP",
+  "description": "Access text content from bot-protected websites. Fetches HTML/markdown from sites with anti-automation measures using Scrapling.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cyberchitta/scrapling-fetch-mcp"
+  },
+  "license": "Apache 2",
+  "author": {
+    "name": "cyberchitta"
+  },
+  "homepage": "https://github.com/cyberchitta/scrapling-fetch-mcp",
+  "categories": [
+    "Web"
+  ],
+  "tags": [
+    "scrapling",
+    "fetch"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "scrapling-fetch-mcp"
+      ]
+    }
+  }
+}

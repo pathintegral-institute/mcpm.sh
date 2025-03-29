@@ -1,0 +1,44 @@
+{
+  "name": "siri-shortcuts",
+  "display_name": "Siri Shortcuts MCP Server",
+  "description": "MCP to interact with Siri Shortcuts on macOS. Exposes all Shortcuts as MCP tools.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dvcrn/mcp-server-siri-shortcuts"
+  },
+  "homepage": "https://github.com/dvcrn/mcp-server-siri-shortcuts",
+  "author": {
+    "name": "dvcrn"
+  },
+  "license": "[NOT GIVEN]",
+  "categories": [
+    "shortcuts",
+    "macos"
+  ],
+  "tags": [
+    "siri",
+    "shortcuts",
+    "automation"
+  ],
+  "examples": [
+    {
+      "title": "List all shortcuts",
+      "description": "Fetches all available Siri shortcuts",
+      "prompt": "list_shortcuts"
+    },
+    {
+      "title": "Run a specific shortcut",
+      "description": "Execute a shortcut with optional input",
+      "prompt": "run_shortcut_My_Shortcut_1"
+    }
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "mcp-server-siri-shortcuts"
+      ]
+    }
+  }
+}

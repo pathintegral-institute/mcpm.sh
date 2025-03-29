@@ -1,0 +1,50 @@
+{
+  "name": "servicenow",
+  "display_name": "ServiceNow MCP Server",
+  "description": "A MCP server to interact with a ServiceNow instance",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/osomai/servicenow-mcp"
+  },
+  "homepage": "https://github.com/osomai/servicenow-mcp",
+  "author": {
+    "name": "osomai"
+  },
+  "license": "MIT",
+  "categories": [
+    "Integration",
+    "Automation"
+  ],
+  "tags": [
+    "ServiceNow",
+    "Automation"
+  ],
+  "examples": [
+    {
+      "title": "Incident Management - Creating an Incident",
+      "description": "Create a new incident for a network outage in the east region.",
+      "prompt": "Create a new incident for a network outage in the east region."
+    },
+    {
+      "title": "Service Catalog - List Items",
+      "description": "Show me all items in the service catalog.",
+      "prompt": "Show me all items in the service catalog."
+    }
+  ],
+  "installations": {
+    "python": {
+      "type": "python",
+      "command": "/Users/yourusername/dev/servicenow-mcp/.venv/bin/python",
+      "args": [
+        "-m",
+        "servicenow_mcp.cli"
+      ],
+      "env": {
+        "SERVICENOW_INSTANCE_URL": "https://your-instance.service-now.com",
+        "SERVICENOW_USERNAME": "your-username",
+        "SERVICENOW_PASSWORD": "your-password",
+        "SERVICENOW_AUTH_TYPE": "basic"
+      }
+    }
+  }
+}

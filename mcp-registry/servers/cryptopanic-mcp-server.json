@@ -1,0 +1,45 @@
+{
+  "name": "cryptopanic-mcp-server",
+  "display_name": "CryptoPanic MCP Server",
+  "description": "Providing latest cryptocurrency news to AI agents, powered by CryptoPanic.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kukapay/cryptopanic-mcp-server"
+  },
+  "homepage": "https://github.com/kukapay/cryptopanic-mcp-server",
+  "author": {
+    "name": "kukapay",
+    "url": "https://github.com/kukapay"
+  },
+  "license": "MIT",
+  "examples": [
+    {
+      "title": "Fetch Cryptocurrency News",
+      "description": "Get the latest news articles on cryptocurrencies.",
+      "prompt": "get_crypto_news(kind='news', num_pages=1)"
+    }
+  ],
+  "categories": [
+    "Crypto",
+    "News"
+  ],
+  "tags": [
+    "cryptocurrency",
+    "news",
+    "CryptoPanic"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/kukapay/cryptopanic-mcp-server",
+        "main.py"
+      ],
+      "env": {
+        "CRYPTOPANIC_API_KEY": ""
+      }
+    }
+  }
+}

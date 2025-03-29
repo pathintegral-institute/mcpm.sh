@@ -1,0 +1,35 @@
+{
+  "name": "notion",
+  "display_name": "Notion MCP Server",
+  "description": "Notion MCP integration. Search, Read, Update, and Create pages through Claude chat.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/v-3/notion-server"
+  },
+  "homepage": "https://github.com/v-3/notion-server",
+  "author": {
+    "name": "v-3"
+  },
+  "license": "MIT",
+  "categories": [
+    "Integration",
+    "API",
+    "Notion"
+  ],
+  "tags": [
+    "Notion"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "https://github.com/v-3/notion-server"
+      ],
+      "env": {
+        "NOTION_API_KEY": "${NOTION_API_KEY}"
+      }
+    }
+  }
+}

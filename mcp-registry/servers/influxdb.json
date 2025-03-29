@@ -1,0 +1,37 @@
+{
+  "name": "influxdb",
+  "display_name": "InfluxDB MCP Server",
+  "description": "Run queries against InfluxDB OSS API v2.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/idoru/influxdb-mcp-server"
+  },
+  "homepage": "https://github.com/idoru/influxdb-mcp-server",
+  "author": {
+    "name": "idoru"
+  },
+  "license": "MIT",
+  "categories": [
+    "database"
+  ],
+  "tags": [
+    "InfluxDB",
+    "API",
+    "server",
+    "time-series"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "influxdb-mcp-server"
+      ],
+      "env": {
+        "INFLUXDB_TOKEN": "your_token",
+        "INFLUXDB_URL": "http://localhost:8086",
+        "INFLUXDB_ORG": "your_org"
+      }
+    }
+  }
+}

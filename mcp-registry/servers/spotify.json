@@ -1,0 +1,50 @@
+{
+  "name": "spotify",
+  "display_name": "Spotify MCP",
+  "description": "This MCP allows an LLM to play and use Spotify.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/varunneal/spotify-mcp"
+  },
+  "homepage": "https://github.com/varunneal/spotify-mcp",
+  "author": {
+    "name": "varunneal"
+  },
+  "license": "MIT",
+  "categories": [
+    "multimedia",
+    "music"
+  ],
+  "tags": [
+    "spotify",
+    "audio"
+  ],
+  "examples": [
+    {
+      "title": "Basic Playback Control",
+      "description": "Use the MCP to start, pause, or skip songs on Spotify.",
+      "prompt": "Start playing a song on Spotify."
+    },
+    {
+      "title": "Search for Tracks",
+      "description": "Search for tracks, albums, artists, or playlists using the Spotify API.",
+      "prompt": "Search for the album 'Thriller'."
+    }
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/varunneal/spotify-mcp",
+        "spotify-mcp"
+      ],
+      "env": {
+        "SPOTIFY_CLIENT_ID": "YOUR_CLIENT_ID",
+        "SPOTIFY_CLIENT_SECRET": "YOUR_CLIENT_SECRET",
+        "SPOTIFY_REDIRECT_URI": "http://localhost:8888"
+      }
+    }
+  }
+}

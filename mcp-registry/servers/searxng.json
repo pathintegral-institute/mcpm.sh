@@ -1,0 +1,35 @@
+{
+  "name": "searxng",
+  "display_name": "SearXNG MCP Server",
+  "description": "A Model Context Protocol Server for [SearXNG](https://docs.searxng.org/)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ihor-sokoliuk/mcp-searxng"
+  },
+  "homepage": "https://github.com/ihor-sokoliuk/mcp-searxng",
+  "author": {
+    "name": "ihor-sokoliuk"
+  },
+  "license": "MIT",
+  "categories": [
+    "web"
+  ],
+  "tags": [
+    "search",
+    "searxng",
+    "api"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "<full path to mcp-searxng repo>/"
+      ],
+      "env": {
+        "SEARXNG_URL": "YOUR_SEARXNG_INSTANCE_URL"
+      }
+    }
+  }
+}

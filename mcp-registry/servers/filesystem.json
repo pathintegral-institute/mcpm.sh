@@ -1,0 +1,52 @@
+{
+  "name": "filesystem",
+  "display_name": "Filesystem MCP Server",
+  "description": "Secure file operations with configurable access controls",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/modelcontextprotocol/servers"
+  },
+  "homepage": "https://github.com/modelcontextprotocol/servers/blob/main/src/filesystem",
+  "author": {
+    "name": "modelcontextprotocol"
+  },
+  "license": "MIT",
+  "categories": [
+    "filesystem"
+  ],
+  "tags": [
+    "Node.js",
+    "server",
+    "filesystem",
+    "operations"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/Users/username/Desktop",
+        "/path/to/other/allowed/dir"
+      ]
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "--mount",
+        "type=bind,src=/Users/username/Desktop,dst=/projects/Desktop",
+        "--mount",
+        "type=bind,src=/path/to/other/allowed/dir,dst=/projects/other/allowed/dir,ro",
+        "--mount",
+        "type=bind,src=/path/to/file.txt,dst=/projects/path/to/file.txt",
+        "mcp/filesystem",
+        "/projects"
+      ]
+    }
+  }
+}

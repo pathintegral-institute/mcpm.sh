@@ -1,0 +1,36 @@
+{
+  "name": "evm-mcp-server",
+  "display_name": "EVM MCP Server",
+  "description": "Comprehensive blockchain services for 30+ EVM networks, supporting native tokens, ERC20, NFTs, smart contracts, transactions, and ENS resolution.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mcpdotdirect/evm-mcp-server"
+  },
+  "license": "MIT",
+  "categories": [
+    "Blockchain",
+    "EVM",
+    "Server"
+  ],
+  "tags": [
+    "Ethereum",
+    "Smart Contracts",
+    "AI",
+    "Token Transfers",
+    "NFTs"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@mcpdotdirect/evm-mcp-server"
+      ]
+    }
+  },
+  "author": {
+    "name": "mcpdotdirect"
+  },
+  "homepage": "https://github.com/mcpdotdirect/evm-mcp-server"
+}

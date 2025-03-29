@@ -1,0 +1,53 @@
+{
+  "name": "memory",
+  "display_name": "Knowledge Graph Memory Server",
+  "description": "Knowledge graph-based persistent memory system",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/modelcontextprotocol/servers"
+  },
+  "homepage": "https://github.com/modelcontextprotocol/servers/blob/main/src/memory",
+  "author": {
+    "name": "modelcontextprotocol"
+  },
+  "license": "MIT",
+  "categories": [
+    "memory",
+    "knowledge",
+    "server"
+  ],
+  "tags": [
+    "knowledge graph",
+    "memory",
+    "persistent memory"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ]
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "-v",
+        "claude-memory:/app/dist",
+        "--rm",
+        "mcp/memory"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "Basic Memory Interaction",
+      "description": "A simple interaction with memory where user details are remembered.",
+      "prompt": "Remembering..."
+    }
+  ]
+}

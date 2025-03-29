@@ -1,0 +1,32 @@
+{
+  "name": "mem0-mcp",
+  "display_name": "MCP Server with Mem0",
+  "description": "A Model Context Protocol server for Mem0, which helps with managing coding preferences.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mem0ai/mem0-mcp"
+  },
+  "homepage": "https://github.com/mem0ai/mem0-mcp",
+  "author": {
+    "name": "mem0ai"
+  },
+  "license": "MIT",
+  "categories": [
+    "development"
+  ],
+  "tags": [
+    "coding preferences",
+    "mem0"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/mem0ai/mem0-mcp",
+        "main.py"
+      ]
+    }
+  }
+}

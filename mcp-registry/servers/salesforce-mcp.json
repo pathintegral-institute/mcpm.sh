@@ -1,0 +1,36 @@
+{
+  "name": "salesforce-mcp",
+  "display_name": "MCP Salesforce Connector",
+  "description": "Interact with Salesforce Data and Metadata",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/smn2gnt/MCP-Salesforce"
+  },
+  "license": "[NOT GIVEN]",
+  "author": {
+    "name": "smn2gnt"
+  },
+  "homepage": "https://github.com/smn2gnt/MCP-Salesforce",
+  "categories": [
+    "Salesforce"
+  ],
+  "tags": [
+    "salesforce"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "mcp-salesforce-connector",
+        "salesforce"
+      ],
+      "env": {
+        "SALESFORCE_USERNAME": "YOUR_SALESFORCE_USERNAME",
+        "SALESFORCE_PASSWORD": "YOUR_SALESFORCE_PASSWORD",
+        "SALESFORCE_SECURITY_TOKEN": "YOUR_SALESFORCE_SECURITY_TOKEN"
+      }
+    }
+  }
+}

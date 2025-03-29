@@ -1,0 +1,52 @@
+{
+  "name": "kibela",
+  "display_name": "Kibela MCP Server",
+  "description": "Interact with Kibela API.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiwamizamurai/mcp-kibela-server"
+  },
+  "homepage": "https://github.com/kiwamizamurai/mcp-kibela-server",
+  "author": {
+    "name": "kiwamizamurai"
+  },
+  "license": "MIT",
+  "categories": [
+    "Productivity"
+  ],
+  "tags": [
+    "Kibela",
+    "Integration"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@kiwamizamurai/mcp-kibela-server"
+      ],
+      "env": {
+        "KIBELA_TEAM": "${KIBELA_TEAM}",
+        "KIBELA_TOKEN": "${KIBELA_TOKEN}"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Search Kibela notes",
+      "description": "Search through your Kibela notes using a query.",
+      "prompt": "kibela_search_notes(\"my search query\")"
+    },
+    {
+      "title": "Get latest notes",
+      "description": "Retrieve your latest notes from Kibela.",
+      "prompt": "kibela_get_my_notes()"
+    },
+    {
+      "title": "Get note content",
+      "description": "Fetch content of a specific note by ID.",
+      "prompt": "kibela_get_note_content(\"note-id\")"
+    }
+  ]
+}

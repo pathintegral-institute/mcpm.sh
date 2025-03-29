@@ -1,0 +1,57 @@
+{
+  "name": "everything-search",
+  "display_name": "Everything Search MCP Server",
+  "description": "Fast file searching capabilities across Windows (using [Everything SDK](https://www.voidtools.com/support/everything/sdk/)), macOS (using mdfind command), and Linux (using locate/plocate command).",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mamertofabian/mcp-everything-search"
+  },
+  "homepage": "https://github.com/mamertofabian/mcp-everything-search",
+  "author": {
+    "name": "mamertofabian"
+  },
+  "license": "MIT",
+  "categories": [
+    "Utilities",
+    "Search"
+  ],
+  "tags": [
+    "search",
+    "everything"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "mcp-server-everything-search"
+      ],
+      "env": {
+        "EVERYTHING_SDK_PATH": "${EVERYTHING_SDK_PATH}"
+      }
+    },
+    "python": {
+      "type": "python",
+      "command": "python",
+      "args": [
+        "-m",
+        "mcp_server_everything_search"
+      ],
+      "env": {
+        "EVERYTHING_SDK_PATH": "${EVERYTHING_SDK_PATH}"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Search Python files",
+      "description": "Search for all Python files in the system.",
+      "prompt": "{\"query\": \"*.py\",\"max_results\": 50,\"sort_by\": 6}"
+    },
+    {
+      "title": "Search files modified today",
+      "description": "Find files with the .py extension that were modified today.",
+      "prompt": "{\"query\": \"ext:py datemodified:today\",\"max_results\": 10}"
+    }
+  ]
+}

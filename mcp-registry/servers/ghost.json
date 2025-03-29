@@ -1,0 +1,54 @@
+{
+  "name": "ghost",
+  "display_name": "Ghost MCP Server",
+  "description": "A Model Context Protocol (MCP) server for interacting with Ghost CMS through LLM interfaces like Claude.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MFYDev/ghost-mcp"
+  },
+  "homepage": "https://github.com/MFYDev/ghost-mcp",
+  "author": {
+    "name": "MFYDev"
+  },
+  "license": "MIT",
+  "categories": [
+    "CMS"
+  ],
+  "tags": [
+    "Ghost",
+    "CMS",
+    "Admin API"
+  ],
+  "examples": [
+    {
+      "title": "List Posts",
+      "description": "List blog posts with pagination.",
+      "prompt": "ghost(action=\"list_posts\", params={\"format\": \"text\", \"page\": 1, \"limit\": 15})"
+    },
+    {
+      "title": "Search Posts by Title",
+      "description": "Search for posts by title.",
+      "prompt": "ghost(action=\"search_posts_by_title\", params={\"query\": \"Welcome\", \"exact\": False})"
+    },
+    {
+      "title": "Create a Post",
+      "description": "Create a new post.",
+      "prompt": "ghost(action=\"create_post\", params={\"post_data\": {\"title\": \"New Post via MCP\",\"status\": \"draft\",\"lexical\": \"{\\\"root\\\":{\\\"children\\\":[{\\\"children\\\":[{\\\"detail\\\":0,\\\"format\\\":0,\\\"mode\\\":\\\"normal\\\",\\\"style\\\":\\\"\\\",\\\"text\\\":\\\"Hello World\\\",\\\"type\\\":\\\"text\\\",\\\"version\\\":1}],\\\"direction\\\":\\\"ltr\\\",\\\"format\\\":\\\"\\\",\\\"indent\\\":0,\\\"type\\\":\\\"paragraph\\\",\\\"version\\\":1}],\\\"direction\\\":\\\"ltr\\\",\\\"format\\\":\\\"\\\",\\\"indent\\\":0,\\\"type\\\":\\\"root\\\",\\\"version\\\":1}}\"}}"
+    }
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/MFYDev/ghost-mcp",
+        "src/main.py"
+      ],
+      "env": {
+        "GHOST_API_URL": "your_ghost_api_url",
+        "GHOST_STAFF_API_KEY": "your_staff_api_key"
+      }
+    }
+  }
+}

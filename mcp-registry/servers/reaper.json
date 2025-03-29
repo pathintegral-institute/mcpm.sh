@@ -1,0 +1,46 @@
+{
+  "name": "reaper",
+  "display_name": "Reaper MCP Server",
+  "description": "Interact with your [Reaper](https://www.reaper.fm/) (Digital Audio Workstation) projects.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dschuler36/reaper-mcp-server"
+  },
+  "homepage": "https://github.com/dschuler36/reaper-mcp-server",
+  "author": {
+    "name": "dschuler36"
+  },
+  "license": "MIT",
+  "categories": [
+    "Audio"
+  ],
+  "tags": [
+    "Reaper",
+    "Claude"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "https://github.com/dschuler36/reaper-mcp-server",
+        "reaper-mcp-server",
+        "--reaper-projects-dir",
+        "/path/to/your/reaper/projects"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "Ask about a Reaper project",
+      "description": "Request information about a specific Reaper project you have.",
+      "prompt": "What are the tracks in my 'Project A' Reaper file?"
+    },
+    {
+      "title": "Find Reaper projects",
+      "description": "Use the tool to locate all Reaper projects in the configured directory.",
+      "prompt": "Find all my Reaper projects."
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+/* MCPM.sh Color System - Common variables for all pages */
+
+:root {
+    /* Base Colors */
+    --bg-color: #242830; /* Clean grey background */
+    --bg-accent: #2e3238; /* Slightly darker grey for accent areas */
+    --background: var(--bg-color);
+    --accent: var(--bg-accent);
+    
+    /* Text Colors */
+    --text-primary: #e2e8f0;
+    --text-secondary: #a0aec0;
+    --text: var(--text-primary);
+    --light-text: var(--text-secondary);
+    --primary: var(--text-primary);
+    --secondary: var(--text-secondary);
+    
+    /* Brand Colors */
+    --accent-color: #09784C; /* Deep green brand color */
+    --accent-light: #5CD951; /* Light green brand color */
+    --accent-dark: #09784C; /* Deep green brand color, darker version */
+    --accent-highlight: #FF84BD; /* Pink brand color */
+    --highlight: var(--accent-highlight);
+    --highlight-light: #FF84BD33;
+    
+    /* Functional Colors */
+    --success: #5CD951; /* Light green brand color */
+    --warning: #FEBF00; /* Yellow/amber brand color */
+    --button-bg: var(--accent-color);
+    --button-hover: var(--accent-light);
+    
+    /* Borders */
+    --card-border: #3a3e45;
+    --border: var(--card-border);
+    
+    /* Code and UI */
+    --code-bg: #1e2124; /* Darker code background */
+    --code-text: var(--text-primary);
+    --view-manifest: var(--bg-accent);
+    
+    /* Special Effects */
+    --gradient-bg: linear-gradient(to right, #242830, #2e3238);
+}

@@ -1,0 +1,48 @@
+{
+  "name": "crypto-feargreed-mcp",
+  "display_name": "Crypto Fear & Greed Index MCP Server",
+  "description": "Providing real-time and historical Crypto Fear & Greed Index data.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kukapay/crypto-feargreed-mcp"
+  },
+  "homepage": "https://github.com/kukapay/crypto-feargreed-mcp",
+  "author": {
+    "name": "KukaPay",
+    "url": "https://github.com/kukapay"
+  },
+  "license": "MIT",
+  "categories": [
+    "Financial",
+    "Data Analysis",
+    "Cryptocurrency"
+  ],
+  "tags": [
+    "Fear & Greed",
+    "Crypto Index",
+    "Analytics"
+  ],
+  "examples": [
+    {
+      "title": "Get Current Index",
+      "description": "What is the current Crypto Fear & Greed Index?",
+      "prompt": "What's the current Crypto Fear & Greed Index?"
+    },
+    {
+      "title": "Analyze Trend",
+      "description": "Show the Fear & Greed Index trend for a specific number of days.",
+      "prompt": "Show me the Crypto Fear & Greed Index trend for the last 30 days."
+    }
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/kukapay/crypto-feargreed-mcp",
+        "main.py"
+      ]
+    }
+  }
+}

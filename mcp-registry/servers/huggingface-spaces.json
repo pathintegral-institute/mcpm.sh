@@ -1,0 +1,55 @@
+{
+  "name": "huggingface-spaces",
+  "display_name": "mcp-hfspace MCP Server \ud83e\udd17",
+  "description": "Server for using HuggingFace Spaces, supporting Open Source Image, Audio, Text Models and more. Claude Desktop mode for easy integration.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/evalstate/mcp-hfspace"
+  },
+  "author": {
+    "name": "evalstate"
+  },
+  "license": "MIT",
+  "categories": [
+    "Image Generation",
+    "Text-to-Speech",
+    "Speech-to-Text"
+  ],
+  "tags": [
+    "Hugging Face",
+    "Claude Desktop"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@llmindset/mcp-hfspace"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "Image Generation Example",
+      "description": "Using mcp-hfspace to generate images.",
+      "prompt": "Use shuttleai/shuttle-3.1-aesthetic to create an image."
+    },
+    {
+      "title": "Text-to-Speech Example",
+      "description": "Using mcp-hfspace to convert text to speech.",
+      "prompt": "Create an audio file from the text 'Hello, world!'."
+    },
+    {
+      "title": "Speech-to-Text Example",
+      "description": "Using mcp-hfspace to transcribe audio to text.",
+      "prompt": "Transcribe the audio file 'sample_audio.wav'."
+    },
+    {
+      "title": "Vision Model Example",
+      "description": "Using mcp-hfspace to analyze images.",
+      "prompt": "Analyze the image file 'test_image.jpg'."
+    }
+  ],
+  "homepage": "https://github.com/evalstate/mcp-hfspace"
+}

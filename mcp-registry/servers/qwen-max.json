@@ -1,0 +1,31 @@
+{
+  "name": "qwen-max",
+  "display_name": "Qwen Max MCP Server",
+  "description": "A Model Context Protocol (MCP) server implementation for the Qwen models.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/66julienmartin/MCP-server-Qwen_Max"
+  },
+  "homepage": "https://github.com/66julienmartin/MCP-server-Qwen_Max",
+  "author": {
+    "name": "66julienmartin"
+  },
+  "license": "MIT",
+  "categories": [
+    "AI"
+  ],
+  "tags": [
+    "Qwen Max",
+    "Server"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@gongrzhe/quickchart-mcp-server"
+      ]
+    }
+  }
+}

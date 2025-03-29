@@ -1,0 +1,57 @@
+{
+  "name": "nasa",
+  "display_name": "NASA MCP Server",
+  "description": "Access to a unified gateway of NASA's data sources including but not limited to APOD, NEO, EPIC, GIBS.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ProgramComputer/NASA-MCP-server"
+  },
+  "homepage": "https://github.com/ProgramComputer/NASA-MCP-server",
+  "author": {
+    "name": "ProgramComputer"
+  },
+  "license": "ISC",
+  "categories": [
+    "NASA",
+    "API",
+    "Data",
+    "Server"
+  ],
+  "tags": [
+    "NASA",
+    "API",
+    "Data",
+    "Space",
+    "Science"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@programcomputer/nasa-mcp-server"
+      ],
+      "env": {
+        "NASA_API_KEY": "${NASA_API_KEY}"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Get Today's Astronomy Picture of the Day",
+      "description": "Fetch the APOD from NASA's API.",
+      "prompt": "GET /nasa/apod"
+    },
+    {
+      "title": "Get Mars Rover Photos",
+      "description": "Retrieve photos taken by the Curiosity rover on a specific sol.",
+      "prompt": "GET /nasa/mars-rover?rover=curiosity&sol=1000"
+    },
+    {
+      "title": "Search for Near Earth Objects",
+      "description": "Find any near earth objects recorded in a specified date range.",
+      "prompt": "GET /nasa/neo?start_date=2023-01-01&end_date=2023-01-07"
+    }
+  ]
+}

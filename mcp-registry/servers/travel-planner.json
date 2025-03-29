@@ -1,0 +1,55 @@
+{
+  "name": "travel-planner",
+  "display_name": "Travel Planner MCP Server",
+  "description": "Travel planning and itinerary management server integrating with Google Maps API for location search, place details, and route calculations.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GongRzhe/TRAVEL-PLANNER-MCP-Server"
+  },
+  "homepage": "https://github.com/GongRzhe/TRAVEL-PLANNER-MCP-Server",
+  "author": {
+    "name": "GongRzhe"
+  },
+  "license": "MIT",
+  "categories": [
+    "travel"
+  ],
+  "tags": [
+    "google-maps",
+    "travel-planning"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "@gongrzhe/server-travelplanner-mcp"
+      ],
+      "env": {
+        "GOOGLE_MAPS_API_KEY": "your_google_maps_api_key"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Search Places",
+      "description": "Search for places using Google Places API",
+      "prompt": "searchPlaces({ query: 'restaurants', location: '34.0522,-118.2437', radius: 5000 });"
+    },
+    {
+      "title": "Get Place Details",
+      "description": "Get detailed information about a specific place",
+      "prompt": "getPlaceDetails({ placeId: 'ChIJN1t_tDeuEmsRUcIa02j2sDE' });"
+    },
+    {
+      "title": "Calculate Route",
+      "description": "Calculate route between two locations",
+      "prompt": "calculateRoute({ origin: 'Los Angeles, CA', destination: 'San Francisco, CA', mode: 'driving' });"
+    },
+    {
+      "title": "Get Time Zone",
+      "description": "Get timezone information for a location",
+      "prompt": "getTimeZone({ location: '34.0522,-118.2437' });"
+    }
+  ]
+}

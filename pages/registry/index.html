@@ -1,0 +1,1463 @@
+---
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mcpm.sh - Server Registry</title>
+    {% include favicon.html %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Highlight.js for JSON syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/json.min.js"></script>
+    <!-- JSON formatter for collapsible view -->
+    <script src="https://cdn.jsdelivr.net/npm/json-formatter-js@2.3.4/dist/json-formatter.umd.min.js"></script>
+    
+    <style>
+        {% include colors.css %}
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--background);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        header {
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-light, #5CD951);
+            text-decoration: none;
+        }
+        
+        .github-corner {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 80px;
+            height: 80px;
+            opacity: 0.8;
+            color: var(--text);
+        }
+        
+        .github-corner:hover {
+            opacity: 1;
+        }
+        
+        .nav a {
+            text-decoration: none;
+            color: var(--text);
+            margin-left: 1.5rem;
+            font-weight: 500;
+        }
+        
+        .nav a:hover {
+            color: var(--primary);
+        }
+        
+        main {
+            padding: 2rem 0;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-highlight));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.05em;
+        }
+        
+        .highlight {
+            display: inline-block;
+            position: relative;
+            color: var(--primary);
+            padding: 0 0.25rem;
+        }
+        
+        .highlight::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0.1em;
+            height: 0.3em;
+            background-color: var(--highlight);
+            opacity: 0.3;
+            z-index: -1;
+        }
+        
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--secondary);
+            margin-bottom: 0.75rem;
+            line-height: 1.6;
+        }
+        
+        .community-note {
+            font-size: 0.95rem;
+            color: var(--light-text);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .search-container {
+            margin: 2rem 0;
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-family: inherit;
+            background-color: var(--bg-accent);
+            color: var(--text-primary);
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+        }
+        
+        .tag-filters-container {
+            margin-bottom: 2rem;
+        }
+        
+        .tag-filters-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        
+        .tag-filters-title {
+            font-weight: 500;
+            color: var(--secondary);
+        }
+        
+        .toggle-tags-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 0.875rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            transition: background-color 0.2s;
+        }
+        
+        .toggle-tags-btn:hover {
+            background-color: var(--accent);
+        }
+        
+        .tag-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            max-height: 2.5rem;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .tag-filters.expanded {
+            max-height: 200px; /* Limit height to show scrollbar */
+            overflow-y: auto; /* Add vertical scrollbar when needed */
+            padding-right: 5px; /* Add some padding for the scrollbar */
+        }
+        
+        /* Custom scrollbar styling for better appearance */
+        .tag-filters.expanded::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .tag-filters.expanded::-webkit-scrollbar-track {
+            background: var(--accent);
+            border-radius: 10px;
+        }
+        
+        .tag-filters.expanded::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 10px;
+        }
+        
+        .tag-filters.expanded::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary);
+        }
+        
+        .tag-filter {
+            background-color: var(--accent);
+            color: var(--primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+        
+        .tag-filter:hover, .tag-filter.active {
+            background-color: var(--accent-color);
+            border-color: var(--border);
+            color: var(--text-primary);
+        }
+        
+        .servers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .server-card {
+            background-color: var(--bg-accent);
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border);
+            cursor: pointer;
+        }
+        
+        .server-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+            border-color: var(--accent-color);
+        }
+        
+        .server-content {
+            padding: 1.75rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .server-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        
+        .server-card h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1.2;
+            margin: 0;
+        }
+        
+        .server-card .description {
+            color: var(--secondary);
+            font-size: 1rem;
+            margin-bottom: 1.25rem;
+            flex: 1;
+            line-height: 1.5;
+        }
+        
+        .server-card .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.25rem;
+        }
+        
+        .server-card .tag {
+            background-color: var(--accent-dark);
+            color: var(--text-primary);
+            padding: 0.4rem 0.8rem;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border: 1px solid var(--border);
+            transition: all 0.2s ease;
+        }
+        
+        .server-card .tag:hover {
+            background-color: var(--border);
+            transform: translateY(-1px);
+        }
+        
+        .server-card .meta {
+            font-size: 0.8rem;
+            color: var(--light-text);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border);
+            padding-top: 1rem;
+            margin-top: auto;
+        }
+        
+        .server-card .meta .author {
+            display: inline-flex;
+            align-items: center;
+            font-weight: 600;
+            font-size: 0.75rem;
+            margin-left: auto;
+            padding: 0.3rem 0;
+            transition: all 0.2s ease;
+        }
+        
+        .server-card .stars {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.3rem 0.7rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.75rem;
+            transition: all 0.2s ease;
+            background-color: var(--accent-dark);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+        
+        .server-card .stars:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .server-card .meta .author {
+            color: var(--primary);
+        }
+        
+        .server-card .meta .author:hover {
+            opacity: 0.8;
+        }
+        
+        .server-card .meta .author:before {
+            content: '';
+            margin-right: 0;
+        }
+        
+        .author-placeholder,
+        .stars-placeholder,
+        .author-tag.author-placeholder {
+            transition: opacity 0.3s ease;
+        }
+        
+        .server-links {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1.25rem;
+        }
+        
+        .server-link {
+            padding: 0.4rem 0.75rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .primary-link {
+            background-color: var(--button-bg);
+            color: white;
+            border: 1px solid var(--button-bg);
+            font-weight: 600;
+        }
+        
+        .primary-link:hover {
+            background-color: var(--button-hover);
+            transform: translateY(-1px);
+        }
+        
+        .secondary-link {
+            background-color: var(--accent);
+            color: var(--primary);
+            border: 1px solid var(--border);
+        }
+        
+        .secondary-link:hover {
+            background-color: var(--border);
+            transform: translateY(-1px);
+        }
+        
+        .secondary-link:hover {
+            background-color: var(--border);
+        }
+        
+        /* Tab Styles */
+        .tabs {
+            display: flex;
+            margin: 2rem 0 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .tab-button {
+            background: none;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--light-text);
+            cursor: pointer;
+            position: relative;
+            margin-right: 1rem;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .tab-button:hover {
+            color: var(--text);
+        }
+        
+        .tab-button.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .tab-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--primary);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* JSON view styles */
+        .json-container {
+            background-color: var(--code-bg);
+            border-radius: 0.5rem;
+            overflow: hidden;
+            margin: 1.5rem 0;
+        }
+        
+        .json-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .json-title {
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .json-header-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .json-action-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            transition: all 0.2s ease;
+        }
+        
+        .json-action-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+        
+        .json-content {
+            padding: 1rem;
+            overflow-x: auto;
+            color: var(--code-text);
+            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+        
+        /* Container background - keep only this style for JSON container */
+        #jsonFormatterContainer {
+            background-color: var(--code-bg);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            border: 1px solid var(--card-border);
+        }
+        
+        /* Remove JSON formatter custom styling to use library defaults */
+        
+        /* Adjust the JSON container header to match the dark theme */
+        .json-container {
+            background-color: var(--code-bg);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        
+        .json-header {
+            background-color: var(--bg-accent);
+            border-bottom: 1px solid var(--card-border);
+        }
+        
+        .json-title {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        
+        .json-action-btn {
+            color: var(--text-primary);
+            background-color: var(--accent-dark);
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid var(--card-border);
+            font-weight: 500;
+        }
+        
+        .json-action-btn:hover {
+            background-color: var(--accent-color);
+            color: var(--text-primary);
+        }
+        
+        .json-content {
+            color: var(--code-text);
+        }
+        
+        /* JSON formatter styles removed - using library defaults */
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+        
+        .modal-content {
+            background-color: var(--bg-accent);
+            border-radius: 0.5rem;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border);
+        }
+        
+        .close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--light-text);
+        }
+        
+        .manifest-info {
+            margin-top: 1.5rem;
+        }
+        
+        .api-url {
+            display: flex;
+            align-items: center;
+            margin: 0.5rem 0 1.5rem;
+            background-color: var(--accent);
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            overflow-x: auto;
+            border: 1px solid var(--border);
+        }
+        
+        .api-url code {
+            font-family: monospace;
+            word-break: break-all;
+            flex: 1;
+        }
+        
+        .copy-button {
+            background-color: var(--button-bg);
+            color: white;
+            border: 1px solid var(--button-bg);
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            white-space: nowrap;
+            margin-left: 0.75rem;
+            transition: all 0.2s ease;
+            font-weight: 600;
+        }
+        
+        .copy-button:hover {
+            background-color: var(--button-hover);
+            transform: translateY(-1px);
+        }
+        
+        .api-url-container {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            background-color: var(--accent);
+            margin-bottom: 1rem;
+        }
+        
+        .api-url-container h3 {
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        
+        /* Installation options styling */
+        .installation-options {
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1.5rem;
+        }
+        
+        .installation-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .installation-tab {
+            padding: 0.5rem 1rem;
+            background-color: var(--accent);
+            border: 1px solid var(--border);
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+            color: var(--text);
+        }
+        
+        .installation-tab.active {
+            background-color: var(--accent-color);
+            color: var(--text-primary);
+            border-color: var(--accent-light);
+        }
+        
+        .installation-tab:hover:not(.active) {
+            background-color: var(--button-hover);
+        }
+        
+        .installation-tab svg {
+            width: 14px;
+            height: 14px;
+        }
+        
+        .installation-tab .recommended {
+            font-size: 0.75rem;
+            font-weight: 400;
+            opacity: 0.8;
+        }
+        
+        .installation-panel {
+            display: none;
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 0.375rem;
+            background-color: var(--accent);
+        }
+        
+        .installation-panel.active {
+            display: block;
+        }
+        
+        .installation-command h4,
+        .installation-env h4 {
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .command-box {
+            display: flex;
+            align-items: stretch;
+            background-color: var(--bg-accent);
+            border: 1px solid var(--border);
+            border-radius: 0.375rem;
+            overflow: hidden;
+        }
+        
+        .command-box pre {
+            margin: 0;
+            padding: 0.75rem;
+            flex-grow: 1;
+            font-family: monospace;
+            font-size: 0.875rem;
+            overflow-x: auto;
+            color: var(--text);
+        }
+        
+        .command-box .copy-button {
+            border-radius: 0;
+            margin: 0;
+            height: auto;
+            border-left: 1px solid var(--border);
+        }
+        
+        .env-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .env-table th,
+        .env-table td {
+            border: 1px solid var(--border);
+            padding: 0.5rem 0.75rem;
+            text-align: left;
+        }
+        
+        .env-table th {
+            background-color: var(--bg-accent);
+            font-weight: 600;
+        }
+        
+        .env-table td code {
+            background-color: var(--accent);
+            padding: 0.125rem 0.25rem;
+            border-radius: 0.25rem;
+            font-family: monospace;
+            font-size: 0.8125rem;
+            color: var(--text);
+        }
+        
+        .installation-env {
+            margin-top: 1.5rem;
+        }
+        
+        .json-content {
+            margin-top: 1.5rem;
+        }
+        
+        .json-content pre {
+            background-color: var(--accent);
+            padding: 1rem;
+            border-radius: 0.375rem;
+            overflow-x: auto;
+            font-family: monospace;
+            margin: 0.5rem 0 1rem;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+        
+        /* Basic JSON syntax highlighting */
+        .hljs-attr {
+            color: #0550ae;
+            font-weight: bold;
+        }
+        
+        .hljs-string {
+            color: var(--text);
+        }
+        
+        .hljs-number {
+            color: #005cc5;
+        }
+        
+        .hljs-boolean {
+            color: #005cc5;
+            font-weight: bold;
+        }
+        
+        /* Footer styling moved to footer.html include */
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .nav {
+                margin-top: 1rem;
+            }
+            
+            .nav a {
+                margin-left: 0;
+                margin-right: 1.5rem;
+            }
+            
+            h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-highlight));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.05em;
+        }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include nav.html %}
+    
+    <main>
+        <div class="container">
+            <h1>MCP Server Registry</h1>
+            
+            <div class="tabs">
+                <button class="tab-button active" data-tab="registry"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px; vertical-align: -3px;"><circle cx="12" cy="7" r="4"></circle><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path></svg> GUI</button>
+                <button class="tab-button" data-tab="json"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px; vertical-align: -3px;"><rect x="3" y="11" width="18" height="10" rx="2" ry="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path><line x1="8" y1="16" x2="8" y2="16"></line><line x1="16" y1="16" x2="16" y2="16"></line><line x1="12" y1="15" x2="12" y2="17"></line></svg> API</button>
+            </div>
+            
+            <div id="registryTab" class="tab-content active">
+                <div class="search-container">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search servers...">
+                </div>
+                
+                <div class="tag-filters-container">
+                    <div class="tag-filters-header">
+                        <span class="tag-filters-title">Filter by tag:</span>
+                        <button id="toggleTagsBtn" class="toggle-tags-btn">Show more</button>
+                    </div>
+                    <div class="tag-filters" id="tagFilters">
+                        <span class="tag-filter active" data-tag="all">All</span>
+                    </div>
+                </div>
+                
+                <div class="servers-grid" id="serversGrid">
+                    <!-- Server cards are populated dynamically -->
+                </div>
+            </div>
+            
+            <div id="jsonTab" class="tab-content">
+                <div class="json-container">
+                    <div class="json-header">
+                        <span class="json-title">mcpm.sh API</span>
+                        <div class="json-header-actions">
+                            <button id="expandAllBtn" class="json-action-btn">Expand All</button>
+                            <button id="collapseAllBtn" class="json-action-btn">Collapse All</button>
+                            <button id="copyJsonBtn" class="json-action-btn">Copy JSON</button>
+                        </div>
+                    </div>
+                    
+                    <div class="api-url-container">
+                        <h3>Servers Manifest API Endpoint:</h3>
+                        <div class="api-url">
+                            <code id="combinedApiUrl"></code>
+                            <button id="copyCombinedUrl" class="copy-button">Copy</button>
+                        </div>
+                    </div>
+                    
+                    <div id="jsonFormatterContainer" class="json-content"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    {% include footer.html %}
+    {% include github-corner.html %}
+    
+    <div id="serverModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="modalTitle">Server Manifest</h2>
+            <div class="manifest-info">
+                <h3>API Endpoint:</h3>
+                <div class="api-url">
+                    <code id="apiUrl"></code>
+                    <button id="copyUrl" class="copy-button">Copy</button>
+                </div>
+                
+                <div class="json-content">
+                    <h3>Manifest Content:</h3>
+                    <pre id="jsonContent"></pre>
+                    <button id="copyContent" class="copy-button">Copy JSON</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Server data - to be loaded from the combined JSON file (as a map with server names as keys)
+        let serversMap = {};
+        let serversArray = []; // Also keep an array version for rendering
+        
+        // Fetch all servers data
+        const serverDataUrl = '/api/servers.json';
+        
+        // First load GitHub star counts, then fetch server data
+        loadGitHubStarCounts()
+            .then(() => fetch(serverDataUrl))
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Server data request failed with status ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                serversMap = data;
+                serversArray = Object.values(serversMap);
+                
+                // Generate tag filters dynamically from server data
+                generateTagFilters(serversArray);
+                
+                // Initialize the UI after data is loaded
+                renderServerCards(serversArray);
+            })
+            .catch(error => {
+                console.error('Error loading servers:', error);
+                document.getElementById('serversGrid').innerHTML = `
+                    <div class="error-message">
+                        <p>Unable to load server data. Please try again later.</p>
+                        <p><small>Error details: ${error.message}</small></p>
+                    </div>
+                `;
+            });
+        
+        // Get server data from the already loaded servers map
+        function getServerByName(name) {
+            return serversMap[name];
+        }
+        
+        // Helper function to format numbers (1000 → 1k)
+        function formatNumber(num) {
+            if (num < 1000) return num.toString();
+            if (num < 10000) return (num / 1000).toFixed(1) + 'k';
+            return Math.floor(num / 1000) + 'k';
+        }
+        
+        // Object to store star counts from stars.json
+        let githubStarCounts = {};
+        
+        // Load GitHub star counts from stars.json
+        async function loadGitHubStarCounts() {
+            try {
+                const response = await fetch('/api/stars.json');
+                if (response.ok) {
+                    githubStarCounts = await response.json();
+                }
+            } catch (error) {
+                // Silently fail - stars just won't be displayed
+            }
+        }
+        
+        // Function to update star count element with the pre-fetched data
+        function updateStarCount(serverName, starCountElement) {
+            const starCount = githubStarCounts[serverName];
+            if (starCount !== undefined) {
+                // Add star icon and count
+                starCountElement.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>${formatNumber(starCount)}`;
+                starCountElement.classList.remove('stars-placeholder');
+                starCountElement.style.opacity = '1';
+            } else {
+                // If no star count available, remove the element
+                starCountElement.remove();
+            }
+        }
+        
+        // Open modal with server manifest details
+        function openServerModal(server) {
+            const modal = document.getElementById('serverModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const apiUrl = document.getElementById('apiUrl');
+            const jsonContent = document.getElementById('jsonContent');
+            
+            // Set modal title and API URL
+            modalTitle.textContent = `${server.display_name || server.name} Manifest`;
+            
+            // Full URL for API endpoint
+            const fullApiUrl = `${window.location.origin}/api/servers/${server.name}.json`;
+            apiUrl.textContent = fullApiUrl;
+            
+            // Display the server data directly from our already loaded servers array
+            const formattedJson = JSON.stringify(server, null, 2);
+            jsonContent.textContent = formattedJson;
+            
+            // Apply syntax highlighting to the JSON
+            jsonContent.classList.add('language-json');
+            hljs.highlightElement(jsonContent);
+            
+            // Display modal
+            modal.style.display = 'flex';
+        }
+        
+        // Copy text to clipboard - using simple, compatible method
+        function copyToClipboard(text, button) {
+            // Create a temporary textarea element
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            
+            // Make the textarea out of the user's sight but still technically visible
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-9999px';
+            textArea.style.top = '0';
+            textArea.style.opacity = '0';
+            
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            try {
+                // Execute copy command
+                const successful = document.execCommand('copy');
+                
+                if (successful) {
+                    // Provide visual feedback
+                    const originalText = button.textContent;
+                    button.textContent = 'Copied!';
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                    }, 1500);
+                }
+            } catch (err) {
+                console.log('Simple copy failed:', err);
+            }
+            
+            // Remove the temporary element
+            document.body.removeChild(textArea);
+        }
+        
+        // Render server cards
+        
+        // Render server cards
+        function renderServerCards(serversToRender) {
+            const serversGrid = document.getElementById('serversGrid');
+            serversGrid.innerHTML = '';
+            
+            if (serversToRender.length === 0) {
+                serversGrid.innerHTML = '<p>No servers found matching your search criteria.</p>';
+                return;
+            }
+            
+            serversToRender.forEach(server => {
+                const serverCard = document.createElement('div');
+                serverCard.className = 'server-card';
+                serverCard.setAttribute('data-name', server.name);
+                
+                const serverContent = document.createElement('div');
+                serverContent.className = 'server-content';
+                
+                // Create header with title and stars
+                const serverHeader = document.createElement('div');
+                serverHeader.className = 'server-header';
+                
+                const heading = document.createElement('h3');
+                heading.textContent = server.display_name || server.name;
+                serverHeader.appendChild(heading);
+                
+                // Add placeholder for GitHub stars in the header
+                const starCount = document.createElement('span');
+                starCount.className = 'stars stars-placeholder';
+                starCount.textContent = 'Loading stars...';
+                starCount.style.opacity = '0';
+                serverHeader.appendChild(starCount);
+                
+                serverContent.appendChild(serverHeader);
+                
+                const description = document.createElement('p');
+                description.className = 'description';
+                description.textContent = server.description;
+                serverContent.appendChild(description);
+                
+                // Create tags container
+                const tagsContainer = document.createElement('div');
+                tagsContainer.className = 'tags';
+                
+                // Add regular tags (if any)
+                if (server.tags && server.tags.length > 0) {
+                    server.tags.slice(0, 4).forEach(tag => {
+                        const tagSpan = document.createElement('span');
+                        tagSpan.className = 'tag';
+                        tagSpan.textContent = tag;
+                        tagsContainer.appendChild(tagSpan);
+                    });
+                }
+                
+                // We've moved the author to the meta section
+                
+                // Append tags container to server content
+                serverContent.appendChild(tagsContainer);
+                
+                const meta = document.createElement('div');
+                meta.className = 'meta';
+                
+                // Add placeholder for author that will be populated later
+                const authorMeta = document.createElement('span');
+                authorMeta.className = 'author author-placeholder';
+                authorMeta.textContent = 'Loading author...';
+                authorMeta.style.opacity = '0';
+                meta.appendChild(authorMeta);
+                
+                // Update author information directly from server data (no need to fetch)
+                if (server.author && server.author.name) {
+                    // Add user icon before author name
+                    authorMeta.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>' + server.author.name;
+                    authorMeta.classList.remove('author-placeholder');
+                    authorMeta.style.opacity = '1';
+                } else {
+                    // Remove placeholder if no author found
+                    authorMeta.remove();
+                }
+                
+                // Use the star count element created in the header
+                
+                serverContent.appendChild(meta);
+                
+                const linksContainer = document.createElement('div');
+                linksContainer.className = 'server-links';
+                
+                // Docs and GitHub buttons removed as requested
+                
+                // Extract GitHub repo info from repository URL for star count
+                if (server.repository && server.repository.url && server.repository.url.includes('github.com')) {
+                    const repoUrlParts = server.repository.url.replace('https://github.com/', '').split('/');
+                    if (repoUrlParts.length >= 2) {
+                        const owner = repoUrlParts[0];
+                        const repo = repoUrlParts[1].replace('.git', '');
+                        // Update star count from our pre-fetched data
+                        const headerStarCount = serverHeader.querySelector('.stars');
+                        updateStarCount(server.name, headerStarCount);
+                        
+                        // Make the stars clickable to navigate to the repository
+                        headerStarCount.style.cursor = 'pointer';
+                        headerStarCount.addEventListener('click', (event) => {
+                            // Prevent the click from opening the modal
+                            event.stopPropagation();
+                            // Open the GitHub repository in a new tab
+                            window.open(server.repository.url, '_blank');
+                        });
+                    } else {
+                        const headerStarCount = serverHeader.querySelector('.stars');
+                        if (headerStarCount) headerStarCount.remove();
+                    }
+                } else {
+                    const headerStarCount = serverHeader.querySelector('.stars');
+                    if (headerStarCount) headerStarCount.remove();
+                }
+                
+                serverContent.appendChild(linksContainer);
+                
+                // Make the entire card clickable
+                serverCard.addEventListener('click', () => openServerModal(server));
+                serverCard.style.cursor = 'pointer';
+                
+                serverCard.appendChild(serverContent);
+                serversGrid.appendChild(serverCard);
+            });
+        }
+        
+        // Initial render will happen after data is loaded
+        
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', handleSearch);
+        
+        // Function to generate tag filters from server data
+        function generateTagFilters(servers) {
+            const tagFiltersContainer = document.getElementById('tagFilters');
+            const allTags = new Set();
+            
+            // Collect all unique tags from servers
+            servers.forEach(server => {
+                if (server.tags && Array.isArray(server.tags)) {
+                    server.tags.forEach(tag => allTags.add(tag.toLowerCase()));
+                }
+            });
+            
+            // Sort tags alphabetically
+            const sortedTags = Array.from(allTags).sort();
+            
+            // Create filter elements (skip 'all' as it's already in the HTML)
+            sortedTags.forEach(tag => {
+                const tagElement = document.createElement('span');
+                tagElement.className = 'tag-filter';
+                tagElement.setAttribute('data-tag', tag);
+                tagElement.textContent = tag.charAt(0).toUpperCase() + tag.slice(1); // Capitalize first letter
+                
+                // Add click event listener
+                tagElement.addEventListener('click', () => {
+                    document.querySelectorAll('.tag-filter').forEach(f => f.classList.remove('active'));
+                    tagElement.classList.add('active');
+                    activeTag = tag;
+                    handleSearch();
+                });
+                
+                tagFiltersContainer.appendChild(tagElement);
+            });
+            
+            // Add click event listener to the 'All' tag that was already there
+            const allTagFilter = document.querySelector('.tag-filter[data-tag="all"]');
+            allTagFilter.addEventListener('click', () => {
+                document.querySelectorAll('.tag-filter').forEach(f => f.classList.remove('active'));
+                allTagFilter.classList.add('active');
+                activeTag = 'all';
+                handleSearch();
+            });
+            
+            // Setup toggle button for expanding/collapsing tags
+            const toggleTagsBtn = document.getElementById('toggleTagsBtn');
+            const tagFilters = document.getElementById('tagFilters');
+            
+            toggleTagsBtn.addEventListener('click', () => {
+                tagFilters.classList.toggle('expanded');
+                if (tagFilters.classList.contains('expanded')) {
+                    toggleTagsBtn.textContent = 'Show less';
+                } else {
+                    toggleTagsBtn.textContent = 'Show more';
+                }
+            });
+            
+            // Check if we need the toggle button (if tags fit in one line)
+            if (sortedTags.length <= 10) {
+                toggleTagsBtn.style.display = 'none';
+                tagFilters.classList.add('expanded');
+            }
+        }
+
+        let activeTag = 'all';
+        
+        function handleSearch() {
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            let filteredServers = serversArray;
+            
+            // Filter by tag first (if not 'all')
+            if (activeTag && activeTag !== 'all') {
+                filteredServers = filteredServers.filter(server => 
+                    server.tags && 
+                    Array.isArray(server.tags) && 
+                    server.tags.some(tag => tag.toLowerCase() === activeTag.toLowerCase())
+                );
+            }
+            
+            // Then filter by search term
+            if (searchTerm) {
+                filteredServers = filteredServers.filter(server => 
+                    (server.display_name && server.display_name.toLowerCase().includes(searchTerm)) || 
+                    (server.name && server.name.toLowerCase().includes(searchTerm)) || 
+                    (server.description && server.description.toLowerCase().includes(searchTerm)) ||
+                    (server.tags && server.tags.some(tag => tag.toLowerCase().includes(searchTerm)))
+                );
+            }
+            
+            renderServerCards(filteredServers);
+        }
+        
+        // Tab switching
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.dataset.tab;
+                
+                // Deactivate all tabs
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                // Activate selected tab
+                button.classList.add('active');
+                document.getElementById(tabId + 'Tab').classList.add('active');
+                
+                // Load JSON data when JSON tab is selected
+                if (tabId === 'json') { // API tab
+                    loadAndFormatJson();
+                }
+            });
+        });
+        
+        // Variable to store the JSON formatter instance
+        let jsonFormatter = null;
+        
+        // Function to load and format JSON data with collapsible view
+        function loadAndFormatJson() {
+            const jsonContainer = document.getElementById('jsonFormatterContainer');
+            jsonContainer.innerHTML = 'Loading...';
+            
+            // Configure hljs to highlight JSON according to the schema
+            hljs.configure({
+                languages: ['json'],
+                cssSelector: 'pre code.language-json'
+            });
+            
+            // Set the combined API URL
+            const combinedApiUrl = document.getElementById('combinedApiUrl');
+            const fullApiUrl = `${window.location.origin}/api/servers.json`;
+            combinedApiUrl.textContent = fullApiUrl;
+            
+            fetch('/api/servers.json')
+                .then(response => response.json())
+                .then(data => {
+                    jsonContainer.innerHTML = ''; // Clear loading text
+                    
+                    // Create a new JSON formatter with improved configuration for minimal aesthetic
+                    jsonFormatter = new JSONFormatter(data, 1, {
+                        hoverPreviewEnabled: true,
+                        hoverPreviewArrayCount: 100,
+                        hoverPreviewFieldCount: 5,
+                        animateOpen: true,
+                        animateClose: true,
+                        theme: null, // Use light theme for better contrast
+                        useToJSON: true,
+                        maxArrayItems: 100
+                    });
+                    
+                    // Add the formatted JSON to the container
+                    jsonContainer.appendChild(jsonFormatter.render());
+                    
+                    // Setup expand/collapse buttons
+                    setupJsonControls();
+                })
+                .catch(error => {
+                    console.error('Error loading JSON data:', error);
+                    jsonContainer.innerHTML = 'Error loading JSON data. Please try again later.';
+                });
+        }
+        
+        // Setup controls for JSON formatter
+        function setupJsonControls() {
+            // Expand all button
+            document.getElementById('expandAllBtn').addEventListener('click', () => {
+                if (jsonFormatter) {
+                    jsonFormatter.openAtDepth(Infinity);
+                }
+            });
+            
+            // Collapse all button
+            document.getElementById('collapseAllBtn').addEventListener('click', () => {
+                if (jsonFormatter) {
+                    jsonFormatter.openAtDepth(1); // Collapse to first level
+                }
+            });
+        }
+        
+        // Copy JSON to clipboard
+        document.getElementById('copyJsonBtn').addEventListener('click', () => {
+            if (jsonFormatter) {
+                // Format the JSON with indentation for copying
+                const jsonContent = JSON.stringify(jsonFormatter.json, null, 2);
+                navigator.clipboard.writeText(jsonContent)
+                    .then(() => {
+                        const copyBtn = document.getElementById('copyJsonBtn');
+                        copyBtn.textContent = 'Copied!';
+                        setTimeout(() => {
+                            copyBtn.textContent = 'Copy JSON';
+                        }, 2000);
+                    })
+                    .catch(err => {
+                        console.error('Failed to copy: ', err);
+                    });
+            }
+        });
+        
+        // Tag filtering is now handled in the fetch promise
+        
+        // Modal functions
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('serverModal');
+            const closeButton = document.querySelector('.close-button');
+            const copyUrlButton = document.getElementById('copyUrl');
+            const copyContentButton = document.getElementById('copyContent');
+            
+            // Close modal when clicking close button
+            closeButton.addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
+            
+            // Close modal when clicking outside of it
+            window.addEventListener('click', (event) => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+            
+            // Copy URL button
+            copyUrlButton.addEventListener('click', (event) => {
+                // Prevent event bubbling
+                event.stopPropagation();
+                
+                const apiUrl = document.getElementById('apiUrl').textContent;
+                if (apiUrl) {
+                    copyToClipboard(apiUrl, copyUrlButton);
+                } else {
+                    console.error('API URL is empty or undefined');
+                }
+            });
+            
+            // Copy JSON content button
+            copyContentButton.addEventListener('click', () => {
+                const jsonContent = document.getElementById('jsonContent').textContent;
+                copyToClipboard(jsonContent, copyContentButton);
+            });
+            
+            // Copy combined API URL button
+            const copyCombinedUrlButton = document.getElementById('copyCombinedUrl');
+            copyCombinedUrlButton.addEventListener('click', () => {
+                const combinedApiUrl = document.getElementById('combinedApiUrl').textContent;
+                copyToClipboard(combinedApiUrl, copyCombinedUrlButton);
+            });
+        });
+    </script>
+</body>
+</html>

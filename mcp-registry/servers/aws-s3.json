@@ -1,0 +1,33 @@
+{
+  "name": "aws-s3",
+  "display_name": "Sample S3 Model Context Protocol Server",
+  "description": "A sample MCP server for AWS S3 that flexibly fetches objects from S3 such as PDF documents.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aws-samples/sample-mcp-server-s3"
+  },
+  "homepage": "https://github.com/aws-samples/sample-mcp-server-s3",
+  "author": {
+    "name": "aws-samples"
+  },
+  "license": "MIT",
+  "categories": [
+    "cloud",
+    "data",
+    "aws"
+  ],
+  "tags": [
+    "S3",
+    "PDF",
+    "aws"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "s3-mcp-server"
+      ]
+    }
+  }
+}

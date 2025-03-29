@@ -1,0 +1,49 @@
+{
+  "name": "google-custom-search",
+  "display_name": "A MCP Server for Google Custom Search and Webpage Reading",
+  "description": "Provides Google Search results via the Google Custom Search API",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adenot/mcp-google-search"
+  },
+  "homepage": "https://github.com/adenot/mcp-google-search",
+  "author": {
+    "name": "adenot"
+  },
+  "license": "MIT",
+  "categories": [
+    "Search Tools",
+    "Web Tools"
+  ],
+  "tags": [
+    "Google",
+    "Custom Search",
+    "Webpage Reading"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@adenot/mcp-google-search"
+      ],
+      "env": {
+        "GOOGLE_API_KEY": "your-api-key-here",
+        "GOOGLE_SEARCH_ENGINE_ID": "your-search-engine-id-here"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Search Tool",
+      "description": "Perform web searches using Google Custom Search API.",
+      "prompt": "{\"name\":\"search\",\"arguments\":{\"query\":\"your search query\",\"num\":5}}"
+    },
+    {
+      "title": "Webpage Reader Tool",
+      "description": "Extract content from any webpage.",
+      "prompt": "{\"name\":\"read_webpage\",\"arguments\":{\"url\":\"https://example.com\"}}"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "name": "chroma",
+  "display_name": "Chroma MCP Server",
+  "description": "Vector database server for semantic document search and metadata filtering, built on Chroma",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/privetin/chroma"
+  },
+  "homepage": "https://github.com/privetin/chroma",
+  "author": {
+    "name": "privetin"
+  },
+  "license": "MIT",
+  "categories": [
+    "database",
+    "server"
+  ],
+  "tags": [
+    "vector database",
+    "semantic search"
+  ],
+  "examples": [
+    {
+      "title": "Create a document",
+      "description": "Creates a new document with specified content and metadata.",
+      "prompt": "create_document({\"document_id\": \"ml_paper1\", \"content\": \"Convolutional neural networks improve image recognition accuracy.\", \"metadata\": {\"year\": 2020, \"field\": \"computer vision\", \"complexity\": \"advanced\"}})"
+    },
+    {
+      "title": "Search similar documents",
+      "description": "Finds documents semantically similar to a given query.",
+      "prompt": "search_similar({\"query\": \"machine learning models\", \"num_results\": 2, \"metadata_filter\": {\"year\": 2020, \"field\": \"computer vision\"}})"
+    }
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/privetin/chroma",
+        "src/chroma/server.py"
+      ]
+    }
+  }
+}

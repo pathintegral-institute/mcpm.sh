@@ -1,0 +1,47 @@
+{
+  "name": "any-chat-completions",
+  "display_name": "Any Chat Completions MCP",
+  "description": "Interact with any OpenAI SDK Compatible Chat Completions API like OpenAI, Perplexity, Groq, xAI and many more.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pyroprompts/any-chat-completions-mcp"
+  },
+  "homepage": "https://github.com/pyroprompts/any-chat-completions-mcp",
+  "author": {
+    "name": "pyroprompts"
+  },
+  "license": "MIT",
+  "categories": [
+    "Chat",
+    "Integration"
+  ],
+  "tags": [
+    "Claude",
+    "OpenAI",
+    "API",
+    "Chat Completion"
+  ],
+  "examples": [
+    {
+      "title": "OpenAI Integration",
+      "description": "Integrate OpenAI into Claude Desktop",
+      "prompt": "Configure the MCP server to use OpenAI's API."
+    }
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "https://github.com/pyroprompts/any-chat-completions-mcp"
+      ],
+      "env": {
+        "AI_CHAT_KEY": "OPENAI_KEY",
+        "AI_CHAT_NAME": "OpenAI",
+        "AI_CHAT_MODEL": "gpt-4o",
+        "AI_CHAT_BASE_URL": "https://api.openai.com/v1"
+      }
+    }
+  }
+}

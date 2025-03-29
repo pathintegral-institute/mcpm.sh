@@ -1,0 +1,50 @@
+{
+  "name": "sequential-thinking",
+  "display_name": "Sequential Thinking MCP Server",
+  "description": "Dynamic and reflective problem-solving through thought sequences",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/modelcontextprotocol/servers"
+  },
+  "homepage": "https://github.com/modelcontextprotocol/servers/blob/main/src/sequentialthinking",
+  "author": {
+    "name": "modelcontextprotocol"
+  },
+  "license": "MIT",
+  "categories": [
+    "Problem Solving",
+    "Tools"
+  ],
+  "tags": [
+    "dynamic thinking",
+    "reflective process",
+    "structured thinking"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "mcp/sequentialthinking"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "Example Usage",
+      "description": "Using the Sequential Thinking tool for a complex problem",
+      "prompt": "Break down the complex problem of organizing an event into manageable steps."
+    }
+  ]
+}

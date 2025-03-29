@@ -1,0 +1,57 @@
+{
+  "name": "flightradar24",
+  "display_name": "Flightradar24 MCP Server",
+  "description": "A Claude Desktop MCP server that helps you track flights in real-time using Flightradar24 data.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sunsetcoder/flightradar24-mcp-server"
+  },
+  "author": {
+    "name": "sunsetcoder"
+  },
+  "license": "MIT",
+  "examples": [
+    {
+      "title": "Check Flight Status",
+      "description": "Ask for the status of a specific flight.",
+      "prompt": "What's the status of flight UA123?"
+    },
+    {
+      "title": "Show Current Flights at Airport",
+      "description": "Request to see all flights currently at an airport.",
+      "prompt": "Show me all flights currently at SFO"
+    },
+    {
+      "title": "Emergency Flights Query",
+      "description": "Ask if there are emergency flights in the area.",
+      "prompt": "Are there any emergency flights in the area?"
+    },
+    {
+      "title": "International Flights Arrival",
+      "description": "Request information on international flights arriving within a timeframe.",
+      "prompt": "Show me all international flights arriving at SFO in the next 2 hours"
+    }
+  ],
+  "categories": [
+    "Aviation",
+    "Travel"
+  ],
+  "tags": [
+    "Flightradar24",
+    "Flight Tracking"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "https://github.com/sunsetcoder/flightradar24-mcp-server"
+      ],
+      "env": {
+        "FR24_API_KEY": "your_api_key_here",
+        "FR24_API_URL": "https://fr24api.flightradar24.com"
+      }
+    }
+  }
+}

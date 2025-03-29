@@ -1,0 +1,55 @@
+{
+  "name": "airflow",
+  "display_name": "MCP Server Apache Airflow",
+  "description": "A MCP Server that connects to [Apache Airflow](https://airflow.apache.org/) using official python client.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yangkyeongmo/mcp-server-apache-airflow"
+  },
+  "homepage": "https://github.com/yangkyeongmo/mcp-server-apache-airflow",
+  "author": {
+    "name": "yangkyeongmo"
+  },
+  "license": "MIT",
+  "categories": [
+    "Data Pipeline",
+    "Workflow Automation"
+  ],
+  "tags": [
+    "Apache Airflow",
+    "DAG",
+    "Workflow",
+    "Data Pipeline"
+  ],
+  "arguments": {
+    "AIRFLOW_HOST": {
+      "description": "URL of your Apache Airflow instance",
+      "required": true,
+      "example": "https://your-airflow-host:8080"
+    },
+    "AIRFLOW_USERNAME": {
+      "description": "Username for authenticating with Airflow",
+      "required": true,
+      "example": "admin"
+    },
+    "AIRFLOW_PASSWORD": {
+      "description": "Password for authenticating with Airflow",
+      "required": true,
+      "example": "your_secure_password"
+    }
+  },
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "mcp-server-apache-airflow"
+      ],
+      "env": {
+        "AIRFLOW_HOST": "${AIRFLOW_HOST}",
+        "AIRFLOW_USERNAME": "${AIRFLOW_USERNAME}",
+        "AIRFLOW_PASSWORD": "${AIRFLOW_PASSWORD}"
+      }
+    }
+  }
+}

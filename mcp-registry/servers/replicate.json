@@ -1,0 +1,40 @@
+{
+  "name": "replicate",
+  "display_name": "Replicate MCP Server",
+  "description": "Search, run and manage machine learning models on Replicate through a simple tool-based interface. Browse models, create predictions, track their status, and handle generated images.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/deepfates/mcp-replicate"
+  },
+  "homepage": "https://github.com/deepfates/mcp-replicate",
+  "author": {
+    "name": "deepfates"
+  },
+  "license": "MIT",
+  "categories": [
+    "AI"
+  ],
+  "tags": [
+    "Replicate",
+    "API"
+  ],
+  "examples": [
+    {
+      "title": "Run a model prediction",
+      "description": "Creates a prediction using a specified model and input parameters.",
+      "prompt": "create_prediction(model_id='model_id_here', input_params='input_params_here')"
+    }
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "mcp-replicate"
+      ],
+      "env": {
+        "REPLICATE_API_TOKEN": "your_replicate_api_token"
+      }
+    }
+  }
+}

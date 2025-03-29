@@ -1,0 +1,51 @@
+{
+  "name": "rabbitmq",
+  "display_name": "RabbitMQ MCP Server",
+  "description": "The MCP server that interacts with RabbitMQ to publish and consume messages.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kenliao94/mcp-server-rabbitmq"
+  },
+  "homepage": "https://github.com/kenliao94/mcp-server-rabbitmq",
+  "author": {
+    "name": "kenliao94"
+  },
+  "license": "MIT",
+  "categories": [
+    "RabbitMQ",
+    "Messaging"
+  ],
+  "tags": [
+    "rabbitmq",
+    "server",
+    "messaging"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "https://github.com/kenliao94/mcp-server-rabbitmq",
+        "mcp-server-rabbitmq",
+        "--rabbitmq-host",
+        "<hostname ex. test.rabbit.com, localhost>",
+        "--port",
+        "<port number ex. 5672>",
+        "--username",
+        "<rabbitmq username>",
+        "--password",
+        "<rabbitmq password>",
+        "--use-tls",
+        "<true if uses amqps, false otherwise>"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "Publish Message",
+      "description": "Ask Claude to publish a message to a queue.",
+      "prompt": "Please publish a message to the queue."
+    }
+  ]
+}

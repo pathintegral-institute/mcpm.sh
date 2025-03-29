@@ -1,0 +1,52 @@
+{
+  "name": "mcp-installer",
+  "display_name": "MCP Installer",
+  "description": "This server is a server that installs other MCP servers for you.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anaisbetts/mcp-installer"
+  },
+  "homepage": "https://github.com/anaisbetts/mcp-installer",
+  "author": {
+    "name": "anaisbetts"
+  },
+  "license": "MIT",
+  "categories": [
+    "Installer"
+  ],
+  "tags": [
+    "installer",
+    "server"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "@anaisbetts/mcp-installer"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "Install MCP server",
+      "description": "Install the MCP server named mcp-server-fetch",
+      "prompt": "Hey Claude, install the MCP server named mcp-server-fetch"
+    },
+    {
+      "title": "Install server with arguments",
+      "description": "Install the @modelcontextprotocol/server-filesystem package as an MCP server with specific arguments",
+      "prompt": "Hey Claude, install the @modelcontextprotocol/server-filesystem package as an MCP server. Use ['/Users/anibetts/Desktop'] for the arguments"
+    },
+    {
+      "title": "Install from directory",
+      "description": "Install the MCP server from a specific directory",
+      "prompt": "Hi Claude, please install the MCP server at /Users/anibetts/code/mcp-youtube, I'm too lazy to do it myself."
+    },
+    {
+      "title": "Set environment variable",
+      "description": "Install the server @modelcontextprotocol/server-github with an environment variable",
+      "prompt": "Install the server @modelcontextprotocol/server-github. Set the environment variable GITHUB_PERSONAL_ACCESS_TOKEN to '1234567890'"
+    }
+  ]
+}

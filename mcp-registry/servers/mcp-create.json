@@ -1,0 +1,45 @@
+{
+  "name": "mcp-create",
+  "display_name": "MCP Create Server",
+  "description": "A dynamic MCP server management service that creates, runs, and manages Model Context Protocol servers on-the-fly.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tesla0225/mcp-create"
+  },
+  "homepage": "https://github.com/tesla0225/mcp-create",
+  "author": {
+    "name": "tesla0225"
+  },
+  "license": "MIT",
+  "categories": [
+    "Server Management"
+  ],
+  "tags": [
+    "dynamic",
+    "TypeScript"
+  ],
+  "installations": {
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "mcp-create"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "Creating a New Server",
+      "description": "Example of creating a new server using TypeScript.",
+      "prompt": "{\"name\":\"create-server-from-template\",\"arguments\":{\"language\":\"typescript\"}}"
+    },
+    {
+      "title": "Executing a Tool",
+      "description": "Example of executing a tool on a server.",
+      "prompt": "{\"name\":\"execute-tool\",\"arguments\":{\"serverId\":\"ba7c9a4f-6ba8-4cad-8ec8-a41a08c19fac\",\"toolName\":\"echo\",\"args\":{\"message\":\"Hello, dynamic MCP server!\"}}}"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "name": "mongodb",
+  "display_name": "MCP MongoDB Server",
+  "description": "A Model Context Protocol Server for MongoDB.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiliczsh/mcp-mongo-server"
+  },
+  "homepage": "https://github.com/kiliczsh/mcp-mongo-server",
+  "author": {
+    "name": "kiliczsh"
+  },
+  "license": "MIT",
+  "categories": [
+    "Database"
+  ],
+  "tags": [
+    "MongoDB",
+    "LLM"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-mongo-server",
+        "mongodb://muhammed:kilic@mongodb.localhost/sample_namespace"
+      ]
+    }
+  }
+}

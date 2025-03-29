@@ -1,0 +1,35 @@
+{
+  "name": "contentful-mcp",
+  "display_name": "Contentful Management MCP Server",
+  "description": "Read, update, delete, publish content in your [Contentful](https://contentful.com/) space(s) from this MCP Server.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ivo-toby/contentful-mcp"
+  },
+  "homepage": "https://github.com/ivo-toby/contentful-mcp",
+  "author": {
+    "name": "ivo-toby"
+  },
+  "license": "MIT",
+  "categories": [
+    "Content Management"
+  ],
+  "tags": [
+    "Contentful",
+    "Management API",
+    "CRUD Operations"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@ivotoby/contentful-management-mcp-server"
+      ],
+      "env": {
+        "CONTENTFUL_MANAGEMENT_ACCESS_TOKEN": "${CONTENTFUL_MANAGEMENT_ACCESS_TOKEN}"
+      }
+    }
+  }
+}

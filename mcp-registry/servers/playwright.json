@@ -1,0 +1,32 @@
+{
+  "name": "playwright",
+  "display_name": "Playwright MCP Server",
+  "description": "This MCP Server will help you run browser automation and webscraping using Playwright",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/executeautomation/mcp-playwright"
+  },
+  "homepage": "https://github.com/executeautomation/mcp-playwright",
+  "author": {
+    "name": "executeautomation"
+  },
+  "license": "MIT",
+  "categories": [
+    "Automation",
+    "Web Testing"
+  ],
+  "tags": [
+    "Playwright",
+    "Browser Automation"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@executeautomation/playwright-mcp-server"
+      ]
+    }
+  }
+}

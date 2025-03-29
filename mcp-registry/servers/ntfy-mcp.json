@@ -1,0 +1,42 @@
+{
+  "name": "ntfy-mcp",
+  "display_name": "Your Friendly Task Completion Notifier",
+  "description": "The MCP server that keeps you informed by sending the notification on phone using ntfy",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/teddyzxcv/ntfy-mcp"
+  },
+  "homepage": "https://github.com/teddyzxcv/ntfy-mcp",
+  "author": {
+    "name": "teddyzxcv"
+  },
+  "license": "Apache License 2.0",
+  "categories": [
+    "Notification",
+    "Productivity"
+  ],
+  "tags": [
+    "ntfy",
+    "notifications"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "https://github.com/teddyzxcv/ntfy-mcp"
+      ],
+      "env": {
+        "NTFY_TOPIC": "<your topic name>"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Python Hello World",
+      "description": "Write a prompt to execute a task and receive a notification upon completion.",
+      "prompt": "Write me a hello world in python, notify me when the task is done"
+    }
+  ]
+}

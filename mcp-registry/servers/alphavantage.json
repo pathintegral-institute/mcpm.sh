@@ -1,0 +1,36 @@
+{
+  "name": "alphavantage",
+  "display_name": "Alphavantage MCP Server",
+  "description": "MCP server for stock market data API [AlphaVantage](https://www.alphavantage.co/)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/calvernaz/alphavantage"
+  },
+  "homepage": "https://github.com/calvernaz/alphavantage",
+  "author": {
+    "name": "calvernaz"
+  },
+  "license": "Apache-2.0",
+  "categories": [
+    "API",
+    "Stock Market"
+  ],
+  "tags": [
+    "alphavantage",
+    "stock market"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/calvernaz/alphavantage.git",
+        "alphavantage"
+      ],
+      "env": {
+        "ALPHAVANTAGE_API_KEY": "${ALPHAVANTAGE_API_KEY}"
+      }
+    }
+  }
+}

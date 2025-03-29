@@ -1,0 +1,49 @@
+{
+  "name": "discord",
+  "display_name": "Discord MCP Server",
+  "description": "A MCP server to connect to Discord guilds through a bot and read and write messages in channels",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/v-3/discordmcp"
+  },
+  "homepage": "https://github.com/v-3/discordmcp",
+  "author": {
+    "name": "v-3",
+    "url": "https://github.com/v-3"
+  },
+  "license": "MIT",
+  "categories": [
+    "Communication",
+    "Protocol"
+  ],
+  "tags": [
+    "Discord",
+    "LLM",
+    "Bot"
+  ],
+  "examples": [
+    {
+      "title": "Read Messages",
+      "description": "Fetch the last 5 messages from a channel.",
+      "prompt": "{\"channel\": \"general\", \"limit\": 5}"
+    },
+    {
+      "title": "Send Message",
+      "description": "Send a message to the specified channel.",
+      "prompt": "{\"channel\": \"announcements\", \"message\": \"Meeting starts in 10 minutes\"}"
+    }
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "https://github.com/v-3/discordmcp"
+      ],
+      "env": {
+        "DISCORD_TOKEN": "your_discord_bot_token_here"
+      }
+    }
+  }
+}

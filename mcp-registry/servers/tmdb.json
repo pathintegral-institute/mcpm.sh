@@ -1,0 +1,59 @@
+{
+  "name": "tmdb",
+  "display_name": "TMDB MCP Server",
+  "description": "This MCP server integrates with The Movie Database (TMDB) API to provide movie information, search capabilities, and recommendations.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Laksh-star/mcp-server-tmdb"
+  },
+  "homepage": "https://github.com/Laksh-star/mcp-server-tmdb",
+  "author": {
+    "name": "Laksh-star"
+  },
+  "license": "MIT",
+  "categories": [
+    "movies",
+    "api",
+    "tmdb"
+  ],
+  "tags": [
+    "tmdb",
+    "movies",
+    "recommendations"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "https://github.com/Laksh-star/mcp-server-tmdb"
+      ],
+      "env": {
+        "TMDB_API_KEY": "your_api_key_here"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Search for Movies",
+      "description": "Search for movies by title or keywords",
+      "prompt": "\"Search for movies about artificial intelligence\""
+    },
+    {
+      "title": "Get Trending Movies",
+      "description": "Get today's or this week's trending movies",
+      "prompt": "\"What are the trending movies today?\""
+    },
+    {
+      "title": "Get Movie Recommendations",
+      "description": "Get movie recommendations based on a movie ID",
+      "prompt": "\"Get movie recommendations based on movie ID 550\""
+    },
+    {
+      "title": "Get Movie Details",
+      "description": "Get details of a specific movie by ID",
+      "prompt": "\"Tell me about the movie with ID 550\""
+    }
+  ]
+}

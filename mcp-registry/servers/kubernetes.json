@@ -1,0 +1,33 @@
+{
+  "name": "kubernetes",
+  "display_name": "MCP Server Kubernetes",
+  "description": "Connect to Kubernetes cluster and manage pods, deployments, and services.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Flux159/mcp-server-kubernetes"
+  },
+  "homepage": "https://github.com/Flux159/mcp-server-kubernetes",
+  "author": {
+    "name": "Flux159"
+  },
+  "license": "[NOT GIVEN]",
+  "categories": [
+    "Kubernetes",
+    "Server"
+  ],
+  "tags": [
+    "kubernetes",
+    "server",
+    "management"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-server-kubernetes"
+      ]
+    }
+  }
+}

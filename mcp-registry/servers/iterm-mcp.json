@@ -1,0 +1,32 @@
+{
+  "name": "iterm-mcp",
+  "display_name": "iTerm MCP",
+  "description": "Integration with iTerm2 terminal emulator for macOS, enabling LLMs to execute and monitor terminal commands.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ferrislucas/iterm-mcp"
+  },
+  "homepage": "https://github.com/ferrislucas/iterm-mcp",
+  "author": {
+    "name": "ferrislucas"
+  },
+  "license": "MIT",
+  "categories": [
+    "Terminal"
+  ],
+  "tags": [
+    "iTerm",
+    "server",
+    "automation"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "iterm-mcp"
+      ]
+    }
+  }
+}

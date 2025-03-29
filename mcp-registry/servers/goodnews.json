@@ -1,0 +1,46 @@
+{
+  "name": "goodnews",
+  "display_name": "MCP Goodnews",
+  "description": "A simple MCP server that delivers curated positive and uplifting news stories.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/VectorInstitute/mcp-goodnews"
+  },
+  "homepage": "https://github.com/VectorInstitute/mcp-goodnews",
+  "author": {
+    "name": "VectorInstitute"
+  },
+  "license": "Apache 2.0",
+  "categories": [
+    "news",
+    "sentiment"
+  ],
+  "tags": [
+    "positive news",
+    "uplifting",
+    "Cohere",
+    "NewsAPI"
+  ],
+  "examples": [
+    {
+      "title": "Fetch list of good news",
+      "description": "Retrieve uplifting news articles using MCP Goodnews.",
+      "prompt": "Show me some good news from today."
+    }
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/VectorInstitute/mcp-goodnews",
+        "server.py"
+      ],
+      "env": {
+        "NEWS_API_KEY": "<newsapi-api-key>",
+        "COHERE_API_KEY": "<cohere-api-key>"
+      }
+    }
+  }
+}

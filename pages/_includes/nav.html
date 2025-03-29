@@ -1,0 +1,90 @@
+<nav class="top-nav">
+    <div class="container">
+        <div class="nav-content">
+            <!-- <a href="/" class="nav-logo">MCPM</a> -->
+            <div class="left-links">
+                <a href="/" class="nav-link {% if page.url == '/' %}active{% endif %}">Manager</a>
+                <a href="/registry/" class="nav-link {% if page.url contains '/registry/' %}active{% endif %}">Registry</a>
+            </div>
+            <div class="right-links">
+                <a href="https://github.com/pathintegral-institute/mcpm.sh/blob/main/CONTRIBUTING.md" target="_blank" class="nav-link">Contribute</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<style>
+    .top-nav {
+        background-color: var(--bg-accent, #2e3238);
+        border-bottom: 1px solid var(--card-border, #3a3e45);
+        position: relative;
+        min-height: 60px;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .top-nav .container {
+        /* padding: 0; */
+        width: 100%;
+    }
+    
+    .nav-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        flex-wrap: nowrap;
+    }
+    
+    .left-links {
+        display: flex;
+        gap: 1.5rem;
+        align-items: center;
+        flex-wrap: nowrap;
+    }
+    
+    .right-links {
+        display: flex;
+        align-items: center;
+        flex-wrap: nowrap;
+    }
+    
+    .nav-link {
+        color: var(--text-primary, #e2e8f0);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s;
+        white-space: nowrap;
+    }
+    
+    .nav-link:hover {
+        color: var(--accent-light, #5CD951);
+    }
+    
+    .nav-link.active {
+        color: var(--accent-highlight, #FF84BD);
+    }
+    
+    
+    @media (max-width: 480px) {
+        .top-nav {
+            padding: 0.5rem 0;
+            min-height: auto;
+        }
+        
+        .nav-content {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .left-links {
+            justify-content: center;
+            padding: 0.5rem 0;
+        }
+
+        .right-links {
+            display: none;
+        }
+    }
+</style>

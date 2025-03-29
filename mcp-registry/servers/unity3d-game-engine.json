@@ -1,0 +1,45 @@
+{
+  "name": "unity3d-game-engine",
+  "display_name": "MCP Unity",
+  "description": "An MCP server that enables LLMs to interact with Unity3d Game Engine, supporting access to a variety of the Unit's Editor engine tools (e.g. Console Logs, Test Runner logs, Editor functions, hierarchy state, etc) and executing them as MCP tools or gather them as resources.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CoderGamester/mcp-unity"
+  },
+  "homepage": "https://github.com/CoderGamester/mcp-unity",
+  "author": {
+    "name": "CoderGamester"
+  },
+  "license": "MIT",
+  "categories": [
+    "Unity",
+    "AI"
+  ],
+  "tags": [
+    "Unity",
+    "Node.js",
+    "TypeScript",
+    "WebSocket",
+    "AI"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "https://github.com/CoderGamester/mcp-unity"
+      ],
+      "env": {
+        "UNITY_PORT": "8090"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Execute Menu Item",
+      "description": "Execute Unity menu items programmatically using MCP Unity.",
+      "prompt": "mcp-unity execute_menu_item"
+    }
+  ]
+}

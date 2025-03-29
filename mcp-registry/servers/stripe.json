@@ -1,0 +1,58 @@
+{
+  "name": "stripe",
+  "display_name": "Stripe Model Context Protocol",
+  "description": "The Stripe Model Context Protocol server allows you to integrate with Stripe APIs through function calling. This protocol supports various tools to interact with different Stripe services.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stripe/agent-toolkit"
+  },
+  "homepage": "https://github.com/stripe/agent-toolkit/tree/main/modelcontextprotocol",
+  "author": {
+    "name": "stripe"
+  },
+  "license": "MIT",
+  "categories": [
+    "Payments",
+    "Financial"
+  ],
+  "tags": [
+    "stripe",
+    "payments",
+    "customers",
+    "refunds"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@stripe/mcp",
+        "--tools=all",
+        "--api-key=STRIPE_SECRET_KEY"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "Create a customer",
+      "description": "Creates a new customer in Stripe.",
+      "prompt": "{\"tool\": \"customer_create\", \"arguments\": {\"email\": \"customer@example.com\", \"name\": \"John Doe\"}}"
+    },
+    {
+      "title": "Retrieve a customer",
+      "description": "Retrieves details of an existing customer.",
+      "prompt": "{\"tool\": \"customer_retrieve\", \"arguments\": {\"customer_id\": \"cus_123456\"}}"
+    },
+    {
+      "title": "Create a payment intent",
+      "description": "Creates a payment intent for processing payments.",
+      "prompt": "{\"tool\": \"payment_intent_create\", \"arguments\": {\"amount\": 5000, \"currency\": \"usd\", \"customer\": \"cus_123456\"}}"
+    },
+    {
+      "title": "Create a refund",
+      "description": "Creates a refund for a charge.",
+      "prompt": "{\"tool\": \"refund_create\", \"arguments\": {\"charge_id\": \"ch_abc123\"}}"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "name": "openapi-anyapi",
+  "display_name": "Scalable OpenAPI Endpoint Discovery and API Request Tool",
+  "description": "Interact with large [OpenAPI](https://www.openapis.org/) docs using built-in semantic search for endpoints. Allows for customizing the MCP server prefix.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/baryhuang/mcp-server-any-openapi"
+  },
+  "homepage": "https://github.com/baryhuang/mcp-server-any-openapi",
+  "author": {
+    "name": "baryhuang"
+  },
+  "license": "MIT",
+  "categories": [
+    "API",
+    "OpenAPI",
+    "Server"
+  ],
+  "installations": {
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "OPENAPI_JSON_DOCS_URL=https://api.finance.com/openapi.json",
+        "-e",
+        "API_REQUEST_BASE_URL=https://api.finance.staging.com",
+        "-e",
+        "MCP_API_PREFIX=finance",
+        "buryhuang/mcp-server-any-openapi:latest"
+      ]
+    },
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/baryhuang/mcp-server-any-openapi",
+        "src/mcp_server_any_openapi/server.py"
+      ]
+    }
+  },
+  "tags": [
+    "OpenAPI",
+    "API Discovery",
+    "Semantic Search",
+    "FastAPI"
+  ],
+  "examples": [
+    {
+      "title": "Get API Endpoints",
+      "description": "Use this tool to find relevant API endpoints by describing your intent.",
+      "prompt": "Get prices for all stocks"
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "name": "mindmap",
+  "display_name": "Mindmap MCP Server",
+  "description": "A server that generates mindmaps from input containing markdown code.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YuChenSSR/mindmap-mcp-server"
+  },
+  "homepage": "https://github.com/YuChenSSR/mindmap-mcp-server",
+  "author": {
+    "name": "YuChenSSR"
+  },
+  "license": "MIT",
+  "categories": [
+    "Markdown",
+    "Mindmap"
+  ],
+  "tags": [
+    "mindmap",
+    "markdown",
+    "interactive"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "mindmap-mcp-server",
+        "--return-type",
+        "html"
+      ]
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "-v",
+        "/path/to/output/folder:/output",
+        "ychen94/mindmap-converter-mcp:latest"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "Basic Mindmap Generation",
+      "description": "Generate a mindmap from Markdown input.",
+      "prompt": "give a mindmap for the following markdown code, using a mindmap tool:\n```\n# Project Planning\n## Research\n### Market Analysis\n### Competitor Review\n## Design\n### Wireframes\n### Mockups\n## Development\n### Frontend\n### Backend\n## Testing\n### Unit Tests\n### User Testing\n```\n"
+    },
+    {
+      "title": "Save Mindmap to File",
+      "description": "Save the generated mindmap as an HTML file and open it in the browser.",
+      "prompt": "give a mindmap for the following markdown input_code using a mindmap tool,\nafter that,use iterm to open the generated html file.\ninput_code:\n```\nmarkdown content\n```\n"
+    },
+    {
+      "title": "Elephant in Refrigerator Mindmap",
+      "description": "Create a mindmap about the process of putting an elephant into a refrigerator.",
+      "prompt": "Think about the process of putting an elephant into a refrigerator, and provide a mind map. Open it with a terminal."
+    }
+  ]
+}

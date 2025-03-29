@@ -1,0 +1,72 @@
+{
+  "name": "graphql-schema",
+  "display_name": "GraphQL Schema Model Context Protocol Server",
+  "description": "Allow LLMs to explore large GraphQL schemas without bloating the context.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hannesj/mcp-graphql-schema"
+  },
+  "homepage": "https://github.com/hannesj/mcp-graphql-schema",
+  "author": {
+    "name": "hannesj"
+  },
+  "license": "[NOT GIVEN]",
+  "categories": [
+    "GraphQL",
+    "Server"
+  ],
+  "tags": [
+    "GraphQL",
+    "LLMs",
+    "Schema",
+    "API"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-graphql-schema",
+        "/ABSOLUTE/PATH/TO/schema.graphqls"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "List all query fields",
+      "description": "Retrieve a list of all available root-level fields for GraphQL queries.",
+      "prompt": "What query fields are available in this GraphQL schema?"
+    },
+    {
+      "title": "User query field details",
+      "description": "Get detailed definition for the \"user\" query field.",
+      "prompt": "Show me the details of the \"user\" query field."
+    },
+    {
+      "title": "Mutation operations",
+      "description": "List all mutation operations that can be performed in the schema.",
+      "prompt": "What mutation operations can I perform in this schema?"
+    },
+    {
+      "title": "List all types",
+      "description": "Retrieve a list of all types defined in the schema.",
+      "prompt": "List all types defined in this schema."
+    },
+    {
+      "title": "Type definition",
+      "description": "Show the definition of the \"Product\" type.",
+      "prompt": "Show me the definition of the \"Product\" type."
+    },
+    {
+      "title": "Order type fields",
+      "description": "List all fields of the \"Order\" type.",
+      "prompt": "List all fields of the \"Order\" type."
+    },
+    {
+      "title": "Search for types and fields",
+      "description": "Search the schema for types and fields related to \"customer.\"",
+      "prompt": "Search for types and fields related to \"customer\"."
+    }
+  ]
+}

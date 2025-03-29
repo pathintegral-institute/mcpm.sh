@@ -1,0 +1,50 @@
+{
+  "name": "google-maps",
+  "display_name": "Google Maps MCP Server",
+  "description": "Location services, directions, and place details",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/modelcontextprotocol/servers"
+  },
+  "homepage": "https://github.com/modelcontextprotocol/servers/blob/main/src/google-maps",
+  "author": {
+    "name": "modelcontextprotocol"
+  },
+  "license": "MIT",
+  "categories": [
+    "API",
+    "Mapping"
+  ],
+  "tags": [
+    "Google Maps",
+    "Geolocation"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-google-maps"
+      ],
+      "env": {
+        "GOOGLE_MAPS_API_KEY": "<YOUR_API_KEY>"
+      }
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "GOOGLE_MAPS_API_KEY",
+        "mcp/google-maps"
+      ],
+      "env": {
+        "GOOGLE_MAPS_API_KEY": "<YOUR_API_KEY>"
+      }
+    }
+  }
+}

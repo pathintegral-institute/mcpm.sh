@@ -1,0 +1,35 @@
+{
+  "name": "lightdash",
+  "display_name": "Lightdash MCP Server",
+  "description": "Interact with [Lightdash](https://www.lightdash.com/), a BI tool.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/syucream/lightdash-mcp-server"
+  },
+  "homepage": "https://github.com/syucream/lightdash-mcp-server",
+  "author": {
+    "name": "syucream"
+  },
+  "license": "MIT",
+  "categories": [
+    "Tools"
+  ],
+  "tags": [
+    "Lightdash",
+    "AI"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "lightdash-mcp-server"
+      ],
+      "env": {
+        "LIGHTDASH_API_KEY": "${LIGHTDASH_API_KEY}",
+        "LIGHTDASH_API_URL": "${LIGHTDASH_API_URL}"
+      }
+    }
+  }
+}

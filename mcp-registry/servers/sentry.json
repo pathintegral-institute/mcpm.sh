@@ -1,0 +1,64 @@
+{
+  "name": "sentry",
+  "display_name": "A Sentry MCP server",
+  "description": "Retrieving and analyzing issues from Sentry.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/modelcontextprotocol/servers"
+  },
+  "homepage": "https://github.com/modelcontextprotocol/servers/blob/main/src/sentry",
+  "author": {
+    "name": "modelcontextprotocol"
+  },
+  "license": "MIT",
+  "categories": [
+    "monitoring",
+    "error-reporting"
+  ],
+  "tags": [
+    "sentry",
+    "monitoring",
+    "errors",
+    "debugging"
+  ],
+  "examples": [
+    {
+      "title": "Retrieve issue details from Sentry",
+      "description": "Use this command to get detailed information about a specific Sentry issue using its ID or URL.",
+      "prompt": "sentry-issue {issue_id_or_url}"
+    }
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "mcp-server-sentry",
+        "--auth-token",
+        "YOUR_SENTRY_TOKEN"
+      ]
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "mcp/sentry",
+        "--auth-token",
+        "YOUR_SENTRY_TOKEN"
+      ]
+    },
+    "python": {
+      "type": "python",
+      "command": "python",
+      "args": [
+        "-m",
+        "mcp_server_sentry",
+        "--auth-token",
+        "YOUR_SENTRY_TOKEN"
+      ]
+    }
+  }
+}

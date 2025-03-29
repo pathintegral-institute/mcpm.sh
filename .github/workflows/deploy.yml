@@ -2,8 +2,11 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *'  # Run every 6 hours
 
 permissions:
   contents: read
@@ -15,20 +18,59 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  validate:
+    uses: ./.github/workflows/validate-manifests.yml
+
+  build:
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      
+      - name: Install uv with caching
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: "pyproject.toml"
+
+      - name: Install dependencies
+        run: |
+          uv sync
+          
+      - name: Setup site structure
+        run: |
+          mkdir -p pages/registry
+          mkdir -p pages/api/servers
+          
+      - name: Run preparation script
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          chmod +x ./scripts/prepare.sh
+          source .venv/bin/activate
+          ./scripts/prepare.sh ./pages
+        
+      
+      - name: Build with Jekyll
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./pages
+          destination: ./_site
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+
   deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    needs: build
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: 'pages'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

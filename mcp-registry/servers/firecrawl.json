@@ -1,0 +1,50 @@
+{
+  "name": "firecrawl",
+  "display_name": "Firecrawl MCP Server",
+  "description": "Advanced web scraping with JavaScript rendering, PDF support, and smart rate limiting",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vrknetha/mcp-server-firecrawl"
+  },
+  "homepage": "https://github.com/vrknetha/mcp-server-firecrawl",
+  "author": {
+    "name": "vrknetha"
+  },
+  "license": "MIT",
+  "categories": [
+    "Web Scraping",
+    "AI"
+  ],
+  "tags": [
+    "firecrawl",
+    "scraping",
+    "web",
+    "api",
+    "automation"
+  ],
+  "examples": [
+    {
+      "title": "Basic Scraping Example",
+      "description": "Scrape content from a single URL",
+      "prompt": "firecrawl_scrape with url 'https://example.com'"
+    },
+    {
+      "title": "Batch Scraping",
+      "description": "Scrape multiple URLs",
+      "prompt": "firecrawl_batch_scrape with urls ['https://example1.com', 'https://example2.com']"
+    }
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "firecrawl-mcp"
+      ],
+      "env": {
+        "FIRECRAWL_API_KEY": "${FIRECRAWL_API_KEY}"
+      }
+    }
+  }
+}

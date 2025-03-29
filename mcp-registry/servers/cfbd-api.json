@@ -1,0 +1,46 @@
+{
+  "name": "cfbd-api",
+  "display_name": "College Football Data MCP Server",
+  "description": "An MCP server for the [College Football Data API](https://collegefootballdata.com/).",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lenwood/cfbd-mcp-server"
+  },
+  "homepage": "https://github.com/lenwood/cfbd-mcp-server",
+  "author": {
+    "name": "lenwood"
+  },
+  "license": "MIT",
+  "categories": [
+    "Sports",
+    "Data"
+  ],
+  "tags": [
+    "football",
+    "college",
+    "API",
+    "statistics"
+  ],
+  "installations": {
+    "npm": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/lenwood/cfbd-mcp-server",
+        "src/cfbd_mcp_server/server.py"
+      ],
+      "env": {
+        "CFB_API_KEY": "xxx",
+        "PATH": "/full/path/to/python"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Get the largest upset among FCS games during the 2014 season",
+      "description": "Query the server for significant game upsets in the 2014 college football season.",
+      "prompt": "What was the largest upset among FCS games during the 2014 season?"
+    }
+  ]
+}

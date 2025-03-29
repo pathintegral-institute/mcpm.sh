@@ -1,0 +1,65 @@
+{
+  "name": "x-twitter",
+  "display_name": "X(Twitter) MCP Server",
+  "description": "Create, manage and publish X/Twitter posts directly through Claude chat.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vidhupv/x-mcp"
+  },
+  "homepage": "https://github.com/vidhupv/x-mcp",
+  "author": {
+    "name": "vidhupv"
+  },
+  "license": "MIT",
+  "categories": [
+    "Social Media"
+  ],
+  "tags": [
+    "Twitter",
+    "X"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/vidhupv/x-mcp",
+        "x-mcp"
+      ],
+      "env": {
+        "TWITTER_API_KEY": "your_api_key",
+        "TWITTER_API_SECRET": "your_api_secret",
+        "TWITTER_ACCESS_TOKEN": "your_access_token",
+        "TWITTER_ACCESS_TOKEN_SECRET": "your_access_token_secret"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Tweet",
+      "description": "Example of sending a tweet through Claude chat.",
+      "prompt": "Tweet 'Just learned how to tweet through AI - mind blown! \ud83e\udd16\u2728'"
+    },
+    {
+      "title": "Create Thread",
+      "description": "Create a thread about a specific topic.",
+      "prompt": "Create a thread about the history of pizza"
+    },
+    {
+      "title": "Show Drafts",
+      "description": "Request to see draft tweets.",
+      "prompt": "Show me my draft tweets"
+    },
+    {
+      "title": "Publish Draft",
+      "description": "Publish an existing draft.",
+      "prompt": "Publish this draft!"
+    },
+    {
+      "title": "Delete Draft",
+      "description": "Delete a specific draft.",
+      "prompt": "Delete that draft"
+    }
+  ]
+}

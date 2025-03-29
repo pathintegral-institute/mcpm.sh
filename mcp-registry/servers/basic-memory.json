@@ -1,0 +1,36 @@
+{
+  "name": "basic-memory",
+  "display_name": "Basic Memory",
+  "description": "Local-first knowledge management system that builds a semantic graph from Markdown files, enabling persistent memory across conversations with LLMs.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/basicmachines-co/basic-memory"
+  },
+  "homepage": "https://github.com/basicmachines-co/basic-memory",
+  "author": {
+    "name": "basicmachines-co"
+  },
+  "license": "AGPL-3.0",
+  "categories": [
+    "Knowledge Management",
+    "AI",
+    "Markdown"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "basic-memory",
+        "mcp",
+        "--project",
+        "your-project-name"
+      ]
+    }
+  },
+  "tags": [
+    "LLM",
+    "Markdown",
+    "Knowledge Base"
+  ]
+}

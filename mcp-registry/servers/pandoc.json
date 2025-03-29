@@ -1,0 +1,43 @@
+{
+  "name": "pandoc",
+  "display_name": "mcp-pandoc: A Document Conversion MCP Server",
+  "description": "MCP server for seamless document format conversion using Pandoc, supporting Markdown, HTML, PDF, DOCX (.docx), csv and more.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vivekVells/mcp-pandoc"
+  },
+  "homepage": "https://github.com/vivekVells/mcp-pandoc",
+  "author": {
+    "name": "vivekVells"
+  },
+  "license": "MIT",
+  "categories": [
+    "Document Conversion"
+  ],
+  "tags": [
+    "pandoc",
+    "document",
+    "conversion"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "mcp-pandoc"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "Convert Markdown to PDF",
+      "description": "Converts Markdown content to PDF format and saves it to the specified path.",
+      "prompt": "Convert /path/to/input.md to PDF and save as /path/to/output.pdf"
+    },
+    {
+      "title": "Convert Content Directly",
+      "description": "Converts a string of content directly to a specific output format.",
+      "prompt": "Convert this text to PDF and save as /path/to/document.pdf"
+    }
+  ]
+}

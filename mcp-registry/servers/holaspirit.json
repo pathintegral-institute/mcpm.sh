@@ -1,0 +1,34 @@
+{
+  "name": "holaspirit",
+  "display_name": "Holaspirit MCP Server",
+  "description": "Interact with [Holaspirit](https://www.holaspirit.com/).",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/syucream/holaspirit-mcp-server"
+  },
+  "homepage": "https://github.com/syucream/holaspirit-mcp-server",
+  "author": {
+    "name": "syucream"
+  },
+  "license": "MIT",
+  "categories": [
+    "API"
+  ],
+  "tags": [
+    "Holaspirit",
+    "AI"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "holaspirit-mcp-server"
+      ],
+      "env": {
+        "HOLASPIRIT_API_TOKEN": "<your token>"
+      }
+    }
+  }
+}

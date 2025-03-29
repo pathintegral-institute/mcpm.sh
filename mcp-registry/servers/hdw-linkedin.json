@@ -1,0 +1,38 @@
+{
+  "name": "hdw-linkedin",
+  "display_name": "HDW MCP Server",
+  "description": "Access to profile data and management of user account with [HorizonDataWave.ai](https://horizondatawave.ai/).",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/horizondatawave/hdw-mcp-server"
+  },
+  "homepage": "https://github.com/horizondatawave/hdw-mcp-server",
+  "author": {
+    "name": "horizondatawave"
+  },
+  "license": "MIT",
+  "categories": [
+    "API",
+    "LinkedIn",
+    "Data Management"
+  ],
+  "tags": [
+    "LinkedIn",
+    "API access",
+    "Data retrieval",
+    "User management"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "@horizondatawave/mcp"
+      ],
+      "env": {
+        "HDW_ACCESS_TOKEN": "YOUR_HD_W_ACCESS_TOKEN",
+        "HDW_ACCOUNT_ID": "YOUR_HD_W_ACCOUNT_ID"
+      }
+    }
+  }
+}

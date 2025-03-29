@@ -1,0 +1,43 @@
+{
+  "name": "data-exploration",
+  "display_name": "MCP Server for Data Exploration",
+  "description": "MCP server for autonomous data exploration on .csv-based datasets, providing intelligent insights with minimal effort. NOTE: Will execute arbitrary Python code on your machine, please use with caution!",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/reading-plus-ai/mcp-server-data-exploration"
+  },
+  "homepage": "https://github.com/reading-plus-ai/mcp-server-data-exploration",
+  "author": {
+    "name": "reading-plus-ai"
+  },
+  "license": "MIT",
+  "categories": [
+    "Data Science",
+    "Exploration"
+  ],
+  "tags": [
+    "data",
+    "exploration"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "mcp-server-ds"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "California Real Estate Listing Prices",
+      "description": "Exploring housing price trends in California using a dataset.",
+      "prompt": "csv_path: Local path to the CSV file, topic: Housing price trends in California."
+    },
+    {
+      "title": "Weather in London",
+      "description": "Investigating daily weather history in London using a dataset.",
+      "prompt": "csv_path: Local path to the CSV file, topic: Weather in London."
+    }
+  ]
+}

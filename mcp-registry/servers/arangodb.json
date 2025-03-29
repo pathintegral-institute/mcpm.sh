@@ -1,0 +1,59 @@
+{
+  "name": "arangodb",
+  "display_name": "MCP Server for ArangoDB",
+  "description": "MCP Server that provides database interaction capabilities through [ArangoDB](https://arangodb.com/).",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ravenwits/mcp-server-arangodb"
+  },
+  "homepage": "https://github.com/ravenwits/mcp-server-arangodb",
+  "author": {
+    "name": "ravenwits"
+  },
+  "license": "MIT",
+  "categories": [
+    "Database"
+  ],
+  "tags": [
+    "ArangoDB",
+    "TypeScript"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "https://github.com/ravenwits/mcp-server-arangodb"
+      ],
+      "description": "Run with npx (requires npm install)"
+    }
+  },
+  "examples": [
+    {
+      "title": "List all collections",
+      "description": "Query to list all collections in the database.",
+      "prompt": "{}"
+    },
+    {
+      "title": "Insert a new document",
+      "description": "Insert a new document into the 'users' collection.",
+      "prompt": "{\"collection\": \"users\", \"document\": {\"name\": \"John Doe\", \"email\": \"john@example.com\"}}"
+    },
+    {
+      "title": "Update a document",
+      "description": "Update a document in the 'users' collection by key.",
+      "prompt": "{\"collection\": \"users\", \"key\": \"123456\", \"update\": {\"name\": \"Jane Doe\"}}"
+    },
+    {
+      "title": "Remove a document",
+      "description": "Remove a document from the 'users' collection by key.",
+      "prompt": "{\"collection\": \"users\", \"key\": \"123456\"}}"
+    },
+    {
+      "title": "Backup database collections",
+      "description": "Backup collections to a specified directory.",
+      "prompt": "{\"outputDir\": \"./backup\"}"
+    }
+  ]
+}

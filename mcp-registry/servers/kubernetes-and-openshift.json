@@ -1,0 +1,32 @@
+{
+  "name": "kubernetes-and-openshift",
+  "display_name": "Kubernetes MCP Server",
+  "description": "A powerful Kubernetes MCP server with additional support for OpenShift. Besides providing CRUD operations for any Kubernetes resource, this server provides specialized tools to interact with your cluster.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/manusa/kubernetes-mcp-server"
+  },
+  "homepage": "https://github.com/manusa/kubernetes-mcp-server",
+  "author": {
+    "name": "manusa"
+  },
+  "license": "MIT",
+  "categories": [
+    "Kubernetes",
+    "Server"
+  ],
+  "tags": [
+    "Kubernetes",
+    "Server"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "kubernetes-mcp-server@latest"
+      ]
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "name": "elevenlabs",
+  "display_name": "ElevenLabs MCP Server",
+  "description": "A server that integrates with ElevenLabs text-to-speech API capable of generating full voiceovers with multiple voices.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mamertofabian/elevenlabs-mcp-server"
+  },
+  "homepage": "https://github.com/mamertofabian/elevenlabs-mcp-server",
+  "author": {
+    "name": "mamertofabian"
+  },
+  "license": "MIT",
+  "categories": [
+    "Text-to-Speech",
+    "Speech Synthesis"
+  ],
+  "tags": [
+    "ElevenLabs",
+    "Text-to-Speech",
+    "SvelteKit",
+    "TTS"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "elevenlabs-mcp-server"
+      ],
+      "env": {
+        "ELEVENLABS_API_KEY": "${ELEVENLABS_API_KEY}",
+        "ELEVENLABS_VOICE_ID": "${ELEVENLABS_VOICE_ID}",
+        "ELEVENLABS_MODEL_ID": "eleven_flash_v2",
+        "ELEVENLABS_STABILITY": "0.5",
+        "ELEVENLABS_SIMILARITY_BOOST": "0.75",
+        "ELEVENLABS_STYLE": "0.1",
+        "ELEVENLABS_OUTPUT_DIR": "output"
+      }
+    }
+  }
+}
