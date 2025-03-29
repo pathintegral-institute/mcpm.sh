@@ -58,10 +58,9 @@ def add(server_name, force=False):
     # Display server information
     display_name = server_metadata.get("display_name", server_name)
     description = server_metadata.get("description", "No description available")
-    available_version = server_metadata.get("version")
     author_info = server_metadata.get("author", {})
     
-    console.print(f"\n[bold]{display_name}[/] ({server_name}) v{available_version}")
+    console.print(f"\n[bold]{display_name}[/] ({server_name})")
     console.print(f"[dim]{description}[/]")
     
     if author_info:
@@ -90,7 +89,6 @@ def add(server_name, force=False):
     
     # Extract installation information
     installations = server_metadata.get("installations", {})
-    version = available_version
     
     # If no installation information is available, create minimal default values
     # This allows us to add the server config without full installation details
@@ -169,7 +167,7 @@ def add(server_name, force=False):
             json.dump(server_metadata, f, indent=2)
         
         # Configure the server
-        progress.add_task(f"Configuring {server_name} v{version}...", total=None)
+        progress.add_task(f"Configuring {server_name}...", total=None)
         
         # Get all available arguments from the server metadata
         all_arguments = server_metadata.get("arguments", {})
@@ -255,7 +253,7 @@ def add(server_name, force=False):
                 console=console
             )
             progress.start()
-            progress.add_task(f"Configuring {server_name} v{version}...", total=None)
+            progress.add_task(f"Configuring {server_name}...", total=None)
         
         # Now process any remaining environment variables from the installation method
         for key, value in env_vars.items():
@@ -294,7 +292,7 @@ def add(server_name, force=False):
                         console=console
                     )
                     progress.start()
-                    progress.add_task(f"Configuring {server_name} v{version}...", total=None)
+                    progress.add_task(f"Configuring {server_name}...", total=None)
                 else:
                     # Store reference to environment variable
                     processed_env[key] = value
@@ -328,7 +326,7 @@ def add(server_name, force=False):
     
     if success:
         # Server has been successfully added to the client configuration
-        console.print(f"[bold green]Successfully added {display_name} v{version} to {client_display_name}![/]")
+        console.print(f"[bold green]Successfully added {display_name} to {client_display_name}![/]")
         
         # Display usage examples if available
         examples = server_metadata.get("examples", [])

@@ -106,29 +106,15 @@ class RepositoryManager:
         servers_dict = self._fetch_servers()
         return servers_dict.get(server_name)
     
-    def get_available_versions(self, server_name: str) -> List[str]:
-        """
-        Get available versions for a server
-        
-        Args:
-            server_name: Name of the server
-            
-        Returns:
-            List of available versions, currently just returns the current version
-        """
-        metadata = self.get_server_metadata(server_name)
-        if metadata and "version" in metadata:
-            return [metadata["version"]]
-        return []
+    # Version-related method removed
     
-    def download_server(self, server_name: str, version: Optional[str] = None, 
+    def download_server(self, server_name: str, 
                        dest_dir: Optional[str] = None) -> Optional[Dict[str, Any]]:
         """
         Download an MCP server package
         
         Args:
             server_name: Name of the server to download
-            version: Optional specific version to download
             dest_dir: Directory to download to
             
         Returns:
@@ -138,14 +124,6 @@ class RepositoryManager:
         if not metadata:
             logger.error(f"Server not found: {server_name}")
             return None
-            
-        if version and metadata["version"] != version:
-            logger.error(f"Version {version} not found for server {server_name}")
-            return None
-        
-        # Use the latest version if none specified
-        if not version:
-            version = metadata["version"]
             
         # Create the destination directory if needed
         if dest_dir:
@@ -157,5 +135,5 @@ class RepositoryManager:
             with open(metadata_path, "w") as f:
                 json.dump(metadata, f, indent=2)
         
-        logger.info(f"Downloaded server {server_name} v{metadata['version']}")
+        logger.info(f"Downloaded server {server_name}")
         return metadata

@@ -64,7 +64,6 @@ def _display_table_results(servers):
     """Display search results in a compact table"""
     table = Table(show_header=True, header_style="bold")
     table.add_column("Name", style="cyan")
-    table.add_column("Version")
     table.add_column("Description")
     table.add_column("Categories/Tags", overflow="fold")
     
@@ -72,7 +71,6 @@ def _display_table_results(servers):
         # Get server data
         name = server["name"]
         display_name = server.get("display_name", name)
-        version = server.get("version", "")
         description = server.get("description", "No description")
         
         # Build categories and tags
@@ -84,7 +82,6 @@ def _display_table_results(servers):
         # Add row to table
         table.add_row(
             f"{display_name}\n[dim]({name})[/]",
-            version,
             description,
             meta_info
         )
@@ -93,11 +90,10 @@ def _display_table_results(servers):
 
 def _display_detailed_results(servers):
     """Display detailed information about each server"""
-    for server in sorted(servers, key=lambda s: s["name"]):
+    for i, server in enumerate(sorted(servers, key=lambda s: s["name"])):
         # Get server data
         name = server["name"]
         display_name = server.get("display_name", name)
-        version = server.get("version", "")
         description = server.get("description", "No description")
         license_info = server.get("license", "Unknown")
         
@@ -106,62 +102,73 @@ def _display_detailed_results(servers):
         author_name = author_info.get("name", "Unknown")
         author_email = author_info.get("email", "")
         
-        # Installation requirements
-        requirements = server.get("requirements", {})
-        needs_api_key = requirements.get("api_key", False)
-        auth_type = requirements.get("authentication")
-        
         # Build categories and tags
         categories = server.get("categories", [])
         tags = server.get("tags", [])
         
-        # Installation info
+        # Get installation details
+        installations = server.get("installations", {})
         installation = server.get("installation", {})
         package = installation.get("package", "")
         
-        # Build the panel content
-        content = f"[bold]{display_name}[/] [dim]v{version}[/]\n"
-        content += f"[italic]{description}[/]\n\n"
+        # Print server header
+        console.print(f"[bold cyan]{display_name}[/] [dim]({name})[/]")
+        console.print(f"[italic]{description}[/]\n")
         
         # Server information section
-        content += "[bold yellow]Server Information:[/]\n"
-        content += f"ID: {name}\n"
+        console.print("[bold yellow]Server Information:[/]")
         if categories:
-            content += f"Categories: {', '.join(categories)}\n"
+            console.print(f"Categories: {', '.join(categories)}")
         if tags:
-            content += f"Tags: {', '.join(tags)}\n"
-        content += f"Package: {package}\n" if package else ""
-        content += f"Author: {author_name}" + (f" ({author_email})" if author_email else "") + "\n"
-        content += f"License: {license_info}\n"
+            console.print(f"Tags: {', '.join(tags)}")
+        if package:
+            console.print(f"Package: {package}")
+        console.print(f"Author: {author_name}" + (f" ({author_email})" if author_email else ""))
+        console.print(f"License: {license_info}")
+        console.print("")
         
-        # Requirements section if needed
-        if needs_api_key:
-            content += "\n[bold yellow]Authentication:[/]\n"
-            content += "Requires API key or authentication\n"
-            if auth_type:
-                content += f"Authentication type: {auth_type}\n"
-        
-        # No installation status in the new architecture
-        content += "\n"
+        # Installation details section
+        if installations:
+            console.print("[bold yellow]Installation Details:[/]")
+            for method in installations.values():
+                method_type = method.get("type", "unknown")
+                description = method.get("description", f"{method_type} installation")
+                recommended = " [green](recommended)[/]" if method.get("recommended", False) else ""
+                
+                console.print(f"[cyan]{method_type}[/]: {description}{recommended}")
+                
+                # Show command if available
+                if "command" in method:
+                    cmd = method["command"]
+                    args = method.get("args", [])
+                    cmd_str = f"{cmd} {' '.join(args)}" if args else cmd
+                    console.print(f"Command: [green]{cmd_str}[/]")
+                
+                # Show dependencies if available
+                dependencies = method.get("dependencies", [])
+                if dependencies:
+                    console.print("Dependencies: " + ", ".join(dependencies))
+                
+                # Show environment variables if available
+                env_vars = method.get("env", {})
+                if env_vars:
+                    console.print("Environment Variables:")
+                    for key, value in env_vars.items():
+                        console.print(f"  [bold blue]{key}[/] = [green]\"{value}\"[/]")
+                console.print("")
         
         # If there are examples, show the first one
         examples = server.get("examples", [])
         if examples:
-            content += "\n[bold yellow]Example:[/]\n"
+            console.print("[bold yellow]Example:[/]")
             first_example = examples[0]
             if "title" in first_example:
-                content += f"[bold]{first_example['title']}[/]\n"
+                console.print(f"[bold]{first_example['title']}[/]")
             if "description" in first_example:
-                content += f"{first_example['description']}\n"
+                console.print(f"{first_example['description']}")
+            console.print("")
         
-        # Use a consistent border style in the new architecture
-        border_style = "blue"
-        panel = Panel(
-            content,
-            title=f"MCP Server: {name}",
-            border_style=border_style,
-            expand=False,
-        )
-        console.print(panel)
-        console.print("")
+        # Add a separator between servers (except for the last one)
+        if i < len(servers) - 1:
+            console.print("[dim]" + "-" * 50 + "[/]\n")
 
