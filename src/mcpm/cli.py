@@ -29,9 +29,7 @@ CONTEXT_SETTINGS = dict(help_option_names=[])
 
 
 @click.group(context_settings=CONTEXT_SETTINGS, invoke_without_command=True)
-@click.option(
-    "-h", "--help", "help_flag", is_flag=True, help="Show this message and exit."
-)
+@click.option("-h", "--help", "help_flag", is_flag=True, help="Show this message and exit.")
 @click.version_option(version=__version__)
 @click.pass_context
 def main(ctx, help_flag):
@@ -45,9 +43,7 @@ def main(ctx, help_flag):
         active_client = config_manager.get_active_client()
         if not active_client:
             console.print("[bold red]Error:[/] No active client set.")
-            console.print(
-                "Please run 'mcpm client <client-name>' to set an active client."
-            )
+            console.print("Please run 'mcpm client <client-name>' to set an active client.")
             console.print("Available clients:")
 
             # Show available clients
@@ -100,28 +96,16 @@ def main(ctx, help_flag):
 
         # Display active client information and main help
         if active_client:
-            client_status = (
-                "[green]✓[/]"
-                if installed_clients.get(active_client, False)
-                else "[yellow]⚠[/]"
-            )
-            console.print(
-                f"[bold magenta]Active client:[/] [yellow]{active_client}[/] {client_status}"
-            )
+            client_status = "[green]✓[/]" if installed_clients.get(active_client, False) else "[yellow]⚠[/]"
+            console.print(f"[bold magenta]Active client:[/] [yellow]{active_client}[/] {client_status}")
         else:
-            console.print(
-                "[bold red]No active client set![/] Please run 'mcpm client <client-name>' to set one."
-            )
+            console.print("[bold red]No active client set![/] Please run 'mcpm client <client-name>' to set one.")
         console.print("")
 
         # Display usage info
-        console.print(
-            "[bold green]Usage:[/] [white]mcpm [OPTIONS] COMMAND [ARGS]...[/]"
-        )
+        console.print("[bold green]Usage:[/] [white]mcpm [OPTIONS] COMMAND [ARGS]...[/]")
         console.print("")
-        console.print(
-            "[bold green]Description:[/] [white]A tool for managing MCP servers across various clients.[/]"
-        )
+        console.print("[bold green]Description:[/] [white]A tool for managing MCP servers across various clients.[/]")
         console.print("")
 
         # Display options
@@ -133,34 +117,24 @@ def main(ctx, help_flag):
         # Display available commands in a table
         console.print("[bold]Commands:[/]")
         commands_table = Table(show_header=False, box=None, padding=(0, 2, 0, 0))
-        commands_table.add_row(
-            "  [cyan]add[/]", "Add an MCP server directly to a client."
-        )
+        commands_table.add_row("  [cyan]add[/]", "Add an MCP server directly to a client.")
         commands_table.add_row("  [cyan]client[/]", "Manage the active MCPM client.")
         commands_table.add_row("  [cyan]config[/]", "Manage MCPM configuration.")
         commands_table.add_row(
             "  [cyan]edit[/]",
             "View or edit the active MCPM client's configuration file.",
         )
-        commands_table.add_row(
-            "  [cyan]inspector[/]", "Launch the MCPM Inspector UI to examine servers."
-        )
+        commands_table.add_row("  [cyan]inspector[/]", "Launch the MCPM Inspector UI to examine servers.")
         commands_table.add_row("  [cyan]list[/]", "List all installed MCP servers.")
         commands_table.add_row("  [cyan]remove[/]", "Remove an installed MCP server.")
         commands_table.add_row("  [cyan]search[/]", "Search available MCP servers.")
-        commands_table.add_row(
-            "  [cyan]stash[/]", "Temporarily store a server configuration aside."
-        )
-        commands_table.add_row(
-            "  [cyan]pop[/]", "Restore a previously stashed server configuration."
-        )
+        commands_table.add_row("  [cyan]stash[/]", "Temporarily store a server configuration aside.")
+        commands_table.add_row("  [cyan]pop[/]", "Restore a previously stashed server configuration.")
         console.print(commands_table)
 
         # Additional helpful information
         console.print("")
-        console.print(
-            "[italic]Run [bold]mcpm CLIENT -h[/] for more information on a command.[/]"
-        )
+        console.print("[italic]Run [bold]mcpm CLIENT -h[/] for more information on a command.[/]")
 
 
 # Register commands

@@ -2,17 +2,7 @@
 MCPM commands package
 """
 
-__all__ = [
-    "add",
-    "client",
-    "edit",
-    "inspector",
-    "list",
-    "pop",
-    "remove",
-    "search",
-    "stash"
-]
+__all__ = ["add", "client", "edit", "inspector", "list", "pop", "remove", "search", "stash"]
 
 # All command modules
 from . import add

@@ -9,9 +9,7 @@ description = "MCPM - Model Context Protocol Manager"
 readme = "README.md"
 requires-python = ">=3.8"
 license = "MIT"
-authors = [
-    {name = "MCPM Contributors"},
-]
+authors = [{ name = "MCPM Contributors" }]
 dependencies = [
     "click>=8.1.3",
     "rich>=12.0.0",
@@ -36,3 +34,11 @@ path = "src/mcpm/version.py"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120
+fix = true
+
+[tool.ruff.lint]
+select = ["F", "E", "W", "I"]
+fixable = ["I", "F401"]

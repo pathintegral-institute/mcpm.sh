@@ -34,14 +34,10 @@ def clear_cache():
         if os.path.exists(repo_manager.cache_file):
             # Remove the cache file
             os.remove(repo_manager.cache_file)
-            console.print(
-                f"[green]Successfully cleared repository cache at:[/] {repo_manager.cache_file}"
-            )
+            console.print(f"[green]Successfully cleared repository cache at:[/] {repo_manager.cache_file}")
             console.print("Cache will be rebuilt on next search.")
         else:
-            console.print(
-                f"[yellow]Cache file not found at:[/] {repo_manager.cache_file}"
-            )
+            console.print(f"[yellow]Cache file not found at:[/] {repo_manager.cache_file}")
             console.print("No action needed.")
     except Exception as e:
         console.print(f"[bold red]Error clearing cache:[/] {str(e)}")
