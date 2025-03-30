@@ -20,6 +20,23 @@
     <style>
         {% include colors.css %}
         
+        /* Override colors with blue and pink theme */
+        :root {
+            /* Brand Colors - Changed from green to blue and pink */
+            --accent-color: #3b82f6; /* Blue brand color instead of Deep green */
+            --accent-light: #60a5fa; /* Light blue brand color instead of Light green */
+            --accent-dark: #2563eb; /* Darker blue instead of Deep green */
+            --accent-highlight: #ec4899; /* Brighter pink brand color */
+            --highlight: var(--accent-highlight);
+            --highlight-light: #ec489933;
+            
+            /* Functional Colors */
+            --success: #60a5fa; /* Light blue instead of Light green */
+            --warning: #FEBF00; /* Yellow/amber brand color - unchanged */
+            --button-bg: var(--accent-color);
+            --button-hover: var(--accent-dark);
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -54,7 +71,7 @@
         .logo {
             font-size: 1.5rem;
             font-weight: 700;
-            color: var(--accent-light, #5CD951);
+            color: var(--accent-highlight);
             text-decoration: none;
         }
         
@@ -84,17 +101,17 @@
         }
         
         main {
-            padding: 2rem 0;
+            padding: 1.5rem 0;
         }
         
         h1 {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
             background: linear-gradient(90deg, var(--accent-color), var(--accent-highlight));
             -webkit-background-clip: text;
             background-clip: text;
-            color: transparent;
+            color: var(--accent-color);
             letter-spacing: -0.05em;
         }
         
@@ -132,17 +149,17 @@
         }
         
         .search-container {
-            margin: 2rem 0;
+            margin: 1.5rem 0 1rem;
             display: flex;
             gap: 1rem;
         }
         
         .search-input {
             flex: 1;
-            padding: 0.75rem 1rem;
+            padding: 0.6rem 0.75rem;
             border: 1px solid var(--border);
-            border-radius: 0.5rem;
-            font-size: 1rem;
+            border-radius: 0.4rem;
+            font-size: 0.9rem;
             font-family: inherit;
             background-color: var(--bg-accent);
             color: var(--text-primary);
@@ -155,28 +172,29 @@
         }
         
         .tag-filters-container {
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
         
         .tag-filters-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.5rem;
         }
         
         .tag-filters-title {
             font-weight: 500;
-            color: var(--secondary);
+            color: var(--text-primary);
+            font-size: 0.9rem;
         }
         
         .toggle-tags-btn {
             background: none;
             border: none;
-            color: var(--primary);
+            color: var(--accent-highlight);
             cursor: pointer;
-            font-size: 0.875rem;
-            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+            padding: 0.2rem 0.4rem;
             border-radius: 0.25rem;
             transition: background-color 0.2s;
         }
@@ -188,8 +206,8 @@
         .tag-filters {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.5rem;
-            max-height: 2.5rem;
+            gap: 0.4rem;
+            max-height: 2.2rem;
             overflow: hidden;
             transition: max-height 0.3s ease;
         }
@@ -220,36 +238,37 @@
         }
         
         .tag-filter {
-            background-color: var(--accent);
-            color: var(--primary);
-            padding: 0.25rem 0.75rem;
-            border-radius: 2rem;
-            font-size: 0.875rem;
+            background-color: var(--bg-accent);
+            color: var(--text-primary);
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.75rem;
+            font-size: 0.8rem;
             font-weight: 500;
             cursor: pointer;
-            border: 1px solid transparent;
+            border: 1px solid var(--border);
             transition: all 0.2s ease;
+            line-height: 1.2;
         }
         
         .tag-filter:hover, .tag-filter.active {
-            background-color: var(--accent-color);
-            border-color: var(--border);
-            color: var(--text-primary);
+            background-color: var(--accent-highlight);
+            border-color: var(--accent-highlight);
+            color: white;
         }
         
         .servers-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
         }
         
         .server-card {
             background-color: var(--bg-accent);
-            border-radius: 0.75rem;
+            border-radius: 0.6rem;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
             display: flex;
             flex-direction: column;
             border: 1px solid var(--border);
@@ -257,114 +276,114 @@
         }
         
         .server-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-            border-color: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 0 0 1px var(--accent-highlight);
+            border-color: var(--accent-highlight);
         }
         
         .server-content {
-            padding: 1.75rem;
+            padding: 1.25rem;
             flex: 1;
             display: flex;
             flex-direction: column;
+            gap: 0.75rem;
         }
         
         .server-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.75rem;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
         }
         
         .server-card h3 {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--primary);
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent-color);
             line-height: 1.2;
             margin: 0;
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-highlight));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
         
         .server-card .description {
             color: var(--secondary);
-            font-size: 1rem;
-            margin-bottom: 1.25rem;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
             flex: 1;
-            line-height: 1.5;
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-height: 5.4rem;
         }
         
         .server-card .tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 1.25rem;
+            gap: 0.35rem;
+            margin-bottom: 0.5rem;
         }
         
         .server-card .tag {
-            background-color: var(--accent-dark);
+            background-color: var(--bg-accent);
             color: var(--text-primary);
-            padding: 0.4rem 0.8rem;
-            border-radius: 2rem;
-            font-size: 0.75rem;
+            padding: 0.2rem 0.45rem;
+            border-radius: 0.75rem;
+            font-size: 0.65rem;
             font-weight: 500;
             border: 1px solid var(--border);
             transition: all 0.2s ease;
+            line-height: 1;
         }
         
         .server-card .tag:hover {
-            background-color: var(--border);
+            background-color: var(--accent-highlight);
+            border-color: var(--accent-highlight);
+            color: white;
             transform: translateY(-1px);
         }
         
         .server-card .meta {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             color: var(--light-text);
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-top: 1px solid var(--border);
-            padding-top: 1rem;
+            padding-top: 0.5rem;
             margin-top: auto;
+            margin-bottom: 0;
         }
         
         .server-card .meta .author {
-            display: inline-flex;
-            align-items: center;
+            color: var(--accent-highlight);
             font-weight: 600;
-            font-size: 0.75rem;
-            margin-left: auto;
-            padding: 0.3rem 0;
-            transition: all 0.2s ease;
-        }
-        
-        .server-card .stars {
-            display: inline-flex;
+            font-size: 0.7rem;
+            display: flex;
             align-items: center;
-            padding: 0.3rem 0.7rem;
-            border-radius: 2rem;
-            font-weight: 600;
-            font-size: 0.75rem;
-            transition: all 0.2s ease;
-            background-color: var(--accent-dark);
-            color: var(--text-primary);
-            border: 1px solid var(--border);
         }
         
-        .server-card .stars:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        .server-card .meta .stars {
+            display: flex;
+            align-items: center;
+            font-size: 0.7rem;
         }
         
-        .server-card .meta .author {
-            color: var(--primary);
+        .server-card .meta .author svg {
+            margin-right: 0.25rem;
+            width: 10px;
+            height: 10px;
         }
         
-        .server-card .meta .author:hover {
-            opacity: 0.8;
-        }
-        
-        .server-card .meta .author:before {
-            content: '';
-            margin-right: 0;
+        .server-card .meta .stars svg {
+            margin-right: 0.25rem;
+            width: 10px;
+            height: 10px;
         }
         
         .author-placeholder,
@@ -395,44 +414,41 @@
         }
         
         .primary-link {
-            background-color: var(--button-bg);
+            background-color: var(--accent-highlight);
             color: white;
-            border: 1px solid var(--button-bg);
+            border: 1px solid var(--accent-highlight);
             font-weight: 600;
         }
         
         .primary-link:hover {
-            background-color: var(--button-hover);
+            background-color: var(--accent-dark);
             transform: translateY(-1px);
         }
         
         .secondary-link {
             background-color: var(--accent);
-            color: var(--primary);
+            color: var(--text-primary);
             border: 1px solid var(--border);
         }
         
         .secondary-link:hover {
             background-color: var(--border);
             transform: translateY(-1px);
-        }
-        
-        .secondary-link:hover {
-            background-color: var(--border);
+            color: var(--text-primary);
         }
         
         /* Tab Styles */
         .tabs {
             display: flex;
-            margin: 2rem 0 1.5rem;
+            margin: 1.5rem 0 1rem;
             border-bottom: 1px solid var(--border);
         }
         
         .tab-button {
             background: none;
             border: none;
-            padding: 0.75rem 1.5rem;
-            font-size: 1rem;
+            padding: 0.6rem 1.25rem;
+            font-size: 0.9rem;
             font-weight: 500;
             color: var(--light-text);
             cursor: pointer;
@@ -446,7 +462,7 @@
         }
         
         .tab-button.active {
-            color: var(--primary);
+            color: var(--text-primary);
             font-weight: 600;
         }
         
@@ -457,7 +473,7 @@
             left: 0;
             width: 100%;
             height: 2px;
-            background-color: var(--primary);
+            background-color: var(--accent-highlight);
         }
         
         .tab-content {
@@ -474,6 +490,8 @@
             border-radius: 0.5rem;
             overflow: hidden;
             margin: 1.5rem 0;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
         }
         
         .json-header {
@@ -481,14 +499,14 @@
             justify-content: space-between;
             align-items: center;
             padding: 0.75rem 1rem;
-            background-color: rgba(255, 255, 255, 0.05);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: var(--bg-accent);
+            border-bottom: 1px solid var(--border);
         }
         
         .json-title {
             color: var(--text-primary);
             font-size: 0.875rem;
-            font-weight: 500;
+            font-weight: 600;
         }
         
         .json-header-actions {
@@ -497,123 +515,61 @@
         }
         
         .json-action-btn {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 0.75rem;
+            color: var(--text-primary);
+            background-color: var(--bg-accent);
+            padding: 6px 10px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            font-weight: 500;
             cursor: pointer;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
             transition: all 0.2s ease;
         }
         
         .json-action-btn:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: #fff;
+            background-color: var(--accent-highlight);
+            color: white;
+            border-color: var(--accent-highlight);
         }
         
         .json-content {
             padding: 1rem;
             overflow-x: auto;
-            color: var(--code-text);
+            color: var(--text-primary);
             font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
             font-size: 0.875rem;
             line-height: 1.5;
         }
         
-        /* Container background - keep only this style for JSON container */
+        /* Container background for JSON formatter */
         #jsonFormatterContainer {
             background-color: var(--code-bg);
             border-radius: 0.5rem;
             padding: 1rem;
-            border: 1px solid var(--card-border);
-        }
-        
-        /* Remove JSON formatter custom styling to use library defaults */
-        
-        /* Adjust the JSON container header to match the dark theme */
-        .json-container {
-            background-color: var(--code-bg);
-            border: 1px solid var(--card-border);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-        }
-        
-        .json-header {
-            background-color: var(--bg-accent);
-            border-bottom: 1px solid var(--card-border);
-        }
-        
-        .json-title {
-            color: var(--text-primary);
-            font-weight: 600;
-        }
-        
-        .json-action-btn {
-            color: var(--text-primary);
-            background-color: var(--accent-dark);
-            padding: 4px 8px;
-            border-radius: 4px;
-            border: 1px solid var(--card-border);
-            font-weight: 500;
-        }
-        
-        .json-action-btn:hover {
-            background-color: var(--accent-color);
             color: var(--text-primary);
         }
         
-        .json-content {
-            color: var(--code-text);
-        }
-        
-        /* JSON formatter styles removed - using library defaults */
-        
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
+        /* API URL container styling */
+        .api-url-container {
             padding: 1rem;
-        }
-        
-        .modal-content {
+            border-bottom: 1px solid var(--border);
             background-color: var(--bg-accent);
-            border-radius: 0.5rem;
-            max-width: 800px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            padding: 2rem;
-            position: relative;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-            border: 1px solid var(--border);
+            margin-bottom: 1rem;
+            border-radius: 0.375rem;
         }
         
-        .close-button {
-            position: absolute;
-            top: 1rem;
-            right: 1.5rem;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--light-text);
-        }
-        
-        .manifest-info {
-            margin-top: 1.5rem;
+        .api-url-container h3 {
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-primary);
         }
         
         .api-url {
             display: flex;
             align-items: center;
             margin: 0.5rem 0 1.5rem;
-            background-color: var(--accent);
+            background-color: var(--code-bg);
             padding: 0.75rem;
             border-radius: 0.375rem;
             overflow-x: auto;
@@ -624,39 +580,97 @@
             font-family: monospace;
             word-break: break-all;
             flex: 1;
+            color: #e2e8f0;
         }
         
-        .copy-button {
-            background-color: var(--button-bg);
-            color: white;
-            border: 1px solid var(--button-bg);
-            padding: 0.375rem 0.75rem;
-            border-radius: 0.25rem;
-            font-size: 0.875rem;
-            cursor: pointer;
-            white-space: nowrap;
-            margin-left: 0.75rem;
-            transition: all 0.2s ease;
+        /* Syntax highlighting adjustments for dark theme */
+        .hljs {
+            color: #e2e8f0 !important; /* Override highlight.js base text color */
+            background: var(--code-bg) !important;
+        }
+        
+        .hljs-attr {
+            color: #60a5fa !important; /* Light blue for attributes */
+            font-weight: bold;
+        }
+        
+        .hljs-string {
+            color: #fca5a5 !important; /* Light red for strings */
+        }
+        
+        .hljs-number {
+            color: #c4b5fd !important; /* Light purple for numbers */
+        }
+        
+        .hljs-boolean {
+            color: #f9a8d4 !important; /* Light pink for booleans */
+            font-weight: bold;
+        }
+        
+        .hljs-null {
+            color: #9ca3af !important; /* Grey for null values */
+        }
+        
+        /* JSON formatter overrides for better visibility */
+        .json-formatter-row, .json-formatter-row a, .json-formatter-row a:hover{
+            color: #e2e8f0 !important; /* Light gray for base text */
+        }
+        
+        .json-formatter-row .json-formatter-row {
+            margin-left: 1rem;
+        }
+        
+        .json-formatter-row .json-formatter-key {
+            color: #60a5fa !important; /* Light blue for keys */
             font-weight: 600;
         }
         
-        .copy-button:hover {
-            background-color: var(--button-hover);
-            transform: translateY(-1px);
+        .json-formatter-row .json-formatter-string {
+            color: #fca5a5 !important; /* Light red for strings */
         }
         
-        .api-url-container {
-            padding: 1rem;
-            border-bottom: 1px solid var(--border);
-            background-color: var(--accent);
-            margin-bottom: 1rem;
+        .json-formatter-row .json-formatter-number {
+            color: #c4b5fd !important; /* Light purple for numbers */
         }
         
-        .api-url-container h3 {
-            margin-top: 0;
-            margin-bottom: 0.5rem;
-            font-size: 1rem;
-            font-weight: 500;
+        .json-formatter-row .json-formatter-boolean {
+            color: #f9a8d4 !important; /* Light pink for booleans */
+        }
+        
+        .json-formatter-row .json-formatter-null {
+            color: #9ca3af !important; /* Grey for null values */
+        }
+        
+        .json-formatter-row .json-formatter-bracket {
+            color: #e2e8f0 !important; /* Light gray for brackets */
+        }
+        
+        .json-formatter-row .json-formatter-comma {
+            color: #e2e8f0 !important; /* Light gray for commas */
+        }
+        
+        /* Override JSON formatter default styling */
+        .json-formatter-dark.json-formatter-row,
+        .json-formatter-dark.json-formatter-row .json-formatter-row {
+            background: none !important;
+            color: #e2e8f0 !important;
+        }
+        
+        .json-formatter-dark.json-formatter-row .toggler:after {
+            color: #e2e8f0 !important;
+        }
+        
+        /* Fix JSON formatter toggler (expand/collapse arrow) */
+        .json-formatter-row .toggler {
+            font-size: 0.8em;
+            margin-right: 0.2em;
+            opacity: 0.8;
+            color: #e2e8f0 !important; 
+        }
+        
+        .json-formatter-row .toggler:hover {
+            opacity: 1;
+            color: white !important;
         }
         
         /* Installation options styling */
@@ -675,7 +689,7 @@
         
         .installation-tab {
             padding: 0.5rem 1rem;
-            background-color: var(--accent);
+            background-color: var(--bg-accent);
             border: 1px solid var(--border);
             border-radius: 0.375rem;
             cursor: pointer;
@@ -685,17 +699,18 @@
             align-items: center;
             gap: 0.5rem;
             transition: all 0.2s ease;
-            color: var(--text);
+            color: var(--text-primary);
         }
         
         .installation-tab.active {
-            background-color: var(--accent-color);
-            color: var(--text-primary);
-            border-color: var(--accent-light);
+            background-color: var(--accent-highlight);
+            color: white;
+            border-color: var(--accent-highlight);
         }
         
         .installation-tab:hover:not(.active) {
-            background-color: var(--button-hover);
+            background-color: var(--accent-highlight);
+            color: white;
         }
         
         .installation-tab svg {
@@ -791,8 +806,14 @@
             margin-top: 1.5rem;
         }
         
+        .json-content h3 {
+            color: var(--text-primary);
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+        }
+        
         .json-content pre {
-            background-color: var(--accent);
+            background-color: var(--code-bg);
             padding: 1rem;
             border-radius: 0.375rem;
             overflow-x: auto;
@@ -802,26 +823,7 @@
             overflow-y: auto;
             white-space: pre-wrap;
             border: 1px solid var(--border);
-            color: var(--text);
-        }
-        
-        /* Basic JSON syntax highlighting */
-        .hljs-attr {
-            color: #0550ae;
-            font-weight: bold;
-        }
-        
-        .hljs-string {
-            color: var(--text);
-        }
-        
-        .hljs-number {
-            color: #005cc5;
-        }
-        
-        .hljs-boolean {
-            color: #005cc5;
-            font-weight: bold;
+            color: #e2e8f0;
         }
         
         /* Footer styling moved to footer.html include */
@@ -843,19 +845,106 @@
             }
             
             h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(90deg, var(--accent-color), var(--accent-highlight));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            letter-spacing: -0.05em;
-        }
+                font-size: 2rem;
+                font-weight: 700;
+                margin-bottom: 0.5rem;
+                background: linear-gradient(90deg, var(--accent-color), var(--accent-highlight));
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+                letter-spacing: -0.05em;
+            }
             
             .subtitle {
                 font-size: 1rem;
             }
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+        
+        .modal-content {
+            background-color: var(--bg-accent);
+            border-radius: 0.5rem;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border);
+        }
+        
+        #modalTitle {
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-highlight));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .manifest-info h3 {
+            color: var(--accent-color);
+            font-size: 1.1rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--light-text);
+        }
+        
+        .manifest-info {
+            margin-top: 1.5rem;
+        }
+        
+        .copy-button {
+            background-color: var(--bg-accent);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            white-space: nowrap;
+            margin-left: 0.75rem;
+            transition: all 0.2s ease;
+            font-weight: 600;
+        }
+        
+        .copy-button:hover {
+            background-color: var(--accent-highlight);
+            transform: translateY(-1px);
+            color: white;
+            border-color: var(--accent-highlight);
+        }
+        
+        .modal-content .api-url {
+            border-left: 3px solid var(--accent-highlight);
+            margin: 0.5rem 0 1.5rem;
+        }
+        
+        .modal-content .json-content pre {
+            border-left: 3px solid var(--accent-highlight);
         }
     </style>
 </head>
@@ -1008,9 +1097,10 @@
             const starCount = githubStarCounts[serverName];
             if (starCount !== undefined) {
                 // Add star icon and count
-                starCountElement.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>${formatNumber(starCount)}`;
+                starCountElement.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>${formatNumber(starCount)}`;
                 starCountElement.classList.remove('stars-placeholder');
                 starCountElement.style.opacity = '1';
+                starCountElement.classList.add('stars');
             } else {
                 // If no star count available, remove the element
                 starCountElement.remove();
@@ -1152,7 +1242,7 @@
                 // Update author information directly from server data (no need to fetch)
                 if (server.author && server.author.name) {
                     // Add user icon before author name
-                    authorMeta.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>' + server.author.name;
+                    authorMeta.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>' + server.author.name;
                     authorMeta.classList.remove('author-placeholder');
                     authorMeta.style.opacity = '1';
                 } else {
@@ -1358,7 +1448,7 @@
                         hoverPreviewFieldCount: 5,
                         animateOpen: true,
                         animateClose: true,
-                        theme: null, // Use light theme for better contrast
+                        theme: 'dark', // Use dark theme for better contrast on dark background
                         useToJSON: true,
                         maxArrayItems: 100
                     });

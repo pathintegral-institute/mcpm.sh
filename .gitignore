@@ -58,6 +58,7 @@ logs/
 .env.development
 .env.test
 .env.production
+.envrc
 
 # MCP specific
 .mcp/
