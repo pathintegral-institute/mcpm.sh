@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      urls: https://pypi.org/p/mcpm
+      url: https://pypi.org/p/mcpm
     permissions:
       # IMPORTANT: this permission is mandatory for Trusted Publishing
       id-token: write
