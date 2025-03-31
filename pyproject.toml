@@ -29,15 +29,6 @@ Issues = "https://github.com/pathintegral-institute/mcpm.sh/issues"
 [project.scripts]
 mcpm = "mcpm.cli:main"
 
-[tool.hatch.build]
-packages = ["src/mcpm"]
-
-[tool.hatch.build.targets.wheel]
-packages = ["src/mcpm"]
-
-[tool.hatch.build.targets.sdist]
-packages = ["src/mcpm"]
-
 [tool.hatch.version]
 path = "src/mcpm/version.py"
 
