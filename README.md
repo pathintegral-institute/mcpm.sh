@@ -28,30 +28,30 @@ MCPM provides a comprehensive CLI built with Python's Click framework. Below are
 ### Basic Commands
 
 ```
-mcpm --help                  # Display help information and available commands
-mcpm --version               # Display the current version of MCPM
+mcpm --help                             # Display help information and available commands
+mcpm --version                          # Display the current version of MCPM
 ```
 
 ### Available Commands
 
 ```
-mcpm client                  # Show the current active MCP client
-mcpm client CLIENT_NAME      # Set a new active MCP client
-mcpm client --list           # List all supported MCP clients and their status
+mpcm add SERVER_NAME                     # Add an MCP server to the active client
+mcpm add SERVER_NAME --alias ALIAS_NAME  # Add an MCP server to the active client with a custom alias
 
-mcpm edit                    # View or edit the active MCP client's configuration file
+mcpm client                              # Show the current active MCP client
+mcpm client CLIENT_NAME                  # Set a new active MCP client
+mcpm client --list                       # List all supported MCP clients and their status
 
-mcpm list                    # List all installed MCP servers
+mcpm edit                                # View or edit the active MCP client's configuration file
 
-mcpm remove SERVER_NAME      # Remove an installed MCP server
+mcpm list                                # List all installed MCP servers
 
-mcpm server                  # Manage MCP server processes
-mcpm server start SERVER_NAME   # Start an MCP server
-mcpm server stop SERVER_NAME    # Stop an MCP server
-mcpm server restart SERVER_NAME # Restart an MCP server
-mcpm server status           # Show status of running MCP servers
+mcpm remove SERVER_NAME                  # Remove an installed MCP server
 
-mcpm toggle SERVER_NAME      # Toggle an MCP server on or off for a client
+mcpm stash SERVER_NAME                   # Temporarily disable an MCP server for a client
+mcpm pop SERVER_NAME                     # Re-enable an MCP server for a client
+
+mcpm inspect SERVER_NAME                 # Launch the MCPM Inspector UI to examine servers
 ```
 
 ### Registry
@@ -103,7 +103,7 @@ mcpm.sh/
 
 1. Clone the repository
    ```
-   git clone https://github.com/getmcp-xyz/mcpm.sh.git
+   git clone https://github.com/pathintegral-institute/mcpm.sh.git
    cd mcpm.sh
    ```
 
@@ -121,7 +121,7 @@ mcpm.sh/
 4. Run the CLI directly during development
    ```
    # Either use the installed package
-   mcp --help
+   mcpm --help
    
    # Or use the development script
    ./test_cli.py --help
@@ -136,7 +136,7 @@ mcpm.sh/
 
 - Use the src-based directory structure to prevent import confusion
 - Develop with an editable install using `uv pip install -e .`
-- Keep commands modular in the `src/mcp/commands/` directory
+- Keep commands modular in the `src/mcpm/commands/` directory
 - Add tests for new functionality in the `tests/` directory
 - Use the `test_cli.py` script for quick development testing
 
@@ -148,7 +148,7 @@ MCP uses a single source of truth pattern for version management to ensure consi
 #### Version Structure
 
 - The canonical version is defined in `version.py` at the project root
-- `src/mcp/__init__.py` imports this version
+- `src/mcpm/__init__.py` imports this version
 - `pyproject.toml` uses dynamic versioning to read from `version.py`
 - Git tags are created with the same version number prefixed with 'v' (e.g., v1.0.0)
 
@@ -170,6 +170,7 @@ When releasing a new version:
 3. Create a GitHub release matching the new version
 
 This process ensures that the version is consistent in all places: code, package metadata, and git tags.
+PyPI release is handled by the CI/CD pipeline and will be triggered automatically.
 
 ## License
 

@@ -219,6 +219,48 @@
                 font-size: 1.2rem;
             }
         }
+        
+        .install-tabs {
+            margin: 2rem 0;
+        }
+        
+        .install-tabs .tabs {
+            display: flex;
+            border-bottom: 2px solid var(--accent-color);
+            margin-bottom: 0;
+        }
+        
+        .install-tabs .tab-button {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            background-color: var(--bg-accent);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-right: 4px;
+            font-weight: 500;
+        }
+        
+        .install-tabs .tab-button:hover {
+            background-color: rgba(92, 217, 81, 0.2);
+        }
+        
+        .install-tabs .tab-button.active {
+            background-color: var(--accent-color);
+            color: var(--text-secondary);
+        }
+        
+        .install-tabs .tab-content {
+            display: none;
+            padding: 1.5rem;
+            border: 1px solid var(--card-border);
+            border-top: none;
+            background-color: var(--bg-accent);
+        }
+        
+        .install-tabs .tab-content.active {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -258,10 +300,36 @@
 
         <div class="coming-soon">
             <h2>Quick Installation</h2>
-            <p>Install MCPM with a single command:</p>
-            <div class="code-block">
-                <code><span class="command-prompt">$</span> curl -sSL https://mcpm.sh/install | bash</code>
-                <button class="copy-button" data-command="curl -sSL https://mcpm.sh/install | bash"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+            <div class="install-tabs">
+                <div class="tabs">
+                    <button class="tab-button active" data-tab="pipx">pipx</button>
+                    <button class="tab-button" data-tab="pip">pip</button>
+                    <button class="tab-button" data-tab="script">Shell</button>
+                </div>
+                
+                <div class="tab-content active" id="pipx-tab">
+                    <p>Install with pipx:</p>
+                    <div class="code-block">
+                        <code><span class="command-prompt">$</span> pipx install mcpm</code>
+                        <button class="copy-button" data-command="pipx install mcpm"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="pip-tab">
+                    <p>Install with pip:</p>
+                    <div class="code-block">
+                        <code><span class="command-prompt">$</span> pip install mcpm</code>
+                        <button class="copy-button" data-command="pip install mcpm"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="script-tab">
+                    <p>Install with a single command:</p>
+                    <div class="code-block">
+                        <code><span class="command-prompt">$</span> curl -sSL https://mcpm.sh/install | bash</code>
+                        <button class="copy-button" data-command="curl -sSL https://mcpm.sh/install | bash"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                    </div>
+                </div>
             </div>
             <p>Model Context Protocol Manager (MCPM) is a Homebrew-like service for managing Model Context Protocol (MCP) servers across clients.</p>
         </div>
@@ -484,6 +552,25 @@
                 // Fix for SVG animation in some browsers
                 setInterval(updateCursor, 100);
             }
+            
+            // Tabbed installation section
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    const tabContent = document.getElementById(`${tabId}-tab`);
+                    
+                    // Remove active class from all buttons and contents
+                    tabButtons.forEach(button => button.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Add active class to the selected button and content
+                    this.classList.add('active');
+                    tabContent.classList.add('active');
+                });
+            });
         });
     </script>
 </body>

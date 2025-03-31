@@ -10,6 +10,8 @@ readme = "README.md"
 requires-python = ">=3.8"
 license = "MIT"
 authors = [{ name = "MCPM Contributors" }]
+maintainers = [{ name = "Path Integral Institute" }]
+keywords = ["MCPM", "MCP", "Model Context Protocol", "Claude Desktop", "Cursor", "Windsurf"]
 dependencies = [
     "click>=8.1.3",
     "rich>=12.0.0",
@@ -19,17 +21,13 @@ dependencies = [
     "jsonschema>=4.17.0",
 ]
 
+[project.urls]
+Homepage = "https://mcpm.sh"
+Repository = "https://github.com/pathintegral-institute/mcpm.sh"
+Issues = "https://github.com/pathintegral-institute/mcpm.sh/issues"
+
 [project.scripts]
 mcpm = "mcpm.cli:main"
-
-[tool.hatch.build]
-packages = ["src/mcpm"]
-
-[tool.hatch.build.targets.wheel]
-packages = ["src/mcpm"]
-
-[tool.hatch.build.targets.sdist]
-packages = ["src/mcpm"]
 
 [tool.hatch.version]
 path = "src/mcpm/version.py"
