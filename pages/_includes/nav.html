@@ -17,16 +17,20 @@
     .top-nav {
         background-color: var(--bg-accent, #2e3238);
         border-bottom: 1px solid var(--card-border, #3a3e45);
-        position: relative;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
         min-height: 60px;
         display: flex;
         align-items: center;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        z-index: 100;
     }
     
     .top-nav .container {
-        /* padding: 0; */
         width: 100%;
+        max-width: 1200px;
     }
     
     .nav-content {
@@ -35,6 +39,7 @@
         align-items: center;
         width: 100%;
         flex-wrap: nowrap;
+        padding: 0.75rem 0;
     }
     
     .left-links {
@@ -60,12 +65,16 @@
     
     .nav-link:hover {
         color: var(--accent-light, #5CD951);
+        text-decoration: none;
     }
     
     .nav-link.active {
         color: var(--accent-highlight, #FF84BD);
     }
     
+    main {
+        padding-top: calc(60px + 1.5rem) !important;
+    }
     
     @media (max-width: 480px) {
         .top-nav {
@@ -85,6 +94,10 @@
 
         .right-links {
             display: none;
+        }
+        
+        main {
+            padding-top: calc(80px + 1.5rem) !important;
         }
     }
 </style>

@@ -19,20 +19,18 @@
     
     <style>
         {% include colors.css %}
+        {% include common.css %}
         
         /* Override colors with blue and pink theme */
         :root {
-            /* Brand Colors - Changed from green to blue and pink */
-            --accent-color: #3b82f6; /* Blue brand color instead of Deep green */
-            --accent-light: #60a5fa; /* Light blue brand color instead of Light green */
-            --accent-dark: #2563eb; /* Darker blue instead of Deep green */
-            --accent-highlight: #ec4899; /* Brighter pink brand color */
+            --accent-color: #3b82f6;
+            --accent-light: #60a5fa;
+            --accent-dark: #2563eb;
+            --accent-highlight: #ec4899;
             --highlight: var(--accent-highlight);
             --highlight-light: #ec489933;
-            
-            /* Functional Colors */
-            --success: #60a5fa; /* Light blue instead of Light green */
-            --warning: #FEBF00; /* Yellow/amber brand color - unchanged */
+            --success: #60a5fa;
+            --warning: #FEBF00;
             --button-bg: var(--accent-color);
             --button-hover: var(--accent-dark);
         }
@@ -54,18 +52,6 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 2rem;
-        }
-        
-        header {
-            padding: 2rem 0;
-            border-bottom: 1px solid var(--border);
-            position: relative;
-        }
-        
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
         
         .logo {
@@ -90,18 +76,16 @@
         }
         
         .nav a {
-            text-decoration: none;
-            color: var(--text);
-            margin-left: 1.5rem;
-            font-weight: 500;
+            /* Remove all nav link styles */
         }
         
         .nav a:hover {
-            color: var(--primary);
+            /* Remove all nav link styles */
         }
         
         main {
             padding: 1.5rem 0;
+            /* Remove margin-top as it's handled by nav.html */
         }
         
         h1 {
@@ -829,6 +813,10 @@
         /* Footer styling moved to footer.html include */
         
         @media (max-width: 768px) {
+            main {
+                padding-top: calc(80px + 1.5rem) !important; /* Adjust for taller mobile nav */
+            }
+            
             .header-content {
                 flex-direction: column;
                 align-items: flex-start;
