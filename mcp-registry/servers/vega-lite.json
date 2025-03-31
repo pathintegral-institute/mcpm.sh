@@ -1,6 +1,6 @@
 {
   "name": "vega-lite",
-  "display_name": "Data Visualization MCP Server",
+  "display_name": "Vega-Lite Data Visualization",
   "description": "Generate visualizations from fetched data using the VegaLite format and renderer.",
   "repository": {
     "type": "git",

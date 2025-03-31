@@ -1,6 +1,6 @@
 {
   "name": "lightdash",
-  "display_name": "Lightdash MCP Server",
+  "display_name": "Lightdash",
   "description": "Interact with [Lightdash](https://www.lightdash.com/), a BI tool.",
   "repository": {
     "type": "git",
@@ -30,6 +30,18 @@
         "LIGHTDASH_API_KEY": "${LIGHTDASH_API_KEY}",
         "LIGHTDASH_API_URL": "${LIGHTDASH_API_URL}"
       }
+    }
+  },
+  "arguments": {
+    "LIGHTDASH_API_KEY": {
+      "description": "Your Lightdash PAT (Personal Access Token) required for authenticating API requests.",
+      "required": true,
+      "example": "your_personal_access_token_here"
+    },
+    "LIGHTDASH_API_URL": {
+      "description": "The base URL for the Lightdash API that you are connecting to.",
+      "required": true,
+      "example": "https://your.base.url"
     }
   }
 }

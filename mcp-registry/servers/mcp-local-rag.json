@@ -1,6 +1,6 @@
 {
   "name": "mcp-local-rag",
-  "display_name": "MCP Local RAG",
+  "display_name": "Local RAG",
   "description": "\"primitive\" RAG-like web search model context protocol (MCP) server that runs locally using Google's MediaPipe Text Embedder and DuckDuckGo Search. \u2728 no APIs required \u2728.",
   "repository": {
     "type": "git",

@@ -1,6 +1,6 @@
 {
   "name": "mem0-mcp",
-  "display_name": "MCP Server with Mem0",
+  "display_name": "Mem0 Server",
   "description": "A Model Context Protocol server for Mem0, which helps with managing coding preferences.",
   "repository": {
     "type": "git",
@@ -27,6 +27,18 @@
         "git+https://github.com/mem0ai/mem0-mcp",
         "main.py"
       ]
+    }
+  },
+  "arguments": {
+    "host": {
+      "description": "The host address that the server will bind to. This can be configured to allow access from different IP addresses or set it to 'localhost' for local access only.",
+      "required": false,
+      "example": "0.0.0.0"
+    },
+    "port": {
+      "description": "The port number on which the server will listen for incoming connections. Changing this can help to avoid port conflicts with other services on the same machine.",
+      "required": false,
+      "example": "8080"
     }
   }
 }

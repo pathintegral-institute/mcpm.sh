@@ -1,6 +1,6 @@
 {
   "name": "aws-kb-retrieval",
-  "display_name": "AWS Knowledge Base Retrieval MCP Server",
+  "display_name": "AWS Knowledge Base Retrieval",
   "description": "Retrieval from AWS Knowledge Base using Bedrock Agent Runtime",
   "repository": {
     "type": "git",
@@ -55,6 +55,23 @@
         "AWS_SECRET_ACCESS_KEY": "${AWS_SECRET_ACCESS_KEY}",
         "AWS_REGION": "${AWS_REGION}"
       }
+    }
+  },
+  "arguments": {
+    "AWS_ACCESS_KEY_ID": {
+      "description": "The access key ID for your AWS account used for authentication.",
+      "required": true,
+      "example": "YOUR_ACCESS_KEY_HERE"
+    },
+    "AWS_SECRET_ACCESS_KEY": {
+      "description": "The secret access key for your AWS account used for authentication.",
+      "required": true,
+      "example": "YOUR_SECRET_ACCESS_KEY_HERE"
+    },
+    "AWS_REGION": {
+      "description": "The AWS region where your resources are located.",
+      "required": true,
+      "example": "us-east-1"
     }
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "blender",
-  "display_name": "Blender MCP",
+  "display_name": "Blender",
   "description": "Blender integration allowing prompt enabled 3D scene creation, modeling and manipulation.",
   "repository": {
     "type": "git",

@@ -1,6 +1,6 @@
 {
   "name": "airtable",
-  "display_name": "Airtable MCP Server",
+  "display_name": "Airtable",
   "description": "Airtable Model Context Protocol Server.",
   "repository": {
     "type": "git",

@@ -1,6 +1,6 @@
 {
   "name": "figma",
-  "display_name": "Figma MCP Server",
+  "display_name": "Figma",
   "description": "Give your coding agent direct access to Figma file data, helping it one-shot design implementation.",
   "repository": {
     "type": "git",
@@ -29,6 +29,13 @@
         "--figma-api-key=${FIGMA_API_KEY}",
         "--stdio"
       ]
+    }
+  },
+  "arguments": {
+    "FIGMA_API_KEY": {
+      "description": "Your Figma API access token (required)",
+      "required": true,
+      "example": "<your-figma-api-key>"
     }
   }
 }

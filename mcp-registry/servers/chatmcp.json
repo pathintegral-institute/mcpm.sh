@@ -1,6 +1,6 @@
 {
   "name": "chatmcp",
-  "display_name": "MCP Chat Desktop App",
+  "display_name": "Chat Desktop App",
   "description": "\u2013 An Open Source Cross-platform GUI Desktop application compatible with Linux, macOS, and Windows, enabling seamless interaction with MCP servers across dynamically selectable LLMs, by **[AIQL](https://github.com/AI-QL/chat-mcp)**",
   "repository": {
     "type": "git",
@@ -31,8 +31,15 @@
         "https://github.com/AI-QL/chat-mcp"
       ],
       "env": {
-        "PATH": "config.json"
+        "PATH": "${PATH}"
       }
+    }
+  },
+  "arguments": {
+    "PATH": {
+      "description": "This environment variable specifies the system's executable search path, which determines where the operating system looks for executable files when running commands.",
+      "required": false,
+      "example": "C:\\Program Files\\nodejs;C:\\Windows\\System32"
     }
   }
 }

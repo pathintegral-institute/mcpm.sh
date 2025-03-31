@@ -1,6 +1,6 @@
 {
   "name": "mcp-create",
-  "display_name": "MCP Create Server",
+  "display_name": "Create Server",
   "description": "A dynamic MCP server management service that creates, runs, and manages Model Context Protocol servers on-the-fly.",
   "repository": {
     "type": "git",

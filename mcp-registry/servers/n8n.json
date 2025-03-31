@@ -1,6 +1,6 @@
 {
   "name": "n8n",
-  "display_name": "n8n MCP Server",
+  "display_name": "n8n",
   "description": "This MCP server provides tools and resources for AI assistants to manage n8n workflows and executions, including listing, creating, updating, and deleting workflows, as well as monitoring their execution status.",
   "repository": {
     "type": "git",
@@ -33,6 +33,18 @@
         "N8N_API_URL": "${N8N_API_URL}",
         "N8N_API_KEY": "${N8N_API_KEY}"
       }
+    }
+  },
+  "arguments": {
+    "N8N_API_URL": {
+      "description": "URL of the n8n API",
+      "required": true,
+      "example": "http://localhost:5678/api/v1"
+    },
+    "N8N_API_KEY": {
+      "description": "API key for authenticating with n8n",
+      "required": true,
+      "example": "n8n_api_..."
     }
   }
 }

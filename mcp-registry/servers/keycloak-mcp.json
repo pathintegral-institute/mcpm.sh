@@ -34,5 +34,22 @@
         "KEYCLOAK_ADMIN_PASSWORD": "${KEYCLOAK_ADMIN_PASSWORD}"
       }
     }
+  },
+  "arguments": {
+    "KEYCLOAK_URL": {
+      "description": "The URL of the Keycloak server instance that the MCP will connect to.",
+      "required": true,
+      "example": "http://localhost:8080"
+    },
+    "KEYCLOAK_ADMIN": {
+      "description": "The admin username for accessing the Keycloak server.",
+      "required": true,
+      "example": "admin"
+    },
+    "KEYCLOAK_ADMIN_PASSWORD": {
+      "description": "The password for the admin user to access the Keycloak server.",
+      "required": true,
+      "example": "admin"
+    }
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "iterm-mcp",
-  "display_name": "iTerm MCP",
+  "display_name": "iTerm",
   "description": "Integration with iTerm2 terminal emulator for macOS, enabling LLMs to execute and monitor terminal commands.",
   "repository": {
     "type": "git",

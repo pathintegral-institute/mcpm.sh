@@ -1,6 +1,6 @@
 {
   "name": "x-twitter",
-  "display_name": "X(Twitter) MCP Server",
+  "display_name": "X (Twitter)",
   "description": "Create, manage and publish X/Twitter posts directly through Claude chat.",
   "repository": {
     "type": "git",
@@ -28,10 +28,10 @@
         "x-mcp"
       ],
       "env": {
-        "TWITTER_API_KEY": "your_api_key",
-        "TWITTER_API_SECRET": "your_api_secret",
-        "TWITTER_ACCESS_TOKEN": "your_access_token",
-        "TWITTER_ACCESS_TOKEN_SECRET": "your_access_token_secret"
+        "TWITTER_API_KEY": "${TWITTER_API_KEY}",
+        "TWITTER_API_SECRET": "${TWITTER_API_SECRET}",
+        "TWITTER_ACCESS_TOKEN": "${TWITTER_ACCESS_TOKEN}",
+        "TWITTER_ACCESS_TOKEN_SECRET": "${TWITTER_ACCESS_TOKEN_SECRET}"
       }
     }
   },
@@ -61,5 +61,27 @@
       "description": "Delete a specific draft.",
       "prompt": "Delete that draft"
     }
-  ]
+  ],
+  "arguments": {
+    "TWITTER_API_KEY": {
+      "description": "The API key for accessing Twitter's API.",
+      "required": true,
+      "example": "your_api_key"
+    },
+    "TWITTER_API_SECRET": {
+      "description": "The API secret key for accessing Twitter's API.",
+      "required": true,
+      "example": "your_api_secret"
+    },
+    "TWITTER_ACCESS_TOKEN": {
+      "description": "The access token for authorizing the application to access Twitter on behalf of the user.",
+      "required": true,
+      "example": "your_access_token"
+    },
+    "TWITTER_ACCESS_TOKEN_SECRET": {
+      "description": "The access token secret for authorizing the application to access Twitter on behalf of the user.",
+      "required": true,
+      "example": "your_access_token_secret"
+    }
+  }
 }

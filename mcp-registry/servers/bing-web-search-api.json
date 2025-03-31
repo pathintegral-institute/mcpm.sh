@@ -1,6 +1,6 @@
 {
   "name": "bing-web-search-api",
-  "display_name": "Bing Search MCP Server",
+  "display_name": "Bing Search API",
   "description": "Server implementation for Microsoft Bing Web Search API.",
   "repository": {
     "type": "git",
@@ -52,5 +52,12 @@
       "description": "Find images related to a query.",
       "prompt": "Search for 'sunsets'."
     }
-  ]
+  ],
+  "arguments": {
+    "BING_API_KEY": {
+      "description": "API key required for authenticating requests to the Microsoft Bing Search API.",
+      "required": true,
+      "example": "your-bing-api-key"
+    }
+  }
 }

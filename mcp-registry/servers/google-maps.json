@@ -1,6 +1,6 @@
 {
   "name": "google-maps",
-  "display_name": "Google Maps MCP Server",
+  "display_name": "Google Maps",
   "description": "Location services, directions, and place details",
   "repository": {
     "type": "git",
@@ -28,7 +28,7 @@
         "@modelcontextprotocol/server-google-maps"
       ],
       "env": {
-        "GOOGLE_MAPS_API_KEY": "<YOUR_API_KEY>"
+        "GOOGLE_MAPS_API_KEY": "${GOOGLE_MAPS_API_KEY}"
       }
     },
     "docker": {
@@ -43,8 +43,15 @@
         "mcp/google-maps"
       ],
       "env": {
-        "GOOGLE_MAPS_API_KEY": "<YOUR_API_KEY>"
+        "GOOGLE_MAPS_API_KEY": "${GOOGLE_MAPS_API_KEY}"
       }
+    }
+  },
+  "arguments": {
+    "GOOGLE_MAPS_API_KEY": {
+      "description": "Your Google Maps API key obtained from the Google Developers Console.",
+      "required": true,
+      "example": "AIzaSyD..."
     }
   }
 }

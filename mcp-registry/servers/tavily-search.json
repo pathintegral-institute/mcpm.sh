@@ -1,6 +1,6 @@
 {
   "name": "tavily-search",
-  "display_name": "Tavily MCP Server",
+  "display_name": "Tavily Search",
   "description": "An MCP server for Tavily's search & news API, with explicit site inclusions/exclusions",
   "repository": {
     "type": "git",
@@ -64,5 +64,12 @@
       "description": "Retrieve recent news articles on specific topics.",
       "prompt": "Give me the top 10 AI-related news in the last 5 days."
     }
-  ]
+  ],
+  "arguments": {
+    "TAVILY_API_KEY": {
+      "description": "Your Tavily API key for accessing Tavily's search API functionalities.",
+      "required": true,
+      "example": "your_api_key_here"
+    }
+  }
 }

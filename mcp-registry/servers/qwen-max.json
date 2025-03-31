@@ -1,6 +1,6 @@
 {
   "name": "qwen-max",
-  "display_name": "Qwen Max MCP Server",
+  "display_name": "Qwen Max",
   "description": "A Model Context Protocol (MCP) server implementation for the Qwen models.",
   "repository": {
     "type": "git",
@@ -26,6 +26,13 @@
         "-y",
         "@gongrzhe/quickchart-mcp-server"
       ]
+    }
+  },
+  "arguments": {
+    "DASHSCOPE_API_KEY": {
+      "description": "API key required for authentication with the Dashscope service.",
+      "required": true,
+      "example": "your-api-key-here"
     }
   }
 }

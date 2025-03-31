@@ -1,6 +1,6 @@
 {
   "name": "obsidian-markdown-notes",
-  "display_name": "Obsidian Model Context Protocol",
+  "display_name": "Obsidian Markdown Notes",
   "description": "Read and search through your Obsidian vault or any directory containing Markdown notes",
   "repository": {
     "type": "git",

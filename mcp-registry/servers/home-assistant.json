@@ -1,6 +1,6 @@
 {
   "name": "home-assistant",
-  "display_name": "Hass-MCP",
+  "display_name": "Hass",
   "description": "Docker-ready MCP server for Home Assistant with entity management, domain summaries, automation support, and guided conversations. Includes pre-built container images for easy installation.",
   "repository": {
     "type": "git",
@@ -77,5 +77,17 @@
       "description": "Search for specific entities related to a query.",
       "prompt": "Search for entities related to my living room"
     }
-  ]
+  ],
+  "arguments": {
+    "HA_URL": {
+      "description": "The URL for the Home Assistant instance where the Hass-MCP server will connect to retrieve and manage entities.",
+      "required": true,
+      "example": "http://homeassistant.local:8123"
+    },
+    "HA_TOKEN": {
+      "description": "The Long-Lived Access Token from Home Assistant, required for authentication to access the Home Assistant API.",
+      "required": true,
+      "example": "YOUR_LONG_LIVED_TOKEN"
+    }
+  }
 }

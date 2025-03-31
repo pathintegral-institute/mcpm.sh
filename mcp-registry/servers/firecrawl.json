@@ -1,6 +1,6 @@
 {
   "name": "firecrawl",
-  "display_name": "Firecrawl MCP Server",
+  "display_name": "Firecrawl",
   "description": "Advanced web scraping with JavaScript rendering, PDF support, and smart rate limiting",
   "repository": {
     "type": "git",
@@ -45,6 +45,13 @@
       "env": {
         "FIRECRAWL_API_KEY": "${FIRECRAWL_API_KEY}"
       }
+    }
+  },
+  "arguments": {
+    "FIRECRAWL_API_KEY": {
+      "description": "Your FireCrawl API key. Required for using the cloud API (default) and optional for self-hosted instances.",
+      "required": true,
+      "example": "fc-YOUR_API_KEY"
     }
   }
 }

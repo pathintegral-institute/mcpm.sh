@@ -1,6 +1,6 @@
 {
   "name": "google-tasks",
-  "display_name": "Google Tasks MCP Server",
+  "display_name": "Google Tasks",
   "description": "Google Tasks API Model Context Protocol Server.",
   "repository": {
     "type": "git",

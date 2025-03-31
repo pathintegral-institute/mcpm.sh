@@ -1,6 +1,6 @@
 {
   "name": "any-chat-completions",
-  "display_name": "Any Chat Completions MCP",
+  "display_name": "Any Chat Completions",
   "description": "Interact with any OpenAI SDK Compatible Chat Completions API like OpenAI, Perplexity, Groq, xAI and many more.",
   "repository": {
     "type": "git",
@@ -37,11 +37,33 @@
         "https://github.com/pyroprompts/any-chat-completions-mcp"
       ],
       "env": {
-        "AI_CHAT_KEY": "OPENAI_KEY",
-        "AI_CHAT_NAME": "OpenAI",
-        "AI_CHAT_MODEL": "gpt-4o",
-        "AI_CHAT_BASE_URL": "https://api.openai.com/v1"
+        "AI_CHAT_KEY": "${AI_CHAT_KEY}",
+        "AI_CHAT_NAME": "${AI_CHAT_NAME}",
+        "AI_CHAT_MODEL": "${AI_CHAT_MODEL}",
+        "AI_CHAT_BASE_URL": "${AI_CHAT_BASE_URL}"
       }
+    }
+  },
+  "arguments": {
+    "AI_CHAT_KEY": {
+      "description": "API key for authentication with the chat service provider.",
+      "required": true,
+      "example": "your_openai_secret_key_here"
+    },
+    "AI_CHAT_NAME": {
+      "description": "The name of the AI chat provider to use, like 'OpenAI' or 'PyroPrompts'.",
+      "required": true,
+      "example": "OpenAI"
+    },
+    "AI_CHAT_MODEL": {
+      "description": "Specifies which model to be used for the chat service, e.g., 'gpt-4o'.",
+      "required": true,
+      "example": "gpt-4o"
+    },
+    "AI_CHAT_BASE_URL": {
+      "description": "The base URL for the API service of the chat provider.",
+      "required": true,
+      "example": "https://api.openai.com/v1"
     }
   }
 }

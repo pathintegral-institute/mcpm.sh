@@ -1,6 +1,6 @@
 {
   "name": "starwind-ui",
-  "display_name": "Starwind UI MCP Server",
+  "display_name": "Starwind UI",
   "description": "This MCP provides relevant commands, documentation, and other information to allow LLMs to take full advantage of Starwind UI's open source Astro components.",
   "repository": {
     "type": "git",

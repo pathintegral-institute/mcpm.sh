@@ -1,6 +1,6 @@
 {
   "name": "deepseek-r1",
-  "display_name": "Deepseek R1 MCP Server",
+  "display_name": "Deepseek R1",
   "description": "A Model Context Protocol (MCP) server implementation connecting Claude Desktop with DeepSeek's language models (R1/V3)",
   "repository": {
     "type": "git",
@@ -28,8 +28,15 @@
         "https://github.com/66julienmartin/MCP-server-Deepseek_R1"
       ],
       "env": {
-        "DEEPSEEK_API_KEY": "your-api-key"
+        "DEEPSEEK_API_KEY": "${DEEPSEEK_API_KEY}"
       }
+    }
+  },
+  "arguments": {
+    "DEEPSEEK_API_KEY": {
+      "description": "API key for authenticating with the Deepseek service.",
+      "required": true,
+      "example": "your-api-key"
     }
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "arangodb",
-  "display_name": "MCP Server for ArangoDB",
+  "display_name": "ArangoDB",
   "description": "MCP Server that provides database interaction capabilities through [ArangoDB](https://arangodb.com/).",
   "repository": {
     "type": "git",
@@ -55,5 +55,23 @@
       "description": "Backup collections to a specified directory.",
       "prompt": "{\"outputDir\": \"./backup\"}"
     }
-  ]
+  ],
+  "arguments": {
+    "ARANGO_URL": {
+      "description": "ArangoDB server URL (note: 8529 is the default port for ArangoDB for local development)",
+      "required": true
+    },
+    "ARANGO_DATABASE": {
+      "description": "Database name",
+      "required": true
+    },
+    "ARANGO_USERNAME": {
+      "description": "Database user",
+      "required": true
+    },
+    "ARANGO_PASSWORD": {
+      "description": "Database password",
+      "required": true
+    }
+  }
 }

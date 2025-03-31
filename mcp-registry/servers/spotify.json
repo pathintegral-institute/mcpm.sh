@@ -1,6 +1,6 @@
 {
   "name": "spotify",
-  "display_name": "Spotify MCP",
+  "display_name": "Spotify",
   "description": "This MCP allows an LLM to play and use Spotify.",
   "repository": {
     "type": "git",
@@ -41,10 +41,27 @@
         "spotify-mcp"
       ],
       "env": {
-        "SPOTIFY_CLIENT_ID": "YOUR_CLIENT_ID",
-        "SPOTIFY_CLIENT_SECRET": "YOUR_CLIENT_SECRET",
-        "SPOTIFY_REDIRECT_URI": "http://localhost:8888"
+        "SPOTIFY_CLIENT_ID": "${SPOTIFY_CLIENT_ID}",
+        "SPOTIFY_CLIENT_SECRET": "${SPOTIFY_CLIENT_SECRET}",
+        "SPOTIFY_REDIRECT_URI": "${SPOTIFY_REDIRECT_URI}"
       }
+    }
+  },
+  "arguments": {
+    "SPOTIFY_CLIENT_ID": {
+      "description": "The client ID for your Spotify application, required to authenticate with the Spotify API.",
+      "required": true,
+      "example": "your_spotify_client_id_here"
+    },
+    "SPOTIFY_CLIENT_SECRET": {
+      "description": "The client secret for your Spotify application, needed for secure authentication with the API.",
+      "required": true,
+      "example": "your_spotify_client_secret_here"
+    },
+    "SPOTIFY_REDIRECT_URI": {
+      "description": "The redirect URI you specified when creating the Spotify application, needed for the OAuth authentication process.",
+      "required": false,
+      "example": "http://localhost:8888"
     }
   }
 }

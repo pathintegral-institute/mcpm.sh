@@ -1,6 +1,6 @@
 {
   "name": "rquest",
-  "display_name": "MCP Rquest",
+  "display_name": "Rquest",
   "description": "An MCP server providing realistic browser-like HTTP request capabilities with accurate TLS/JA3/JA4 fingerprints for bypassing anti-bot measures.",
   "repository": {
     "type": "git",

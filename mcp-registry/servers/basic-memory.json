@@ -24,7 +24,7 @@
         "basic-memory",
         "mcp",
         "--project",
-        "your-project-name"
+        "${PROJECT_NAME}"
       ]
     }
   },
@@ -32,5 +32,12 @@
     "LLM",
     "Markdown",
     "Knowledge Base"
-  ]
+  ],
+  "arguments": {
+    "PROJECT_NAME": {
+      "description": "The name of the project to be associated with Basic Memory in the Claude Desktop configuration.",
+      "required": true,
+      "example": "my_project"
+    }
+  }
 }

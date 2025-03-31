@@ -1,6 +1,6 @@
 {
   "name": "memory",
-  "display_name": "Knowledge Graph Memory Server",
+  "display_name": "Knowledge Graph Memory",
   "description": "Knowledge graph-based persistent memory system",
   "repository": {
     "type": "git",
@@ -49,5 +49,12 @@
       "description": "A simple interaction with memory where user details are remembered.",
       "prompt": "Remembering..."
     }
-  ]
+  ],
+  "arguments": {
+    "MEMORY_FILE_PATH": {
+      "description": "Path to the memory storage JSON file (default: memory.json in the server directory)",
+      "required": false,
+      "example": "/path/to/custom/memory.json"
+    }
+  }
 }

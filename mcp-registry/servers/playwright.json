@@ -1,6 +1,6 @@
 {
   "name": "playwright",
-  "display_name": "Playwright MCP Server",
+  "display_name": "Playwright",
   "description": "This MCP Server will help you run browser automation and webscraping using Playwright",
   "repository": {
     "type": "git",

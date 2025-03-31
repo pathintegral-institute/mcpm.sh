@@ -1,6 +1,6 @@
 {
   "name": "airbnb",
-  "display_name": "Airbnb MCP Server",
+  "display_name": "Airbnb",
   "description": "Provides tools to search Airbnb and get listing details.",
   "repository": {
     "type": "git",
@@ -42,5 +42,67 @@
       "description": "Retrieve details for a specific listing.",
       "prompt": "Get details for listing 12345"
     }
-  ]
+  ],
+  "arguments": {
+    "location": {
+      "description": "The location where you want to search for Airbnb listings",
+      "required": true,
+      "example": "New York City"
+    },
+    "placeId": {
+      "description": "The unique identifier for a specific place or location",
+      "required": false,
+      "example": "ChIJN1t_tDeuEmsRUsoyG83frY4"
+    },
+    "checkin": {
+      "description": "The check-in date for your stay in YYYY-MM-DD format",
+      "required": false,
+      "example": "2023-10-01"
+    },
+    "checkout": {
+      "description": "The check-out date for your stay in YYYY-MM-DD format",
+      "required": false,
+      "example": "2023-10-05"
+    },
+    "adults": {
+      "description": "The number of adults staying",
+      "required": false,
+      "example": "2"
+    },
+    "children": {
+      "description": "The number of children staying",
+      "required": false,
+      "example": "1"
+    },
+    "infants": {
+      "description": "The number of infants staying",
+      "required": false,
+      "example": "1"
+    },
+    "pets": {
+      "description": "The number of pets allowed in the listing",
+      "required": false,
+      "example": "2"
+    },
+    "minPrice": {
+      "description": "The minimum price per night for the listings",
+      "required": false,
+      "example": "50"
+    },
+    "maxPrice": {
+      "description": "The maximum price per night for the listings",
+      "required": false,
+      "example": "300"
+    },
+    "cursor": {
+      "description": "A cursor for paginating through results",
+      "required": false,
+      "example": "next-page-token"
+    },
+    "ignoreRobotsText": {
+      "description": "Set to true to disregard Airbnb's robots.txt rules for all requests",
+      "required": false,
+      "example": "true"
+    }
+  }
 }

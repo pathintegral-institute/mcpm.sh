@@ -1,6 +1,6 @@
 {
   "name": "code-sandbox-mcp",
-  "display_name": "Code Sandbox MCP",
+  "display_name": "Code Sandbox",
   "description": "An MCP server to create secure code sandbox environment for executing code within Docker containers.",
   "repository": {
     "type": "git",

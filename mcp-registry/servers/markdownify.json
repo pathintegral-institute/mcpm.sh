@@ -1,6 +1,6 @@
 {
   "name": "markdownify",
-  "display_name": "Markdownify MCP Server",
+  "display_name": "Markdownify",
   "description": "MCP to convert almost anything to Markdown (PPTX, HTML, PDF, Youtube Transcripts and more)",
   "repository": {
     "type": "git",
@@ -30,6 +30,13 @@
       "env": {
         "UV_PATH": "${UV_PATH}"
       }
+    }
+  },
+  "arguments": {
+    "UV_PATH": {
+      "description": "Environment variable specifying the installation location of the `uv` dependency.",
+      "required": false,
+      "example": "/path/to/uv"
     }
   }
 }

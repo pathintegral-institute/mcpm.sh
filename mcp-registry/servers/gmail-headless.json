@@ -1,6 +1,6 @@
 {
   "name": "gmail-headless",
-  "display_name": "MCP Headless Gmail Server",
+  "display_name": "Headless Gmail Server",
   "description": "Remote hostable MCP server that can get and send Gmail messages without local credential or file system setup.",
   "repository": {
     "type": "git",
@@ -31,6 +31,28 @@
         "--rm",
         "buryhuang/mcp-headless-gmail:latest"
       ]
+    }
+  },
+  "arguments": {
+    "google_access_token": {
+      "description": "OAuth 2.0 access token for authenticating API requests to Google services.",
+      "required": true,
+      "example": "your_access_token"
+    },
+    "google_refresh_token": {
+      "description": "OAuth 2.0 refresh token used to obtain a new access token when the original access token expires.",
+      "required": true,
+      "example": "your_refresh_token"
+    },
+    "google_client_id": {
+      "description": "Client ID obtained from Google Cloud Console, used to identify the application.",
+      "required": true,
+      "example": "your_client_id"
+    },
+    "google_client_secret": {
+      "description": "Client secret obtained from Google Cloud Console, used alongside the client ID for authentication.",
+      "required": true,
+      "example": "your_client_secret"
     }
   }
 }

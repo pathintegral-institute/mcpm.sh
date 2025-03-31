@@ -1,6 +1,6 @@
 {
   "name": "intercom",
-  "display_name": "MCP Server for Intercom",
+  "display_name": "Intercom Support Server",
   "description": "An MCP-compliant server for retrieving customer support tickets from Intercom. This tool enables AI assistants like Claude Desktop and Cline to access and analyze your Intercom support tickets.",
   "repository": {
     "type": "git",
@@ -38,6 +38,13 @@
       "env": {
         "INTERCOM_ACCESS_TOKEN": "your-intercom-access-token"
       }
+    }
+  },
+  "arguments": {
+    "INTERCOM_ACCESS_TOKEN": {
+      "description": "Your Intercom API token used to authenticate requests to the Intercom API.",
+      "required": true,
+      "example": "your_intercom_api_token"
     }
   }
 }

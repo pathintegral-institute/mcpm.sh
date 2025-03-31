@@ -1,6 +1,6 @@
 {
   "name": "okta",
-  "display_name": "Okta MCP Server",
+  "display_name": "Okta",
   "description": "Interact with Okta API.",
   "repository": {
     "type": "git",
@@ -70,5 +70,16 @@
       "description": "List groups that contain the word 'admin'.",
       "prompt": "List groups containing the word 'admin'"
     }
-  ]
+  ],
+  "arguments": {
+    "OKTA_ORG_URL": {
+      "description": "The base URL for your Okta organization, should include 'https://'.",
+      "required": true,
+      "example": "https://dev-123456.okta.com"
+    },
+    "OKTA_API_TOKEN": {
+      "description": "A valid API token used to authenticate API requests to Okta.",
+      "required": true
+    }
+  }
 }

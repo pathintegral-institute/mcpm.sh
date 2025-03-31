@@ -1,6 +1,6 @@
 {
   "name": "bitable-mcp",
-  "display_name": "Bitable MCP Server",
+  "display_name": "Bitable",
   "description": "MCP server provides access to Lark Bitable through the Model Context Protocol. It allows users to interact with Bitable tables using predefined tools.",
   "repository": {
     "type": "git",
@@ -51,5 +51,17 @@
       "description": "Lists all tables available in Bitable.",
       "prompt": "list_table"
     }
-  ]
+  ],
+  "arguments": {
+    "PERSONAL_BASE_TOKEN": {
+      "description": "Personal base token required for authentication with the Bitable API.",
+      "required": true,
+      "example": "your_personal_base_token"
+    },
+    "APP_TOKEN": {
+      "description": "Application token required for the Bitable server to function properly.",
+      "required": true,
+      "example": "your_app_token"
+    }
+  }
 }

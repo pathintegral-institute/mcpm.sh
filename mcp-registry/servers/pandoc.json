@@ -1,6 +1,6 @@
 {
   "name": "pandoc",
-  "display_name": "mcp-pandoc: A Document Conversion MCP Server",
+  "display_name": "Pandoc Document Conversion",
   "description": "MCP server for seamless document format conversion using Pandoc, supporting Markdown, HTML, PDF, DOCX (.docx), csv and more.",
   "repository": {
     "type": "git",

@@ -1,6 +1,6 @@
 {
   "name": "discourse",
-  "display_name": "Discourse MCP Server",
+  "display_name": "Discourse",
   "description": "A MCP server to search Discourse posts on a Discourse forum.",
   "repository": {
     "type": "git",
@@ -44,6 +44,23 @@
         "DISCOURSE_API_USERNAME=${DISCOURSE_API_USERNAME}",
         "ashdev/discourse-mcp-server"
       ]
+    }
+  },
+  "arguments": {
+    "DISCOURSE_API_URL": {
+      "description": "API URL for the Discourse forum that the server will connect to.",
+      "required": true,
+      "example": "https://try.discourse.org"
+    },
+    "DISCOURSE_API_KEY": {
+      "description": "API key for authenticating to the Discourse forum.",
+      "required": true,
+      "example": "1234"
+    },
+    "DISCOURSE_API_USERNAME": {
+      "description": "Username for authenticating to the Discourse forum.",
+      "required": true,
+      "example": "ash"
     }
   }
 }

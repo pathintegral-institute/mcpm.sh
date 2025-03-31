@@ -32,5 +32,42 @@
         "minima"
       ]
     }
+  },
+  "arguments": {
+    "LOCAL_FILES_PATH": {
+      "description": "Specify the root folder for indexing (on your cloud or local pc). Indexing is a recursive process, meaning all documents within subfolders of this root folder will also be indexed. Supported file types: .pdf, .xls, .docx, .txt, .md, .csv.",
+      "required": true,
+      "example": "/Users/davidmayboroda/Downloads/PDFs/"
+    },
+    "EMBEDDING_MODEL_ID": {
+      "description": "Specify the embedding model to use. Currently, only Sentence Transformer models are supported. Testing has been done with sentence-transformers/all-mpnet-base-v2, but other Sentence Transformer models can be used.",
+      "required": false,
+      "example": "sentence-transformers/all-mpnet-base-v2"
+    },
+    "EMBEDDING_SIZE": {
+      "description": "Define the embedding dimension provided by the model, which is needed to configure Qdrant vector storage. Ensure this value matches the actual embedding size of the specified EMBEDDING_MODEL_ID.",
+      "required": false,
+      "example": "768"
+    },
+    "OLLAMA_MODEL": {
+      "description": "Set up the Ollama model, use an ID available on the Ollama site. Please, use LLM model here, not an embedding.",
+      "required": false,
+      "example": "qwen2:0.5b"
+    },
+    "RERANKER_MODEL": {
+      "description": "Specify the reranker model. Currently, we have tested with BAAI rerankers. You can explore all available rerankers using a specific link.",
+      "required": false,
+      "example": "BAAI/bge-reranker-base"
+    },
+    "USER_ID": {
+      "description": "Just use your email here, this is needed to authenticate custom GPT to search in your data.",
+      "required": true,
+      "example": "user@gmail.com"
+    },
+    "PASSWORD": {
+      "description": "Put any password here, this is used to create a firebase account for the email specified above.",
+      "required": true,
+      "example": "password"
+    }
   }
 }

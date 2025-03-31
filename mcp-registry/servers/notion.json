@@ -1,6 +1,6 @@
 {
   "name": "notion",
-  "display_name": "Notion MCP Server",
+  "display_name": "Notion",
   "description": "Notion MCP integration. Search, Read, Update, and Create pages through Claude chat.",
   "repository": {
     "type": "git",
@@ -30,6 +30,13 @@
       "env": {
         "NOTION_API_KEY": "${NOTION_API_KEY}"
       }
+    }
+  },
+  "arguments": {
+    "NOTION_API_KEY": {
+      "description": "Your Notion API key for authentication to access data within your Notion workspace.",
+      "required": true,
+      "example": "your_notion_api_key_here"
     }
   }
 }

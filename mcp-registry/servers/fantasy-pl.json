@@ -1,6 +1,6 @@
 {
   "name": "fantasy-pl",
-  "display_name": "Fantasy Premier League MCP Server",
+  "display_name": "Fantasy Premier League",
   "description": "Give your coding agent direct access to up-to date Fantasy Premier League data",
   "repository": {
     "type": "git",

@@ -28,7 +28,7 @@
         "https://github.com/teddyzxcv/ntfy-mcp"
       ],
       "env": {
-        "NTFY_TOPIC": "<your topic name>"
+        "NTFY_TOPIC": "${NTFY_TOPIC}"
       }
     }
   },
@@ -38,5 +38,12 @@
       "description": "Write a prompt to execute a task and receive a notification upon completion.",
       "prompt": "Write me a hello world in python, notify me when the task is done"
     }
-  ]
+  ],
+  "arguments": {
+    "NTFY_TOPIC": {
+      "description": "Environment variable representing the topic name for notifications to be sent to.",
+      "required": true,
+      "example": "your_topic_name"
+    }
+  }
 }

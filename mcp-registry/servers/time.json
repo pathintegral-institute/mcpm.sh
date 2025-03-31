@@ -1,6 +1,6 @@
 {
   "name": "time",
-  "display_name": "Time MCP Server",
+  "display_name": "Time",
   "description": "A Model Context Protocol server that provides time and timezone conversion capabilities. It automatically detects the system's timezone and offers tools for getting current time and converting between timezones.",
   "repository": {
     "type": "git",

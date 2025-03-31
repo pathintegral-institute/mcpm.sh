@@ -1,6 +1,6 @@
 {
   "name": "ghost",
-  "display_name": "Ghost MCP Server",
+  "display_name": "Ghost",
   "description": "A Model Context Protocol (MCP) server for interacting with Ghost CMS through LLM interfaces like Claude.",
   "repository": {
     "type": "git",
@@ -46,9 +46,21 @@
         "src/main.py"
       ],
       "env": {
-        "GHOST_API_URL": "your_ghost_api_url",
-        "GHOST_STAFF_API_KEY": "your_staff_api_key"
+        "GHOST_API_URL": "${GHOST_API_URL}",
+        "GHOST_STAFF_API_KEY": "${GHOST_STAFF_API_KEY}"
       }
+    }
+  },
+  "arguments": {
+    "GHOST_API_URL": {
+      "description": "Your Ghost Admin API URL",
+      "required": true,
+      "example": "https://yourblog.com"
+    },
+    "GHOST_STAFF_API_KEY": {
+      "description": "Your Ghost Staff API key",
+      "required": true,
+      "example": "your_staff_api_key"
     }
   }
 }

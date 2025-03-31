@@ -1,6 +1,6 @@
 {
   "name": "filesystem",
-  "display_name": "Filesystem MCP Server",
+  "display_name": "Filesystem",
   "description": "Secure file operations with configurable access controls",
   "repository": {
     "type": "git",

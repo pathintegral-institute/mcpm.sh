@@ -1,6 +1,6 @@
 {
   "name": "pinecone",
-  "display_name": "Pinecone Model Context Protocol Server for Claude Desktop",
+  "display_name": "Pinecone Model Context Protocol for Claude Desktop",
   "description": "MCP server for searching and uploading records to Pinecone. Allows for simple RAG features, leveraging Pinecone's Inference API.",
   "repository": {
     "type": "git",
@@ -23,9 +23,9 @@
       "command": "uvx",
       "args": [
         "--index-name",
-        "{your-index-name}",
+        "${your-index-name}",
         "--api-key",
-        "{your-secret-api-key}",
+        "${your-secret-api-key}",
         "mcp-pinecone"
       ]
     }

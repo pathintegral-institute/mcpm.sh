@@ -1,6 +1,6 @@
 {
   "name": "monday-com",
-  "display_name": "Monday.com MCP Server",
+  "display_name": "Monday.com",
   "description": "MCP Server to interact with Monday.com boards and items.",
   "repository": {
     "type": "git",
@@ -43,6 +43,18 @@
         "MONDAY_WORKSPACE_NAME=${MONDAY_WORKSPACE_NAME}",
         "sakce/mcp-server-monday"
       ]
+    }
+  },
+  "arguments": {
+    "MONDAY_API_KEY": {
+      "description": "API key for authenticating with the Monday.com API.",
+      "required": true,
+      "example": "your-monday-api-key"
+    },
+    "MONDAY_WORKSPACE_NAME": {
+      "description": "The name of the Monday.com workspace you are working with.",
+      "required": true,
+      "example": "myworkspace"
     }
   }
 }

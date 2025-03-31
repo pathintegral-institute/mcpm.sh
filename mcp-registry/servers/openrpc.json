@@ -1,6 +1,6 @@
 {
   "name": "openrpc",
-  "display_name": "OpenRPC MCP Server",
+  "display_name": "OpenRPC",
   "description": "Interact with and discover JSON-RPC APIs via [OpenRPC](https://open-rpc.org/).",
   "repository": {
     "type": "git",

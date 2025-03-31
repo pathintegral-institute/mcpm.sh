@@ -1,6 +1,6 @@
 {
   "name": "ticketmaster",
-  "display_name": "Ticketmaster MCP Server",
+  "display_name": "Ticketmaster",
   "description": "Search for events, venues, and attractions through the Ticketmaster Discovery API",
   "repository": {
     "type": "git",
@@ -30,7 +30,7 @@
         "@delorenj/mcp-server-ticketmaster"
       ],
       "env": {
-        "TICKETMASTER_API_KEY": "your-api-key-here"
+        "TICKETMASTER_API_KEY": "${TICKETMASTER_API_KEY}"
       }
     }
   },
@@ -45,5 +45,12 @@
       "description": "Example of human-readable text output for searching events.",
       "prompt": "<use_mcp_tool>\n<server_name>ticketmaster</server_name>\n<tool_name>search_ticketmaster</tool_name>\n<arguments>\n{\n  \"type\": \"event\",\n  \"keyword\": \"concert\",\n  \"startDate\": \"2025-02-01\",\n  \"endDate\": \"2025-02-28\",\n  \"city\": \"New York\",\n  \"stateCode\": \"NY\",\n  \"format\": \"text\"\n}\n</arguments>\n</use_mcp_tool>"
     }
-  ]
+  ],
+  "arguments": {
+    "TICKETMASTER_API_KEY": {
+      "description": "API key required to access the Ticketmaster Discovery API.",
+      "required": true,
+      "example": "your-api-key-here"
+    }
+  }
 }

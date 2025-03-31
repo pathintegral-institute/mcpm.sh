@@ -1,6 +1,6 @@
 {
   "name": "github",
-  "display_name": "GitHub MCP Server",
+  "display_name": "GitHub",
   "description": "MCP Server for the GitHub API, enabling file operations, repository management, search functionality, and more.",
   "repository": {
     "type": "git",
@@ -23,8 +23,8 @@
     "git"
   ],
   "arguments": {
-    "GITHUB_TOKEN": {
-      "description": "GitHub Personal Access Token with appropriate permissions for the repositories you want to access",
+    "GITHUB_PERSONAL_ACCESS_TOKEN": {
+      "description": "Personal Access Token for GitHub to authenticate API requests",
       "required": true,
       "example": "ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
     }
@@ -39,7 +39,7 @@
       ],
       "package": "@modelcontextprotocol/server-github",
       "env": {
-        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
       },
       "description": "Install and run using NPX",
       "recommended": true
@@ -56,7 +56,7 @@
         "mcp/github"
       ],
       "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
       },
       "description": "Run with Docker"
     }

@@ -1,6 +1,6 @@
 {
   "name": "github-actions",
-  "display_name": "GitHub Actions MCP Server",
+  "display_name": "GitHub Actions",
   "description": "A Model Context Protocol (MCP) server for interacting with Github Actions.",
   "repository": {
     "type": "git",
@@ -41,8 +41,15 @@
         "https://github.com/ko1ynnky/github-actions-mcp-server"
       ],
       "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "<YOUR_TOKEN>"
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
       }
+    }
+  },
+  "arguments": {
+    "GITHUB_PERSONAL_ACCESS_TOKEN": {
+      "description": "A personal access token required for authentication with GitHub API, used to access user repositories and perform actions.",
+      "required": true,
+      "example": "ghp_16CharTokenHere"
     }
   }
 }

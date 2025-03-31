@@ -1,6 +1,6 @@
 {
   "name": "chatsum",
-  "display_name": "MCP Server Chat Summary",
+  "display_name": "Chat Summary",
   "description": "Query and Summarize chat messages with LLM. by [mcpso](https://mcp.so/)",
   "repository": {
     "type": "git",
@@ -38,6 +38,13 @@
       "env": {
         "CHAT_DB_PATH": "path-to/mcp-server-chatsum/chatbot/data/chat.db"
       }
+    }
+  },
+  "arguments": {
+    "CHAT_DB_PATH": {
+      "description": "Path to your chat database file that the server will use to store and retrieve chat messages.",
+      "required": true,
+      "example": "path-to/mcp-server-chatsum/chatbot/data/chat.db"
     }
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "dicom",
-  "display_name": "DICOM Model Context Protocol Server",
+  "display_name": "DICOM Model Context Protocol",
   "description": "An MCP server to query and retrieve medical images and for parsing and reading dicom-encapsulated documents (pdf etc.).",
   "repository": {
     "type": "git",

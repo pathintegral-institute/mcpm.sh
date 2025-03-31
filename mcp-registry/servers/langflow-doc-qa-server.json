@@ -1,6 +1,6 @@
 {
   "name": "langflow-doc-qa-server",
-  "display_name": "Langflow Document Q&A Server",
+  "display_name": "Langflow Document Q&A",
   "description": "A Model Context Protocol server for document Q&A powered by Langflow. It demonstrates core MCP concepts by providing a simple interface to query documents through a Langflow backend.",
   "repository": {
     "type": "git",
@@ -30,6 +30,13 @@
       "env": {
         "API_ENDPOINT": "${API_ENDPOINT}"
       }
+    }
+  },
+  "arguments": {
+    "API_ENDPOINT": {
+      "description": "The endpoint URL for the Langflow API service.",
+      "required": false,
+      "example": "http://127.0.0.1:7860/api/v1/run/<flow-id>?stream=false"
     }
   }
 }

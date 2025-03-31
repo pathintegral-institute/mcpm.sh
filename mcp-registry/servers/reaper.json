@@ -1,6 +1,6 @@
 {
   "name": "reaper",
-  "display_name": "Reaper MCP Server",
+  "display_name": "Reaper",
   "description": "Interact with your [Reaper](https://www.reaper.fm/) (Digital Audio Workstation) projects.",
   "repository": {
     "type": "git",
@@ -27,7 +27,7 @@
         "https://github.com/dschuler36/reaper-mcp-server",
         "reaper-mcp-server",
         "--reaper-projects-dir",
-        "/path/to/your/reaper/projects"
+        "${REAPER_PROJECTS_DIR}"
       ]
     }
   },
@@ -42,5 +42,12 @@
       "description": "Use the tool to locate all Reaper projects in the configured directory.",
       "prompt": "Find all my Reaper projects."
     }
-  ]
+  ],
+  "arguments": {
+    "REAPER_PROJECTS_DIR": {
+      "description": "The directory where Reaper projects are stored, allowing the MCP server to find and interact with them.",
+      "required": true,
+      "example": "/path/to/reaper/projects"
+    }
+  }
 }

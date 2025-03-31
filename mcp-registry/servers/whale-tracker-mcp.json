@@ -1,6 +1,6 @@
 {
   "name": "whale-tracker-mcp",
-  "display_name": "Whale Tracker MCP Server",
+  "display_name": "Whale Tracker",
   "description": "A mcp server for tracking cryptocurrency whale transactions.",
   "repository": {
     "type": "git",
@@ -51,5 +51,12 @@
       "description": "Analyze recent whale transactions on Bitcoin.",
       "prompt": "Analyze recent whale transactions on Bitcoin."
     }
-  ]
+  ],
+  "arguments": {
+    "WHALE_TRACKER_API_KEY": {
+      "description": "Environment variable to load the Whale Alert API key for the server.",
+      "required": true,
+      "example": "your_api_key_here"
+    }
+  }
 }

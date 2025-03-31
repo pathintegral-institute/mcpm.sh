@@ -1,6 +1,6 @@
 {
   "name": "deepseek-thinker-mcp",
-  "display_name": "Deepseek Thinker MCP Server",
+  "display_name": "Deepseek Thinker",
   "description": "A MCP (Model Context Protocol) provider Deepseek reasoning content to MCP-enabled AI Clients, like Claude Desktop. Supports access to Deepseek's thought processes from the Deepseek API service or from a local Ollama server.",
   "repository": {
     "type": "git",
@@ -33,5 +33,17 @@
   "author": {
     "name": "ruixingshi"
   },
-  "homepage": "https://github.com/ruixingshi/deepseek-thinker-mcp"
+  "homepage": "https://github.com/ruixingshi/deepseek-thinker-mcp",
+  "arguments": {
+    "API_KEY": {
+      "description": "Your OpenAI API Key for authentication with the OpenAI services.",
+      "required": true,
+      "example": "sk-xxxxxxxxxx"
+    },
+    "BASE_URL": {
+      "description": "The base URL for the OpenAI API that you are connecting to.",
+      "required": true,
+      "example": "https://api.openai.com/v1"
+    }
+  }
 }

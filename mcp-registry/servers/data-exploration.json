@@ -1,6 +1,6 @@
 {
   "name": "data-exploration",
-  "display_name": "MCP Server for Data Exploration",
+  "display_name": "Data Exploration",
   "description": "MCP server for autonomous data exploration on .csv-based datasets, providing intelligent insights with minimal effort. NOTE: Will execute arbitrary Python code on your machine, please use with caution!",
   "repository": {
     "type": "git",

@@ -1,6 +1,6 @@
 {
   "name": "naver",
-  "display_name": "Naver MCP Server",
+  "display_name": "Naver",
   "description": "This MCP server provides tools to interact with various Naver services, such as searching blogs, news, books, and more.",
   "repository": {
     "type": "git",
@@ -53,5 +53,17 @@
       "description": "Search books on Naver using a query.",
       "prompt": "search_book('your query here')"
     }
-  ]
+  ],
+  "arguments": {
+    "NAVER_CLIENT_ID": {
+      "description": "The Client ID for accessing the Naver Open API, obtained from the Naver developer portal.",
+      "required": true,
+      "example": "your_naver_client_id"
+    },
+    "NAVER_CLIENT_SECRET": {
+      "description": "The Client Secret for accessing the Naver Open API, obtained from the Naver developer portal.",
+      "required": true,
+      "example": "your_naver_client_secret"
+    }
+  }
 }

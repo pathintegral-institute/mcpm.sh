@@ -1,6 +1,6 @@
 {
   "name": "mcp-compass",
-  "display_name": "MCP Compass",
+  "display_name": "Compass",
   "description": "Suggest the right MCP server for your needs",
   "repository": {
     "type": "git",

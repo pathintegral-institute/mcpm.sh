@@ -1,6 +1,6 @@
 {
   "name": "opendota",
-  "display_name": "OpenDota MCP Server",
+  "display_name": "OpenDota",
   "description": "Interact with OpenDota API to retrieve Dota 2 match data, player statistics, and more.",
   "repository": {
     "type": "git",

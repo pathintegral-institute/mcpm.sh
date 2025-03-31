@@ -1,6 +1,6 @@
 {
   "name": "kibela",
-  "display_name": "Kibela MCP Server",
+  "display_name": "Kibela",
   "description": "Interact with Kibela API.",
   "repository": {
     "type": "git",
@@ -48,5 +48,17 @@
       "description": "Fetch content of a specific note by ID.",
       "prompt": "kibela_get_note_content(\"note-id\")"
     }
-  ]
+  ],
+  "arguments": {
+    "KIBELA_TEAM": {
+      "description": "Your Kibela team name",
+      "required": true,
+      "example": "your-team"
+    },
+    "KIBELA_TOKEN": {
+      "description": "Your Kibela API token",
+      "required": true,
+      "example": "your-token"
+    }
+  }
 }

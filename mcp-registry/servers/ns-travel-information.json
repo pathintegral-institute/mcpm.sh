@@ -1,6 +1,6 @@
 {
   "name": "ns-travel-information",
-  "display_name": "NS Travel Information MCP Server",
+  "display_name": "NS Travel Information",
   "description": "Access Dutch Railways (NS) real-time train travel information and disruptions through the official NS API.",
   "repository": {
     "type": "git",
@@ -55,5 +55,12 @@
       "description": "Ask for ticket prices for travel between cities.",
       "prompt": "How much does a first-class ticket from Amsterdam to Rotterdam cost?"
     }
-  ]
+  ],
+  "arguments": {
+    "NS_API_KEY": {
+      "description": "Your NS API key, required for authenticating API requests to access NS travel information.",
+      "required": true,
+      "example": "your_api_key_here"
+    }
+  }
 }

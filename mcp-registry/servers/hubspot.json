@@ -1,6 +1,6 @@
 {
   "name": "hubspot",
-  "display_name": "HubSpot MCP Server",
+  "display_name": "HubSpot CRM Integration",
   "description": "HubSpot CRM integration for managing contacts and companies. Create and retrieve CRM data directly through Claude chat.",
   "repository": {
     "type": "git",
@@ -31,9 +31,12 @@
         "-i",
         "--rm",
         "-e",
-        "HUBSPOT_ACCESS_TOKEN=your_access_token_here",
+        "HUBSPOT_ACCESS_TOKEN=${HUBSPOT_ACCESS_TOKEN}",
         "buryhuang/mcp-hubspot:latest"
-      ]
+      ],
+      "env": {
+        "HUBSPOT_ACCESS_TOKEN": "${HUBSPOT_ACCESS_TOKEN}"
+      }
     }
   },
   "examples": [
@@ -47,5 +50,12 @@
       "description": "Use this prompt to get the latest activities related to your company in HubSpot.",
       "prompt": "What's happening latestly with my pipeline?"
     }
-  ]
+  ],
+  "arguments": {
+    "HUBSPOT_ACCESS_TOKEN": {
+      "description": "The HubSpot access token required for authenticating API requests to HubSpot.",
+      "required": true,
+      "example": "your_access_token_here"
+    }
+  }
 }

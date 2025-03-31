@@ -1,6 +1,6 @@
 {
   "name": "dune-analytics-mcp",
-  "display_name": "Dune Analytics MCP Server",
+  "display_name": "Dune Analytics",
   "description": "A mcp server that bridges Dune Analytics data to AI agents.",
   "repository": {
     "type": "git",
@@ -42,8 +42,15 @@
         "main.py"
       ],
       "env": {
-        "DUNE_API_KEY": "<YOUR_DUNE_API_KEY>"
+        "DUNE_API_KEY": "${DUNE_API_KEY}"
       }
+    }
+  },
+  "arguments": {
+    "DUNE_API_KEY": {
+      "description": "A valid Dune Analytics API key obtained from Dune Analytics for authentication and data access.",
+      "required": true,
+      "example": "your_api_key_here"
     }
   }
 }

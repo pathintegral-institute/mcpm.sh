@@ -1,6 +1,6 @@
 {
   "name": "servicenow",
-  "display_name": "ServiceNow MCP Server",
+  "display_name": "ServiceNow",
   "description": "A MCP server to interact with a ServiceNow instance",
   "repository": {
     "type": "git",
@@ -40,11 +40,33 @@
         "servicenow_mcp.cli"
       ],
       "env": {
-        "SERVICENOW_INSTANCE_URL": "https://your-instance.service-now.com",
-        "SERVICENOW_USERNAME": "your-username",
-        "SERVICENOW_PASSWORD": "your-password",
-        "SERVICENOW_AUTH_TYPE": "basic"
+        "SERVICENOW_INSTANCE_URL": "${SERVICENOW_INSTANCE_URL}",
+        "SERVICENOW_USERNAME": "${SERVICENOW_USERNAME}",
+        "SERVICENOW_PASSWORD": "${SERVICENOW_PASSWORD}",
+        "SERVICENOW_AUTH_TYPE": "${SERVICENOW_AUTH_TYPE}"
       }
+    }
+  },
+  "arguments": {
+    "SERVICENOW_INSTANCE_URL": {
+      "description": "URL of the ServiceNow instance to connect to.",
+      "required": true,
+      "example": "https://your-instance.service-now.com"
+    },
+    "SERVICENOW_USERNAME": {
+      "description": "Username for accessing the ServiceNow instance.",
+      "required": true,
+      "example": "your-username"
+    },
+    "SERVICENOW_PASSWORD": {
+      "description": "Password for the ServiceNow username.",
+      "required": true,
+      "example": "your-password"
+    },
+    "SERVICENOW_AUTH_TYPE": {
+      "description": "Authentication type for connecting to ServiceNow. Options are 'basic', 'oauth', or 'api_key'.",
+      "required": true,
+      "example": "basic"
     }
   }
 }

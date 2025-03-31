@@ -1,6 +1,6 @@
 {
   "name": "xcodebuild",
-  "display_name": "xcodebuild MCP Server",
+  "display_name": "Xcode Build",
   "description": "\ud83c\udf4e Build iOS Xcode workspace/project and feed back errors to llm.",
   "repository": {
     "type": "git",

@@ -1,6 +1,6 @@
 {
   "name": "graphql-schema",
-  "display_name": "GraphQL Schema Model Context Protocol Server",
+  "display_name": "GraphQL Schema Model Context Protocol",
   "description": "Allow LLMs to explore large GraphQL schemas without bloating the context.",
   "repository": {
     "type": "git",

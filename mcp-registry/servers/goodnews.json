@@ -1,6 +1,6 @@
 {
   "name": "goodnews",
-  "display_name": "MCP Goodnews",
+  "display_name": "Goodnews",
   "description": "A simple MCP server that delivers curated positive and uplifting news stories.",
   "repository": {
     "type": "git",
@@ -41,6 +41,18 @@
         "NEWS_API_KEY": "<newsapi-api-key>",
         "COHERE_API_KEY": "<cohere-api-key>"
       }
+    }
+  },
+  "arguments": {
+    "NEWS_API_KEY": {
+      "description": "API key for NewsAPI to fetch news articles",
+      "required": true,
+      "example": "your_newsapi_key_here"
+    },
+    "COHERE_API_KEY": {
+      "description": "API key for Cohere to analyze sentiment of news articles",
+      "required": true,
+      "example": "your_cohere_api_key_here"
     }
   }
 }

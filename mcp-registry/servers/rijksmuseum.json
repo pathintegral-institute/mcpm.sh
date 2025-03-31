@@ -1,6 +1,6 @@
 {
   "name": "rijksmuseum",
-  "display_name": "Rijksmuseum MCP Server",
+  "display_name": "Rijksmuseum",
   "description": "Interface with the Rijksmuseum API to search artworks, retrieve artwork details, access image tiles, and explore user collections.",
   "repository": {
     "type": "git",
@@ -28,7 +28,7 @@
         "mcp-server-rijksmuseum"
       ],
       "env": {
-        "RIJKSMUSEUM_API_KEY": "your_api_key_here"
+        "RIJKSMUSEUM_API_KEY": "${RIJKSMUSEUM_API_KEY}"
       }
     }
   },
@@ -63,5 +63,12 @@
       "description": "Queries for examining visual details in artworks.",
       "prompt": "\"Let me examine the details in the background of The Night Watch\""
     }
-  ]
+  ],
+  "arguments": {
+    "RIJKSMUSEUM_API_KEY": {
+      "description": "Your Rijksmuseum API key used for authenticating requests to the Rijksmuseum API.",
+      "required": true,
+      "example": "your_api_key_here"
+    }
+  }
 }

@@ -1,6 +1,6 @@
 {
   "name": "rabbitmq",
-  "display_name": "RabbitMQ MCP Server",
+  "display_name": "RabbitMQ",
   "description": "The MCP server that interacts with RabbitMQ to publish and consume messages.",
   "repository": {
     "type": "git",
@@ -29,15 +29,15 @@
         "https://github.com/kenliao94/mcp-server-rabbitmq",
         "mcp-server-rabbitmq",
         "--rabbitmq-host",
-        "<hostname ex. test.rabbit.com, localhost>",
+        "${RABBITMQ_HOST}",
         "--port",
-        "<port number ex. 5672>",
+        "${RABBITMQ_PORT}",
         "--username",
-        "<rabbitmq username>",
+        "${RABBITMQ_USERNAME}",
         "--password",
-        "<rabbitmq password>",
+        "${RABBITMQ_PASSWORD}",
         "--use-tls",
-        "<true if uses amqps, false otherwise>"
+        "${USE_TLS}"
       ]
     }
   },
@@ -47,5 +47,32 @@
       "description": "Ask Claude to publish a message to a queue.",
       "prompt": "Please publish a message to the queue."
     }
-  ]
+  ],
+  "arguments": {
+    "RABBITMQ_HOST": {
+      "description": "The hostname of the RabbitMQ server (e.g., test.rabbit.com, localhost).",
+      "required": true,
+      "example": "test.rabbit.com"
+    },
+    "RABBITMQ_PORT": {
+      "description": "The port number to connect to the RabbitMQ server (e.g., 5672).",
+      "required": true,
+      "example": "5672"
+    },
+    "RABBITMQ_USERNAME": {
+      "description": "The username to authenticate with the RabbitMQ server.",
+      "required": true,
+      "example": "guest"
+    },
+    "RABBITMQ_PASSWORD": {
+      "description": "The password for the RabbitMQ username provided.",
+      "required": true,
+      "example": "guest"
+    },
+    "USE_TLS": {
+      "description": "Set to true if using TLS (AMQPS), otherwise false.",
+      "required": false,
+      "example": "true or false"
+    }
+  }
 }

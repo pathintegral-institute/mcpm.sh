@@ -1,6 +1,6 @@
 {
   "name": "mssql",
-  "display_name": "MSSQL MCP Server",
+  "display_name": "MSSQL",
   "description": "MCP Server for MSSQL database in Python",
   "repository": {
     "type": "git",
@@ -28,12 +28,39 @@
         "mssql_mcp_server"
       ],
       "env": {
-        "MSSQL_DRIVER": "mssql_driver",
-        "MSSQL_HOST": "localhost",
-        "MSSQL_USER": "your_username",
-        "MSSQL_PASSWORD": "your_password",
-        "MSSQL_DATABASE": "your_database"
+        "MSSQL_DRIVER": "${MSSQL_DRIVER}",
+        "MSSQL_HOST": "${MSSQL_HOST}",
+        "MSSQL_USER": "${MSSQL_USER}",
+        "MSSQL_PASSWORD": "${MSSQL_PASSWORD}",
+        "MSSQL_DATABASE": "${MSSQL_DATABASE}"
       }
+    }
+  },
+  "arguments": {
+    "MSSQL_DRIVER": {
+      "description": "Environment variable that specifies the driver to connect to the MSSQL database.",
+      "required": true,
+      "example": "mssql_driver"
+    },
+    "MSSQL_HOST": {
+      "description": "Environment variable that specifies the hostname or IP address of the MSSQL server.",
+      "required": true,
+      "example": "localhost"
+    },
+    "MSSQL_USER": {
+      "description": "Environment variable that defines the username for connecting to the MSSQL database.",
+      "required": true,
+      "example": "your_username"
+    },
+    "MSSQL_PASSWORD": {
+      "description": "Environment variable that stores the password for the MSSQL user.",
+      "required": true,
+      "example": "your_password"
+    },
+    "MSSQL_DATABASE": {
+      "description": "Environment variable that specifies the name of the MSSQL database to connect to.",
+      "required": true,
+      "example": "your_database"
     }
   }
 }

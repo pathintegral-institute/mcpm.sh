@@ -1,6 +1,6 @@
 {
   "name": "elasticsearch",
-  "display_name": "Elasticsearch MCP Server",
+  "display_name": "Elasticsearch",
   "description": "MCP server implementation that provides Elasticsearch interaction.",
   "repository": {
     "type": "git",
@@ -31,6 +31,23 @@
         "ELASTIC_USERNAME": "${ELASTIC_USERNAME}",
         "ELASTIC_PASSWORD": "${ELASTIC_PASSWORD}"
       }
+    }
+  },
+  "arguments": {
+    "ELASTIC_HOST": {
+      "description": "The host URL of the Elasticsearch server.",
+      "required": true,
+      "example": "https://localhost:9200"
+    },
+    "ELASTIC_USERNAME": {
+      "description": "The username for authenticating with the Elasticsearch server.",
+      "required": true,
+      "example": "elastic"
+    },
+    "ELASTIC_PASSWORD": {
+      "description": "The password for authenticating with the Elasticsearch server.",
+      "required": true,
+      "example": "test123"
     }
   }
 }

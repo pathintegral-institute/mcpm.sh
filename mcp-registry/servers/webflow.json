@@ -1,6 +1,6 @@
 {
   "name": "webflow",
-  "display_name": "Webflow MCP Server",
+  "display_name": "Webflow",
   "description": "Interfact with the Webflow APIs",
   "repository": {
     "type": "git",
@@ -27,7 +27,7 @@
         "https://github.com/kapilduraphe/webflow-mcp-server"
       ],
       "env": {
-        "WEBFLOW_API_TOKEN": "your-api-token"
+        "WEBFLOW_API_TOKEN": "${WEBFLOW_API_TOKEN}"
       }
     }
   },
@@ -42,5 +42,12 @@
       "description": "Retrieve detailed information about a specific Webflow site by ID.",
       "prompt": "get_site siteId"
     }
-  ]
+  ],
+  "arguments": {
+    "WEBFLOW_API_TOKEN": {
+      "description": "Your Webflow API token to authenticate requests to the Webflow API. This token is required for the server to function and should be kept secure.",
+      "required": true,
+      "example": "your-api-token"
+    }
+  }
 }

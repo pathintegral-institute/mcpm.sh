@@ -1,6 +1,6 @@
 {
   "name": "excel",
-  "display_name": "Excel MCP Server",
+  "display_name": "Excel",
   "description": "Excel manipulation including data reading/writing, worksheet management, formatting, charts, and pivot table.",
   "repository": {
     "type": "git",
@@ -28,8 +28,15 @@
         "excel-mcp-server"
       ],
       "env": {
-        "EXCEL_FILES_PATH": "/path/to/excel/files"
+        "EXCEL_FILES_PATH": "${EXCEL_FILES_PATH}"
       }
+    }
+  },
+  "arguments": {
+    "EXCEL_FILES_PATH": {
+      "description": "Directory where Excel files will be stored.",
+      "required": false,
+      "example": "/path/to/excel/files"
     }
   }
 }

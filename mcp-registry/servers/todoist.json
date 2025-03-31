@@ -1,6 +1,6 @@
 {
   "name": "todoist",
-  "display_name": "Todoist MCP Server",
+  "display_name": "Todoist",
   "description": "Interact with Todoist to manage your tasks.",
   "repository": {
     "type": "git",
@@ -24,7 +24,7 @@
         "@abhiz123/todoist-mcp-server"
       ],
       "env": {
-        "TODOIST_API_TOKEN": "your_api_token_here"
+        "TODOIST_API_TOKEN": "${TODOIST_API_TOKEN}"
       }
     }
   },
@@ -59,5 +59,12 @@
       "description": "Example commands for deleting tasks",
       "prompt": "\"Delete the PR review task\""
     }
-  ]
+  ],
+  "arguments": {
+    "TODOIST_API_TOKEN": {
+      "description": "API token to authenticate with the Todoist service",
+      "required": true,
+      "example": "your_api_token_here"
+    }
+  }
 }

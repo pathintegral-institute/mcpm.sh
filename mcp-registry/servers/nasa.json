@@ -1,6 +1,6 @@
 {
   "name": "nasa",
-  "display_name": "NASA MCP Server",
+  "display_name": "NASA",
   "description": "Access to a unified gateway of NASA's data sources including but not limited to APOD, NEO, EPIC, GIBS.",
   "repository": {
     "type": "git",
@@ -53,5 +53,12 @@
       "description": "Find any near earth objects recorded in a specified date range.",
       "prompt": "GET /nasa/neo?start_date=2023-01-01&end_date=2023-01-07"
     }
-  ]
+  ],
+  "arguments": {
+    "NASA_API_KEY": {
+      "description": "Your NASA API key (get at api.nasa.gov)",
+      "required": false,
+      "example": "DEMO_KEY"
+    }
+  }
 }

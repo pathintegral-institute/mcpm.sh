@@ -1,6 +1,6 @@
 {
   "name": "coin-api-mcp",
-  "display_name": "Coin MCP Server",
+  "display_name": "Coin API",
   "description": "Provides access to [coinmarketcap](https://coinmarketcap.com/) cryptocurrency data.",
   "repository": {
     "type": "git",
@@ -44,5 +44,12 @@
       "description": "Retrieve detailed information about a specific cryptocurrency by its ID or symbol.",
       "prompt": "Call `get-coin-info` using the cryptocurrency ID."
     }
-  ]
+  ],
+  "arguments": {
+    "COINMARKETCAP_API_KEY": {
+      "description": "The API key required to access CoinMarketCap data.",
+      "required": true,
+      "example": "your_api_key_here"
+    }
+  }
 }

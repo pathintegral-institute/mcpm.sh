@@ -1,6 +1,6 @@
 {
   "name": "everything-search",
-  "display_name": "Everything Search MCP Server",
+  "display_name": "Everything Search",
   "description": "Fast file searching capabilities across Windows (using [Everything SDK](https://www.voidtools.com/support/everything/sdk/)), macOS (using mdfind command), and Linux (using locate/plocate command).",
   "repository": {
     "type": "git",
@@ -53,5 +53,12 @@
       "description": "Find files with the .py extension that were modified today.",
       "prompt": "{\"query\": \"ext:py datemodified:today\",\"max_results\": 10}"
     }
-  ]
+  ],
+  "arguments": {
+    "EVERYTHING_SDK_PATH": {
+      "description": "Environment variable that specifies the path to the Everything SDK DLL required for the server to function properly.",
+      "required": true,
+      "example": "path/to/Everything-SDK/dll/Everything64.dll"
+    }
+  }
 }
