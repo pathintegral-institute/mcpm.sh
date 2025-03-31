@@ -12,8 +12,8 @@
   },
   "license": "MIT",
   "categories": [
-    "youtube",
-    "api"
+    "Youtube",
+    "API"
   ],
   "tags": [
     "youtube",
@@ -34,13 +34,6 @@
       }
     }
   },
-  "examples": [
-    {
-      "title": "Managing Videos",
-      "description": "Example code for managing videos using the YouTube MCP Server.",
-      "prompt": "// Get video details\nconst video = await youtube.videos.getVideo({\n  videoId: \"video-id\"\n});"
-    }
-  ],
   "arguments": {
     "YOUTUBE_API_KEY": {
       "description": "Your YouTube Data API key, needed for authentication when making requests to the YouTube API.",
