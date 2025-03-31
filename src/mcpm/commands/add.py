@@ -21,12 +21,14 @@ repo_manager = RepositoryManager()
 @click.command()
 @click.argument("server_name")
 @click.option("--force", is_flag=True, help="Force reinstall if server is already installed")
-def add(server_name, force=False):
+@click.option("--alias", help="Alias for the server", required=False)
+def add(server_name, force=False, alias=None):
     """Add an MCP server to a client configuration.
 
     Examples:
         mcpm add time
         mcpm add everything --force
+        mcpm add youtube --alias yt
     """
     # Get the active client info
     client = ClientRegistry.get_active_client()
@@ -42,10 +44,12 @@ def add(server_name, force=False):
         console.print(f"[bold red]Error:[/] Unsupported client '{client}'.")
         return
 
+    config_name = alias or server_name
+
     # Check if server already exists in client config
-    existing_server = client_manager.get_server(server_name)
+    existing_server = client_manager.get_server(config_name)
     if existing_server and not force:
-        console.print(f"[yellow]Server '{server_name}' is already added to {client}.[/]")
+        console.print(f"[yellow]Server '{config_name}' is already added to {client}.[/]")
         console.print("Use '--force' to overwrite the existing configuration.")
         return
 
@@ -74,7 +78,7 @@ def add(server_name, force=False):
     client_display_name = client_info.get("name", client)
 
     # Confirm addition
-    if not force and not Confirm.ask(f"Add this server to {client_display_name}?"):
+    if not force and not Confirm.ask(f"Add this server to {client_display_name}{' as ' + alias if alias else ''}?"):
         console.print("[yellow]Operation cancelled.[/]")
         return
 
@@ -310,7 +314,7 @@ def add(server_name, force=False):
 
     # Create server configuration using ServerConfig
     server_config = ServerConfig(
-        name=server_name,
+        name=config_name,
         display_name=display_name,
         description=description,
         command=mcp_command,  # Use the actual MCP server command
