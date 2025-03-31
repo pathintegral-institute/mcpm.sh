@@ -1,8 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <!-- Background circle -->
-  <circle cx="16" cy="16" r="16" fill="#2E3440" />
+  <circle cx="16" cy="16" r="16" fill="#182c25" />
   
-  <!-- Command prompt and text -->
-  <text x="4" y="18" font-family="monospace" font-size="9" fill="#D8DEE9">></text>
-  <text x="9" y="18" font-family="monospace" font-size="8" fill="#88C0D0">mcpm</text>
+  <!-- Command prompt -->
+  <text x="3" y="19" font-family="monospace" font-size="9" fill="#5CD951">></text>
+  
+  <!-- MCPM text with different colors for each character -->
+  <text x="9" y="18" font-family="monospace" font-size="8" fill="#FF84BD">m</text>
+  <text x="14" y="18" font-family="monospace" font-size="8" fill="#FF84BD">c</text>
+  <text x="18.5" y="18" font-family="monospace" font-size="8" fill="#FF84BD">p</text>
+  <text x="23" y="18" font-family="monospace" font-size="8" fill="#FEBF00">m</text>
 </svg>

@@ -68,3 +68,6 @@ _site/
 .jekyll-cache/
 .jekyll-metadata
 _dev/
+
+# macos system files
+.DS_Store
