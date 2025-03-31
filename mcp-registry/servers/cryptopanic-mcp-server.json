@@ -1,6 +1,6 @@
 {
   "name": "cryptopanic-mcp-server",
-  "display_name": "CryptoPanic MCP Server",
+  "display_name": "CryptoPanic News",
   "description": "Providing latest cryptocurrency news to AI agents, powered by CryptoPanic.",
   "repository": {
     "type": "git",
@@ -38,8 +38,15 @@
         "main.py"
       ],
       "env": {
-        "CRYPTOPANIC_API_KEY": ""
+        "CRYPTOPANIC_API_KEY": "${CRYPTOPANIC_API_KEY}"
       }
+    }
+  },
+  "arguments": {
+    "CRYPTOPANIC_API_KEY": {
+      "description": "API key to access CryptoPanic services. This key is necessary to authenticate requests made to the CryptoPanic API.",
+      "required": true,
+      "example": "your_api_key_here"
     }
   }
 }

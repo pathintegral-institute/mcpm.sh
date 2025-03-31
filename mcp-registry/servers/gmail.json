@@ -1,6 +1,6 @@
 {
   "name": "gmail",
-  "display_name": "Gmail AutoAuth MCP Server",
+  "display_name": "Gmail AutoAuth",
   "description": "A Model Context Protocol (MCP) server for Gmail integration in Claude Desktop with auto authentication support.",
   "repository": {
     "type": "git",
@@ -41,6 +41,13 @@
         "${GMAIL_CREDENTIALS_PATH}=/gmail-server/credentials.json",
         "mcp/gmail"
       ]
+    }
+  },
+  "arguments": {
+    "GMAIL_CREDENTIALS_PATH": {
+      "description": "The path to the Gmail credentials file that the server will use for OAuth authentication.",
+      "required": true,
+      "example": "/gmail-server/credentials.json"
     }
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "quickchart",
-  "display_name": "Quickchart-MCP-Server",
+  "display_name": "Quickchart",
   "description": "A Model Context Protocol server for generating charts using QuickChart.io",
   "repository": {
     "type": "git",
@@ -36,5 +36,12 @@
       "description": "Generate a bar chart using Chart.js configuration.",
       "prompt": "{\"type\":\"bar\",\"data\":{\"labels\":[\"January\",\"February\",\"March\"],\"datasets\":[{\"label\":\"Sales\",\"data\":[65,59,80],\"backgroundColor\":\"rgb(75,192,192)\"}]},\"options\":{\"title\":{\"display\":true,\"text\":\"Monthly Sales\"}}}"
     }
-  ]
+  ],
+  "arguments": {
+    "client": {
+      "description": "Specifies the client type for which the QuickChart Server is installed. In this case, it's for Claude.",
+      "required": true,
+      "example": "claude"
+    }
+  }
 }

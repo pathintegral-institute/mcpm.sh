@@ -1,6 +1,6 @@
 {
   "name": "inoyu",
-  "display_name": "Inoyu Apache Unomi MCP Server",
+  "display_name": "Inoyu Apache Unomi",
   "description": "Interact with an Apache Unomi CDP customer data platform to retrieve and update customer profiles",
   "repository": {
     "type": "git",
@@ -27,14 +27,44 @@
         "@inoyu/mcp-unomi-server"
       ],
       "env": {
-        "UNOMI_BASE_URL": "http://your-unomi-server:8181",
-        "UNOMI_USERNAME": "your-username",
-        "UNOMI_PASSWORD": "your-password",
-        "UNOMI_PROFILE_ID": "your-profile-id",
-        "UNOMI_KEY": "your-unomi-key",
-        "UNOMI_EMAIL": "your-email@example.com",
-        "UNOMI_SOURCE_ID": "claude-desktop"
+        "UNOMI_BASE_URL": "${UNOMI_BASE_URL}",
+        "UNOMI_USERNAME": "${UNOMI_USERNAME}",
+        "UNOMI_PASSWORD": "${UNOMI_PASSWORD}",
+        "UNOMI_PROFILE_ID": "${UNOMI_PROFILE_ID}",
+        "UNOMI_KEY": "${UNOMI_KEY}",
+        "UNOMI_EMAIL": "${UNOMI_EMAIL}",
+        "UNOMI_SOURCE_ID": "${UNOMI_SOURCE_ID}"
       }
+    }
+  },
+  "arguments": {
+    "UNOMI_BASE_URL": {
+      "description": "The base URL of your Apache Unomi server (e.g., http://your-unomi-server:8181)",
+      "required": true
+    },
+    "UNOMI_USERNAME": {
+      "description": "The username to authenticate with the Apache Unomi server, default is 'karaf'",
+      "required": true
+    },
+    "UNOMI_PASSWORD": {
+      "description": "The password to authenticate with the Apache Unomi server, default is 'karaf'",
+      "required": true
+    },
+    "UNOMI_PROFILE_ID": {
+      "description": "The ID of the user profile to be used for context management",
+      "required": false
+    },
+    "UNOMI_KEY": {
+      "description": "The authorization key required for secured operations with the Unomi server, defaults to '670c26d1cc413346c3b2fd9ce65dab41'",
+      "required": false
+    },
+    "UNOMI_EMAIL": {
+      "description": "The email address associated with the user profile, used for profile lookup",
+      "required": false
+    },
+    "UNOMI_SOURCE_ID": {
+      "description": "An identifier for the source of the request (e.g., claude-desktop)",
+      "required": false
     }
   }
 }

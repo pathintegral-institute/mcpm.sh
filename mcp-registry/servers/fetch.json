@@ -1,6 +1,6 @@
 {
   "name": "fetch",
-  "display_name": "Fetch MCP Server",
+  "display_name": "Fetch",
   "description": "A server that flexibly fetches HTML, JSON, Markdown, or plaintext.",
   "repository": {
     "type": "git",
@@ -54,6 +54,18 @@
         "-y",
         "https://github.com/zcaceres/fetch-mcp"
       ]
+    }
+  },
+  "arguments": {
+    "url": {
+      "description": "URL of the website to fetch",
+      "required": true,
+      "example": "https://example.com"
+    },
+    "headers": {
+      "description": "Custom headers to include in the request",
+      "required": false,
+      "example": "{\"Authorization\": \"Bearer token\"}"
     }
   }
 }

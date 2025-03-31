@@ -1,6 +1,6 @@
 {
   "name": "aws-cost-explorer",
-  "display_name": "AWS Cost Explorer and Amazon Bedrock",
+  "display_name": "AWS Cost Explorer",
   "description": "Optimize your AWS spend (including Amazon Bedrock spend) with this MCP server by examining spend across regions, services, instance types and foundation models ([demo video](https://www.youtube.com/watch?v=WuVOmYLRFmI&feature=youtu.be)).",
   "repository": {
     "type": "git",
@@ -82,5 +82,27 @@
       "description": "Show me my top 5 AWS services by cost for the last month.",
       "prompt": "Show me my top 5 AWS services by cost for the last month."
     }
-  ]
+  ],
+  "arguments": {
+    "AWS_ACCESS_KEY_ID": {
+      "description": "Your AWS Access Key ID required for authenticating API calls to AWS services.",
+      "required": true,
+      "example": "AKIAIOSFODNN7EXAMPLE"
+    },
+    "AWS_SECRET_ACCESS_KEY": {
+      "description": "Your AWS Secret Access Key required alongside the Access Key ID for authentication.",
+      "required": true,
+      "example": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+    },
+    "AWS_REGION": {
+      "description": "The AWS region where your resources are located. Examples include 'us-east-1', 'eu-west-1'.",
+      "required": true,
+      "example": "us-east-1"
+    },
+    "BEDROCK_LOG_GROUP_NAME": {
+      "description": "The name of the CloudWatch log group where Amazon Bedrock model invocation logs are stored.",
+      "required": true,
+      "example": "my-bedrock-log-group-name"
+    }
+  }
 }

@@ -1,6 +1,6 @@
 {
   "name": "kubernetes",
-  "display_name": "MCP Server Kubernetes",
+  "display_name": "Kubernetes",
   "description": "Connect to Kubernetes cluster and manage pods, deployments, and services.",
   "repository": {
     "type": "git",

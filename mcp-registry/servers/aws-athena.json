@@ -1,6 +1,6 @@
 {
   "name": "aws-athena",
-  "display_name": "AWS Athena MCP",
+  "display_name": "AWS Athena",
   "description": "A MCP server for AWS Athena to run SQL queries on Glue Catalog.",
   "repository": {
     "type": "git",
@@ -35,9 +35,9 @@
         "AWS_ACCESS_KEY_ID": "${AWS_ACCESS_KEY_ID}",
         "AWS_SECRET_ACCESS_KEY": "${AWS_SECRET_ACCESS_KEY}",
         "AWS_SESSION_TOKEN": "${AWS_SESSION_TOKEN}",
-        "QUERY_TIMEOUT_MS": "300000",
-        "MAX_RETRIES": "100",
-        "RETRY_DELAY_MS": "500"
+        "QUERY_TIMEOUT_MS": "${QUERY_TIMEOUT_MS}",
+        "MAX_RETRIES": "${MAX_RETRIES}",
+        "RETRY_DELAY_MS": "${RETRY_DELAY_MS}"
       }
     }
   },
@@ -67,5 +67,52 @@
       "description": "Finds the average price by category for in-stock products",
       "prompt": "{\"database\": \"my_database\", \"query\": \"SELECT category, COUNT(*) as count, AVG(price) as avg_price FROM products WHERE in_stock = true GROUP BY category ORDER BY count DESC\", \"maxRows\": 100}"
     }
-  ]
+  ],
+  "arguments": {
+    "OUTPUT_S3_PATH": {
+      "description": "S3 bucket path for saving Athena query results.",
+      "required": true,
+      "example": "s3://your-bucket/athena-results/"
+    },
+    "AWS_REGION": {
+      "description": "The AWS region to use for Athena queries, defaults to AWS CLI default region.",
+      "required": false,
+      "example": "us-east-1"
+    },
+    "AWS_PROFILE": {
+      "description": "AWS CLI profile to use, defaults to 'default' profile.",
+      "required": false,
+      "example": "default"
+    },
+    "AWS_ACCESS_KEY_ID": {
+      "description": "AWS access key for authentication, if not using IAM role or environment variables.",
+      "required": false,
+      "example": ""
+    },
+    "AWS_SECRET_ACCESS_KEY": {
+      "description": "AWS secret key for authentication, if not using IAM role or environment variables.",
+      "required": false,
+      "example": ""
+    },
+    "AWS_SESSION_TOKEN": {
+      "description": "Session token for temporary AWS credentials, if using temporary access.",
+      "required": false,
+      "example": ""
+    },
+    "QUERY_TIMEOUT_MS": {
+      "description": "Timeout setting for queries in milliseconds (default: 300000 ms).",
+      "required": false,
+      "example": "300000"
+    },
+    "MAX_RETRIES": {
+      "description": "Number of retry attempts for failed queries (default: 100).",
+      "required": false,
+      "example": "100"
+    },
+    "RETRY_DELAY_MS": {
+      "description": "Delay between retry attempts in milliseconds (default: 500 ms).",
+      "required": false,
+      "example": "500"
+    }
+  }
 }

@@ -1,6 +1,6 @@
 {
   "name": "crypto-feargreed-mcp",
-  "display_name": "Crypto Fear & Greed Index MCP Server",
+  "display_name": "Crypto Fear & Greed Index",
   "description": "Providing real-time and historical Crypto Fear & Greed Index data.",
   "repository": {
     "type": "git",

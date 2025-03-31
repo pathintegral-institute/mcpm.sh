@@ -1,6 +1,6 @@
 {
   "name": "algorand",
-  "display_name": "Algorand MCP Implementation",
+  "display_name": "Algorand Implementation",
   "description": "A comprehensive MCP server for tooling interactions (40+) and resource accessibility (60+) plus many useful prompts for interacting with the Algorand blockchain.",
   "repository": {
     "type": "git",
@@ -30,15 +30,57 @@
         "@GoPlausible/algorand-mcp"
       ],
       "env": {
-        "NFD_API_KEY": "",
-        "NFD_API_URL": "https://testnet-api.algonode.cloud",
-        "ALGORAND_ALGOD": "https://testnet-api.algonode.cloud",
-        "ALGORAND_TOKEN": "",
-        "ALGORAND_INDEXER": "https://testnet-idx.algonode.cloud",
-        "ALGORAND_INDEXER_API": "https://testnet-idx.algonode.cloud/v2",
-        "ALGORAND_INDEXER_PORT": "",
-        "ALGORAND_NETWORK": "testnet"
+        "NFD_API_KEY": "${NFD_API_KEY}",
+        "NFD_API_URL": "${NFD_API_URL}",
+        "ALGORAND_ALGOD": "${ALGORAND_ALGOD}",
+        "ALGORAND_TOKEN": "${ALGORAND_TOKEN}",
+        "ALGORAND_INDEXER": "${ALGORAND_INDEXER}",
+        "ALGORAND_INDEXER_API": "${ALGORAND_INDEXER_API}",
+        "ALGORAND_INDEXER_PORT": "${ALGORAND_INDEXER_PORT}",
+        "ALGORAND_NETWORK": "${ALGORAND_NETWORK}"
       }
+    }
+  },
+  "arguments": {
+    "NFD_API_KEY": {
+      "description": "API key for the NFD service, required for accessing domain functionalities.",
+      "required": true,
+      "example": "your_nfd_api_key_here"
+    },
+    "NFD_API_URL": {
+      "description": "The URL endpoint for the NFD API service.",
+      "required": false,
+      "example": "https://api.nf.domains"
+    },
+    "ALGORAND_ALGOD": {
+      "description": "The URL endpoint for the Algorand Algod node.",
+      "required": true,
+      "example": "https://testnet-api.algonode.cloud"
+    },
+    "ALGORAND_TOKEN": {
+      "description": "The token required to interact with the Algorand Algod node, usually a blank string for testnets.",
+      "required": false,
+      "example": ""
+    },
+    "ALGORAND_INDEXER": {
+      "description": "The URL endpoint for the Algorand Indexer service.",
+      "required": true,
+      "example": "https://testnet-idx.algonode.cloud"
+    },
+    "ALGORAND_INDEXER_API": {
+      "description": "The API endpoint for accessing Algorand indexer functionalities.",
+      "required": false,
+      "example": "https://testnet-idx.algonode.cloud/v2"
+    },
+    "ALGORAND_INDEXER_PORT": {
+      "description": "The port for the Algorand indexer service, usually left blank for default settings.",
+      "required": false,
+      "example": ""
+    },
+    "ALGORAND_NETWORK": {
+      "description": "The network type being used (e.g., testnet or mainnet).",
+      "required": true,
+      "example": "testnet"
     }
   }
 }

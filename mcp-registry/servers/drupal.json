@@ -1,6 +1,6 @@
 {
   "name": "drupal",
-  "display_name": "MCP Server for Drupal",
+  "display_name": "Drupal Server",
   "description": "Server for interacting with [Drupal](https://www.drupal.org/project/mcp) using STDIO transport layer.",
   "repository": {
     "type": "git",
@@ -33,6 +33,18 @@
         "${DRUPAL_BASE_URL}"
       ],
       "env": {}
+    }
+  },
+  "arguments": {
+    "VERSION": {
+      "description": "The version of the MCP server to be used. This must be provided to ensure compatibility with the installed Drupal version.",
+      "required": true,
+      "example": "1.0.0"
+    },
+    "DRUPAL_BASE_URL": {
+      "description": "The base URL of the Drupal site that the MCP server will interact with.",
+      "required": true,
+      "example": "https://example.com"
     }
   }
 }

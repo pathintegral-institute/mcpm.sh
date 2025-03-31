@@ -1,6 +1,6 @@
 {
   "name": "fastn-ai-unified-api-mcp-server",
-  "display_name": "Fastn Server",
+  "display_name": "Fastn AI Unified API",
   "description": "A remote, dynamic MCP server with a unified API that connects to 1,000+ tools, actions, and workflows, featuring built-in authentication and monitoring.",
   "repository": {
     "type": "git",
@@ -28,10 +28,22 @@
         "git+https://github.com/fastnai/mcp-fastn",
         "fastn-server.py",
         "--api_key",
-        "YOUR_API_KEY",
+        "${YOUR_API_KEY}",
         "--space_id",
-        "YOUR_WORKSPACE_ID"
+        "${YOUR_WORKSPACE_ID}"
       ]
+    }
+  },
+  "arguments": {
+    "YOUR_API_KEY": {
+      "description": "The API key is required to authenticate and access the Fastn server's features and services.",
+      "required": true,
+      "example": "your_actual_api_key_here"
+    },
+    "YOUR_WORKSPACE_ID": {
+      "description": "The unique identifier for your workspace in Fastn, which directs the server to the correct environment and settings.",
+      "required": true,
+      "example": "your_actual_workspace_id_here"
     }
   }
 }

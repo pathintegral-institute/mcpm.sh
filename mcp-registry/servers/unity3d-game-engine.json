@@ -1,6 +1,6 @@
 {
   "name": "unity3d-game-engine",
-  "display_name": "MCP Unity",
+  "display_name": "Unity3D Game Engine",
   "description": "An MCP server that enables LLMs to interact with Unity3d Game Engine, supporting access to a variety of the Unit's Editor engine tools (e.g. Console Logs, Test Runner logs, Editor functions, hierarchy state, etc) and executing them as MCP tools or gather them as resources.",
   "repository": {
     "type": "git",
@@ -41,5 +41,12 @@
       "description": "Execute Unity menu items programmatically using MCP Unity.",
       "prompt": "mcp-unity execute_menu_item"
     }
-  ]
+  ],
+  "arguments": {
+    "UNITY_PORT": {
+      "description": "Environment variable to set the port number for the Unity MCP Server. This should be set to the desired port for the server to run and connect with the Unity Editor.",
+      "required": false,
+      "example": "8090"
+    }
+  }
 }

@@ -1,6 +1,6 @@
 {
   "name": "obsidian-mcp",
-  "display_name": "Obsidian MCP Server",
+  "display_name": "Obsidian",
   "description": "(by Steven Stavrakis) An MCP server for Obsidian.md with tools for searching, reading, writing, and organizing notes.",
   "repository": {
     "type": "git",

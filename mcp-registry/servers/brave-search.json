@@ -1,6 +1,6 @@
 {
   "name": "brave-search",
-  "display_name": "Brave Search MCP Server",
+  "display_name": "Brave Search",
   "description": "Web and local search using Brave's Search API",
   "repository": {
     "type": "git",
@@ -60,5 +60,12 @@
       "description": "Search for local businesses and services.",
       "prompt": "brave_local_search(query=\"restaurants near me\", count=5)"
     }
-  ]
+  ],
+  "arguments": {
+    "BRAVE_API_KEY": {
+      "description": "The API key required to authenticate requests to the Brave Search API.",
+      "required": true,
+      "example": "YOUR_API_KEY_HERE"
+    }
+  }
 }

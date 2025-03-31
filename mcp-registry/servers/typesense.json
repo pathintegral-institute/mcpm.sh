@@ -1,6 +1,6 @@
 {
   "name": "typesense",
-  "display_name": "Typesense MCP Server",
+  "display_name": "Typesense",
   "description": "A Model Context Protocol (MCP) server implementation that provides AI models with access to Typesense search capabilities. This server enables LLMs to discover, search, and analyze data stored in Typesense collections.",
   "repository": {
     "type": "git",
@@ -28,13 +28,13 @@
         "-y",
         "typesense-mcp-server",
         "--host",
-        "your-typesense-host",
+        "${TYPESENSE_HOST}",
         "--port",
         "8108",
         "--protocol",
         "http",
         "--api-key",
-        "your-api-key"
+        "${API_KEY}"
       ]
     }
   },
@@ -44,5 +44,17 @@
       "description": "Configuration for using Typesense MCP Server with Claude Desktop.",
       "prompt": "{\"mcpServers\": {\"typesense\": {\"command\": \"npx\",\"args\": [\"-y\",\"typesense-mcp-server\",\"--host\", \"your-typesense-host\",\"--port\", \"8108\",\"--protocol\", \"http\",\"--api-key\", \"your-api-key\"]}}}"
     }
-  ]
+  ],
+  "arguments": {
+    "TYPESENSE_HOST": {
+      "description": "The host for the Typesense server. This is the address where your Typesense server is running.",
+      "required": true,
+      "example": "localhost"
+    },
+    "API_KEY": {
+      "description": "The API key for accessing the Typesense server. This is needed for authentication when making requests to the server.",
+      "required": true,
+      "example": "your_api_key_here"
+    }
+  }
 }

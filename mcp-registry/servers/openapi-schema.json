@@ -1,6 +1,6 @@
 {
   "name": "openapi-schema",
-  "display_name": "OpenAPI Schema Model Context Protocol Server",
+  "display_name": "OpenAPI Schema Model Context Protocol",
   "description": "Allow LLMs to explore large [OpenAPI](https://www.openapis.org/) schemas without bloating the context.",
   "repository": {
     "type": "git",
@@ -28,6 +28,13 @@
         "mcp-openapi-schema",
         "/ABSOLUTE/PATH/TO/openapi.yaml"
       ]
+    }
+  },
+  "arguments": {
+    "ABSOLUTE_PATH_TO_OPENAPI_YAML": {
+      "description": "The absolute path to the OpenAPI YAML file that the MCP server will use to load the schema.",
+      "required": true,
+      "example": "/absolute/path/to/openapi.yaml"
     }
   }
 }

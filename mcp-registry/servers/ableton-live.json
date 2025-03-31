@@ -1,6 +1,6 @@
 {
   "name": "ableton-live",
-  "display_name": "Ableton Live MCP Server",
+  "display_name": "Ableton Live",
   "description": "an MCP server to control Ableton Live.",
   "repository": {
     "type": "git",

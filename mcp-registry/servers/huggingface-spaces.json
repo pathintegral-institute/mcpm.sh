@@ -1,6 +1,6 @@
 {
   "name": "huggingface-spaces",
-  "display_name": "mcp-hfspace MCP Server \ud83e\udd17",
+  "display_name": "HuggingFace Spaces \ud83e\udd17",
   "description": "Server for using HuggingFace Spaces, supporting Open Source Image, Audio, Text Models and more. Claude Desktop mode for easy integration.",
   "repository": {
     "type": "git",
@@ -51,5 +51,12 @@
       "prompt": "Analyze the image file 'test_image.jpg'."
     }
   ],
-  "homepage": "https://github.com/evalstate/mcp-hfspace"
+  "homepage": "https://github.com/evalstate/mcp-hfspace",
+  "arguments": {
+    "CLAUDE_DESKTOP_MODE": {
+      "description": "Enables or disables the Claude Desktop Mode for the server.",
+      "required": false,
+      "example": "false"
+    }
+  }
 }

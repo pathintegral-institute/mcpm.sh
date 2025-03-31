@@ -1,6 +1,6 @@
 {
   "name": "video-editor",
-  "display_name": "Video Editor MCP Server",
+  "display_name": "Video Editor",
   "description": "A Model Context Protocol Server to add, edit, and search videos with [Video Jungle](https://www.video-jungle.com/).",
   "repository": {
     "type": "git",
@@ -27,7 +27,7 @@
         "--from",
         "git+https://github.com/burningion/video-editing-mcp",
         "video-editor-mcp",
-        "YOURAPIKEY"
+        "${YOURAPIKEY}"
       ]
     }
   },
@@ -47,5 +47,12 @@
       "description": "Creates an edit from found video segments.",
       "prompt": "can you create an edit of all the times the video says \"fly trap\"?"
     }
-  ]
+  ],
+  "arguments": {
+    "YOURAPIKEY": {
+      "description": "API key required to authenticate and communicate with Video Jungle services.",
+      "required": true,
+      "example": "YOURAPIKEY"
+    }
+  }
 }

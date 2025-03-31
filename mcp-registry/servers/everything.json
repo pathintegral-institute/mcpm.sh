@@ -1,6 +1,6 @@
 {
   "name": "everything",
-  "display_name": "Everything MCP Server",
+  "display_name": "Everything",
   "description": "This MCP server exercises all the features of the MCP protocol. It is a test server for builders of MCP clients.",
   "repository": {
     "type": "git",
@@ -21,7 +21,6 @@
     "example",
     "demo"
   ],
-  "arguments": {},
   "installations": {
     "npm": {
       "type": "npm",

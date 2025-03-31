@@ -1,6 +1,6 @@
 {
   "name": "mysql",
-  "display_name": "MySQL MCP Server",
+  "display_name": "MySQL Database Integration",
   "description": "MySQL database integration in Python with configurable access controls and schema inspection",
   "repository": {
     "type": "git",
@@ -27,12 +27,39 @@
         "mysql_mcp_server"
       ],
       "env": {
-        "MYSQL_HOST": "localhost",
-        "MYSQL_PORT": "3306",
-        "MYSQL_USER": "your_username",
-        "MYSQL_PASSWORD": "your_password",
-        "MYSQL_DATABASE": "your_database"
+        "MYSQL_HOST": "${MYSQL_HOST}",
+        "MYSQL_PORT": "${MYSQL_PORT}",
+        "MYSQL_USER": "${MYSQL_USER}",
+        "MYSQL_PASSWORD": "${MYSQL_PASSWORD}",
+        "MYSQL_DATABASE": "${MYSQL_DATABASE}"
       }
+    }
+  },
+  "arguments": {
+    "MYSQL_HOST": {
+      "description": "Database host",
+      "required": true,
+      "example": "localhost"
+    },
+    "MYSQL_PORT": {
+      "description": "Database port (defaults to 3306 if not specified)",
+      "required": false,
+      "example": "3306"
+    },
+    "MYSQL_USER": {
+      "description": "Username for database access",
+      "required": true,
+      "example": "your_username"
+    },
+    "MYSQL_PASSWORD": {
+      "description": "Password for the database user",
+      "required": true,
+      "example": "your_password"
+    },
+    "MYSQL_DATABASE": {
+      "description": "Database name to connect to",
+      "required": true,
+      "example": "your_database"
     }
   }
 }

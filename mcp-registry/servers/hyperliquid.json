@@ -1,6 +1,6 @@
 {
   "name": "hyperliquid",
-  "display_name": "Hyperliquid MCP Server",
+  "display_name": "Hyperliquid",
   "description": "An MCP server implementation that integrates the Hyperliquid SDK for exchange data.",
   "repository": {
     "type": "git",

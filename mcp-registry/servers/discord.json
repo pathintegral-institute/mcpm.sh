@@ -1,6 +1,6 @@
 {
   "name": "discord",
-  "display_name": "Discord MCP Server",
+  "display_name": "Discord",
   "description": "A MCP server to connect to Discord guilds through a bot and read and write messages in channels",
   "repository": {
     "type": "git",
@@ -42,8 +42,15 @@
         "https://github.com/v-3/discordmcp"
       ],
       "env": {
-        "DISCORD_TOKEN": "your_discord_bot_token_here"
+        "DISCORD_TOKEN": "${DISCORD_TOKEN}"
       }
+    }
+  },
+  "arguments": {
+    "DISCORD_TOKEN": {
+      "description": "The Discord bot token required for authentication and to interact with Discord's API.",
+      "required": true,
+      "example": "your_discord_bot_token_here"
     }
   }
 }

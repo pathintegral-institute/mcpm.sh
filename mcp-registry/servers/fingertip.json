@@ -1,6 +1,6 @@
 {
   "name": "fingertip",
-  "display_name": "Fingertip MCP",
+  "display_name": "Fingertip",
   "description": "MCP server for Fingertip.com to search and create new sites.",
   "repository": {
     "type": "git",

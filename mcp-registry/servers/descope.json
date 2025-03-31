@@ -1,6 +1,6 @@
 {
   "name": "descope",
-  "display_name": "Descope MCP Server",
+  "display_name": "Descope",
   "description": "An MCP server to integrate with [Descope](https://descope.com/) to search audit logs, manage users, and more.",
   "repository": {
     "type": "git",
@@ -33,6 +33,18 @@
         "DESCOPE_PROJECT_ID": "your-descope-project-id-here",
         "DESCOPE_MANAGEMENT_KEY": "your-descope-management-key-here"
       }
+    }
+  },
+  "arguments": {
+    "DESCOPE_PROJECT_ID": {
+      "description": "Your Descope Project ID",
+      "required": true,
+      "example": "12345-abcde-67890-fghij"
+    },
+    "DESCOPE_MANAGEMENT_KEY": {
+      "description": "Your Descope Management Key",
+      "required": true,
+      "example": "sk_test_4eC39HqLyjEDERyCzKZQz9fgo"
     }
   }
 }

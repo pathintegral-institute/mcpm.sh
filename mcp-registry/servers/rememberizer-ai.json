@@ -1,6 +1,6 @@
 {
   "name": "rememberizer-ai",
-  "display_name": "Rememberizer MCP Server",
+  "display_name": "Rememberizer",
   "description": "An MCP server designed for interacting with the Rememberizer data source, facilitating enhanced knowledge retrieval.",
   "repository": {
     "type": "git",
@@ -28,8 +28,15 @@
         "mcp-server-rememberizer"
       ],
       "env": {
-        "REMEMBERIZER_API_TOKEN": "your_rememberizer_api_token"
+        "REMEMBERIZER_API_TOKEN": "${REMEMBERIZER_API_TOKEN}"
       }
+    }
+  },
+  "arguments": {
+    "REMEMBERIZER_API_TOKEN": {
+      "description": "Your Rememberizer API token, required for accessing the Rememberizer API.",
+      "required": true,
+      "example": "your_rememberizer_api_token"
     }
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "pif",
-  "display_name": "MCP-PIF Server",
+  "display_name": "PIF Framework",
   "description": "A Personal Intelligence Framework (PIF), providing tools for file operations, structured reasoning, and journal-based documentation to support continuity and evolving human-AI collaboration across sessions.",
   "repository": {
     "type": "git",
@@ -42,5 +42,17 @@
       "description": "Document development for future reference.",
       "prompt": "journal_create: { title: 'Implementation Pattern', content: 'Insights about development...', tags: ['development', 'patterns'] }"
     }
-  ]
+  ],
+  "arguments": {
+    "MCP_WORKSPACE_ROOT": {
+      "description": "Environment variable to specify a workspace location for the server.",
+      "required": false,
+      "example": "/path/to/workspace"
+    },
+    "MCP_CONFIG": {
+      "description": "Environment variable containing a JSON string of configuration options for the server.",
+      "required": false,
+      "example": "{\"key\": \"value\"}"
+    }
+  }
 }

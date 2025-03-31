@@ -1,6 +1,6 @@
 {
   "name": "mindmap",
-  "display_name": "Mindmap MCP Server",
+  "display_name": "Mindmap",
   "description": "A server that generates mindmaps from input containing markdown code.",
   "repository": {
     "type": "git",

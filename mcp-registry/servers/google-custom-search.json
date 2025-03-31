@@ -1,6 +1,6 @@
 {
   "name": "google-custom-search",
-  "display_name": "A MCP Server for Google Custom Search and Webpage Reading",
+  "display_name": "Google Custom Search",
   "description": "Provides Google Search results via the Google Custom Search API",
   "repository": {
     "type": "git",
@@ -45,5 +45,17 @@
       "description": "Extract content from any webpage.",
       "prompt": "{\"name\":\"read_webpage\",\"arguments\":{\"url\":\"https://example.com\"}}"
     }
-  ]
+  ],
+  "arguments": {
+    "GOOGLE_API_KEY": {
+      "description": "Your Google API key for accessing the Google Custom Search API.",
+      "required": true,
+      "example": "AIzaSyA-xxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    },
+    "GOOGLE_SEARCH_ENGINE_ID": {
+      "description": "The unique identifier for your Custom Search Engine that you created on Google.",
+      "required": true,
+      "example": "012345678901234567890:abcdefghijk"
+    }
+  }
 }

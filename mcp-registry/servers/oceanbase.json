@@ -1,6 +1,6 @@
 {
   "name": "oceanbase",
-  "display_name": "OceanBase MCP Server",
+  "display_name": "OceanBase",
   "description": "(by yuanoOo) A Model Context Protocol (MCP) server that enables secure interaction with OceanBase databases.",
   "repository": {
     "type": "git",
@@ -30,12 +30,39 @@
         "oceanbase_mcp_server"
       ],
       "env": {
-        "OB_HOST": "localhost",
-        "OB_PORT": "2881",
-        "OB_USER": "your_username",
-        "OB_PASSWORD": "your_password",
-        "OB_DATABASE": "your_database"
+        "OB_HOST": "${OB_HOST}",
+        "OB_PORT": "${OB_PORT}",
+        "OB_USER": "${OB_USER}",
+        "OB_PASSWORD": "${OB_PASSWORD}",
+        "OB_DATABASE": "${OB_DATABASE}"
       }
+    }
+  },
+  "arguments": {
+    "OB_HOST": {
+      "description": "Database host for connecting to the OceanBase server.",
+      "required": true,
+      "example": "localhost"
+    },
+    "OB_PORT": {
+      "description": "Optional: Database port to connect to OceanBase, defaults to 2881 if not specified.",
+      "required": false,
+      "example": "2881"
+    },
+    "OB_USER": {
+      "description": "Username for authenticating with the OceanBase database.",
+      "required": true,
+      "example": "your_username"
+    },
+    "OB_PASSWORD": {
+      "description": "Password for the specified database user.",
+      "required": true,
+      "example": "your_password"
+    },
+    "OB_DATABASE": {
+      "description": "Name of the OceanBase database to connect to.",
+      "required": true,
+      "example": "your_database"
     }
   }
 }

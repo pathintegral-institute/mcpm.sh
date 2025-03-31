@@ -1,6 +1,6 @@
 {
   "name": "alphavantage",
-  "display_name": "Alphavantage MCP Server",
+  "display_name": "Alphavantage",
   "description": "MCP server for stock market data API [AlphaVantage](https://www.alphavantage.co/)",
   "repository": {
     "type": "git",
@@ -31,6 +31,13 @@
       "env": {
         "ALPHAVANTAGE_API_KEY": "${ALPHAVANTAGE_API_KEY}"
       }
+    }
+  },
+  "arguments": {
+    "ALPHAVANTAGE_API_KEY": {
+      "description": "The API key to access the Alphavantage service.",
+      "required": true,
+      "example": "YOUR_API_KEY_HERE"
     }
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "neovim",
-  "display_name": "MCP Neovim Server",
+  "display_name": "Neovim Server",
   "description": "An MCP Server for your Neovim session.",
   "repository": {
     "type": "git",
@@ -29,9 +29,21 @@
         "mcp-neovim-server"
       ],
       "env": {
-        "ALLOW_SHELL_COMMANDS": "true",
-        "NVIM_SOCKET_PATH": "/tmp/nvim"
+        "ALLOW_SHELL_COMMANDS": "${ALLOW_SHELL_COMMANDS}",
+        "NVIM_SOCKET_PATH": "${NVIM_SOCKET_PATH}"
       }
+    }
+  },
+  "arguments": {
+    "ALLOW_SHELL_COMMANDS": {
+      "description": "Set to 'true' to enable shell command execution (e.g. `!ls`).",
+      "required": false,
+      "example": "true"
+    },
+    "NVIM_SOCKET_PATH": {
+      "description": "Set to the path of your Neovim socket.",
+      "required": false,
+      "example": "/tmp/nvim"
     }
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "mcp-installer",
-  "display_name": "MCP Installer",
+  "display_name": "Installer",
   "description": "This server is a server that installs other MCP servers for you.",
   "repository": {
     "type": "git",

@@ -1,6 +1,6 @@
 {
   "name": "godot",
-  "display_name": "Godot MCP",
+  "display_name": "Godot",
   "description": "A MCP server providing comprehensive Godot engine integration for project editing, debugging, and scene management.",
   "repository": {
     "type": "git",

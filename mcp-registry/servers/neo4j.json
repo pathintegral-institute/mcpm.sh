@@ -1,6 +1,6 @@
 {
   "name": "neo4j",
-  "display_name": "MCP Neo4j Server",
+  "display_name": "Neo4j Server",
   "description": "A community built server that interacts with Neo4j Graph Database.",
   "repository": {
     "type": "git",
@@ -55,5 +55,21 @@
       "description": "Perform comprehensive queries like 'Find all products purchased by customers who live in New York'.",
       "prompt": "User: \"Find all products purchased by customers who live in New York\""
     }
-  ]
+  ],
+  "arguments": {
+    "NEO4J_URI": {
+      "description": "Neo4j database URI (default: bolt://localhost:7687)",
+      "required": false,
+      "example": "bolt://localhost:7687"
+    },
+    "NEO4J_USERNAME": {
+      "description": "Neo4j username (default: neo4j)",
+      "required": false,
+      "example": "neo4j"
+    },
+    "NEO4J_PASSWORD": {
+      "description": "Neo4j password",
+      "required": true
+    }
+  }
 }

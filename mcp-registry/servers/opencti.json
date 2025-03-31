@@ -1,6 +1,6 @@
 {
   "name": "opencti",
-  "display_name": "OpenCTI MCP Server",
+  "display_name": "OpenCTI",
   "description": "Interact with OpenCTI platform to retrieve threat intelligence data including reports, indicators, malware and threat actors.",
   "repository": {
     "type": "git",
@@ -49,5 +49,15 @@
       "description": "Lists all users in the system.",
       "prompt": "{ \"name\": \"list_users\", \"arguments\": {} }"
     }
-  ]
+  ],
+  "arguments": {
+    "OPENCTI_URL": {
+      "description": "Your OpenCTI instance URL",
+      "required": true
+    },
+    "OPENCTI_TOKEN": {
+      "description": "Your OpenCTI API token",
+      "required": true
+    }
+  }
 }

@@ -28,7 +28,7 @@
         "xiyan_mcp_server"
       ],
       "env": {
-        "YML": "PATH/TO/YML"
+        "YML": "${YML}"
       }
     }
   },
@@ -43,5 +43,12 @@
       "description": "After installing, you can run the server using a yml configuration file.",
       "prompt": "env YML=path/to/yml python -m xiyan_mcp_server"
     }
-  ]
+  ],
+  "arguments": {
+    "YML": {
+      "description": "The path to the YAML configuration file required for setting up the server environment variables.",
+      "required": true,
+      "example": "path/to/yml"
+    }
+  }
 }

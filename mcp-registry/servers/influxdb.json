@@ -1,6 +1,6 @@
 {
   "name": "influxdb",
-  "display_name": "InfluxDB MCP Server",
+  "display_name": "InfluxDB",
   "description": "Run queries against InfluxDB OSS API v2.",
   "repository": {
     "type": "git",
@@ -25,13 +25,32 @@
       "type": "npm",
       "command": "npx",
       "args": [
-        "influxdb-mcp-server"
+        "${INFLUXDB_TOKEN}",
+        "${INFLUXDB_URL}",
+        "${INFLUXDB_ORG}"
       ],
       "env": {
         "INFLUXDB_TOKEN": "your_token",
         "INFLUXDB_URL": "http://localhost:8086",
         "INFLUXDB_ORG": "your_org"
       }
+    }
+  },
+  "arguments": {
+    "INFLUXDB_TOKEN": {
+      "description": "Authentication token for the InfluxDB API",
+      "required": true,
+      "example": "your_token"
+    },
+    "INFLUXDB_URL": {
+      "description": "URL of the InfluxDB instance",
+      "required": false,
+      "example": "http://localhost:8086"
+    },
+    "INFLUXDB_ORG": {
+      "description": "Default organization name for certain operations",
+      "required": false,
+      "example": "your_org"
     }
   }
 }

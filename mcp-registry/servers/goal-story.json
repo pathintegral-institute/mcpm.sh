@@ -1,6 +1,6 @@
 {
   "name": "goal-story",
-  "display_name": "Goal Story MCP",
+  "display_name": "Goal Story",
   "description": "a Goal Tracker and Visualization Tool for personal and professional development.",
   "repository": {
     "type": "git",
@@ -29,8 +29,15 @@
         "-y",
         "goalstory-mcp",
         "https://prod-goalstory-rqc2.encr.app",
-        "your-api-key"
+        "${YOUR_API_KEY}"
       ]
+    }
+  },
+  "arguments": {
+    "YOUR_API_KEY": {
+      "description": "The API key required to authenticate your requests to the Goal Story service.",
+      "required": true,
+      "example": "abcdefgh12345678"
     }
   }
 }

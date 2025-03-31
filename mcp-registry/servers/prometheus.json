@@ -1,6 +1,6 @@
 {
   "name": "prometheus",
-  "display_name": "Prometheus MCP Server",
+  "display_name": "Prometheus",
   "description": "Query and analyze Prometheus - open-source monitoring system.",
   "repository": {
     "type": "git",
@@ -30,9 +30,9 @@
         "src/prometheus_mcp_server/main.py"
       ],
       "env": {
-        "PROMETHEUS_URL": "http://your-prometheus-server:9090",
-        "PROMETHEUS_USERNAME": "your_username",
-        "PROMETHEUS_PASSWORD": "your_password"
+        "PROMETHEUS_URL": "${PROMETHEUS_URL}",
+        "PROMETHEUS_USERNAME": "${PROMETHEUS_USERNAME}",
+        "PROMETHEUS_PASSWORD": "${PROMETHEUS_PASSWORD}"
       }
     }
   },
@@ -47,5 +47,22 @@
       "description": "Get a list of metrics from Prometheus",
       "prompt": "list_metrics()"
     }
-  ]
+  ],
+  "arguments": {
+    "PROMETHEUS_URL": {
+      "description": "The URL of the Prometheus server you want to connect to.",
+      "required": true,
+      "example": "http://your-prometheus-server:9090"
+    },
+    "PROMETHEUS_USERNAME": {
+      "description": "The username for basic authentication when accessing the Prometheus server.",
+      "required": false,
+      "example": "your_username"
+    },
+    "PROMETHEUS_PASSWORD": {
+      "description": "The password for basic authentication when accessing the Prometheus server.",
+      "required": false,
+      "example": "your_password"
+    }
+  }
 }

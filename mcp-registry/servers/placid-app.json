@@ -1,6 +1,6 @@
 {
   "name": "placid-app",
-  "display_name": "Placid.app MCP Server",
+  "display_name": "Placid.app",
   "description": "Generate image and video creatives using Placid.app templates",
   "repository": {
     "type": "git",
@@ -28,7 +28,7 @@
         "@felores/placid-mcp-server"
       ],
       "env": {
-        "PLACID_API_TOKEN": "your-api-token"
+        "PLACID_API_TOKEN": "${PLACID_API_TOKEN}"
       }
     }
   },
@@ -43,5 +43,12 @@
       "description": "Example usage for generating an image using Placid templates.",
       "prompt": "{\"template_id\":\"template-uuid\",\"layers\":{\"headline\":{\"text\":\"Welcome to My App\"},\"background\":{\"image\":\"https://example.com/bg.jpg\"}}}"
     }
-  ]
+  ],
+  "arguments": {
+    "PLACID_API_TOKEN": {
+      "description": "Your Placid API token used for authenticating requests to the Placid API.",
+      "required": true,
+      "example": "my-secret-api-token"
+    }
+  }
 }

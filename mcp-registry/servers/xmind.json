@@ -1,6 +1,6 @@
 {
   "name": "xmind",
-  "display_name": "MCP XMind Server",
+  "display_name": "XMind",
   "description": "Read and search through your XMind directory containing XMind files.",
   "repository": {
     "type": "git",
@@ -28,7 +28,7 @@
       "args": [
         "-y",
         "@41px/mcp-xmind",
-        "/Users/alex/XMind"
+        "${USER_XMIND_DIRECTORY}"
       ]
     }
   },
@@ -48,5 +48,12 @@
       "description": "Lists TODO tasks from the mind map.",
       "prompt": "{\"name\": \"get_todo_tasks\", \"arguments\": {\"path\": \"/path/to/file.xmind\"}}"
     }
-  ]
+  ],
+  "arguments": {
+    "USER_XMIND_DIRECTORY": {
+      "description": "The path to the directory containing XMind files that should be processed by the server.",
+      "required": true,
+      "example": "/Users/alex/XMind"
+    }
+  }
 }

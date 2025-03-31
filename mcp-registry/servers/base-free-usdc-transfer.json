@@ -1,6 +1,6 @@
 {
   "name": "base-free-usdc-transfer",
-  "display_name": "Free USDC Transfer MCP Server",
+  "display_name": "Free USDC Transfer",
   "description": "Send USDC on [Base](https://base.org/) for free using Claude AI! Built with [Coinbase CDP](https://docs.cdp.coinbase.com/mpc-wallet/docs/welcome).",
   "repository": {
     "type": "git",
@@ -33,6 +33,13 @@
         "COINBASE_CDP_API_KEY_NAME": "${COINBASE_CDP_API_KEY_NAME}",
         "COINBASE_CDP_PRIVATE_KEY": "${COINBASE_CDP_PRIVATE_KEY}"
       }
+    }
+  },
+  "arguments": {
+    "COINBASE_CDP_API_KEY_NAME": {
+      "description": "The name of your Coinbase CDP API key, which is required for authenticating API requests.",
+      "required": true,
+      "example": "my_api_key_name"
     }
   }
 }

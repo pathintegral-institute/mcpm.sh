@@ -1,6 +1,6 @@
 {
   "name": "google-drive",
-  "display_name": "Google Drive Server",
+  "display_name": "Google Drive",
   "description": "File access and search capabilities for Google Drive",
   "repository": {
     "type": "git",
@@ -42,6 +42,13 @@
         "GDRIVE_CREDENTIALS_PATH=/gdrive-server/credentials.json",
         "mcp/gdrive"
       ]
+    }
+  },
+  "arguments": {
+    "GDRIVE_CREDENTIALS_PATH": {
+      "description": "Path to the credentials JSON file for Google Drive OAuth.",
+      "required": true,
+      "example": "/gdrive-server/credentials.json"
     }
   }
 }

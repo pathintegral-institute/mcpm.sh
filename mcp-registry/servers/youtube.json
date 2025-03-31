@@ -1,6 +1,6 @@
 {
   "name": "youtube",
-  "display_name": "YouTube MCP Server",
+  "display_name": "YouTube",
   "description": "Comprehensive YouTube API integration for video management, Shorts creation, and analytics.",
   "repository": {
     "type": "git",
@@ -30,7 +30,7 @@
         "@modelcontextprotocol/server-youtube"
       ],
       "env": {
-        "YOUTUBE_API_KEY": "<YOUR_API_KEY>"
+        "YOUTUBE_API_KEY": "${YOUTUBE_API_KEY}"
       }
     }
   },
@@ -40,5 +40,12 @@
       "description": "Example code for managing videos using the YouTube MCP Server.",
       "prompt": "// Get video details\nconst video = await youtube.videos.getVideo({\n  videoId: \"video-id\"\n});"
     }
-  ]
+  ],
+  "arguments": {
+    "YOUTUBE_API_KEY": {
+      "description": "Your YouTube Data API key, needed for authentication when making requests to the YouTube API.",
+      "required": true,
+      "example": "AIzaSyD4-1234abcdEFGHijklmnop"
+    }
+  }
 }

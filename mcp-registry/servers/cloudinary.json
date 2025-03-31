@@ -1,6 +1,6 @@
 {
   "name": "cloudinary",
-  "display_name": "Cloudinary MCP Server",
+  "display_name": "Cloudinary",
   "description": "Cloudinary Model Context Protocol Server to upload media to Cloudinary and get back the media link and details.",
   "repository": {
     "type": "git",
@@ -40,5 +40,22 @@
       "description": "This example demonstrates how to upload an image to Cloudinary.",
       "prompt": "use_mcp_tool({ server_name: 'cloudinary', tool_name: 'upload', arguments: { file: 'path/to/image.jpg', resource_type: 'image', public_id: 'my-custom-id' }});"
     }
-  ]
+  ],
+  "arguments": {
+    "CLOUDINARY_CLOUD_NAME": {
+      "description": "Your Cloudinary cloud name, used to identify your account and resources.",
+      "required": true,
+      "example": "my_cloud_name"
+    },
+    "CLOUDINARY_API_KEY": {
+      "description": "Your Cloudinary API key, used to authenticate requests to the Cloudinary API.",
+      "required": true,
+      "example": "my_api_key"
+    },
+    "CLOUDINARY_API_SECRET": {
+      "description": "Your Cloudinary API secret, used to authenticate requests and secure your Cloudinary account.",
+      "required": true,
+      "example": "my_api_secret"
+    }
+  }
 }

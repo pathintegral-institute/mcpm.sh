@@ -1,6 +1,6 @@
 {
   "name": "travel-planner",
-  "display_name": "Travel Planner MCP Server",
+  "display_name": "Travel Planner",
   "description": "Travel planning and itinerary management server integrating with Google Maps API for location search, place details, and route calculations.",
   "repository": {
     "type": "git",
@@ -26,7 +26,7 @@
         "@gongrzhe/server-travelplanner-mcp"
       ],
       "env": {
-        "GOOGLE_MAPS_API_KEY": "your_google_maps_api_key"
+        "GOOGLE_MAPS_API_KEY": "${GOOGLE_MAPS_API_KEY}"
       }
     }
   },
@@ -51,5 +51,12 @@
       "description": "Get timezone information for a location",
       "prompt": "getTimeZone({ location: '34.0522,-118.2437' });"
     }
-  ]
+  ],
+  "arguments": {
+    "GOOGLE_MAPS_API_KEY": {
+      "description": "Your Google Maps API key with the following APIs enabled: Places API, Directions API, Geocoding API, Time Zone API",
+      "required": true,
+      "example": "your_google_maps_api_key"
+    }
+  }
 }

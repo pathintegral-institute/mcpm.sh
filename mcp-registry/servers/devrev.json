@@ -1,6 +1,6 @@
 {
   "name": "devrev",
-  "display_name": "DevRev MCP Server",
+  "display_name": "DevRev",
   "description": "An MCP server to integrate with DevRev APIs to search through your DevRev Knowledge Graph where objects can be imported from diff. sources listed [here](https://devrev.ai/docs/import#available-sources).",
   "repository": {
     "type": "git",
@@ -30,6 +30,13 @@
       "env": {
         "DEVREV_API_KEY": "${DEVREV_API_KEY}"
       }
+    }
+  },
+  "arguments": {
+    "DEVREV_API_KEY": {
+      "description": "Your DevRev API key required to authenticate requests to the DevRev API.",
+      "required": true,
+      "example": "YOUR_DEVREV_API_KEY"
     }
   }
 }

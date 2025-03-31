@@ -1,6 +1,6 @@
 {
   "name": "elevenlabs",
-  "display_name": "ElevenLabs MCP Server",
+  "display_name": "ElevenLabs",
   "description": "A server that integrates with ElevenLabs text-to-speech API capable of generating full voiceovers with multiple voices.",
   "repository": {
     "type": "git",
@@ -31,12 +31,49 @@
       "env": {
         "ELEVENLABS_API_KEY": "${ELEVENLABS_API_KEY}",
         "ELEVENLABS_VOICE_ID": "${ELEVENLABS_VOICE_ID}",
-        "ELEVENLABS_MODEL_ID": "eleven_flash_v2",
-        "ELEVENLABS_STABILITY": "0.5",
-        "ELEVENLABS_SIMILARITY_BOOST": "0.75",
-        "ELEVENLABS_STYLE": "0.1",
-        "ELEVENLABS_OUTPUT_DIR": "output"
+        "ELEVENLABS_MODEL_ID": "${ELEVENLABS_MODEL_ID}",
+        "ELEVENLABS_STABILITY": "${ELEVENLABS_STABILITY}",
+        "ELEVENLABS_SIMILARITY_BOOST": "${ELEVENLABS_SIMILARITY_BOOST}",
+        "ELEVENLABS_STYLE": "${ELEVENLABS_STYLE}",
+        "ELEVENLABS_OUTPUT_DIR": "${ELEVENLABS_OUTPUT_DIR}"
       }
+    }
+  },
+  "arguments": {
+    "ELEVENLABS_API_KEY": {
+      "description": "Your API key for ElevenLabs to access the text-to-speech services.",
+      "required": true,
+      "example": "sk-12345abcd"
+    },
+    "ELEVENLABS_VOICE_ID": {
+      "description": "The ID of the voice you want to use for synthesis.",
+      "required": true,
+      "example": "voice-12345"
+    },
+    "ELEVENLABS_MODEL_ID": {
+      "description": "The model ID to be used, indicating the version of the ElevenLabs API to utilize.",
+      "required": false,
+      "example": "eleven_flash_v2"
+    },
+    "ELEVENLABS_STABILITY": {
+      "description": "Stability of the voice generation; controls variations in the output voice.",
+      "required": false,
+      "example": "0.5"
+    },
+    "ELEVENLABS_SIMILARITY_BOOST": {
+      "description": "Boosting similarity for the voices; affects how closely the output mimics the selected voice.",
+      "required": false,
+      "example": "0.75"
+    },
+    "ELEVENLABS_STYLE": {
+      "description": "Style parameter to adjust the expression in the generated speech.",
+      "required": false,
+      "example": "0.1"
+    },
+    "ELEVENLABS_OUTPUT_DIR": {
+      "description": "Directory path where the generated audio files will be saved.",
+      "required": false,
+      "example": "output"
     }
   }
 }

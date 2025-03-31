@@ -1,6 +1,6 @@
 {
   "name": "dbhub",
-  "display_name": "DBHub",
+  "display_name": "DBHub - Universal Database Gateway",
   "description": "Universal database MCP server connecting to MySQL, PostgreSQL, SQLite, DuckDB and etc.",
   "repository": {
     "type": "git",
@@ -48,6 +48,13 @@
         "--dsn",
         "${DATABASE_URL}"
       ]
+    }
+  },
+  "arguments": {
+    "DATABASE_URL": {
+      "description": "The database connection string which includes the user, password, host, port, and database name.",
+      "required": true,
+      "example": "postgres://user:password@localhost:5432/dbname?sslmode=disable"
     }
   }
 }

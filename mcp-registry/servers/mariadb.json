@@ -1,6 +1,6 @@
 {
   "name": "mariadb",
-  "display_name": "MCP Server for MariaDB",
+  "display_name": "MariaDB Database Integration",
   "description": "MariaDB database integration with configurable access controls in Python.",
   "repository": {
     "type": "git",
@@ -43,5 +43,30 @@
       "description": "Example of executing a read-only operation against MariaDB.",
       "prompt": "Execute read-only operations against your MariaDB database."
     }
-  ]
+  ],
+  "arguments": {
+    "DB_HOST": {
+      "description": "The hostname of the MariaDB server to connect to.",
+      "required": true,
+      "example": "localhost"
+    },
+    "DB_PORT": {
+      "description": "The port number on which the MariaDB server is listening.",
+      "required": true,
+      "example": "3306"
+    },
+    "DB_USER": {
+      "description": "The username to connect to the MariaDB database.",
+      "required": true,
+      "example": "root"
+    },
+    "DB_PASSWORD": {
+      "description": "The password for the MariaDB user.",
+      "required": true
+    },
+    "DB_NAME": {
+      "description": "The name of the database to connect to.",
+      "required": true
+    }
+  }
 }

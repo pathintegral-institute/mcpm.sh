@@ -1,6 +1,6 @@
 {
   "name": "windows-cli",
-  "display_name": "Windows CLI MCP Server",
+  "display_name": "Windows CLI",
   "description": "MCP server for secure command-line interactions on Windows systems, enabling controlled access to PowerShell, CMD, and Git Bash shells.",
   "repository": {
     "type": "git",
@@ -29,7 +29,7 @@
         "-y",
         "@simonb97/server-win-cli",
         "--config",
-        "path/to/your/config.json"
+        "${config}"
       ]
     }
   },
@@ -39,5 +39,12 @@
       "description": "Add MCP server configuration to Claude Desktop.",
       "prompt": "\n{\n  \"mcpServers\": {\n    \"windows-cli\": {\n      \"command\": \"npx\",\n      \"args\": [\"-y\", \"@simonb97/server-win-cli\"]\n    }\n  }\n}\n"
     }
-  ]
+  ],
+  "arguments": {
+    "config": {
+      "description": "The path to your configuration file, which customizes the server behavior.",
+      "required": true,
+      "example": "path/to/your/config.json"
+    }
+  }
 }

@@ -1,6 +1,6 @@
 {
   "name": "aws-resources-operations",
-  "display_name": "AWS Resources MCP Server",
+  "display_name": "AWS Resources",
   "description": "Run generated python code to securely query or modify any AWS resources supported by boto3.",
   "repository": {
     "type": "git",
@@ -35,7 +35,29 @@
         "-e",
         "AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}",
         "buryhuang/mcp-server-aws-resources:latest"
-      ]
+      ],
+      "env": {
+        "AWS_ACCESS_KEY_ID": "${AWS_ACCESS_KEY_ID}",
+        "AWS_SECRET_ACCESS_KEY": "${AWS_SECRET_ACCESS_KEY}",
+        "AWS_DEFAULT_REGION": "${AWS_DEFAULT_REGION}"
+      }
+    }
+  },
+  "arguments": {
+    "AWS_ACCESS_KEY_ID": {
+      "description": "Your AWS access key.",
+      "required": true,
+      "example": "your_access_key_id_here"
+    },
+    "AWS_SECRET_ACCESS_KEY": {
+      "description": "Your AWS secret key.",
+      "required": true,
+      "example": "your_secret_access_key_here"
+    },
+    "AWS_DEFAULT_REGION": {
+      "description": "AWS region to operate in. Defaults to 'us-east-1' if not set.",
+      "required": false,
+      "example": "us-east-1"
     }
   }
 }

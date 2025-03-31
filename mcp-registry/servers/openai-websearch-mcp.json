@@ -1,6 +1,6 @@
 {
   "name": "openai-websearch-mcp",
-  "display_name": "OpenAI WebSearch MCP Server",
+  "display_name": "OpenAI WebSearch",
   "description": "This is a Python-based MCP server that provides OpenAI `web_search` build-in tool.",
   "repository": {
     "type": "git",
@@ -28,7 +28,7 @@
         "openai-websearch-mcp"
       ],
       "env": {
-        "OPENAI_API_KEY": "your-api-key-here"
+        "OPENAI_API_KEY": "${OPENAI_API_KEY}"
       }
     },
     "python": {
@@ -39,7 +39,7 @@
         "openai_websearch_mcp"
       ],
       "env": {
-        "OPENAI_API_KEY": "your-api-key-here"
+        "OPENAI_API_KEY": "${OPENAI_API_KEY}"
       }
     }
   },
@@ -49,5 +49,12 @@
       "description": "Perform a web search using the OpenAI WebSearch MCP server.",
       "prompt": "search('latest news on AI')"
     }
-  ]
+  ],
+  "arguments": {
+    "OPENAI_API_KEY": {
+      "description": "Your OpenAI API key to authenticate requests to the OpenAI API.",
+      "required": true,
+      "example": "sk-xxxx"
+    }
+  }
 }

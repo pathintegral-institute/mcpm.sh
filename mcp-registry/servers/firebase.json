@@ -1,6 +1,6 @@
 {
   "name": "firebase",
-  "display_name": "Firebase MCP Server",
+  "display_name": "Firebase",
   "description": "Server to interact with Firebase services including Firebase Authentication, Firestore, and Firebase Storage.",
   "repository": {
     "type": "git",
@@ -32,6 +32,18 @@
         "SERVICE_ACCOUNT_KEY_PATH": "${SERVICE_ACCOUNT_KEY_PATH}",
         "FIREBASE_STORAGE_BUCKET": "${FIREBASE_STORAGE_BUCKET}"
       }
+    }
+  },
+  "arguments": {
+    "SERVICE_ACCOUNT_KEY_PATH": {
+      "description": "Path to your Firebase service account key JSON file",
+      "required": true,
+      "example": "/absolute/path/to/serviceAccountKey.json"
+    },
+    "FIREBASE_STORAGE_BUCKET": {
+      "description": "Bucket name for Firebase Storage",
+      "required": false,
+      "example": "your-project-id.firebasestorage.app"
     }
   }
 }

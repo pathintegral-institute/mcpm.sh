@@ -33,5 +33,12 @@
         "lc-mcp"
       ]
     }
+  },
+  "arguments": {
+    "mcp": {
+      "description": "Indicates the model context protocol that should be used for communication.",
+      "required": true,
+      "example": "lc-mcp"
+    }
   }
 }

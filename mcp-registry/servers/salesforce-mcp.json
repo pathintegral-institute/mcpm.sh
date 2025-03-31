@@ -1,6 +1,6 @@
 {
   "name": "salesforce-mcp",
-  "display_name": "MCP Salesforce Connector",
+  "display_name": "Salesforce Connector",
   "description": "Interact with Salesforce Data and Metadata",
   "repository": {
     "type": "git",
@@ -27,10 +27,25 @@
         "salesforce"
       ],
       "env": {
-        "SALESFORCE_USERNAME": "YOUR_SALESFORCE_USERNAME",
-        "SALESFORCE_PASSWORD": "YOUR_SALESFORCE_PASSWORD",
-        "SALESFORCE_SECURITY_TOKEN": "YOUR_SALESFORCE_SECURITY_TOKEN"
+        "SALESFORCE_USERNAME": "${SALESFORCE_USERNAME}",
+        "SALESFORCE_PASSWORD": "${SALESFORCE_PASSWORD}",
+        "SALESFORCE_SECURITY_TOKEN": "${SALESFORCE_SECURITY_TOKEN}"
       }
+    }
+  },
+  "arguments": {
+    "SALESFORCE_USERNAME": {
+      "description": "Your Salesforce username for authentication",
+      "required": true,
+      "example": "myemail@example.com"
+    },
+    "SALESFORCE_PASSWORD": {
+      "description": "Your Salesforce password for authentication",
+      "required": true
+    },
+    "SALESFORCE_SECURITY_TOKEN": {
+      "description": "Your Salesforce security token for additional security measures",
+      "required": true
     }
   }
 }

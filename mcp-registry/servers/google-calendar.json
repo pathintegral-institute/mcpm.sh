@@ -1,6 +1,6 @@
 {
   "name": "google-calendar",
-  "display_name": "Google Calendar MCP Server",
+  "display_name": "Google Calendar",
   "description": "Google Calendar MCP Server for managing Google calendar events. Also supports searching for events by attributes like title and location.",
   "repository": {
     "type": "git",

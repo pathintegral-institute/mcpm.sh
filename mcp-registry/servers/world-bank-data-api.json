@@ -1,6 +1,6 @@
 {
   "name": "world-bank-data-api",
-  "display_name": "World Bank MCP Server",
+  "display_name": "World Bank Data API",
   "description": "A server that fetches data indicators available with the World Bank as part of their data API",
   "repository": {
     "type": "git",

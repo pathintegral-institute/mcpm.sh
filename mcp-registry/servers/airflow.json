@@ -1,6 +1,6 @@
 {
   "name": "airflow",
-  "display_name": "MCP Server Apache Airflow",
+  "display_name": "Apache Airflow",
   "description": "A MCP Server that connects to [Apache Airflow](https://airflow.apache.org/) using official python client.",
   "repository": {
     "type": "git",

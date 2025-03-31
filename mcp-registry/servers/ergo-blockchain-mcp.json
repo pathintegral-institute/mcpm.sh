@@ -1,6 +1,6 @@
 {
   "name": "ergo-blockchain-mcp",
-  "display_name": "Ergo MCP",
+  "display_name": "Ergo Blockchain Explorer",
   "description": "-An MCP server to integrate Ergo Blockchain Node and Explorer APIs for checking address balances, analyzing transactions, viewing transaction history, performing forensic analysis of addresses, searching for tokens, and monitoring network status.",
   "repository": {
     "type": "git",
@@ -49,6 +49,33 @@
         "ERGO_NODE_API": "<YOUR_ERGO_NODE_API>",
         "ERGO_NODE_API_KEY": "<YOUR_ERGO_NODE_API_KEY>"
       }
+    }
+  },
+  "arguments": {
+    "SERVER_HOST": {
+      "description": "Host to bind the server to (default: 0.0.0.0)",
+      "required": false,
+      "example": "localhost"
+    },
+    "SERVER_PORT": {
+      "description": "Port to run the server on (default: 3001)",
+      "required": false,
+      "example": "3001"
+    },
+    "SERVER_WORKERS": {
+      "description": "Number of worker processes (default: 4)",
+      "required": false,
+      "example": "4"
+    },
+    "ERGO_NODE_API": {
+      "description": "URL of the Ergo node API (for node-specific features)",
+      "required": false,
+      "example": "http://localhost:8080"
+    },
+    "ERGO_NODE_API_KEY": {
+      "description": "API key for the Ergo node (if required)",
+      "required": false,
+      "example": "your_api_key"
     }
   }
 }

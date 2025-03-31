@@ -1,6 +1,6 @@
 {
   "name": "searxng",
-  "display_name": "SearXNG MCP Server",
+  "display_name": "SearXNG",
   "description": "A Model Context Protocol Server for [SearXNG](https://docs.searxng.org/)",
   "repository": {
     "type": "git",
@@ -25,11 +25,18 @@
       "command": "npx",
       "args": [
         "-y",
-        "<full path to mcp-searxng repo>/"
+        "https://github.com/ihor-sokoliuk/mcp-searxng"
       ],
       "env": {
-        "SEARXNG_URL": "YOUR_SEARXNG_INSTANCE_URL"
+        "SEARXNG_URL": "${SEARXNG_URL}"
       }
+    }
+  },
+  "arguments": {
+    "SEARXNG_URL": {
+      "description": "Environment variable to set the URL of the SearXNG instance that will be used for search queries.",
+      "required": true,
+      "example": "http://localhost:8080"
     }
   }
 }

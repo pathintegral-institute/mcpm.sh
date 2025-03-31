@@ -29,7 +29,7 @@
         "-y",
         "@stripe/mcp",
         "--tools=all",
-        "--api-key=STRIPE_SECRET_KEY"
+        "--api-key=${STRIPE_SECRET_KEY}"
       ]
     }
   },
@@ -54,5 +54,12 @@
       "description": "Creates a refund for a charge.",
       "prompt": "{\"tool\": \"refund_create\", \"arguments\": {\"charge_id\": \"ch_abc123\"}}"
     }
-  ]
+  ],
+  "arguments": {
+    "STRIPE_SECRET_KEY": {
+      "description": "Your Stripe secret API key required for authenticating requests to the Stripe API.",
+      "required": true,
+      "example": "sk_test_4eC39HqLyjWDarjtT1zdp7dc"
+    }
+  }
 }

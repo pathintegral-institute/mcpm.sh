@@ -1,6 +1,6 @@
 {
   "name": "unity-catalog",
-  "display_name": "An Unity Catalog MCP server",
+  "display_name": "Unity Catalog",
   "description": "An MCP server that enables LLMs to interact with Unity Catalog AI, supporting CRUD operations on Unity Catalog Functions and executing them as MCP tools.",
   "repository": {
     "type": "git",
@@ -28,11 +28,11 @@
         "git+https://github.com/ognis1205/mcp-server-unitycatalog",
         "mcp-server-unitycatalog",
         "--uc_server",
-        "<your unity catalog url>",
+        "${UC_SERVER}",
         "--uc_catalog",
-        "<your catalog name>",
+        "${UC_CATALOG}",
         "--uc_schema",
-        "<your schema name>"
+        "${UC_SCHEMA}"
       ]
     },
     "docker": {
@@ -44,12 +44,29 @@
         "-i",
         "mcp/unitycatalog",
         "--uc_server",
-        "<your unity catalog url>",
+        "${UC_SERVER}",
         "--uc_catalog",
-        "<your catalog name>",
+        "${UC_CATALOG}",
         "--uc_schema",
-        "<your schema name>"
+        "${UC_SCHEMA}"
       ]
+    }
+  },
+  "arguments": {
+    "UC_SERVER": {
+      "description": "The base URL of the Unity Catalog server.",
+      "required": true,
+      "example": "https://my-unity-catalog.com"
+    },
+    "UC_CATALOG": {
+      "description": "The name of the Unity Catalog catalog.",
+      "required": true,
+      "example": "my_catalog"
+    },
+    "UC_SCHEMA": {
+      "description": "The name of the schema within a Unity Catalog catalog.",
+      "required": true,
+      "example": "my_schema"
     }
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "pushover",
-  "display_name": "Pushover Notification",
+  "display_name": "Pushover Notifications",
   "description": "Send instant notifications to your devices using [Pushover.net](https://pushover.net/)",
   "repository": {
     "type": "git",
@@ -27,10 +27,22 @@
         "pushover-mcp@latest",
         "start",
         "--token",
-        "YOUR_TOKEN",
+        "${YOUR_TOKEN}",
         "--user",
-        "YOUR_USER"
+        "${YOUR_USER}"
       ]
+    }
+  },
+  "arguments": {
+    "YOUR_TOKEN": {
+      "description": "Application token required for authenticating with Pushover.net",
+      "required": true,
+      "example": "abcdef123456"
+    },
+    "YOUR_USER": {
+      "description": "User key associated with your Pushover.net account",
+      "required": true,
+      "example": "1234567890:abcdef123456"
     }
   }
 }

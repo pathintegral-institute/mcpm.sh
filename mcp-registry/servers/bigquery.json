@@ -1,6 +1,6 @@
 {
   "name": "bigquery",
-  "display_name": "BigQuery MCP Server",
+  "display_name": "BigQuery",
   "description": "Server implementation for Google BigQuery integration that enables direct BigQuery database access and querying capabilities",
   "repository": {
     "type": "git",
@@ -32,6 +32,18 @@
         "--location",
         "${LOCATION}"
       ]
+    }
+  },
+  "arguments": {
+    "PROJECT_ID": {
+      "description": "Your Google Cloud project ID",
+      "required": true,
+      "example": "your-project-id"
+    },
+    "LOCATION": {
+      "description": "BigQuery location, defaults to 'us-central1'.",
+      "required": false,
+      "example": "us-central1"
     }
   }
 }

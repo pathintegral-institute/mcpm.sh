@@ -1,6 +1,6 @@
 {
   "name": "redis",
-  "display_name": "MCP Server Redis",
+  "display_name": "Redis",
   "description": "MCP server to interact with Redis Server, AWS Memory DB, etc for caching or other use-cases where in-memory and key-value based storage is appropriate",
   "repository": {
     "type": "git",

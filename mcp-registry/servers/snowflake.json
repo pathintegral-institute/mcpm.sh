@@ -1,6 +1,6 @@
 {
   "name": "snowflake",
-  "display_name": "Snowflake MCP Server",
+  "display_name": "Snowflake",
   "description": "This MCP server enables LLMs to interact with Snowflake databases, allowing for secure and controlled data operations.",
   "repository": {
     "type": "git",
@@ -26,20 +26,57 @@
       "args": [
         "mcp_snowflake_server",
         "--account",
-        "the_account",
+        "${ACCOUNT}",
         "--warehouse",
-        "the_warehouse",
+        "${WAREHOUSE}",
         "--user",
-        "the_user",
+        "${USER}",
         "--password",
-        "their_password",
+        "${PASSWORD}",
         "--role",
-        "the_role",
+        "${ROLE}",
         "--database",
-        "the_database",
+        "${DATABASE}",
         "--schema",
-        "the_schema"
+        "${SCHEMA}"
       ]
+    }
+  },
+  "arguments": {
+    "ACCOUNT": {
+      "description": "The Snowflake account name to connect to.",
+      "required": true,
+      "example": "your_account_name"
+    },
+    "WAREHOUSE": {
+      "description": "The name of the virtual warehouse to be used for the session.",
+      "required": true,
+      "example": "your_warehouse_name"
+    },
+    "USER": {
+      "description": "The username to authenticate with Snowflake.",
+      "required": true,
+      "example": "your_username"
+    },
+    "PASSWORD": {
+      "description": "The password for the specified user.",
+      "required": true,
+      "example": "your_password"
+    },
+    "ROLE": {
+      "description": "The role to be assumed during the session.",
+      "required": true,
+      "example": "your_role_name"
+    },
+    "DATABASE": {
+      "description": "The name of the Snowflake database to connect to.",
+      "required": true,
+      "example": "your_database_name"
+    },
+    "SCHEMA": {
+      "description": "The schema within the database where queries will be executed.",
+      "required": true,
+      "example": "your_schema_name"
     }
   }
 }

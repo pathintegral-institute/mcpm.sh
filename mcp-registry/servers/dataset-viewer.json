@@ -1,6 +1,6 @@
 {
   "name": "dataset-viewer",
-  "display_name": "Dataset Viewer MCP Server",
+  "display_name": "Dataset Viewer",
   "description": "Browse and analyze Hugging Face datasets with features like search, filtering, statistics, and data export",
   "repository": {
     "type": "git",
@@ -58,5 +58,12 @@
       "description": "Get statistics about a dataset split.",
       "prompt": "{\"dataset\": \"stanfordnlp/imdb\",\"config\": \"plain_text\",\"split\": \"train\"}"
     }
-  ]
+  ],
+  "arguments": {
+    "HUGGINGFACE_TOKEN": {
+      "description": "Your Hugging Face API token for accessing private datasets",
+      "required": false,
+      "example": ""
+    }
+  }
 }

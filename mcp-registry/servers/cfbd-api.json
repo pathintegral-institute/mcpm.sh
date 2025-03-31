@@ -1,6 +1,6 @@
 {
   "name": "cfbd-api",
-  "display_name": "College Football Data MCP Server",
+  "display_name": "College Football Data API",
   "description": "An MCP server for the [College Football Data API](https://collegefootballdata.com/).",
   "repository": {
     "type": "git",
@@ -31,8 +31,8 @@
         "src/cfbd_mcp_server/server.py"
       ],
       "env": {
-        "CFB_API_KEY": "xxx",
-        "PATH": "/full/path/to/python"
+        "CFB_API_KEY": "${CFB_API_KEY}",
+        "PATH": "${PATH}"
       }
     }
   },
@@ -42,5 +42,17 @@
       "description": "Query the server for significant game upsets in the 2014 college football season.",
       "prompt": "What was the largest upset among FCS games during the 2014 season?"
     }
-  ]
+  ],
+  "arguments": {
+    "CFB_API_KEY": {
+      "description": "The API key required to authenticate requests to the College Football Data API.",
+      "required": true,
+      "example": "your_api_key_here"
+    },
+    "PATH": {
+      "description": "Environment variable that specifies the path to the Python executable being used by the server.",
+      "required": false,
+      "example": "/full/path/to/python"
+    }
+  }
 }

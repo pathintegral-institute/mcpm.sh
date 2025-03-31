@@ -1,6 +1,6 @@
 {
   "name": "scholarly",
-  "display_name": "mcp-scholarly",
+  "display_name": "scholarly",
   "description": "A MCP server to search for scholarly and academic articles.",
   "repository": {
     "type": "git",
@@ -36,6 +36,13 @@
         "-i",
         "mcp/scholarly"
       ]
+    }
+  },
+  "arguments": {
+    "keyword": {
+      "description": "The keyword to search for articles in arXiv.",
+      "required": true,
+      "example": "machine learning"
     }
   }
 }

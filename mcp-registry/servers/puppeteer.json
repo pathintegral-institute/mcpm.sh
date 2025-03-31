@@ -1,6 +1,6 @@
 {
   "name": "puppeteer",
-  "display_name": "Puppeteer",
+  "display_name": "Puppeteer Browser Automation",
   "description": "Browser automation and web scraping",
   "repository": {
     "type": "git",
@@ -43,6 +43,13 @@
         "DOCKER_CONTAINER=true",
         "mcp/puppeteer"
       ]
+    }
+  },
+  "arguments": {
+    "DOCKER_CONTAINER": {
+      "description": "Environment variable to indicate that the application is running in Docker container mode",
+      "required": false,
+      "example": "true"
     }
   }
 }

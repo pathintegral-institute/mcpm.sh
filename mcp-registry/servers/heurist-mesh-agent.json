@@ -1,6 +1,6 @@
 {
   "name": "heurist-mesh-agent",
-  "display_name": "Mesh Agent MCP Server",
+  "display_name": "Mesh Agent",
   "description": "Access specialized web3 AI agents for blockchain analysis, smart contract security, token metrics, and blockchain interactions through the [Heurist Mesh network](https://github.com/heurist-network/heurist-agent-framework/tree/main/mesh).",
   "repository": {
     "type": "git",
@@ -31,8 +31,15 @@
         "mesh-tool-server"
       ],
       "env": {
-        "HEURIST_API_KEY": "your-api-key-here"
+        "HEURIST_API_KEY": "${HEURIST_API_KEY}"
       }
+    }
+  },
+  "arguments": {
+    "HEURIST_API_KEY": {
+      "description": "API key for accessing the Heurist services.",
+      "required": true,
+      "example": "your-api-key-here"
     }
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "openapi-anyapi",
-  "display_name": "Scalable OpenAPI Endpoint Discovery and API Request Tool",
+  "display_name": "Scalable OpenAPI Endpoint Discovery Tool",
   "description": "Interact with large [OpenAPI](https://www.openapis.org/) docs using built-in semantic search for endpoints. Allows for customizing the MCP server prefix.",
   "repository": {
     "type": "git",
@@ -25,13 +25,18 @@
         "-i",
         "--rm",
         "-e",
-        "OPENAPI_JSON_DOCS_URL=https://api.finance.com/openapi.json",
+        "OPENAPI_JSON_DOCS_URL=${OPENAPI_JSON_DOCS_URL}",
         "-e",
-        "API_REQUEST_BASE_URL=https://api.finance.staging.com",
+        "API_REQUEST_BASE_URL=${API_REQUEST_BASE_URL}",
         "-e",
-        "MCP_API_PREFIX=finance",
+        "MCP_API_PREFIX=${MCP_API_PREFIX}",
         "buryhuang/mcp-server-any-openapi:latest"
-      ]
+      ],
+      "env": {
+        "OPENAPI_JSON_DOCS_URL": "${OPENAPI_JSON_DOCS_URL}",
+        "API_REQUEST_BASE_URL": "${API_REQUEST_BASE_URL}",
+        "MCP_API_PREFIX": "${MCP_API_PREFIX}"
+      }
     },
     "uvx": {
       "type": "uvx",
@@ -40,7 +45,12 @@
         "--from",
         "git+https://github.com/baryhuang/mcp-server-any-openapi",
         "src/mcp_server_any_openapi/server.py"
-      ]
+      ],
+      "env": {
+        "OPENAPI_JSON_DOCS_URL": "${OPENAPI_JSON_DOCS_URL}",
+        "API_REQUEST_BASE_URL": "${API_REQUEST_BASE_URL}",
+        "MCP_API_PREFIX": "${MCP_API_PREFIX}"
+      }
     }
   },
   "tags": [
@@ -55,5 +65,22 @@
       "description": "Use this tool to find relevant API endpoints by describing your intent.",
       "prompt": "Get prices for all stocks"
     }
-  ]
+  ],
+  "arguments": {
+    "OPENAPI_JSON_DOCS_URL": {
+      "description": "URL to the OpenAPI specification JSON (defaults to https://api.staging.readymojo.com/openapi.json)",
+      "required": false,
+      "example": "https://api.example.com/openapi.json"
+    },
+    "API_REQUEST_BASE_URL": {
+      "description": "Optional base URL to override the default URL extracted from the OpenAPI document.",
+      "required": false,
+      "example": "https://api.finance.com"
+    },
+    "MCP_API_PREFIX": {
+      "description": "Customizable tool namespace (default 'any_openapi'). Allows for control over tool naming.",
+      "required": false,
+      "example": "finance"
+    }
+  }
 }

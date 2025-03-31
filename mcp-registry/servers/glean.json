@@ -30,5 +30,17 @@
         "https://github.com/longyi1207/glean-mcp-server"
       ]
     }
+  },
+  "arguments": {
+    "GLEAN_API_KEY": {
+      "description": "The API key required to authenticate with the Glean API.",
+      "required": true,
+      "example": "YOUR_API_KEY_HERE"
+    },
+    "GLEAN_DOMAIN": {
+      "description": "The domain used for the Glean API service operations.",
+      "required": true,
+      "example": "YOUR_DOMAIN_HERE"
+    }
   }
 }

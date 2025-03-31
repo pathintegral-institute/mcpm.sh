@@ -1,6 +1,6 @@
 {
   "name": "image-generation",
-  "display_name": "Image Generation MCP Server",
+  "display_name": "Image Generation",
   "description": "This MCP server provides image generation capabilities using the Replicate Flux model.",
   "repository": {
     "type": "git",
@@ -28,9 +28,23 @@
         "@gongrzhe/image-gen-server"
       ],
       "env": {
-        "REPLICATE_API_TOKEN": "your-replicate-api-token",
-        "MODEL": "alternative-model-name"
+        "REPLICATE_API_TOKEN": "${REPLICATE_API_TOKEN}",
+        "MODEL": "${MODEL}",
+        "your-replicate-api-token": "${your_replicate_api_token}",
+        "alternative-model-name": "${alternative_model_name}"
       }
+    }
+  },
+  "arguments": {
+    "REPLICATE_API_TOKEN": {
+      "description": "Your Replicate API token for authentication",
+      "required": true,
+      "example": "your-replicate-api-token"
+    },
+    "MODEL": {
+      "description": "The Replicate model to use for image generation. Defaults to \"black-forest-labs/flux-schnell\"",
+      "required": false,
+      "example": "alternative-model-name"
     }
   }
 }

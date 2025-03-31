@@ -1,6 +1,6 @@
 {
   "name": "azure-adx",
-  "display_name": "Azure Data Explorer MCP Server",
+  "display_name": "Azure Data Explorer",
   "description": "Query and analyze Azure Data Explorer databases.",
   "repository": {
     "type": "git",
@@ -38,6 +38,18 @@
         "ADX_CLUSTER_URL": "${ADX_CLUSTER_URL}",
         "ADX_DATABASE": "${ADX_DATABASE}"
       }
+    }
+  },
+  "arguments": {
+    "ADX_CLUSTER_URL": {
+      "description": "The URL of the Azure Data Explorer cluster.",
+      "required": true,
+      "example": "https://yourcluster.region.kusto.windows.net"
+    },
+    "ADX_DATABASE": {
+      "description": "The name of the Azure Data Explorer database to connect to.",
+      "required": true,
+      "example": "your_database"
     }
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "openapi",
-  "display_name": "OpenAPI MCP Server",
+  "display_name": "OpenAPI",
   "description": "Interact with [OpenAPI](https://www.openapis.org/) APIs.",
   "repository": {
     "type": "git",

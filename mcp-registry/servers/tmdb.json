@@ -1,6 +1,6 @@
 {
   "name": "tmdb",
-  "display_name": "TMDB MCP Server",
+  "display_name": "TMDB",
   "description": "This MCP server integrates with The Movie Database (TMDB) API to provide movie information, search capabilities, and recommendations.",
   "repository": {
     "type": "git",
@@ -30,7 +30,7 @@
         "https://github.com/Laksh-star/mcp-server-tmdb"
       ],
       "env": {
-        "TMDB_API_KEY": "your_api_key_here"
+        "TMDB_API_KEY": "${TMDB_API_KEY}"
       }
     }
   },
@@ -55,5 +55,12 @@
       "description": "Get details of a specific movie by ID",
       "prompt": "\"Tell me about the movie with ID 550\""
     }
-  ]
+  ],
+  "arguments": {
+    "TMDB_API_KEY": {
+      "description": "API key used to authenticate requests to the TMDB API.",
+      "required": true,
+      "example": "your_api_key_here"
+    }
+  }
 }
