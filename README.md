@@ -109,7 +109,7 @@ mcpm.sh/
 
 2. Set up a virtual environment with uv
    ```
-   uv venv
+   uv venv --seed
    source .venv/bin/activate  # On Unix/Mac
    ```
 

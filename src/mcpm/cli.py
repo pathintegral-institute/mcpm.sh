@@ -7,6 +7,7 @@ from rich.console import Console
 from rich.table import Table
 
 from mcpm import __version__
+from mcpm.clients.client_config import ClientConfigManager
 from mcpm.commands import (
     add,
     client,
@@ -19,10 +20,9 @@ from mcpm.commands import (
     search,
     stash,
 )
-from mcpm.utils.config import ConfigManager
 
 console = Console()
-config_manager = ConfigManager()
+client_config_manager = ClientConfigManager()
 
 # Set -h as an alias for --help but we'll handle it ourselves
 CONTEXT_SETTINGS = dict(help_option_names=[])
@@ -40,7 +40,7 @@ def main(ctx, help_flag):
     # Check if a command is being executed (and it's not help, no command, or the client command)
     if ctx.invoked_subcommand and ctx.invoked_subcommand != "client" and not help_flag:
         # Check if active client is set
-        active_client = config_manager.get_active_client()
+        active_client = client_config_manager.get_active_client()
         if not active_client:
             console.print("[bold red]Error:[/] No active client set.")
             console.print("Please run 'mcpm client <client-name>' to set an active client.")
@@ -57,7 +57,7 @@ def main(ctx, help_flag):
     # If no command was invoked or help is requested, show our custom help
     if ctx.invoked_subcommand is None or help_flag:
         # Get active client
-        active_client = config_manager.get_active_client()
+        active_client = client_config_manager.get_active_client()
 
         # Create a nice ASCII art banner with proper alignment using Rich
         from rich.panel import Panel
