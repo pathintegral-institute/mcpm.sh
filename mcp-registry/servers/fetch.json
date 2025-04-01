@@ -67,5 +67,87 @@
       "required": false,
       "example": "{\"Authorization\": \"Bearer token\"}"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "fetch_html",
+      "description": "Fetch a website and return the content as HTML",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL of the website to fetch"
+          },
+          "headers": {
+            "type": "object",
+            "description": "Optional headers to include in the request"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    },
+    {
+      "name": "fetch_markdown",
+      "description": "Fetch a website and return the content as Markdown",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL of the website to fetch"
+          },
+          "headers": {
+            "type": "object",
+            "description": "Optional headers to include in the request"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    },
+    {
+      "name": "fetch_txt",
+      "description": "Fetch a website, return the content as plain text (no HTML)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL of the website to fetch"
+          },
+          "headers": {
+            "type": "object",
+            "description": "Optional headers to include in the request"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    },
+    {
+      "name": "fetch_json",
+      "description": "Fetch a JSON file from a URL",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL of the JSON to fetch"
+          },
+          "headers": {
+            "type": "object",
+            "description": "Optional headers to include in the request"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    }
+  ]
 }

@@ -48,5 +48,122 @@
       "required": false,
       "example": "8090"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "execute_menu_item",
+      "description": "Executes a Unity menu item by path",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "menuPath": {
+            "type": "string",
+            "description": "The path to the menu item to execute (e.g. \"GameObject/Create Empty\")"
+          }
+        },
+        "required": [
+          "menuPath"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "select_object",
+      "description": "Sets the selected object in the Unity editor by path or ID",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "objectPath": {
+            "type": "string",
+            "description": "The path or ID of the object to select (e.g. \"Main Camera\" or a Unity object ID)"
+          }
+        },
+        "required": [
+          "objectPath"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "package_manager",
+      "description": "Manages packages in the Unity Package Manager",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "methodSource": {
+            "type": "string",
+            "description": "The method source to use (registry, github, or disk) to add the package"
+          },
+          "packageName": {
+            "type": "string",
+            "description": "The package name to add from Unity registry (e.g. com.unity.textmeshpro)"
+          },
+          "version": {
+            "type": "string",
+            "description": "The version to use for registry packages (optional)"
+          },
+          "repositoryUrl": {
+            "type": "string",
+            "description": "The GitHub repository URL (e.g. https://github.com/username/repo.git)"
+          },
+          "branch": {
+            "type": "string",
+            "description": "The branch to use for GitHub packages (optional)"
+          },
+          "path": {
+            "type": "string",
+            "description": "The path to use (folder path for disk method or subfolder for GitHub)"
+          }
+        },
+        "required": [
+          "methodSource"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "run_tests",
+      "description": "Runs Unity's Test Runner tests",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "testMode": {
+            "type": "string",
+            "description": "The test mode to run (EditMode, PlayMode, or All)"
+          },
+          "testFilter": {
+            "type": "string",
+            "description": "Optional test filter (e.g. specific test name or namespace)"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "notify_message",
+      "description": "Sends a message to the Unity console",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "The message to display in the Unity console"
+          },
+          "type": {
+            "type": "string",
+            "description": "The type of message (info, warning, error)"
+          }
+        },
+        "required": [
+          "message"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    }
+  ]
 }

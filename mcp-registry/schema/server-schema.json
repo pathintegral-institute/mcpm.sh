@@ -93,6 +93,31 @@
         }
       }
     },
+    "tools": {
+      "type": "array",
+      "description": "Tools provided by this server",
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "inputSchema": {
+            "type": "object"
+          },
+          "required": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
     "installations": {
       "type": "object",
       "description": "Different methods to install and run this server",

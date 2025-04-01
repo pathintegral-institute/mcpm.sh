@@ -27,5 +27,48 @@
         "openrpc-mpc-server"
       ]
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "rpc_call",
+      "description": "Call any JSON-RPC method on a server with parameters. A user would prompt: Call method <method> on <server url> with params <params>",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "server": {
+            "type": "string",
+            "description": "Server URL"
+          },
+          "method": {
+            "type": "string",
+            "description": "JSON-RPC method name to call"
+          },
+          "params": {
+            "type": "string",
+            "description": "Stringified Parameters to pass to the method"
+          }
+        },
+        "required": [
+          "server",
+          "method"
+        ]
+      }
+    },
+    {
+      "name": "rpc_discover",
+      "description": "This uses JSON-RPC to call `rpc.discover` which is part of the OpenRPC Specification for discovery for JSON-RPC servers. A user would prompt: What JSON-RPC methods does this server have? <server url>",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "server": {
+            "type": "string",
+            "description": "Server URL"
+          }
+        },
+        "required": [
+          "server"
+        ]
+      }
+    }
+  ]
 }

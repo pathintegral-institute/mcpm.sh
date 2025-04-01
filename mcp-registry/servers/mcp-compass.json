@@ -29,5 +29,23 @@
         "@liuyoshio/mcp-compass"
       ]
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "recommend-mcp-servers",
+      "description": "\n          Use this tool when there is a need to findn external MCP tools.\n          It explores and recommends existing MCP servers from the \n          internet, based on the description of the MCP Server \n          needed. It returns a list of MCP servers with their IDs, \n          descriptions, GitHub URLs, and similarity scores.\n          ",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "\n                Description for the MCP Server needed. \n                It should be specific and actionable, e.g.:\n                GOOD:\n                - 'MCP Server for AWS Lambda Python3.9 deployment'\n                - 'MCP Server for United Airlines booking API'\n                - 'MCP Server for Stripe refund webhook handling'\n\n                BAD:\n                - 'MCP Server for cloud' (too vague)\n                - 'MCP Server for booking' (which booking system?)\n                - 'MCP Server for payment' (which payment provider?)\n\n                Query should explicitly specify:\n                1. Target platform/vendor (e.g. AWS, Stripe, MongoDB)\n                2. Exact operation/service (e.g. Lambda deployment, webhook handling)\n                3. Additional context if applicable (e.g. Python, refund events)\n                "
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ]
 }
