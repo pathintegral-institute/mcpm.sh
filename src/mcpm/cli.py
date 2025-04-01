@@ -47,7 +47,7 @@ def main(ctx, help_flag):
             console.print("Available clients:")
 
             # Show available clients
-            from mcpm.utils.client_registry import ClientRegistry
+            from mcpm.clients.client_registry import ClientRegistry
 
             for client in ClientRegistry.get_supported_clients():
                 console.print(f"  - {client}")
@@ -90,7 +90,7 @@ def main(ctx, help_flag):
         console.print(panel)
 
         # Get information about installed clients
-        from mcpm.utils.client_registry import ClientRegistry
+        from mcpm.clients.client_registry import ClientRegistry
 
         installed_clients = ClientRegistry.detect_installed_clients()
 

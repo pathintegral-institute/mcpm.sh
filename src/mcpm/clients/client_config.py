@@ -43,7 +43,7 @@ class ClientConfigManager:
             return result
 
         # Get supported clients
-        from mcpm.utils.client_registry import ClientRegistry
+        from mcpm.clients.client_registry import ClientRegistry
 
         supported_clients = ClientRegistry.get_supported_clients()
 
@@ -59,7 +59,7 @@ class ClientConfigManager:
     def get_supported_clients(self) -> List[str]:
         """Get a list of supported client names"""
         # Import here to avoid circular imports
-        from mcpm.utils.client_registry import ClientRegistry
+        from mcpm.clients.client_registry import ClientRegistry
 
         return ClientRegistry.get_supported_clients()
 
@@ -73,7 +73,7 @@ class ClientConfigManager:
             BaseClientManager or None if client not supported
         """
         # Import here to avoid circular imports
-        from mcpm.utils.client_registry import ClientRegistry
+        from mcpm.clients.client_registry import ClientRegistry
 
         return ClientRegistry.get_client_manager(client_name)
 

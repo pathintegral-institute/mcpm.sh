@@ -2,17 +2,16 @@
 Claude Desktop integration utilities for MCP
 """
 
-import os
 import logging
-import platform
-from typing import Dict, Any
+import os
+from typing import Any, Dict
 
-from mcpm.clients.base import BaseClientManager
+from mcpm.clients.base import JSONClientManager
 
 logger = logging.getLogger(__name__)
 
 
-class ClaudeDesktopManager(BaseClientManager):
+class ClaudeDesktopManager(JSONClientManager):
     """Manages Claude Desktop MCP server configurations"""
 
     # Client information

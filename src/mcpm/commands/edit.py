@@ -2,15 +2,16 @@
 Edit command for MCPM (formerly config)
 """
 
-import os
 import json
-import click
+import os
 import subprocess
+
+import click
 from rich.console import Console
 from rich.panel import Panel
 from rich.prompt import Confirm
 
-from mcpm.utils.client_registry import ClientRegistry
+from mcpm.clients.client_registry import ClientRegistry
 
 console = Console()
 

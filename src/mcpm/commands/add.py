@@ -2,17 +2,17 @@
 Add command for adding MCP servers directly to client configurations
 """
 
-import os
 import json
+import os
 
 import click
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.prompt import Confirm
 
+from mcpm.clients.client_registry import ClientRegistry
 from mcpm.utils.repository import RepositoryManager
 from mcpm.utils.server_config import ServerConfig
-from mcpm.utils.client_registry import ClientRegistry
 
 console = Console()
 repo_manager = RepositoryManager()

@@ -2,19 +2,25 @@
 Base client manager module that defines the interface for all client managers.
 """
 
-import os
+import abc
 import json
 import logging
+import os
 import platform
-from typing import Dict, Optional, Any, List, Union
+from typing import Any, Dict, List, Optional, Union
 
 from mcpm.utils.server_config import ServerConfig
 
 logger = logging.getLogger(__name__)
 
 
-class BaseClientManager:
-    """Base class for all client managers providing a common interface"""
+class BaseClientManager(abc.ABC):
+    """
+    Abstract base class that defines the interface for all client managers.
+
+    This class establishes the contract that all client managers must fulfill,
+    but does not provide implementations.
+    """
 
     # Client information properties
     client_key = ""  # Client identifier (e.g., "claude-desktop")
@@ -24,8 +30,119 @@ class BaseClientManager:
     def __init__(self):
         """Initialize the client manager"""
         self.config_path = None  # To be set by subclasses
-        self._config = None
         self._system = platform.system()
+
+    @abc.abstractmethod
+    def get_servers(self) -> Dict[str, Any]:
+        """Get all MCP servers configured for this client
+
+        Returns:
+            Dict of server configurations by name
+        """
+        pass
+
+    @abc.abstractmethod
+    def get_server(self, server_name: str) -> Optional[ServerConfig]:
+        """Get a server configuration
+
+        Args:
+            server_name: Name of the server
+
+        Returns:
+            ServerConfig object if found, None otherwise
+        """
+        pass
+
+    @abc.abstractmethod
+    def add_server(self, server_config: Union[ServerConfig, Dict[str, Any]], name: Optional[str] = None) -> bool:
+        """Add or update a server in the client config
+
+        Args:
+            server_config: ServerConfig object or dictionary in client format
+            name: Required server name when using dictionary format
+
+        Returns:
+            bool: Success or failure
+        """
+        pass
+
+    @abc.abstractmethod
+    def to_client_format(self, server_config: ServerConfig) -> Dict[str, Any]:
+        """Convert ServerConfig to client-specific format
+
+        Args:
+            server_config: ServerConfig object
+
+        Returns:
+            Dict containing client-specific configuration
+        """
+        pass
+
+    @abc.abstractmethod
+    def from_client_format(self, server_name: str, client_config: Dict[str, Any]) -> ServerConfig:
+        """Convert client format to ServerConfig
+
+        Args:
+            server_name: Name of the server
+            client_config: Client-specific configuration
+
+        Returns:
+            ServerConfig object
+        """
+        pass
+
+    @abc.abstractmethod
+    def list_servers(self) -> List[str]:
+        """List all MCP servers in client config
+
+        Returns:
+            List of server names
+        """
+        pass
+
+    @abc.abstractmethod
+    def remove_server(self, server_name: str) -> bool:
+        """Remove an MCP server from client config
+
+        Args:
+            server_name: Name of the server to remove
+
+        Returns:
+            bool: Success or failure
+        """
+        pass
+
+    @abc.abstractmethod
+    def get_client_info(self) -> Dict[str, str]:
+        """Get information about this client
+
+        Returns:
+            Dict: Information about the client including display name, download URL, and config path
+        """
+        pass
+
+    @abc.abstractmethod
+    def is_client_installed(self) -> bool:
+        """Check if this client is installed
+
+        Returns:
+            bool: True if client is installed, False otherwise
+        """
+        pass
+
+
+class JSONClientManager(BaseClientManager):
+    """
+    JSON-based implementation of the client manager interface.
+
+    This class implements the BaseClientManager interface using JSON files
+    for configuration storage.
+    """
+
+    def __init__(self):
+        """Initialize the JSON client manager"""
+        super().__init__()
+        self._config = None
 
     def _load_config(self) -> Dict[str, Any]:
         """Load client configuration file
@@ -88,7 +205,6 @@ class BaseClientManager:
         Returns:
             Dict of server configurations by name
         """
-        # To be overridden by subclasses
         config = self._load_config()
         return config.get("mcpServers", {})
 
@@ -145,7 +261,7 @@ class BaseClientManager:
     def to_client_format(self, server_config: ServerConfig) -> Dict[str, Any]:
         """Convert ServerConfig to client-specific format with common core fields
 
-        This base implementation provides the common core fields (command, args, env)
+        This implementation provides the common core fields (command, args, env)
         that are used by all client managers. Subclasses can override this method
         if they need to add additional client-specific fields.
 

@@ -4,10 +4,10 @@ Remove command for MCPM
 
 import click
 from rich.console import Console
-from rich.prompt import Confirm
 from rich.markup import escape
+from rich.prompt import Confirm
 
-from mcpm.utils.client_registry import ClientRegistry
+from mcpm.clients.client_registry import ClientRegistry
 
 console = Console()
 

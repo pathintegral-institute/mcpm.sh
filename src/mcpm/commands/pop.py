@@ -6,7 +6,7 @@ import click
 from rich.console import Console
 
 from mcpm.clients.client_config import ClientConfigManager
-from mcpm.utils.client_registry import ClientRegistry
+from mcpm.clients.client_registry import ClientRegistry
 
 console = Console()
 logger = logging.getLogger(__name__)

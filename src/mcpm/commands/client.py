@@ -8,7 +8,7 @@ from rich.panel import Panel
 from rich.table import Table
 
 from mcpm.clients.client_config import ClientConfigManager
-from mcpm.utils.client_registry import ClientRegistry
+from mcpm.clients.client_registry import ClientRegistry
 
 console = Console()
 client_config_manager = ClientConfigManager()
