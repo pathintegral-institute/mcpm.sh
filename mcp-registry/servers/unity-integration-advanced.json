@@ -51,5 +51,501 @@
       "required": false,
       "example": "5010"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "get_current_scene_info",
+      "description": "Retrieve information about the current scene in Unity Editor with configurable detail level",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "detailLevel": {
+            "type": "string",
+            "enum": [
+              "RootObjectsOnly",
+              "FullHierarchy"
+            ],
+            "description": "RootObjectsOnly: Returns just root GameObjects. FullHierarchy: Returns complete hierarchy with all children.",
+            "default": "RootObjectsOnly"
+          }
+        },
+        "additionalProperties": false
+      },
+      "category": "Editor State",
+      "tags": [
+        "unity",
+        "editor",
+        "scene"
+      ],
+      "returns": {
+        "type": "object",
+        "description": "Returns information about the current scene and its hierarchy based on requested detail level"
+      }
+    },
+    {
+      "name": "get_game_objects_info",
+      "description": "Retrieve detailed information about specific GameObjects in the current scene",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "instanceIDs": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "description": "Array of GameObject instance IDs to get information for",
+            "minItems": 1
+          },
+          "detailLevel": {
+            "type": "string",
+            "enum": [
+              "BasicInfo",
+              "IncludeComponents",
+              "IncludeChildren",
+              "IncludeComponentsAndChildren"
+            ],
+            "description": "BasicInfo: Basic GameObject information. IncludeComponents: Includes component details. IncludeChildren: Includes child GameObjects. IncludeComponentsAndChildren: Includes both components and a full hierarchy with components on children.",
+            "default": "IncludeComponents"
+          }
+        },
+        "required": [
+          "instanceIDs"
+        ],
+        "additionalProperties": false
+      },
+      "category": "Editor State",
+      "tags": [
+        "unity",
+        "editor",
+        "gameobjects"
+      ],
+      "returns": {
+        "type": "object",
+        "description": "Returns detailed information about the requested GameObjects"
+      }
+    },
+    {
+      "name": "execute_editor_command",
+      "description": "Execute C# code directly in the Unity Editor - allows full flexibility including custom namespaces and multiple classes",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "C# code to execute in Unity Editor. You MUST define a public class named \"McpScript\" with a public static method named \"Execute\" that returns an object. Example: \"public class McpScript { public static object Execute() { /* your code here */ return result; } }\". You can include any necessary namespaces, additional classes, and methods.",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "additionalProperties": false
+      },
+      "category": "Editor Control",
+      "tags": [
+        "unity",
+        "editor",
+        "command",
+        "c#"
+      ],
+      "returns": {
+        "type": "object",
+        "description": "Returns the execution result, execution time, and status"
+      }
+    },
+    {
+      "name": "get_logs",
+      "description": "Retrieve Unity Editor logs with filtering options",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "types": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "Log",
+                "Warning",
+                "Error",
+                "Exception"
+              ]
+            },
+            "description": "Filter logs by type"
+          },
+          "count": {
+            "type": "number",
+            "description": "Maximum number of log entries to return",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "message",
+                "stackTrace",
+                "logType",
+                "timestamp"
+              ]
+            },
+            "description": "Specify which fields to include in the output"
+          },
+          "messageContains": {
+            "type": "string",
+            "description": "Filter logs by message content"
+          },
+          "stackTraceContains": {
+            "type": "string",
+            "description": "Filter logs by stack trace content"
+          },
+          "timestampAfter": {
+            "type": "string",
+            "description": "Filter logs after this ISO timestamp"
+          },
+          "timestampBefore": {
+            "type": "string",
+            "description": "Filter logs before this ISO timestamp"
+          }
+        },
+        "additionalProperties": false
+      },
+      "category": "Debugging",
+      "tags": [
+        "unity",
+        "editor",
+        "logs",
+        "debugging"
+      ],
+      "returns": {
+        "type": "array",
+        "description": "Returns an array of log entries matching the specified filters"
+      }
+    },
+    {
+      "name": "verify_connection",
+      "description": "Verify that the MCP server has an active connection to Unity Editor",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "category": "Connection",
+      "tags": [
+        "unity",
+        "editor",
+        "connection"
+      ],
+      "returns": {
+        "type": "object",
+        "description": "Returns connection status information"
+      }
+    },
+    {
+      "name": "get_editor_state",
+      "description": "Get the current Unity Editor state including project information",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "category": "Editor State",
+      "tags": [
+        "unity",
+        "editor",
+        "project"
+      ],
+      "returns": {
+        "type": "object",
+        "description": "Returns detailed information about the current Unity Editor state, project settings, and environment"
+      }
+    },
+    {
+      "name": "read_file",
+      "description": "Read the contents of a file from the Unity project. Paths are relative to the project's Assets folder. For example, use 'Scenes/MainScene.unity' to read Assets/Scenes/MainScene.unity.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Path to the file to read. Can be absolute or relative to Unity project Assets folder. If empty, defaults to the Assets folder."
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "category": "Filesystem",
+      "tags": [
+        "unity",
+        "filesystem",
+        "file"
+      ]
+    },
+    {
+      "name": "read_multiple_files",
+      "description": "Read the contents of multiple files from the Unity project simultaneously.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "paths": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of file paths to read. Paths can be absolute or relative to Unity project Assets folder."
+          }
+        },
+        "required": [
+          "paths"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "category": "Filesystem",
+      "tags": [
+        "unity",
+        "filesystem",
+        "file",
+        "batch"
+      ]
+    },
+    {
+      "name": "write_file",
+      "description": "Create a new file or completely overwrite an existing file in the Unity project.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Path to the file to write. Can be absolute or relative to Unity project Assets folder. If empty, defaults to the Assets folder."
+          },
+          "content": {
+            "type": "string",
+            "description": "Content to write to the file"
+          }
+        },
+        "required": [
+          "path",
+          "content"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "category": "Filesystem",
+      "tags": [
+        "unity",
+        "filesystem",
+        "file",
+        "write"
+      ]
+    },
+    {
+      "name": "edit_file",
+      "description": "Make precise edits to a text file in the Unity project. Returns a git-style diff showing changes.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Path to the file to edit. Can be absolute or relative to Unity project Assets folder. If empty, defaults to the Assets folder."
+          },
+          "edits": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "oldText": {
+                  "type": "string",
+                  "description": "Text to search for - must match exactly"
+                },
+                "newText": {
+                  "type": "string",
+                  "description": "Text to replace with"
+                }
+              },
+              "required": [
+                "oldText",
+                "newText"
+              ],
+              "additionalProperties": false
+            },
+            "description": "Array of edit operations to apply"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "default": false,
+            "description": "Preview changes using git-style diff format"
+          }
+        },
+        "required": [
+          "path",
+          "edits"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "category": "Filesystem",
+      "tags": [
+        "unity",
+        "filesystem",
+        "file",
+        "edit"
+      ]
+    },
+    {
+      "name": "list_directory",
+      "description": "Get a listing of all files and directories in a specified path in the Unity project. Paths are relative to the Assets folder unless absolute. For example, use 'Scenes' to list all files in Assets/Scenes directory. Use empty string to list the Assets folder.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Path to the directory to list. Can be absolute or relative to Unity project Assets folder. If empty, defaults to the Assets folder. Example: \"Scenes\" will list all files in the Assets/Scenes directory."
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "category": "Filesystem",
+      "tags": [
+        "unity",
+        "filesystem",
+        "directory",
+        "list"
+      ]
+    },
+    {
+      "name": "directory_tree",
+      "description": "Get a recursive tree view of files and directories in the Unity project as a JSON structure.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Path to the directory to get tree of. Can be absolute or relative to Unity project Assets folder. If empty, defaults to the Assets folder. Example: \"Prefabs\" will show the tree for Assets/Prefabs."
+          },
+          "maxDepth": {
+            "type": "number",
+            "default": 5,
+            "description": "Maximum depth to traverse"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "category": "Filesystem",
+      "tags": [
+        "unity",
+        "filesystem",
+        "directory",
+        "tree"
+      ]
+    },
+    {
+      "name": "search_files",
+      "description": "Recursively search for files and directories matching a pattern in the Unity project.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Path to search from. Can be absolute or relative to Unity project Assets folder. If empty, defaults to the Assets folder. Example: \"Scripts\" will search within Assets/Scripts."
+          },
+          "pattern": {
+            "type": "string",
+            "description": "Pattern to search for"
+          },
+          "excludePatterns": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [],
+            "description": "Patterns to exclude"
+          }
+        },
+        "required": [
+          "path",
+          "pattern"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "category": "Filesystem",
+      "tags": [
+        "unity",
+        "filesystem",
+        "search"
+      ]
+    },
+    {
+      "name": "get_file_info",
+      "description": "Retrieve detailed metadata about a file or directory in the Unity project.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Path to the file to get info for. Can be absolute or relative to Unity project Assets folder. If empty, defaults to the Assets folder."
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "category": "Filesystem",
+      "tags": [
+        "unity",
+        "filesystem",
+        "file",
+        "metadata"
+      ]
+    },
+    {
+      "name": "find_assets_by_type",
+      "description": "Find all Unity assets of a specified type (e.g., Material, Prefab, Scene, Script) in the project. Set searchPath to an empty string to search the entire Assets folder.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "assetType": {
+            "type": "string",
+            "description": "Type of assets to find (e.g., \"Material\", \"Prefab\", \"Scene\", \"Script\")"
+          },
+          "searchPath": {
+            "type": "string",
+            "default": "",
+            "description": "Directory to search in. Can be absolute or relative to Unity project Assets folder. An empty string will search the entire Assets folder."
+          },
+          "maxDepth": {
+            "type": "number",
+            "default": 1,
+            "description": "Maximum depth to search. 1 means search only in the specified directory, 2 includes immediate subdirectories, and so on. Set to -1 for unlimited depth."
+          }
+        },
+        "required": [
+          "assetType"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "category": "Filesystem",
+      "tags": [
+        "unity",
+        "filesystem",
+        "assets",
+        "search"
+      ]
+    }
+  ]
 }
