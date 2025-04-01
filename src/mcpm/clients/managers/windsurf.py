@@ -2,19 +2,15 @@
 Windsurf integration utilities for MCP
 """
 
-import os
 import logging
-import platform
-from typing import Dict, Any, Union, Optional
+import os
 
-from mcpm.utils.server_config import ServerConfig
-
-from mcpm.clients.base import BaseClientManager
+from mcpm.clients.base import JSONClientManager
 
 logger = logging.getLogger(__name__)
 
 
-class WindsurfManager(BaseClientManager):
+class WindsurfManager(JSONClientManager):
     """Manages Windsurf MCP server configurations"""
 
     # Client information

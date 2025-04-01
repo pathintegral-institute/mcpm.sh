@@ -7,12 +7,12 @@ import logging
 from typing import Dict, List, Optional
 
 from mcpm.clients.base import BaseClientManager
+from mcpm.clients.client_config import ClientConfigManager
 
 # Import all client managers
-from mcpm.clients.claude_desktop import ClaudeDesktopManager
-from mcpm.clients.client_config import ClientConfigManager
-from mcpm.clients.cursor import CursorManager
-from mcpm.clients.windsurf import WindsurfManager
+from mcpm.clients.managers.claude_desktop import ClaudeDesktopManager
+from mcpm.clients.managers.cursor import CursorManager
+from mcpm.clients.managers.windsurf import WindsurfManager
 
 logger = logging.getLogger(__name__)
 

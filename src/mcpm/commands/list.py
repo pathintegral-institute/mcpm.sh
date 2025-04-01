@@ -4,10 +4,9 @@ List command for MCP
 
 import click
 from rich.console import Console
-from rich.table import Table
 from rich.markup import escape
 
-from mcpm.utils.client_registry import ClientRegistry
+from mcpm.clients.client_registry import ClientRegistry
 
 console = Console()
 
