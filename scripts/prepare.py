@@ -217,7 +217,7 @@ def get_github_stars(github_repos: Dict[str, str]) -> Dict[str, int]:
     status_message(f"Fetching GitHub stars for {repo_count} repositories...")
 
     # Convert dict values to list for batch processing
-    repo_urls = list(github_repos.values())[:2]
+    repo_urls = list(github_repos.values())
 
     # Fetch stars
     url_to_stars = fetch_github_stars_batch(repo_urls)
