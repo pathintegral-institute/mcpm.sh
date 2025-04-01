@@ -4,14 +4,14 @@ Client command for MCPM
 
 import click
 from rich.console import Console
-from rich.table import Table
 from rich.panel import Panel
+from rich.table import Table
 
-from mcpm.utils.config import ConfigManager
+from mcpm.clients.client_config import ClientConfigManager
 from mcpm.utils.client_registry import ClientRegistry
 
 console = Console()
-config_manager = ConfigManager()
+client_config_manager = ClientConfigManager()
 
 
 @click.command()

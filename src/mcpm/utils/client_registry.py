@@ -7,12 +7,12 @@ import logging
 from typing import Dict, List, Optional
 
 from mcpm.clients.base import BaseClientManager
-from mcpm.utils.config import ConfigManager
 
 # Import all client managers
 from mcpm.clients.claude_desktop import ClaudeDesktopManager
-from mcpm.clients.windsurf import WindsurfManager
+from mcpm.clients.client_config import ClientConfigManager
 from mcpm.clients.cursor import CursorManager
+from mcpm.clients.windsurf import WindsurfManager
 
 logger = logging.getLogger(__name__)
 
@@ -23,8 +23,8 @@ class ClientRegistry:
     Provides access to client managers and their configurations
     """
 
-    # Configuration manager for system-wide settings
-    _config_manager = ConfigManager()
+    # Client configuration manager for system-wide client settings
+    _client_config_manager = ClientConfigManager()
 
     # Dictionary mapping client keys to manager instances
     _CLIENT_MANAGERS = {
@@ -100,7 +100,7 @@ class ClientRegistry:
         Returns:
             str: Name of the active client
         """
-        return cls._config_manager.get_active_client()
+        return cls._client_config_manager.get_active_client()
 
     @classmethod
     def set_active_client(cls, client_name: str) -> bool:
@@ -113,7 +113,7 @@ class ClientRegistry:
         Returns:
             bool: Success or failure
         """
-        return cls._config_manager.set_active_client(client_name)
+        return cls._client_config_manager.set_active_client(client_name)
 
     @classmethod
     def get_active_client_manager(cls) -> Optional[BaseClientManager]:

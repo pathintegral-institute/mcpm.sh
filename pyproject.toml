@@ -11,7 +11,14 @@ requires-python = ">=3.10"
 license = "MIT"
 authors = [{ name = "MCPM Contributors" }]
 maintainers = [{ name = "Path Integral Institute" }]
-keywords = ["MCPM", "MCP", "Model Context Protocol", "Claude Desktop", "Cursor", "Windsurf"]
+keywords = [
+    "MCPM",
+    "MCP",
+    "Model Context Protocol",
+    "Claude Desktop",
+    "Cursor",
+    "Windsurf",
+]
 dependencies = [
     "click>=8.1.3",
     "rich>=12.0.0",

@@ -5,11 +5,12 @@ This file tests the common functionality provided by BaseClientManager
 using the WindsurfManager as a concrete implementation.
 """
 
-import os
 import json
-import pytest
+import os
 import tempfile
 from unittest.mock import patch
+
+import pytest
 
 from mcpm.clients.windsurf import WindsurfManager
 from mcpm.utils.config import ConfigManager
@@ -80,11 +81,18 @@ class TestBaseClientManagerViaWindsurf:
 
     @pytest.fixture
     def config_manager(self):
-        """Create a ConfigManager with a temp config for testing"""
+        """Create a ClientConfigManager with a temp config for testing"""
         with tempfile.TemporaryDirectory() as temp_dir:
             config_path = os.path.join(temp_dir, "config.json")
-            manager = ConfigManager(config_path=config_path)
-            yield manager
+            # Create ConfigManager with the temp path
+            config_mgr = ConfigManager(config_path=config_path)
+            # Create ClientConfigManager that will use this ConfigManager internally
+            from mcpm.clients.client_config import ClientConfigManager
+
+            client_mgr = ClientConfigManager()
+            # Override its internal config_manager with our temp one
+            client_mgr.config_manager = config_mgr
+            yield client_mgr
 
     def test_list_servers(self, windsurf_manager):
         """Test list_servers method from BaseClientManager"""
