@@ -59,10 +59,6 @@ def list():
             for i, arg in enumerate(args):
                 console.print(f"    {i}: [yellow]{escape(arg)}[/]")
 
-            # Get package name (usually the second argument)
-            if len(args) > 1:
-                console.print(f"  Package: [magenta]{args[1]}[/]")
-
         # Display environment variables
         env_vars = server_info.get("env", {})
         if env_vars:
