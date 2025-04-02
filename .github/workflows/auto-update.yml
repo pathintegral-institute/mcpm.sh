@@ -56,6 +56,6 @@ jobs:
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
           git checkout -b "$BRANCH_NAME"
-          git add local/readme.md
+          git add -f local/readme.md  # Force add despite .gitignore TODO: change to real json file
           git commit -m "Update repo with README from issue #$ISSUE_NUMBER" || echo "No changes to commit"
           git push origin "$BRANCH_NAME" --force  # Push to the new branch
