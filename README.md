@@ -19,7 +19,12 @@ MCPM will support managing MCP servers for the following clients:
 - Claude Desktop (Anthropic)
 - Cursor
 - Windsurf
-- Additional clients coming soon...
+- Cline
+- Continue
+- Goose
+- 5ire
+- Roo Code
+- More clients coming soon...
 
 ## Command Line Interface (CLI)
 
@@ -122,7 +127,7 @@ mcpm.sh/
    ```
    # Either use the installed package
    mcpm --help
-   
+
    # Or use the development script
    ./test_cli.py --help
    ```

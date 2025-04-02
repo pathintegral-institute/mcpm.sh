@@ -9,6 +9,8 @@ import os
 import platform
 from typing import Any, Dict, List, Optional, Union
 
+from ruamel.yaml import YAML
+
 from mcpm.utils.server_config import ServerConfig
 
 logger = logging.getLogger(__name__)
@@ -138,6 +140,7 @@ class JSONClientManager(BaseClientManager):
     This class implements the BaseClientManager interface using JSON files
     for configuration storage.
     """
+    configure_key_name: str = "mcpServers"
 
     def __init__(self):
         """Initialize the JSON client manager"""
@@ -151,7 +154,7 @@ class JSONClientManager(BaseClientManager):
             Dict containing the client configuration with at least {"mcpServers": {}}
         """
         # Create empty config with the correct structure
-        empty_config = {"mcpServers": {}}
+        empty_config = {self.configure_key_name: {}}
 
         if not os.path.exists(self.config_path):
             logger.warning(f"Client config file not found at: {self.config_path}")
@@ -161,8 +164,8 @@ class JSONClientManager(BaseClientManager):
             with open(self.config_path, "r") as f:
                 config = json.load(f)
                 # Ensure mcpServers section exists
-                if "mcpServers" not in config:
-                    config["mcpServers"] = {}
+                if self.configure_key_name not in config:
+                    config[self.configure_key_name] = {}
                 return config
         except json.JSONDecodeError:
             logger.error(f"Error parsing client config file: {self.config_path}")
@@ -206,7 +209,7 @@ class JSONClientManager(BaseClientManager):
             Dict of server configurations by name
         """
         config = self._load_config()
-        return config.get("mcpServers", {})
+        return config.get(self.configure_key_name, {})
 
     def get_server(self, server_name: str) -> Optional[ServerConfig]:
         """Get a server configuration
@@ -254,7 +257,7 @@ class JSONClientManager(BaseClientManager):
 
         # Update config directly
         config = self._load_config()
-        config["mcpServers"][server_name] = client_config
+        config[self.configure_key_name][server_name] = client_config
 
         return self._save_config(config)
 
@@ -336,7 +339,7 @@ class JSONClientManager(BaseClientManager):
 
         # Load full config and remove the server
         config = self._load_config()
-        del config["mcpServers"][server_name]
+        del config[self.configure_key_name][server_name]
 
         return self._save_config(config)
 
@@ -356,4 +359,247 @@ class JSONClientManager(BaseClientManager):
         """
         # Default implementation checks if the config directory exists
         # Can be overridden by subclasses
+        return os.path.isdir(os.path.dirname(self.config_path))
+
+
+class YAMLClientManager(BaseClientManager):
+    """
+    YAML-based implementation of the client manager interface.
+
+    This class implements the BaseClientManager interface using YAML files
+    for configuration storage. It provides common functionality for different
+    YAML-based client managers with varying configuration formats.
+    """
+
+    def __init__(self):
+        """Initialize the YAML client manager"""
+        super().__init__()
+        self.config_path = None  # To be set by subclasses
+        self.yaml_handler: YAML = YAML()
+
+    def _load_config(self) -> Dict[str, Any]:
+        """Load client configuration file
+
+        Returns:
+            Dict containing the client configuration
+        """
+        # Create empty config with the correct structure
+        empty_config = self._get_empty_config()
+
+        if not os.path.exists(self.config_path):
+            logger.warning(f"Client config file not found at: {self.config_path}")
+            return empty_config
+
+        try:
+            with open(self.config_path, "r") as f:
+                config = self.yaml_handler.load(f)
+                return config if config else empty_config
+        except Exception as e:
+            logger.error(f"Error parsing client config file: {self.config_path} - {str(e)}")
+            # Return empty config
+            return empty_config
+
+    def _save_config(self, config: Dict[str, Any]) -> bool:
+        """Save configuration to client config file
+
+        Args:
+            config: Configuration to save
+
+        Returns:
+            bool: Success or failure
+        """
+        try:
+            # Create directory if it doesn't exist
+            os.makedirs(os.path.dirname(self.config_path), exist_ok=True)
+
+            with open(self.config_path, "w") as f:
+                self.yaml_handler.dump(config, f)
+            return True
+        except Exception as e:
+            logger.error(f"Error saving client config: {str(e)}")
+            return False
+
+    @abc.abstractmethod
+    def _get_empty_config(self) -> Dict[str, Any]:
+        """Get an empty configuration structure for this client
+
+        Returns:
+            Dict containing the empty configuration structure
+        """
+        pass
+
+    @abc.abstractmethod
+    def _get_server_config(self, config: Dict[str, Any], server_name: str) -> Optional[Dict[str, Any]]:
+        """Get a server configuration from the config by name
+
+        Args:
+            config: The loaded configuration
+            server_name: Name of the server to find
+
+        Returns:
+            Server configuration if found, None otherwise
+        """
+        pass
+
+    @abc.abstractmethod
+    def _get_all_server_names(self, config: Dict[str, Any]) -> List[str]:
+        """Get all server names from the configuration
+
+        Args:
+            config: The loaded configuration
+
+        Returns:
+            List of server names
+        """
+        pass
+
+    @abc.abstractmethod
+    def _add_server_to_config(self, config: Dict[str, Any], server_name: str, server_config: Dict[str, Any]) -> Dict[str, Any]:
+        """Add or update a server in the config
+
+        Args:
+            config: The loaded configuration
+            server_name: Name of the server to add or update
+            server_config: Server configuration to add or update
+
+        Returns:
+            Updated configuration
+        """
+        pass
+
+    @abc.abstractmethod
+    def _remove_server_from_config(self, config: Dict[str, Any], server_name: str) -> Dict[str, Any]:
+        """Remove a server from the config
+
+        Args:
+            config: The loaded configuration
+            server_name: Name of the server to remove
+
+        Returns:
+            Updated configuration
+        """
+        pass
+
+    def get_servers(self) -> Dict[str, Any]:
+        """Get all MCP servers configured for this client
+
+        Returns:
+            Dict of server configurations by name
+        """
+        config = self._load_config()
+        result = {}
+
+        for server_name in self._get_all_server_names(config):
+            server_config = self._get_server_config(config, server_name)
+            if server_config:
+                # Normalize configuration for external use
+                result[server_name] = self._normalize_server_config(server_config)
+
+        return result
+
+    def get_server(self, server_name: str) -> Optional[ServerConfig]:
+        """Get a server configuration
+
+        Args:
+            server_name: Name of the server
+
+        Returns:
+            ServerConfig object if found, None otherwise
+        """
+        config = self._load_config()
+        server_config = self._get_server_config(config, server_name)
+
+        if not server_config:
+            logger.debug(f"Server {server_name} not found in {self.display_name} config")
+            return None
+
+        return self.from_client_format(server_name, server_config)
+
+    def add_server(self, server_config: Union[ServerConfig, Dict[str, Any]], name: Optional[str] = None) -> bool:
+        """Add or update a server in the client config
+
+        Args:
+            server_config: ServerConfig object or dictionary in client format
+            name: Required server name when using dictionary format
+
+        Returns:
+            bool: Success or failure
+        """
+        # Handle direct dictionary input
+        if isinstance(server_config, dict):
+            if name is None:
+                raise ValueError("Name must be provided when using dictionary format")
+            server_name = name
+            client_config = server_config  # Already in client format
+        # Handle ServerConfig objects
+        else:
+            server_name = server_config.name
+            client_config = self.to_client_format(server_config)
+
+        config = self._load_config()
+        config = self._add_server_to_config(config, server_name, client_config)
+
+        return self._save_config(config)
+
+    def remove_server(self, server_name: str) -> bool:
+        """Remove an MCP server from client config
+
+        Args:
+            server_name: Name of the server to remove
+
+        Returns:
+            bool: Success or failure
+        """
+        config = self._load_config()
+        server_config = self._get_server_config(config, server_name)
+
+        if not server_config:
+            logger.warning(f"Server {server_name} not found in {self.display_name} config")
+            return False
+
+        config = self._remove_server_from_config(config, server_name)
+        return self._save_config(config)
+
+    def list_servers(self) -> List[str]:
+        """List all MCP servers in client config
+
+        Returns:
+            List of server names
+        """
+        config = self._load_config()
+        return self._get_all_server_names(config)
+
+    def _normalize_server_config(self, server_config: Dict[str, Any]) -> Dict[str, Any]:
+        """Normalize server configuration for external use
+
+        This method can be overridden by subclasses to transform client-specific
+        configuration formats to a standard format expected by external components.
+
+        Args:
+            server_config: Client-specific server configuration
+
+        Returns:
+            Normalized server configuration
+        """
+        return server_config
+
+    def get_client_info(self) -> Dict[str, str]:
+        """Get information about this client
+
+        Returns:
+            Dict: Information about the client including display name, download URL, and config path
+        """
+        return {
+            "name": self.display_name,
+            "download_url": self.download_url,
+            "config_file": self.config_path
+        }
+
+    def is_client_installed(self) -> bool:
+        """Check if this client is installed
+
+        Returns:
+            bool: True if client is installed, False otherwise
+        """
+        # Check if the config directory exists
         return os.path.isdir(os.path.dirname(self.config_path))

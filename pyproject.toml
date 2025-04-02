@@ -26,6 +26,7 @@ dependencies = [
     "pydantic>=2.5.1",
     "jsonschema>=4.17.0",
     "mcp>=1.6.0",
+    "ruamel-yaml>=0.18.10",
 ]
 
 [project.urls]
