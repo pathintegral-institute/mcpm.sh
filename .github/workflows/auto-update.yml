@@ -1,0 +1,36 @@
+name: Get Server JSON and Update Repo
+
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  get-json-and-update:
+    runs-on: ubuntu-latest
+    if: github.event.label.name == 'new-server' && contains(github.event.issue.labels.*.name, 'approved')
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          pip install requests openai
+
+      - name: Run the script
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python scripts/get_manifest.py "$ISSUE_BODY"
+
+      - name: Commit the JSON content
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git add .
+          git commit -m "New server JSON content from issue #${{ github.event.issue.number }}" || echo "No changes to commit"
+          git push
