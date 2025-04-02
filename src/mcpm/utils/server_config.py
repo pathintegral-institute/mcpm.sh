@@ -1,7 +1,6 @@
 """Server configuration utilities for MCPM"""
 
-import os
-from typing import Dict, List, Optional, ClassVar
+from typing import ClassVar, Dict, List, Optional
 
 from pydantic import BaseModel, Field, model_validator
 
@@ -20,7 +19,7 @@ class ServerConfig(BaseModel):
     args: List[str]
 
     # Optional fields
-    env_vars: Dict[str, str] = Field(default_factory=dict)
+    env: Dict[str, str] = Field(default_factory=dict)
     display_name: Optional[str] = None
     description: str = ""
     installation: Optional[str] = None
@@ -81,7 +80,7 @@ class ServerConfig(BaseModel):
         Returns:
             Dictionary of non-empty environment variables
         """
-        if not self.env_vars:
+        if not self.env:
             return {}
 
         # Use provided environment without falling back to os.environ
@@ -89,7 +88,7 @@ class ServerConfig(BaseModel):
 
         # Filter out empty environment variables
         non_empty_env = {}
-        for key, value in self.env_vars.items():
+        for key, value in self.env.items():
             # For environment variable references like ${VAR_NAME}, check if the variable exists
             # and has a non-empty value. If it doesn't exist or is empty, exclude it.
             if value is not None and isinstance(value, str):

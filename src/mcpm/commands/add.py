@@ -4,6 +4,7 @@ Add command for adding MCP servers directly to client configurations
 
 import json
 import os
+import re
 
 import click
 from rich.console import Console
@@ -157,7 +158,6 @@ def add(server_name, force=False, alias=None):
             install_args = selected_method.get("args", install_args)
             package_name = selected_method.get("package", package_name)
             env_vars = selected_method.get("env", env_vars)
-            required_args = server_metadata.get("required_args", required_args)
 
         console.print(f"\n[green]Using [bold]{installation_method}[/] installation method[/]")
 
@@ -175,7 +175,9 @@ def add(server_name, force=False, alias=None):
         # Get all available arguments from the server metadata
         all_arguments = server_metadata.get("arguments", {})
 
-        # Process environment variables to store in config
+        required_args = {}
+        # Process variables to store in config
+        processed_variables = {}
         processed_env = {}
 
         # First, prompt for all defined arguments even if they're not in env_vars
@@ -196,6 +198,7 @@ def add(server_name, force=False, alias=None):
 
                 # Add required indicator
                 if is_required:
+                    required_args[arg_name] = arg_info
                     prompt_text += " (required)"
                 else:
                     prompt_text += " (optional, press Enter to skip)"
@@ -216,13 +219,12 @@ def add(server_name, force=False, alias=None):
                         )
                         if user_value != env_value:
                             # User provided a different value
-                            processed_env[arg_name] = user_value
+                            processed_variables[arg_name] = user_value
                         else:
-                            # User kept the environment value
-                            processed_env[arg_name] = f"${{{arg_name}}}"
+                            # User use environment value
+                            processed_variables[arg_name] = env_value
                     except click.Abort:
-                        # Keep environment reference on abort
-                        processed_env[arg_name] = f"${{{arg_name}}}"
+                        pass
                 else:
                     # No environment value
                     try:
@@ -234,7 +236,7 @@ def add(server_name, force=False, alias=None):
                                 or "key" in arg_name.lower()
                                 or "secret" in arg_name.lower(),
                             )
-                            processed_env[arg_name] = user_value
+                            processed_variables[arg_name] = user_value
                         else:
                             # Optional argument can be skipped
                             user_value = click.prompt(
@@ -247,43 +249,36 @@ def add(server_name, force=False, alias=None):
                             )
                             # Only add non-empty values to the environment
                             if user_value and user_value.strip():
-                                processed_env[arg_name] = user_value
+                                processed_variables[arg_name] = user_value
                             # Explicitly don't add anything if the user leaves it blank
                     except click.Abort:
                         if is_required:
                             console.print(f"[yellow]Warning: Required argument {arg_name} not provided.[/]")
-                            # Store as environment reference even if missing
-                            processed_env[arg_name] = f"${{{arg_name}}}"
 
             # Resume progress display
             progress = Progress(SpinnerColumn(), TextColumn("[bold green]{task.description}[/]"), console=console)
             progress.start()
             progress.add_task(f"Configuring {server_name}...", total=None)
 
-        # Now process any remaining environment variables from the installation method
+        # Now process the replacement of environment variables
         for key, value in env_vars.items():
-            # Skip if we already processed this key
-            if key in processed_env:
-                continue
+            processed_env[key] = value
 
             if isinstance(value, str) and value.startswith("${") and value.endswith("}"):
-                env_var_name = value[2:-1]  # Extract variable name from ${NAME}
-                is_required = env_var_name in required_args
-
                 # For required arguments, prompt the user if not in environment
-                env_value = os.environ.get(env_var_name, "")
+                env_value = os.environ.get(key, "")
 
-                if not env_value and is_required:
+                if not env_value and key in required_args and key not in processed_variables:
                     progress.stop()
-                    console.print(f"[yellow]Warning:[/] Required argument {env_var_name} is not set in environment")
+                    console.print(f"[yellow]Warning:[/] Required argument {key} is not set in environment")
 
                     # Prompt for the value
-                    arg_info = required_args.get(env_var_name, {})
+                    arg_info = required_args.get(key, {})
                     description = arg_info.get("description", "")
                     try:
                         user_value = click.prompt(
-                            f"Enter value for {env_var_name} ({description})",
-                            hide_input="token" in env_var_name.lower() or "key" in env_var_name.lower(),
+                            f"Enter value for {key} ({description})",
+                            hide_input="token" in key.lower() or "key" in key.lower(),
                         )
                         processed_env[key] = user_value
                     except click.Abort:
@@ -298,19 +293,33 @@ def add(server_name, force=False, alias=None):
                     progress.add_task(f"Configuring {server_name}...", total=None)
                 else:
                     # Store reference to environment variable
-                    processed_env[key] = value
+                    processed_env[key] = processed_variables.get(key, env_value)
             else:
                 processed_env[key] = value
+
+    # replace arguments with values
+    processed_args = []
+    for arg in install_args:
+        matched = re.match(r"\$\{(.*?)\}", arg)
+        if matched:
+            original, key = matched.group(0), matched.group(1)
+            if key not in processed_variables:
+                # not required, remove the argument from args
+                continue
+            replaced_arg = arg.replace(original, processed_variables.get(key, arg))
+            processed_args.append(replaced_arg)
+        else:
+            processed_args.append(arg)
 
     # Get actual MCP execution command, args, and env from the selected installation method
     # This ensures we use the actual server command information instead of placeholders
     if selected_method:
         mcp_command = selected_method.get("command", install_command)
-        mcp_args = selected_method.get("args", install_args)
+        mcp_args = processed_args
         # Env vars are already processed above
     else:
         mcp_command = install_command
-        mcp_args = install_args
+        mcp_args = processed_args
 
     # Create server configuration using ServerConfig
     server_config = ServerConfig(
@@ -319,7 +328,7 @@ def add(server_name, force=False, alias=None):
         description=description,
         command=mcp_command,  # Use the actual MCP server command
         args=mcp_args,  # Use the actual MCP server arguments
-        env_vars=processed_env,
+        env=processed_env,
         # Use the simplified installation method
         installation=installation_method,
     )

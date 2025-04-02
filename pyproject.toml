@@ -49,3 +49,9 @@ fix = true
 [tool.ruff.lint]
 select = ["F", "E", "W", "I"]
 fixable = ["I", "F401"]
+
+[dependency-groups]
+dev = [
+    "ipython>=8.34.0",
+    "pytest>=8.3.5",
+]
