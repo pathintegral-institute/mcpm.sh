@@ -43,7 +43,6 @@
   "tools": [
     {
       "name": "chat_completion",
-      "description": null,
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -112,7 +111,6 @@
     },
     {
       "name": "multi_turn_chat",
-      "description": null,
       "inputSchema": {
         "type": "object",
         "properties": {
