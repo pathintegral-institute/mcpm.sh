@@ -202,6 +202,6 @@ class GooseClientManager(YAMLClientManager):
 
         # Add environment variables if present
         if "envs" in client_config:
-            server_data["env_vars"] = client_config["envs"]
+            server_data["env"] = client_config["envs"]
 
         return ServerConfig.from_dict(server_data)
