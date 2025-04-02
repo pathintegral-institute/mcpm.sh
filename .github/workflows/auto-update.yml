@@ -24,8 +24,6 @@ jobs:
 
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          ref: test-automation  # Hardcode test branch
 
       - name: Set up Python
         uses: actions/setup-python@v5
