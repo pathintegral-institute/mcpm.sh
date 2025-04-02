@@ -49,5 +49,91 @@
       "required": true,
       "example": "test123"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "list_indices",
+      "description": "List all indices in the Elasticsearch cluster",
+      "inputSchema": {
+        "properties": {},
+        "title": "list_indicesArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_mapping",
+      "description": "Get index mapping",
+      "inputSchema": {
+        "properties": {
+          "index": {
+            "title": "Index",
+            "type": "string"
+          }
+        },
+        "required": [
+          "index"
+        ],
+        "title": "get_mappingArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_settings",
+      "description": "Get index settings",
+      "inputSchema": {
+        "properties": {
+          "index": {
+            "title": "Index",
+            "type": "string"
+          }
+        },
+        "required": [
+          "index"
+        ],
+        "title": "get_settingsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "search_documents",
+      "description": "Search documents in an index with a custom query",
+      "inputSchema": {
+        "properties": {
+          "index": {
+            "title": "Index",
+            "type": "string"
+          },
+          "body": {
+            "additionalProperties": true,
+            "title": "Body",
+            "type": "object"
+          }
+        },
+        "required": [
+          "index",
+          "body"
+        ],
+        "title": "search_documentsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_cluster_health",
+      "description": "Get cluster health status",
+      "inputSchema": {
+        "properties": {},
+        "title": "get_cluster_healthArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_cluster_stats",
+      "description": "Get cluster statistics",
+      "inputSchema": {
+        "properties": {},
+        "title": "get_cluster_statsArguments",
+        "type": "object"
+      }
+    }
+  ]
 }

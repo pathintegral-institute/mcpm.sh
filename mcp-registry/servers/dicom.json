@@ -38,8 +38,311 @@
         "--from",
         "git+https://github.com/ChristianHinge/dicom-mcp",
         "dicom-mcp",
-        "/path/to/configuration.yaml"
+        "${CONFIG_PATH}"
       ]
     }
-  }
+  },
+  "arguments": {
+    "CONFIG_PATH": {
+      "description": "Path to the configuration file",
+      "required": true,
+      "example": "/path/to/config.yaml"
+    }
+  },
+  "tools": [
+    {
+      "name": "list_dicom_nodes",
+      "description": "Lists all configured DICOM nodes and calling AE titles.",
+      "inputSchema": {},
+      "required": []
+    },
+    {
+      "name": "switch_dicom_node",
+      "description": "Switches to a different configured DICOM node.",
+      "inputSchema": {
+        "node_name": {
+          "type": "string",
+          "description": "Name of the node to switch to"
+        }
+      },
+      "required": [
+        "node_name"
+      ]
+    },
+    {
+      "name": "switch_calling_aet",
+      "description": "Switches to a different configured calling AE title.",
+      "inputSchema": {
+        "aet_name": {
+          "type": "string",
+          "description": "Name of the calling AE title to switch to"
+        }
+      },
+      "required": [
+        "aet_name"
+      ]
+    },
+    {
+      "name": "verify_connection",
+      "description": "Tests connectivity to the configured DICOM node using C-ECHO.",
+      "inputSchema": {},
+      "required": []
+    },
+    {
+      "name": "query_patients",
+      "description": "Search for patients matching specified criteria.",
+      "inputSchema": {
+        "name_pattern": {
+          "type": "string",
+          "description": "Patient name pattern (can include wildcards)",
+          "optional": true
+        },
+        "patient_id": {
+          "type": "string",
+          "description": "Patient ID",
+          "optional": true
+        },
+        "birth_date": {
+          "type": "string",
+          "description": "Patient birth date (YYYYMMDD)",
+          "optional": true
+        },
+        "attribute_preset": {
+          "type": "string",
+          "description": "Preset level of detail",
+          "optional": true
+        },
+        "additional_attributes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Additional DICOM attributes to include",
+          "optional": true
+        },
+        "exclude_attributes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "DICOM attributes to exclude",
+          "optional": true
+        }
+      },
+      "required": []
+    },
+    {
+      "name": "query_studies",
+      "description": "Search for studies matching specified criteria.",
+      "inputSchema": {
+        "patient_id": {
+          "type": "string",
+          "description": "Patient ID",
+          "optional": true
+        },
+        "study_date": {
+          "type": "string",
+          "description": "Study date or range (YYYYMMDD or YYYYMMDD-YYYYMMDD)",
+          "optional": true
+        },
+        "modality_in_study": {
+          "type": "string",
+          "description": "Modalities in study",
+          "optional": true
+        },
+        "study_description": {
+          "type": "string",
+          "description": "Study description (can include wildcards)",
+          "optional": true
+        },
+        "accession_number": {
+          "type": "string",
+          "description": "Accession number",
+          "optional": true
+        },
+        "study_instance_uid": {
+          "type": "string",
+          "description": "Study Instance UID",
+          "optional": true
+        },
+        "attribute_preset": {
+          "type": "string",
+          "description": "Preset level of detail",
+          "optional": true
+        },
+        "additional_attributes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Additional DICOM attributes to include",
+          "optional": true
+        },
+        "exclude_attributes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "DICOM attributes to exclude",
+          "optional": true
+        }
+      },
+      "required": []
+    },
+    {
+      "name": "query_series",
+      "description": "Search for series within a study.",
+      "inputSchema": {
+        "study_instance_uid": {
+          "type": "string",
+          "description": "Study Instance UID"
+        },
+        "modality": {
+          "type": "string",
+          "description": "Modality (e.g., 'CT', 'MR')",
+          "optional": true
+        },
+        "series_number": {
+          "type": "string",
+          "description": "Series number",
+          "optional": true
+        },
+        "series_description": {
+          "type": "string",
+          "description": "Series description",
+          "optional": true
+        },
+        "series_instance_uid": {
+          "type": "string",
+          "description": "Series Instance UID",
+          "optional": true
+        },
+        "attribute_preset": {
+          "type": "string",
+          "description": "Preset level of detail",
+          "optional": true
+        },
+        "additional_attributes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Additional DICOM attributes to include",
+          "optional": true
+        },
+        "exclude_attributes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "DICOM attributes to exclude",
+          "optional": true
+        }
+      },
+      "required": [
+        "study_instance_uid"
+      ]
+    },
+    {
+      "name": "query_instances",
+      "description": "Search for instances within a series.",
+      "inputSchema": {
+        "series_instance_uid": {
+          "type": "string",
+          "description": "Series Instance UID"
+        },
+        "instance_number": {
+          "type": "string",
+          "description": "Instance number",
+          "optional": true
+        },
+        "sop_instance_uid": {
+          "type": "string",
+          "description": "SOP Instance UID",
+          "optional": true
+        },
+        "attribute_preset": {
+          "type": "string",
+          "description": "Preset level of detail",
+          "optional": true
+        },
+        "additional_attributes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Additional DICOM attributes to include",
+          "optional": true
+        },
+        "exclude_attributes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "DICOM attributes to exclude",
+          "optional": true
+        }
+      },
+      "required": [
+        "series_instance_uid"
+      ]
+    },
+    {
+      "name": "get_attribute_presets",
+      "description": "Lists available attribute presets for queries.",
+      "inputSchema": {},
+      "required": []
+    },
+    {
+      "name": "retrieve_instance",
+      "description": "Retrieves a specific DICOM instance and saves it to the local filesystem.",
+      "inputSchema": {
+        "study_instance_uid": {
+          "type": "string",
+          "description": "Study Instance UID"
+        },
+        "series_instance_uid": {
+          "type": "string",
+          "description": "Series Instance UID"
+        },
+        "sop_instance_uid": {
+          "type": "string",
+          "description": "SOP Instance UID"
+        },
+        "output_directory": {
+          "type": "string",
+          "description": "Directory to save the retrieved instance to (default: './retrieved_files')",
+          "optional": true
+        }
+      },
+      "required": [
+        "study_instance_uid",
+        "series_instance_uid",
+        "sop_instance_uid"
+      ]
+    },
+    {
+      "name": "extract_pdf_text_from_dicom",
+      "description": "Retrieves a DICOM instance containing an encapsulated PDF and extracts its text content.",
+      "inputSchema": {
+        "study_instance_uid": {
+          "type": "string",
+          "description": "Study Instance UID"
+        },
+        "series_instance_uid": {
+          "type": "string",
+          "description": "Series Instance UID"
+        },
+        "sop_instance_uid": {
+          "type": "string",
+          "description": "SOP Instance UID"
+        }
+      },
+      "required": [
+        "study_instance_uid",
+        "series_instance_uid",
+        "sop_instance_uid"
+      ]
+    }
+  ]
 }

@@ -38,5 +38,1301 @@
       "required": true,
       "example": "<Your CMA token>"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "search_entries",
+      "description": "Search for entries using query parameters. Returns a maximum of 3 items per request. Use skip parameter to paginate through results.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "object",
+            "description": "Query parameters for searching entries",
+            "properties": {
+              "content_type": {
+                "type": "string"
+              },
+              "select": {
+                "type": "string"
+              },
+              "limit": {
+                "type": "number",
+                "default": 3,
+                "maximum": 3,
+                "description": "Maximum number of items to return (max: 3)"
+              },
+              "skip": {
+                "type": "number",
+                "default": 0,
+                "description": "Number of items to skip for pagination"
+              },
+              "order": {
+                "type": "string"
+              },
+              "query": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "limit",
+              "skip"
+            ]
+          },
+          "spaceId": {
+            "type": "string",
+            "description": "The ID of the Contentful space. This must be the space's ID, not its name, ask for this ID if it's unclear."
+          },
+          "environmentId": {
+            "type": "string",
+            "description": "The ID of the environment within the space, by default this will be called Master",
+            "default": "master"
+          }
+        },
+        "required": [
+          "query",
+          "spaceId",
+          "environmentId"
+        ]
+      }
+    },
+    {
+      "name": "create_entry",
+      "description": "Create a new entry in Contentful, before executing this function, you need to know the contentTypeId (not the content type NAME) and the fields of that contentType, you can get the fields definition by using the GET_CONTENT_TYPE tool. ",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "contentTypeId": {
+            "type": "string",
+            "description": "The ID of the content type for the new entry"
+          },
+          "fields": {
+            "type": "object",
+            "description": "The fields of the entry"
+          },
+          "spaceId": {
+            "type": "string",
+            "description": "The ID of the Contentful space. This must be the space's ID, not its name, ask for this ID if it's unclear."
+          },
+          "environmentId": {
+            "type": "string",
+            "description": "The ID of the environment within the space, by default this will be called Master",
+            "default": "master"
+          }
+        },
+        "required": [
+          "contentTypeId",
+          "fields",
+          "spaceId",
+          "environmentId"
+        ]
+      }
+    },
+    {
+      "name": "get_entry",
+      "description": "Retrieve an existing entry",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "entryId": {
+            "type": "string"
+          },
+          "spaceId": {
+            "type": "string",
+            "description": "The ID of the Contentful space. This must be the space's ID, not its name, ask for this ID if it's unclear."
+          },
+          "environmentId": {
+            "type": "string",
+            "description": "The ID of the environment within the space, by default this will be called Master",
+            "default": "master"
+          }
+        },
+        "required": [
+          "entryId",
+          "spaceId",
+          "environmentId"
+        ]
+      }
+    },
+    {
+      "name": "update_entry",
+      "description": "Update an existing entry, very important: always send all field values and all values related to locales, also the fields values that have not been updated",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "entryId": {
+            "type": "string"
+          },
+          "fields": {
+            "type": "object"
+          },
+          "spaceId": {
+            "type": "string",
+            "description": "The ID of the Contentful space. This must be the space's ID, not its name, ask for this ID if it's unclear."
+          },
+          "environmentId": {
+            "type": "string",
+            "description": "The ID of the environment within the space, by default this will be called Master",
+            "default": "master"
+          }
+        },
+        "required": [
+          "entryId",
+          "fields",
+          "spaceId",
+          "environmentId"
+        ]
+      }
+    },
+    {
+      "name": "delete_entry",
+      "description": "Delete an entry",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "entryId": {
+            "type": "string"
+          },
+          "spaceId": {
+            "type": "string",
+            "description": "The ID of the Contentful space. This must be the space's ID, not its name, ask for this ID if it's unclear."
+          },
+          "environmentId": {
+            "type": "string",
+            "description": "The ID of the environment within the space, by default this will be called Master",
+            "default": "master"
+          }
+        },
+        "required": [
+          "entryId",
+          "spaceId",
+          "environmentId"
+        ]
+      }
+    },
+    {
+      "name": "publish_entry",
+      "description": "Publish an entry or multiple entries. Accepts either a single entryId (string) or an array of entryIds (up to 100 entries). For a single entry, it uses the standard publish operation. For multiple entries, it automatically uses bulk publishing.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "entryId": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "maxItems": 100,
+                "description": "Array of entry IDs to publish (max: 100)"
+              }
+            ],
+            "description": "ID of the entry to publish, or an array of entry IDs (max: 100)"
+          },
+          "spaceId": {
+            "type": "string",
+            "description": "The ID of the Contentful space. This must be the space's ID, not its name, ask for this ID if it's unclear."
+          },
+          "environmentId": {
+            "type": "string",
+            "description": "The ID of the environment within the space, by default this will be called Master",
+            "default": "master"
+          }
+        },
+        "required": [
+          "entryId",
+          "spaceId",
+          "environmentId"
+        ]
+      }
+    },
+    {
+      "name": "unpublish_entry",
+      "description": "Unpublish an entry or multiple entries. Accepts either a single entryId (string) or an array of entryIds (up to 100 entries). For a single entry, it uses the standard unpublish operation. For multiple entries, it automatically uses bulk unpublishing.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "entryId": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "maxItems": 100,
+                "description": "Array of entry IDs to unpublish (max: 100)"
+              }
+            ],
+            "description": "ID of the entry to unpublish, or an array of entry IDs (max: 100)"
+          },
+          "spaceId": {
+            "type": "string",
+            "description": "The ID of the Contentful space. This must be the space's ID, not its name, ask for this ID if it's unclear."
+          },
+          "environmentId": {
+            "type": "string",
+            "description": "The ID of the environment within the space, by default this will be called Master",
+            "default": "master"
+          }
+        },
+        "required": [
+          "entryId",
+          "spaceId",
+          "environmentId"
+        ]
+      }
+    },
+    {
+      "name": "list_assets",
+      "description": "List assets in a space. Returns a maximum of 3 items per request. Use skip parameter to paginate through results.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "number",
+            "default": 3,
+            "maximum": 3,
+            "description": "Maximum number of items to return (max: 3)"
+          },
+          "skip": {
+            "type": "number",
+            "default": 0,
+            "description": "Number of items to skip for pagination"
+          },
+          "spaceId": {
+            "type": "string",
+            "description": "The ID of the Contentful space. This must be the space's ID, not its name, ask for this ID if it's unclear."
+          },
+          "environmentId": {
+            "type": "string",
+            "description": "The ID of the environment within the space, by default this will be called Master",
+            "default": "master"
+          }
+        },
+        "required": [
+          "limit",
+          "skip",
+          "spaceId",
+          "environmentId"
+        ]
+      }
+    },
+    {
+      "name": "upload_asset",
+      "description": "Upload a new asset",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "file": {
+            "type": "object",
+            "properties": {
+              "upload": {
+                "type": "string"
+              },
+              "fileName": {
+                "type": "string"
+              },
+              "contentType": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "upload",
+              "fileName",
+              "contentType"
+            ]
+          },
+          "spaceId": {
+            "type": "string",
+            "description": "The ID of the Contentful space. This must be the space's ID, not its name, ask for this ID if it's unclear."
+          },
+          "environmentId": {
+            "type": "string",
+            "description": "The ID of the environment within the space, by default this will be called Master",
+            "default": "master"
+          }
+        },
+        "required": [
+          "title",
+          "file",
+          "spaceId",
+          "environmentId"
+        ]
+      }
+    },
+    {
+      "name": "get_asset",
+      "description": "Retrieve an asset",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "assetId": {
+            "type": "string"
+          },
+          "spaceId": {
+            "type": "string",
+            "description": "The ID of the Contentful space. This must be the space's ID, not its name, ask for this ID if it's unclear."
+          },
+          "environmentId": {
+            "type": "string",
+            "description": "The ID of the environment within the space, by default this will be called Master",
+            "default": "master"
+          }
+        },
+        "required": [
+          "assetId",
+          "spaceId",
+          "environmentId"
+        ]
+      }
+    },
+    {
+      "name": "update_asset",
+      "description": "Update an asset",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "assetId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "file": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string"
+              },
+              "fileName": {
+                "type": "string"
+              },
+              "contentType": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "url",
+              "fileName",
+              "contentType"
+            ]
+          },
+          "spaceId": {
+            "type": "string",
+            "description": "The ID of the Contentful space. This must be the space's ID, not its name, ask for this ID if it's unclear."
+          },
+          "environmentId": {
+            "type": "string",
+            "description": "The ID of the environment within the space, by default this will be called Master",
+            "default": "master"
+          }
+        },
+        "required": [
+          "assetId",
+          "spaceId",
+          "environmentId"
+        ]
+      }
+    },
+    {
+      "name": "delete_asset",
+      "description": "Delete an asset",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "assetId": {
+            "type": "string"
+          },
+          "spaceId": {
+            "type": "string",
+            "description": "The ID of the Contentful space. This must be the space's ID, not its name, ask for this ID if it's unclear."
+          },
+          "environmentId": {
+            "type": "string",
+            "description": "The ID of the environment within the space, by default this will be called Master",
+            "default": "master"
+          }
+        },
+        "required": [
+          "assetId",
+          "spaceId",
+          "environmentId"
+        ]
+      }
+    },
+    {
+      "name": "publish_asset",
+      "description": "Publish an asset",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "assetId": {
+            "type": "string"
+          },
+          "spaceId": {
+            "type": "string",
+            "description": "The ID of the Contentful space. This must be the space's ID, not its name, ask for this ID if it's unclear."
+          },
+          "environmentId": {
+            "type": "string",
+            "description": "The ID of the environment within the space, by default this will be called Master",
+            "default": "master"
+          }
+        },
+        "required": [
+          "assetId",
+          "spaceId",
+          "environmentId"
+        ]
+      }
+    },
+    {
+      "name": "unpublish_asset",
+      "description": "Unpublish an asset",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "assetId": {
+            "type": "string"
+          },
+          "spaceId": {
+            "type": "string",
+            "description": "The ID of the Contentful space. This must be the space's ID, not its name, ask for this ID if it's unclear."
+          },
+          "environmentId": {
+            "type": "string",
+            "description": "The ID of the environment within the space, by default this will be called Master",
+            "default": "master"
+          }
+        },
+        "required": [
+          "assetId",
+          "spaceId",
+          "environmentId"
+        ]
+      }
+    },
+    {
+      "name": "list_content_types",
+      "description": "List content types in a space. Returns a maximum of 10 items per request. Use skip parameter to paginate through results.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "number",
+            "default": 10,
+            "maximum": 20,
+            "description": "Maximum number of items to return (max: 3)"
+          },
+          "skip": {
+            "type": "number",
+            "default": 0,
+            "description": "Number of items to skip for pagination"
+          },
+          "spaceId": {
+            "type": "string",
+            "description": "The ID of the Contentful space. This must be the space's ID, not its name, ask for this ID if it's unclear."
+          },
+          "environmentId": {
+            "type": "string",
+            "description": "The ID of the environment within the space, by default this will be called Master",
+            "default": "master"
+          }
+        },
+        "required": [
+          "limit",
+          "skip",
+          "spaceId",
+          "environmentId"
+        ]
+      }
+    },
+    {
+      "name": "get_content_type",
+      "description": "Get details of a specific content type",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "contentTypeId": {
+            "type": "string"
+          },
+          "spaceId": {
+            "type": "string",
+            "description": "The ID of the Contentful space. This must be the space's ID, not its name, ask for this ID if it's unclear."
+          },
+          "environmentId": {
+            "type": "string",
+            "description": "The ID of the environment within the space, by default this will be called Master",
+            "default": "master"
+          }
+        },
+        "required": [
+          "contentTypeId",
+          "spaceId",
+          "environmentId"
+        ]
+      }
+    },
+    {
+      "name": "create_content_type",
+      "description": "Create a new content type",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "fields": {
+            "type": "array",
+            "description": "Array of field definitions for the content type",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "The ID of the field"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Display name of the field"
+                },
+                "type": {
+                  "type": "string",
+                  "description": "Type of the field (Text, Number, Date, Location, Media, Boolean, JSON, Link, Array, etc)",
+                  "enum": [
+                    "Symbol",
+                    "Text",
+                    "Integer",
+                    "Number",
+                    "Date",
+                    "Location",
+                    "Object",
+                    "Boolean",
+                    "Link",
+                    "Array"
+                  ]
+                },
+                "required": {
+                  "type": "boolean",
+                  "description": "Whether this field is required",
+                  "default": false
+                },
+                "localized": {
+                  "type": "boolean",
+                  "description": "Whether this field can be localized",
+                  "default": false
+                },
+                "linkType": {
+                  "type": "string",
+                  "description": "Required for Link fields. Specifies what type of resource this field links to",
+                  "enum": [
+                    "Entry",
+                    "Asset"
+                  ]
+                },
+                "items": {
+                  "type": "object",
+                  "description": "Required for Array fields. Specifies the type of items in the array",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "Symbol",
+                        "Link"
+                      ]
+                    },
+                    "linkType": {
+                      "type": "string",
+                      "enum": [
+                        "Entry",
+                        "Asset"
+                      ]
+                    },
+                    "validations": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                },
+                "validations": {
+                  "type": "array",
+                  "description": "Array of validation rules for the field",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "type"
+              ]
+            }
+          },
+          "description": {
+            "type": "string"
+          },
+          "displayField": {
+            "type": "string"
+          },
+          "spaceId": {
+            "type": "string",
+            "description": "The ID of the Contentful space. This must be the space's ID, not its name, ask for this ID if it's unclear."
+          },
+          "environmentId": {
+            "type": "string",
+            "description": "The ID of the environment within the space, by default this will be called Master",
+            "default": "master"
+          }
+        },
+        "required": [
+          "name",
+          "fields",
+          "spaceId",
+          "environmentId"
+        ]
+      }
+    },
+    {
+      "name": "update_content_type",
+      "description": "Update an existing content type",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "contentTypeId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "description": {
+            "type": "string"
+          },
+          "displayField": {
+            "type": "string"
+          },
+          "spaceId": {
+            "type": "string",
+            "description": "The ID of the Contentful space. This must be the space's ID, not its name, ask for this ID if it's unclear."
+          },
+          "environmentId": {
+            "type": "string",
+            "description": "The ID of the environment within the space, by default this will be called Master",
+            "default": "master"
+          }
+        },
+        "required": [
+          "contentTypeId",
+          "name",
+          "fields",
+          "spaceId",
+          "environmentId"
+        ]
+      }
+    },
+    {
+      "name": "delete_content_type",
+      "description": "Delete a content type",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "contentTypeId": {
+            "type": "string"
+          },
+          "spaceId": {
+            "type": "string",
+            "description": "The ID of the Contentful space. This must be the space's ID, not its name, ask for this ID if it's unclear."
+          },
+          "environmentId": {
+            "type": "string",
+            "description": "The ID of the environment within the space, by default this will be called Master",
+            "default": "master"
+          }
+        },
+        "required": [
+          "contentTypeId",
+          "spaceId",
+          "environmentId"
+        ]
+      }
+    },
+    {
+      "name": "publish_content_type",
+      "description": "Publish a content type",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "contentTypeId": {
+            "type": "string"
+          },
+          "spaceId": {
+            "type": "string",
+            "description": "The ID of the Contentful space. This must be the space's ID, not its name, ask for this ID if it's unclear."
+          },
+          "environmentId": {
+            "type": "string",
+            "description": "The ID of the environment within the space, by default this will be called Master",
+            "default": "master"
+          }
+        },
+        "required": [
+          "contentTypeId",
+          "spaceId",
+          "environmentId"
+        ]
+      }
+    },
+    {
+      "name": "list_spaces",
+      "description": "List all available spaces",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_space",
+      "description": "Get details of a space",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "spaceId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "spaceId"
+        ]
+      }
+    },
+    {
+      "name": "list_environments",
+      "description": "List all environments in a space",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "spaceId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "spaceId"
+        ]
+      }
+    },
+    {
+      "name": "create_environment",
+      "description": "Create a new environment",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "spaceId": {
+            "type": "string"
+          },
+          "environmentId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "spaceId",
+          "environmentId",
+          "name"
+        ]
+      }
+    },
+    {
+      "name": "delete_environment",
+      "description": "Delete an environment",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "spaceId": {
+            "type": "string"
+          },
+          "environmentId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "spaceId",
+          "environmentId"
+        ]
+      }
+    },
+    {
+      "name": "bulk_validate",
+      "description": "Validate multiple entries at once",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "entryIds": {
+            "type": "array",
+            "description": "Array of entry IDs to validate",
+            "items": {
+              "type": "string"
+            }
+          },
+          "spaceId": {
+            "type": "string",
+            "description": "The ID of the Contentful space. This must be the space's ID, not its name, ask for this ID if it's unclear."
+          },
+          "environmentId": {
+            "type": "string",
+            "description": "The ID of the environment within the space, by default this will be called Master",
+            "default": "master"
+          }
+        },
+        "required": [
+          "entryIds",
+          "spaceId",
+          "environmentId"
+        ]
+      }
+    },
+    {
+      "name": "list_ai_actions",
+      "description": "List all AI Actions in a space",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "number",
+            "default": 100,
+            "description": "Maximum number of AI Actions to return"
+          },
+          "skip": {
+            "type": "number",
+            "default": 0,
+            "description": "Number of AI Actions to skip for pagination"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "all",
+              "published"
+            ],
+            "description": "Filter AI Actions by status"
+          },
+          "spaceId": {
+            "type": "string",
+            "description": "The ID of the Contentful space. This must be the space's ID, not its name, ask for this ID if it's unclear."
+          },
+          "environmentId": {
+            "type": "string",
+            "description": "The ID of the environment within the space, by default this will be called Master",
+            "default": "master"
+          }
+        },
+        "required": [
+          "spaceId",
+          "environmentId"
+        ]
+      }
+    },
+    {
+      "name": "get_ai_action",
+      "description": "Get a specific AI Action by ID",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "aiActionId": {
+            "type": "string",
+            "description": "The ID of the AI Action to retrieve"
+          },
+          "spaceId": {
+            "type": "string",
+            "description": "The ID of the Contentful space. This must be the space's ID, not its name, ask for this ID if it's unclear."
+          },
+          "environmentId": {
+            "type": "string",
+            "description": "The ID of the environment within the space, by default this will be called Master",
+            "default": "master"
+          }
+        },
+        "required": [
+          "aiActionId",
+          "spaceId",
+          "environmentId"
+        ]
+      }
+    },
+    {
+      "name": "create_ai_action",
+      "description": "Create a new AI Action",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the AI Action"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the AI Action"
+          },
+          "instruction": {
+            "type": "object",
+            "description": "The instruction object containing the template and variables",
+            "properties": {
+              "template": {
+                "type": "string",
+                "description": "The prompt template with variable placeholders"
+              },
+              "variables": {
+                "type": "array",
+                "description": "Array of variable definitions",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "conditions": {
+                "type": "array",
+                "description": "Optional array of conditions for the template",
+                "items": {
+                  "type": "object"
+                }
+              }
+            },
+            "required": [
+              "template",
+              "variables"
+            ]
+          },
+          "configuration": {
+            "type": "object",
+            "description": "The model configuration",
+            "properties": {
+              "modelType": {
+                "type": "string",
+                "description": "The type of model to use (e.g., gpt-4)"
+              },
+              "modelTemperature": {
+                "type": "number",
+                "description": "The temperature setting for the model (0.0 to 1.0)",
+                "minimum": 0,
+                "maximum": 1
+              }
+            },
+            "required": [
+              "modelType",
+              "modelTemperature"
+            ]
+          },
+          "testCases": {
+            "type": "array",
+            "description": "Optional array of test cases for the AI Action",
+            "items": {
+              "type": "object"
+            }
+          },
+          "spaceId": {
+            "type": "string",
+            "description": "The ID of the Contentful space. This must be the space's ID, not its name, ask for this ID if it's unclear."
+          },
+          "environmentId": {
+            "type": "string",
+            "description": "The ID of the environment within the space, by default this will be called Master",
+            "default": "master"
+          }
+        },
+        "required": [
+          "name",
+          "description",
+          "instruction",
+          "configuration",
+          "spaceId",
+          "environmentId"
+        ]
+      }
+    },
+    {
+      "name": "update_ai_action",
+      "description": "Update an existing AI Action",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "aiActionId": {
+            "type": "string",
+            "description": "The ID of the AI Action to update"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the AI Action"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the AI Action"
+          },
+          "instruction": {
+            "type": "object",
+            "description": "The instruction object containing the template and variables",
+            "properties": {
+              "template": {
+                "type": "string",
+                "description": "The prompt template with variable placeholders"
+              },
+              "variables": {
+                "type": "array",
+                "description": "Array of variable definitions",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "conditions": {
+                "type": "array",
+                "description": "Optional array of conditions for the template",
+                "items": {
+                  "type": "object"
+                }
+              }
+            },
+            "required": [
+              "template",
+              "variables"
+            ]
+          },
+          "configuration": {
+            "type": "object",
+            "description": "The model configuration",
+            "properties": {
+              "modelType": {
+                "type": "string",
+                "description": "The type of model to use (e.g., gpt-4)"
+              },
+              "modelTemperature": {
+                "type": "number",
+                "description": "The temperature setting for the model (0.0 to 1.0)",
+                "minimum": 0,
+                "maximum": 1
+              }
+            },
+            "required": [
+              "modelType",
+              "modelTemperature"
+            ]
+          },
+          "testCases": {
+            "type": "array",
+            "description": "Optional array of test cases for the AI Action",
+            "items": {
+              "type": "object"
+            }
+          },
+          "spaceId": {
+            "type": "string",
+            "description": "The ID of the Contentful space. This must be the space's ID, not its name, ask for this ID if it's unclear."
+          },
+          "environmentId": {
+            "type": "string",
+            "description": "The ID of the environment within the space, by default this will be called Master",
+            "default": "master"
+          }
+        },
+        "required": [
+          "aiActionId",
+          "name",
+          "description",
+          "instruction",
+          "configuration",
+          "spaceId",
+          "environmentId"
+        ]
+      }
+    },
+    {
+      "name": "delete_ai_action",
+      "description": "Delete an AI Action",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "aiActionId": {
+            "type": "string",
+            "description": "The ID of the AI Action to delete"
+          },
+          "spaceId": {
+            "type": "string",
+            "description": "The ID of the Contentful space. This must be the space's ID, not its name, ask for this ID if it's unclear."
+          },
+          "environmentId": {
+            "type": "string",
+            "description": "The ID of the environment within the space, by default this will be called Master",
+            "default": "master"
+          }
+        },
+        "required": [
+          "aiActionId",
+          "spaceId",
+          "environmentId"
+        ]
+      }
+    },
+    {
+      "name": "publish_ai_action",
+      "description": "Publish an AI Action",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "aiActionId": {
+            "type": "string",
+            "description": "The ID of the AI Action to publish"
+          },
+          "spaceId": {
+            "type": "string",
+            "description": "The ID of the Contentful space. This must be the space's ID, not its name, ask for this ID if it's unclear."
+          },
+          "environmentId": {
+            "type": "string",
+            "description": "The ID of the environment within the space, by default this will be called Master",
+            "default": "master"
+          }
+        },
+        "required": [
+          "aiActionId",
+          "spaceId",
+          "environmentId"
+        ]
+      }
+    },
+    {
+      "name": "unpublish_ai_action",
+      "description": "Unpublish an AI Action",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "aiActionId": {
+            "type": "string",
+            "description": "The ID of the AI Action to unpublish"
+          },
+          "spaceId": {
+            "type": "string",
+            "description": "The ID of the Contentful space. This must be the space's ID, not its name, ask for this ID if it's unclear."
+          },
+          "environmentId": {
+            "type": "string",
+            "description": "The ID of the environment within the space, by default this will be called Master",
+            "default": "master"
+          }
+        },
+        "required": [
+          "aiActionId",
+          "spaceId",
+          "environmentId"
+        ]
+      }
+    },
+    {
+      "name": "invoke_ai_action",
+      "description": "Invoke an AI Action with variables",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "aiActionId": {
+            "type": "string",
+            "description": "The ID of the AI Action to invoke"
+          },
+          "variables": {
+            "type": "object",
+            "description": "Key-value pairs of variable IDs and their values",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "rawVariables": {
+            "type": "array",
+            "description": "Array of raw variable objects (for complex variable types like references)",
+            "items": {
+              "type": "object"
+            }
+          },
+          "outputFormat": {
+            "type": "string",
+            "enum": [
+              "Markdown",
+              "RichText",
+              "PlainText"
+            ],
+            "default": "Markdown",
+            "description": "The format of the output content"
+          },
+          "waitForCompletion": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether to wait for the AI Action to complete before returning"
+          },
+          "spaceId": {
+            "type": "string",
+            "description": "The ID of the Contentful space. This must be the space's ID, not its name, ask for this ID if it's unclear."
+          },
+          "environmentId": {
+            "type": "string",
+            "description": "The ID of the environment within the space, by default this will be called Master",
+            "default": "master"
+          }
+        },
+        "required": [
+          "aiActionId",
+          "spaceId",
+          "environmentId"
+        ]
+      }
+    },
+    {
+      "name": "get_ai_action_invocation",
+      "description": "Get the result of a previous AI Action invocation",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "aiActionId": {
+            "type": "string",
+            "description": "The ID of the AI Action"
+          },
+          "invocationId": {
+            "type": "string",
+            "description": "The ID of the specific invocation to retrieve"
+          },
+          "spaceId": {
+            "type": "string",
+            "description": "The ID of the Contentful space. This must be the space's ID, not its name, ask for this ID if it's unclear."
+          },
+          "environmentId": {
+            "type": "string",
+            "description": "The ID of the environment within the space, by default this will be called Master",
+            "default": "master"
+          }
+        },
+        "required": [
+          "aiActionId",
+          "invocationId",
+          "spaceId",
+          "environmentId"
+        ]
+      }
+    }
+  ]
 }

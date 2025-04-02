@@ -36,5 +36,78 @@
       "description": "Using the Whois MCP to find out domain details.",
       "prompt": "What can you tell me about example.com?"
     }
+  ],
+  "tools": [
+    {
+      "name": "whois_domain",
+      "description": "Looksup whois information about the domain",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "domain"
+        ]
+      }
+    },
+    {
+      "name": "whois_tld",
+      "description": "Looksup whois information about the Top Level Domain (TLD)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tld": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "tld"
+        ]
+      }
+    },
+    {
+      "name": "whois_ip",
+      "description": "Looksup whois information about the IP",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ip": {
+            "type": "string",
+            "anyOf": [
+              {
+                "format": "ipv4"
+              },
+              {
+                "format": "ipv6"
+              }
+            ]
+          }
+        },
+        "required": [
+          "ip"
+        ]
+      }
+    },
+    {
+      "name": "whois_as",
+      "description": "Looksup whois information about the Autonomous System Number (ASN)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "asn": {
+            "type": "string",
+            "pattern": "^AS\\d+$"
+          }
+        },
+        "required": [
+          "asn"
+        ]
+      }
+    }
   ]
 }

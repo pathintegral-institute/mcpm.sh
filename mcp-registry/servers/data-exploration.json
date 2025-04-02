@@ -39,5 +39,68 @@
       "description": "Investigating daily weather history in London using a dataset.",
       "prompt": "csv_path: Local path to the CSV file, topic: Weather in London."
     }
+  ],
+  "tools": [
+    {
+      "name": "load_csv",
+      "description": "\nLoad CSV File Tool\n\nPurpose:\nLoad a local CSV file into a DataFrame.\n\nUsage Notes:\n\t\u2022\tIf a df_name is not provided, the tool will automatically assign names sequentially as df_1, df_2, and so on.\n",
+      "inputSchema": {
+        "properties": {
+          "csv_path": {
+            "title": "Csv Path",
+            "type": "string"
+          },
+          "df_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Df Name"
+          }
+        },
+        "required": [
+          "csv_path"
+        ],
+        "title": "LoadCsv",
+        "type": "object"
+      }
+    },
+    {
+      "name": "run_script",
+      "description": "\nPython Script Execution Tool\n\nPurpose:\nExecute Python scripts for specific data analytics tasks.\n\nAllowed Actions\n\t1.\tPrint Results: Output will be displayed as the script\u2019s stdout.\n\t2.\t[Optional] Save DataFrames: Store DataFrames in memory for future use by specifying a save_to_memory name.\n\nProhibited Actions\n\t1.\tOverwriting Original DataFrames: Do not modify existing DataFrames to preserve their integrity for future tasks.\n\t2.\tCreating Charts: Chart generation is not permitted.\n",
+      "inputSchema": {
+        "properties": {
+          "script": {
+            "title": "Script",
+            "type": "string"
+          },
+          "save_to_memory": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Save To Memory"
+          }
+        },
+        "required": [
+          "script"
+        ],
+        "title": "RunScript",
+        "type": "object"
+      }
+    }
   ]
 }

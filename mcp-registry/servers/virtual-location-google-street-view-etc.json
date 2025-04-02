@@ -20,6 +20,240 @@
     "Avatar",
     "Virtual Travel"
   ],
+  "tools": [
+    {
+      "name": "tips",
+      "description": "Inform you of recommended actions for your device",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_setting",
+      "description": "Get current setting",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_traveler_info",
+      "description": "get a traveler's setting.For example, traveler's name, the language traveler speak, Personality and speaking habits, etc.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "settings": {}
+        }
+      }
+    },
+    {
+      "name": "set_traveler_info",
+      "description": "set a traveler's setting.For example, traveler's name, the language traveler speak, Personality and speaking habits, etc.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "settings": {
+            "type": "string",
+            "description": "traveler's setting. traveler's name, the language traveler speak, etc."
+          }
+        },
+        "required": [
+          "settings"
+        ]
+      }
+    },
+    {
+      "name": "set_avatar_prompt",
+      "description": "set a traveler's avatar prompt. A prompt for AI image generation to specify the appearance of a traveler's avatar",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "traveler's avatar AI image generation prompt."
+          }
+        },
+        "required": [
+          "prompt"
+        ]
+      }
+    },
+    {
+      "name": "reset_avatar_prompt",
+      "description": "reset to default traveler's avatar prompt.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "start_journey",
+      "description": "Start the journey to destination",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "stop_journey",
+      "description": "Stop the journey",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "reach_a_percentage_of_destination",
+      "description": "Reach a specified percentage of the destination",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "timeElapsedPercentage": {
+            "type": "number",
+            "description": "Percent progress towards destination. (0~100)"
+          }
+        },
+        "required": [
+          "timeElapsedPercentage"
+        ]
+      }
+    },
+    {
+      "name": "get_current_view_info",
+      "description": "Get the address of the current location and information on nearby facilities,view snapshot",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "includePhoto": {
+            "type": "boolean",
+            "description": "Get scenery photos of current location"
+          },
+          "includeNearbyFacilities": {
+            "type": "boolean",
+            "description": "Get information on nearby facilities"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_traveler_location",
+      "description": "Get the address of the current traveler's location",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_sns_mentions",
+      "description": "Get recent social media mentions",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_sns_feeds",
+      "description": "Get recent social media posts from fellow travelers feeds",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "post_sns_writer",
+      "description": "Post your recent travel experiences to social media for fellow travelers and readers.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "A description of the journey. important: Do not use offensive language."
+          }
+        },
+        "required": [
+          "message"
+        ]
+      }
+    },
+    {
+      "name": "reply_sns_writer",
+      "description": "Write a reply to the article with the specified ID.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "A description of the reply article. important: Do not use offensive language."
+          },
+          "id": {
+            "type": "string",
+            "description": "The ID of the original post to which you want to add a reply."
+          }
+        },
+        "required": [
+          "message",
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "add_like",
+      "description": "Add a like to the specified post",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The ID of the post to like."
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "set_current_location",
+      "description": "Set my current address",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "address to set"
+          }
+        },
+        "required": [
+          "address"
+        ]
+      }
+    },
+    {
+      "name": "get_destination_address",
+      "description": "get a address of destination location",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "set_destination_address",
+      "description": "set a address of destination",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "address of destination"
+          }
+        },
+        "required": [
+          "address"
+        ]
+      }
+    }
+  ],
   "installations": {
     "npm": {
       "type": "npm",

@@ -32,12 +32,13 @@
     }
   ],
   "installations": {
-    "python": {
-      "type": "python",
-      "command": "/Users/yourusername/dev/servicenow-mcp/.venv/bin/python",
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
       "args": [
-        "-m",
-        "servicenow_mcp.cli"
+        "--from",
+        "git+https://github.com/osomai/servicenow-mcp",
+        "servicenow-mcp"
       ],
       "env": {
         "SERVICENOW_INSTANCE_URL": "${SERVICENOW_INSTANCE_URL}",
@@ -68,5 +69,5313 @@
       "required": true,
       "example": "basic"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "create_incident",
+      "description": "Create a new incident in ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "CreateIncidentParams": {
+            "description": "Parameters for creating an incident.",
+            "properties": {
+              "short_description": {
+                "description": "Short description of the incident",
+                "title": "Short Description",
+                "type": "string"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Detailed description of the incident",
+                "title": "Description"
+              },
+              "caller_id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "User who reported the incident",
+                "title": "Caller Id"
+              },
+              "category": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Category of the incident",
+                "title": "Category"
+              },
+              "subcategory": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Subcategory of the incident",
+                "title": "Subcategory"
+              },
+              "priority": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Priority of the incident",
+                "title": "Priority"
+              },
+              "impact": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Impact of the incident",
+                "title": "Impact"
+              },
+              "urgency": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Urgency of the incident",
+                "title": "Urgency"
+              },
+              "assigned_to": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "User assigned to the incident",
+                "title": "Assigned To"
+              },
+              "assignment_group": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Group assigned to the incident",
+                "title": "Assignment Group"
+              }
+            },
+            "required": [
+              "short_description"
+            ],
+            "title": "CreateIncidentParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/CreateIncidentParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "create_incidentArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_incident",
+      "description": "Update an existing incident in ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "UpdateIncidentParams": {
+            "description": "Parameters for updating an incident.",
+            "properties": {
+              "incident_id": {
+                "description": "Incident ID or sys_id",
+                "title": "Incident Id",
+                "type": "string"
+              },
+              "short_description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Short description of the incident",
+                "title": "Short Description"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Detailed description of the incident",
+                "title": "Description"
+              },
+              "state": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "State of the incident",
+                "title": "State"
+              },
+              "category": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Category of the incident",
+                "title": "Category"
+              },
+              "subcategory": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Subcategory of the incident",
+                "title": "Subcategory"
+              },
+              "priority": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Priority of the incident",
+                "title": "Priority"
+              },
+              "impact": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Impact of the incident",
+                "title": "Impact"
+              },
+              "urgency": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Urgency of the incident",
+                "title": "Urgency"
+              },
+              "assigned_to": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "User assigned to the incident",
+                "title": "Assigned To"
+              },
+              "assignment_group": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Group assigned to the incident",
+                "title": "Assignment Group"
+              },
+              "work_notes": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Work notes to add to the incident",
+                "title": "Work Notes"
+              },
+              "close_notes": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Close notes to add to the incident",
+                "title": "Close Notes"
+              },
+              "close_code": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Close code for the incident",
+                "title": "Close Code"
+              }
+            },
+            "required": [
+              "incident_id"
+            ],
+            "title": "UpdateIncidentParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/UpdateIncidentParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "update_incidentArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "add_comment",
+      "description": "Add a comment to an incident in ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "AddCommentParams": {
+            "description": "Parameters for adding a comment to an incident.",
+            "properties": {
+              "incident_id": {
+                "description": "Incident ID or sys_id",
+                "title": "Incident Id",
+                "type": "string"
+              },
+              "comment": {
+                "description": "Comment to add to the incident",
+                "title": "Comment",
+                "type": "string"
+              },
+              "is_work_note": {
+                "default": false,
+                "description": "Whether the comment is a work note",
+                "title": "Is Work Note",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "incident_id",
+              "comment"
+            ],
+            "title": "AddCommentParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/AddCommentParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "add_commentArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "resolve_incident",
+      "description": "Resolve an incident in ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "ResolveIncidentParams": {
+            "description": "Parameters for resolving an incident.",
+            "properties": {
+              "incident_id": {
+                "description": "Incident ID or sys_id",
+                "title": "Incident Id",
+                "type": "string"
+              },
+              "resolution_code": {
+                "description": "Resolution code for the incident",
+                "title": "Resolution Code",
+                "type": "string"
+              },
+              "resolution_notes": {
+                "description": "Resolution notes for the incident",
+                "title": "Resolution Notes",
+                "type": "string"
+              }
+            },
+            "required": [
+              "incident_id",
+              "resolution_code",
+              "resolution_notes"
+            ],
+            "title": "ResolveIncidentParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/ResolveIncidentParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "resolve_incidentArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_incidents",
+      "description": "List incidents from ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "ListIncidentsParams": {
+            "description": "Parameters for listing incidents.",
+            "properties": {
+              "limit": {
+                "default": 10,
+                "description": "Maximum number of incidents to return",
+                "title": "Limit",
+                "type": "integer"
+              },
+              "offset": {
+                "default": 0,
+                "description": "Offset for pagination",
+                "title": "Offset",
+                "type": "integer"
+              },
+              "state": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Filter by incident state",
+                "title": "State"
+              },
+              "assigned_to": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Filter by assigned user",
+                "title": "Assigned To"
+              },
+              "category": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Filter by category",
+                "title": "Category"
+              },
+              "query": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Search query for incidents",
+                "title": "Query"
+              }
+            },
+            "title": "ListIncidentsParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/ListIncidentsParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "list_incidentsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_catalog_items",
+      "description": "List service catalog items.",
+      "inputSchema": {
+        "$defs": {
+          "ListCatalogItemsParams": {
+            "description": "Parameters for listing service catalog items.",
+            "properties": {
+              "limit": {
+                "default": 10,
+                "description": "Maximum number of catalog items to return",
+                "title": "Limit",
+                "type": "integer"
+              },
+              "offset": {
+                "default": 0,
+                "description": "Offset for pagination",
+                "title": "Offset",
+                "type": "integer"
+              },
+              "category": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Filter by category",
+                "title": "Category"
+              },
+              "query": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Search query for catalog items",
+                "title": "Query"
+              },
+              "active": {
+                "default": true,
+                "description": "Whether to only return active catalog items",
+                "title": "Active",
+                "type": "boolean"
+              }
+            },
+            "title": "ListCatalogItemsParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/ListCatalogItemsParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "list_catalog_itemsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_catalog_item",
+      "description": "Get a specific service catalog item.",
+      "inputSchema": {
+        "$defs": {
+          "GetCatalogItemParams": {
+            "description": "Parameters for getting a specific service catalog item.",
+            "properties": {
+              "item_id": {
+                "description": "Catalog item ID or sys_id",
+                "title": "Item Id",
+                "type": "string"
+              }
+            },
+            "required": [
+              "item_id"
+            ],
+            "title": "GetCatalogItemParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/GetCatalogItemParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "get_catalog_itemArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_catalog_categories",
+      "description": "List service catalog categories.",
+      "inputSchema": {
+        "$defs": {
+          "ListCatalogCategoriesParams": {
+            "description": "Parameters for listing service catalog categories.",
+            "properties": {
+              "limit": {
+                "default": 10,
+                "description": "Maximum number of categories to return",
+                "title": "Limit",
+                "type": "integer"
+              },
+              "offset": {
+                "default": 0,
+                "description": "Offset for pagination",
+                "title": "Offset",
+                "type": "integer"
+              },
+              "query": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Search query for categories",
+                "title": "Query"
+              },
+              "active": {
+                "default": true,
+                "description": "Whether to only return active categories",
+                "title": "Active",
+                "type": "boolean"
+              }
+            },
+            "title": "ListCatalogCategoriesParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/ListCatalogCategoriesParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "list_catalog_categoriesArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_catalog_category",
+      "description": "Create a new service catalog category.",
+      "inputSchema": {
+        "$defs": {
+          "CreateCatalogCategoryParams": {
+            "description": "Parameters for creating a new service catalog category.",
+            "properties": {
+              "title": {
+                "description": "Title of the category",
+                "title": "Title",
+                "type": "string"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Description of the category",
+                "title": "Description"
+              },
+              "parent": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Parent category sys_id",
+                "title": "Parent"
+              },
+              "icon": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Icon for the category",
+                "title": "Icon"
+              },
+              "active": {
+                "default": true,
+                "description": "Whether the category is active",
+                "title": "Active",
+                "type": "boolean"
+              },
+              "order": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Order of the category",
+                "title": "Order"
+              }
+            },
+            "required": [
+              "title"
+            ],
+            "title": "CreateCatalogCategoryParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/CreateCatalogCategoryParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "create_catalog_categoryArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_catalog_category",
+      "description": "Update an existing service catalog category.",
+      "inputSchema": {
+        "$defs": {
+          "UpdateCatalogCategoryParams": {
+            "description": "Parameters for updating a service catalog category.",
+            "properties": {
+              "category_id": {
+                "description": "Category ID or sys_id",
+                "title": "Category Id",
+                "type": "string"
+              },
+              "title": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Title of the category",
+                "title": "Title"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Description of the category",
+                "title": "Description"
+              },
+              "parent": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Parent category sys_id",
+                "title": "Parent"
+              },
+              "icon": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Icon for the category",
+                "title": "Icon"
+              },
+              "active": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Whether the category is active",
+                "title": "Active"
+              },
+              "order": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Order of the category",
+                "title": "Order"
+              }
+            },
+            "required": [
+              "category_id"
+            ],
+            "title": "UpdateCatalogCategoryParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/UpdateCatalogCategoryParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "update_catalog_categoryArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "move_catalog_items",
+      "description": "Move catalog items to a different category.",
+      "inputSchema": {
+        "$defs": {
+          "MoveCatalogItemsParams": {
+            "description": "Parameters for moving catalog items between categories.",
+            "properties": {
+              "item_ids": {
+                "description": "List of catalog item IDs to move",
+                "items": {
+                  "type": "string"
+                },
+                "title": "Item Ids",
+                "type": "array"
+              },
+              "target_category_id": {
+                "description": "Target category ID to move items to",
+                "title": "Target Category Id",
+                "type": "string"
+              }
+            },
+            "required": [
+              "item_ids",
+              "target_category_id"
+            ],
+            "title": "MoveCatalogItemsParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/MoveCatalogItemsParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "move_catalog_itemsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_optimization_recommendations",
+      "description": "Get optimization recommendations for the service catalog.",
+      "inputSchema": {
+        "$defs": {
+          "OptimizationRecommendationsParams": {
+            "properties": {
+              "recommendation_types": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Recommendation Types",
+                "type": "array"
+              },
+              "category_id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Category Id"
+              }
+            },
+            "required": [
+              "recommendation_types"
+            ],
+            "title": "OptimizationRecommendationsParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/OptimizationRecommendationsParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "get_optimization_recommendationsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_catalog_item",
+      "description": "Update a service catalog item.",
+      "inputSchema": {
+        "$defs": {
+          "UpdateCatalogItemParams": {
+            "properties": {
+              "item_id": {
+                "title": "Item Id",
+                "type": "string"
+              },
+              "name": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Name"
+              },
+              "short_description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Short Description"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "category": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Category"
+              },
+              "price": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Price"
+              },
+              "active": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Active"
+              },
+              "order": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Order"
+              }
+            },
+            "required": [
+              "item_id"
+            ],
+            "title": "UpdateCatalogItemParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/UpdateCatalogItemParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "update_catalog_itemArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_catalog_item_variable",
+      "description": "Create a new catalog item variable",
+      "inputSchema": {
+        "$defs": {
+          "CreateCatalogItemVariableParams": {
+            "description": "Parameters for creating a catalog item variable.",
+            "properties": {
+              "catalog_item_id": {
+                "description": "The sys_id of the catalog item",
+                "title": "Catalog Item Id",
+                "type": "string"
+              },
+              "name": {
+                "description": "The name of the variable (internal name)",
+                "title": "Name",
+                "type": "string"
+              },
+              "type": {
+                "description": "The type of variable (e.g., string, integer, boolean, reference)",
+                "title": "Type",
+                "type": "string"
+              },
+              "label": {
+                "description": "The display label for the variable",
+                "title": "Label",
+                "type": "string"
+              },
+              "mandatory": {
+                "default": false,
+                "description": "Whether the variable is required",
+                "title": "Mandatory",
+                "type": "boolean"
+              },
+              "help_text": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Help text to display with the variable",
+                "title": "Help Text"
+              },
+              "default_value": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Default value for the variable",
+                "title": "Default Value"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Description of the variable",
+                "title": "Description"
+              },
+              "order": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Display order of the variable",
+                "title": "Order"
+              },
+              "reference_table": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "For reference fields, the table to reference",
+                "title": "Reference Table"
+              },
+              "reference_qualifier": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "For reference fields, the query to filter reference options",
+                "title": "Reference Qualifier"
+              },
+              "max_length": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Maximum length for string fields",
+                "title": "Max Length"
+              },
+              "min": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Minimum value for numeric fields",
+                "title": "Min"
+              },
+              "max": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Maximum value for numeric fields",
+                "title": "Max"
+              }
+            },
+            "required": [
+              "catalog_item_id",
+              "name",
+              "type",
+              "label"
+            ],
+            "title": "CreateCatalogItemVariableParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/CreateCatalogItemVariableParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "create_catalog_item_variableArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_catalog_item_variables",
+      "description": "List catalog item variables",
+      "inputSchema": {
+        "$defs": {
+          "ListCatalogItemVariablesParams": {
+            "description": "Parameters for listing catalog item variables.",
+            "properties": {
+              "catalog_item_id": {
+                "description": "The sys_id of the catalog item",
+                "title": "Catalog Item Id",
+                "type": "string"
+              },
+              "include_details": {
+                "default": true,
+                "description": "Whether to include detailed information about each variable",
+                "title": "Include Details",
+                "type": "boolean"
+              },
+              "limit": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Maximum number of variables to return",
+                "title": "Limit"
+              },
+              "offset": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Offset for pagination",
+                "title": "Offset"
+              }
+            },
+            "required": [
+              "catalog_item_id"
+            ],
+            "title": "ListCatalogItemVariablesParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/ListCatalogItemVariablesParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "list_catalog_item_variablesArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_catalog_item_variable",
+      "description": "Update a catalog item variable",
+      "inputSchema": {
+        "$defs": {
+          "UpdateCatalogItemVariableParams": {
+            "description": "Parameters for updating a catalog item variable.",
+            "properties": {
+              "variable_id": {
+                "description": "The sys_id of the variable to update",
+                "title": "Variable Id",
+                "type": "string"
+              },
+              "label": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "The display label for the variable",
+                "title": "Label"
+              },
+              "mandatory": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Whether the variable is required",
+                "title": "Mandatory"
+              },
+              "help_text": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Help text to display with the variable",
+                "title": "Help Text"
+              },
+              "default_value": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Default value for the variable",
+                "title": "Default Value"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Description of the variable",
+                "title": "Description"
+              },
+              "order": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Display order of the variable",
+                "title": "Order"
+              },
+              "reference_qualifier": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "For reference fields, the query to filter reference options",
+                "title": "Reference Qualifier"
+              },
+              "max_length": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Maximum length for string fields",
+                "title": "Max Length"
+              },
+              "min": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Minimum value for numeric fields",
+                "title": "Min"
+              },
+              "max": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Maximum value for numeric fields",
+                "title": "Max"
+              }
+            },
+            "required": [
+              "variable_id"
+            ],
+            "title": "UpdateCatalogItemVariableParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/UpdateCatalogItemVariableParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "update_catalog_item_variableArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_change_request",
+      "description": "Create a new change request in ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "CreateChangeRequestParams": {
+            "description": "Parameters for creating a change request.",
+            "properties": {
+              "short_description": {
+                "description": "Short description of the change request",
+                "title": "Short Description",
+                "type": "string"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Detailed description of the change request",
+                "title": "Description"
+              },
+              "type": {
+                "description": "Type of change (normal, standard, emergency)",
+                "title": "Type",
+                "type": "string"
+              },
+              "risk": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Risk level of the change",
+                "title": "Risk"
+              },
+              "impact": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Impact of the change",
+                "title": "Impact"
+              },
+              "category": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Category of the change",
+                "title": "Category"
+              },
+              "requested_by": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "User who requested the change",
+                "title": "Requested By"
+              },
+              "assignment_group": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Group assigned to the change",
+                "title": "Assignment Group"
+              },
+              "start_date": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Planned start date (YYYY-MM-DD HH:MM:SS)",
+                "title": "Start Date"
+              },
+              "end_date": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Planned end date (YYYY-MM-DD HH:MM:SS)",
+                "title": "End Date"
+              }
+            },
+            "required": [
+              "short_description",
+              "type"
+            ],
+            "title": "CreateChangeRequestParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/CreateChangeRequestParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "create_change_requestArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_change_request",
+      "description": "Update an existing change request in ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "UpdateChangeRequestParams": {
+            "description": "Parameters for updating a change request.",
+            "properties": {
+              "change_id": {
+                "description": "Change request ID or sys_id",
+                "title": "Change Id",
+                "type": "string"
+              },
+              "short_description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Short description of the change request",
+                "title": "Short Description"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Detailed description of the change request",
+                "title": "Description"
+              },
+              "state": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "State of the change request",
+                "title": "State"
+              },
+              "risk": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Risk level of the change",
+                "title": "Risk"
+              },
+              "impact": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Impact of the change",
+                "title": "Impact"
+              },
+              "category": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Category of the change",
+                "title": "Category"
+              },
+              "assignment_group": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Group assigned to the change",
+                "title": "Assignment Group"
+              },
+              "start_date": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Planned start date (YYYY-MM-DD HH:MM:SS)",
+                "title": "Start Date"
+              },
+              "end_date": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Planned end date (YYYY-MM-DD HH:MM:SS)",
+                "title": "End Date"
+              },
+              "work_notes": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Work notes to add to the change request",
+                "title": "Work Notes"
+              }
+            },
+            "required": [
+              "change_id"
+            ],
+            "title": "UpdateChangeRequestParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/UpdateChangeRequestParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "update_change_requestArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_change_requests",
+      "description": "List change requests from ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "ListChangeRequestsParams": {
+            "description": "Parameters for listing change requests.",
+            "properties": {
+              "limit": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": 10,
+                "description": "Maximum number of records to return",
+                "title": "Limit"
+              },
+              "offset": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": 0,
+                "description": "Offset to start from",
+                "title": "Offset"
+              },
+              "state": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Filter by state",
+                "title": "State"
+              },
+              "type": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Filter by type (normal, standard, emergency)",
+                "title": "Type"
+              },
+              "category": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Filter by category",
+                "title": "Category"
+              },
+              "assignment_group": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Filter by assignment group",
+                "title": "Assignment Group"
+              },
+              "timeframe": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Filter by timeframe (upcoming, in-progress, completed)",
+                "title": "Timeframe"
+              },
+              "query": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Additional query string",
+                "title": "Query"
+              }
+            },
+            "title": "ListChangeRequestsParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/ListChangeRequestsParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "list_change_requestsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_change_request_details",
+      "description": "Get detailed information about a specific change request",
+      "inputSchema": {
+        "$defs": {
+          "GetChangeRequestDetailsParams": {
+            "description": "Parameters for getting change request details.",
+            "properties": {
+              "change_id": {
+                "description": "Change request ID or sys_id",
+                "title": "Change Id",
+                "type": "string"
+              }
+            },
+            "required": [
+              "change_id"
+            ],
+            "title": "GetChangeRequestDetailsParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/GetChangeRequestDetailsParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "get_change_request_detailsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "add_change_task",
+      "description": "Add a task to a change request",
+      "inputSchema": {
+        "$defs": {
+          "AddChangeTaskParams": {
+            "description": "Parameters for adding a task to a change request.",
+            "properties": {
+              "change_id": {
+                "description": "Change request ID or sys_id",
+                "title": "Change Id",
+                "type": "string"
+              },
+              "short_description": {
+                "description": "Short description of the task",
+                "title": "Short Description",
+                "type": "string"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Detailed description of the task",
+                "title": "Description"
+              },
+              "assigned_to": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "User assigned to the task",
+                "title": "Assigned To"
+              },
+              "planned_start_date": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Planned start date (YYYY-MM-DD HH:MM:SS)",
+                "title": "Planned Start Date"
+              },
+              "planned_end_date": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Planned end date (YYYY-MM-DD HH:MM:SS)",
+                "title": "Planned End Date"
+              }
+            },
+            "required": [
+              "change_id",
+              "short_description"
+            ],
+            "title": "AddChangeTaskParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/AddChangeTaskParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "add_change_taskArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "submit_change_for_approval",
+      "description": "Submit a change request for approval",
+      "inputSchema": {
+        "$defs": {
+          "SubmitChangeForApprovalParams": {
+            "description": "Parameters for submitting a change request for approval.",
+            "properties": {
+              "change_id": {
+                "description": "Change request ID or sys_id",
+                "title": "Change Id",
+                "type": "string"
+              },
+              "approval_comments": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Comments for the approval request",
+                "title": "Approval Comments"
+              }
+            },
+            "required": [
+              "change_id"
+            ],
+            "title": "SubmitChangeForApprovalParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/SubmitChangeForApprovalParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "submit_change_for_approvalArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "approve_change",
+      "description": "Approve a change request",
+      "inputSchema": {
+        "$defs": {
+          "ApproveChangeParams": {
+            "description": "Parameters for approving a change request.",
+            "properties": {
+              "change_id": {
+                "description": "Change request ID or sys_id",
+                "title": "Change Id",
+                "type": "string"
+              },
+              "approver_id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "ID of the approver",
+                "title": "Approver Id"
+              },
+              "approval_comments": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Comments for the approval",
+                "title": "Approval Comments"
+              }
+            },
+            "required": [
+              "change_id"
+            ],
+            "title": "ApproveChangeParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/ApproveChangeParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "approve_changeArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "reject_change",
+      "description": "Reject a change request",
+      "inputSchema": {
+        "$defs": {
+          "RejectChangeParams": {
+            "description": "Parameters for rejecting a change request.",
+            "properties": {
+              "change_id": {
+                "description": "Change request ID or sys_id",
+                "title": "Change Id",
+                "type": "string"
+              },
+              "approver_id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "ID of the approver",
+                "title": "Approver Id"
+              },
+              "rejection_reason": {
+                "description": "Reason for rejection",
+                "title": "Rejection Reason",
+                "type": "string"
+              }
+            },
+            "required": [
+              "change_id",
+              "rejection_reason"
+            ],
+            "title": "RejectChangeParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/RejectChangeParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "reject_changeArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_workflows",
+      "description": "List workflows from ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "ListWorkflowsParams": {
+            "description": "Parameters for listing workflows.",
+            "properties": {
+              "limit": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": 10,
+                "description": "Maximum number of records to return",
+                "title": "Limit"
+              },
+              "offset": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": 0,
+                "description": "Offset to start from",
+                "title": "Offset"
+              },
+              "active": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Filter by active status",
+                "title": "Active"
+              },
+              "name": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Filter by name (contains)",
+                "title": "Name"
+              },
+              "query": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Additional query string",
+                "title": "Query"
+              }
+            },
+            "title": "ListWorkflowsParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/ListWorkflowsParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "list_workflowsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_workflow_details",
+      "description": "Get detailed information about a specific workflow",
+      "inputSchema": {
+        "$defs": {
+          "GetWorkflowDetailsParams": {
+            "description": "Parameters for getting workflow details.",
+            "properties": {
+              "workflow_id": {
+                "description": "Workflow ID or sys_id",
+                "title": "Workflow Id",
+                "type": "string"
+              },
+              "include_versions": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": false,
+                "description": "Include workflow versions",
+                "title": "Include Versions"
+              }
+            },
+            "required": [
+              "workflow_id"
+            ],
+            "title": "GetWorkflowDetailsParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/GetWorkflowDetailsParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "get_workflow_detailsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_workflow_versions",
+      "description": "List workflow versions from ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "ListWorkflowVersionsParams": {
+            "description": "Parameters for listing workflow versions.",
+            "properties": {
+              "workflow_id": {
+                "description": "Workflow ID or sys_id",
+                "title": "Workflow Id",
+                "type": "string"
+              },
+              "limit": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": 10,
+                "description": "Maximum number of records to return",
+                "title": "Limit"
+              },
+              "offset": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": 0,
+                "description": "Offset to start from",
+                "title": "Offset"
+              }
+            },
+            "required": [
+              "workflow_id"
+            ],
+            "title": "ListWorkflowVersionsParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/ListWorkflowVersionsParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "list_workflow_versionsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_workflow_activities",
+      "description": "Get activities for a specific workflow",
+      "inputSchema": {
+        "$defs": {
+          "GetWorkflowActivitiesParams": {
+            "description": "Parameters for getting workflow activities.",
+            "properties": {
+              "workflow_id": {
+                "description": "Workflow ID or sys_id",
+                "title": "Workflow Id",
+                "type": "string"
+              },
+              "version": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Specific version to get activities for",
+                "title": "Version"
+              }
+            },
+            "required": [
+              "workflow_id"
+            ],
+            "title": "GetWorkflowActivitiesParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/GetWorkflowActivitiesParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "get_workflow_activitiesArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_workflow",
+      "description": "Create a new workflow in ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "CreateWorkflowParams": {
+            "description": "Parameters for creating a new workflow.",
+            "properties": {
+              "name": {
+                "description": "Name of the workflow",
+                "title": "Name",
+                "type": "string"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Description of the workflow",
+                "title": "Description"
+              },
+              "table": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Table the workflow applies to",
+                "title": "Table"
+              },
+              "active": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": true,
+                "description": "Whether the workflow is active",
+                "title": "Active"
+              },
+              "attributes": {
+                "anyOf": [
+                  {
+                    "additionalProperties": true,
+                    "type": "object"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Additional attributes for the workflow",
+                "title": "Attributes"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "title": "CreateWorkflowParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/CreateWorkflowParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "create_workflowArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_workflow",
+      "description": "Update an existing workflow in ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "UpdateWorkflowParams": {
+            "description": "Parameters for updating a workflow.",
+            "properties": {
+              "workflow_id": {
+                "description": "Workflow ID or sys_id",
+                "title": "Workflow Id",
+                "type": "string"
+              },
+              "name": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Name of the workflow",
+                "title": "Name"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Description of the workflow",
+                "title": "Description"
+              },
+              "table": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Table the workflow applies to",
+                "title": "Table"
+              },
+              "active": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Whether the workflow is active",
+                "title": "Active"
+              },
+              "attributes": {
+                "anyOf": [
+                  {
+                    "additionalProperties": true,
+                    "type": "object"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Additional attributes for the workflow",
+                "title": "Attributes"
+              }
+            },
+            "required": [
+              "workflow_id"
+            ],
+            "title": "UpdateWorkflowParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/UpdateWorkflowParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "update_workflowArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "activate_workflow",
+      "description": "Activate a workflow in ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "ActivateWorkflowParams": {
+            "description": "Parameters for activating a workflow.",
+            "properties": {
+              "workflow_id": {
+                "description": "Workflow ID or sys_id",
+                "title": "Workflow Id",
+                "type": "string"
+              }
+            },
+            "required": [
+              "workflow_id"
+            ],
+            "title": "ActivateWorkflowParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/ActivateWorkflowParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "activate_workflowArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "deactivate_workflow",
+      "description": "Deactivate a workflow in ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "DeactivateWorkflowParams": {
+            "description": "Parameters for deactivating a workflow.",
+            "properties": {
+              "workflow_id": {
+                "description": "Workflow ID or sys_id",
+                "title": "Workflow Id",
+                "type": "string"
+              }
+            },
+            "required": [
+              "workflow_id"
+            ],
+            "title": "DeactivateWorkflowParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/DeactivateWorkflowParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "deactivate_workflowArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "add_workflow_activity",
+      "description": "Add a new activity to a workflow in ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "AddWorkflowActivityParams": {
+            "description": "Parameters for adding an activity to a workflow.",
+            "properties": {
+              "workflow_version_id": {
+                "description": "Workflow version ID",
+                "title": "Workflow Version Id",
+                "type": "string"
+              },
+              "name": {
+                "description": "Name of the activity",
+                "title": "Name",
+                "type": "string"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Description of the activity",
+                "title": "Description"
+              },
+              "activity_type": {
+                "description": "Type of activity (e.g., 'approval', 'task', 'notification')",
+                "title": "Activity Type",
+                "type": "string"
+              },
+              "attributes": {
+                "anyOf": [
+                  {
+                    "additionalProperties": true,
+                    "type": "object"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Additional attributes for the activity",
+                "title": "Attributes"
+              }
+            },
+            "required": [
+              "workflow_version_id",
+              "name",
+              "activity_type"
+            ],
+            "title": "AddWorkflowActivityParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/AddWorkflowActivityParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "add_workflow_activityArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_workflow_activity",
+      "description": "Update an existing activity in a workflow",
+      "inputSchema": {
+        "$defs": {
+          "UpdateWorkflowActivityParams": {
+            "description": "Parameters for updating a workflow activity.",
+            "properties": {
+              "activity_id": {
+                "description": "Activity ID or sys_id",
+                "title": "Activity Id",
+                "type": "string"
+              },
+              "name": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Name of the activity",
+                "title": "Name"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Description of the activity",
+                "title": "Description"
+              },
+              "attributes": {
+                "anyOf": [
+                  {
+                    "additionalProperties": true,
+                    "type": "object"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Additional attributes for the activity",
+                "title": "Attributes"
+              }
+            },
+            "required": [
+              "activity_id"
+            ],
+            "title": "UpdateWorkflowActivityParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/UpdateWorkflowActivityParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "update_workflow_activityArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "delete_workflow_activity",
+      "description": "Delete an activity from a workflow",
+      "inputSchema": {
+        "$defs": {
+          "DeleteWorkflowActivityParams": {
+            "description": "Parameters for deleting a workflow activity.",
+            "properties": {
+              "activity_id": {
+                "description": "Activity ID or sys_id",
+                "title": "Activity Id",
+                "type": "string"
+              }
+            },
+            "required": [
+              "activity_id"
+            ],
+            "title": "DeleteWorkflowActivityParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/DeleteWorkflowActivityParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "delete_workflow_activityArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "reorder_workflow_activities",
+      "description": "Reorder activities in a workflow",
+      "inputSchema": {
+        "$defs": {
+          "ReorderWorkflowActivitiesParams": {
+            "description": "Parameters for reordering workflow activities.",
+            "properties": {
+              "workflow_id": {
+                "description": "Workflow ID or sys_id",
+                "title": "Workflow Id",
+                "type": "string"
+              },
+              "activity_ids": {
+                "description": "List of activity IDs in the desired order",
+                "items": {
+                  "type": "string"
+                },
+                "title": "Activity Ids",
+                "type": "array"
+              }
+            },
+            "required": [
+              "workflow_id",
+              "activity_ids"
+            ],
+            "title": "ReorderWorkflowActivitiesParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/ReorderWorkflowActivitiesParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "reorder_workflow_activitiesArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_changesets",
+      "description": "List changesets from ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "ListChangesetsParams": {
+            "description": "Parameters for listing changesets.",
+            "properties": {
+              "limit": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": 10,
+                "description": "Maximum number of records to return",
+                "title": "Limit"
+              },
+              "offset": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": 0,
+                "description": "Offset to start from",
+                "title": "Offset"
+              },
+              "state": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Filter by state",
+                "title": "State"
+              },
+              "application": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Filter by application",
+                "title": "Application"
+              },
+              "developer": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Filter by developer",
+                "title": "Developer"
+              },
+              "timeframe": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Filter by timeframe (recent, last_week, last_month)",
+                "title": "Timeframe"
+              },
+              "query": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Additional query string",
+                "title": "Query"
+              }
+            },
+            "title": "ListChangesetsParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/ListChangesetsParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "list_changesetsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_changeset_details",
+      "description": "Get detailed information about a specific changeset",
+      "inputSchema": {
+        "$defs": {
+          "GetChangesetDetailsParams": {
+            "description": "Parameters for getting changeset details.",
+            "properties": {
+              "changeset_id": {
+                "description": "Changeset ID or sys_id",
+                "title": "Changeset Id",
+                "type": "string"
+              }
+            },
+            "required": [
+              "changeset_id"
+            ],
+            "title": "GetChangesetDetailsParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/GetChangesetDetailsParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "get_changeset_detailsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_changeset",
+      "description": "Create a new changeset in ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "CreateChangesetParams": {
+            "description": "Parameters for creating a changeset.",
+            "properties": {
+              "name": {
+                "description": "Name of the changeset",
+                "title": "Name",
+                "type": "string"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Description of the changeset",
+                "title": "Description"
+              },
+              "application": {
+                "description": "Application the changeset belongs to",
+                "title": "Application",
+                "type": "string"
+              },
+              "developer": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Developer responsible for the changeset",
+                "title": "Developer"
+              }
+            },
+            "required": [
+              "name",
+              "application"
+            ],
+            "title": "CreateChangesetParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/CreateChangesetParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "create_changesetArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_changeset",
+      "description": "Update an existing changeset in ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "UpdateChangesetParams": {
+            "description": "Parameters for updating a changeset.",
+            "properties": {
+              "changeset_id": {
+                "description": "Changeset ID or sys_id",
+                "title": "Changeset Id",
+                "type": "string"
+              },
+              "name": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Name of the changeset",
+                "title": "Name"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Description of the changeset",
+                "title": "Description"
+              },
+              "state": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "State of the changeset",
+                "title": "State"
+              },
+              "developer": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Developer responsible for the changeset",
+                "title": "Developer"
+              }
+            },
+            "required": [
+              "changeset_id"
+            ],
+            "title": "UpdateChangesetParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/UpdateChangesetParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "update_changesetArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "commit_changeset",
+      "description": "Commit a changeset in ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "CommitChangesetParams": {
+            "description": "Parameters for committing a changeset.",
+            "properties": {
+              "changeset_id": {
+                "description": "Changeset ID or sys_id",
+                "title": "Changeset Id",
+                "type": "string"
+              },
+              "commit_message": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Commit message",
+                "title": "Commit Message"
+              }
+            },
+            "required": [
+              "changeset_id"
+            ],
+            "title": "CommitChangesetParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/CommitChangesetParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "commit_changesetArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "publish_changeset",
+      "description": "Publish a changeset in ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "PublishChangesetParams": {
+            "description": "Parameters for publishing a changeset.",
+            "properties": {
+              "changeset_id": {
+                "description": "Changeset ID or sys_id",
+                "title": "Changeset Id",
+                "type": "string"
+              },
+              "publish_notes": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Notes for publishing",
+                "title": "Publish Notes"
+              }
+            },
+            "required": [
+              "changeset_id"
+            ],
+            "title": "PublishChangesetParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/PublishChangesetParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "publish_changesetArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "add_file_to_changeset",
+      "description": "Add a file to a changeset in ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "AddFileToChangesetParams": {
+            "description": "Parameters for adding a file to a changeset.",
+            "properties": {
+              "changeset_id": {
+                "description": "Changeset ID or sys_id",
+                "title": "Changeset Id",
+                "type": "string"
+              },
+              "file_path": {
+                "description": "Path of the file to add",
+                "title": "File Path",
+                "type": "string"
+              },
+              "file_content": {
+                "description": "Content of the file",
+                "title": "File Content",
+                "type": "string"
+              }
+            },
+            "required": [
+              "changeset_id",
+              "file_path",
+              "file_content"
+            ],
+            "title": "AddFileToChangesetParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/AddFileToChangesetParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "add_file_to_changesetArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_script_includes",
+      "description": "List script includes from ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "ListScriptIncludesParams": {
+            "description": "Parameters for listing script includes.",
+            "properties": {
+              "limit": {
+                "default": 10,
+                "description": "Maximum number of script includes to return",
+                "title": "Limit",
+                "type": "integer"
+              },
+              "offset": {
+                "default": 0,
+                "description": "Offset for pagination",
+                "title": "Offset",
+                "type": "integer"
+              },
+              "active": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Filter by active status",
+                "title": "Active"
+              },
+              "client_callable": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Filter by client callable status",
+                "title": "Client Callable"
+              },
+              "query": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Search query for script includes",
+                "title": "Query"
+              }
+            },
+            "title": "ListScriptIncludesParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/ListScriptIncludesParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "list_script_includesArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_script_include",
+      "description": "Get a specific script include from ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "GetScriptIncludeParams": {
+            "description": "Parameters for getting a script include.",
+            "properties": {
+              "script_include_id": {
+                "description": "Script include ID or name",
+                "title": "Script Include Id",
+                "type": "string"
+              }
+            },
+            "required": [
+              "script_include_id"
+            ],
+            "title": "GetScriptIncludeParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/GetScriptIncludeParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "get_script_includeArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_script_include",
+      "description": "Create a new script include in ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "CreateScriptIncludeParams": {
+            "description": "Parameters for creating a script include.",
+            "properties": {
+              "name": {
+                "description": "Name of the script include",
+                "title": "Name",
+                "type": "string"
+              },
+              "script": {
+                "description": "Script content",
+                "title": "Script",
+                "type": "string"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Description of the script include",
+                "title": "Description"
+              },
+              "api_name": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "API name of the script include",
+                "title": "Api Name"
+              },
+              "client_callable": {
+                "default": false,
+                "description": "Whether the script include is client callable",
+                "title": "Client Callable",
+                "type": "boolean"
+              },
+              "active": {
+                "default": true,
+                "description": "Whether the script include is active",
+                "title": "Active",
+                "type": "boolean"
+              },
+              "access": {
+                "default": "package_private",
+                "description": "Access level of the script include",
+                "title": "Access",
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "script"
+            ],
+            "title": "CreateScriptIncludeParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/CreateScriptIncludeParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "create_script_includeArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_script_include",
+      "description": "Update an existing script include in ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "UpdateScriptIncludeParams": {
+            "description": "Parameters for updating a script include.",
+            "properties": {
+              "script_include_id": {
+                "description": "Script include ID or name",
+                "title": "Script Include Id",
+                "type": "string"
+              },
+              "script": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Script content",
+                "title": "Script"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Description of the script include",
+                "title": "Description"
+              },
+              "api_name": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "API name of the script include",
+                "title": "Api Name"
+              },
+              "client_callable": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Whether the script include is client callable",
+                "title": "Client Callable"
+              },
+              "active": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Whether the script include is active",
+                "title": "Active"
+              },
+              "access": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Access level of the script include",
+                "title": "Access"
+              }
+            },
+            "required": [
+              "script_include_id"
+            ],
+            "title": "UpdateScriptIncludeParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/UpdateScriptIncludeParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "update_script_includeArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "delete_script_include",
+      "description": "Delete a script include in ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "DeleteScriptIncludeParams": {
+            "description": "Parameters for deleting a script include.",
+            "properties": {
+              "script_include_id": {
+                "description": "Script include ID or name",
+                "title": "Script Include Id",
+                "type": "string"
+              }
+            },
+            "required": [
+              "script_include_id"
+            ],
+            "title": "DeleteScriptIncludeParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/DeleteScriptIncludeParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "delete_script_includeArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_knowledge_base",
+      "description": "Create a new knowledge base in ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "CreateKnowledgeBaseParams": {
+            "description": "Parameters for creating a knowledge base.",
+            "properties": {
+              "title": {
+                "description": "Title of the knowledge base",
+                "title": "Title",
+                "type": "string"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Description of the knowledge base",
+                "title": "Description"
+              },
+              "owner": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "The specified admin user or group",
+                "title": "Owner"
+              },
+              "managers": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Users who can manage this knowledge base",
+                "title": "Managers"
+              },
+              "publish_workflow": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": "Knowledge - Instant Publish",
+                "description": "Publication workflow",
+                "title": "Publish Workflow"
+              },
+              "retire_workflow": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": "Knowledge - Instant Retire",
+                "description": "Retirement workflow",
+                "title": "Retire Workflow"
+              }
+            },
+            "required": [
+              "title"
+            ],
+            "title": "CreateKnowledgeBaseParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/CreateKnowledgeBaseParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "create_knowledge_baseArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_knowledge_bases",
+      "description": "List knowledge bases from ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "ListKnowledgeBasesParams": {
+            "description": "Parameters for listing knowledge bases.",
+            "properties": {
+              "limit": {
+                "default": 10,
+                "description": "Maximum number of knowledge bases to return",
+                "title": "Limit",
+                "type": "integer"
+              },
+              "offset": {
+                "default": 0,
+                "description": "Offset for pagination",
+                "title": "Offset",
+                "type": "integer"
+              },
+              "active": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Filter by active status",
+                "title": "Active"
+              },
+              "query": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Search query for knowledge bases",
+                "title": "Query"
+              }
+            },
+            "title": "ListKnowledgeBasesParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/ListKnowledgeBasesParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "list_knowledge_basesArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_category",
+      "description": "Create a new category in a knowledge base",
+      "inputSchema": {
+        "$defs": {
+          "CreateCategoryParams": {
+            "description": "Parameters for creating a category in a knowledge base.",
+            "properties": {
+              "title": {
+                "description": "Title of the category",
+                "title": "Title",
+                "type": "string"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Description of the category",
+                "title": "Description"
+              },
+              "knowledge_base": {
+                "description": "The knowledge base to create the category in",
+                "title": "Knowledge Base",
+                "type": "string"
+              },
+              "parent_category": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Parent category (if creating a subcategory)",
+                "title": "Parent Category"
+              },
+              "active": {
+                "default": true,
+                "description": "Whether the category is active",
+                "title": "Active",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "title",
+              "knowledge_base"
+            ],
+            "title": "CreateCategoryParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/CreateCategoryParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "create_categoryArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_article",
+      "description": "Create a new knowledge article",
+      "inputSchema": {
+        "$defs": {
+          "CreateArticleParams": {
+            "description": "Parameters for creating a knowledge article.",
+            "properties": {
+              "title": {
+                "description": "Title of the article",
+                "title": "Title",
+                "type": "string"
+              },
+              "text": {
+                "description": "The main body text for the article",
+                "title": "Text",
+                "type": "string"
+              },
+              "short_description": {
+                "description": "Short description of the article",
+                "title": "Short Description",
+                "type": "string"
+              },
+              "knowledge_base": {
+                "description": "The knowledge base to create the article in",
+                "title": "Knowledge Base",
+                "type": "string"
+              },
+              "category": {
+                "description": "Category for the article",
+                "title": "Category",
+                "type": "string"
+              },
+              "keywords": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Keywords for search",
+                "title": "Keywords"
+              },
+              "article_type": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": "text",
+                "description": "The type of article",
+                "title": "Article Type"
+              }
+            },
+            "required": [
+              "title",
+              "text",
+              "short_description",
+              "knowledge_base",
+              "category"
+            ],
+            "title": "CreateArticleParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/CreateArticleParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "create_articleArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_article",
+      "description": "Update an existing knowledge article",
+      "inputSchema": {
+        "$defs": {
+          "UpdateArticleParams": {
+            "description": "Parameters for updating a knowledge article.",
+            "properties": {
+              "article_id": {
+                "description": "ID of the article to update",
+                "title": "Article Id",
+                "type": "string"
+              },
+              "title": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Updated title of the article",
+                "title": "Title"
+              },
+              "text": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Updated main body text for the article",
+                "title": "Text"
+              },
+              "short_description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Updated short description",
+                "title": "Short Description"
+              },
+              "category": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Updated category for the article",
+                "title": "Category"
+              },
+              "keywords": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Updated keywords for search",
+                "title": "Keywords"
+              }
+            },
+            "required": [
+              "article_id"
+            ],
+            "title": "UpdateArticleParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/UpdateArticleParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "update_articleArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "publish_article",
+      "description": "Publish a knowledge article",
+      "inputSchema": {
+        "$defs": {
+          "PublishArticleParams": {
+            "description": "Parameters for publishing a knowledge article.",
+            "properties": {
+              "article_id": {
+                "description": "ID of the article to publish",
+                "title": "Article Id",
+                "type": "string"
+              },
+              "workflow_state": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": "published",
+                "description": "The workflow state to set",
+                "title": "Workflow State"
+              },
+              "workflow_version": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "The workflow version to use",
+                "title": "Workflow Version"
+              }
+            },
+            "required": [
+              "article_id"
+            ],
+            "title": "PublishArticleParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/PublishArticleParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "publish_articleArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_articles",
+      "description": "List knowledge articles",
+      "inputSchema": {
+        "$defs": {
+          "ListArticlesParams": {
+            "description": "Parameters for listing knowledge articles.",
+            "properties": {
+              "limit": {
+                "default": 10,
+                "description": "Maximum number of articles to return",
+                "title": "Limit",
+                "type": "integer"
+              },
+              "offset": {
+                "default": 0,
+                "description": "Offset for pagination",
+                "title": "Offset",
+                "type": "integer"
+              },
+              "knowledge_base": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Filter by knowledge base",
+                "title": "Knowledge Base"
+              },
+              "category": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Filter by category",
+                "title": "Category"
+              },
+              "query": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Search query for articles",
+                "title": "Query"
+              },
+              "workflow_state": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Filter by workflow state",
+                "title": "Workflow State"
+              }
+            },
+            "title": "ListArticlesParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/ListArticlesParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "list_articlesArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_article",
+      "description": "Get a specific knowledge article by ID",
+      "inputSchema": {
+        "$defs": {
+          "GetArticleParams": {
+            "description": "Parameters for getting a knowledge article.",
+            "properties": {
+              "article_id": {
+                "description": "ID of the article to get",
+                "title": "Article Id",
+                "type": "string"
+              }
+            },
+            "required": [
+              "article_id"
+            ],
+            "title": "GetArticleParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/GetArticleParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "get_articleArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_categories",
+      "description": "List categories in a knowledge base",
+      "inputSchema": {
+        "$defs": {
+          "ListCategoriesParams": {
+            "description": "Parameters for listing categories in a knowledge base.",
+            "properties": {
+              "knowledge_base": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Filter by knowledge base ID",
+                "title": "Knowledge Base"
+              },
+              "parent_category": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Filter by parent category ID",
+                "title": "Parent Category"
+              },
+              "limit": {
+                "default": 10,
+                "description": "Maximum number of categories to return",
+                "title": "Limit",
+                "type": "integer"
+              },
+              "offset": {
+                "default": 0,
+                "description": "Offset for pagination",
+                "title": "Offset",
+                "type": "integer"
+              },
+              "active": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Filter by active status",
+                "title": "Active"
+              },
+              "query": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Search query for categories",
+                "title": "Query"
+              }
+            },
+            "title": "ListCategoriesParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/ListCategoriesParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "list_categoriesArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_user",
+      "description": "Create a new user in ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "CreateUserParams": {
+            "description": "Parameters for creating a user.",
+            "properties": {
+              "user_name": {
+                "description": "Username for the user",
+                "title": "User Name",
+                "type": "string"
+              },
+              "first_name": {
+                "description": "First name of the user",
+                "title": "First Name",
+                "type": "string"
+              },
+              "last_name": {
+                "description": "Last name of the user",
+                "title": "Last Name",
+                "type": "string"
+              },
+              "email": {
+                "description": "Email address of the user",
+                "title": "Email",
+                "type": "string"
+              },
+              "title": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Job title of the user",
+                "title": "Title"
+              },
+              "department": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Department the user belongs to",
+                "title": "Department"
+              },
+              "manager": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Manager of the user (sys_id or username)",
+                "title": "Manager"
+              },
+              "roles": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Roles to assign to the user",
+                "title": "Roles"
+              },
+              "phone": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Phone number of the user",
+                "title": "Phone"
+              },
+              "mobile_phone": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Mobile phone number of the user",
+                "title": "Mobile Phone"
+              },
+              "location": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Location of the user",
+                "title": "Location"
+              },
+              "password": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Password for the user account",
+                "title": "Password"
+              },
+              "active": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": true,
+                "description": "Whether the user account is active",
+                "title": "Active"
+              }
+            },
+            "required": [
+              "user_name",
+              "first_name",
+              "last_name",
+              "email"
+            ],
+            "title": "CreateUserParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/CreateUserParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "create_userArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_user",
+      "description": "Update an existing user in ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "UpdateUserParams": {
+            "description": "Parameters for updating a user.",
+            "properties": {
+              "user_id": {
+                "description": "User ID or sys_id to update",
+                "title": "User Id",
+                "type": "string"
+              },
+              "user_name": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Username for the user",
+                "title": "User Name"
+              },
+              "first_name": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "First name of the user",
+                "title": "First Name"
+              },
+              "last_name": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Last name of the user",
+                "title": "Last Name"
+              },
+              "email": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Email address of the user",
+                "title": "Email"
+              },
+              "title": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Job title of the user",
+                "title": "Title"
+              },
+              "department": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Department the user belongs to",
+                "title": "Department"
+              },
+              "manager": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Manager of the user (sys_id or username)",
+                "title": "Manager"
+              },
+              "roles": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Roles to assign to the user",
+                "title": "Roles"
+              },
+              "phone": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Phone number of the user",
+                "title": "Phone"
+              },
+              "mobile_phone": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Mobile phone number of the user",
+                "title": "Mobile Phone"
+              },
+              "location": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Location of the user",
+                "title": "Location"
+              },
+              "password": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Password for the user account",
+                "title": "Password"
+              },
+              "active": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Whether the user account is active",
+                "title": "Active"
+              }
+            },
+            "required": [
+              "user_id"
+            ],
+            "title": "UpdateUserParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/UpdateUserParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "update_userArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_user",
+      "description": "Get a specific user in ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "GetUserParams": {
+            "description": "Parameters for getting a user.",
+            "properties": {
+              "user_id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "User ID or sys_id",
+                "title": "User Id"
+              },
+              "user_name": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Username of the user",
+                "title": "User Name"
+              },
+              "email": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Email address of the user",
+                "title": "Email"
+              }
+            },
+            "title": "GetUserParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/GetUserParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "get_userArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_users",
+      "description": "List users in ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "ListUsersParams": {
+            "description": "Parameters for listing users.",
+            "properties": {
+              "limit": {
+                "default": 10,
+                "description": "Maximum number of users to return",
+                "title": "Limit",
+                "type": "integer"
+              },
+              "offset": {
+                "default": 0,
+                "description": "Offset for pagination",
+                "title": "Offset",
+                "type": "integer"
+              },
+              "active": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Filter by active status",
+                "title": "Active"
+              },
+              "department": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Filter by department",
+                "title": "Department"
+              },
+              "query": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Case-insensitive search term that matches against name, username, or email fields. Uses ServiceNow's LIKE operator for partial matching.",
+                "title": "Query"
+              }
+            },
+            "title": "ListUsersParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/ListUsersParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "list_usersArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_group",
+      "description": "Create a new group in ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "CreateGroupParams": {
+            "description": "Parameters for creating a group.",
+            "properties": {
+              "name": {
+                "description": "Name of the group",
+                "title": "Name",
+                "type": "string"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Description of the group",
+                "title": "Description"
+              },
+              "manager": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Manager of the group (sys_id or username)",
+                "title": "Manager"
+              },
+              "parent": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Parent group (sys_id or name)",
+                "title": "Parent"
+              },
+              "type": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Type of the group",
+                "title": "Type"
+              },
+              "email": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Email address for the group",
+                "title": "Email"
+              },
+              "members": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "List of user sys_ids or usernames to add as members",
+                "title": "Members"
+              },
+              "active": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": true,
+                "description": "Whether the group is active",
+                "title": "Active"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "title": "CreateGroupParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/CreateGroupParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "create_groupArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_group",
+      "description": "Update an existing group in ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "UpdateGroupParams": {
+            "description": "Parameters for updating a group.",
+            "properties": {
+              "group_id": {
+                "description": "Group ID or sys_id to update",
+                "title": "Group Id",
+                "type": "string"
+              },
+              "name": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Name of the group",
+                "title": "Name"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Description of the group",
+                "title": "Description"
+              },
+              "manager": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Manager of the group (sys_id or username)",
+                "title": "Manager"
+              },
+              "parent": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Parent group (sys_id or name)",
+                "title": "Parent"
+              },
+              "type": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Type of the group",
+                "title": "Type"
+              },
+              "email": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Email address for the group",
+                "title": "Email"
+              },
+              "active": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Whether the group is active",
+                "title": "Active"
+              }
+            },
+            "required": [
+              "group_id"
+            ],
+            "title": "UpdateGroupParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/UpdateGroupParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "update_groupArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "add_group_members",
+      "description": "Add members to an existing group in ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "AddGroupMembersParams": {
+            "description": "Parameters for adding members to a group.",
+            "properties": {
+              "group_id": {
+                "description": "Group ID or sys_id",
+                "title": "Group Id",
+                "type": "string"
+              },
+              "members": {
+                "description": "List of user sys_ids or usernames to add as members",
+                "items": {
+                  "type": "string"
+                },
+                "title": "Members",
+                "type": "array"
+              }
+            },
+            "required": [
+              "group_id",
+              "members"
+            ],
+            "title": "AddGroupMembersParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/AddGroupMembersParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "add_group_membersArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "remove_group_members",
+      "description": "Remove members from an existing group in ServiceNow",
+      "inputSchema": {
+        "$defs": {
+          "RemoveGroupMembersParams": {
+            "description": "Parameters for removing members from a group.",
+            "properties": {
+              "group_id": {
+                "description": "Group ID or sys_id",
+                "title": "Group Id",
+                "type": "string"
+              },
+              "members": {
+                "description": "List of user sys_ids or usernames to remove as members",
+                "items": {
+                  "type": "string"
+                },
+                "title": "Members",
+                "type": "array"
+              }
+            },
+            "required": [
+              "group_id",
+              "members"
+            ],
+            "title": "RemoveGroupMembersParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/RemoveGroupMembersParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "remove_group_membersArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_groups",
+      "description": "List groups from ServiceNow with optional filtering",
+      "inputSchema": {
+        "$defs": {
+          "ListGroupsParams": {
+            "description": "Parameters for listing groups.",
+            "properties": {
+              "limit": {
+                "default": 10,
+                "description": "Maximum number of groups to return",
+                "title": "Limit",
+                "type": "integer"
+              },
+              "offset": {
+                "default": 0,
+                "description": "Offset for pagination",
+                "title": "Offset",
+                "type": "integer"
+              },
+              "active": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Filter by active status",
+                "title": "Active"
+              },
+              "query": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Case-insensitive search term that matches against group name or description fields. Uses ServiceNow's LIKE operator for partial matching.",
+                "title": "Query"
+              },
+              "type": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Filter by group type",
+                "title": "Type"
+              }
+            },
+            "title": "ListGroupsParams",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/ListGroupsParams"
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "title": "list_groupsArguments",
+        "type": "object"
+      }
+    }
+  ]
 }

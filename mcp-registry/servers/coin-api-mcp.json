@@ -21,12 +21,13 @@
     "Data"
   ],
   "installations": {
-    "python": {
-      "type": "python",
-      "command": "python",
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
       "args": [
-        "-m",
-        "coin_api_mcp"
+        "--from",
+        "git+https://github.com/longmans/coin_api_mcp",
+        "coin-api"
       ],
       "env": {
         "COINMARKETCAP_API_KEY": "${COINMARKETCAP_API_KEY}"
@@ -51,5 +52,213 @@
       "required": true,
       "example": "your_api_key_here"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "listing-coins",
+      "description": "Returns a paginated list of all active cryptocurrencies with latest market data",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "start": {
+            "type": "integer",
+            "description": "Optionally offset the start (1-based index) of the paginated list of items to return.",
+            "minimum": 1
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Optionally specify the number of results to return.",
+            "minimum": 1,
+            "maximum": 5000
+          },
+          "price_min": {
+            "type": "number",
+            "description": "Optionally specify a threshold of minimum USD price to filter results by.",
+            "minimum": 0
+          },
+          "price_max": {
+            "type": "number",
+            "description": "Optionally specify a threshold of maximum USD price to filter results by.",
+            "minimum": 0
+          },
+          "market_cap_min": {
+            "type": "number",
+            "description": "Optionally specify a threshold of minimum market cap to filter results by.",
+            "minimum": 0
+          },
+          "market_cap_max": {
+            "type": "number",
+            "description": "Optionally specify a threshold of maximum market cap to filter results by.",
+            "minimum": 0
+          },
+          "volume_24h_min": {
+            "type": "number",
+            "description": "Optionally specify a threshold of minimum 24 hour USD volume to filter results by.",
+            "minimum": 0
+          },
+          "volume_24h_max": {
+            "type": "number",
+            "description": "Optionally specify a threshold of maximum 24 hour USD volume to filter results by.",
+            "minimum": 0
+          },
+          "circulating_supply_min": {
+            "type": "number",
+            "description": "Optionally specify a threshold of minimum circulating supply to filter results by.",
+            "minimum": 0
+          },
+          "circulating_supply_max": {
+            "type": "number",
+            "description": "Optionally specify a threshold of maximum circulating supply to filter results by.",
+            "minimum": 0
+          },
+          "percent_change_24h_min": {
+            "type": "number",
+            "description": "Optionally specify a threshold of minimum 24 hour percent change to filter results by.",
+            "minimum": -100
+          },
+          "percent_change_24h_max": {
+            "type": "number",
+            "description": "Optionally specify a threshold of maximum 24 hour percent change to filter results by.",
+            "minimum": -100
+          },
+          "convert": {
+            "type": "string",
+            "description": "Optionally calculate market quotes in up to 120 currencies at once by passing a comma-separated list of cryptocurrency or fiat currency symbols."
+          },
+          "convert_id": {
+            "type": "string",
+            "description": "Optionally calculate market quotes by CoinMarketCap ID instead of symbol."
+          },
+          "sort": {
+            "type": "string",
+            "description": "What field to sort the list of cryptocurrencies by.",
+            "enum": [
+              "market_cap",
+              "name",
+              "symbol",
+              "date_added",
+              "market_cap_strict",
+              "price",
+              "circulating_supply",
+              "total_supply",
+              "max_supply",
+              "num_market_pairs",
+              "volume_24h",
+              "percent_change_1h",
+              "percent_change_24h",
+              "percent_change_7d",
+              "market_cap_by_total_supply_strict",
+              "volume_7d",
+              "volume_30d"
+            ]
+          },
+          "sort_dir": {
+            "type": "string",
+            "description": "The direction in which to order cryptocurrencies against the specified sort.",
+            "enum": [
+              "asc",
+              "desc"
+            ]
+          },
+          "cryptocurrency_type": {
+            "type": "string",
+            "description": "The type of cryptocurrency to include.",
+            "enum": [
+              "all",
+              "coins",
+              "tokens"
+            ]
+          },
+          "tag": {
+            "type": "string",
+            "description": "The tag of cryptocurrency to include.",
+            "enum": [
+              "all",
+              "defi",
+              "filesharing"
+            ]
+          },
+          "aux": {
+            "type": "string",
+            "description": "Optionally specify a comma-separated list of supplemental data fields to return."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "get-coin-info",
+      "description": "Get coins' information includes details like logo, description, official website URL, social links, and links to a cryptocurrency's technical documentation.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "One or more comma-separated CoinMarketCap cryptocurrency IDs. Example: \"1,2\""
+          },
+          "slug": {
+            "type": "string",
+            "description": "Alternatively pass a comma-separated list of cryptocurrency slugs. Example: \"bitcoin,ethereum\""
+          },
+          "symbol": {
+            "type": "string",
+            "description": "Alternatively pass one or more comma-separated cryptocurrency symbols. Example: \"BTC,ETH\""
+          },
+          "address": {
+            "type": "string",
+            "description": "Alternatively pass in a contract address. Example: \"0xc40af1e4fecfa05ce6bab79dcd8b373d2e436c4e\""
+          },
+          "skip_invalid": {
+            "type": "boolean",
+            "description": "Pass true to relax request validation rules. When requesting records on multiple cryptocurrencies an error is returned if any invalid cryptocurrencies are requested or a cryptocurrency does not have matching records in the requested timeframe. If set to true, invalid lookups will be skipped allowing valid cryptocurrencies to still be returned.",
+            "default": false
+          },
+          "aux": {
+            "type": "string",
+            "description": "Optionally specify a comma-separated list of supplemental data fields to return. Pass urls,logo,description,tags,platform,date_added,notice,status to include all auxiliary fields."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "get-coin-quotes",
+      "description": "the latest market quote for 1 or more cryptocurrencies. Use the \"convert\" option to return market values in multiple fiat and cryptocurrency conversions in the same call.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "One or more comma-separated cryptocurrency CoinMarketCap IDs. Example: 1,2"
+          },
+          "slug": {
+            "type": "string",
+            "description": "Alternatively pass a comma-separated list of cryptocurrency slugs. Example: \"bitcoin,ethereum\""
+          },
+          "symbol": {
+            "type": "string",
+            "description": "Alternatively pass one or more comma-separated cryptocurrency symbols. Example: \"BTC,ETH\""
+          },
+          "convert": {
+            "type": "string",
+            "description": "Optionally calculate market quotes in up to 120 currencies at once by passing a comma-separated list of cryptocurrency or fiat currency symbols."
+          },
+          "convert_id": {
+            "type": "string",
+            "description": "Optionally calculate market quotes by CoinMarketCap ID instead of symbol. This option is identical to\u00a0convert\u00a0outside of ID format."
+          },
+          "aux": {
+            "type": "string",
+            "description": "\"num_market_pairs,cmc_rank,date_added,tags,platform,max_supply,circulating_supply,total_supply,is_active,is_fiat\"Optionally specify a comma-separated list of supplemental data fields to return."
+          },
+          "skip_invalid": {
+            "type": "boolean",
+            "description": "Pass true to relax request validation rules.",
+            "default": false
+          }
+        },
+        "required": []
+      }
+    }
+  ]
 }

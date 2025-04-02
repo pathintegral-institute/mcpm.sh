@@ -45,5 +45,24 @@
       "required": false,
       "example": "us-central1"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "query",
+      "description": "Run a read-only BigQuery SQL query",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sql": {
+            "type": "string"
+          },
+          "maximumBytesBilled": {
+            "type": "string",
+            "description": "Maximum bytes billed (default: 1GB)",
+            "optional": true
+          }
+        }
+      }
+    }
+  ]
 }

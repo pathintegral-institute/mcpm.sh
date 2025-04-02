@@ -56,5 +56,26 @@
       "required": true,
       "example": "postgres://user:password@localhost:5432/dbname?sslmode=disable"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "list_connectors",
+      "description": "Lists all available database connectors and their sample DSNs. Indicates which connector is active based on the current DSN.",
+      "inputSchema": {},
+      "required": []
+    },
+    {
+      "name": "run_query",
+      "description": "Executes a SQL query and returns the results.",
+      "inputSchema": {
+        "query": {
+          "type": "string",
+          "description": "SQL query to execute"
+        }
+      },
+      "required": [
+        "query"
+      ]
+    }
+  ]
 }

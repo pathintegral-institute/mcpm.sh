@@ -71,5 +71,81 @@
       "description": "Neo4j password",
       "required": true
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "execute_query",
+      "description": "Execute a Cypher query on Neo4j database",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Cypher query to execute"
+          },
+          "params": {
+            "type": "object",
+            "description": "Query parameters",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "create_node",
+      "description": "Create a new node in Neo4j",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "description": "Node label"
+          },
+          "properties": {
+            "type": "object",
+            "description": "Node properties",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "label",
+          "properties"
+        ]
+      }
+    },
+    {
+      "name": "create_relationship",
+      "description": "Create a relationship between two nodes",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "fromNodeId": {
+            "type": "number",
+            "description": "ID of the source node"
+          },
+          "toNodeId": {
+            "type": "number",
+            "description": "ID of the target node"
+          },
+          "type": {
+            "type": "string",
+            "description": "Relationship type"
+          },
+          "properties": {
+            "type": "object",
+            "description": "Relationship properties",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "fromNodeId",
+          "toNodeId",
+          "type"
+        ]
+      }
+    }
+  ]
 }

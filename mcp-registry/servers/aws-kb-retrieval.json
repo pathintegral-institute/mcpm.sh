@@ -73,5 +73,33 @@
       "required": true,
       "example": "us-east-1"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "retrieve_from_aws_kb",
+      "description": "Performs retrieval from the AWS Knowledge Base using the provided query and Knowledge Base ID.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The query to perform retrieval on"
+          },
+          "knowledgeBaseId": {
+            "type": "string",
+            "description": "The ID of the AWS Knowledge Base"
+          },
+          "n": {
+            "type": "number",
+            "default": 3,
+            "description": "Number of results to retrieve"
+          }
+        },
+        "required": [
+          "query",
+          "knowledgeBaseId"
+        ]
+      }
+    }
+  ]
 }

@@ -42,5 +42,45 @@
       "description": "Builds the iOS Xcode workspace/project located at a specified folder.",
       "prompt": "build --folder /path/to/your/project"
     }
+  ],
+  "tools": [
+    {
+      "name": "build",
+      "description": "Build the iOS Xcode workspace/project in the folder",
+      "inputSchema": {
+        "description": "Parameters",
+        "properties": {
+          "folder": {
+            "description": "The full path of the current folder that the iOS Xcode workspace/project sits",
+            "title": "Folder",
+            "type": "string"
+          }
+        },
+        "required": [
+          "folder"
+        ],
+        "title": "Folder",
+        "type": "object"
+      }
+    },
+    {
+      "name": "test",
+      "description": "Run test for the iOS Xcode workspace/project in the folder",
+      "inputSchema": {
+        "description": "Parameters",
+        "properties": {
+          "folder": {
+            "description": "The full path of the current folder that the iOS Xcode workspace/project sits",
+            "title": "Folder",
+            "type": "string"
+          }
+        },
+        "required": [
+          "folder"
+        ],
+        "title": "Folder",
+        "type": "object"
+      }
+    }
   ]
 }

@@ -24,11 +24,19 @@
       "command": "npx",
       "args": [
         "-y",
-        "@llamaindex/mcp-server-llamacloud"
+        "@llamaindex/mcp-server-llamacloud",
+        "--index",
+        "10k-SEC-Tesla",
+        "--description",
+        "10k SEC documents from 2023 for Tesla",
+        "--index",
+        "10k-SEC-Apple",
+        "--description",
+        "10k SEC documents from 2023 for Apple"
       ],
       "env": {
-        "LLAMA_CLOUD_PROJECT_NAME": "${LLAMA_CLOUD_PROJECT_NAME}",
-        "LLAMA_CLOUD_API_KEY": "${LLAMA_CLOUD_API_KEY}"
+        "LLAMA_CLOUD_PROJECT_NAME": "<YOUR_PROJECT_NAME>",
+        "LLAMA_CLOUD_API_KEY": "<YOUR_API_KEY>"
       }
     }
   },
@@ -43,5 +51,39 @@
       "required": true,
       "example": "1234567890abcdef"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "get_information_10k_sec_tesla",
+      "description": "Get information from the 10k-SEC-Tesla index. The index contains 10k SEC documents from 2023 for Tesla",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The query used to get information from the 10k-SEC-Tesla index."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "get_information_10k_sec_apple",
+      "description": "Get information from the 10k-SEC-Apple index. The index contains 10k SEC documents from 2023 for Apple",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The query used to get information from the 10k-SEC-Apple index."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ]
 }

@@ -50,5 +50,160 @@
       "required": true,
       "example": "my-secret-api-token"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "placid_list_templates",
+      "description": "Get a list of available Placid templates with optional filtering. Each template includes its title, ID, preview image URL, available layers, and tags.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "collection_id": {
+            "type": "string",
+            "description": "Optional: Filter templates by collection ID"
+          },
+          "custom_data": {
+            "type": "string",
+            "description": "Optional: Filter by custom reference data"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Optional: Filter templates by tags"
+          }
+        }
+      }
+    },
+    {
+      "name": "placid_generate_image",
+      "description": "Generate an image using a template and provided assets",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "template_id",
+          "layers"
+        ],
+        "properties": {
+          "template_id": {
+            "type": "string",
+            "description": "UUID of the template to use"
+          },
+          "layers": {
+            "type": "object",
+            "description": "Key-value pairs for dynamic content. Keys must match template layer names.",
+            "additionalProperties": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "text": {
+                      "type": "string",
+                      "description": "Content for text layers"
+                    }
+                  },
+                  "required": [
+                    "text"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "image": {
+                      "type": "string",
+                      "format": "uri",
+                      "description": "URL for image/video layers"
+                    }
+                  },
+                  "required": [
+                    "image"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "placid_generate_video",
+      "description": "Generate a video using one or more templates and provided assets. Every 10 seconds of video uses 10 credits.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "template_id",
+          "layers"
+        ],
+        "properties": {
+          "template_id": {
+            "type": "string",
+            "description": "UUID of the template to use"
+          },
+          "layers": {
+            "type": "object",
+            "description": "Key-value pairs for dynamic content. Keys must match template layer names.",
+            "additionalProperties": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "text": {
+                      "type": "string",
+                      "description": "Content for text layers"
+                    }
+                  },
+                  "required": [
+                    "text"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "image": {
+                      "type": "string",
+                      "format": "uri",
+                      "description": "URL for image layers"
+                    }
+                  },
+                  "required": [
+                    "image"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "video": {
+                      "type": "string",
+                      "format": "uri",
+                      "description": "URL for video layers (.mp4)"
+                    }
+                  },
+                  "required": [
+                    "video"
+                  ]
+                }
+              ]
+            }
+          },
+          "audio": {
+            "type": "string",
+            "description": "URL of mp3 audio file for this video"
+          },
+          "audio_duration": {
+            "type": "string",
+            "description": "Set to 'auto' to trim audio to video length"
+          },
+          "audio_trim_start": {
+            "type": "string",
+            "description": "Timestamp of the trim start point (e.g. '00:00:45' or '00:00:45.25')"
+          },
+          "audio_trim_end": {
+            "type": "string",
+            "description": "Timestamp of the trim end point (e.g. '00:00:55' or '00:00:55.25')"
+          }
+        }
+      }
+    }
+  ]
 }

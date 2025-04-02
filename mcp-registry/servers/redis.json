@@ -17,7 +17,7 @@
       "command": "uvx",
       "args": [
         "--from",
-        "https://github.com/prajwalnayak7/mcp-server-redis",
+        "git+https://github.com/prajwalnayak7/mcp-server-redis",
         "src/server.py"
       ]
     }

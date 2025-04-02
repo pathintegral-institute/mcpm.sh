@@ -28,7 +28,7 @@
       "command": "uvx",
       "args": [
         "--from",
-        "git+https://github.com/dmayboroda/minima.git",
+        "git+https://github.com/dmayboroda/minima.git@main#subdirectory=mcp-server",
         "minima"
       ]
     }
@@ -69,5 +69,25 @@
       "required": true,
       "example": "password"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "query",
+      "description": "Find a context in local files (PDF, CSV, DOCX, MD, TXT)",
+      "inputSchema": {
+        "properties": {
+          "text": {
+            "description": "context to find",
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "title": "Query",
+        "type": "object"
+      }
+    }
+  ]
 }

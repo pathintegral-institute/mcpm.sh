@@ -78,5 +78,39 @@
       "required": true,
       "example": "your_schema_name"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "read_query",
+      "description": "Execute a SELECT query.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "SELECT SQL query to execute"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "append_insight",
+      "description": "Add a data insight to the memo",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "insight": {
+            "type": "string",
+            "description": "Data insight discovered from analysis"
+          }
+        },
+        "required": [
+          "insight"
+        ]
+      }
+    }
+  ]
 }

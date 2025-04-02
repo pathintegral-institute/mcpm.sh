@@ -53,5 +53,33 @@
       "required": true,
       "example": "your_key_here"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "generate_image",
+      "description": "Generate images using EverArt Models and returns a clickable link to view the generated image. The tool will return a URL that can be clicked to view the image in a browser. Available models:\n- 5000:FLUX1.1: Standard quality\n- 9000:FLUX1.1-ultra: Ultra high quality\n- 6000:SD3.5: Stable Diffusion 3.5\n- 7000:Recraft-Real: Photorealistic style\n- 8000:Recraft-Vector: Vector art style\n\nThe response will contain a direct link to view the generated image.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "Text description of desired image"
+          },
+          "model": {
+            "type": "string",
+            "description": "Model ID (5000:FLUX1.1, 9000:FLUX1.1-ultra, 6000:SD3.5, 7000:Recraft-Real, 8000:Recraft-Vector)",
+            "default": "5000"
+          },
+          "image_count": {
+            "type": "number",
+            "description": "Number of images to generate",
+            "default": 1
+          }
+        },
+        "required": [
+          "prompt"
+        ]
+      }
+    }
+  ]
 }

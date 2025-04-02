@@ -65,5 +65,23 @@
       "required": true,
       "example": "https://api.openai.com/v1"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "chat-with-${AI_CHAT_NAME_CLEAN}",
+      "description": "Text chat with ${AI_CHAT_NAME}",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "The content of the chat to send to ${AI_CHAT_NAME}"
+          }
+        },
+        "required": [
+          "content"
+        ]
+      }
+    }
+  ]
 }

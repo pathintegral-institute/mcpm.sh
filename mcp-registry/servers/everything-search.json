@@ -60,5 +60,80 @@
       "required": true,
       "example": "path/to/Everything-SDK/dll/Everything64.dll"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "search",
+      "description": "Universal file search tool for Darwin\n\nCurrent Implementation:\nUsing mdfind (Spotlight) with native macOS search capabilities\n\nSearch Syntax Guide:\nmacOS Spotlight (mdfind) Search Syntax:\n                \nBasic Usage:\n- Simple text search: Just type the words you're looking for\n- Phrase search: Use quotes (\"exact phrase\")\n- Filename search: -name \"filename\"\n- Directory scope: -onlyin /path/to/dir\n\nSpecial Parameters:\n- Live updates: -live\n- Literal search: -literal\n- Interpreted search: -interpret\n\nMetadata Attributes:\n- kMDItemDisplayName\n- kMDItemTextContent\n- kMDItemKind\n- kMDItemFSSize\n- And many more OS X metadata attributes\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "base": {
+            "description": "Base search parameters common to all platforms.",
+            "properties": {
+              "query": {
+                "description": "Search query string. See platform-specific documentation for syntax details.",
+                "title": "Query",
+                "type": "string"
+              },
+              "max_results": {
+                "default": 100,
+                "description": "Maximum number of results to return (1-1000)",
+                "maximum": 1000,
+                "minimum": 1,
+                "title": "Max Results",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "title": "BaseSearchQuery",
+            "type": "object"
+          },
+          "mac_params": {
+            "description": "macOS-specific search parameters for mdfind.",
+            "properties": {
+              "live_updates": {
+                "default": false,
+                "description": "Provide live updates to search results",
+                "title": "Live Updates",
+                "type": "boolean"
+              },
+              "search_directory": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Limit search to specific directory (-onlyin parameter)",
+                "title": "Search Directory"
+              },
+              "literal_query": {
+                "default": false,
+                "description": "Treat query as literal string without interpretation",
+                "title": "Literal Query",
+                "type": "boolean"
+              },
+              "interpret_query": {
+                "default": false,
+                "description": "Interpret query as if typed in Spotlight menu",
+                "title": "Interpret Query",
+                "type": "boolean"
+              }
+            },
+            "title": "MacSpecificParams",
+            "type": "object"
+          }
+        },
+        "required": [
+          "base"
+        ]
+      }
+    }
+  ]
 }

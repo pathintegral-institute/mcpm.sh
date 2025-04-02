@@ -63,5 +63,50 @@
       "required": true,
       "example": "your_app_token"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "list_table",
+      "description": "list table for current bitable",
+      "inputSchema": {
+        "properties": {},
+        "title": "list_tableArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "describe_table",
+      "description": "describe_table by table name",
+      "inputSchema": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "describe_tableArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "read_query",
+      "description": "read_query by sql",
+      "inputSchema": {
+        "properties": {
+          "sql": {
+            "title": "Sql",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sql"
+        ],
+        "title": "read_queryArguments",
+        "type": "object"
+      }
+    }
+  ]
 }

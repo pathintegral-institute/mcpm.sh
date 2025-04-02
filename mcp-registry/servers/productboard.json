@@ -38,5 +38,221 @@
       "required": true,
       "example": "your_access_token_here"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "get_products",
+      "description": "Returns detail of all products. This API is paginated and the page limit is always 100",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "number",
+            "default": 1
+          }
+        }
+      }
+    },
+    {
+      "name": "get_product_detail",
+      "description": "Returns detailed information about a specific product",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "description": "ID of the product to retrieve"
+          }
+        },
+        "required": [
+          "productId"
+        ]
+      }
+    },
+    {
+      "name": "get_features",
+      "description": "Returns a list of all features. This API is paginated and the page limit is always 100",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "number",
+            "default": 1
+          }
+        }
+      }
+    },
+    {
+      "name": "get_feature_detail",
+      "description": "Returns detailed information about a specific feature",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "featureId": {
+            "type": "string",
+            "description": "ID of the feature to retrieve"
+          }
+        },
+        "required": [
+          "featureId"
+        ]
+      }
+    },
+    {
+      "name": "get_components",
+      "description": "Returns a list of all components. This API is paginated and the page limit is always 100",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "number",
+            "default": 1
+          }
+        }
+      }
+    },
+    {
+      "name": "get_component_detail",
+      "description": "Returns detailed information about a specific component",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "componentId": {
+            "type": "string",
+            "description": "ID of the component to retrieve"
+          }
+        },
+        "required": [
+          "componentId"
+        ]
+      }
+    },
+    {
+      "name": "get_feature_statuses",
+      "description": "Returns a list of all feature statuses. This API is paginated and the page limit is always 100",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "number",
+            "default": 1
+          }
+        }
+      }
+    },
+    {
+      "name": "get_notes",
+      "description": "Returns a list of all notes",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "last": {
+            "type": "string",
+            "description": "Return only notes created since given span of months (m), days (s), or hours (h). E.g. 6m | 10d | 24h | 1h. Cannot be combined with createdFrom, createdTo, dateFrom, or dateTo"
+          },
+          "createdFrom": {
+            "type": "string",
+            "format": "date",
+            "description": "Return only notes created since given date. Cannot be combined with last"
+          },
+          "createdTo": {
+            "type": "string",
+            "format": "date",
+            "description": "Return only notes created before or equal to the given date. Cannot be combined with last"
+          },
+          "updatedFrom": {
+            "type": "string",
+            "format": "date",
+            "description": "Return only notes updated since given date"
+          },
+          "updatedTo": {
+            "type": "string",
+            "format": "date",
+            "description": "Return only notes updated before or equal to the given date"
+          },
+          "term": {
+            "type": "string",
+            "description": "Return only notes by fulltext search"
+          },
+          "featureId": {
+            "type": "string",
+            "description": "Return only notes for specific feature ID or its descendants"
+          },
+          "companyId": {
+            "type": "string",
+            "description": "Return only notes for specific company ID"
+          },
+          "ownerEmail": {
+            "type": "string",
+            "description": "Return only notes owned by a specific owner email"
+          },
+          "source": {
+            "type": "string",
+            "description": "Return only notes from a specific source origin. This is the unique string identifying the external system from which the data came"
+          },
+          "anyTag": {
+            "type": "string",
+            "description": "Return only notes that have been assigned any of the tags in the array. Cannot be combined with allTags"
+          },
+          "allTags": {
+            "type": "string",
+            "description": "Return only notes that have been assigned all of the tags in the array. Cannot be combined with anyTag"
+          },
+          "pageLimit": {
+            "type": "number",
+            "description": "Page limit"
+          },
+          "pageCursor": {
+            "type": "string",
+            "description": "Page cursor to get next page of results"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_note_detail",
+      "description": "Returns detailed information about a specific note",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "noteId": {
+            "type": "string",
+            "description": "ID of the note to retrieve"
+          }
+        },
+        "required": [
+          "noteId"
+        ]
+      }
+    },
+    {
+      "name": "get_companies",
+      "description": "Returns a list of all companies. This API is paginated and the page limit is always 100",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "number",
+            "default": 1
+          }
+        }
+      }
+    },
+    {
+      "name": "get_company_detail",
+      "description": "Returns detailed information about a specific company",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "companyId": {
+            "type": "string",
+            "description": "ID of the company to retrieve"
+          }
+        },
+        "required": [
+          "companyId"
+        ]
+      }
+    }
+  ]
 }

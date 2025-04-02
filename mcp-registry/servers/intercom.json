@@ -33,7 +33,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "mcp-server-for-intercom"
+        "https://github.com/raoulbia-ai/mcp-server-for-intercom"
       ],
       "env": {
         "INTERCOM_ACCESS_TOKEN": "your-intercom-access-token"

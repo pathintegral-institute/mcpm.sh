@@ -18,6 +18,13 @@
     "MongoDB",
     "LLM"
   ],
+  "arguments": {
+    "MONGODB_URI": {
+      "description": "The connection string for the MongoDB database.",
+      "required": true,
+      "example": "mongodb://muhammed:kilic@mongodb.localhost/sample_namespace"
+    }
+  },
   "installations": {
     "npm": {
       "type": "npm",
@@ -25,8 +32,289 @@
       "args": [
         "-y",
         "mcp-mongo-server",
-        "mongodb://muhammed:kilic@mongodb.localhost/sample_namespace"
+        "${MONGODB_URI}"
       ]
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "query",
+      "description": "Execute a MongoDB query with optional execution plan analysis",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "collection": {
+            "type": "string",
+            "description": "Name of the collection to query"
+          },
+          "filter": {
+            "type": "object",
+            "description": "MongoDB query filter"
+          },
+          "projection": {
+            "type": "object",
+            "description": "Fields to include/exclude"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of documents to return"
+          },
+          "explain": {
+            "type": "string",
+            "description": "Optional: Get query execution information (queryPlanner, executionStats, or allPlansExecution)",
+            "enum": [
+              "queryPlanner",
+              "executionStats",
+              "allPlansExecution"
+            ]
+          }
+        },
+        "required": [
+          "collection"
+        ]
+      }
+    },
+    {
+      "name": "aggregate",
+      "description": "Execute a MongoDB aggregation pipeline with optional execution plan analysis",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "collection": {
+            "type": "string",
+            "description": "Name of the collection to aggregate"
+          },
+          "pipeline": {
+            "type": "array",
+            "description": "Aggregation pipeline stages"
+          },
+          "explain": {
+            "type": "string",
+            "description": "Optional: Get aggregation execution information (queryPlanner, executionStats, or allPlansExecution)",
+            "enum": [
+              "queryPlanner",
+              "executionStats",
+              "allPlansExecution"
+            ]
+          }
+        },
+        "required": [
+          "collection",
+          "pipeline"
+        ]
+      }
+    },
+    {
+      "name": "update",
+      "description": "Update documents in a MongoDB collection",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "collection": {
+            "type": "string",
+            "description": "Name of the collection to update"
+          },
+          "filter": {
+            "type": "object",
+            "description": "Filter to select documents to update"
+          },
+          "update": {
+            "type": "object",
+            "description": "Update operations to apply ($set, $unset, $inc, etc.)"
+          },
+          "upsert": {
+            "type": "boolean",
+            "description": "Create a new document if no documents match the filter"
+          },
+          "multi": {
+            "type": "boolean",
+            "description": "Update multiple documents that match the filter"
+          }
+        },
+        "required": [
+          "collection",
+          "filter",
+          "update"
+        ]
+      }
+    },
+    {
+      "name": "serverInfo",
+      "description": "Get MongoDB server information including version, storage engine, and other details",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "includeDebugInfo": {
+            "type": "boolean",
+            "description": "Include additional debug information about the server"
+          }
+        }
+      }
+    },
+    {
+      "name": "insert",
+      "description": "Insert one or more documents into a MongoDB collection",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "collection": {
+            "type": "string",
+            "description": "Name of the collection to insert into"
+          },
+          "documents": {
+            "type": "array",
+            "description": "Array of documents to insert",
+            "items": {
+              "type": "object"
+            }
+          },
+          "ordered": {
+            "type": "boolean",
+            "description": "Optional: If true, perform an ordered insert of the documents. If false, perform an unordered insert"
+          },
+          "writeConcern": {
+            "type": "object",
+            "description": "Optional: Write concern for the insert operation"
+          },
+          "bypassDocumentValidation": {
+            "type": "boolean",
+            "description": "Optional: Allow insert to bypass schema validation"
+          }
+        },
+        "required": [
+          "collection",
+          "documents"
+        ]
+      }
+    },
+    {
+      "name": "createIndex",
+      "description": "Create one or more indexes on a MongoDB collection",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "collection": {
+            "type": "string",
+            "description": "Name of the collection to create indexes on"
+          },
+          "indexes": {
+            "type": "array",
+            "description": "Array of index specifications",
+            "items": {
+              "type": "object",
+              "properties": {
+                "key": {
+                  "type": "object",
+                  "description": "Index key pattern, e.g. { field: 1 } for ascending, { field: -1 } for descending"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Optional: Name of the index"
+                },
+                "unique": {
+                  "type": "boolean",
+                  "description": "Optional: If true, creates a unique index"
+                },
+                "sparse": {
+                  "type": "boolean",
+                  "description": "Optional: If true, creates a sparse index"
+                },
+                "background": {
+                  "type": "boolean",
+                  "description": "Optional: If true, creates the index in the background"
+                },
+                "expireAfterSeconds": {
+                  "type": "number",
+                  "description": "Optional: Specifies the TTL for documents (time to live)"
+                },
+                "partialFilterExpression": {
+                  "type": "object",
+                  "description": "Optional: Filter expression for partial indexes"
+                }
+              },
+              "required": [
+                "key"
+              ]
+            }
+          },
+          "writeConcern": {
+            "type": "object",
+            "description": "Optional: Write concern for the index creation"
+          },
+          "commitQuorum": {
+            "type": [
+              "string",
+              "number"
+            ],
+            "description": "Optional: Number of voting members required to create index"
+          }
+        },
+        "required": [
+          "collection",
+          "indexes"
+        ]
+      }
+    },
+    {
+      "name": "count",
+      "description": "Count the number of documents in a collection that match a query",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "collection": {
+            "type": "string",
+            "description": "Name of the collection to count documents in"
+          },
+          "query": {
+            "type": "object",
+            "description": "Optional: Query filter to select documents to count"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Optional: Maximum number of documents to count"
+          },
+          "skip": {
+            "type": "integer",
+            "description": "Optional: Number of documents to skip before counting"
+          },
+          "hint": {
+            "type": "object",
+            "description": "Optional: Index hint to force query plan"
+          },
+          "readConcern": {
+            "type": "object",
+            "description": "Optional: Read concern for the count operation"
+          },
+          "maxTimeMS": {
+            "type": "integer",
+            "description": "Optional: Maximum time to allow the count to run"
+          },
+          "collation": {
+            "type": "object",
+            "description": "Optional: Collation rules for string comparison"
+          }
+        },
+        "required": [
+          "collection"
+        ]
+      }
+    },
+    {
+      "name": "listCollections",
+      "description": "List all collections in the MongoDB database",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "nameOnly": {
+            "type": "boolean",
+            "description": "Optional: If true, returns only the collection names instead of full collection info"
+          },
+          "filter": {
+            "type": "object",
+            "description": "Optional: Filter to apply to the collections"
+          }
+        }
+      }
+    }
+  ]
 }

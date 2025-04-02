@@ -52,5 +52,97 @@
       "required": false,
       "example": "your_org"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "write-data",
+      "description": "Write data to InfluxDB in line protocol format.",
+      "inputSchema": {
+        "org": {
+          "type": "string",
+          "description": "The organization name"
+        },
+        "bucket": {
+          "type": "string",
+          "description": "The bucket name"
+        },
+        "data": {
+          "type": "string",
+          "description": "Data in InfluxDB line protocol format"
+        },
+        "precision": {
+          "type": "string",
+          "enum": [
+            "ns",
+            "us",
+            "ms",
+            "s"
+          ],
+          "description": "Timestamp precision (ns, us, ms, s)"
+        }
+      },
+      "required": [
+        "org",
+        "bucket",
+        "data"
+      ]
+    },
+    {
+      "name": "query-data",
+      "description": "Execute a Flux query on InfluxDB data.",
+      "inputSchema": {
+        "org": {
+          "type": "string",
+          "description": "The organization name"
+        },
+        "query": {
+          "type": "string",
+          "description": "Flux query string"
+        }
+      },
+      "required": [
+        "org",
+        "query"
+      ]
+    },
+    {
+      "name": "create-bucket",
+      "description": "Create a new bucket in InfluxDB.",
+      "inputSchema": {
+        "name": {
+          "type": "string",
+          "description": "The bucket name"
+        },
+        "orgID": {
+          "type": "string",
+          "description": "The organization ID"
+        },
+        "retentionPeriodSeconds": {
+          "type": "number",
+          "description": "Retention period in seconds (optional)"
+        }
+      },
+      "required": [
+        "name",
+        "orgID"
+      ]
+    },
+    {
+      "name": "create-org",
+      "description": "Create a new organization in InfluxDB.",
+      "inputSchema": {
+        "name": {
+          "type": "string",
+          "description": "The organization name"
+        },
+        "description": {
+          "type": "string",
+          "description": "Organization description (optional)"
+        }
+      },
+      "required": [
+        "name"
+      ]
+    }
+  ]
 }

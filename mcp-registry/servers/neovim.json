@@ -45,5 +45,178 @@
       "required": false,
       "example": "/tmp/nvim"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "vim_buffer",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "filename": {
+            "type": "string",
+            "description": "Optional file name to view a specific buffer"
+          }
+        }
+      }
+    },
+    {
+      "name": "vim_command",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string",
+            "description": "Vim command to execute (use ! prefix for shell commands if enabled)"
+          }
+        },
+        "required": [
+          "command"
+        ]
+      }
+    },
+    {
+      "name": "vim_status",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "filename": {
+            "type": "string",
+            "description": "Optional file name to get status for a specific buffer"
+          }
+        }
+      }
+    },
+    {
+      "name": "vim_edit",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "startLine": {
+            "type": "number",
+            "description": "The line number where editing should begin (1-indexed)"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "insert",
+              "replace",
+              "replaceAll"
+            ],
+            "description": "Whether to insert new content, replace existing content, or replace entire buffer"
+          },
+          "lines": {
+            "type": "string",
+            "description": "The text content to insert or use as replacement"
+          }
+        },
+        "required": [
+          "startLine",
+          "mode",
+          "lines"
+        ]
+      }
+    },
+    {
+      "name": "vim_window",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string",
+            "enum": [
+              "split",
+              "vsplit",
+              "only",
+              "close",
+              "wincmd h",
+              "wincmd j",
+              "wincmd k",
+              "wincmd l"
+            ],
+            "description": "Window manipulation command: split or vsplit to create new window, only to keep just current window, close to close current window, or wincmd with h/j/k/l to navigate between windows"
+          }
+        },
+        "required": [
+          "command"
+        ]
+      }
+    },
+    {
+      "name": "vim_mark",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mark": {
+            "type": "string",
+            "pattern": "^[a-z]$",
+            "description": "Single lowercase letter [a-z] to use as the mark name"
+          },
+          "line": {
+            "type": "number",
+            "description": "The line number where the mark should be placed (1-indexed)"
+          },
+          "column": {
+            "type": "number",
+            "description": "The column number where the mark should be placed (0-indexed)"
+          }
+        },
+        "required": [
+          "mark",
+          "line",
+          "column"
+        ]
+      }
+    },
+    {
+      "name": "vim_register",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "register": {
+            "type": "string",
+            "pattern": "^[a-z\\\"]$",
+            "description": "Register name - a lowercase letter [a-z] or double-quote [\"] for the unnamed register"
+          },
+          "content": {
+            "type": "string",
+            "description": "The text content to store in the specified register"
+          }
+        },
+        "required": [
+          "register",
+          "content"
+        ]
+      }
+    },
+    {
+      "name": "vim_visual",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "startLine": {
+            "type": "number",
+            "description": "The starting line number for visual selection (1-indexed)"
+          },
+          "startColumn": {
+            "type": "number",
+            "description": "The starting column number for visual selection (0-indexed)"
+          },
+          "endLine": {
+            "type": "number",
+            "description": "The ending line number for visual selection (1-indexed)"
+          },
+          "endColumn": {
+            "type": "number",
+            "description": "The ending column number for visual selection (0-indexed)"
+          }
+        },
+        "required": [
+          "startLine",
+          "startColumn",
+          "endLine",
+          "endColumn"
+        ]
+      }
+    }
+  ]
 }

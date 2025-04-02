@@ -22,13 +22,13 @@
     "statistics"
   ],
   "installations": {
-    "npm": {
+    "uvx": {
       "type": "uvx",
       "command": "uvx",
       "args": [
         "--from",
         "git+https://github.com/lenwood/cfbd-mcp-server",
-        "src/cfbd_mcp_server/server.py"
+        "cfbd-mcp-server"
       ],
       "env": {
         "CFB_API_KEY": "${CFB_API_KEY}",
@@ -54,5 +54,314 @@
       "required": false,
       "example": "/full/path/to/python"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "get-games",
+      "description": "Get college football game data. Required: year. Optional: week, season_type, team, conference, category, game_id.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer",
+            "description": "Year of the games"
+          },
+          "week": {
+            "type": "integer",
+            "description": "Week of the games"
+          },
+          "season_type": {
+            "type": "string",
+            "description": "Type of season (e.g., regular, postseason)"
+          },
+          "team": {
+            "type": "string",
+            "description": "Name of the team"
+          },
+          "conference": {
+            "type": "string",
+            "description": "Name of the conference"
+          },
+          "category": {
+            "type": "string",
+            "description": "Category of games"
+          },
+          "game_id": {
+            "type": "integer",
+            "description": "ID of the game"
+          }
+        },
+        "required": [
+          "year"
+        ]
+      }
+    },
+    {
+      "name": "get-records",
+      "description": "Get college football team record data. Optional: year, team, conference.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer",
+            "description": "Year of the records"
+          },
+          "team": {
+            "type": "string",
+            "description": "Name of the team"
+          },
+          "conference": {
+            "type": "string",
+            "description": "Name of the conference"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "get-games-teams",
+      "description": "Get college football team game data. Required: year plus at least one of: week, team or conference.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer",
+            "description": "Year of the games"
+          },
+          "week": {
+            "type": "integer",
+            "description": "Week of the games"
+          },
+          "team": {
+            "type": "string",
+            "description": "Name of the team"
+          },
+          "conference": {
+            "type": "string",
+            "description": "Name of the conference"
+          }
+        },
+        "required": [
+          "year"
+        ]
+      }
+    },
+    {
+      "name": "get-plays",
+      "description": "Get college football play-by-play data. Required: year AND week. Optional: season_type, team, offense, defense, conference, offense_conference, defense_conference, play_type, classification.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer",
+            "description": "Year of the plays"
+          },
+          "week": {
+            "type": "integer",
+            "description": "Week of the plays"
+          },
+          "season_type": {
+            "type": "string",
+            "description": "Type of season (e.g., regular, postseason)"
+          },
+          "team": {
+            "type": "string",
+            "description": "Name of the team"
+          },
+          "offense": {
+            "type": "string",
+            "description": "Name of the offense team"
+          },
+          "defense": {
+            "type": "string",
+            "description": "Name of the defense team"
+          },
+          "conference": {
+            "type": "string",
+            "description": "Name of the conference"
+          },
+          "offense_conference": {
+            "type": "string",
+            "description": "Conference of the offense team"
+          },
+          "defense_conference": {
+            "type": "string",
+            "description": "Conference of the defense team"
+          },
+          "play_type": {
+            "type": "string",
+            "description": "Type of play"
+          },
+          "classification": {
+            "type": "string",
+            "description": "Classification of the play"
+          }
+        },
+        "required": [
+          "year",
+          "week"
+        ]
+      }
+    },
+    {
+      "name": "get-drives",
+      "description": "Get college football drive data. Required: year. Optional: season_type, week, team, offense, defense, conference, offense_conference, defense_conference, classification.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer",
+            "description": "Year of the drives"
+          },
+          "season_type": {
+            "type": "string",
+            "description": "Type of season (e.g., regular, postseason)"
+          },
+          "week": {
+            "type": "integer",
+            "description": "Week of the drives"
+          },
+          "team": {
+            "type": "string",
+            "description": "Name of the team"
+          },
+          "offense": {
+            "type": "string",
+            "description": "Name of the offense team"
+          },
+          "defense": {
+            "type": "string",
+            "description": "Name of the defense team"
+          },
+          "conference": {
+            "type": "string",
+            "description": "Name of the conference"
+          },
+          "offense_conference": {
+            "type": "string",
+            "description": "Conference of the offense team"
+          },
+          "defense_conference": {
+            "type": "string",
+            "description": "Conference of the defense team"
+          },
+          "classification": {
+            "type": "string",
+            "description": "Classification of the drive"
+          }
+        },
+        "required": [
+          "year"
+        ]
+      }
+    },
+    {
+      "name": "get-play-stats",
+      "description": "Get college football play statistic data. Optional: year, week, team, game_id, athlete_id, stat_type_id, season_type, conference. At least one parameter is required.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer",
+            "description": "Year of the statistics"
+          },
+          "week": {
+            "type": "integer",
+            "description": "Week of the statistics"
+          },
+          "team": {
+            "type": "string",
+            "description": "Name of the team"
+          },
+          "game_id": {
+            "type": "integer",
+            "description": "ID of the game"
+          },
+          "athlete_id": {
+            "type": "integer",
+            "description": "ID of the athlete"
+          },
+          "stat_type_id": {
+            "type": "integer",
+            "description": "ID of the statistic type"
+          },
+          "season_type": {
+            "type": "string",
+            "description": "Type of season (e.g., regular, postseason)"
+          },
+          "conference": {
+            "type": "string",
+            "description": "Name of the conference"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "get-rankings",
+      "description": "Get college football rankings data. Required: year. Optional: week, season_type.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer",
+            "description": "Year of the rankings"
+          },
+          "week": {
+            "type": "integer",
+            "description": "Week of the rankings"
+          },
+          "season_type": {
+            "type": "string",
+            "description": "Type of season (e.g., regular, postseason)"
+          }
+        },
+        "required": [
+          "year"
+        ]
+      }
+    },
+    {
+      "name": "get-pregame-win-probability",
+      "description": "Get college football pregame win probability data. Optional: year, week, team, season_type. At least one parameter is required.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer",
+            "description": "Year of the probabilities"
+          },
+          "week": {
+            "type": "integer",
+            "description": "Week of the probabilities"
+          },
+          "team": {
+            "type": "string",
+            "description": "Name of the team"
+          },
+          "season_type": {
+            "type": "string",
+            "description": "Type of season (e.g., regular, postseason)"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "get-advanced-box-score",
+      "description": "Get advanced box score data for college football games. Required: gameId.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "gameId": {
+            "type": "integer",
+            "description": "ID of the game"
+          }
+        },
+        "required": [
+          "gameId"
+        ]
+      }
+    }
+  ]
 }

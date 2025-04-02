@@ -24,8 +24,50 @@
       "command": "npx",
       "args": [
         "-y",
-        "https://github.com/smithery-ai/mcp-obsidian.git"
+        "https://github.com/calclavia/mcp-obsidian.git",
+        "${OBSIDIAN_VAULT_PATH}"
       ]
     }
-  }
+  },
+  "arguments": {
+    "OBSIDIAN_VAULT_PATH": {
+      "description": "Path to your Obsidian vault",
+      "required": true
+    }
+  },
+  "tools": [
+    {
+      "name": "read_notes",
+      "description": "Read the contents of multiple notes. Each note's content is returned with its path as a reference. Failed reads for individual notes won't stop the entire operation. Reading too many at once may result in an error.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "paths": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "paths"
+        ]
+      }
+    },
+    {
+      "name": "search_notes",
+      "description": "Searches for a note by its name. The search is case-insensitive and matches partial names. Queries can also be a valid regex. Returns paths of the notes that match the query.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ]
 }

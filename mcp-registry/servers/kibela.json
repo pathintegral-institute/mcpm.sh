@@ -24,7 +24,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "@kiwamizamurai/mcp-kibela-server"
+        "https://github.com/kiwamizamurai/mcp-kibela-server"
       ],
       "env": {
         "KIBELA_TEAM": "${KIBELA_TEAM}",
@@ -60,5 +60,53 @@
       "required": true,
       "example": "your-token"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "kibela_search_notes",
+      "description": "Search Kibela notes with given query",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "kibela_get_my_notes",
+      "description": "Get your latest notes from Kibela",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "number",
+            "description": "Number of notes to fetch (max 50)",
+            "default": 15
+          }
+        }
+      }
+    },
+    {
+      "name": "kibela_get_note_content",
+      "description": "Get content and comments of a specific note",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Note ID"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    }
+  ]
 }

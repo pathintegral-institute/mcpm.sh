@@ -39,5 +39,415 @@
       "required": true,
       "example": "abcdefgh12345678"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "goalstory_about",
+      "description": "Retrieve information about Goal Story's philosophy and the power of story-driven goal achievement. Use this to help users understand the unique approach of Goal Storying.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "goalstory_read_self_user",
+      "description": "Get the user's profile data including their preferences, belief systems, and past goal history to enable personalized goal storying and context-aware discussions.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "goalstory_update_self_user",
+      "description": "Update the user's profile including their name, visibility preferences, and personal context. When updating 'about' data, guide the user through questions to understand their motivations, beliefs, and goal-achievement style.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The user's preferred name for their Goal Story profile."
+          },
+          "about": {
+            "type": "string",
+            "description": "Personal context including motivations, beliefs, and goal-achievement preferences gathered through guided questions."
+          },
+          "visibility": {
+            "type": "number",
+            "description": "Profile visibility setting where 0 = public (viewable by others) and 1 = private (only visible to user)."
+          }
+        }
+      }
+    },
+    {
+      "name": "goalstory_count_goals",
+      "description": "Get the total number of goals in the user's journey. Useful for tracking overall progress and goal management patterns.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "goalstory_create_goal",
+      "description": "Begin the goal clarification process by creating a new goal. Always discuss and refine the goal with the user before or after saving, ensuring it's well-defined and aligned with their aspirations. Confirm if any adjustments are needed after creation.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Clear and specific title that captures the essence of the goal."
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed explanation of the goal, including context, motivation, and desired outcomes."
+          },
+          "story_mode": {
+            "type": "string",
+            "description": "Narrative approach that shapes how future stories visualize goal achievement."
+          },
+          "belief_mode": {
+            "type": "string",
+            "description": "Framework defining how the user's core beliefs and values influence this goal."
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    {
+      "name": "goalstory_update_goal",
+      "description": "Update goal details including name, status, description, outcomes, evidence of completion, and story/belief modes that influence how stories are generated.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the goal to be updated."
+          },
+          "name": {
+            "type": "string",
+            "description": "Refined or clarified goal title."
+          },
+          "status": {
+            "type": "number",
+            "description": "Goal progress status: 0 = active/in progress, 1 = successfully completed."
+          },
+          "description": {
+            "type": "string",
+            "description": "Enhanced goal context, motivation, or outcome details."
+          },
+          "outcome": {
+            "type": "string",
+            "description": "Actual results and impact achieved through goal completion or progress."
+          },
+          "evidence": {
+            "type": "string",
+            "description": "Concrete proof, measurements, or observations of goal progress/completion."
+          },
+          "story_mode": {
+            "type": "string",
+            "description": "Updated narrative style for future goal achievement stories."
+          },
+          "belief_mode": {
+            "type": "string",
+            "description": "Refined understanding of how personal beliefs shape this goal."
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "goalstory_destroy_goal",
+      "description": "Remove a goal and all its associated steps and stories from the user's journey. Use with confirmation to prevent accidental deletion.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the goal to be permanently removed."
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "goalstory_read_one_goal",
+      "description": "Retrieve detailed information about a specific goal to support focused discussion and story creation.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the goal to retrieve."
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "goalstory_read_goals",
+      "description": "Get an overview of the user's goal journey, with optional pagination to manage larger sets of goals.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "number",
+            "description": "Page number for viewing subsets of goals (starts at 1)."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of goals to return per page."
+          }
+        }
+      }
+    },
+    {
+      "name": "goalstory_read_current_focus",
+      "description": "Identify which goal and step the user is currently focused on to maintain context in discussions and story creation.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "goalstory_get_story_context",
+      "description": "Gather rich context about the user, their current goal/step, beliefs, and motivations to create deeply personalized and meaningful stories. Combines user profile data with conversation insights.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "goalId": {
+            "type": "string",
+            "description": "Unique identifier of the goal for context gathering."
+          },
+          "stepId": {
+            "type": "string",
+            "description": "Unique identifier of the specific step for context gathering."
+          },
+          "feedback": {
+            "type": "string",
+            "description": "Additional user input to enhance context understanding."
+          }
+        },
+        "required": [
+          "goalId",
+          "stepId"
+        ]
+      }
+    },
+    {
+      "name": "goalstory_create_steps",
+      "description": "Formulate actionable steps for a goal through thoughtful discussion. Present the steps for user review either before or after saving, ensuring they're clear and achievable. Confirm if any refinements are needed.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "goal_id": {
+            "type": "string",
+            "description": "Unique identifier of the goal these steps will help achieve."
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of clear, actionable step descriptions in sequence."
+          }
+        },
+        "required": [
+          "goal_id",
+          "steps"
+        ]
+      }
+    },
+    {
+      "name": "goalstory_read_steps",
+      "description": "Access the action plan for a specific goal, showing all steps in the journey toward achievement.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "goal_id": {
+            "type": "string",
+            "description": "Unique identifier of the goal whose steps to retrieve."
+          },
+          "page": {
+            "type": "number",
+            "description": "Page number for viewing subsets of steps (starts at 1)."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of steps to return per page."
+          }
+        },
+        "required": [
+          "goal_id"
+        ]
+      }
+    },
+    {
+      "name": "goalstory_read_one_step",
+      "description": "Get detailed information about a specific step to support focused discussion and story creation.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the step to retrieve."
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "goalstory_update_step",
+      "description": "Update step details including the name, completion status, evidence, and outcome. Use this to track progress and insights.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the step to update."
+          },
+          "name": {
+            "type": "string",
+            "description": "Refined or clarified step description."
+          },
+          "status": {
+            "type": "number",
+            "description": "Step completion status: 0 = pending/in progress, 1 = completed."
+          },
+          "outcome": {
+            "type": "string",
+            "description": "Results and impact achieved through completing this step."
+          },
+          "evidence": {
+            "type": "string",
+            "description": "Concrete proof or observations of step completion."
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "goalstory_destroy_step",
+      "description": "Remove a specific step from a goal's action plan.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the step to be permanently removed."
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "goalstory_update_step_notes",
+      "description": "Update step notes with additional context, insights, or reflections in markdown format. Use this to capture valuable information from discussions.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the step to update."
+          },
+          "notes": {
+            "type": "string",
+            "description": "Additional context, insights, or reflections in markdown format."
+          }
+        },
+        "required": [
+          "id",
+          "notes"
+        ]
+      }
+    },
+    {
+      "name": "goalstory_create_story",
+      "description": "Generate and save a highly personalized story that visualizes achievement of the current goal/step. Uses understanding of the user's beliefs, motivations, and context to create engaging mental imagery. If context is needed, gathers it through user discussion and profile data.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "goal_id": {
+            "type": "string",
+            "description": "Unique identifier of the goal this story supports."
+          },
+          "step_id": {
+            "type": "string",
+            "description": "Unique identifier of the specific step this story visualizes."
+          },
+          "title": {
+            "type": "string",
+            "description": "Engaging headline that captures the essence of the story."
+          },
+          "story_text": {
+            "type": "string",
+            "description": "Detailed narrative that vividly illustrates goal/step achievement."
+          }
+        },
+        "required": [
+          "goal_id",
+          "step_id",
+          "title",
+          "story_text"
+        ]
+      }
+    },
+    {
+      "name": "goalstory_read_stories",
+      "description": "Access the collection of personalized stories created for a specific goal/step pair, supporting reflection and motivation.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "goal_id": {
+            "type": "string",
+            "description": "Unique identifier of the goal whose stories to retrieve."
+          },
+          "step_id": {
+            "type": "string",
+            "description": "Unique identifier of the step whose stories to retrieve."
+          },
+          "page": {
+            "type": "number",
+            "description": "Page number for viewing subsets of stories (starts at 1)."
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of stories to return per page."
+          }
+        },
+        "required": [
+          "goal_id",
+          "step_id"
+        ]
+      }
+    },
+    {
+      "name": "goalstory_read_one_story",
+      "description": "Retrieve a specific story to revisit the visualization and mental imagery created for goal achievement.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the story to retrieve."
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    }
+  ]
 }

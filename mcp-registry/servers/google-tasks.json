@@ -29,5 +29,134 @@
         "https://github.com/zcaceres/gtasks-mcp"
       ]
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "search",
+      "description": "Search for tasks in Google Tasks.",
+      "inputSchema": {
+        "query": {
+          "type": "string",
+          "description": "Search query for tasks"
+        }
+      },
+      "required": [
+        "query"
+      ]
+    },
+    {
+      "name": "list",
+      "description": "List all tasks in Google Tasks.",
+      "inputSchema": {
+        "cursor": {
+          "type": "string",
+          "description": "Cursor for pagination",
+          "optional": true
+        }
+      },
+      "required": []
+    },
+    {
+      "name": "create",
+      "description": "Create a new task in Google Tasks.",
+      "inputSchema": {
+        "taskListId": {
+          "type": "string",
+          "description": "Task list ID",
+          "optional": true
+        },
+        "title": {
+          "type": "string",
+          "description": "Task title"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Task notes",
+          "optional": true
+        },
+        "due": {
+          "type": "string",
+          "description": "Due date",
+          "optional": true
+        }
+      },
+      "required": [
+        "title"
+      ]
+    },
+    {
+      "name": "update",
+      "description": "Update an existing task in Google Tasks.",
+      "inputSchema": {
+        "taskListId": {
+          "type": "string",
+          "description": "Task list ID",
+          "optional": true
+        },
+        "id": {
+          "type": "string",
+          "description": "Task ID"
+        },
+        "uri": {
+          "type": "string",
+          "description": "Task URI"
+        },
+        "title": {
+          "type": "string",
+          "description": "New task title",
+          "optional": true
+        },
+        "notes": {
+          "type": "string",
+          "description": "New task notes",
+          "optional": true
+        },
+        "status": {
+          "type": "string",
+          "description": "New task status ('needsAction' or 'completed')",
+          "optional": true
+        },
+        "due": {
+          "type": "string",
+          "description": "New due date",
+          "optional": true
+        }
+      },
+      "required": [
+        "id",
+        "uri"
+      ]
+    },
+    {
+      "name": "delete",
+      "description": "Delete a task in Google Tasks.",
+      "inputSchema": {
+        "taskListId": {
+          "type": "string",
+          "description": "Task list ID"
+        },
+        "id": {
+          "type": "string",
+          "description": "Task ID"
+        }
+      },
+      "required": [
+        "taskListId",
+        "id"
+      ]
+    },
+    {
+      "name": "clear",
+      "description": "Clear completed tasks from a Google Tasks task list.",
+      "inputSchema": {
+        "taskListId": {
+          "type": "string",
+          "description": "Task list ID"
+        }
+      },
+      "required": [
+        "taskListId"
+      ]
+    }
+  ]
 }

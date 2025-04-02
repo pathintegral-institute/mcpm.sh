@@ -21,12 +21,11 @@
     "football"
   ],
   "installations": {
-    "python": {
-      "type": "python",
-      "command": "python",
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
       "args": [
-        "-m",
-        "fpl_mcp"
+        "fpl-mcp"
       ]
     }
   },

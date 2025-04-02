@@ -52,5 +52,27 @@
       "required": true,
       "example": "your-conda-env"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "execute_code",
+      "description": "Execute Python code in the specified conda environment",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Python code to execute"
+          },
+          "filename": {
+            "type": "string",
+            "description": "Optional: Name of the file to save the code (default: generated UUID)"
+          }
+        },
+        "required": [
+          "code"
+        ]
+      }
+    }
+  ]
 }

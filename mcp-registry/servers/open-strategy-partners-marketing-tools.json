@@ -53,5 +53,61 @@
       "description": "Apply the OSP writing guide to create a document for a specific audience.",
       "prompt": "Apply the OSP writing guide to create a tutorial about setting up a CI/CD pipeline for junior developers."
     }
+  ],
+  "tools": [
+    {
+      "name": "health_check",
+      "description": "Check if the server is running and can access its resources",
+      "inputSchema": {
+        "properties": {},
+        "title": "health_checkArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_editing_codes",
+      "description": "Get the Open Strategy Partners (OSP) editing codes documentation and usage protocol for editing texts.",
+      "inputSchema": {
+        "properties": {},
+        "title": "get_editing_codesArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_writing_guide",
+      "description": "Get the Open Strategy Partners (OSP) writing guide and usage protocol for editing texts.",
+      "inputSchema": {
+        "properties": {},
+        "title": "get_writing_guideArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_meta_guide",
+      "description": "Get the Open Strategy Partners (OSP) Web Content Meta Information Generation System (titles, meta-titles, slugs).",
+      "inputSchema": {
+        "properties": {},
+        "title": "get_meta_guideArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_value_map_positioning_guide",
+      "description": "Get the Open Strategy Partners (OSP) Product Communications Value Map Generation System for Product Positioning (value cases, feature extraction, taglines).",
+      "inputSchema": {
+        "properties": {},
+        "title": "get_value_map_positioning_guideArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_on_page_seo_guide",
+      "description": "Get the Open Strategy Partners (OSP) On-Page SEO Optimization Guide.",
+      "inputSchema": {
+        "properties": {},
+        "title": "get_on_page_seo_guideArguments",
+        "type": "object"
+      }
+    }
   ]
 }

@@ -62,5 +62,59 @@
       "required": true,
       "example": "your_api_key_here"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "search_movies",
+      "description": "Search for movies by title or keywords",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query for movie titles"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "get_recommendations",
+      "description": "Get movie recommendations based on a movie ID",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "movieId": {
+            "type": "string",
+            "description": "TMDB movie ID to get recommendations for"
+          }
+        },
+        "required": [
+          "movieId"
+        ]
+      }
+    },
+    {
+      "name": "get_trending",
+      "description": "Get trending movies for a time window",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "timeWindow": {
+            "type": "string",
+            "enum": [
+              "day",
+              "week"
+            ],
+            "description": "Time window for trending movies"
+          }
+        },
+        "required": [
+          "timeWindow"
+        ]
+      }
+    }
+  ]
 }

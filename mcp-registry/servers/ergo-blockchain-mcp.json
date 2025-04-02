@@ -38,9 +38,7 @@
       "type": "uvx",
       "command": "uvx",
       "args": [
-        "--from",
-        "git+https://github.com/marctheshark3/ergo-mcp",
-        "ergo_explorer"
+        "ergo-mcp"
       ],
       "env": {
         "SERVER_HOST": "<YOUR_HOST>",

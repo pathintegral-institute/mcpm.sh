@@ -26,7 +26,7 @@
       "command": "uvx",
       "args": [
         "--from",
-        "https://github.com/kenliao94/mcp-server-rabbitmq",
+        "git+https://github.com/kenliao94/mcp-server-rabbitmq",
         "mcp-server-rabbitmq",
         "--rabbitmq-host",
         "${RABBITMQ_HOST}",
@@ -74,5 +74,193 @@
       "required": false,
       "example": "true or false"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "enqueue",
+      "description": "Enqueue a message to a queue hosted on RabbitMQ",
+      "inputSchema": {
+        "properties": {
+          "message": {
+            "description": "The message to publish",
+            "title": "Message",
+            "type": "string"
+          },
+          "queue": {
+            "description": "The name of the queue",
+            "title": "Queue",
+            "type": "string"
+          }
+        },
+        "required": [
+          "message",
+          "queue"
+        ],
+        "title": "Enqueue",
+        "type": "object"
+      }
+    },
+    {
+      "name": "fanout",
+      "description": "Publish a message to an exchange with fanout type",
+      "inputSchema": {
+        "properties": {
+          "message": {
+            "description": "The message to publish",
+            "title": "Message",
+            "type": "string"
+          },
+          "exchange": {
+            "description": "The name of the exchange",
+            "title": "Exchange",
+            "type": "string"
+          }
+        },
+        "required": [
+          "message",
+          "exchange"
+        ],
+        "title": "Fanout",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_queues",
+      "description": "List all the queues in the broker",
+      "inputSchema": {
+        "properties": {},
+        "title": "ListQueues",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_exchanges",
+      "description": "List all the exchanges in the broker",
+      "inputSchema": {
+        "properties": {},
+        "title": "ListExchanges",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_queue_info",
+      "description": "Get detailed information about a specific queue",
+      "inputSchema": {
+        "properties": {
+          "queue": {
+            "description": "The name of the queue to get info about",
+            "title": "Queue",
+            "type": "string"
+          },
+          "vhost": {
+            "default": "/",
+            "description": "The virtual host where the queue exists",
+            "title": "Vhost",
+            "type": "string"
+          }
+        },
+        "required": [
+          "queue"
+        ],
+        "title": "GetQueueInfo",
+        "type": "object"
+      }
+    },
+    {
+      "name": "delete_queue",
+      "description": "Delete a specific queue",
+      "inputSchema": {
+        "properties": {
+          "queue": {
+            "description": "The name of the queue to delete",
+            "title": "Queue",
+            "type": "string"
+          },
+          "vhost": {
+            "default": "/",
+            "description": "The virtual host where the queue exists",
+            "title": "Vhost",
+            "type": "string"
+          }
+        },
+        "required": [
+          "queue"
+        ],
+        "title": "DeleteQueue",
+        "type": "object"
+      }
+    },
+    {
+      "name": "purge_queue",
+      "description": "Remove all messages from a specific queue",
+      "inputSchema": {
+        "properties": {
+          "queue": {
+            "description": "The name of the queue to purge",
+            "title": "Queue",
+            "type": "string"
+          },
+          "vhost": {
+            "default": "/",
+            "description": "The virtual host where the queue exists",
+            "title": "Vhost",
+            "type": "string"
+          }
+        },
+        "required": [
+          "queue"
+        ],
+        "title": "PurgeQueue",
+        "type": "object"
+      }
+    },
+    {
+      "name": "delete_exchange",
+      "description": "Delete a specific exchange",
+      "inputSchema": {
+        "properties": {
+          "exchange": {
+            "description": "The name of the exchange to delete",
+            "title": "Exchange",
+            "type": "string"
+          },
+          "vhost": {
+            "default": "/",
+            "description": "The virtual host where the exchange exists",
+            "title": "Vhost",
+            "type": "string"
+          }
+        },
+        "required": [
+          "exchange"
+        ],
+        "title": "DeleteExchange",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_exchange_info",
+      "description": "Get detailed information about a specific exchange",
+      "inputSchema": {
+        "properties": {
+          "exchange": {
+            "description": "The name of the exchange to get info about",
+            "title": "Exchange",
+            "type": "string"
+          },
+          "vhost": {
+            "default": "/",
+            "description": "The virtual host where the exchange exists",
+            "title": "Vhost",
+            "type": "string"
+          }
+        },
+        "required": [
+          "exchange"
+        ],
+        "title": "GetExchangeInfo",
+        "type": "object"
+      }
+    }
+  ]
 }

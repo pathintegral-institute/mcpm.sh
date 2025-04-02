@@ -40,5 +40,51 @@
         "mcp-server-siri-shortcuts"
       ]
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "list_shortcuts",
+      "description": "List all available Siri shortcuts",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "open_shortcut",
+      "description": "Open a shortcut in the Shortcuts app",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the shortcut to open"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    {
+      "name": "run_shortcut",
+      "description": "Run a shortcut with optional input and output parameters",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name or identifier of the shortcut to run"
+          },
+          "input": {
+            "type": "string",
+            "description": "The input to pass to the shortcut. Can be text, or a filepath"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    }
+  ]
 }

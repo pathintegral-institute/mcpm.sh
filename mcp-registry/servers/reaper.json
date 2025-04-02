@@ -24,7 +24,7 @@
       "command": "uvx",
       "args": [
         "--from",
-        "https://github.com/dschuler36/reaper-mcp-server",
+        "git+https://github.com/dschuler36/reaper-mcp-server",
         "reaper-mcp-server",
         "--reaper-projects-dir",
         "${REAPER_PROJECTS_DIR}"

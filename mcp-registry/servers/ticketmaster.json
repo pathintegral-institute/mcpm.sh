@@ -52,5 +52,73 @@
       "required": true,
       "example": "your-api-key-here"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "search_ticketmaster",
+      "description": "Search for events, venues, or attractions on Ticketmaster",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "event",
+              "venue",
+              "attraction"
+            ],
+            "description": "Type of search to perform"
+          },
+          "keyword": {
+            "type": "string",
+            "description": "Search keyword or term"
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Start date in YYYY-MM-DD format"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "End date in YYYY-MM-DD format"
+          },
+          "city": {
+            "type": "string",
+            "description": "City name"
+          },
+          "stateCode": {
+            "type": "string",
+            "description": "State code (e.g., NY, CA)"
+          },
+          "countryCode": {
+            "type": "string",
+            "description": "Country code (e.g., US, CA)"
+          },
+          "venueId": {
+            "type": "string",
+            "description": "Specific venue ID to search"
+          },
+          "attractionId": {
+            "type": "string",
+            "description": "Specific attraction ID to search"
+          },
+          "classificationName": {
+            "type": "string",
+            "description": "Event classification/category (e.g., \"Sports\", \"Music\")"
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "json",
+              "text"
+            ],
+            "description": "Output format (defaults to json)",
+            "default": "json"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      }
+    }
+  ]
 }

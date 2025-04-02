@@ -22,9 +22,7 @@
       "command": "uvx",
       "args": [
         "basic-memory",
-        "mcp",
-        "--project",
-        "${PROJECT_NAME}"
+        "mcp"
       ]
     }
   },
@@ -33,11 +31,421 @@
     "Markdown",
     "Knowledge Base"
   ],
-  "arguments": {
-    "PROJECT_NAME": {
-      "description": "The name of the project to be associated with Basic Memory in the Claude Desktop configuration.",
-      "required": true,
-      "example": "my_project"
+  "tools": [
+    {
+      "name": "delete_note",
+      "description": "Delete a note by title or permalink",
+      "inputSchema": {
+        "properties": {
+          "identifier": {
+            "title": "Identifier",
+            "type": "string"
+          }
+        },
+        "required": [
+          "identifier"
+        ],
+        "title": "delete_noteArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "read_content",
+      "description": "Read a file's raw content by path or permalink",
+      "inputSchema": {
+        "properties": {
+          "path": {
+            "title": "Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "title": "read_contentArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "build_context",
+      "description": "Build context from a memory:// URI to continue conversations naturally.\n    \n    Use this to follow up on previous discussions or explore related topics.\n    Timeframes support natural language like:\n    - \"2 days ago\"\n    - \"last week\" \n    - \"today\"\n    - \"3 months ago\"\n    Or standard formats like \"7d\", \"24h\"\n    ",
+      "inputSchema": {
+        "properties": {
+          "url": {
+            "maxLength": 2028,
+            "minLength": 1,
+            "title": "Url",
+            "type": "string"
+          },
+          "depth": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": 1,
+            "title": "Depth"
+          },
+          "timeframe": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": "7d",
+            "title": "Timeframe"
+          },
+          "page": {
+            "default": 1,
+            "title": "Page",
+            "type": "integer"
+          },
+          "page_size": {
+            "default": 10,
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "max_related": {
+            "default": 10,
+            "title": "Max Related",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "title": "build_contextArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "recent_activity",
+      "description": "Get recent activity from across the knowledge base.\n    \n    Timeframe supports natural language formats like:\n    - \"2 days ago\"  \n    - \"last week\"\n    - \"yesterday\" \n    - \"today\"\n    - \"3 weeks ago\"\n    Or standard formats like \"7d\"\n    ",
+      "inputSchema": {
+        "$defs": {
+          "SearchItemType": {
+            "description": "Types of searchable items.",
+            "enum": [
+              "entity",
+              "observation",
+              "relation"
+            ],
+            "title": "SearchItemType",
+            "type": "string"
+          }
+        },
+        "properties": {
+          "type": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/$defs/SearchItemType"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Type"
+          },
+          "depth": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": 1,
+            "title": "Depth"
+          },
+          "timeframe": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": "7d",
+            "title": "Timeframe"
+          },
+          "page": {
+            "default": 1,
+            "title": "Page",
+            "type": "integer"
+          },
+          "page_size": {
+            "default": 10,
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "max_related": {
+            "default": 10,
+            "title": "Max Related",
+            "type": "integer"
+          }
+        },
+        "title": "recent_activityArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "search_notes",
+      "description": "Search across all content in the knowledge base.",
+      "inputSchema": {
+        "$defs": {
+          "SearchItemType": {
+            "description": "Types of searchable items.",
+            "enum": [
+              "entity",
+              "observation",
+              "relation"
+            ],
+            "title": "SearchItemType",
+            "type": "string"
+          },
+          "SearchQuery": {
+            "description": "Search query parameters.\n\nUse ONE of these primary search modes:\n- permalink: Exact permalink match\n- permalink_match: Path pattern with *\n- text: Full-text search of title/content (supports boolean operators: AND, OR, NOT)\n\nOptionally filter results by:\n- types: Limit to specific item types\n- entity_types: Limit to specific entity types\n- after_date: Only items after date\n\nBoolean search examples:\n- \"python AND flask\" - Find items with both terms\n- \"python OR django\" - Find items with either term\n- \"python NOT django\" - Find items with python but not django\n- \"(python OR flask) AND web\" - Use parentheses for grouping",
+            "properties": {
+              "permalink": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Permalink"
+              },
+              "permalink_match": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Permalink Match"
+              },
+              "text": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Text"
+              },
+              "title": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Title"
+              },
+              "types": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "$ref": "#/$defs/SearchItemType"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Types"
+              },
+              "entity_types": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Entity Types"
+              },
+              "after_date": {
+                "anyOf": [
+                  {
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "After Date"
+              }
+            },
+            "title": "SearchQuery",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "query": {
+            "$ref": "#/$defs/SearchQuery"
+          },
+          "page": {
+            "default": 1,
+            "title": "Page",
+            "type": "integer"
+          },
+          "page_size": {
+            "default": 10,
+            "title": "Page Size",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "title": "search_notesArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "read_note",
+      "description": "Read a markdown note by title or permalink.",
+      "inputSchema": {
+        "properties": {
+          "identifier": {
+            "title": "Identifier",
+            "type": "string"
+          },
+          "page": {
+            "default": 1,
+            "title": "Page",
+            "type": "integer"
+          },
+          "page_size": {
+            "default": 10,
+            "title": "Page Size",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "identifier"
+        ],
+        "title": "read_noteArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "write_note",
+      "description": "Create or update a markdown note. Returns a markdown formatted summary of the semantic content.",
+      "inputSchema": {
+        "properties": {
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "content": {
+            "title": "Content",
+            "type": "string"
+          },
+          "folder": {
+            "title": "Folder",
+            "type": "string"
+          },
+          "tags": {
+            "default": null,
+            "title": "tags",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "content",
+          "folder"
+        ],
+        "title": "write_noteArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "canvas",
+      "description": "Create an Obsidian canvas file to visualize concepts and connections.",
+      "inputSchema": {
+        "properties": {
+          "nodes": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Nodes",
+            "type": "array"
+          },
+          "edges": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Edges",
+            "type": "array"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "folder": {
+            "title": "Folder",
+            "type": "string"
+          }
+        },
+        "required": [
+          "nodes",
+          "edges",
+          "title",
+          "folder"
+        ],
+        "title": "canvasArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "project_info",
+      "description": "Get information and statistics about the current Basic Memory project.",
+      "inputSchema": {
+        "properties": {},
+        "title": "project_infoArguments",
+        "type": "object"
+      }
     }
-  }
+  ]
 }

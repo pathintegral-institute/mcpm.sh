@@ -63,5 +63,148 @@
       "required": false,
       "example": "http://localhost:8888"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "SpotifyPlayback",
+      "description": "Manages the current playback with the following actions:\n    - get: Get information about user's current track.\n    - start: Starts playing new item or resumes current playback if called with no uri.\n    - pause: Pauses current playback.\n    - skip: Skips current track.\n    ",
+      "inputSchema": {
+        "description": "Manages the current playback with the following actions:\n- get: Get information about user's current track.\n- start: Starts playing new item or resumes current playback if called with no uri.\n- pause: Pauses current playback.\n- skip: Skips current track.",
+        "properties": {
+          "action": {
+            "description": "Action to perform: 'get', 'start', 'pause' or 'skip'.",
+            "title": "Action",
+            "type": "string"
+          },
+          "spotify_uri": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Spotify uri of item to play for 'start' action. If omitted, resumes current playback.",
+            "title": "Spotify Uri"
+          },
+          "num_skips": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": 1,
+            "description": "Number of tracks to skip for `skip` action.",
+            "title": "Num Skips"
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "title": "Playback",
+        "type": "object"
+      }
+    },
+    {
+      "name": "SpotifySearch",
+      "description": "Search for tracks, albums, artists, or playlists on Spotify.",
+      "inputSchema": {
+        "description": "Search for tracks, albums, artists, or playlists on Spotify.",
+        "properties": {
+          "query": {
+            "description": "query term",
+            "title": "Query",
+            "type": "string"
+          },
+          "qtype": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": "track",
+            "description": "Type of items to search for (track, album, artist, playlist, or comma-separated combination)",
+            "title": "Qtype"
+          },
+          "limit": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": 10,
+            "description": "Maximum number of items to return",
+            "title": "Limit"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "title": "Search",
+        "type": "object"
+      }
+    },
+    {
+      "name": "SpotifyQueue",
+      "description": "Manage the playback queue - get the queue or add tracks.",
+      "inputSchema": {
+        "description": "Manage the playback queue - get the queue or add tracks.",
+        "properties": {
+          "action": {
+            "description": "Action to perform: 'add' or 'get'.",
+            "title": "Action",
+            "type": "string"
+          },
+          "track_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Track ID to add to queue (required for add action)",
+            "title": "Track Id"
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "title": "Queue",
+        "type": "object"
+      }
+    },
+    {
+      "name": "SpotifyGetInfo",
+      "description": "Get detailed information about a Spotify item (track, album, artist, or playlist).",
+      "inputSchema": {
+        "description": "Get detailed information about a Spotify item (track, album, artist, or playlist).",
+        "properties": {
+          "item_uri": {
+            "description": "URI of the item to get information about. If 'playlist' or 'album', returns its tracks. If 'artist', returns albums and top tracks.",
+            "title": "Item Uri",
+            "type": "string"
+          }
+        },
+        "required": [
+          "item_uri"
+        ],
+        "title": "GetInfo",
+        "type": "object"
+      }
+    }
+  ]
 }

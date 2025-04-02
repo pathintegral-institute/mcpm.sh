@@ -32,23 +32,30 @@
       }
     }
   },
-  "examples": [
-    {
-      "title": "Installing from pip",
-      "description": "You can install the server through pip, and it will install the latest version.",
-      "prompt": "pip install xiyan-mcp-server"
-    },
-    {
-      "title": "Running the server",
-      "description": "After installing, you can run the server using a yml configuration file.",
-      "prompt": "env YML=path/to/yml python -m xiyan_mcp_server"
-    }
-  ],
   "arguments": {
     "YML": {
       "description": "The path to the YAML configuration file required for setting up the server environment variables.",
       "required": true,
       "example": "path/to/yml"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "get_data",
+      "description": "Fetch the data from database through a natural language query\n\n    Args:\n        query: The query in natual language\n    ",
+      "inputSchema": {
+        "properties": {
+          "query": {
+            "title": "Query",
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "title": "get_dataArguments",
+        "type": "object"
+      }
+    }
+  ]
 }

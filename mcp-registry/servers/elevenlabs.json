@@ -75,5 +75,98 @@
       "required": false,
       "example": "output"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "generate_audio_simple",
+      "description": "Generate audio from plain text using default voice settings",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "Plain text to convert to audio"
+          },
+          "voice_id": {
+            "type": "string",
+            "description": "Optional voice ID to use for generation"
+          }
+        },
+        "required": [
+          "text"
+        ]
+      }
+    },
+    {
+      "name": "generate_audio_script",
+      "description": "Generate audio from a structured script with multiple voices and actors. \n                    Accepts either:\n                    1. Plain text string\n                    2. JSON string with format: {\n                        \"script\": [\n                            {\n                                \"text\": \"Text to speak\",\n                                \"voice_id\": \"optional-voice-id\",\n                                \"actor\": \"optional-actor-name\"\n                            },\n                            ...\n                        ]\n                    }",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "script": {
+            "type": "string",
+            "description": "JSON string containing script array or plain text. For JSON format, provide an object with a 'script' array containing objects with 'text' (required), 'voice_id' (optional), and 'actor' (optional) fields."
+          }
+        },
+        "required": [
+          "script"
+        ]
+      }
+    },
+    {
+      "name": "delete_job",
+      "description": "Delete a voiceover job and its associated files",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "description": "ID of the job to delete"
+          }
+        },
+        "required": [
+          "job_id"
+        ]
+      }
+    },
+    {
+      "name": "get_audio_file",
+      "description": "Get the audio file content for a specific job",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "description": "ID of the job to get audio file for"
+          }
+        },
+        "required": [
+          "job_id"
+        ]
+      }
+    },
+    {
+      "name": "list_voices",
+      "description": "Get a list of all available ElevenLabs voices with metadata",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "get_voiceover_history",
+      "description": "Get voiceover job history. Optionally specify a job ID for a specific job.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "description": "Optional job ID to get details for a specific job"
+          }
+        },
+        "required": []
+      }
+    }
+  ]
 }

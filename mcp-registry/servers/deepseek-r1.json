@@ -38,5 +38,35 @@
       "required": true,
       "example": "your-api-key"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "deepseek_r1",
+      "description": "Generate text using DeepSeek R1 model",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "Input text for DeepSeek"
+          },
+          "max_tokens": {
+            "type": "number",
+            "description": "Maximum tokens to generate (default: 8192)",
+            "minimum": 1,
+            "maximum": 8192
+          },
+          "temperature": {
+            "type": "number",
+            "description": "Sampling temperature (default: 0.2)",
+            "minimum": 0,
+            "maximum": 2
+          }
+        },
+        "required": [
+          "prompt"
+        ]
+      }
+    }
+  ]
 }

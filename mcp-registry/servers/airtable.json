@@ -40,5 +40,371 @@
       "description": "Run with npx (requires npm install)"
     }
   },
-  "homepage": "https://github.com/felores/airtable-mcp"
+  "homepage": "https://github.com/felores/airtable-mcp",
+  "tools": [
+    {
+      "name": "list_bases",
+      "description": "List all accessible Airtable bases",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "list_tables",
+      "description": "List all tables in a base",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "base_id": {
+            "type": "string",
+            "description": "ID of the base"
+          }
+        },
+        "required": [
+          "base_id"
+        ]
+      }
+    },
+    {
+      "name": "create_table",
+      "description": "Create a new table in a base",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "base_id": {
+            "type": "string",
+            "description": "ID of the base"
+          },
+          "table_name": {
+            "type": "string",
+            "description": "Name of the new table"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the table"
+          },
+          "fields": {
+            "type": "array",
+            "description": "Initial fields for the table",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Name of the field"
+                },
+                "type": {
+                  "type": "string",
+                  "description": "Type of the field (e.g., singleLineText, multilineText, number, etc.)"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Description of the field"
+                },
+                "options": {
+                  "type": "object",
+                  "description": "Field-specific options"
+                }
+              },
+              "required": [
+                "name",
+                "type"
+              ]
+            }
+          }
+        },
+        "required": [
+          "base_id",
+          "table_name"
+        ]
+      }
+    },
+    {
+      "name": "update_table",
+      "description": "Update a table's schema",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "base_id": {
+            "type": "string",
+            "description": "ID of the base"
+          },
+          "table_id": {
+            "type": "string",
+            "description": "ID of the table to update"
+          },
+          "name": {
+            "type": "string",
+            "description": "New name for the table"
+          },
+          "description": {
+            "type": "string",
+            "description": "New description for the table"
+          }
+        },
+        "required": [
+          "base_id",
+          "table_id"
+        ]
+      }
+    },
+    {
+      "name": "create_field",
+      "description": "Create a new field in a table",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "base_id": {
+            "type": "string",
+            "description": "ID of the base"
+          },
+          "table_id": {
+            "type": "string",
+            "description": "ID of the table"
+          },
+          "field": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Name of the field"
+              },
+              "type": {
+                "type": "string",
+                "description": "Type of the field"
+              },
+              "description": {
+                "type": "string",
+                "description": "Description of the field"
+              },
+              "options": {
+                "type": "object",
+                "description": "Field-specific options"
+              }
+            },
+            "required": [
+              "name",
+              "type"
+            ]
+          }
+        },
+        "required": [
+          "base_id",
+          "table_id",
+          "field"
+        ]
+      }
+    },
+    {
+      "name": "update_field",
+      "description": "Update a field in a table",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "base_id": {
+            "type": "string",
+            "description": "ID of the base"
+          },
+          "table_id": {
+            "type": "string",
+            "description": "ID of the table"
+          },
+          "field_id": {
+            "type": "string",
+            "description": "ID of the field to update"
+          },
+          "updates": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "New name for the field"
+              },
+              "description": {
+                "type": "string",
+                "description": "New description for the field"
+              },
+              "options": {
+                "type": "object",
+                "description": "New field-specific options"
+              }
+            }
+          }
+        },
+        "required": [
+          "base_id",
+          "table_id",
+          "field_id",
+          "updates"
+        ]
+      }
+    },
+    {
+      "name": "list_records",
+      "description": "List records in a table",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "base_id": {
+            "type": "string",
+            "description": "ID of the base"
+          },
+          "table_name": {
+            "type": "string",
+            "description": "Name of the table"
+          },
+          "max_records": {
+            "type": "number",
+            "description": "Maximum number of records to return"
+          }
+        },
+        "required": [
+          "base_id",
+          "table_name"
+        ]
+      }
+    },
+    {
+      "name": "create_record",
+      "description": "Create a new record in a table",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "base_id": {
+            "type": "string",
+            "description": "ID of the base"
+          },
+          "table_name": {
+            "type": "string",
+            "description": "Name of the table"
+          },
+          "fields": {
+            "type": "object",
+            "description": "Record fields as key-value pairs"
+          }
+        },
+        "required": [
+          "base_id",
+          "table_name",
+          "fields"
+        ]
+      }
+    },
+    {
+      "name": "update_record",
+      "description": "Update an existing record in a table",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "base_id": {
+            "type": "string",
+            "description": "ID of the base"
+          },
+          "table_name": {
+            "type": "string",
+            "description": "Name of the table"
+          },
+          "record_id": {
+            "type": "string",
+            "description": "ID of the record to update"
+          },
+          "fields": {
+            "type": "object",
+            "description": "Record fields to update as key-value pairs"
+          }
+        },
+        "required": [
+          "base_id",
+          "table_name",
+          "record_id",
+          "fields"
+        ]
+      }
+    },
+    {
+      "name": "delete_record",
+      "description": "Delete a record from a table",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "base_id": {
+            "type": "string",
+            "description": "ID of the base"
+          },
+          "table_name": {
+            "type": "string",
+            "description": "Name of the table"
+          },
+          "record_id": {
+            "type": "string",
+            "description": "ID of the record to delete"
+          }
+        },
+        "required": [
+          "base_id",
+          "table_name",
+          "record_id"
+        ]
+      }
+    },
+    {
+      "name": "search_records",
+      "description": "Search for records in a table",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "base_id": {
+            "type": "string",
+            "description": "ID of the base"
+          },
+          "table_name": {
+            "type": "string",
+            "description": "Name of the table"
+          },
+          "field_name": {
+            "type": "string",
+            "description": "Name of the field to search in"
+          },
+          "value": {
+            "type": "string",
+            "description": "Value to search for"
+          }
+        },
+        "required": [
+          "base_id",
+          "table_name",
+          "field_name",
+          "value"
+        ]
+      }
+    },
+    {
+      "name": "get_record",
+      "description": "Get a single record by its ID",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "base_id": {
+            "type": "string",
+            "description": "ID of the base"
+          },
+          "table_name": {
+            "type": "string",
+            "description": "Name of the table"
+          },
+          "record_id": {
+            "type": "string",
+            "description": "ID of the record to retrieve"
+          }
+        },
+        "required": [
+          "base_id",
+          "table_name",
+          "record_id"
+        ]
+      }
+    }
+  ]
 }

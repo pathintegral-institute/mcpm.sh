@@ -50,5 +50,63 @@
       "required": true,
       "example": "your-apify-api-token"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "search",
+      "description": "Search phrase or a URL at Google and return crawled web pages as text or Markdown. Prefer HTTP raw client for speed and browser-playwright for reliability.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "pattern": "[^\\s]+",
+            "description": "Enter Google Search keywords or a URL of a specific web page. The keywords might include theadvanced search operators. Examples: \"san francisco weather\", \"https://www.cnn.com\", \"function calling site:openai.com\""
+          },
+          "maxResults": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "minimum": 1,
+            "maximum": 100,
+            "default": 1,
+            "description": "The maximum number of top organic Google Search results whose web pages will be extracted. If query is a URL, then this field is ignored and the Actor only fetches the specific web page."
+          },
+          "scrapingTool": {
+            "type": "string",
+            "enum": [
+              "browser-playwright",
+              "raw-http"
+            ],
+            "description": "Select a scraping tool for extracting the target web pages. The Browser tool is more powerful and can handle JavaScript heavy websites, while the Plain HTML tool can not handle JavaScript but is about two times faster.",
+            "default": "raw-http"
+          },
+          "outputFormats": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "text",
+                "markdown",
+                "html"
+              ]
+            },
+            "description": "Select one or more formats to which the target web pages will be extracted.",
+            "default": [
+              "markdown"
+            ]
+          },
+          "requestTimeoutSecs": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 300,
+            "default": 40,
+            "description": "The maximum time in seconds available for the request, including querying Google Search and scraping the target web pages."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ]
 }

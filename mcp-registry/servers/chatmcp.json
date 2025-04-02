@@ -31,12 +31,12 @@
         "https://github.com/AI-QL/chat-mcp"
       ],
       "env": {
-        "PATH": "${PATH}"
+        "SEARCH_PATH": "${SEARCH_PATH}"
       }
     }
   },
   "arguments": {
-    "PATH": {
+    "SEARCH_PATH": {
       "description": "This environment variable specifies the system's executable search path, which determines where the operating system looks for executable files when running commands.",
       "required": false,
       "example": "C:\\Program Files\\nodejs;C:\\Windows\\System32"

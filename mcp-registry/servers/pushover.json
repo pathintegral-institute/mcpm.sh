@@ -44,5 +44,44 @@
       "required": true,
       "example": "1234567890:abcdef123456"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "send",
+      "description": "Send a notification via Pushover",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "minLength": 1
+          },
+          "title": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "number",
+            "minimum": -2,
+            "maximum": 2
+          },
+          "sound": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "url_title": {
+            "type": "string"
+          },
+          "device": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "message"
+        ]
+      }
+    }
+  ]
 }

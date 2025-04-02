@@ -51,5 +51,3147 @@
         "AIRFLOW_PASSWORD": "${AIRFLOW_PASSWORD}"
       }
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "get_config",
+      "description": "Get current configuration",
+      "inputSchema": {
+        "properties": {
+          "section": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Section"
+          }
+        },
+        "title": "get_configArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_value",
+      "description": "Get a specific option from configuration",
+      "inputSchema": {
+        "properties": {
+          "section": {
+            "title": "Section",
+            "type": "string"
+          },
+          "option": {
+            "title": "Option",
+            "type": "string"
+          }
+        },
+        "required": [
+          "section",
+          "option"
+        ],
+        "title": "get_valueArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_connections",
+      "description": "List all connections",
+      "inputSchema": {
+        "properties": {
+          "limit": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Limit"
+          },
+          "offset": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Offset"
+          },
+          "order_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Order By"
+          }
+        },
+        "title": "list_connectionsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_connection",
+      "description": "Create a connection",
+      "inputSchema": {
+        "properties": {
+          "conn_id": {
+            "title": "Conn Id",
+            "type": "string"
+          },
+          "conn_type": {
+            "title": "Conn Type",
+            "type": "string"
+          },
+          "host": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Host"
+          },
+          "port": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Port"
+          },
+          "login": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Login"
+          },
+          "password": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Password"
+          },
+          "schema": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Schema"
+          },
+          "extra": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Extra"
+          }
+        },
+        "required": [
+          "conn_id",
+          "conn_type"
+        ],
+        "title": "create_connectionArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_connection",
+      "description": "Get a connection by ID",
+      "inputSchema": {
+        "properties": {
+          "conn_id": {
+            "title": "Conn Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "conn_id"
+        ],
+        "title": "get_connectionArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_connection",
+      "description": "Update a connection by ID",
+      "inputSchema": {
+        "properties": {
+          "conn_id": {
+            "title": "Conn Id",
+            "type": "string"
+          },
+          "conn_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Conn Type"
+          },
+          "host": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Host"
+          },
+          "port": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Port"
+          },
+          "login": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Login"
+          },
+          "password": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Password"
+          },
+          "schema": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Schema"
+          },
+          "extra": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Extra"
+          }
+        },
+        "required": [
+          "conn_id"
+        ],
+        "title": "update_connectionArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "delete_connection",
+      "description": "Delete a connection by ID",
+      "inputSchema": {
+        "properties": {
+          "conn_id": {
+            "title": "Conn Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "conn_id"
+        ],
+        "title": "delete_connectionArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "test_connection",
+      "description": "Test a connection",
+      "inputSchema": {
+        "properties": {
+          "conn_type": {
+            "title": "Conn Type",
+            "type": "string"
+          },
+          "host": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Host"
+          },
+          "port": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Port"
+          },
+          "login": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Login"
+          },
+          "password": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Password"
+          },
+          "schema": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Schema"
+          },
+          "extra": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Extra"
+          }
+        },
+        "required": [
+          "conn_type"
+        ],
+        "title": "test_connectionArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "fetch_dags",
+      "description": "Fetch all DAGs",
+      "inputSchema": {
+        "properties": {
+          "limit": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Limit"
+          },
+          "offset": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Offset"
+          },
+          "order_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Order By"
+          },
+          "tags": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Tags"
+          },
+          "only_active": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Only Active"
+          },
+          "paused": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Paused"
+          },
+          "dag_id_pattern": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Dag Id Pattern"
+          }
+        },
+        "title": "get_dagsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_dag",
+      "description": "Get a DAG by ID",
+      "inputSchema": {
+        "properties": {
+          "dag_id": {
+            "title": "Dag Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "dag_id"
+        ],
+        "title": "get_dagArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_dag_details",
+      "description": "Get a simplified representation of DAG",
+      "inputSchema": {
+        "properties": {
+          "dag_id": {
+            "title": "Dag Id",
+            "type": "string"
+          },
+          "fields": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Fields"
+          }
+        },
+        "required": [
+          "dag_id"
+        ],
+        "title": "get_dag_detailsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_dag_source",
+      "description": "Get a source code",
+      "inputSchema": {
+        "properties": {
+          "file_token": {
+            "title": "File Token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "file_token"
+        ],
+        "title": "get_dag_sourceArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "pause_dag",
+      "description": "Pause a DAG by ID",
+      "inputSchema": {
+        "properties": {
+          "dag_id": {
+            "title": "Dag Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "dag_id"
+        ],
+        "title": "pause_dagArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "unpause_dag",
+      "description": "Unpause a DAG by ID",
+      "inputSchema": {
+        "properties": {
+          "dag_id": {
+            "title": "Dag Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "dag_id"
+        ],
+        "title": "unpause_dagArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_dag_tasks",
+      "description": "Get tasks for DAG",
+      "inputSchema": {
+        "properties": {
+          "dag_id": {
+            "title": "Dag Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "dag_id"
+        ],
+        "title": "get_dag_tasksArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_task",
+      "description": "Get a task by ID",
+      "inputSchema": {
+        "properties": {
+          "dag_id": {
+            "title": "Dag Id",
+            "type": "string"
+          },
+          "task_id": {
+            "title": "Task Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "dag_id",
+          "task_id"
+        ],
+        "title": "get_taskArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_tasks",
+      "description": "Get tasks for DAG",
+      "inputSchema": {
+        "properties": {
+          "dag_id": {
+            "title": "Dag Id",
+            "type": "string"
+          },
+          "order_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Order By"
+          }
+        },
+        "required": [
+          "dag_id"
+        ],
+        "title": "get_tasksArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "patch_dag",
+      "description": "Update a DAG",
+      "inputSchema": {
+        "properties": {
+          "dag_id": {
+            "title": "Dag Id",
+            "type": "string"
+          },
+          "is_paused": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Is Paused"
+          },
+          "tags": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Tags"
+          }
+        },
+        "required": [
+          "dag_id"
+        ],
+        "title": "patch_dagArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "patch_dags",
+      "description": "Update multiple DAGs",
+      "inputSchema": {
+        "properties": {
+          "dag_id_pattern": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Dag Id Pattern"
+          },
+          "is_paused": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Is Paused"
+          },
+          "tags": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Tags"
+          }
+        },
+        "title": "patch_dagsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "delete_dag",
+      "description": "Delete a DAG",
+      "inputSchema": {
+        "properties": {
+          "dag_id": {
+            "title": "Dag Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "dag_id"
+        ],
+        "title": "delete_dagArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "clear_task_instances",
+      "description": "Clear a set of task instances",
+      "inputSchema": {
+        "properties": {
+          "dag_id": {
+            "title": "Dag Id",
+            "type": "string"
+          },
+          "task_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Task Ids"
+          },
+          "start_date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Start Date"
+          },
+          "end_date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "End Date"
+          },
+          "include_subdags": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Include Subdags"
+          },
+          "include_parentdag": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Include Parentdag"
+          },
+          "include_upstream": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Include Upstream"
+          },
+          "include_downstream": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Include Downstream"
+          },
+          "include_future": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Include Future"
+          },
+          "include_past": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Include Past"
+          },
+          "dry_run": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Dry Run"
+          },
+          "reset_dag_runs": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Reset Dag Runs"
+          }
+        },
+        "required": [
+          "dag_id"
+        ],
+        "title": "clear_task_instancesArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "set_task_instances_state",
+      "description": "Set a state of task instances",
+      "inputSchema": {
+        "properties": {
+          "dag_id": {
+            "title": "Dag Id",
+            "type": "string"
+          },
+          "state": {
+            "title": "State",
+            "type": "string"
+          },
+          "task_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Task Ids"
+          },
+          "execution_date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Execution Date"
+          },
+          "include_upstream": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Include Upstream"
+          },
+          "include_downstream": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Include Downstream"
+          },
+          "include_future": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Include Future"
+          },
+          "include_past": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Include Past"
+          },
+          "dry_run": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Dry Run"
+          }
+        },
+        "required": [
+          "dag_id",
+          "state"
+        ],
+        "title": "set_task_instances_stateArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "reparse_dag_file",
+      "description": "Request re-parsing of a DAG file",
+      "inputSchema": {
+        "properties": {
+          "file_token": {
+            "title": "File Token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "file_token"
+        ],
+        "title": "reparse_dag_fileArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "post_dag_run",
+      "description": "Trigger a DAG by ID",
+      "inputSchema": {
+        "properties": {
+          "dag_id": {
+            "title": "Dag Id",
+            "type": "string"
+          },
+          "dag_run_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Dag Run Id"
+          },
+          "data_interval_end": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Data Interval End"
+          },
+          "data_interval_start": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Data Interval Start"
+          },
+          "end_date": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "End Date"
+          },
+          "execution_date": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Execution Date"
+          },
+          "external_trigger": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "External Trigger"
+          },
+          "last_scheduling_decision": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Last Scheduling Decision"
+          },
+          "logical_date": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Logical Date"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Note"
+          },
+          "run_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Run Type"
+          },
+          "start_date": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Start Date"
+          }
+        },
+        "required": [
+          "dag_id"
+        ],
+        "title": "post_dag_runArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_dag_runs",
+      "description": "Get DAG runs by ID",
+      "inputSchema": {
+        "properties": {
+          "dag_id": {
+            "title": "Dag Id",
+            "type": "string"
+          },
+          "limit": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Limit"
+          },
+          "offset": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Offset"
+          },
+          "execution_date_gte": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Execution Date Gte"
+          },
+          "execution_date_lte": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Execution Date Lte"
+          },
+          "start_date_gte": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Start Date Gte"
+          },
+          "start_date_lte": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Start Date Lte"
+          },
+          "end_date_gte": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "End Date Gte"
+          },
+          "end_date_lte": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "End Date Lte"
+          },
+          "updated_at_gte": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Updated At Gte"
+          },
+          "updated_at_lte": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Updated At Lte"
+          },
+          "state": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "State"
+          },
+          "order_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Order By"
+          }
+        },
+        "required": [
+          "dag_id"
+        ],
+        "title": "get_dag_runsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_dag_runs_batch",
+      "description": "List DAG runs (batch)",
+      "inputSchema": {
+        "properties": {
+          "dag_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Dag Ids"
+          },
+          "execution_date_gte": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Execution Date Gte"
+          },
+          "execution_date_lte": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Execution Date Lte"
+          },
+          "start_date_gte": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Start Date Gte"
+          },
+          "start_date_lte": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Start Date Lte"
+          },
+          "end_date_gte": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "End Date Gte"
+          },
+          "end_date_lte": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "End Date Lte"
+          },
+          "state": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "State"
+          },
+          "order_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Order By"
+          },
+          "page_offset": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Page Offset"
+          },
+          "page_limit": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Page Limit"
+          }
+        },
+        "title": "get_dag_runs_batchArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_dag_run",
+      "description": "Get a DAG run by DAG ID and DAG run ID",
+      "inputSchema": {
+        "properties": {
+          "dag_id": {
+            "title": "Dag Id",
+            "type": "string"
+          },
+          "dag_run_id": {
+            "title": "Dag Run Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "dag_id",
+          "dag_run_id"
+        ],
+        "title": "get_dag_runArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_dag_run_state",
+      "description": "Update a DAG run state by DAG ID and DAG run ID",
+      "inputSchema": {
+        "properties": {
+          "dag_id": {
+            "title": "Dag Id",
+            "type": "string"
+          },
+          "dag_run_id": {
+            "title": "Dag Run Id",
+            "type": "string"
+          },
+          "state": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "State"
+          }
+        },
+        "required": [
+          "dag_id",
+          "dag_run_id"
+        ],
+        "title": "update_dag_run_stateArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "delete_dag_run",
+      "description": "Delete a DAG run by DAG ID and DAG run ID",
+      "inputSchema": {
+        "properties": {
+          "dag_id": {
+            "title": "Dag Id",
+            "type": "string"
+          },
+          "dag_run_id": {
+            "title": "Dag Run Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "dag_id",
+          "dag_run_id"
+        ],
+        "title": "delete_dag_runArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "clear_dag_run",
+      "description": "Clear a DAG run",
+      "inputSchema": {
+        "properties": {
+          "dag_id": {
+            "title": "Dag Id",
+            "type": "string"
+          },
+          "dag_run_id": {
+            "title": "Dag Run Id",
+            "type": "string"
+          },
+          "dry_run": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Dry Run"
+          }
+        },
+        "required": [
+          "dag_id",
+          "dag_run_id"
+        ],
+        "title": "clear_dag_runArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "set_dag_run_note",
+      "description": "Update the DagRun note",
+      "inputSchema": {
+        "properties": {
+          "dag_id": {
+            "title": "Dag Id",
+            "type": "string"
+          },
+          "dag_run_id": {
+            "title": "Dag Run Id",
+            "type": "string"
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          }
+        },
+        "required": [
+          "dag_id",
+          "dag_run_id",
+          "note"
+        ],
+        "title": "set_dag_run_noteArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_upstream_dataset_events",
+      "description": "Get dataset events for a DAG run",
+      "inputSchema": {
+        "properties": {
+          "dag_id": {
+            "title": "Dag Id",
+            "type": "string"
+          },
+          "dag_run_id": {
+            "title": "Dag Run Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "dag_id",
+          "dag_run_id"
+        ],
+        "title": "get_upstream_dataset_eventsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_dag_stats",
+      "description": "Get DAG stats",
+      "inputSchema": {
+        "properties": {
+          "dag_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Dag Ids"
+          }
+        },
+        "title": "get_dag_statsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_datasets",
+      "description": "List datasets",
+      "inputSchema": {
+        "properties": {
+          "limit": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Limit"
+          },
+          "offset": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Offset"
+          },
+          "order_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Order By"
+          },
+          "uri_pattern": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Uri Pattern"
+          },
+          "dag_ids": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Dag Ids"
+          }
+        },
+        "title": "get_datasetsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_dataset",
+      "description": "Get a dataset by URI",
+      "inputSchema": {
+        "properties": {
+          "uri": {
+            "title": "Uri",
+            "type": "string"
+          }
+        },
+        "required": [
+          "uri"
+        ],
+        "title": "get_datasetArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_dataset_events",
+      "description": "Get dataset events",
+      "inputSchema": {
+        "properties": {
+          "limit": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Limit"
+          },
+          "offset": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Offset"
+          },
+          "order_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Order By"
+          },
+          "dataset_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Dataset Id"
+          },
+          "source_dag_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Source Dag Id"
+          },
+          "source_task_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Source Task Id"
+          },
+          "source_run_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Source Run Id"
+          },
+          "source_map_index": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Source Map Index"
+          }
+        },
+        "title": "get_dataset_eventsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_dataset_event",
+      "description": "Create dataset event",
+      "inputSchema": {
+        "properties": {
+          "dataset_uri": {
+            "title": "Dataset Uri",
+            "type": "string"
+          },
+          "extra": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Extra"
+          }
+        },
+        "required": [
+          "dataset_uri"
+        ],
+        "title": "create_dataset_eventArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_dag_dataset_queued_event",
+      "description": "Get a queued Dataset event for a DAG",
+      "inputSchema": {
+        "properties": {
+          "dag_id": {
+            "title": "Dag Id",
+            "type": "string"
+          },
+          "uri": {
+            "title": "Uri",
+            "type": "string"
+          }
+        },
+        "required": [
+          "dag_id",
+          "uri"
+        ],
+        "title": "get_dag_dataset_queued_eventArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_dag_dataset_queued_events",
+      "description": "Get queued Dataset events for a DAG",
+      "inputSchema": {
+        "properties": {
+          "dag_id": {
+            "title": "Dag Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "dag_id"
+        ],
+        "title": "get_dag_dataset_queued_eventsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "delete_dag_dataset_queued_event",
+      "description": "Delete a queued Dataset event for a DAG",
+      "inputSchema": {
+        "properties": {
+          "dag_id": {
+            "title": "Dag Id",
+            "type": "string"
+          },
+          "uri": {
+            "title": "Uri",
+            "type": "string"
+          }
+        },
+        "required": [
+          "dag_id",
+          "uri"
+        ],
+        "title": "delete_dag_dataset_queued_eventArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "delete_dag_dataset_queued_events",
+      "description": "Delete queued Dataset events for a DAG",
+      "inputSchema": {
+        "properties": {
+          "dag_id": {
+            "title": "Dag Id",
+            "type": "string"
+          },
+          "before": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Before"
+          }
+        },
+        "required": [
+          "dag_id"
+        ],
+        "title": "delete_dag_dataset_queued_eventsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_dataset_queued_events",
+      "description": "Get queued Dataset events for a Dataset",
+      "inputSchema": {
+        "properties": {
+          "uri": {
+            "title": "Uri",
+            "type": "string"
+          }
+        },
+        "required": [
+          "uri"
+        ],
+        "title": "get_dataset_queued_eventsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "delete_dataset_queued_events",
+      "description": "Delete queued Dataset events for a Dataset",
+      "inputSchema": {
+        "properties": {
+          "uri": {
+            "title": "Uri",
+            "type": "string"
+          },
+          "before": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Before"
+          }
+        },
+        "required": [
+          "uri"
+        ],
+        "title": "delete_dataset_queued_eventsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_event_logs",
+      "description": "List log entries from event log",
+      "inputSchema": {
+        "properties": {
+          "limit": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Limit"
+          },
+          "offset": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Offset"
+          },
+          "order_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Order By"
+          },
+          "dag_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Dag Id"
+          },
+          "task_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Task Id"
+          },
+          "run_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Run Id"
+          },
+          "map_index": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Map Index"
+          },
+          "try_number": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Try Number"
+          },
+          "event": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Event"
+          },
+          "owner": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Owner"
+          },
+          "before": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Before"
+          },
+          "after": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "After"
+          },
+          "included_events": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Included Events"
+          },
+          "excluded_events": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Excluded Events"
+          }
+        },
+        "title": "get_event_logsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_event_log",
+      "description": "Get a specific log entry by ID",
+      "inputSchema": {
+        "properties": {
+          "event_log_id": {
+            "title": "Event Log Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "event_log_id"
+        ],
+        "title": "get_event_logArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_import_errors",
+      "description": "List import errors",
+      "inputSchema": {
+        "properties": {
+          "limit": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Limit"
+          },
+          "offset": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Offset"
+          },
+          "order_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Order By"
+          }
+        },
+        "title": "get_import_errorsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_import_error",
+      "description": "Get a specific import error by ID",
+      "inputSchema": {
+        "properties": {
+          "import_error_id": {
+            "title": "Import Error Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "import_error_id"
+        ],
+        "title": "get_import_errorArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_health",
+      "description": "Get instance status",
+      "inputSchema": {
+        "properties": {},
+        "title": "get_healthArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_version",
+      "description": "Get version information",
+      "inputSchema": {
+        "properties": {},
+        "title": "get_versionArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_plugins",
+      "description": "Get a list of loaded plugins",
+      "inputSchema": {
+        "properties": {
+          "limit": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Limit"
+          },
+          "offset": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Offset"
+          }
+        },
+        "title": "get_pluginsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_pools",
+      "description": "List pools",
+      "inputSchema": {
+        "properties": {
+          "limit": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Limit"
+          },
+          "offset": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Offset"
+          },
+          "order_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Order By"
+          }
+        },
+        "title": "get_poolsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_pool",
+      "description": "Get a pool by name",
+      "inputSchema": {
+        "properties": {
+          "pool_name": {
+            "title": "Pool Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "pool_name"
+        ],
+        "title": "get_poolArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "delete_pool",
+      "description": "Delete a pool",
+      "inputSchema": {
+        "properties": {
+          "pool_name": {
+            "title": "Pool Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "pool_name"
+        ],
+        "title": "delete_poolArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "post_pool",
+      "description": "Create a pool",
+      "inputSchema": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "slots": {
+            "title": "Slots",
+            "type": "integer"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "include_deferred": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Include Deferred"
+          }
+        },
+        "required": [
+          "name",
+          "slots"
+        ],
+        "title": "post_poolArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "patch_pool",
+      "description": "Update a pool",
+      "inputSchema": {
+        "properties": {
+          "pool_name": {
+            "title": "Pool Name",
+            "type": "string"
+          },
+          "slots": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Slots"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "include_deferred": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Include Deferred"
+          }
+        },
+        "required": [
+          "pool_name"
+        ],
+        "title": "patch_poolArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_task_instance",
+      "description": "Get a task instance by DAG ID, task ID, and DAG run ID",
+      "inputSchema": {
+        "properties": {
+          "dag_id": {
+            "title": "Dag Id",
+            "type": "string"
+          },
+          "task_id": {
+            "title": "Task Id",
+            "type": "string"
+          },
+          "dag_run_id": {
+            "title": "Dag Run Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "dag_id",
+          "task_id",
+          "dag_run_id"
+        ],
+        "title": "get_task_instanceArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_task_instances",
+      "description": "List task instances by DAG ID and DAG run ID",
+      "inputSchema": {
+        "properties": {
+          "dag_id": {
+            "title": "Dag Id",
+            "type": "string"
+          },
+          "dag_run_id": {
+            "title": "Dag Run Id",
+            "type": "string"
+          },
+          "execution_date_gte": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Execution Date Gte"
+          },
+          "execution_date_lte": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Execution Date Lte"
+          },
+          "start_date_gte": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Start Date Gte"
+          },
+          "start_date_lte": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Start Date Lte"
+          },
+          "end_date_gte": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "End Date Gte"
+          },
+          "end_date_lte": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "End Date Lte"
+          },
+          "updated_at_gte": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Updated At Gte"
+          },
+          "updated_at_lte": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Updated At Lte"
+          },
+          "duration_gte": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Duration Gte"
+          },
+          "duration_lte": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Duration Lte"
+          },
+          "state": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "State"
+          },
+          "pool": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Pool"
+          },
+          "queue": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Queue"
+          },
+          "limit": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Limit"
+          },
+          "offset": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Offset"
+          }
+        },
+        "required": [
+          "dag_id",
+          "dag_run_id"
+        ],
+        "title": "list_task_instancesArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_task_instance",
+      "description": "Update a task instance by DAG ID, DAG run ID, and task ID",
+      "inputSchema": {
+        "properties": {
+          "dag_id": {
+            "title": "Dag Id",
+            "type": "string"
+          },
+          "dag_run_id": {
+            "title": "Dag Run Id",
+            "type": "string"
+          },
+          "task_id": {
+            "title": "Task Id",
+            "type": "string"
+          },
+          "state": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "State"
+          }
+        },
+        "required": [
+          "dag_id",
+          "dag_run_id",
+          "task_id"
+        ],
+        "title": "update_task_instanceArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_variables",
+      "description": "List all variables",
+      "inputSchema": {
+        "properties": {
+          "limit": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Limit"
+          },
+          "offset": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Offset"
+          },
+          "order_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Order By"
+          }
+        },
+        "title": "list_variablesArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_variable",
+      "description": "Create a variable",
+      "inputSchema": {
+        "properties": {
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "value": {
+            "title": "Value",
+            "type": "string"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          }
+        },
+        "required": [
+          "key",
+          "value"
+        ],
+        "title": "create_variableArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_variable",
+      "description": "Get a variable by key",
+      "inputSchema": {
+        "properties": {
+          "key": {
+            "title": "Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "title": "get_variableArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_variable",
+      "description": "Update a variable by key",
+      "inputSchema": {
+        "properties": {
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Value"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "title": "update_variableArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "delete_variable",
+      "description": "Delete a variable by key",
+      "inputSchema": {
+        "properties": {
+          "key": {
+            "title": "Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "title": "delete_variableArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_xcom_entries",
+      "description": "Get all XCom entries",
+      "inputSchema": {
+        "properties": {
+          "dag_id": {
+            "title": "Dag Id",
+            "type": "string"
+          },
+          "dag_run_id": {
+            "title": "Dag Run Id",
+            "type": "string"
+          },
+          "task_id": {
+            "title": "Task Id",
+            "type": "string"
+          },
+          "map_index": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Map Index"
+          },
+          "xcom_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Xcom Key"
+          },
+          "limit": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Limit"
+          },
+          "offset": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Offset"
+          }
+        },
+        "required": [
+          "dag_id",
+          "dag_run_id",
+          "task_id"
+        ],
+        "title": "get_xcom_entriesArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_xcom_entry",
+      "description": "Get an XCom entry",
+      "inputSchema": {
+        "properties": {
+          "dag_id": {
+            "title": "Dag Id",
+            "type": "string"
+          },
+          "dag_run_id": {
+            "title": "Dag Run Id",
+            "type": "string"
+          },
+          "task_id": {
+            "title": "Task Id",
+            "type": "string"
+          },
+          "xcom_key": {
+            "title": "Xcom Key",
+            "type": "string"
+          },
+          "map_index": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Map Index"
+          },
+          "deserialize": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Deserialize"
+          },
+          "stringify": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Stringify"
+          }
+        },
+        "required": [
+          "dag_id",
+          "dag_run_id",
+          "task_id",
+          "xcom_key"
+        ],
+        "title": "get_xcom_entryArguments",
+        "type": "object"
+      }
+    }
+  ]
 }

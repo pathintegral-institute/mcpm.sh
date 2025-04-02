@@ -55,5 +55,150 @@
       "required": true,
       "example": "/Users/alex/XMind"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "read_xmind",
+      "description": "Parse and analyze XMind files with multiple capabilities:\n                - Extract complete mind map structure in JSON format\n                - Include all relationships between nodes with their IDs and titles\n                - Extract callouts attached to topics\n                - Generate text or markdown summaries\n                - Search for specific content\n                - Get hierarchical path to any node\n                - Filter content by labels, task status, or node depth\n                - Extract all URLs and external references\n                - Analyze relationships and connections between topics\n                Input: File path to .xmind file\n                Output: JSON structure containing nodes, relationships, and callouts",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "list_xmind_directory",
+      "description": "Comprehensive XMind file discovery and analysis tool:\n                - Recursively scan directories for .xmind files\n                - Filter files by creation/modification date\n                - Search for files containing specific content\n                - Group files by project or category\n                - Detect duplicate mind maps\n                - Generate directory statistics and summaries\n                - Verify file integrity and structure\n                - Monitor changes in mind map files\n                Input: Directory path to scan\n                Output: List of XMind files with optional metadata",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "directory": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "read_multiple_xmind_files",
+      "description": "Advanced multi-file analysis and correlation tool:\n                - Process multiple XMind files simultaneously\n                - Compare content across different mind maps\n                - Identify common themes and patterns\n                - Merge related content from different files\n                - Generate cross-reference reports\n                - Find content duplications across files\n                - Create consolidated summaries\n                - Track changes across multiple versions\n                - Generate comparative analysis\n                Input: Array of file paths to .xmind files\n                Output: Combined analysis results in JSON format with per-file details",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "paths": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "paths"
+        ]
+      }
+    },
+    {
+      "name": "search_xmind_files",
+      "description": "Advanced file search tool with recursive capabilities:\n                - Search for files and directories by partial name matching\n                - Case-insensitive pattern matching\n                - Searches through all subdirectories recursively\n                - Returns full paths to all matching items\n                - Includes both files and directories in results\n                - Safe searching within allowed directories only\n                - Handles special characters in names\n                - Continues searching even if some directories are inaccessible\n                Input: {\n                    directory: Starting directory path,\n                    pattern: Search text to match in names\n                }\n                Output: Array of full paths to matching items",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pattern": {
+            "type": "string"
+          },
+          "directory": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "pattern"
+        ]
+      }
+    },
+    {
+      "name": "extract_node",
+      "description": "Smart node extraction with fuzzy path matching:\n                - Flexible search using partial or complete node paths\n                - Returns multiple matching nodes ranked by relevance\n                - Supports approximate matching for better results\n                - Includes full context and hierarchy information\n                - Returns complete subtree for each match\n                - Best tool for exploring and navigating complex mind maps\n                - Perfect for finding nodes when exact path is unknown\n                Usage examples:\n                - \"Project > Backend\" : finds nodes in any path containing these terms\n                - \"Feature API\" : finds nodes containing these words in any order\n                Input: {\n                    path: Path to .xmind file,\n                    searchQuery: Text to search in node paths (flexible matching)\n                }\n                Output: Ranked list of matching nodes with their full subtrees",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "searchQuery": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "path",
+          "searchQuery"
+        ]
+      }
+    },
+    {
+      "name": "extract_node_by_id",
+      "description": "Extract a specific node and its subtree using its unique ID:\n                - Find and extract node using its XMind ID\n                - Return complete subtree structure\n                - Preserve all node properties and relationships\n                - Fast direct access without path traversal\n                Note: For a more detailed view with fuzzy matching, use \"extract_node\" with the node's path\n                Input: {\n                    path: Path to .xmind file,\n                    nodeId: Unique identifier of the node\n                }\n                Output: JSON structure of the found node and its subtree",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "nodeId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "path",
+          "nodeId"
+        ]
+      }
+    },
+    {
+      "name": "search_nodes",
+      "description": "Advanced node search with multiple criteria:\n                - Search through titles, notes, labels, callouts and tasks\n                - Filter by task status (todo/done)\n                - Find nodes by their relationships\n                - Configure which fields to search in\n                - Case-sensitive or insensitive search\n                - Get full context including task status\n                - Returns all matching nodes with their IDs\n                - Includes relationship information and task status\n                Input: {\n                    path: Path to .xmind file,\n                    query: Search text,\n                    searchIn: Array of fields to search in ['title', 'notes', 'labels', 'callouts', 'tasks'],\n                    taskStatus: 'todo' | 'done' (optional),\n                    caseSensitive: Boolean (optional)\n                }\n                Output: Detailed search results with task status and context",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "query": {
+            "type": "string"
+          },
+          "searchIn": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "title",
+                "notes",
+                "labels",
+                "callouts",
+                "tasks"
+              ]
+            }
+          },
+          "caseSensitive": {
+            "type": "boolean"
+          },
+          "taskStatus": {
+            "type": "string",
+            "enum": [
+              "todo",
+              "done"
+            ]
+          }
+        },
+        "required": [
+          "path",
+          "query"
+        ]
+      }
+    }
+  ]
 }

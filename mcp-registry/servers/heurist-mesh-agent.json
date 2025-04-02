@@ -27,7 +27,7 @@
       "command": "uvx",
       "args": [
         "--from",
-        "git+https://github.com/heurist-network/heurist-mesh-mcp-server/mesh_mcp_server",
+        "git+https://github.com/heurist-network/heurist-mesh-mcp-server",
         "mesh-tool-server"
       ],
       "env": {
@@ -41,5 +41,397 @@
       "required": true,
       "example": "your-api-key-here"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "coingeckotokeninfoagent_get_coingecko_id",
+      "description": "Search for a token by name to get its CoinGecko ID. This tool helps you find the correct CoinGecko ID for any cryptocurrency when you only know its name or symbol. The CoinGecko ID is required for fetching detailed token information using other CoinGecko tools.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "token_name": {
+            "type": "string",
+            "description": "The token name to search for"
+          }
+        },
+        "required": [
+          "token_name"
+        ]
+      }
+    },
+    {
+      "name": "coingeckotokeninfoagent_get_token_info",
+      "description": "Get detailed token information and market data using CoinGecko ID. This tool provides comprehensive cryptocurrency data including current price, market cap, trading volume, price changes, and more.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "coingecko_id": {
+            "type": "string",
+            "description": "The CoinGecko ID of the token"
+          }
+        },
+        "required": [
+          "coingecko_id"
+        ]
+      }
+    },
+    {
+      "name": "coingeckotokeninfoagent_get_trending_coins",
+      "description": "Get the current top trending cryptocurrencies on CoinGecko. This tool retrieves a list of the most popular cryptocurrencies based on trading volume and social media mentions.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "coingeckotokeninfoagent_get_token_price_multi",
+      "description": "Fetch price data for multiple tokens at once using CoinGecko IDs. Efficiently retrieves current prices and optional market data for multiple cryptocurrencies in a single API call.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "string",
+            "description": "Comma-separated CoinGecko IDs of the tokens to query"
+          },
+          "vs_currencies": {
+            "type": "string",
+            "description": "Comma-separated target currencies (e.g., usd,eur,btc)",
+            "default": "usd"
+          },
+          "include_market_cap": {
+            "type": "boolean",
+            "description": "Include market capitalization data",
+            "default": false
+          },
+          "include_24hr_vol": {
+            "type": "boolean",
+            "description": "Include 24hr trading volume data",
+            "default": false
+          },
+          "include_24hr_change": {
+            "type": "boolean",
+            "description": "Include 24hr price change percentage",
+            "default": false
+          },
+          "include_last_updated_at": {
+            "type": "boolean",
+            "description": "Include timestamp of when the data was last updated",
+            "default": false
+          },
+          "precision": {
+            "type": "string",
+            "description": "Decimal precision for currency values (e.g., 'full' for maximum precision)",
+            "default": false
+          }
+        },
+        "required": [
+          "ids",
+          "vs_currencies"
+        ]
+      }
+    },
+    {
+      "name": "coingeckotokeninfoagent_get_categories_list",
+      "description": "Get a list of all available cryptocurrency categories from CoinGecko. This tool retrieves all the category IDs and names that can be used for further category-specific queries.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "coingeckotokeninfoagent_get_category_data",
+      "description": "Get market data for all cryptocurrency categories from CoinGecko. This tool retrieves comprehensive information about all categories including market cap, volume, market cap change, top coins in each category, and more.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "order": {
+            "type": "string",
+            "description": "Sort order for categories (default: market_cap_desc)",
+            "enum": [
+              "market_cap_desc",
+              "market_cap_asc",
+              "name_desc",
+              "name_asc",
+              "market_cap_change_24h_desc",
+              "market_cap_change_24h_asc"
+            ]
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "coingeckotokeninfoagent_get_tokens_by_category",
+      "description": "Get a list of tokens within a specific category. This tool retrieves token data for all cryptocurrencies that belong to a particular category, including price, market cap, volume, and price changes.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category_id": {
+            "type": "string",
+            "description": "The CoinGecko category ID (e.g., 'layer-1')"
+          },
+          "vs_currency": {
+            "type": "string",
+            "description": "The currency to show results in (default: usd)",
+            "default": "usd"
+          },
+          "order": {
+            "type": "string",
+            "description": "Sort order for tokens (default: market_cap_desc)",
+            "enum": [
+              "market_cap_desc",
+              "market_cap_asc",
+              "volume_desc",
+              "volume_asc",
+              "id_asc",
+              "id_desc"
+            ],
+            "default": "market_cap_desc"
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "Number of results per page (1-250, default: 100)",
+            "default": 100,
+            "minimum": 1,
+            "maximum": 250
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number (default: 1)",
+            "default": 1,
+            "minimum": 1
+          }
+        },
+        "required": [
+          "category_id"
+        ]
+      }
+    },
+    {
+      "name": "dexscreenertokeninfoagent_search_pairs",
+      "description": "Search for trading pairs on decentralized exchanges by token name, symbol, or address. This tool helps you find specific trading pairs across multiple DEXs and blockchains. It returns information about the pairs including price, volume, liquidity, and the exchanges where they're available. Data comes from DexScreener and covers major DEXs on most blockchains. The search results may be incomplete if the token is not traded on any of the supported chains.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search_term": {
+            "type": "string",
+            "description": "Search term (token name, symbol, or address)"
+          }
+        },
+        "required": [
+          "search_term"
+        ]
+      }
+    },
+    {
+      "name": "dexscreenertokeninfoagent_get_specific_pair_info",
+      "description": "Get detailed information about a specific trading pair on a decentralized exchange by chain and pair address. This tool provides comprehensive data about a DEX trading pair including current price, 24h volume, liquidity, price changes, and trading history. Data comes from DexScreener and is updated in real-time. You must specify both the blockchain and the exact pair contract address. The pair address is the LP contract address, not the quote token address.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chain": {
+            "type": "string",
+            "description": "Chain identifier (e.g., solana, bsc, ethereum, base)"
+          },
+          "pair_address": {
+            "type": "string",
+            "description": "The pair contract address to look up"
+          }
+        },
+        "required": [
+          "chain",
+          "pair_address"
+        ]
+      }
+    },
+    {
+      "name": "dexscreenertokeninfoagent_get_token_pairs",
+      "description": "Get all trading pairs for a specific token across decentralized exchanges by chain and token address. This tool retrieves a comprehensive list of all DEX pairs where the specified token is traded on a particular blockchain. It provides data on each pair including the paired token, exchange, price, volume, and liquidity. Data comes from DexScreener and is updated in real-time. You must specify both the blockchain and the exact token contract address.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chain": {
+            "type": "string",
+            "description": "Chain identifier (e.g., solana, bsc, ethereum, base)"
+          },
+          "token_address": {
+            "type": "string",
+            "description": "The token contract address to look up all pairs for"
+          }
+        },
+        "required": [
+          "chain",
+          "token_address"
+        ]
+      }
+    },
+    {
+      "name": "elfatwitterintelligenceagent_search_mentions",
+      "description": "Search for mentions of specific tokens or topics on Twitter. This tool finds discussions about cryptocurrencies, blockchain projects, or other topics of interest. It provides the tweets and mentions of smart accounts (only influential ones) and does not contain all tweets. Use this when you want to understand what influential people are saying about a particular token or topic on Twitter. Each of the search keywords should be one word or phrase. A maximum of 5 keywords are allowed. One key word should be one concept. Never use long sentences or phrases as keywords.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keywords": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of keywords to search for"
+          },
+          "days_ago": {
+            "type": "number",
+            "description": "Number of days to look back",
+            "default": 20
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of results (minimum: 20)",
+            "default": 20
+          }
+        },
+        "required": [
+          "keywords"
+        ]
+      }
+    },
+    {
+      "name": "elfatwitterintelligenceagent_search_account",
+      "description": "Search for a Twitter account with both mention search and account statistics. This tool provides engagement metrics, follower growth, and mentions by smart users. It does not contain all tweets, but only those of influential users. It also identifies the topics and cryptocurrencies they frequently discuss. Data comes from ELFA API and can analyze several weeks of historical activity.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "Twitter username to analyze (without @)"
+          },
+          "days_ago": {
+            "type": "number",
+            "description": "Number of days to look back for mentions",
+            "default": 30
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of mention results",
+            "default": 20
+          }
+        },
+        "required": [
+          "username"
+        ]
+      }
+    },
+    {
+      "name": "elfatwitterintelligenceagent_get_trending_tokens",
+      "description": "Get current trending tokens on Twitter. This tool identifies which cryptocurrencies and tokens are generating the most buzz on Twitter right now. The results include token names, their relative popularity, and sentiment indicators. Use this when you want to discover which cryptocurrencies are currently being discussed most actively on social media. Data comes from ELFA API and represents real-time trends.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "time_window": {
+            "type": "string",
+            "description": "Time window to analyze",
+            "default": "24h"
+          }
+        }
+      }
+    },
+    {
+      "name": "exasearchagent_exa_web_search",
+      "description": "Search for webpages related to a query using Exa search. This tool performs a web search and returns relevant results including titles, snippets, and URLs. It's useful for finding up-to-date information on any topic, but may fail to find information of niche topics such like small cap crypto projects. Use this when you need to gather information from across the web.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search_term": {
+            "type": "string",
+            "description": "The search term"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of results to return (default: 10)"
+          }
+        },
+        "required": [
+          "search_term"
+        ]
+      }
+    },
+    {
+      "name": "exasearchagent_exa_answer_question",
+      "description": "Get a direct answer to a question using Exa's answer API. This tool provides concise, factual answers to specific questions by searching and analyzing content from across the web. Use this when you need a direct answer to a specific question rather than a list of search results. It may fail to find information of niche topics such like small cap crypto projects.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "description": "The question to answer"
+          }
+        },
+        "required": [
+          "question"
+        ]
+      }
+    },
+    {
+      "name": "firecrawlsearchagent_firecrawl_web_search",
+      "description": "Execute a web search query by reading the web pages using Firecrawl. It provides more comprehensive information than standard web search by extracting the full contents from the pages. Use this when you need in-depth information on a topic. Data comes from Firecrawl search API. It may fail to find information of niche topics such like small cap crypto projects.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search_term": {
+            "type": "string",
+            "description": "The search term to execute"
+          }
+        },
+        "required": [
+          "search_term"
+        ]
+      }
+    },
+    {
+      "name": "firecrawlsearchagent_firecrawl_extract_web_data",
+      "description": "Extract structured data from one or multiple web pages using natural language instructions using Firecrawl. This tool can process single URLs or entire domains (using wildcards like example.com/*). Use this when you need specific information from websites rather than general search results. You must specify what data to extract from the pages using the 'extraction_prompt' parameter.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "urls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of URLs to extract data from. Can include wildcards (e.g., 'example.com/*') to crawl entire domains."
+          },
+          "extraction_prompt": {
+            "type": "string",
+            "description": "Natural language description of what data to extract from the pages."
+          }
+        },
+        "required": [
+          "urls",
+          "extraction_prompt"
+        ]
+      }
+    },
+    {
+      "name": "goplusanalysisagent_fetch_security_details",
+      "description": "Fetch security details of a blockchain token contract",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "contract_address": {
+            "type": "string",
+            "description": "The token contract address"
+          },
+          "chain_id": {
+            "type": "string",
+            "description": "The blockchain chain ID or 'solana' for Solana tokens. Supported chains: Ethereum (1), Optimism (10), Cronos (25), BSC (56), Gnosis (100), HECO (128), Polygon (137), Fantom (250), KCC (321), zkSync Era (324), ETHW (10001), FON (201022), Arbitrum (42161), Avalanche (43114), Linea Mainnet (59144), Base (8453), Tron (tron), Scroll (534352), opBNB (204), Mantle (5000), ZKFair (42766), Blast (81457), Manta Pacific (169), Berachain Artio Testnet (80085), Merlin (4200), Bitlayer Mainnet (200901), zkLink Nova (810180), X Layer Mainnet (196), Solana (solana)",
+            "default": 1
+          }
+        },
+        "required": [
+          "contract_address"
+        ]
+      }
+    }
+  ]
 }

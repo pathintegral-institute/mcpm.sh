@@ -27,5 +27,62 @@
         "@mektigboy/server-hyperliquid"
       ]
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "get_all_mids",
+      "description": "Get mid prices for all coins on Hyperliquid",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "get_candle_snapshot",
+      "description": "Get candlestick data for a token on Hyperliquid",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "coin": {
+            "type": "string",
+            "description": "The symbol of the token to get candlestick data for"
+          },
+          "interval": {
+            "type": "string",
+            "description": "Time interval (e.g., '15m', '1h')"
+          },
+          "startTime": {
+            "type": "number",
+            "description": "Start time in milliseconds since epoch"
+          },
+          "endTime": {
+            "type": "number",
+            "description": "End time in milliseconds since epoch (optional)"
+          }
+        },
+        "required": [
+          "coin",
+          "interval",
+          "startTime"
+        ]
+      }
+    },
+    {
+      "name": "get_l2_book",
+      "description": "Get the L2 book of a token on Hyperliquid",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "description": "The symbol of the token to get the price of"
+          },
+          "required": [
+            "symbol"
+          ]
+        }
+      }
+    }
+  ]
 }

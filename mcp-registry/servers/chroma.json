@@ -38,8 +38,132 @@
       "args": [
         "--from",
         "git+https://github.com/privetin/chroma",
-        "src/chroma/server.py"
+        "chroma"
       ]
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "create_document",
+      "description": "Create a new document in the Chroma vector database",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "document_id": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "document_id",
+          "content"
+        ]
+      }
+    },
+    {
+      "name": "read_document",
+      "description": "Retrieve a document from the Chroma vector database by its ID",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "document_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "document_id"
+        ]
+      }
+    },
+    {
+      "name": "update_document",
+      "description": "Update an existing document in the Chroma vector database",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "document_id": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "document_id",
+          "content"
+        ]
+      }
+    },
+    {
+      "name": "delete_document",
+      "description": "Delete a document from the Chroma vector database by its ID",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "document_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "document_id"
+        ]
+      }
+    },
+    {
+      "name": "list_documents",
+      "description": "List all documents stored in the Chroma vector database with pagination",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 10
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0
+          }
+        }
+      }
+    },
+    {
+      "name": "search_similar",
+      "description": "Search for semantically similar documents in the Chroma vector database",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "num_results": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 5
+          },
+          "metadata_filter": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "content_filter": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ]
 }

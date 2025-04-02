@@ -59,5 +59,224 @@
       "description": "Your OpenCTI API token",
       "required": true
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "get_latest_reports",
+      "description": "\u7372\u53d6\u6700\u65b0\u7684OpenCTI\u5831\u544a",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "first": {
+            "type": "number",
+            "description": "\u8fd4\u56de\u7d50\u679c\u6578\u91cf\u9650\u5236",
+            "default": 10
+          }
+        }
+      }
+    },
+    {
+      "name": "get_report_by_id",
+      "description": "\u6839\u64daID\u7372\u53d6OpenCTI\u5831\u544a",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "\u5831\u544aID"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "search_indicators",
+      "description": "\u641c\u5c0bOpenCTI\u4e2d\u7684\u6307\u6a19",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "\u641c\u5c0b\u95dc\u9375\u5b57"
+          },
+          "first": {
+            "type": "number",
+            "description": "\u8fd4\u56de\u7d50\u679c\u6578\u91cf\u9650\u5236",
+            "default": 10
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "search_malware",
+      "description": "\u641c\u5c0bOpenCTI\u4e2d\u7684\u60e1\u610f\u7a0b\u5f0f",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "\u641c\u5c0b\u95dc\u9375\u5b57"
+          },
+          "first": {
+            "type": "number",
+            "description": "\u8fd4\u56de\u7d50\u679c\u6578\u91cf\u9650\u5236",
+            "default": 10
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "search_threat_actors",
+      "description": "\u641c\u5c0bOpenCTI\u4e2d\u7684\u5a01\u8105\u884c\u70ba\u8005",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "\u641c\u5c0b\u95dc\u9375\u5b57"
+          },
+          "first": {
+            "type": "number",
+            "description": "\u8fd4\u56de\u7d50\u679c\u6578\u91cf\u9650\u5236",
+            "default": 10
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "get_user_by_id",
+      "description": "\u6839\u64daID\u7372\u53d6\u4f7f\u7528\u8005\u8cc7\u8a0a",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "\u4f7f\u7528\u8005ID"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "list_users",
+      "description": "\u5217\u51fa\u6240\u6709\u4f7f\u7528\u8005",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_groups",
+      "description": "\u5217\u51fa\u6240\u6709\u7fa4\u7d44",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "first": {
+            "type": "number",
+            "description": "\u8fd4\u56de\u7d50\u679c\u6578\u91cf\u9650\u5236",
+            "default": 10
+          }
+        }
+      }
+    },
+    {
+      "name": "list_attack_patterns",
+      "description": "\u5217\u51fa\u6240\u6709\u653b\u64ca\u6a21\u5f0f",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "first": {
+            "type": "number",
+            "description": "\u8fd4\u56de\u7d50\u679c\u6578\u91cf\u9650\u5236",
+            "default": 10
+          }
+        }
+      }
+    },
+    {
+      "name": "get_campaign_by_name",
+      "description": "\u6839\u64da\u540d\u7a31\u7372\u53d6\u884c\u52d5\u8cc7\u8a0a",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "\u884c\u52d5\u540d\u7a31"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    {
+      "name": "list_connectors",
+      "description": "\u5217\u51fa\u6240\u6709\u9023\u63a5\u5668",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_status_templates",
+      "description": "\u5217\u51fa\u6240\u6709\u72c0\u614b\u6a21\u677f",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_file_by_id",
+      "description": "\u6839\u64daID\u7372\u53d6\u6a94\u6848\u8cc7\u8a0a",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "\u6a94\u6848ID"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "list_files",
+      "description": "\u5217\u51fa\u6240\u6709\u6a94\u6848",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_marking_definitions",
+      "description": "\u5217\u51fa\u6240\u6709\u6a19\u8a18\u5b9a\u7fa9",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_labels",
+      "description": "\u5217\u51fa\u6240\u6709\u6a19\u7c64",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ]
 }

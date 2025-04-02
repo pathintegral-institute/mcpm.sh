@@ -44,11 +44,19 @@
       ]
     }
   },
-  "arguments": {
-    "GDRIVE_CREDENTIALS_PATH": {
-      "description": "Path to the credentials JSON file for Google Drive OAuth.",
-      "required": true,
-      "example": "/gdrive-server/credentials.json"
+  "tools": [
+    {
+      "name": "search",
+      "description": "Search for files in Google Drive.",
+      "inputSchema": {
+        "query": {
+          "type": "string",
+          "description": "Search query"
+        }
+      },
+      "required": [
+        "query"
+      ]
     }
-  }
+  ]
 }

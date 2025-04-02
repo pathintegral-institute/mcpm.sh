@@ -37,5 +37,289 @@
       "required": true,
       "example": "<your token>"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "holaspirit_list_tasks",
+      "description": "List all tasks in the organization",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "organizationId": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9-]+$",
+            "description": "Unique identifier for the organization"
+          },
+          "page": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Page number"
+          },
+          "count": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Number of elements per page"
+          }
+        },
+        "required": [
+          "organizationId"
+        ]
+      }
+    },
+    {
+      "name": "holaspirit_list_metrics",
+      "description": "List all metrics in the organization",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "organizationId": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9-]+$",
+            "description": "Unique identifier for the organization"
+          },
+          "page": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Page number"
+          },
+          "count": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Number of elements per page"
+          }
+        },
+        "required": [
+          "organizationId"
+        ]
+      }
+    },
+    {
+      "name": "holaspirit_list_circles",
+      "description": "List all circles in the organization",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "organizationId": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9-]+$",
+            "description": "Unique identifier for the organization"
+          },
+          "page": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Page number"
+          },
+          "count": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Number of elements per page"
+          },
+          "member": {
+            "type": "string",
+            "description": "Comma-separated unique identifiers for the member"
+          },
+          "circle": {
+            "type": "string",
+            "description": "Comma-separated unique identifiers for the circle"
+          }
+        },
+        "required": [
+          "organizationId"
+        ]
+      }
+    },
+    {
+      "name": "holaspirit_get_circle",
+      "description": "Get details of a specific circle",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "organizationId": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9-]+$",
+            "description": "Unique identifier for the organization"
+          },
+          "circleId": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9-]+$",
+            "description": "Unique identifier for the circle"
+          }
+        },
+        "required": [
+          "organizationId",
+          "circleId"
+        ]
+      }
+    },
+    {
+      "name": "holaspirit_list_roles",
+      "description": "List all roles in the organization",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "organizationId": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9-]+$",
+            "description": "Unique identifier for the organization"
+          },
+          "page": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Page number"
+          },
+          "count": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Number of elements per page"
+          },
+          "member": {
+            "type": "string",
+            "description": "Comma-separated unique identifiers for the member"
+          },
+          "circle": {
+            "type": "string",
+            "description": "Comma-separated unique identifiers for the circle"
+          }
+        },
+        "required": [
+          "organizationId"
+        ]
+      }
+    },
+    {
+      "name": "holaspirit_get_role",
+      "description": "Get details of a specific role",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "organizationId": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9-]+$",
+            "description": "Unique identifier for the organization"
+          },
+          "roleId": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9-]+$",
+            "description": "Unique identifier for the role"
+          }
+        },
+        "required": [
+          "organizationId",
+          "roleId"
+        ]
+      }
+    },
+    {
+      "name": "holaspirit_list_domains",
+      "description": "List all domains in the organization",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "organizationId": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9-]+$",
+            "description": "Unique identifier for the organization"
+          },
+          "page": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Page number"
+          },
+          "count": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Number of elements per page"
+          }
+        },
+        "required": [
+          "organizationId"
+        ]
+      }
+    },
+    {
+      "name": "holaspirit_list_policies",
+      "description": "List all policies in the organization",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "organizationId": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9-]+$",
+            "description": "Unique identifier for the organization"
+          },
+          "page": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Page number"
+          },
+          "count": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Number of elements per page"
+          }
+        },
+        "required": [
+          "organizationId"
+        ]
+      }
+    },
+    {
+      "name": "holaspirit_list_meetings",
+      "description": "List all meetings in the organization",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "organizationId": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9-]+$",
+            "description": "Unique identifier for the organization"
+          },
+          "page": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Page number"
+          },
+          "count": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Number of elements per page"
+          },
+          "circle": {
+            "type": "string",
+            "description": "Comma-separated unique identifiers for the circle"
+          },
+          "member": {
+            "type": "string",
+            "description": "Comma-separated unique identifiers for the member"
+          }
+        },
+        "required": [
+          "organizationId"
+        ]
+      }
+    },
+    {
+      "name": "holaspirit_get_meeting",
+      "description": "Get details of a specific meeting",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "organizationId": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9-]+$",
+            "description": "Unique identifier for the organization"
+          },
+          "meetingId": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9-]+$",
+            "description": "Unique identifier for the meeting"
+          }
+        },
+        "required": [
+          "organizationId",
+          "meetingId"
+        ]
+      }
+    }
+  ]
 }
