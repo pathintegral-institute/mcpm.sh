@@ -1,25 +1,25 @@
-name: Create Server JSON and Update Repo
+name: Scrape and Update Repo
 
 on:
   issues:
     types: [labeled]
 
 jobs:
-  create-json-and-update:
+  scrape-and-update:
     runs-on: ubuntu-latest
-    if: github.event.label.name == 'new-server'
+    if: github.event.label.name == 'new-server'  # Trigger only on 'new-server' label
     steps:
       - name: Check if user is authorized
         env:
           SENDER: ${{ github.event.sender.login }}
         run: |
           # Custom list of authorized users (GitHub usernames)
-          AUTHORIZED_USERS="jeremy-dai-txyz JoJoJoJoJoJoJo niechen" 
+          AUTHORIZED_USERS="jeremy-dai-txyz JoJoJoJoJoJoJo niechen"
           if echo "$AUTHORIZED_USERS" | grep -q -w "$SENDER"; then
             echo "User $SENDER is authorized"
           else
             echo "User $SENDER is not authorized"
-            exit 1  # Fail the workflow if unauthorized
+            exit 1
           fi
 
       - name: Checkout repository
@@ -28,23 +28,34 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: '3.13'
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests openai
+          pip install requests
 
-      - name: Run the script
+      - name: Create local directory
+        run: mkdir -p local
+
+      - name: Run Script with Issue Body
         env:
           ISSUE_BODY: ${{ github.event.issue.body }}
+        shell: /usr/bin/bash -e {0}
         run: |
+          echo "Running get_manifest.py with issue body"
           python scripts/get_manifest.py "$ISSUE_BODY"
 
-      - name: Commit the new content
+      - name: Create and push new branch
+        env:
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        shell: /usr/bin/bash -e {0}
         run: |
+          # Create a unique branch name with issue number
+          BRANCH_NAME="scrape-issue-$ISSUE_NUMBER"
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
-          git add .
-          git commit -m "Update repo with JSON content from issue #${{ github.event.issue.number }}" || echo "No changes to commit"
-          git push
+          git checkout -b "$BRANCH_NAME"
+          git add local/readme.md
+          git commit -m "Update repo with README from issue #$ISSUE_NUMBER" || echo "No changes to commit"
+          git push origin "$BRANCH_NAME" --force  # Push to the new branch
