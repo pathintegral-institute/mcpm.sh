@@ -21,29 +21,6 @@ class TestBaseClientManagerViaWindsurf:
     """Test BaseClientManager functionality via WindsurfManager implementation"""
 
     @pytest.fixture
-    def temp_config_file(self):
-        """Create a temporary Windsurf config file for testing"""
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".json") as f:
-            # Create a basic config with a test server
-            config = {
-                "mcpServers": {
-                    "test-server": {
-                        "command": "npx",
-                        "args": ["-y", "@modelcontextprotocol/server-test"],
-                        "version": "1.0.0",
-                        "path": "/path/to/server",
-                        "display_name": "Test Server",
-                    }
-                }
-            }
-            f.write(json.dumps(config).encode("utf-8"))
-            temp_path = f.name
-
-        yield temp_path
-        # Clean up
-        os.unlink(temp_path)
-
-    @pytest.fixture
     def empty_config_file(self):
         """Create an empty temporary Windsurf config file for testing"""
         with tempfile.NamedTemporaryFile(delete=False, suffix=".json") as f:
@@ -57,16 +34,6 @@ class TestBaseClientManagerViaWindsurf:
         os.unlink(temp_path)
 
     @pytest.fixture
-    def windsurf_manager(self, temp_config_file):
-        """Create a WindsurfManager instance using the temp config file"""
-        return WindsurfManager(config_path=temp_config_file)
-
-    @pytest.fixture
-    def empty_windsurf_manager(self, empty_config_file):
-        """Create a WindsurfManager instance with an empty config"""
-        return WindsurfManager(config_path=empty_config_file)
-
-    @pytest.fixture
     def sample_server_config(self):
         """Create a sample ServerConfig for testing"""
         return ServerConfig(
@@ -75,7 +42,7 @@ class TestBaseClientManagerViaWindsurf:
             description="A sample server for testing",
             command="npx",
             args=["-y", "@modelcontextprotocol/sample-server"],
-            env_vars={"API_KEY": "sample-key"},
+            env={"API_KEY": "sample-key"},
             installation="default:npm",
         )
 
@@ -126,7 +93,7 @@ class TestBaseClientManagerViaWindsurf:
         server = windsurf_manager.get_server("google-maps")
         assert server is not None
         assert server.command == "npx"
-        assert "GOOGLE_MAPS_API_KEY" in server.env_vars
+        assert "GOOGLE_MAPS_API_KEY" in server.env
 
     def test_add_server_to_empty_config(self, empty_windsurf_manager):
         """Test BaseClientManager creates mcpServers if it doesn't exist"""
@@ -206,7 +173,7 @@ class TestBaseClientManagerViaWindsurf:
         assert server_config.name == "test-server"
         assert server_config.command == "npx"
         assert server_config.args == ["-y", "@modelcontextprotocol/server-test"]
-        assert server_config.env_vars["TEST_KEY"] == "test-value"
+        assert server_config.env["TEST_KEY"] == "test-value"
 
     def test_get_all_servers_as_configs(self, windsurf_manager, sample_server_config):
         """Test getting all servers and converting them to ServerConfig objects"""

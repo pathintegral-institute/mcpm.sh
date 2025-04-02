@@ -306,7 +306,7 @@ class JSONClientManager(BaseClientManager):
 
         # Add environment variables if present
         if "env" in client_config:
-            server_data["env_vars"] = client_config["env"]
+            server_data["env"] = client_config["env"]
 
         return ServerConfig.from_dict(server_data)
 
