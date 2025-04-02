@@ -58,5 +58,156 @@
       "required": true,
       "example": "your_google_maps_api_key"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "create_itinerary",
+      "description": "Creates a personalized travel itinerary based on user preferences",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "origin": {
+            "type": "string",
+            "description": "Starting location"
+          },
+          "destination": {
+            "type": "string",
+            "description": "Destination location"
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Start date (YYYY-MM-DD)"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "End date (YYYY-MM-DD)"
+          },
+          "budget": {
+            "type": "number",
+            "description": "Budget in USD"
+          },
+          "preferences": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Travel preferences"
+          }
+        },
+        "required": [
+          "origin",
+          "destination",
+          "startDate",
+          "endDate"
+        ]
+      }
+    },
+    {
+      "name": "optimize_itinerary",
+      "description": "Optimizes an existing itinerary based on specified criteria",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "itineraryId": {
+            "type": "string",
+            "description": "ID of the itinerary to optimize"
+          },
+          "optimizationCriteria": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Criteria for optimization (time, cost, etc.)"
+          }
+        },
+        "required": [
+          "itineraryId",
+          "optimizationCriteria"
+        ]
+      }
+    },
+    {
+      "name": "search_attractions",
+      "description": "Searches for attractions and points of interest in a specified location",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "description": "Location to search attractions"
+          },
+          "radius": {
+            "type": "number",
+            "description": "Search radius in meters"
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Categories of attractions"
+          }
+        },
+        "required": [
+          "location"
+        ]
+      }
+    },
+    {
+      "name": "get_transport_options",
+      "description": "Retrieves available transportation options between two points",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "origin": {
+            "type": "string",
+            "description": "Starting point"
+          },
+          "destination": {
+            "type": "string",
+            "description": "Destination point"
+          },
+          "date": {
+            "type": "string",
+            "description": "Travel date (YYYY-MM-DD)"
+          }
+        },
+        "required": [
+          "origin",
+          "destination",
+          "date"
+        ]
+      }
+    },
+    {
+      "name": "get_accommodations",
+      "description": "Searches for accommodation options in a specified location",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "description": "Location to search"
+          },
+          "checkIn": {
+            "type": "string",
+            "description": "Check-in date (YYYY-MM-DD)"
+          },
+          "checkOut": {
+            "type": "string",
+            "description": "Check-out date (YYYY-MM-DD)"
+          },
+          "budget": {
+            "type": "number",
+            "description": "Maximum price per night"
+          }
+        },
+        "required": [
+          "location",
+          "checkIn",
+          "checkOut"
+        ]
+      }
+    }
+  ]
 }

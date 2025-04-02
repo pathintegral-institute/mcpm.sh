@@ -26,5 +26,103 @@
         "scrapling-fetch-mcp"
       ]
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "s-fetch-page",
+      "description": "Fetches a complete web page with pagination support. Retrieves content from websites with bot-detection avoidance. For best performance, start with 'basic' mode (fastest), then only escalate to 'stealth' or 'max-stealth' modes if basic mode fails. Content is returned as 'METADATA: {json}\\n\\n[content]' where metadata includes length information and truncation status.",
+      "inputSchema": {
+        "properties": {
+          "url": {
+            "description": "URL to fetch",
+            "title": "Url",
+            "type": "string"
+          },
+          "mode": {
+            "default": "basic",
+            "description": "Fetching mode (basic, stealth, or max-stealth)",
+            "title": "Mode",
+            "type": "string"
+          },
+          "format": {
+            "default": "markdown",
+            "description": "Output format (html or markdown)",
+            "title": "Format",
+            "type": "string"
+          },
+          "max_length": {
+            "default": 5000,
+            "description": "Maximum number of characters to return.",
+            "exclusiveMaximum": 1000000,
+            "exclusiveMinimum": 0,
+            "title": "Max Length",
+            "type": "integer"
+          },
+          "start_index": {
+            "default": 0,
+            "description": "On return output starting at this character index, useful if a previous fetch was truncated and more content is required.",
+            "minimum": 0,
+            "title": "Start Index",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "title": "PageFetchRequest",
+        "type": "object"
+      }
+    },
+    {
+      "name": "s-fetch-pattern",
+      "description": "Extracts content matching regex patterns from web pages. Retrieves specific content from websites with bot-detection avoidance. For best performance, start with 'basic' mode (fastest), then only escalate to 'stealth' or 'max-stealth' modes if basic mode fails. Returns matched content as 'METADATA: {json}\\n\\n[content]' where metadata includes match statistics and truncation information. Each matched content chunk is delimited with '\u0965\u0e5b\u0965' and prefixed with '[Position: start-end]' indicating its byte position in the original document, allowing targeted follow-up requests with s-fetch-page using specific start_index values.",
+      "inputSchema": {
+        "properties": {
+          "url": {
+            "description": "URL to fetch",
+            "title": "Url",
+            "type": "string"
+          },
+          "mode": {
+            "default": "basic",
+            "description": "Fetching mode (basic, stealth, or max-stealth)",
+            "title": "Mode",
+            "type": "string"
+          },
+          "format": {
+            "default": "markdown",
+            "description": "Output format (html or markdown)",
+            "title": "Format",
+            "type": "string"
+          },
+          "max_length": {
+            "default": 5000,
+            "description": "Maximum number of characters to return.",
+            "exclusiveMaximum": 1000000,
+            "exclusiveMinimum": 0,
+            "title": "Max Length",
+            "type": "integer"
+          },
+          "search_pattern": {
+            "description": "Regular expression pattern to search for in the content",
+            "title": "Search Pattern",
+            "type": "string"
+          },
+          "context_chars": {
+            "default": 200,
+            "description": "Number of characters to include before and after each match",
+            "minimum": 0,
+            "title": "Context Chars",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "url",
+          "search_pattern"
+        ],
+        "title": "PatternFetchRequest",
+        "type": "object"
+      }
+    }
+  ]
 }

@@ -19,14 +19,12 @@
     "TypeScript"
   ],
   "installations": {
-    "docker": {
-      "type": "docker",
-      "command": "docker",
+    "npm": {
+      "type": "npm",
+      "command": "npx",
       "args": [
-        "run",
-        "-i",
-        "--rm",
-        "mcp-create"
+        "-y",
+        "https://github.com/tesla0225/mcp-create"
       ]
     }
   },

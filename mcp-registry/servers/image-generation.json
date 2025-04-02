@@ -46,5 +46,62 @@
       "required": false,
       "example": "alternative-model-name"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "generate_image",
+      "description": "Generate an image using the Flux model",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "Prompt for generated image"
+          },
+          "seed": {
+            "type": "integer",
+            "description": "Random seed for reproducible generation"
+          },
+          "aspect_ratio": {
+            "type": "string",
+            "enum": [
+              "1:1",
+              "16:9",
+              "21:9",
+              "3:2",
+              "2:3",
+              "4:5",
+              "5:4",
+              "3:4",
+              "4:3",
+              "9:16",
+              "9:21"
+            ],
+            "description": "Aspect ratio for the generated image",
+            "default": "1:1"
+          },
+          "output_format": {
+            "type": "string",
+            "enum": [
+              "webp",
+              "jpg",
+              "png"
+            ],
+            "description": "Format of the output images",
+            "default": "webp"
+          },
+          "num_outputs": {
+            "type": "integer",
+            "description": "Number of outputs to generate (1-4)",
+            "default": 1,
+            "minimum": 1,
+            "maximum": 4
+          }
+        },
+        "required": [
+          "prompt"
+        ]
+      }
+    }
+  ]
 }

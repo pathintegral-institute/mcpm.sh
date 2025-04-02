@@ -46,5 +46,205 @@
       "required": true,
       "example": "path/to/your/config.json"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "execute_command",
+      "description": "Execute a command in the specified shell (powershell, cmd, or gitbash)\n\nExample usage (PowerShell):\n```json\n{\n  \"shell\": \"powershell\",\n  \"command\": \"Get-Process | Select-Object -First 5\",\n  \"workingDir\": \"C:\\Users\\username\"\n}\n```\n\nExample usage (CMD):\n```json\n{\n  \"shell\": \"cmd\",\n  \"command\": \"dir /b\",\n  \"workingDir\": \"C:\\Projects\"\n}\n```\n\nExample usage (Git Bash):\n```json\n{\n  \"shell\": \"gitbash\",\n  \"command\": \"ls -la\",\n  \"workingDir\": \"/c/Users/username\"\n}\n```",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "shell": {
+            "type": "string",
+            "enum": [
+              "powershell",
+              "cmd",
+              "gitbash"
+            ],
+            "description": "Shell to use for command execution"
+          },
+          "command": {
+            "type": "string",
+            "description": "Command to execute"
+          },
+          "workingDir": {
+            "type": "string",
+            "description": "Working directory for command execution (optional)"
+          }
+        },
+        "required": [
+          "shell",
+          "command"
+        ]
+      }
+    },
+    {
+      "name": "get_command_history",
+      "description": "Get the history of executed commands\n\nExample usage:\n```json\n{\n  \"limit\": 5\n}\n```\n\nExample response:\n```json\n[\n  {\n    \"command\": \"Get-Process\",\n    \"output\": \"...\",\n    \"timestamp\": \"2024-03-20T10:30:00Z\",\n    \"exitCode\": 0\n  }\n]\n```",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of history entries to return (default: 10, max: 1000)"
+          }
+        }
+      }
+    },
+    {
+      "name": "ssh_execute",
+      "description": "Execute a command on a remote host via SSH\n\nExample usage:\n```json\n{\n  \"connectionId\": \"raspberry-pi\",\n  \"command\": \"uname -a\"\n}\n```\n\nConfiguration required in config.json:\n```json\n{\n  \"ssh\": {\n    \"enabled\": true,\n    \"connections\": {\n      \"raspberry-pi\": {\n        \"host\": \"raspberrypi.local\",\n        \"port\": 22,\n        \"username\": \"pi\",\n        \"password\": \"raspberry\"\n      }\n    }\n  }\n}\n```",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "connectionId": {
+            "type": "string",
+            "description": "ID of the SSH connection to use",
+            "enum": []
+          },
+          "command": {
+            "type": "string",
+            "description": "Command to execute"
+          }
+        },
+        "required": [
+          "connectionId",
+          "command"
+        ]
+      }
+    },
+    {
+      "name": "ssh_disconnect",
+      "description": "Disconnect from an SSH server\n\nExample usage:\n```json\n{\n  \"connectionId\": \"raspberry-pi\"\n}\n```\n\nUse this to cleanly close SSH connections when they're no longer needed.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "connectionId": {
+            "type": "string",
+            "description": "ID of the SSH connection to disconnect",
+            "enum": []
+          }
+        },
+        "required": [
+          "connectionId"
+        ]
+      }
+    },
+    {
+      "name": "create_ssh_connection",
+      "description": "Create a new SSH connection",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "connectionId": {
+            "type": "string",
+            "description": "ID of the SSH connection"
+          },
+          "connectionConfig": {
+            "type": "object",
+            "properties": {
+              "host": {
+                "type": "string",
+                "description": "Host of the SSH connection"
+              },
+              "port": {
+                "type": "number",
+                "description": "Port of the SSH connection"
+              },
+              "username": {
+                "type": "string",
+                "description": "Username for the SSH connection"
+              },
+              "password": {
+                "type": "string",
+                "description": "Password for the SSH connection"
+              },
+              "privateKeyPath": {
+                "type": "string",
+                "description": "Path to the private key for the SSH connection"
+              }
+            },
+            "required": [
+              "connectionId",
+              "connectionConfig"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "read_ssh_connections",
+      "description": "Read all SSH connections",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "update_ssh_connection",
+      "description": "Update an existing SSH connection",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "connectionId": {
+            "type": "string",
+            "description": "ID of the SSH connection to update"
+          },
+          "connectionConfig": {
+            "type": "object",
+            "properties": {
+              "host": {
+                "type": "string",
+                "description": "Host of the SSH connection"
+              },
+              "port": {
+                "type": "number",
+                "description": "Port of the SSH connection"
+              },
+              "username": {
+                "type": "string",
+                "description": "Username for the SSH connection"
+              },
+              "password": {
+                "type": "string",
+                "description": "Password for the SSH connection"
+              },
+              "privateKeyPath": {
+                "type": "string",
+                "description": "Path to the private key for the SSH connection"
+              }
+            },
+            "required": [
+              "connectionId",
+              "connectionConfig"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "delete_ssh_connection",
+      "description": "Delete an existing SSH connection",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "connectionId": {
+            "type": "string",
+            "description": "ID of the SSH connection to delete"
+          }
+        },
+        "required": [
+          "connectionId"
+        ]
+      }
+    },
+    {
+      "name": "get_current_directory",
+      "description": "Get the current working directory",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ]
 }

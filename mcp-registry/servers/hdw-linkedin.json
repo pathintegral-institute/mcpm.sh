@@ -46,5 +46,841 @@
       "required": true,
       "example": "YOUR_HD_W_ACCOUNT_ID"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "search_linkedin_users",
+      "description": "Search for LinkedIn users with various filters like keywords, name, title, company, location etc.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keywords": {
+            "type": "string",
+            "description": "Any keyword for searching in the user page."
+          },
+          "first_name": {
+            "type": "string",
+            "description": "Exact first name"
+          },
+          "last_name": {
+            "type": "string",
+            "description": "Exact last name"
+          },
+          "title": {
+            "type": "string",
+            "description": "Exact word in the title"
+          },
+          "company_keywords": {
+            "type": "string",
+            "description": "Exact word in the company name"
+          },
+          "school_keywords": {
+            "type": "string",
+            "description": "Exact word in the school name"
+          },
+          "current_company": {
+            "type": "string",
+            "description": "Company URN or name"
+          },
+          "past_company": {
+            "type": "string",
+            "description": "Past company URN or name"
+          },
+          "location": {
+            "type": "string",
+            "description": "Location name or URN"
+          },
+          "industry": {
+            "type": "string",
+            "description": "Industry URN or name"
+          },
+          "education": {
+            "type": "string",
+            "description": "Education URN or name"
+          },
+          "count": {
+            "type": "number",
+            "description": "Maximum number of results (max 1000)",
+            "default": 10
+          },
+          "timeout": {
+            "type": "number",
+            "description": "Timeout in seconds (20-1500)",
+            "default": 300
+          }
+        },
+        "required": [
+          "count"
+        ]
+      }
+    },
+    {
+      "name": "get_linkedin_profile",
+      "description": "Get detailed information about a LinkedIn user profile",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "string",
+            "description": "User alias, URL, or URN"
+          },
+          "with_experience": {
+            "type": "boolean",
+            "description": "Include experience info",
+            "default": true
+          },
+          "with_education": {
+            "type": "boolean",
+            "description": "Include education info",
+            "default": true
+          },
+          "with_skills": {
+            "type": "boolean",
+            "description": "Include skills info",
+            "default": true
+          }
+        },
+        "required": [
+          "user"
+        ]
+      }
+    },
+    {
+      "name": "get_linkedin_email_user",
+      "description": "Get LinkedIn user details by email",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email address"
+          },
+          "count": {
+            "type": "number",
+            "description": "Max results",
+            "default": 5
+          },
+          "timeout": {
+            "type": "number",
+            "description": "Timeout in seconds",
+            "default": 300
+          }
+        },
+        "required": [
+          "email"
+        ]
+      }
+    },
+    {
+      "name": "get_linkedin_user_posts",
+      "description": "Get LinkedIn posts for a user by URN (must include prefix, example: fsd_profile:ACoAAEWn01QBWENVMWqyM3BHfa1A-xsvxjdaXsY)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "urn": {
+            "type": "string",
+            "description": "User URN (must include prefix, example: fsd_profile:ACoAA...)"
+          },
+          "count": {
+            "type": "number",
+            "description": "Max posts",
+            "default": 10
+          },
+          "timeout": {
+            "type": "number",
+            "description": "Timeout in seconds",
+            "default": 300
+          }
+        },
+        "required": [
+          "urn"
+        ]
+      }
+    },
+    {
+      "name": "get_linkedin_user_reactions",
+      "description": "Get LinkedIn reactions for a user by URN (must include prefix, example: fsd_profile:ACoAA...)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "urn": {
+            "type": "string",
+            "description": "User URN (must include prefix, example: fsd_profile:ACoAA...)"
+          },
+          "count": {
+            "type": "number",
+            "description": "Max reactions",
+            "default": 10
+          },
+          "timeout": {
+            "type": "number",
+            "description": "Timeout in seconds",
+            "default": 300
+          }
+        },
+        "required": [
+          "urn"
+        ]
+      }
+    },
+    {
+      "name": "get_linkedin_chat_messages",
+      "description": "Get top chat messages from LinkedIn management API. Account ID is taken from environment.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "string",
+            "description": "User URN for filtering messages (must include prefix, e.g. fsd_profile:ACoAA...)"
+          },
+          "count": {
+            "type": "number",
+            "description": "Max messages to return",
+            "default": 20
+          },
+          "timeout": {
+            "type": "number",
+            "description": "Timeout in seconds",
+            "default": 300
+          }
+        },
+        "required": [
+          "user"
+        ]
+      }
+    },
+    {
+      "name": "send_linkedin_chat_message",
+      "description": "Send a chat message via LinkedIn management API. Account ID is taken from environment.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "string",
+            "description": "Recipient user URN (must include prefix, e.g. fsd_profile:ACoAA...)"
+          },
+          "text": {
+            "type": "string",
+            "description": "Message text"
+          },
+          "timeout": {
+            "type": "number",
+            "description": "Timeout in seconds",
+            "default": 300
+          }
+        },
+        "required": [
+          "user",
+          "text"
+        ]
+      }
+    },
+    {
+      "name": "send_linkedin_connection",
+      "description": "Send a connection invitation to LinkedIn user. Account ID is taken from environment.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "string",
+            "description": "Recipient user URN (must include prefix, e.g. fsd_profile:ACoAA...)"
+          },
+          "timeout": {
+            "type": "number",
+            "description": "Timeout in seconds",
+            "default": 300
+          }
+        },
+        "required": [
+          "user"
+        ]
+      }
+    },
+    {
+      "name": "send_linkedin_post_comment",
+      "description": "Create a comment on a LinkedIn post or on another comment. Account ID is taken from environment.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "Comment text"
+          },
+          "urn": {
+            "type": "string",
+            "description": "URN of the activity or comment to comment on (e.g., 'activity:123' or 'comment:(activity:123,456)')"
+          },
+          "timeout": {
+            "type": "number",
+            "description": "Timeout in seconds",
+            "default": 300
+          }
+        },
+        "required": [
+          "text",
+          "urn"
+        ]
+      }
+    },
+    {
+      "name": "get_linkedin_user_connections",
+      "description": "Get list of LinkedIn user connections. Account ID is taken from environment.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "connected_after": {
+            "type": "number",
+            "description": "Filter users that added after the specified date (timestamp)"
+          },
+          "count": {
+            "type": "number",
+            "description": "Max connections to return",
+            "default": 20
+          },
+          "timeout": {
+            "type": "number",
+            "description": "Timeout in seconds",
+            "default": 300
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "get_linkedin_post_reposts",
+      "description": "Get LinkedIn reposts for a post by URN",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "urn": {
+            "type": "string",
+            "description": "Post URN, only activity urn type is allowed (example: activity:7234173400267538433)"
+          },
+          "count": {
+            "type": "number",
+            "description": "Max reposts to return",
+            "default": 50
+          },
+          "timeout": {
+            "type": "number",
+            "description": "Timeout in seconds",
+            "default": 300
+          }
+        },
+        "required": [
+          "urn",
+          "count"
+        ]
+      }
+    },
+    {
+      "name": "get_linkedin_post_comments",
+      "description": "Get LinkedIn comments for a post by URN",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "urn": {
+            "type": "string",
+            "description": "Post URN, only activity urn type is allowed (example: activity:7234173400267538433)"
+          },
+          "sort": {
+            "type": "string",
+            "description": "Sort type (relevance or recent)",
+            "enum": [
+              "relevance",
+              "recent"
+            ],
+            "default": "relevance"
+          },
+          "count": {
+            "type": "number",
+            "description": "Max comments to return",
+            "default": 10
+          },
+          "timeout": {
+            "type": "number",
+            "description": "Timeout in seconds",
+            "default": 300
+          }
+        },
+        "required": [
+          "urn",
+          "count"
+        ]
+      }
+    },
+    {
+      "name": "get_linkedin_google_company",
+      "description": "Search for LinkedIn companies using Google search. First result is usually the best match.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keywords": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Company keywords for search. For example, company name or company website",
+            "examples": [
+              [
+                "Software as a Service (SaaS)"
+              ],
+              [
+                "google.com"
+              ]
+            ]
+          },
+          "with_urn": {
+            "type": "boolean",
+            "description": "Include URNs in response (increases execution time)",
+            "default": false
+          },
+          "count_per_keyword": {
+            "type": "number",
+            "description": "Max results per keyword",
+            "default": 1,
+            "minimum": 1,
+            "maximum": 10
+          },
+          "timeout": {
+            "type": "number",
+            "description": "Timeout in seconds",
+            "default": 300
+          }
+        },
+        "required": [
+          "keywords"
+        ]
+      }
+    },
+    {
+      "name": "get_linkedin_company",
+      "description": "Get detailed information about a LinkedIn company",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "company": {
+            "type": "string",
+            "description": "Company Alias or URL or URN (example: 'openai' or 'company:1441')"
+          },
+          "timeout": {
+            "type": "number",
+            "description": "Timeout in seconds",
+            "default": 300
+          }
+        },
+        "required": [
+          "company"
+        ]
+      }
+    },
+    {
+      "name": "get_linkedin_company_employees",
+      "description": "Get employees of a LinkedIn company",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "companies": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Company URNs (example: ['company:14064608'])"
+          },
+          "keywords": {
+            "type": "string",
+            "description": "Any keyword for searching employees",
+            "examples": [
+              "Alex"
+            ]
+          },
+          "first_name": {
+            "type": "string",
+            "description": "Search for exact first name",
+            "examples": [
+              "Bill"
+            ]
+          },
+          "last_name": {
+            "type": "string",
+            "description": "Search for exact last name",
+            "examples": [
+              "Gates"
+            ]
+          },
+          "count": {
+            "type": "number",
+            "description": "Maximum number of results",
+            "default": 10
+          },
+          "timeout": {
+            "type": "number",
+            "description": "Timeout in seconds",
+            "default": 300
+          }
+        },
+        "required": [
+          "companies",
+          "count"
+        ]
+      }
+    },
+    {
+      "name": "send_linkedin_post",
+      "description": "Create a post on LinkedIn. Account ID is taken from environment.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "Post text content"
+          },
+          "visibility": {
+            "type": "string",
+            "description": "Post visibility",
+            "enum": [
+              "ANYONE",
+              "CONNECTIONS_ONLY"
+            ],
+            "default": "ANYONE"
+          },
+          "comment_scope": {
+            "type": "string",
+            "description": "Who can comment on the post",
+            "enum": [
+              "ALL",
+              "CONNECTIONS_ONLY",
+              "NONE"
+            ],
+            "default": "ALL"
+          },
+          "timeout": {
+            "type": "number",
+            "description": "Timeout in seconds",
+            "default": 300
+          }
+        },
+        "required": [
+          "text"
+        ]
+      }
+    },
+    {
+      "name": "linkedin_sn_search_users",
+      "description": "Advanced search for LinkedIn users using Sales Navigator filters",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keywords": {
+            "type": "string",
+            "description": "Any keyword for searching in the user profile. Using this may reduce result count."
+          },
+          "first_names": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Exact first names to search for"
+          },
+          "last_names": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Exact last names to search for"
+          },
+          "current_titles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Exact words to search in current titles"
+          },
+          "location": {
+            "type": [
+              "string",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "description": "Location URN (geo:*) or name, or array of them"
+          },
+          "education": {
+            "type": [
+              "string",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "description": "Education URN (company:*) or name, or array of them"
+          },
+          "languages": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "Arabic",
+                "English",
+                "Spanish",
+                "Portuguese",
+                "Chinese",
+                "French",
+                "Italian",
+                "Russian",
+                "German",
+                "Dutch",
+                "Turkish",
+                "Tagalog",
+                "Polish",
+                "Korean",
+                "Japanese",
+                "Malay",
+                "Norwegian",
+                "Danish",
+                "Romanian",
+                "Swedish",
+                "Bahasa Indonesia",
+                "Czech"
+              ]
+            },
+            "description": "Profile languages"
+          },
+          "past_titles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Exact words to search in past titles"
+          },
+          "functions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "Accounting",
+                "Administrative",
+                "Arts and Design",
+                "Business",
+                "Development",
+                "Community and Social Services",
+                "Consulting",
+                "Education",
+                "Engineering",
+                "Entrepreneurship",
+                "Finance",
+                "Healthcare Services",
+                "Human Resources",
+                "Information Technology",
+                "Legal",
+                "Marketing",
+                "Media and Communication",
+                "Military and Protective Services",
+                "Operations",
+                "Product Management",
+                "Program and Project Management",
+                "Purchasing",
+                "Quality Assurance",
+                "Research",
+                "Real Estate",
+                "Sales",
+                "Customer Success and Support"
+              ]
+            },
+            "description": "Job functions"
+          },
+          "levels": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "Entry",
+                "Director",
+                "Owner",
+                "CXO",
+                "Vice President",
+                "Experienced Manager",
+                "Entry Manager",
+                "Strategic",
+                "Senior",
+                "Trainy"
+              ]
+            },
+            "description": "Job seniority levels"
+          },
+          "years_in_the_current_company": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "0-1",
+                "1-2",
+                "3-5",
+                "6-10",
+                "10+"
+              ]
+            },
+            "description": "Years in current company ranges"
+          },
+          "years_in_the_current_position": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "0-1",
+                "1-2",
+                "3-5",
+                "6-10",
+                "10+"
+              ]
+            },
+            "description": "Years in current position ranges"
+          },
+          "company_sizes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "Self-employed",
+                "1-10",
+                "11-50",
+                "51-200",
+                "201-500",
+                "501-1,000",
+                "1,001-5,000",
+                "5,001-10,000",
+                "10,001+"
+              ]
+            },
+            "description": "Company size ranges"
+          },
+          "company_types": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "Public Company",
+                "Privately Held",
+                "Non Profit",
+                "Educational Institution",
+                "Partnership",
+                "Self Employed",
+                "Self Owned",
+                "Government Agency"
+              ]
+            },
+            "description": "Company types"
+          },
+          "company_locations": {
+            "type": [
+              "string",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "description": "Company location URN (geo:*) or name, or array of them"
+          },
+          "current_companies": {
+            "type": [
+              "string",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "description": "Current company URN (company:*) or name, or array of them"
+          },
+          "past_companies": {
+            "type": [
+              "string",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "description": "Past company URN (company:*) or name, or array of them"
+          },
+          "industry": {
+            "type": [
+              "string",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "description": "Industry URN (industry:*) or name, or array of them"
+          },
+          "count": {
+            "type": "number",
+            "description": "Maximum number of results (max 2500)",
+            "default": 10,
+            "minimum": 1,
+            "maximum": 2500
+          },
+          "timeout": {
+            "type": "number",
+            "description": "Timeout in seconds (20-1500)",
+            "default": 300,
+            "minimum": 20,
+            "maximum": 1500
+          }
+        },
+        "required": [
+          "count"
+        ]
+      }
+    },
+    {
+      "name": "get_linkedin_conversations",
+      "description": "Get list of LinkedIn conversations from the messaging interface. Account ID is taken from environment.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "connected_after": {
+            "type": "number",
+            "description": "Filter conversations created after the specified date (timestamp)"
+          },
+          "count": {
+            "type": "number",
+            "description": "Max conversations to return",
+            "default": 20
+          },
+          "timeout": {
+            "type": "number",
+            "description": "Timeout in seconds",
+            "default": 300
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "google_search",
+      "description": "Search for information using Google search API",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query. For example: 'python fastapi'"
+          },
+          "count": {
+            "type": "number",
+            "description": "Maximum number of results (from 1 to 20)",
+            "default": 10
+          },
+          "timeout": {
+            "type": "number",
+            "description": "Timeout in seconds (20-1500)",
+            "default": 300
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ]
 }

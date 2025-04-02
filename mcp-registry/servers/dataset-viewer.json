@@ -65,5 +65,351 @@
       "required": false,
       "example": ""
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "get_info",
+      "description": "Get detailed information about a Hugging Face dataset including description, features, splits, and statistics. Run validate first to check if the dataset exists and is accessible.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "dataset": {
+            "type": "string",
+            "description": "Hugging Face dataset identifier in the format owner/dataset",
+            "pattern": "^[^/]+/[^/]+$",
+            "examples": [
+              "ylecun/mnist",
+              "stanfordnlp/imdb"
+            ]
+          },
+          "auth_token": {
+            "type": "string",
+            "description": "Hugging Face auth token for private/gated datasets",
+            "optional": true
+          }
+        },
+        "required": [
+          "dataset"
+        ]
+      }
+    },
+    {
+      "name": "get_rows",
+      "description": "Get paginated rows from a Hugging Face dataset",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "dataset": {
+            "type": "string",
+            "description": "Hugging Face dataset identifier in the format owner/dataset",
+            "pattern": "^[^/]+/[^/]+$",
+            "examples": [
+              "ylecun/mnist",
+              "stanfordnlp/imdb"
+            ]
+          },
+          "config": {
+            "type": "string",
+            "description": "Dataset configuration/subset name. Use get_info to list available configs",
+            "examples": [
+              "default",
+              "en",
+              "es"
+            ]
+          },
+          "split": {
+            "type": "string",
+            "description": "Dataset split name. Splits partition the data for training/evaluation",
+            "examples": [
+              "train",
+              "validation",
+              "test"
+            ]
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number (0-based), returns 100 rows per page",
+            "default": 0
+          },
+          "auth_token": {
+            "type": "string",
+            "description": "Hugging Face auth token for private/gated datasets",
+            "optional": true
+          }
+        },
+        "required": [
+          "dataset",
+          "config",
+          "split"
+        ]
+      }
+    },
+    {
+      "name": "get_first_rows",
+      "description": "Get first rows from a Hugging Face dataset split",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "dataset": {
+            "type": "string",
+            "description": "Hugging Face dataset identifier in the format owner/dataset",
+            "pattern": "^[^/]+/[^/]+$",
+            "examples": [
+              "ylecun/mnist",
+              "stanfordnlp/imdb"
+            ]
+          },
+          "config": {
+            "type": "string",
+            "description": "Dataset configuration/subset name. Use get_info to list available configs",
+            "examples": [
+              "default",
+              "en",
+              "es"
+            ]
+          },
+          "split": {
+            "type": "string",
+            "description": "Dataset split name. Splits partition the data for training/evaluation",
+            "examples": [
+              "train",
+              "validation",
+              "test"
+            ]
+          },
+          "auth_token": {
+            "type": "string",
+            "description": "Hugging Face auth token for private/gated datasets",
+            "optional": true
+          }
+        },
+        "required": [
+          "dataset",
+          "config",
+          "split"
+        ]
+      }
+    },
+    {
+      "name": "search_dataset",
+      "description": "Search for text within a Hugging Face dataset",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "dataset": {
+            "type": "string",
+            "description": "Hugging Face dataset identifier in the format owner/dataset",
+            "pattern": "^[^/]+/[^/]+$",
+            "examples": [
+              "ylecun/mnist",
+              "stanfordnlp/imdb"
+            ]
+          },
+          "config": {
+            "type": "string",
+            "description": "Dataset configuration/subset name. Use get_info to list available configs",
+            "examples": [
+              "default",
+              "en",
+              "es"
+            ]
+          },
+          "split": {
+            "type": "string",
+            "description": "Dataset split name. Splits partition the data for training/evaluation",
+            "examples": [
+              "train",
+              "validation",
+              "test"
+            ]
+          },
+          "query": {
+            "type": "string",
+            "description": "Text to search for in the dataset"
+          },
+          "auth_token": {
+            "type": "string",
+            "description": "Hugging Face auth token for private/gated datasets",
+            "optional": true
+          }
+        },
+        "required": [
+          "dataset",
+          "config",
+          "split",
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "filter",
+      "description": "Filter rows in a Hugging Face dataset using SQL-like conditions",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "dataset": {
+            "type": "string",
+            "description": "Hugging Face dataset identifier in the format owner/dataset",
+            "pattern": "^[^/]+/[^/]+$",
+            "examples": [
+              "ylecun/mnist",
+              "stanfordnlp/imdb"
+            ]
+          },
+          "config": {
+            "type": "string",
+            "description": "Dataset configuration/subset name. Use get_info to list available configs",
+            "examples": [
+              "default",
+              "en",
+              "es"
+            ]
+          },
+          "split": {
+            "type": "string",
+            "description": "Dataset split name. Splits partition the data for training/evaluation",
+            "examples": [
+              "train",
+              "validation",
+              "test"
+            ]
+          },
+          "where": {
+            "type": "string",
+            "description": "SQL-like WHERE clause to filter rows",
+            "examples": [
+              "column = \"value\"",
+              "score > 0.5",
+              "text LIKE \"%query%\""
+            ]
+          },
+          "orderby": {
+            "type": "string",
+            "description": "SQL-like ORDER BY clause to sort results",
+            "optional": true,
+            "examples": [
+              "column ASC",
+              "score DESC",
+              "name ASC, id DESC"
+            ]
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number for paginated results (100 rows per page)",
+            "default": 0,
+            "minimum": 0
+          },
+          "auth_token": {
+            "type": "string",
+            "description": "Hugging Face auth token for private/gated datasets",
+            "optional": true
+          }
+        },
+        "required": [
+          "dataset",
+          "config",
+          "split",
+          "where"
+        ]
+      }
+    },
+    {
+      "name": "get_statistics",
+      "description": "Get statistics about a Hugging Face dataset",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "dataset": {
+            "type": "string",
+            "description": "Hugging Face dataset identifier in the format owner/dataset",
+            "pattern": "^[^/]+/[^/]+$",
+            "examples": [
+              "ylecun/mnist",
+              "stanfordnlp/imdb"
+            ]
+          },
+          "config": {
+            "type": "string",
+            "description": "Dataset configuration/subset name. Use get_info to list available configs",
+            "examples": [
+              "default",
+              "en",
+              "es"
+            ]
+          },
+          "split": {
+            "type": "string",
+            "description": "Dataset split name. Splits partition the data for training/evaluation",
+            "examples": [
+              "train",
+              "validation",
+              "test"
+            ]
+          },
+          "auth_token": {
+            "type": "string",
+            "description": "Hugging Face auth token for private/gated datasets",
+            "optional": true
+          }
+        },
+        "required": [
+          "dataset",
+          "config",
+          "split"
+        ]
+      }
+    },
+    {
+      "name": "get_parquet",
+      "description": "Export Hugging Face dataset split as Parquet file",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "dataset": {
+            "type": "string",
+            "description": "Hugging Face dataset identifier in the format owner/dataset",
+            "pattern": "^[^/]+/[^/]+$",
+            "examples": [
+              "ylecun/mnist",
+              "stanfordnlp/imdb"
+            ]
+          },
+          "auth_token": {
+            "type": "string",
+            "description": "Hugging Face auth token for private/gated datasets",
+            "optional": true
+          }
+        },
+        "required": [
+          "dataset"
+        ]
+      }
+    },
+    {
+      "name": "validate",
+      "description": "Check if a Hugging Face dataset exists and is accessible",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "dataset": {
+            "type": "string",
+            "description": "Hugging Face dataset identifier in the format owner/dataset",
+            "pattern": "^[^/]+/[^/]+$",
+            "examples": [
+              "ylecun/mnist",
+              "stanfordnlp/imdb"
+            ]
+          },
+          "auth_token": {
+            "type": "string",
+            "description": "Hugging Face auth token for private/gated datasets",
+            "optional": true
+          }
+        },
+        "required": [
+          "dataset"
+        ]
+      }
+    }
+  ]
 }

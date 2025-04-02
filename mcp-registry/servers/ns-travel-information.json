@@ -62,5 +62,274 @@
       "required": true,
       "example": "your_api_key_here"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "get_disruptions",
+      "description": "Get comprehensive information about current and planned disruptions on the Dutch railway network. Returns details about maintenance work, unexpected disruptions, alternative transport options, impact on travel times, and relevant advice. Can filter for active disruptions and specific disruption types.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "isActive": {
+            "type": "boolean",
+            "description": "Filter to only return active disruptions"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of disruptions to return (e.g., MAINTENANCE, DISRUPTION)",
+            "enum": [
+              "MAINTENANCE",
+              "DISRUPTION"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "get_travel_advice",
+      "description": "Get detailed travel routes between two train stations, including transfers, real-time updates, platform information, and journey duration. Can plan trips for immediate departure or for a specific future time, with options to optimize for arrival time. Returns multiple route options with status and crowding information.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "fromStation": {
+            "type": "string",
+            "description": "Name or code of departure station"
+          },
+          "toStation": {
+            "type": "string",
+            "description": "Name or code of destination station"
+          },
+          "dateTime": {
+            "type": "string",
+            "description": "Format - date-time (as date-time in RFC3339). Datetime that the user want to depart from his origin or or arrive at his destination"
+          },
+          "searchForArrival": {
+            "type": "boolean",
+            "description": "If true, dateTime is treated as desired arrival time"
+          }
+        },
+        "required": [
+          "fromStation",
+          "toStation"
+        ]
+      }
+    },
+    {
+      "name": "get_departures",
+      "description": "Get real-time departure information for trains from a specific station, including platform numbers, delays, route details, and any relevant travel notes. Returns a list of upcoming departures with timing, destination, and status information.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "station": {
+            "type": "string",
+            "description": "NS Station code for the station (e.g., ASD for Amsterdam Centraal). Required if uicCode is not provided"
+          },
+          "uicCode": {
+            "type": "string",
+            "description": "UIC code for the station. Required if station code is not provided"
+          },
+          "dateTime": {
+            "type": "string",
+            "description": "Format - date-time (as date-time in RFC3339). Only supported for departures at foreign stations. Defaults to server time (Europe/Amsterdam)"
+          },
+          "maxJourneys": {
+            "type": "number",
+            "description": "Number of departures to return",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 40
+          },
+          "lang": {
+            "type": "string",
+            "description": "Language for localizing the departures list. Only a small subset of text is translated, mainly notes. Defaults to Dutch",
+            "enum": [
+              "nl",
+              "en"
+            ],
+            "default": "nl"
+          }
+        },
+        "oneOf": [
+          {
+            "required": [
+              "station"
+            ]
+          },
+          {
+            "required": [
+              "uicCode"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "get_ovfiets",
+      "description": "Get OV-fiets availability at a train station",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "stationCode": {
+            "type": "string",
+            "description": "Station code to check OV-fiets availability for (e.g., ASD for Amsterdam Centraal)"
+          }
+        },
+        "required": [
+          "stationCode"
+        ]
+      }
+    },
+    {
+      "name": "get_station_info",
+      "description": "Get detailed information about a train station",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Station name or code to search for"
+          },
+          "includeNonPlannableStations": {
+            "type": "boolean",
+            "description": "Include stations where trains do not stop regularly",
+            "default": false
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of results to return",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 10
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "get_current_time_in_rfc3339",
+      "description": "Get the current server time (Europe/Amsterdam timezone) in RFC3339 format. This can be used as input for other tools that require date-time parameters.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_arrivals",
+      "description": "Get real-time arrival information for trains at a specific station, including platform numbers, delays, origin stations, and any relevant travel notes. Returns a list of upcoming arrivals with timing, origin, and status information.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "station": {
+            "type": "string",
+            "description": "NS Station code for the station (e.g., ASD for Amsterdam Centraal). Required if uicCode is not provided"
+          },
+          "uicCode": {
+            "type": "string",
+            "description": "UIC code for the station. Required if station code is not provided"
+          },
+          "dateTime": {
+            "type": "string",
+            "description": "Format - date-time (as date-time in RFC3339). Only supported for arrivals at foreign stations. Defaults to server time (Europe/Amsterdam)"
+          },
+          "maxJourneys": {
+            "type": "number",
+            "description": "Number of arrivals to return",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 40
+          },
+          "lang": {
+            "type": "string",
+            "description": "Language for localizing the arrivals list. Only a small subset of text is translated, mainly notes. Defaults to Dutch",
+            "enum": [
+              "nl",
+              "en"
+            ],
+            "default": "nl"
+          }
+        },
+        "oneOf": [
+          {
+            "required": [
+              "station"
+            ]
+          },
+          {
+            "required": [
+              "uicCode"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "get_prices",
+      "description": "Get price information for domestic train journeys, including different travel classes, ticket types, and discounts. Returns detailed pricing information with conditions and validity.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "fromStation": {
+            "type": "string",
+            "description": "UicCode or station code of the origin station"
+          },
+          "toStation": {
+            "type": "string",
+            "description": "UicCode or station code of the destination station"
+          },
+          "travelClass": {
+            "type": "string",
+            "description": "Travel class to return the price for",
+            "enum": [
+              "FIRST_CLASS",
+              "SECOND_CLASS"
+            ]
+          },
+          "travelType": {
+            "type": "string",
+            "description": "Return the price for a single or return trip",
+            "enum": [
+              "single",
+              "return"
+            ],
+            "default": "single"
+          },
+          "isJointJourney": {
+            "type": "boolean",
+            "description": "Set to true to return the price including joint journey discount",
+            "default": false
+          },
+          "adults": {
+            "type": "integer",
+            "description": "Number of adults to return the price for",
+            "minimum": 1,
+            "default": 1
+          },
+          "children": {
+            "type": "integer",
+            "description": "Number of children to return the price for",
+            "minimum": 0,
+            "default": 0
+          },
+          "routeId": {
+            "type": "string",
+            "description": "Specific identifier for the route to take between the two stations. This routeId is returned in the /api/v3/trips call."
+          },
+          "plannedDepartureTime": {
+            "type": "string",
+            "description": "Format - date-time (as date-time in RFC3339). Used to find the correct route if multiple routes are possible."
+          },
+          "plannedArrivalTime": {
+            "type": "string",
+            "description": "Format - date-time (as date-time in RFC3339). Used to find the correct route if multiple routes are possible."
+          }
+        },
+        "required": [
+          "fromStation",
+          "toStation"
+        ]
+      }
+    }
+  ]
 }

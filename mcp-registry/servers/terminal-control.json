@@ -66,5 +66,92 @@
       "required": true,
       "example": "terminal_controller"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "execute_command",
+      "description": "\n    Execute terminal command and return results\n    \n    Args:\n        command: Command line command to execute\n        timeout: Command timeout in seconds, default is 30 seconds\n    \n    Returns:\n        Output of the command execution\n    ",
+      "inputSchema": {
+        "properties": {
+          "command": {
+            "title": "Command",
+            "type": "string"
+          },
+          "timeout": {
+            "default": 30,
+            "title": "Timeout",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "title": "execute_commandArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_command_history",
+      "description": "\n    Get recent command execution history\n    \n    Args:\n        count: Number of recent commands to return\n    \n    Returns:\n        Formatted command history record\n    ",
+      "inputSchema": {
+        "properties": {
+          "count": {
+            "default": 10,
+            "title": "Count",
+            "type": "integer"
+          }
+        },
+        "title": "get_command_historyArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_current_directory",
+      "description": "\n    Get current working directory\n    \n    Returns:\n        Path of current working directory\n    ",
+      "inputSchema": {
+        "properties": {},
+        "title": "get_current_directoryArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "change_directory",
+      "description": "\n    Change current working directory\n    \n    Args:\n        path: Directory path to switch to\n    \n    Returns:\n        Operation result information\n    ",
+      "inputSchema": {
+        "properties": {
+          "path": {
+            "title": "Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "title": "change_directoryArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_directory",
+      "description": "\n    List files and subdirectories in the specified directory\n    \n    Args:\n        path: Directory path to list contents, default is current directory\n    \n    Returns:\n        List of directory contents\n    ",
+      "inputSchema": {
+        "properties": {
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          }
+        },
+        "title": "list_directoryArguments",
+        "type": "object"
+      }
+    }
+  ]
 }

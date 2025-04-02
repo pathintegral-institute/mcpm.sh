@@ -30,5 +30,34 @@
         "mcp-local-rag"
       ]
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "rag_search",
+      "description": "\n    Search the web for a given query. Give back context to the LLM\n    with a RAG-like similarity sort.\n\n    Args:\n        query (str): The query to search for.\n        num_results (int): Number of results to return.\n        top_k (int): Use top \"k\" results for content.\n\n    Returns:\n        Dict of strings containing best search based on input query. Formatted in markdown.\n    ",
+      "inputSchema": {
+        "properties": {
+          "query": {
+            "title": "Query",
+            "type": "string"
+          },
+          "num_results": {
+            "default": 10,
+            "title": "Num Results",
+            "type": "integer"
+          },
+          "top_k": {
+            "default": 5,
+            "title": "Top K",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "title": "rag_searchArguments",
+        "type": "object"
+      }
+    }
+  ]
 }

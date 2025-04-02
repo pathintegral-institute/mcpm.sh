@@ -27,7 +27,7 @@
       "args": [
         "--from",
         "git+https://github.com/YanxingLiu/dify-mcp-server",
-        "${DIFY_MCP_SERVER}"
+        "dify_mcp_server"
       ],
       "env": {
         "CONFIG_PATH": "${CONFIG_PATH}"
@@ -35,11 +35,6 @@
     }
   },
   "arguments": {
-    "DIFY_MCP_SERVER": {
-      "description": "This argument specifies the path to the Dify MCP server that needs to be executed.",
-      "required": true,
-      "example": "/path/to/dify_mcp_server"
-    },
     "CONFIG_PATH": {
       "description": "This environment variable indicates the path to the configuration file for the Dify MCP server, typically a YAML file containing necessary settings.",
       "required": true,

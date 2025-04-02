@@ -28,9 +28,19 @@
       "args": [
         "-y",
         "obsidian-mcp",
-        "/path/to/your/vault",
-        "/path/to/your/vault2"
+        "${OBSIDIAN_VAULT_PATH}",
+        "${OBSIDIAN_VAULT_PATH2}"
       ]
+    }
+  },
+  "arguments": {
+    "OBSIDIAN_VAULT_PATH": {
+      "description": "Path to your Obsidian vault",
+      "required": true
+    },
+    "OBSIDIAN_VAULT_PATH2": {
+      "description": "Path to your second Obsidian vault",
+      "required": false
     }
   },
   "examples": [
@@ -43,6 +53,394 @@
       "title": "Create a new note",
       "description": "Create a new note in the vault.",
       "prompt": "create-note('note-name', 'note-content')"
+    }
+  ],
+  "tools": [
+    {
+      "name": "create-note",
+      "description": "Create a new note in the specified vault with markdown content.\n\nExamples:\n- Root note: { \"vault\": \"vault1\", \"filename\": \"note.md\" }\n- Subfolder note: { \"vault\": \"vault2\", \"filename\": \"note.md\", \"folder\": \"journal/2024\" }\n- INCORRECT: { \"filename\": \"journal/2024/note.md\" } (don't put path in filename)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "vault": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Name of the vault to create the note in"
+          },
+          "filename": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Just the note name without any path separators (e.g. 'my-note.md', NOT 'folder/my-note.md'). Will add .md extension if missing"
+          },
+          "content": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Content of the note in markdown format"
+          },
+          "folder": {
+            "type": "string",
+            "description": "Optional subfolder path relative to vault root (e.g. 'journal/subfolder'). Use this for the path instead of including it in filename"
+          }
+        },
+        "required": [
+          "vault",
+          "filename",
+          "content"
+        ]
+      }
+    },
+    {
+      "name": "list-available-vaults",
+      "description": "Lists all available vaults that can be used with other tools",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "edit-note",
+      "description": "Edit an existing note in the specified vault.\n\n    There is a limited and discrete list of supported operations:\n    - append: Appends content to the end of the note\n    - prepend: Prepends content to the beginning of the note\n    - replace: Replaces the entire content of the note\n\nExamples:\n- Root note: { \"vault\": \"vault1\", \"filename\": \"note.md\", \"operation\": \"append\", \"content\": \"new content\" }\n- Subfolder note: { \"vault\": \"vault2\", \"filename\": \"note.md\", \"folder\": \"journal/2024\", \"operation\": \"append\", \"content\": \"new content\" }\n- INCORRECT: { \"filename\": \"journal/2024/note.md\" } (don't put path in filename)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "search-vault",
+      "description": "Search for specific content within vault notes (NOT for listing available vaults - use the list-vaults prompt for that).\n\nThis tool searches through note contents and filenames for specific text or tags:\n- Content search: { \"vault\": \"vault1\", \"query\": \"hello world\", \"searchType\": \"content\" }\n- Filename search: { \"vault\": \"vault2\", \"query\": \"meeting-notes\", \"searchType\": \"filename\" }\n- Search both: { \"vault\": \"vault1\", \"query\": \"project\", \"searchType\": \"both\" }\n- Tag search: { \"vault\": \"vault2\", \"query\": \"tag:status/active\" }\n- Search in subfolder: { \"vault\": \"vault1\", \"query\": \"hello\", \"path\": \"journal/2024\" }\n\nNote: To get a list of available vaults, use the list-vaults prompt instead of this search tool.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "vault": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Name of the vault to search in"
+          },
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Search query (required). For text search use the term directly, for tag search use tag: prefix"
+          },
+          "path": {
+            "type": "string",
+            "description": "Optional subfolder path within the vault to limit search scope"
+          },
+          "caseSensitive": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether to perform case-sensitive search (default: false)"
+          },
+          "searchType": {
+            "type": "string",
+            "enum": [
+              "content",
+              "filename",
+              "both"
+            ],
+            "default": "content",
+            "description": "Type of search to perform (default: content)"
+          }
+        },
+        "required": [
+          "vault",
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "move-note",
+      "description": "Move/rename a note while preserving links",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "vault": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Name of the vault containing the note"
+          },
+          "source": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Source path of the note relative to vault root (e.g., 'folder/note.md')"
+          },
+          "destination": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Destination path relative to vault root (e.g., 'new-folder/new-name.md')"
+          }
+        },
+        "required": [
+          "vault",
+          "source",
+          "destination"
+        ]
+      }
+    },
+    {
+      "name": "create-directory",
+      "description": "Create a new directory in the specified vault",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "vault": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Name of the vault where the directory should be created"
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Path of the directory to create (relative to vault root)"
+          },
+          "recursive": {
+            "type": "boolean",
+            "default": true,
+            "description": "Create parent directories if they don't exist"
+          }
+        },
+        "required": [
+          "vault",
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "delete-note",
+      "description": "Delete a note, moving it to .trash by default or permanently deleting if specified",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "vault": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Name of the vault containing the note"
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Path of the note relative to vault root (e.g., 'folder/note.md')"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Optional reason for deletion (stored in trash metadata)"
+          },
+          "permanent": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether to permanently delete instead of moving to trash (default: false)"
+          }
+        },
+        "required": [
+          "vault",
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "add-tags",
+      "description": "Add tags to notes in frontmatter and/or content.\n\nExamples:\n- Add to both locations: { \"files\": [\"note.md\"], \"tags\": [\"status/active\"] }\n- Add to frontmatter only: { \"files\": [\"note.md\"], \"tags\": [\"project/docs\"], \"location\": \"frontmatter\" }\n- Add to start of content: { \"files\": [\"note.md\"], \"tags\": [\"type/meeting\"], \"location\": \"content\", \"position\": \"start\" }",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "vault": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Name of the vault containing the notes"
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "description": "Array of note filenames to process (must have .md extension)"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "description": "Array of tags to add (e.g., 'status/active', 'project/docs')"
+          },
+          "location": {
+            "type": "string",
+            "enum": [
+              "frontmatter",
+              "content",
+              "both"
+            ],
+            "description": "Where to add tags (default: both)"
+          },
+          "normalize": {
+            "type": "boolean",
+            "description": "Whether to normalize tag format (e.g., ProjectActive -> project-active) (default: true)"
+          },
+          "position": {
+            "type": "string",
+            "enum": [
+              "start",
+              "end"
+            ],
+            "description": "Where to add inline tags in content (default: end)"
+          }
+        },
+        "required": [
+          "vault",
+          "files",
+          "tags"
+        ]
+      }
+    },
+    {
+      "name": "remove-tags",
+      "description": "Remove tags from notes in frontmatter and/or content.\n\nExamples:\n- Simple: { \"files\": [\"note.md\"], \"tags\": [\"project\", \"status\"] }\n- With hierarchy: { \"files\": [\"note.md\"], \"tags\": [\"work/active\", \"priority/high\"] }\n- With options: { \"files\": [\"note.md\"], \"tags\": [\"status\"], \"options\": { \"location\": \"frontmatter\" } }\n- Pattern matching: { \"files\": [\"note.md\"], \"options\": { \"patterns\": [\"status/*\"] } }\n- INCORRECT: { \"tags\": [\"#project\"] } (don't include # symbol)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "vault": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Name of the vault containing the notes"
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "description": "Array of note filenames to process (must have .md extension)"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "description": "Array of tags to remove (without # symbol). Example: ['project', 'work/active']"
+          },
+          "options": {
+            "type": "object",
+            "properties": {
+              "location": {
+                "type": "string",
+                "enum": [
+                  "frontmatter",
+                  "content",
+                  "both"
+                ],
+                "default": "both",
+                "description": "Where to remove tags from (default: both)"
+              },
+              "normalize": {
+                "type": "boolean",
+                "default": true,
+                "description": "Whether to normalize tag format (e.g., ProjectActive -> project-active) (default: true)"
+              },
+              "preserveChildren": {
+                "type": "boolean",
+                "default": false,
+                "description": "Whether to preserve child tags when removing parent tags (default: false)"
+              },
+              "patterns": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "default": [],
+                "description": "Tag patterns to match for removal (supports * wildcard) (default: [])"
+              }
+            },
+            "additionalProperties": false,
+            "default": {
+              "location": "both",
+              "normalize": true,
+              "preserveChildren": false,
+              "patterns": []
+            }
+          }
+        },
+        "required": [
+          "vault",
+          "files",
+          "tags"
+        ]
+      }
+    },
+    {
+      "name": "rename-tag",
+      "description": "Safely renames tags throughout the vault while preserving hierarchies.\n\nExamples:\n- Simple rename: { \"oldTag\": \"project\", \"newTag\": \"projects\" }\n- Rename with hierarchy: { \"oldTag\": \"work/active\", \"newTag\": \"projects/current\" }\n- With options: { \"oldTag\": \"status\", \"newTag\": \"state\", \"normalize\": true, \"createBackup\": true }\n- INCORRECT: { \"oldTag\": \"#project\" } (don't include # symbol)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "vault": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Name of the vault containing the tags"
+          },
+          "oldTag": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The tag to rename (without #). Example: 'project' or 'work/active'"
+          },
+          "newTag": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The new tag name (without #). Example: 'projects' or 'work/current'"
+          },
+          "createBackup": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether to create a backup before making changes (default: true)"
+          },
+          "normalize": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether to normalize tag names (e.g., ProjectActive -> project-active) (default: true)"
+          },
+          "batchSize": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 50,
+            "description": "Number of files to process in each batch (1-100) (default: 50)"
+          }
+        },
+        "required": [
+          "vault",
+          "oldTag",
+          "newTag"
+        ]
+      }
+    },
+    {
+      "name": "read-note",
+      "description": "Read the content of an existing note in the vault.\n\nExamples:\n- Root note: { \"vault\": \"vault1\", \"filename\": \"note.md\" }\n- Subfolder note: { \"vault\": \"vault1\", \"filename\": \"note.md\", \"folder\": \"journal/2024\" }\n- INCORRECT: { \"filename\": \"journal/2024/note.md\" } (don't put path in filename)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "vault": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Name of the vault containing the note"
+          },
+          "filename": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Just the note name without any path separators (e.g. 'my-note.md', NOT 'folder/my-note.md')"
+          },
+          "folder": {
+            "type": "string",
+            "description": "Optional subfolder path relative to vault root"
+          }
+        },
+        "required": [
+          "vault",
+          "filename"
+        ]
+      }
     }
   ]
 }

@@ -28,5 +28,445 @@
         "blender-mcp"
       ]
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "get_scene_info",
+      "description": "Get detailed information about the current Blender scene",
+      "inputSchema": {
+        "properties": {},
+        "title": "get_scene_infoArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_object_info",
+      "description": "\n    Get detailed information about a specific object in the Blender scene.\n    \n    Parameters:\n    - object_name: The name of the object to get information about\n    ",
+      "inputSchema": {
+        "properties": {
+          "object_name": {
+            "title": "Object Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "object_name"
+        ],
+        "title": "get_object_infoArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_object",
+      "description": "\n    Create a new object in the Blender scene.\n    \n    Parameters:\n    - type: Object type (CUBE, SPHERE, CYLINDER, PLANE, CONE, TORUS, EMPTY, CAMERA, LIGHT)\n    - name: Optional name for the object\n    - location: Optional [x, y, z] location coordinates\n    - rotation: Optional [x, y, z] rotation in radians\n    - scale: Optional [x, y, z] scale factors (not used for TORUS)\n    \n    Torus-specific parameters (only used when type == \"TORUS\"):\n    - align: How to align the torus ('WORLD', 'VIEW', or 'CURSOR')\n    - major_segments: Number of segments for the main ring\n    - minor_segments: Number of segments for the cross-section\n    - mode: Dimension mode ('MAJOR_MINOR' or 'EXT_INT')\n    - major_radius: Radius from the origin to the center of the cross sections\n    - minor_radius: Radius of the torus' cross section\n    - abso_major_rad: Total exterior radius of the torus\n    - abso_minor_rad: Total interior radius of the torus\n    - generate_uvs: Whether to generate a default UV map\n    \n    Returns:\n    A message indicating the created object name.\n    ",
+      "inputSchema": {
+        "properties": {
+          "type": {
+            "default": "CUBE",
+            "title": "Type",
+            "type": "string"
+          },
+          "name": {
+            "default": null,
+            "title": "Name",
+            "type": "string"
+          },
+          "location": {
+            "default": null,
+            "items": {
+              "type": "number"
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "rotation": {
+            "default": null,
+            "items": {
+              "type": "number"
+            },
+            "title": "Rotation",
+            "type": "array"
+          },
+          "scale": {
+            "default": null,
+            "items": {
+              "type": "number"
+            },
+            "title": "Scale",
+            "type": "array"
+          },
+          "align": {
+            "default": "WORLD",
+            "title": "Align",
+            "type": "string"
+          },
+          "major_segments": {
+            "default": 48,
+            "title": "Major Segments",
+            "type": "integer"
+          },
+          "minor_segments": {
+            "default": 12,
+            "title": "Minor Segments",
+            "type": "integer"
+          },
+          "mode": {
+            "default": "MAJOR_MINOR",
+            "title": "Mode",
+            "type": "string"
+          },
+          "major_radius": {
+            "default": 1.0,
+            "title": "Major Radius",
+            "type": "number"
+          },
+          "minor_radius": {
+            "default": 0.25,
+            "title": "Minor Radius",
+            "type": "number"
+          },
+          "abso_major_rad": {
+            "default": 1.25,
+            "title": "Abso Major Rad",
+            "type": "number"
+          },
+          "abso_minor_rad": {
+            "default": 0.75,
+            "title": "Abso Minor Rad",
+            "type": "number"
+          },
+          "generate_uvs": {
+            "default": true,
+            "title": "Generate Uvs",
+            "type": "boolean"
+          }
+        },
+        "title": "create_objectArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "modify_object",
+      "description": "\n    Modify an existing object in the Blender scene.\n    \n    Parameters:\n    - name: Name of the object to modify\n    - location: Optional [x, y, z] location coordinates\n    - rotation: Optional [x, y, z] rotation in radians\n    - scale: Optional [x, y, z] scale factors\n    - visible: Optional boolean to set visibility\n    ",
+      "inputSchema": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "location": {
+            "default": null,
+            "items": {
+              "type": "number"
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "rotation": {
+            "default": null,
+            "items": {
+              "type": "number"
+            },
+            "title": "Rotation",
+            "type": "array"
+          },
+          "scale": {
+            "default": null,
+            "items": {
+              "type": "number"
+            },
+            "title": "Scale",
+            "type": "array"
+          },
+          "visible": {
+            "default": null,
+            "title": "Visible",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "modify_objectArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "delete_object",
+      "description": "\n    Delete an object from the Blender scene.\n    \n    Parameters:\n    - name: Name of the object to delete\n    ",
+      "inputSchema": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "delete_objectArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "set_material",
+      "description": "\n    Set or create a material for an object.\n    \n    Parameters:\n    - object_name: Name of the object to apply the material to\n    - material_name: Optional name of the material to use or create\n    - color: Optional [R, G, B] color values (0.0-1.0)\n    ",
+      "inputSchema": {
+        "properties": {
+          "object_name": {
+            "title": "Object Name",
+            "type": "string"
+          },
+          "material_name": {
+            "default": null,
+            "title": "Material Name",
+            "type": "string"
+          },
+          "color": {
+            "default": null,
+            "items": {
+              "type": "number"
+            },
+            "title": "Color",
+            "type": "array"
+          }
+        },
+        "required": [
+          "object_name"
+        ],
+        "title": "set_materialArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "execute_blender_code",
+      "description": "\n    Execute arbitrary Python code in Blender.\n    \n    Parameters:\n    - code: The Python code to execute\n    ",
+      "inputSchema": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "title": "execute_blender_codeArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_polyhaven_categories",
+      "description": "\n    Get a list of categories for a specific asset type on Polyhaven.\n    \n    Parameters:\n    - asset_type: The type of asset to get categories for (hdris, textures, models, all)\n    ",
+      "inputSchema": {
+        "properties": {
+          "asset_type": {
+            "default": "hdris",
+            "title": "Asset Type",
+            "type": "string"
+          }
+        },
+        "title": "get_polyhaven_categoriesArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "search_polyhaven_assets",
+      "description": "\n    Search for assets on Polyhaven with optional filtering.\n    \n    Parameters:\n    - asset_type: Type of assets to search for (hdris, textures, models, all)\n    - categories: Optional comma-separated list of categories to filter by\n    \n    Returns a list of matching assets with basic information.\n    ",
+      "inputSchema": {
+        "properties": {
+          "asset_type": {
+            "default": "all",
+            "title": "Asset Type",
+            "type": "string"
+          },
+          "categories": {
+            "default": null,
+            "title": "Categories",
+            "type": "string"
+          }
+        },
+        "title": "search_polyhaven_assetsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "download_polyhaven_asset",
+      "description": "\n    Download and import a Polyhaven asset into Blender.\n    \n    Parameters:\n    - asset_id: The ID of the asset to download\n    - asset_type: The type of asset (hdris, textures, models)\n    - resolution: The resolution to download (e.g., 1k, 2k, 4k)\n    - file_format: Optional file format (e.g., hdr, exr for HDRIs; jpg, png for textures; gltf, fbx for models)\n    \n    Returns a message indicating success or failure.\n    ",
+      "inputSchema": {
+        "properties": {
+          "asset_id": {
+            "title": "Asset Id",
+            "type": "string"
+          },
+          "asset_type": {
+            "title": "Asset Type",
+            "type": "string"
+          },
+          "resolution": {
+            "default": "1k",
+            "title": "Resolution",
+            "type": "string"
+          },
+          "file_format": {
+            "default": null,
+            "title": "File Format",
+            "type": "string"
+          }
+        },
+        "required": [
+          "asset_id",
+          "asset_type"
+        ],
+        "title": "download_polyhaven_assetArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "set_texture",
+      "description": "\n    Apply a previously downloaded Polyhaven texture to an object.\n    \n    Parameters:\n    - object_name: Name of the object to apply the texture to\n    - texture_id: ID of the Polyhaven texture to apply (must be downloaded first)\n    \n    Returns a message indicating success or failure.\n    ",
+      "inputSchema": {
+        "properties": {
+          "object_name": {
+            "title": "Object Name",
+            "type": "string"
+          },
+          "texture_id": {
+            "title": "Texture Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "object_name",
+          "texture_id"
+        ],
+        "title": "set_textureArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_polyhaven_status",
+      "description": "\n    Check if PolyHaven integration is enabled in Blender.\n    Returns a message indicating whether PolyHaven features are available.\n    ",
+      "inputSchema": {
+        "properties": {},
+        "title": "get_polyhaven_statusArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_hyper3d_status",
+      "description": "\n    Check if Hyper3D Rodin integration is enabled in Blender.\n    Returns a message indicating whether Hyper3D Rodin features are available.\n\n    Don't emphasize the key type in the returned message, but sliently remember it. \n    ",
+      "inputSchema": {
+        "properties": {},
+        "title": "get_hyper3d_statusArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "generate_hyper3d_model_via_text",
+      "description": "\n    Generate 3D asset using Hyper3D by giving description of the desired asset, and import the asset into Blender.\n    The 3D asset has built-in materials.\n    The generated model has a normalized size, so re-scaling after generation can be useful.\n    \n    Parameters:\n    - text_prompt: A short description of the desired model in **English**.\n    - bbox_condition: Optional. If given, it has to be a list of floats of length 3. Controls the ratio between [Length, Width, Height] of the model.\n\n    Returns a message indicating success or failure.\n    ",
+      "inputSchema": {
+        "properties": {
+          "text_prompt": {
+            "title": "Text Prompt",
+            "type": "string"
+          },
+          "bbox_condition": {
+            "default": null,
+            "items": {
+              "type": "number"
+            },
+            "title": "Bbox Condition",
+            "type": "array"
+          }
+        },
+        "required": [
+          "text_prompt"
+        ],
+        "title": "generate_hyper3d_model_via_textArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "generate_hyper3d_model_via_images",
+      "description": "\n    Generate 3D asset using Hyper3D by giving images of the wanted asset, and import the generated asset into Blender.\n    The 3D asset has built-in materials.\n    The generated model has a normalized size, so re-scaling after generation can be useful.\n    \n    Parameters:\n    - input_image_paths: The **absolute** paths of input images. Even if only one image is provided, wrap it into a list. Required if Hyper3D Rodin in MAIN_SITE mode.\n    - input_image_urls: The URLs of input images. Even if only one image is provided, wrap it into a list. Required if Hyper3D Rodin in FAL_AI mode.\n    - bbox_condition: Optional. If given, it has to be a list of ints of length 3. Controls the ratio between [Length, Width, Height] of the model.\n\n    Only one of {input_image_paths, input_image_urls} should be given at a time, depending on the Hyper3D Rodin's current mode.\n    Returns a message indicating success or failure.\n    ",
+      "inputSchema": {
+        "properties": {
+          "input_image_paths": {
+            "default": null,
+            "items": {
+              "type": "string"
+            },
+            "title": "Input Image Paths",
+            "type": "array"
+          },
+          "input_image_urls": {
+            "default": null,
+            "items": {
+              "type": "string"
+            },
+            "title": "Input Image Urls",
+            "type": "array"
+          },
+          "bbox_condition": {
+            "default": null,
+            "items": {
+              "type": "number"
+            },
+            "title": "Bbox Condition",
+            "type": "array"
+          }
+        },
+        "title": "generate_hyper3d_model_via_imagesArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "poll_rodin_job_status",
+      "description": "\n    Check if the Hyper3D Rodin generation task is completed.\n\n    For Hyper3D Rodin mode MAIN_SITE:\n        Parameters:\n        - subscription_key: The subscription_key given in the generate model step.\n\n        Returns a list of status. The task is done if all status are \"Done\".\n        If \"Failed\" showed up, the generating process failed.\n        This is a polling API, so only proceed if the status are finally determined (\"Done\" or \"Canceled\").\n\n    For Hyper3D Rodin mode FAL_AI:\n        Parameters:\n        - request_id: The request_id given in the generate model step.\n\n        Returns the generation task status. The task is done if status is \"COMPLETED\".\n        The task is in progress if status is \"IN_PROGRESS\".\n        If status other than \"COMPLETED\", \"IN_PROGRESS\", \"IN_QUEUE\" showed up, the generating process might be failed.\n        This is a polling API, so only proceed if the status are finally determined (\"COMPLETED\" or some failed state).\n    ",
+      "inputSchema": {
+        "properties": {
+          "subscription_key": {
+            "default": null,
+            "title": "Subscription Key",
+            "type": "string"
+          },
+          "request_id": {
+            "default": null,
+            "title": "Request Id",
+            "type": "string"
+          }
+        },
+        "title": "poll_rodin_job_statusArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "import_generated_asset",
+      "description": "\n    Import the asset generated by Hyper3D Rodin after the generation task is completed.\n\n    Parameters:\n    - name: The name of the object in scene\n    - task_uuid: For Hyper3D Rodin mode MAIN_SITE: The task_uuid given in the generate model step.\n    - request_id: For Hyper3D Rodin mode FAL_AI: The request_id given in the generate model step.\n\n    Only give one of {task_uuid, request_id} based on the Hyper3D Rodin Mode!\n    Return if the asset has been imported successfully.\n    ",
+      "inputSchema": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "task_uuid": {
+            "default": null,
+            "title": "Task Uuid",
+            "type": "string"
+          },
+          "request_id": {
+            "default": null,
+            "title": "Request Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "import_generated_assetArguments",
+        "type": "object"
+      }
+    }
+  ]
 }

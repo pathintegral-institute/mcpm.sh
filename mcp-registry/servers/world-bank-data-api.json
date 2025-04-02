@@ -28,7 +28,7 @@
       "args": [
         "--from",
         "git+https://github.com/anshumax/world_bank_mcp_server",
-        "src/world_bank_mcp_server/server.py"
+        "world_bank_mcp_server"
       ]
     }
   },
@@ -47,6 +47,29 @@
       "title": "Analyze Indicators",
       "description": "Analyzes specific indicators for a selected country.",
       "prompt": "Analyze the poverty indicators for Kenya."
+    }
+  ],
+  "tools": [
+    {
+      "name": "get_indicator_for_country",
+      "description": "Get values for an indicator for a specific country from the World Bank API",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "country_id": {
+            "type": "string",
+            "description": "The ID of the country for which the indicator is to be queried"
+          },
+          "indicator_id": {
+            "type": "string",
+            "description": "The ID of the indicator to be queried"
+          }
+        },
+        "required": [
+          "country_id",
+          "indicator_id"
+        ]
+      }
     }
   ]
 }

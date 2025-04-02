@@ -98,5 +98,6 @@
       "required": true,
       "example": "your_api_token or your_token"
     }
-  }
+  },
+  "tools": []
 }

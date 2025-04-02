@@ -61,5 +61,287 @@
       "required": true,
       "example": "sk_test_4eC39HqLyjWDarjtT1zdp7dc"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "create_customer",
+      "description": "\nThis tool will create a customer in Stripe.\n\nIt takes two arguments:\n- name (str): The name of the customer.\n- email (str, optional): The email of the customer.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the customer"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "The email of the customer"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    {
+      "name": "list_customers",
+      "description": "\nThis tool will fetch a list of Customers from Stripe.\n\nIt takes no input.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "description": "A limit on the number of objects to be returned. Limit can range between 1 and 100."
+          },
+          "email": {
+            "type": "string",
+            "description": "A case-sensitive filter on the list based on the customer's email field. The value must be a string."
+          }
+        }
+      }
+    },
+    {
+      "name": "create_product",
+      "description": "\nThis tool will create a product in Stripe.\n\nIt takes two arguments:\n- name (str): The name of the product.\n- description (str, optional): The description of the product.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the product."
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the product."
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    {
+      "name": "list_products",
+      "description": "\nThis tool will fetch a list of Products from Stripe.\n\nIt takes one optional argument:\n- limit (int, optional): The number of products to return.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "description": "A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 10."
+          }
+        }
+      }
+    },
+    {
+      "name": "create_price",
+      "description": "\nThis tool will create a price in Stripe. If a product has not already been specified, a product should be created first.\n\nIt takes three arguments:\n- product (str): The ID of the product to create the price for.\n- unit_amount (int): The unit amount of the price in cents.\n- currency (str): The currency of the price.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product": {
+            "type": "string",
+            "description": "The ID of the product to create the price for."
+          },
+          "unit_amount": {
+            "type": "integer",
+            "description": "The unit amount of the price in cents."
+          },
+          "currency": {
+            "type": "string",
+            "description": "The currency of the price."
+          }
+        },
+        "required": [
+          "product",
+          "unit_amount",
+          "currency"
+        ]
+      }
+    },
+    {
+      "name": "list_prices",
+      "description": "\nThis tool will fetch a list of Prices from Stripe.\n\nIt takes two arguments.\n- product (str, optional): The ID of the product to list prices for.\n- limit (int, optional): The number of prices to return.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product": {
+            "type": "string",
+            "description": "The ID of the product to list prices for."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "description": "A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 10."
+          }
+        }
+      }
+    },
+    {
+      "name": "create_payment_link",
+      "description": "\nThis tool will create a payment link in Stripe.\n\nIt takes two arguments:\n- price (str): The ID of the price to create the payment link for.\n- quantity (int): The quantity of the product to include in the payment link.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "price": {
+            "type": "string",
+            "description": "The ID of the price to create the payment link for."
+          },
+          "quantity": {
+            "type": "integer",
+            "description": "The quantity of the product to include."
+          }
+        },
+        "required": [
+          "price",
+          "quantity"
+        ]
+      }
+    },
+    {
+      "name": "create_invoice",
+      "description": "\nThis tool will create an invoice in Stripe.\n\nIt takes two arguments:\n- customer (str): The ID of the customer to create the invoice for.\n\n- days_until_due (int, optional): The number of days until the invoice is due.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "customer": {
+            "type": "string",
+            "description": "The ID of the customer to create the invoice for."
+          },
+          "days_until_due": {
+            "type": "integer",
+            "description": "The number of days until the invoice is due."
+          }
+        },
+        "required": [
+          "customer"
+        ]
+      }
+    },
+    {
+      "name": "create_invoice_item",
+      "description": "\nThis tool will create an invoice item in Stripe.\n\nIt takes two arguments:\n- customer (str): The ID of the customer to create the invoice item for.\n\n- price (str): The ID of the price to create the invoice item for.\n- invoice (str): The ID of the invoice to create the invoice item for.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "customer": {
+            "type": "string",
+            "description": "The ID of the customer to create the invoice item for."
+          },
+          "price": {
+            "type": "string",
+            "description": "The ID of the price for the item."
+          },
+          "invoice": {
+            "type": "string",
+            "description": "The ID of the invoice to create the item for."
+          }
+        },
+        "required": [
+          "customer",
+          "price",
+          "invoice"
+        ]
+      }
+    },
+    {
+      "name": "finalize_invoice",
+      "description": "\nThis tool will finalize an invoice in Stripe.\n\nIt takes one argument:\n- invoice (str): The ID of the invoice to finalize.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "invoice": {
+            "type": "string",
+            "description": "The ID of the invoice to finalize."
+          }
+        },
+        "required": [
+          "invoice"
+        ]
+      }
+    },
+    {
+      "name": "retrieve_balance",
+      "description": "\nThis tool will retrieve the balance from Stripe. It takes no input.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "create_refund",
+      "description": "\nThis tool will refund a payment intent in Stripe.\n\nIt takes three arguments:\n- payment_intent (str): The ID of the payment intent to refund.\n- amount (int, optional): The amount to refund in cents.\n- reason (str, optional): The reason for the refund.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "payment_intent": {
+            "type": "string",
+            "description": "The ID of the PaymentIntent to refund."
+          },
+          "amount": {
+            "type": "integer",
+            "description": "The amount to refund in cents."
+          }
+        },
+        "required": [
+          "payment_intent"
+        ]
+      }
+    },
+    {
+      "name": "list_payment_intents",
+      "description": "\nThis tool will list payment intents in Stripe.\n\nIt takes two arguments:\n- customer (str, optional): The ID of the customer to list payment intents for.\n\n- limit (int, optional): The number of payment intents to return.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "customer": {
+            "type": "string",
+            "description": "The ID of the customer to list payment intents for."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "description": "A limit on the number of objects to be returned. Limit can range between 1 and 100."
+          }
+        }
+      }
+    },
+    {
+      "name": "search_documentation",
+      "description": "\nThis tool will take in a user question about integrating with Stripe in their application, then search and retrieve relevant Stripe documentation to answer the question.\n\nIt takes two arguments:\n- question (str): The user question to search an answer for in the Stripe documentation.\n- language (str, optional): The programming language to search for in the the documentation.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "description": "The user question about integrating with Stripe will be used to search the documentation."
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "dotnet",
+              "go",
+              "java",
+              "node",
+              "php",
+              "ruby",
+              "python",
+              "curl"
+            ],
+            "description": "The programming language to search for in the the documentation."
+          }
+        },
+        "required": [
+          "question"
+        ]
+      }
+    }
+  ]
 }

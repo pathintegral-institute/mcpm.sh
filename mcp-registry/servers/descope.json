@@ -30,8 +30,8 @@
         "https://github.com/descope-sample-apps/descope-mcp-server"
       ],
       "env": {
-        "DESCOPE_PROJECT_ID": "your-descope-project-id-here",
-        "DESCOPE_MANAGEMENT_KEY": "your-descope-management-key-here"
+        "DESCOPE_PROJECT_ID": "${DESCOPE_PROJECT_ID}",
+        "DESCOPE_MANAGEMENT_KEY": "${DESCOPE_MANAGEMENT_KEY}"
       }
     }
   },

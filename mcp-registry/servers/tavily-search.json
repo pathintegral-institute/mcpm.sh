@@ -25,7 +25,7 @@
       "type": "uvx",
       "command": "uvx",
       "args": [
-        "mcp_server_tavily"
+        "mcp-tavily"
       ],
       "env": {
         "TAVILY_API_KEY": "your_api_key_here"
@@ -36,7 +36,7 @@
       "command": "python",
       "args": [
         "-m",
-        "mcp_server_tavily"
+        "mcp-tavily"
       ],
       "env": {
         "TAVILY_API_KEY": "your_api_key_here"

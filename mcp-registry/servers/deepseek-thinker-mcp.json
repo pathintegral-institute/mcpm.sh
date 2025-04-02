@@ -45,5 +45,23 @@
       "required": true,
       "example": "https://api.openai.com/v1"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "get-deepseek-thinker",
+      "description": "think with deepseek",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "originPrompt": {
+            "type": "string",
+            "description": "user's original prompt"
+          }
+        },
+        "required": [
+          "originPrompt"
+        ]
+      }
+    }
+  ]
 }

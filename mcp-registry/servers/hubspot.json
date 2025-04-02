@@ -57,5 +57,115 @@
       "required": true,
       "example": "your_access_token_here"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "hubspot_create_contact",
+      "description": "Create a new contact in HubSpot",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "firstname": {
+            "type": "string",
+            "description": "Contact's first name"
+          },
+          "lastname": {
+            "type": "string",
+            "description": "Contact's last name"
+          },
+          "email": {
+            "type": "string",
+            "description": "Contact's email address"
+          },
+          "properties": {
+            "type": "object",
+            "description": "Additional contact properties"
+          }
+        },
+        "required": [
+          "firstname",
+          "lastname"
+        ]
+      }
+    },
+    {
+      "name": "hubspot_create_company",
+      "description": "Create a new company in HubSpot",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Company name"
+          },
+          "properties": {
+            "type": "object",
+            "description": "Additional company properties"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    {
+      "name": "hubspot_get_company_activity",
+      "description": "Get activity history for a specific company",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "company_id": {
+            "type": "string",
+            "description": "HubSpot company ID"
+          }
+        },
+        "required": [
+          "company_id"
+        ]
+      }
+    },
+    {
+      "name": "hubspot_get_recent_engagements",
+      "description": "Get recent engagement activities across all contacts and companies",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "days": {
+            "type": "integer",
+            "description": "Number of days to look back (default: 7)"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of engagements to return (default: 50)"
+          }
+        }
+      }
+    },
+    {
+      "name": "hubspot_get_active_companies",
+      "description": "Get most recently active companies from HubSpot",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of companies to return (default: 10)"
+          }
+        }
+      }
+    },
+    {
+      "name": "hubspot_get_active_contacts",
+      "description": "Get most recently active contacts from HubSpot",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of contacts to return (default: 10)"
+          }
+        }
+      }
+    }
+  ]
 }

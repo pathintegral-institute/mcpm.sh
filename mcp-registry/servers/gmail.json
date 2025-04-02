@@ -49,5 +49,178 @@
       "required": true,
       "example": "/gmail-server/credentials.json"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "send_email",
+      "description": "Sends a new email.",
+      "inputSchema": {
+        "to": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of recipient email addresses"
+        },
+        "subject": {
+          "type": "string",
+          "description": "Email subject"
+        },
+        "body": {
+          "type": "string",
+          "description": "Email body content"
+        },
+        "cc": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of CC recipients",
+          "optional": true
+        },
+        "bcc": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of BCC recipients",
+          "optional": true
+        }
+      },
+      "required": [
+        "to",
+        "subject",
+        "body"
+      ]
+    },
+    {
+      "name": "draft_email",
+      "description": "Draft a new email.",
+      "inputSchema": {
+        "to": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of recipient email addresses"
+        },
+        "subject": {
+          "type": "string",
+          "description": "Email subject"
+        },
+        "body": {
+          "type": "string",
+          "description": "Email body content"
+        },
+        "cc": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of CC recipients",
+          "optional": true
+        },
+        "bcc": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of BCC recipients",
+          "optional": true
+        }
+      },
+      "required": [
+        "to",
+        "subject",
+        "body"
+      ]
+    },
+    {
+      "name": "read_email",
+      "description": "Retrieves the content of a specific email.",
+      "inputSchema": {
+        "messageId": {
+          "type": "string",
+          "description": "ID of the email message to retrieve"
+        }
+      },
+      "required": [
+        "messageId"
+      ]
+    },
+    {
+      "name": "search_emails",
+      "description": "Searches for emails using Gmail search syntax.",
+      "inputSchema": {
+        "query": {
+          "type": "string",
+          "description": "Gmail search query (e.g., 'from:example@gmail.com')"
+        },
+        "maxResults": {
+          "type": "number",
+          "description": "Maximum number of results to return",
+          "optional": true
+        }
+      },
+      "required": [
+        "query"
+      ]
+    },
+    {
+      "name": "modify_email",
+      "description": "Modifies email labels (move to different folders).",
+      "inputSchema": {
+        "messageId": {
+          "type": "string",
+          "description": "ID of the email message to modify"
+        },
+        "labelIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of label IDs to apply",
+          "optional": true
+        },
+        "addLabelIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of label IDs to add to the message",
+          "optional": true
+        },
+        "removeLabelIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of label IDs to remove from the message",
+          "optional": true
+        }
+      },
+      "required": [
+        "messageId"
+      ]
+    },
+    {
+      "name": "delete_email",
+      "description": "Permanently deletes an email.",
+      "inputSchema": {
+        "messageId": {
+          "type": "string",
+          "description": "ID of the email message to delete"
+        }
+      },
+      "required": [
+        "messageId"
+      ]
+    },
+    {
+      "name": "list_email_labels",
+      "description": "Retrieves all available Gmail labels.",
+      "inputSchema": {},
+      "required": []
+    }
+  ]
 }

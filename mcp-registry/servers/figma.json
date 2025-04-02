@@ -37,5 +37,79 @@
       "required": true,
       "example": "<your-figma-api-key>"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "get_figma_data",
+      "description": "When the nodeId cannot be obtained, obtain the layout information about the entire Figma file",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "fileKey": {
+            "type": "string",
+            "description": "The key of the Figma file to fetch, often found in a provided URL like figma.com/(file|design)/<fileKey>/..."
+          },
+          "nodeId": {
+            "type": "string",
+            "description": "The ID of the node to fetch, often found as URL parameter node-id=<nodeId>, always use if provided"
+          },
+          "depth": {
+            "type": "number",
+            "description": "How many levels deep to traverse the node tree, only use if explicitly requested by the user"
+          }
+        },
+        "required": [
+          "fileKey"
+        ]
+      }
+    },
+    {
+      "name": "download_figma_images",
+      "description": "Download SVG and PNG images used in a Figma file based on the IDs of image or icon nodes",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "fileKey": {
+            "type": "string",
+            "description": "The key of the Figma file containing the node"
+          },
+          "nodes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "nodeId": {
+                  "type": "string",
+                  "description": "The ID of the Figma image node to fetch, formatted as 1234:5678"
+                },
+                "imageRef": {
+                  "type": "string",
+                  "description": "If a node has an imageRef fill, you must include this variable. Leave blank when downloading Vector SVG images."
+                },
+                "fileName": {
+                  "type": "string",
+                  "description": "The local name for saving the fetched file"
+                }
+              },
+              "required": [
+                "nodeId",
+                "fileName"
+              ],
+              "additionalProperties": false
+            },
+            "description": "The nodes to fetch as images"
+          },
+          "localPath": {
+            "type": "string",
+            "description": "The absolute path to the directory where images are stored in the project. Automatically creates directories if needed."
+          }
+        },
+        "required": [
+          "fileKey",
+          "nodes",
+          "localPath"
+        ]
+      }
+    }
+  ]
 }

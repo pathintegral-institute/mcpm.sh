@@ -21,14 +21,13 @@
     "vega-lite"
   ],
   "installations": {
-    "npm": {
-      "type": "npm",
-      "command": "npx",
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
       "args": [
-        "-y",
-        "https://github.com/isaacwasserman/mcp-vegalite-server",
-        "--output_type",
-        "png"
+        "--from",
+        "git+https://github.com/isaacwasserman/mcp-vegalite-server",
+        "mcp_server_vegalite"
       ]
     }
   },
@@ -42,6 +41,54 @@
       "title": "Visualizing Data",
       "description": "Use the visualize_data tool to visualize saved data using Vega-Lite syntax.",
       "prompt": "visualize_data(data_name='my_table', vegalite_specification='{\"mark\": \"point\", \"encoding\": {\"x\":{\"field\":\"x\",\"type\":\"quantitative\"},\"y\":{\"field\":\"y\",\"type\":\"quantitative\"}}}')"
+    }
+  ],
+  "tools": [
+    {
+      "name": "save_data",
+      "description": "A tool which allows you to save data to a named table for later use in visualizations.\nWhen to use this tool:\n- Use this tool when you have data that you want to visualize later.\nHow to use this tool:\n- Provide the name of the table to save the data to (for later reference) and the data itself.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the table to save the data to"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "description": "Row of the table as a dictionary/object"
+            },
+            "description": "The data to save"
+          }
+        },
+        "required": [
+          "name",
+          "data"
+        ]
+      }
+    },
+    {
+      "name": "visualize_data",
+      "description": "A tool which allows you to produce a data visualization using the Vega-Lite grammar.\nWhen to use this tool:\n- At times, it will be advantageous to provide the user with a visual representation of some data, rather than just a textual representation.\n- This tool is particularly useful when the data is complex or has many dimensions, making it difficult to understand in a tabular format. It is not useful for singular data points.\nHow to use this tool:\n- Prior to visualization, data must be saved to a named table using the save_data tool.\n- After saving the data, use this tool to visualize the data by providing the name of the table with the saved data and a Vega-Lite specification.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "data_name": {
+            "type": "string",
+            "description": "The name of the data table to visualize"
+          },
+          "vegalite_specification": {
+            "type": "string",
+            "description": "The vegalite v5 specification for the visualization. Do not include the data field, as this will be added automatically."
+          }
+        },
+        "required": [
+          "data_name",
+          "vegalite_specification"
+        ]
+      }
     }
   ]
 }

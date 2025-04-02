@@ -22,12 +22,128 @@
       "type": "uvx",
       "command": "uvx",
       "args": [
+        "mcp-pinecone",
         "--index-name",
         "${your-index-name}",
         "--api-key",
-        "${your-secret-api-key}",
-        "mcp-pinecone"
+        "${your-secret-api-key}"
       ]
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "semantic_search",
+      "description": "Search Pinecone for documents.",
+      "inputSchema": {
+        "query": {
+          "type": "string",
+          "description": "Search query"
+        },
+        "top_k": {
+          "type": "integer",
+          "description": "Number of top results to return (default: 10)",
+          "default": 10
+        },
+        "namespace": {
+          "type": "string",
+          "description": "Optional namespace to search in",
+          "optional": true
+        },
+        "category": {
+          "type": "string",
+          "description": "Category for search"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Tags for search"
+        },
+        "date_range": {
+          "type": "object",
+          "properties": {
+            "start": {
+              "type": "string",
+              "format": "date",
+              "description": "Start date of the range"
+            },
+            "end": {
+              "type": "string",
+              "format": "date",
+              "description": "End date of the range"
+            }
+          }
+        }
+      },
+      "required": [
+        "query"
+      ]
+    },
+    {
+      "name": "read_document",
+      "description": "Read a document from Pinecone.",
+      "inputSchema": {
+        "document_id": {
+          "type": "string",
+          "description": "ID of the document to read"
+        },
+        "namespace": {
+          "type": "string",
+          "description": "Optional namespace to read from",
+          "optional": true
+        }
+      },
+      "required": [
+        "document_id"
+      ]
+    },
+    {
+      "name": "process_document",
+      "description": "Process a document. This will optionally chunk, then embed, and upsert the document into Pinecone.",
+      "inputSchema": {
+        "document_id": {
+          "type": "string",
+          "description": "ID of the document to process"
+        },
+        "text": {
+          "type": "string",
+          "description": "Text content of the document"
+        },
+        "metadata": {
+          "type": "object",
+          "description": "Metadata for the document"
+        },
+        "namespace": {
+          "type": "string",
+          "description": "Optional namespace to store the document in",
+          "optional": true
+        }
+      },
+      "required": [
+        "document_id",
+        "text",
+        "metadata"
+      ]
+    },
+    {
+      "name": "list_documents",
+      "description": "List all documents in the knowledge base by namespace.",
+      "inputSchema": {
+        "namespace": {
+          "type": "string",
+          "description": "Namespace to list documents in"
+        }
+      },
+      "required": [
+        "namespace"
+      ]
+    },
+    {
+      "name": "pinecone_stats",
+      "description": "Get stats about the Pinecone index specified in this server.",
+      "inputSchema": {},
+      "required": []
+    }
+  ]
 }

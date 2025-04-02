@@ -59,5 +59,23 @@
       "required": false,
       "example": "us-east-1"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "query_aws_resources",
+      "description": "Execute a boto3 code snippet to query AWS resources",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "code_snippet": {
+            "type": "string",
+            "description": "Python code using boto3 to query AWS resources. The code should have default execution setting variable named 'result'. Example code: 'result = boto3.client('s3').list_buckets()'"
+          }
+        },
+        "required": [
+          "code_snippet"
+        ]
+      }
+    }
+  ]
 }

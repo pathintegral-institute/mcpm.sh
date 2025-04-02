@@ -32,5 +32,112 @@
         "buryhuang/mcp-headless-gmail:latest"
       ]
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "gmail_refresh_token",
+      "description": "Refresh the access token using the refresh token and client credentials",
+      "inputSchema": {
+        "google_access_token": {
+          "type": "string",
+          "description": "Google OAuth2 access token (optional if expired)"
+        },
+        "google_refresh_token": {
+          "type": "string",
+          "description": "Google OAuth2 refresh token"
+        },
+        "google_client_id": {
+          "type": "string",
+          "description": "Google OAuth2 client ID for token refresh"
+        },
+        "google_client_secret": {
+          "type": "string",
+          "description": "Google OAuth2 client secret for token refresh"
+        }
+      },
+      "required": [
+        "google_refresh_token",
+        "google_client_id",
+        "google_client_secret"
+      ]
+    },
+    {
+      "name": "gmail_get_recent_emails",
+      "description": "Get the most recent emails from Gmail (returns metadata, snippets, and first 1k chars of body)",
+      "inputSchema": {
+        "google_access_token": {
+          "type": "string",
+          "description": "Google OAuth2 access token"
+        },
+        "max_results": {
+          "type": "integer",
+          "description": "Maximum number of emails to return (default: 10)"
+        },
+        "unread_only": {
+          "type": "boolean",
+          "description": "Whether to return only unread emails (default: False)"
+        }
+      },
+      "required": [
+        "google_access_token"
+      ]
+    },
+    {
+      "name": "gmail_get_email_body_chunk",
+      "description": "Get a 1k character chunk of an email body starting from the specified offset",
+      "inputSchema": {
+        "google_access_token": {
+          "type": "string",
+          "description": "Google OAuth2 access token"
+        },
+        "message_id": {
+          "type": "string",
+          "description": "ID of the message to retrieve"
+        },
+        "thread_id": {
+          "type": "string",
+          "description": "ID of the thread to retrieve (will get the first message if multiple exist)"
+        },
+        "offset": {
+          "type": "integer",
+          "description": "Offset in characters to start from (default: 0)"
+        }
+      },
+      "required": [
+        "google_access_token"
+      ]
+    },
+    {
+      "name": "gmail_send_email",
+      "description": "Send an email via Gmail",
+      "inputSchema": {
+        "google_access_token": {
+          "type": "string",
+          "description": "Google OAuth2 access token"
+        },
+        "to": {
+          "type": "string",
+          "description": "Recipient email address"
+        },
+        "subject": {
+          "type": "string",
+          "description": "Email subject"
+        },
+        "body": {
+          "type": "string",
+          "description": "Email body content (plain text)"
+        },
+        "html_body": {
+          "type": "string",
+          "description": "Email body content in HTML format (optional)"
+        }
+      },
+      "required": [
+        "google_access_token",
+        "to",
+        "subject",
+        "body"
+      ]
+    }
+  ]
 }

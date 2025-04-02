@@ -26,6 +26,7 @@
       "type": "uvx",
       "command": "uvx",
       "args": [
+        "--from",
         "git+https://github.com/asusevski/opendota-mcp-server.git",
         "src/opendota_server/server"
       ]

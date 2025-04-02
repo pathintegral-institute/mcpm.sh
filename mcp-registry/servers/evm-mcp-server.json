@@ -32,5 +32,719 @@
   "author": {
     "name": "mcpdotdirect"
   },
-  "homepage": "https://github.com/mcpdotdirect/evm-mcp-server"
+  "homepage": "https://github.com/mcpdotdirect/evm-mcp-server",
+  "tools": [
+    {
+      "name": "get_chain_info",
+      "description": "Get information about an EVM network",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "network": {
+            "type": "string",
+            "description": "Network name (e.g., 'ethereum', 'optimism', 'arbitrum', 'base', etc.) or chain ID. Supports all EVM-compatible networks. Defaults to Ethereum mainnet."
+          }
+        }
+      }
+    },
+    {
+      "name": "resolve_ens",
+      "description": "Resolve an ENS name to an Ethereum address",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ensName": {
+            "type": "string",
+            "description": "ENS name to resolve (e.g., 'vitalik.eth')"
+          },
+          "network": {
+            "type": "string",
+            "description": "Network name (e.g., 'ethereum', 'optimism', 'arbitrum', 'base', etc.) or chain ID. ENS resolution works best on Ethereum mainnet. Defaults to Ethereum mainnet."
+          }
+        },
+        "required": [
+          "ensName"
+        ]
+      }
+    },
+    {
+      "name": "get_supported_networks",
+      "description": "Get a list of supported EVM networks",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_block_by_number",
+      "description": "Get a block by its block number",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "blockNumber": {
+            "type": "number",
+            "description": "The block number to fetch"
+          },
+          "network": {
+            "type": "string",
+            "description": "Network name or chain ID. Defaults to Ethereum mainnet."
+          }
+        },
+        "required": [
+          "blockNumber"
+        ]
+      }
+    },
+    {
+      "name": "get_latest_block",
+      "description": "Get the latest block from the EVM",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "network": {
+            "type": "string",
+            "description": "Network name or chain ID. Defaults to Ethereum mainnet."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_balance",
+      "description": "Get the native token balance (ETH, MATIC, etc.) for an address",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "The wallet address or ENS name (e.g., '0x1234...' or 'vitalik.eth') to check the balance for"
+          },
+          "network": {
+            "type": "string",
+            "description": "Network name (e.g., 'ethereum', 'optimism', 'arbitrum', 'base', etc.) or chain ID. Supports all EVM-compatible networks. Defaults to Ethereum mainnet."
+          }
+        },
+        "required": [
+          "address"
+        ]
+      }
+    },
+    {
+      "name": "get_erc20_balance",
+      "description": "Get the ERC20 token balance of an Ethereum address",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "The Ethereum address to check"
+          },
+          "tokenAddress": {
+            "type": "string",
+            "description": "The ERC20 token contract address"
+          },
+          "network": {
+            "type": "string",
+            "description": "Network name or chain ID. Defaults to Ethereum mainnet."
+          }
+        },
+        "required": [
+          "address",
+          "tokenAddress"
+        ]
+      }
+    },
+    {
+      "name": "get_token_balance",
+      "description": "Get the balance of an ERC20 token for an address",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tokenAddress": {
+            "type": "string",
+            "description": "The contract address or ENS name of the ERC20 token (e.g., '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' for USDC or 'uniswap.eth')"
+          },
+          "ownerAddress": {
+            "type": "string",
+            "description": "The wallet address or ENS name to check the balance for (e.g., '0x1234...' or 'vitalik.eth')"
+          },
+          "network": {
+            "type": "string",
+            "description": "Network name (e.g., 'ethereum', 'optimism', 'arbitrum', 'base', etc.) or chain ID. Supports all EVM-compatible networks. Defaults to Ethereum mainnet."
+          }
+        },
+        "required": [
+          "tokenAddress",
+          "ownerAddress"
+        ]
+      }
+    },
+    {
+      "name": "get_transaction",
+      "description": "Get detailed information about a specific transaction by its hash. Includes sender, recipient, value, data, and more.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "txHash": {
+            "type": "string",
+            "description": "The transaction hash to look up (e.g., '0x1234...')"
+          },
+          "network": {
+            "type": "string",
+            "description": "Network name (e.g., 'ethereum', 'optimism', 'arbitrum', 'base', 'polygon') or chain ID. Defaults to Ethereum mainnet."
+          }
+        },
+        "required": [
+          "txHash"
+        ]
+      }
+    },
+    {
+      "name": "get_transaction_receipt",
+      "description": "Get a transaction receipt by its hash",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "txHash": {
+            "type": "string",
+            "description": "The transaction hash to look up"
+          },
+          "network": {
+            "type": "string",
+            "description": "Network name or chain ID. Defaults to Ethereum mainnet."
+          }
+        },
+        "required": [
+          "txHash"
+        ]
+      }
+    },
+    {
+      "name": "estimate_gas",
+      "description": "Estimate the gas cost for a transaction",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "to": {
+            "type": "string",
+            "description": "The recipient address"
+          },
+          "value": {
+            "type": "string",
+            "description": "The amount of ETH to send in ether (e.g., '0.1')"
+          },
+          "data": {
+            "type": "string",
+            "description": "The transaction data as a hex string"
+          },
+          "network": {
+            "type": "string",
+            "description": "Network name or chain ID. Defaults to Ethereum mainnet."
+          }
+        },
+        "required": [
+          "to"
+        ]
+      }
+    },
+    {
+      "name": "transfer_eth",
+      "description": "Transfer native tokens (ETH, MATIC, etc.) to an address",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "privateKey": {
+            "type": "string",
+            "description": "Private key of the sender account in hex format (with or without 0x prefix). SECURITY: This is used only for transaction signing and is not stored."
+          },
+          "to": {
+            "type": "string",
+            "description": "The recipient address or ENS name (e.g., '0x1234...' or 'vitalik.eth')"
+          },
+          "amount": {
+            "type": "string",
+            "description": "Amount to send in ETH (or the native token of the network), as a string (e.g., '0.1')"
+          },
+          "network": {
+            "type": "string",
+            "description": "Network name (e.g., 'ethereum', 'optimism', 'arbitrum', 'base', etc.) or chain ID. Supports all EVM-compatible networks. Defaults to Ethereum mainnet."
+          }
+        },
+        "required": [
+          "privateKey",
+          "to",
+          "amount"
+        ]
+      }
+    },
+    {
+      "name": "transfer_erc20",
+      "description": "Transfer ERC20 tokens to another address",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "privateKey": {
+            "type": "string",
+            "description": "Private key of the sending account (this is used for signing and is never stored)"
+          },
+          "tokenAddress": {
+            "type": "string",
+            "description": "The address of the ERC20 token contract"
+          },
+          "toAddress": {
+            "type": "string",
+            "description": "The recipient address"
+          },
+          "amount": {
+            "type": "string",
+            "description": "The amount of tokens to send (in token units, e.g., '10' for 10 tokens)"
+          },
+          "network": {
+            "type": "string",
+            "description": "Network name (e.g., 'ethereum', 'optimism', 'arbitrum', 'base', etc.) or chain ID. Supports all EVM-compatible networks. Defaults to Ethereum mainnet."
+          }
+        },
+        "required": [
+          "privateKey",
+          "tokenAddress",
+          "toAddress",
+          "amount"
+        ]
+      }
+    },
+    {
+      "name": "approve_token_spending",
+      "description": "Approve another address (like a DeFi protocol or exchange) to spend your ERC20 tokens. This is often required before interacting with DeFi protocols.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "privateKey": {
+            "type": "string",
+            "description": "Private key of the token owner account in hex format (with or without 0x prefix). SECURITY: This is used only for transaction signing and is not stored."
+          },
+          "tokenAddress": {
+            "type": "string",
+            "description": "The contract address of the ERC20 token to approve for spending (e.g., '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' for USDC on Ethereum)"
+          },
+          "spenderAddress": {
+            "type": "string",
+            "description": "The contract address being approved to spend your tokens (e.g., a DEX or lending protocol)"
+          },
+          "amount": {
+            "type": "string",
+            "description": "The amount of tokens to approve in token units, not wei (e.g., '1000' to approve spending 1000 tokens). Use a very large number for unlimited approval."
+          },
+          "network": {
+            "type": "string",
+            "description": "Network name (e.g., 'ethereum', 'optimism', 'arbitrum', 'base', 'polygon') or chain ID. Defaults to Ethereum mainnet."
+          }
+        },
+        "required": [
+          "privateKey",
+          "tokenAddress",
+          "spenderAddress",
+          "amount"
+        ]
+      }
+    },
+    {
+      "name": "transfer_nft",
+      "description": "Transfer an NFT (ERC721 token) from one address to another. Requires the private key of the current owner for signing the transaction.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "privateKey": {
+            "type": "string",
+            "description": "Private key of the NFT owner account in hex format (with or without 0x prefix). SECURITY: This is used only for transaction signing and is not stored."
+          },
+          "tokenAddress": {
+            "type": "string",
+            "description": "The contract address of the NFT collection (e.g., '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D' for Bored Ape Yacht Club)"
+          },
+          "tokenId": {
+            "type": "string",
+            "description": "The ID of the specific NFT to transfer (e.g., '1234')"
+          },
+          "toAddress": {
+            "type": "string",
+            "description": "The recipient wallet address that will receive the NFT"
+          },
+          "network": {
+            "type": "string",
+            "description": "Network name (e.g., 'ethereum', 'optimism', 'arbitrum', 'base', 'polygon') or chain ID. Most NFTs are on Ethereum mainnet, which is the default."
+          }
+        },
+        "required": [
+          "privateKey",
+          "tokenAddress",
+          "tokenId",
+          "toAddress"
+        ]
+      }
+    },
+    {
+      "name": "transfer_erc1155",
+      "description": "Transfer ERC1155 tokens to another address. ERC1155 is a multi-token standard that can represent both fungible and non-fungible tokens in a single contract.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "privateKey": {
+            "type": "string",
+            "description": "Private key of the token owner account in hex format (with or without 0x prefix). SECURITY: This is used only for transaction signing and is not stored."
+          },
+          "tokenAddress": {
+            "type": "string",
+            "description": "The contract address of the ERC1155 token collection (e.g., '0x76BE3b62873462d2142405439777e971754E8E77')"
+          },
+          "tokenId": {
+            "type": "string",
+            "description": "The ID of the specific token to transfer (e.g., '1234')"
+          },
+          "amount": {
+            "type": "string",
+            "description": "The quantity of tokens to send (e.g., '1' for a single NFT or '10' for 10 fungible tokens)"
+          },
+          "toAddress": {
+            "type": "string",
+            "description": "The recipient wallet address that will receive the tokens"
+          },
+          "network": {
+            "type": "string",
+            "description": "Network name (e.g., 'ethereum', 'optimism', 'arbitrum', 'base', 'polygon') or chain ID. ERC1155 tokens exist across many networks. Defaults to Ethereum mainnet."
+          }
+        },
+        "required": [
+          "privateKey",
+          "tokenAddress",
+          "tokenId",
+          "amount",
+          "toAddress"
+        ]
+      }
+    },
+    {
+      "name": "transfer_token",
+      "description": "Transfer ERC20 tokens to an address",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "privateKey": {
+            "type": "string",
+            "description": "Private key of the sender account in hex format (with or without 0x prefix). SECURITY: This is used only for transaction signing and is not stored."
+          },
+          "tokenAddress": {
+            "type": "string",
+            "description": "The contract address or ENS name of the ERC20 token to transfer (e.g., '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' for USDC or 'uniswap.eth')"
+          },
+          "toAddress": {
+            "type": "string",
+            "description": "The recipient address or ENS name that will receive the tokens (e.g., '0x1234...' or 'vitalik.eth')"
+          },
+          "amount": {
+            "type": "string",
+            "description": "Amount of tokens to send as a string (e.g., '100' for 100 tokens). This will be adjusted for the token's decimals."
+          },
+          "network": {
+            "type": "string",
+            "description": "Network name (e.g., 'ethereum', 'optimism', 'arbitrum', 'base', etc.) or chain ID. Supports all EVM-compatible networks. Defaults to Ethereum mainnet."
+          }
+        },
+        "required": [
+          "privateKey",
+          "tokenAddress",
+          "toAddress",
+          "amount"
+        ]
+      }
+    },
+    {
+      "name": "read_contract",
+      "description": "Read data from a smart contract by calling a view/pure function. This doesn't modify blockchain state and doesn't require gas or signing.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "contractAddress": {
+            "type": "string",
+            "description": "The address of the smart contract to interact with"
+          },
+          "abi": {
+            "type": "array",
+            "description": "The ABI (Application Binary Interface) of the smart contract function, as a JSON array"
+          },
+          "functionName": {
+            "type": "string",
+            "description": "The name of the function to call on the contract (e.g., 'balanceOf')"
+          },
+          "args": {
+            "type": "array",
+            "description": "The arguments to pass to the function, as an array (e.g., ['0x1234...'])"
+          },
+          "network": {
+            "type": "string",
+            "description": "Network name (e.g., 'ethereum', 'optimism', 'arbitrum', 'base', 'polygon') or chain ID. Defaults to Ethereum mainnet."
+          }
+        },
+        "required": [
+          "contractAddress",
+          "abi",
+          "functionName"
+        ]
+      }
+    },
+    {
+      "name": "write_contract",
+      "description": "Write data to a smart contract by calling a state-changing function. This modifies blockchain state and requires gas payment and transaction signing.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "contractAddress": {
+            "type": "string",
+            "description": "The address of the smart contract to interact with"
+          },
+          "abi": {
+            "type": "array",
+            "description": "The ABI (Application Binary Interface) of the smart contract function, as a JSON array"
+          },
+          "functionName": {
+            "type": "string",
+            "description": "The name of the function to call on the contract (e.g., 'transfer')"
+          },
+          "args": {
+            "type": "array",
+            "description": "The arguments to pass to the function, as an array (e.g., ['0x1234...', '1000000000000000000'])"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Private key of the sending account in hex format (with or without 0x prefix). SECURITY: This is used only for transaction signing and is not stored."
+          },
+          "network": {
+            "type": "string",
+            "description": "Network name (e.g., 'ethereum', 'optimism', 'arbitrum', 'base', 'polygon') or chain ID. Defaults to Ethereum mainnet."
+          }
+        },
+        "required": [
+          "contractAddress",
+          "abi",
+          "functionName",
+          "args",
+          "privateKey"
+        ]
+      }
+    },
+    {
+      "name": "is_contract",
+      "description": "Check if an address is a smart contract or an externally owned account (EOA)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "The wallet or contract address or ENS name to check (e.g., '0x1234...' or 'uniswap.eth')"
+          },
+          "network": {
+            "type": "string",
+            "description": "Network name (e.g., 'ethereum', 'optimism', 'arbitrum', 'base', etc.) or chain ID. Supports all EVM-compatible networks. Defaults to Ethereum mainnet."
+          }
+        },
+        "required": [
+          "address"
+        ]
+      }
+    },
+    {
+      "name": "get_token_info",
+      "description": "Get comprehensive information about an ERC20 token including name, symbol, decimals, total supply, and other metadata. Use this to analyze any token on EVM chains.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tokenAddress": {
+            "type": "string",
+            "description": "The contract address of the ERC20 token (e.g., '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' for USDC on Ethereum)"
+          },
+          "network": {
+            "type": "string",
+            "description": "Network name (e.g., 'ethereum', 'optimism', 'arbitrum', 'base', 'polygon') or chain ID. Defaults to Ethereum mainnet."
+          }
+        },
+        "required": [
+          "tokenAddress"
+        ]
+      }
+    },
+    {
+      "name": "get_token_balance_erc20",
+      "description": "Get ERC20 token balance for an address",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "The address to check balance for"
+          },
+          "tokenAddress": {
+            "type": "string",
+            "description": "The ERC20 token contract address"
+          },
+          "network": {
+            "type": "string",
+            "description": "Network name or chain ID. Defaults to Ethereum mainnet."
+          }
+        },
+        "required": [
+          "address",
+          "tokenAddress"
+        ]
+      }
+    },
+    {
+      "name": "get_nft_info",
+      "description": "Get detailed information about a specific NFT (ERC721 token), including collection name, symbol, token URI, and current owner if available.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tokenAddress": {
+            "type": "string",
+            "description": "The contract address of the NFT collection (e.g., '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D' for Bored Ape Yacht Club)"
+          },
+          "tokenId": {
+            "type": "string",
+            "description": "The ID of the specific NFT token to query (e.g., '1234')"
+          },
+          "network": {
+            "type": "string",
+            "description": "Network name (e.g., 'ethereum', 'optimism', 'arbitrum', 'base', 'polygon') or chain ID. Most NFTs are on Ethereum mainnet, which is the default."
+          }
+        },
+        "required": [
+          "tokenAddress",
+          "tokenId"
+        ]
+      }
+    },
+    {
+      "name": "check_nft_ownership",
+      "description": "Check if an address owns a specific NFT",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tokenAddress": {
+            "type": "string",
+            "description": "The contract address or ENS name of the NFT collection (e.g., '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D' for BAYC or 'boredapeyachtclub.eth')"
+          },
+          "tokenId": {
+            "type": "string",
+            "description": "The ID of the NFT to check (e.g., '1234')"
+          },
+          "ownerAddress": {
+            "type": "string",
+            "description": "The wallet address or ENS name to check ownership against (e.g., '0x1234...' or 'vitalik.eth')"
+          },
+          "network": {
+            "type": "string",
+            "description": "Network name (e.g., 'ethereum', 'optimism', 'arbitrum', 'base', etc.) or chain ID. Supports all EVM-compatible networks. Defaults to Ethereum mainnet."
+          }
+        },
+        "required": [
+          "tokenAddress",
+          "tokenId",
+          "ownerAddress"
+        ]
+      }
+    },
+    {
+      "name": "get_erc1155_token_uri",
+      "description": "Get the metadata URI for an ERC1155 token (multi-token standard used for both fungible and non-fungible tokens). The URI typically points to JSON metadata about the token.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tokenAddress": {
+            "type": "string",
+            "description": "The contract address of the ERC1155 token collection (e.g., '0x76BE3b62873462d2142405439777e971754E8E77')"
+          },
+          "tokenId": {
+            "type": "string",
+            "description": "The ID of the specific token to query metadata for (e.g., '1234')"
+          },
+          "network": {
+            "type": "string",
+            "description": "Network name (e.g., 'ethereum', 'optimism', 'arbitrum', 'base', 'polygon') or chain ID. ERC1155 tokens exist across many networks. Defaults to Ethereum mainnet."
+          }
+        },
+        "required": [
+          "tokenAddress",
+          "tokenId"
+        ]
+      }
+    },
+    {
+      "name": "get_nft_balance",
+      "description": "Get the total number of NFTs owned by an address from a specific collection. This returns the count of NFTs, not individual token IDs.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tokenAddress": {
+            "type": "string",
+            "description": "The contract address of the NFT collection (e.g., '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D' for Bored Ape Yacht Club)"
+          },
+          "ownerAddress": {
+            "type": "string",
+            "description": "The wallet address to check the NFT balance for (e.g., '0x1234...')"
+          },
+          "network": {
+            "type": "string",
+            "description": "Network name (e.g., 'ethereum', 'optimism', 'arbitrum', 'base', 'polygon') or chain ID. Most NFTs are on Ethereum mainnet, which is the default."
+          }
+        },
+        "required": [
+          "tokenAddress",
+          "ownerAddress"
+        ]
+      }
+    },
+    {
+      "name": "get_erc1155_balance",
+      "description": "Get the balance of a specific ERC1155 token ID owned by an address. ERC1155 allows multiple tokens of the same ID, so the balance can be greater than 1.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tokenAddress": {
+            "type": "string",
+            "description": "The contract address of the ERC1155 token collection (e.g., '0x76BE3b62873462d2142405439777e971754E8E77')"
+          },
+          "tokenId": {
+            "type": "string",
+            "description": "The ID of the specific token to check the balance for (e.g., '1234')"
+          },
+          "ownerAddress": {
+            "type": "string",
+            "description": "The wallet address to check the token balance for (e.g., '0x1234...')"
+          },
+          "network": {
+            "type": "string",
+            "description": "Network name (e.g., 'ethereum', 'optimism', 'arbitrum', 'base', 'polygon') or chain ID. ERC1155 tokens exist across many networks. Defaults to Ethereum mainnet."
+          }
+        },
+        "required": [
+          "tokenAddress",
+          "tokenId",
+          "ownerAddress"
+        ]
+      }
+    },
+    {
+      "name": "get_address_from_private_key",
+      "description": "Get the EVM address derived from a private key",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "privateKey": {
+            "type": "string",
+            "description": "Private key in hex format (with or without 0x prefix). SECURITY: This is used only for address derivation and is not stored."
+          }
+        },
+        "required": [
+          "privateKey"
+        ]
+      }
+    }
+  ]
 }

@@ -56,5 +56,429 @@
       "required": true,
       "example": "myworkspace"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "monday-create-item",
+      "description": "Create a new item in a Monday.com Board. Optionally, specify the parent Item ID to create a Sub-item.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "boardId": {
+            "type": "string",
+            "description": "Monday.com Board ID that the Item or Sub-item is on."
+          },
+          "itemTitle": {
+            "type": "string",
+            "description": "Name of the Monday.com Item or Sub-item that will be created."
+          },
+          "groupId": {
+            "type": "string",
+            "description": "Monday.com Board's Group ID to create the Item in. If set, parentItemId should not be set."
+          },
+          "parentItemId": {
+            "type": "string",
+            "description": "Monday.com Item ID to create the Sub-item under. If set, groupId should not be set."
+          },
+          "columnValues": {
+            "type": "object",
+            "description": "Dictionary of column values to set {column_id: value}"
+          }
+        },
+        "required": [
+          "boardId",
+          "itemTitle"
+        ]
+      }
+    },
+    {
+      "name": "monday-get-items-by-id",
+      "description": "Fetch specific Monday.com item by its ID",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string",
+            "description": "ID of the Monday.com item to fetch."
+          }
+        },
+        "required": [
+          "itemId"
+        ]
+      }
+    },
+    {
+      "name": "monday-update-item",
+      "description": "Update a Monday.com item's or sub-item's column values.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "boardId": {
+            "type": "string",
+            "description": "Monday.com Board ID that the Item or Sub-item is on."
+          },
+          "itemId": {
+            "type": "string",
+            "description": "Monday.com Item or Sub-item ID to update the columns of."
+          },
+          "columnValues": {
+            "type": "object",
+            "description": "Dictionary of column values to update the Monday.com Item or Sub-item with. ({column_id: value})"
+          }
+        },
+        "required": [
+          "boardId",
+          "itemId",
+          "columnValues"
+        ]
+      }
+    },
+    {
+      "name": "monday-get-board-columns",
+      "description": "Get the Columns of a Monday.com Board.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "boardId": {
+            "type": "string",
+            "description": "Monday.com Board ID that the Item or Sub-item is on."
+          }
+        },
+        "required": [
+          "boardId"
+        ]
+      }
+    },
+    {
+      "name": "monday-get-board-groups",
+      "description": "Get the Groups of a Monday.com Board.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "boardId": {
+            "type": "string",
+            "description": "Monday.com Board ID that the Item or Sub-item is on."
+          }
+        },
+        "required": [
+          "boardId"
+        ]
+      }
+    },
+    {
+      "name": "monday-create-update",
+      "description": "Create an update (comment) on a Monday.com Item or Sub-item.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string"
+          },
+          "updateText": {
+            "type": "string",
+            "description": "Content to update the Item or Sub-item with."
+          }
+        },
+        "required": [
+          "itemId",
+          "updateText"
+        ]
+      }
+    },
+    {
+      "name": "monday-list-boards",
+      "description": "Get all Boards from Monday.com",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of Monday.com Boards to return."
+          }
+        }
+      }
+    },
+    {
+      "name": "monday-list-items-in-groups",
+      "description": "List all items in the specified groups of a Monday.com board",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "boardId": {
+            "type": "string",
+            "description": "Monday.com Board ID that the Item or Sub-item is on."
+          },
+          "groupIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "cursor": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "boardId",
+          "groupIds",
+          "limit"
+        ]
+      }
+    },
+    {
+      "name": "monday-list-subitems-in-items",
+      "description": "List all Sub-items of a list of Monday.com Items",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "itemIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "itemIds"
+        ]
+      }
+    },
+    {
+      "name": "monday-create-board",
+      "description": "Create a new Monday.com board",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "board_name": {
+            "type": "string",
+            "description": "Name of the Monday.com board to create"
+          },
+          "board_kind": {
+            "type": "string",
+            "description": "Kind of the Monday.com board to create (public, private, shareable). Default is public."
+          }
+        },
+        "required": [
+          "board_name"
+        ]
+      }
+    },
+    {
+      "name": "monday-create-board-group",
+      "description": "Create a new group in a Monday.com board",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "boardId": {
+            "type": "string",
+            "description": "Monday.com Board ID that the group will be created in."
+          },
+          "groupName": {
+            "type": "string",
+            "description": "Name of the group to create."
+          }
+        },
+        "required": [
+          "boardId",
+          "groupName"
+        ]
+      }
+    },
+    {
+      "name": "monday-move-item-to-group",
+      "description": "Move an item to a group in a Monday.com board",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string",
+            "description": "Monday.com Item ID to move."
+          },
+          "groupId": {
+            "type": "string",
+            "description": "Monday.com Group ID to move the Item to."
+          }
+        },
+        "required": [
+          "itemId",
+          "groupId"
+        ]
+      }
+    },
+    {
+      "name": "monday-delete-item",
+      "description": "Delete an item from a Monday.com board",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string",
+            "description": "Monday.com Item ID to delete."
+          }
+        },
+        "required": [
+          "itemId"
+        ]
+      }
+    },
+    {
+      "name": "monday-archive-item",
+      "description": "Archive an item from a Monday.com board",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string",
+            "description": "Monday.com Item ID to archive."
+          }
+        },
+        "required": [
+          "itemId"
+        ]
+      }
+    },
+    {
+      "name": "monday-get-item-updates",
+      "description": "Get updates for a specific item in Monday.com",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string",
+            "description": "ID of the Monday.com item to get updates for."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of updates to retrieve. Default is 25."
+          }
+        },
+        "required": [
+          "itemId"
+        ]
+      }
+    },
+    {
+      "name": "monday-get-docs",
+      "description": "Get a list of documents from Monday.com, optionally filtered by folder",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of documents to retrieve. Default is 25."
+          },
+          "folder_id": {
+            "type": "string",
+            "description": "Optional folder ID to filter documents by."
+          }
+        }
+      }
+    },
+    {
+      "name": "monday-get-doc-content",
+      "description": "Get the content of a specific document by ID",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "doc_id": {
+            "type": "string",
+            "description": "ID of the Monday.com document to retrieve."
+          }
+        },
+        "required": [
+          "doc_id"
+        ]
+      }
+    },
+    {
+      "name": "monday-create-doc",
+      "description": "Create a new document in Monday.com",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Title of the document to create."
+          },
+          "content": {
+            "type": "string",
+            "description": "Content of the document to create."
+          },
+          "folder_id": {
+            "type": "string",
+            "description": "Optional folder ID to create the document in."
+          }
+        },
+        "required": [
+          "title",
+          "content"
+        ]
+      }
+    },
+    {
+      "name": "monday-add-doc-block",
+      "description": "Add a block to a document",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "doc_id": {
+            "type": "string",
+            "description": "ID of the Monday.com document to add a block to."
+          },
+          "block_type": {
+            "type": "string",
+            "description": "Type of block to add (normal_text, bullet_list, numbered_list, heading, divider, etc.)."
+          },
+          "content": {
+            "type": "string",
+            "description": "Content of the block to add."
+          },
+          "after_block_id": {
+            "type": "string",
+            "description": "Optional ID of the block to add this block after."
+          }
+        },
+        "required": [
+          "doc_id",
+          "block_type",
+          "content"
+        ]
+      }
+    },
+    {
+      "name": "monday-get-item-files",
+      "description": "Get files (PDFs, documents, images, etc.) attached to a Monday.com item",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string",
+            "description": "ID of the Monday.com item to get files from."
+          }
+        },
+        "required": [
+          "itemId"
+        ]
+      }
+    },
+    {
+      "name": "monday-get-update-files",
+      "description": "Get files (PDFs, documents, images, etc.) attached to a specific update in Monday.com",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "updateId": {
+            "type": "string",
+            "description": "ID of the Monday.com update to get files from."
+          }
+        },
+        "required": [
+          "updateId"
+        ]
+      }
+    }
+  ]
 }

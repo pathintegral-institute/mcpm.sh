@@ -21,17 +21,12 @@
     "Data Explorer"
   ],
   "installations": {
-    "docker": {
-      "type": "docker",
-      "command": "docker",
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
       "args": [
-        "run",
-        "--rm",
-        "-i",
-        "-e",
-        "ADX_CLUSTER_URL",
-        "-e",
-        "ADX_DATABASE",
+        "--from",
+        "git+https://github.com/pab1it0/adx-mcp-server",
         "adx-mcp-server"
       ],
       "env": {
@@ -51,5 +46,72 @@
       "required": true,
       "example": "your_database"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "execute_query",
+      "description": "Executes a Kusto Query Language (KQL) query against the configured Azure Data Explorer database and returns the results as a list of dictionaries.",
+      "inputSchema": {
+        "properties": {
+          "query": {
+            "title": "Query",
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "title": "execute_queryArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_tables",
+      "description": "Retrieves a list of all tables available in the configured Azure Data Explorer database, including their names, folders, and database associations.",
+      "inputSchema": {
+        "properties": {},
+        "title": "list_tablesArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_table_schema",
+      "description": "Retrieves the schema information for a specified table in the Azure Data Explorer database, including column names, data types, and other schema-related metadata.",
+      "inputSchema": {
+        "properties": {
+          "table_name": {
+            "title": "Table Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "table_name"
+        ],
+        "title": "get_table_schemaArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "sample_table_data",
+      "description": "Retrieves a random sample of rows from the specified table in the Azure Data Explorer database. The sample_size parameter controls how many rows to return (default: 10).",
+      "inputSchema": {
+        "properties": {
+          "table_name": {
+            "title": "Table Name",
+            "type": "string"
+          },
+          "sample_size": {
+            "default": 10,
+            "title": "Sample Size",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "table_name"
+        ],
+        "title": "sample_table_dataArguments",
+        "type": "object"
+      }
+    }
+  ]
 }

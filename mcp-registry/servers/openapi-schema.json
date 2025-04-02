@@ -26,7 +26,7 @@
       "args": [
         "-y",
         "mcp-openapi-schema",
-        "/ABSOLUTE/PATH/TO/openapi.yaml"
+        "${ABSOLUTE_PATH_TO_OPENAPI_YAML}"
       ]
     }
   },
@@ -36,5 +36,185 @@
       "required": true,
       "example": "/absolute/path/to/openapi.yaml"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "list-endpoints",
+      "description": "Lists all API paths and their HTTP methods with summaries, organized by path",
+      "inputSchema": {
+        "type": "object"
+      }
+    },
+    {
+      "name": "get-endpoint",
+      "description": "Gets detailed information about a specific API endpoint",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "method": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "path",
+          "method"
+        ]
+      }
+    },
+    {
+      "name": "get-request-body",
+      "description": "Gets the request body schema for a specific endpoint",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "method": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "path",
+          "method"
+        ]
+      }
+    },
+    {
+      "name": "get-response-schema",
+      "description": "Gets the response schema for a specific endpoint, method, and status code",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "method": {
+            "type": "string"
+          },
+          "statusCode": {
+            "type": "string",
+            "default": "200"
+          }
+        },
+        "required": [
+          "path",
+          "method"
+        ]
+      }
+    },
+    {
+      "name": "get-path-parameters",
+      "description": "Gets the parameters for a specific path",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "method": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "list-components",
+      "description": "Lists all schema components (schemas, parameters, responses, etc.)",
+      "inputSchema": {
+        "type": "object"
+      }
+    },
+    {
+      "name": "get-component",
+      "description": "Gets detailed definition for a specific component",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Component type (e.g., schemas, parameters, responses)"
+          },
+          "name": {
+            "type": "string",
+            "description": "Component name"
+          }
+        },
+        "required": [
+          "type",
+          "name"
+        ]
+      }
+    },
+    {
+      "name": "list-security-schemes",
+      "description": "Lists all available security schemes",
+      "inputSchema": {
+        "type": "object"
+      }
+    },
+    {
+      "name": "get-examples",
+      "description": "Gets examples for a specific component or endpoint",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "request",
+              "response",
+              "component"
+            ],
+            "description": "Type of example to retrieve"
+          },
+          "path": {
+            "type": "string",
+            "description": "API path (required for request/response examples)"
+          },
+          "method": {
+            "type": "string",
+            "description": "HTTP method (required for request/response examples)"
+          },
+          "statusCode": {
+            "type": "string",
+            "description": "Status code (for response examples)"
+          },
+          "componentType": {
+            "type": "string",
+            "description": "Component type (required for component examples)"
+          },
+          "componentName": {
+            "type": "string",
+            "description": "Component name (required for component examples)"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      }
+    },
+    {
+      "name": "search-schema",
+      "description": "Searches across paths, operations, and schemas",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pattern": {
+            "type": "string",
+            "description": "Search pattern (case-insensitive)"
+          }
+        },
+        "required": [
+          "pattern"
+        ]
+      }
+    }
+  ]
 }

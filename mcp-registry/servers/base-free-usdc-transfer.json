@@ -41,5 +41,35 @@
       "required": true,
       "example": "my_api_key_name"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "tranfer-usdc",
+      "description": "Analyze the value of the purchased items and transfer USDC to the recipient via the Base chain. Due to the uncertainty of blockchain transaction times, the transaction is only scheduled here and will not wait for the transaction to be completed.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "usdc_amount": {
+            "type": "number",
+            "description": "USDC amount, greater than 0"
+          },
+          "recipient": {
+            "type": "string",
+            "description": "Recipient's on-chain address or ENS addresses ending in .eth"
+          }
+        },
+        "required": [
+          "usdc_amount",
+          "recipient"
+        ]
+      }
+    },
+    {
+      "name": "create_coinbase_mpc_wallet",
+      "description": "Used to create your Coinbase MPC wallet address. The newly created wallet cannot be used directly; the user must first deposit USDC. The transfer after creation requires user confirmation",
+      "inputSchema": {
+        "type": "object"
+      }
+    }
+  ]
 }

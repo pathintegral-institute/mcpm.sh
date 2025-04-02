@@ -28,5 +28,107 @@
     "python",
     "mac",
     "messages"
+  ],
+  "tools": [
+    {
+      "name": "tool_get_recent_messages",
+      "description": "\n    Get recent messages from the Messages app.\n    \n    Args:\n        hours: Number of hours to look back (default: 24)\n        contact: Filter by contact name, phone number, or email (optional)\n                Use \"contact:N\" to select a specific contact from previous matches\n    ",
+      "inputSchema": {
+        "properties": {
+          "hours": {
+            "default": 24,
+            "title": "Hours",
+            "type": "integer"
+          },
+          "contact": {
+            "default": null,
+            "title": "Contact",
+            "type": "string"
+          }
+        },
+        "title": "tool_get_recent_messagesArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "tool_send_message",
+      "description": "\n    Send a message using the Messages app.\n    \n    Args:\n        recipient: Phone number, email, contact name, or \"contact:N\" to select from matches\n                  For example, \"contact:1\" selects the first contact from a previous search\n        message: Message text to send\n        group_chat: Whether to send to a group chat (uses chat ID instead of buddy)\n    ",
+      "inputSchema": {
+        "properties": {
+          "recipient": {
+            "title": "Recipient",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "group_chat": {
+            "default": false,
+            "title": "Group Chat",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "recipient",
+          "message"
+        ],
+        "title": "tool_send_messageArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "tool_find_contact",
+      "description": "\n    Find a contact by name using fuzzy matching.\n    \n    Args:\n        name: The name to search for\n    ",
+      "inputSchema": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "tool_find_contactArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "tool_check_db_access",
+      "description": "\n    Diagnose database access issues.\n    ",
+      "inputSchema": {
+        "properties": {},
+        "title": "tool_check_db_accessArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "tool_check_contacts",
+      "description": "\n    List available contacts in the address book.\n    ",
+      "inputSchema": {
+        "properties": {},
+        "title": "tool_check_contactsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "tool_check_addressbook",
+      "description": "\n    Diagnose AddressBook access issues.\n    ",
+      "inputSchema": {
+        "properties": {},
+        "title": "tool_check_addressbookArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "tool_get_chats",
+      "description": "\n    List available group chats from the Messages app.\n    ",
+      "inputSchema": {
+        "properties": {},
+        "title": "tool_get_chatsArguments",
+        "type": "object"
+      }
+    }
   ]
 }

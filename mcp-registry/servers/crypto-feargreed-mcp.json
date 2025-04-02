@@ -44,5 +44,39 @@
         "main.py"
       ]
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "get_current_fng_tool",
+      "description": "Get the current Fear and Greed Index value.",
+      "inputSchema": {},
+      "required": []
+    },
+    {
+      "name": "get_historical_fng_tool",
+      "description": "Get historical Fear and Greed Index data for the specified number of days.",
+      "inputSchema": {
+        "days": {
+          "type": "integer",
+          "description": "Number of days for historical data"
+        }
+      },
+      "required": [
+        "days"
+      ]
+    },
+    {
+      "name": "analyze_fng_trend",
+      "description": "Analyze the Fear and Greed Index trend over the specified number of days.",
+      "inputSchema": {
+        "days": {
+          "type": "integer",
+          "description": "Number of days for trend analysis"
+        }
+      },
+      "required": [
+        "days"
+      ]
+    }
+  ]
 }

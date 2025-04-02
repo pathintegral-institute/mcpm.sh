@@ -29,5 +29,35 @@
         "https://github.com/shannonlal/mcp-postman"
       ]
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "run-collection",
+      "description": "Run a Postman Collection using Newman",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "collection": {
+            "type": "string",
+            "description": "Path or URL to the Postman collection"
+          },
+          "environment": {
+            "type": "string",
+            "description": "Optional path or URL to environment file"
+          },
+          "globals": {
+            "type": "string",
+            "description": "Optional path or URL to globals file"
+          },
+          "iterationCount": {
+            "type": "number",
+            "description": "Optional number of iterations to run"
+          }
+        },
+        "required": [
+          "collection"
+        ]
+      }
+    }
+  ]
 }

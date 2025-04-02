@@ -28,5 +28,60 @@
         "https://github.com/yanmxa/multicluster-mcp-server"
       ]
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "kubectl_executor",
+      "description": "Securely execute a kubectl command.",
+      "inputSchema": {
+        "command": {
+          "type": "string",
+          "description": "The full kubectl command to execute. Must start with 'kubectl'."
+        },
+        "cluster": {
+          "type": "string",
+          "description": "Optional cluster name for multi-cluster environments. Specify only if explicitly provided."
+        }
+      },
+      "required": [
+        "command"
+      ]
+    },
+    {
+      "name": "clusters",
+      "description": "Retrieves a list of Kubernetes clusters (also known as managed clusters or spoke clusters).",
+      "inputSchema": {},
+      "required": []
+    },
+    {
+      "name": "connect_cluster_via_admin",
+      "description": "Generates the KUBECONFIG for the cluster using the ServiceAccount and binds it to the cluster-admin role.",
+      "inputSchema": {
+        "cluster": {
+          "type": "string",
+          "description": "The target cluster where the ServiceAccount will be created."
+        }
+      },
+      "required": [
+        "cluster"
+      ]
+    },
+    {
+      "name": "apply_service_account_with_cluster_role",
+      "description": "Creates a ServiceAccount in the specified cluster and optionally binds it to a ClusterRole. If no ClusterRole is provided, only the ServiceAccount and kubeconfig are created.",
+      "inputSchema": {
+        "cluster": {
+          "type": "string",
+          "description": "The cluster where the ServiceAccount will be created."
+        },
+        "clusterRole": {
+          "type": "object",
+          "description": "Optional ClusterRole object defining permissions for the ServiceAccount."
+        }
+      },
+      "required": [
+        "cluster"
+      ]
+    }
+  ]
 }

@@ -28,8 +28,8 @@
       "command": "uvx",
       "args": [
         "--from",
-        "http://github.com/leehanchung/bing-search-mcp",
-        "mcp_server_bin_search"
+        "git+http://github.com/leehanchung/bing-search-mcp",
+        "mcp-server-bing"
       ],
       "env": {
         "BING_API_KEY": "${BING_API_KEY}"
@@ -59,5 +59,98 @@
       "required": true,
       "example": "your-bing-api-key"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "bing_web_search",
+      "description": "Performs a web search using the Bing Search API for general information\n    and websites.\n\n    Args:\n        query: Search query (required)\n        count: Number of results (1-50, default 10)\n        offset: Pagination offset (default 0)\n        market: Market code like en-US, en-GB, etc.\n    ",
+      "inputSchema": {
+        "properties": {
+          "query": {
+            "title": "Query",
+            "type": "string"
+          },
+          "count": {
+            "default": 10,
+            "title": "Count",
+            "type": "integer"
+          },
+          "offset": {
+            "default": 0,
+            "title": "Offset",
+            "type": "integer"
+          },
+          "market": {
+            "default": "en-US",
+            "title": "Market",
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "title": "bing_web_searchArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "bing_news_search",
+      "description": "Searches for news articles using Bing News Search API for current\n    events and timely information.\n\n    Args:\n        query: News search query (required)\n        count: Number of results (1-50, default 10)\n        market: Market code like en-US, en-GB, etc.\n        freshness: Time period of news (Day, Week, Month)\n    ",
+      "inputSchema": {
+        "properties": {
+          "query": {
+            "title": "Query",
+            "type": "string"
+          },
+          "count": {
+            "default": 10,
+            "title": "Count",
+            "type": "integer"
+          },
+          "market": {
+            "default": "en-US",
+            "title": "Market",
+            "type": "string"
+          },
+          "freshness": {
+            "default": "Day",
+            "title": "Freshness",
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "title": "bing_news_searchArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "bing_image_search",
+      "description": "Searches for images using Bing Image Search API for visual content.\n\n    Args:\n        query: Image search query (required)\n        count: Number of results (1-50, default 10)\n        market: Market code like en-US, en-GB, etc.\n    ",
+      "inputSchema": {
+        "properties": {
+          "query": {
+            "title": "Query",
+            "type": "string"
+          },
+          "count": {
+            "default": 10,
+            "title": "Count",
+            "type": "integer"
+          },
+          "market": {
+            "default": "en-US",
+            "title": "Market",
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "title": "bing_image_searchArguments",
+        "type": "object"
+      }
+    }
+  ]
 }

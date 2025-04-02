@@ -82,5 +82,70 @@
       "required": false,
       "example": "finance"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "${MCP_API_PREFIX}_api_request_schema",
+      "description": "Get API endpoint schemas that match your intent. Returns endpoint details including path, method, parameters, and response formats.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Describe what you want to do with the API (e.g., 'Get user profile information', 'Create a new job posting')"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "${MCP_API_PREFIX}_make_request",
+      "description": "Make an actual REST API request with full control over method, headers, body, and parameters.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "type": "string",
+            "description": "HTTP method (GET, POST, PUT, DELETE, PATCH)",
+            "enum": [
+              "GET",
+              "POST",
+              "PUT",
+              "DELETE",
+              "PATCH"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "description": "Fully qualified API URL (e.g., https://api.example.com/users/123)"
+          },
+          "headers": {
+            "type": "object",
+            "description": "Request headers",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "query_params": {
+            "type": "object",
+            "description": "Query parameters",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "body": {
+            "type": "object",
+            "description": "Request body (for POST, PUT, PATCH)",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "method",
+          "url"
+        ]
+      }
+    }
+  ]
 }

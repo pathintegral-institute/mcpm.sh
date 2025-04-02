@@ -46,5 +46,126 @@
       "description": "Demonstrate accessing resources",
       "prompt": "Demonstrate how to access and use resources from this MCP server."
     }
+  ],
+  "tools": [
+    {
+      "name": "echo",
+      "description": "Echoes back the input",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Message to echo"
+          }
+        },
+        "required": [
+          "message"
+        ]
+      }
+    },
+    {
+      "name": "add",
+      "description": "Adds two numbers",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "a": {
+            "type": "number",
+            "description": "First number"
+          },
+          "b": {
+            "type": "number",
+            "description": "Second number"
+          }
+        },
+        "required": [
+          "a",
+          "b"
+        ]
+      }
+    },
+    {
+      "name": "printEnv",
+      "description": "Prints all environment variables, helpful for debugging MCP server configuration",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "longRunningOperation",
+      "description": "Demonstrates a long running operation with progress updates",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "duration": {
+            "type": "number",
+            "default": 10,
+            "description": "Duration of the operation in seconds"
+          },
+          "steps": {
+            "type": "number",
+            "default": 5,
+            "description": "Number of steps in the operation"
+          }
+        }
+      }
+    },
+    {
+      "name": "sampleLLM",
+      "description": "Samples from an LLM using MCP's sampling feature",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "The prompt to send to the LLM"
+          },
+          "maxTokens": {
+            "type": "number",
+            "default": 100,
+            "description": "Maximum number of tokens to generate"
+          }
+        },
+        "required": [
+          "prompt"
+        ]
+      }
+    },
+    {
+      "name": "getTinyImage",
+      "description": "Returns the MCP_TINY_IMAGE",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "annotatedMessage",
+      "description": "Demonstrates how annotations can be used to provide metadata about content",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "messageType": {
+            "type": "string",
+            "enum": [
+              "error",
+              "success",
+              "debug"
+            ],
+            "description": "Type of message to demonstrate different annotation patterns"
+          },
+          "includeImage": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether to include an example image"
+          }
+        },
+        "required": [
+          "messageType"
+        ]
+      }
+    }
   ]
 }

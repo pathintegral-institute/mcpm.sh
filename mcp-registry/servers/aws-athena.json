@@ -114,5 +114,77 @@
       "required": false,
       "example": "500"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "run_query",
+      "description": "Execute a SQL query using AWS Athena. Returns full results if query completes before timeout, otherwise returns queryExecutionId.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "database": {
+            "type": "string",
+            "description": "The Athena database to query"
+          },
+          "query": {
+            "type": "string",
+            "description": "SQL query to execute"
+          },
+          "maxRows": {
+            "type": "number",
+            "description": "Maximum number of rows to return (default: 1000)",
+            "minimum": 1,
+            "maximum": 10000
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Timeout in milliseconds (default: 60000)",
+            "minimum": 1000
+          }
+        },
+        "required": [
+          "database",
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "get_result",
+      "description": "Get results for a completed query. Returns error if query is still running.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "queryExecutionId": {
+            "type": "string",
+            "description": "The query execution ID"
+          },
+          "maxRows": {
+            "type": "number",
+            "description": "Maximum number of rows to return (default: 1000)",
+            "minimum": 1,
+            "maximum": 10000
+          }
+        },
+        "required": [
+          "queryExecutionId"
+        ]
+      }
+    },
+    {
+      "name": "get_status",
+      "description": "Get the current status of a query execution",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "queryExecutionId": {
+            "type": "string",
+            "description": "The query execution ID"
+          }
+        },
+        "required": [
+          "queryExecutionId"
+        ]
+      }
+    }
+  ]
 }

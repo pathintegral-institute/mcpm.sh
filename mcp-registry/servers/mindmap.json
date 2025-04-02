@@ -59,5 +59,24 @@
       "description": "Create a mindmap about the process of putting an elephant into a refrigerator.",
       "prompt": "Think about the process of putting an elephant into a refrigerator, and provide a mind map. Open it with a terminal."
     }
+  ],
+  "tools": [
+    {
+      "name": "convert_markdown_to_mindmap",
+      "description": "Convert Markdown content to a mindmap mind map.\n    \n    Args:\n        markdown_content: The Markdown content to convert\n    \n    Returns:\n        Either the HTML content or the file path to the generated HTML, \n        depending on the --return-type server argument\n    ",
+      "inputSchema": {
+        "properties": {
+          "markdown_content": {
+            "title": "Markdown Content",
+            "type": "string"
+          }
+        },
+        "required": [
+          "markdown_content"
+        ],
+        "title": "convert_markdown_to_mindmapArguments",
+        "type": "object"
+      }
+    }
   ]
 }

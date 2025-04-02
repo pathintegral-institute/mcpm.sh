@@ -39,5 +39,2681 @@
       "required": true,
       "example": "YOUR_API_KEY_HERE"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "stock_quote",
+      "description": "Fetch a stock quote",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol"
+        ]
+      }
+    },
+    {
+      "name": "time_series_intraday",
+      "description": "Fetch a time series intraday",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "adjusted": {
+            "type": "boolean"
+          },
+          "outputsize": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          },
+          "monthly": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval"
+        ]
+      }
+    },
+    {
+      "name": "time_series_daily",
+      "description": "Fetch a time series daily",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "outputsize": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol"
+        ]
+      }
+    },
+    {
+      "name": "time_series_daily_adjusted",
+      "description": "Fetch a time series daily adjusted",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "outputsize": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol"
+        ]
+      }
+    },
+    {
+      "name": "time_series_weekly",
+      "description": "Fetch a time series weekly",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol"
+        ]
+      }
+    },
+    {
+      "name": "time_series_weekly_adjusted",
+      "description": "Fetch a time series weekly adjusted",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol"
+        ]
+      }
+    },
+    {
+      "name": "time_series_monthly",
+      "description": "Fetch a time series monthly",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol"
+        ]
+      }
+    },
+    {
+      "name": "time_series_monthly_adjusted",
+      "description": "Fetch a time series monthly adjusted",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol"
+        ]
+      }
+    },
+    {
+      "name": "realtime_bulk_quotes",
+      "description": "Fetch real time bulk quotes",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbols": {
+            "type": "array"
+          }
+        },
+        "required": [
+          "symbols"
+        ]
+      }
+    },
+    {
+      "name": "symbol_search",
+      "description": "Search endpoint",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keywords": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "keywords"
+        ]
+      }
+    },
+    {
+      "name": "market_status",
+      "description": "Fetch market status",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "realtime_options",
+      "description": "Fetch realtime options",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          },
+          "contract": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol"
+        ]
+      }
+    },
+    {
+      "name": "historical_options",
+      "description": "Fetch historical options",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          },
+          "contract": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol"
+        ]
+      }
+    },
+    {
+      "name": "news_sentiment",
+      "description": "Fetch news sentiment",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tickers": {
+            "type": "array"
+          },
+          "topics": {
+            "type": "string"
+          },
+          "time_from": {
+            "type": "string"
+          },
+          "time_to": {
+            "type": "string"
+          },
+          "sort": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "number"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "tickers"
+        ]
+      }
+    },
+    {
+      "name": "top_gainers_losers",
+      "description": "Fetch top gainers and losers",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "insider_transactions",
+      "description": "Fetch insider transactions",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol"
+        ]
+      }
+    },
+    {
+      "name": "analytics_fixed_window",
+      "description": "Fetch analytics fixed window",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbols": {
+            "type": "array"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "series_range": {
+            "type": "string"
+          },
+          "ohlc": {
+            "type": "string"
+          },
+          "calculations": {
+            "type": "array"
+          }
+        },
+        "required": [
+          "symbols",
+          "series_range",
+          "interval",
+          "calculations"
+        ]
+      }
+    },
+    {
+      "name": "analytics_sliding_window",
+      "description": "Fetch analytics sliding window",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbols": {
+            "type": "array"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "series_range": {
+            "type": "string"
+          },
+          "ohlc": {
+            "type": "string"
+          },
+          "window_size": {
+            "type": "number"
+          },
+          "calculations": {
+            "type": "array"
+          }
+        },
+        "required": [
+          "symbols",
+          "series_range",
+          "interval",
+          "calculations",
+          "window_size"
+        ]
+      }
+    },
+    {
+      "name": "company_overview",
+      "description": "Fetch company overview",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol"
+        ]
+      }
+    },
+    {
+      "name": "etf_profile",
+      "description": "Fetch ETF profile",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol"
+        ]
+      }
+    },
+    {
+      "name": "company_dividends",
+      "description": "Fetch company dividends",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol"
+        ]
+      }
+    },
+    {
+      "name": "company_splits",
+      "description": "Fetch company splits",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol"
+        ]
+      }
+    },
+    {
+      "name": "income_statement",
+      "description": "Fetch company income statement",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol"
+        ]
+      }
+    },
+    {
+      "name": "balance_sheet",
+      "description": "Fetch company balance sheet",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol"
+        ]
+      }
+    },
+    {
+      "name": "cash_flow",
+      "description": "Fetch company cash flow",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol"
+        ]
+      }
+    },
+    {
+      "name": "listing_status",
+      "description": "Fetch listing status",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "earnings_calendar",
+      "description": "Fetch company earnings calendar",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "horizon": {
+            "type": "string"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "ipo_calendar",
+      "description": "Fetch IPO calendar",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "exchange_rate",
+      "description": "Fetch exchange rate",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "from_currency": {
+            "type": "string"
+          },
+          "to_currency": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "from_currency",
+          "to_currency"
+        ]
+      }
+    },
+    {
+      "name": "fx_intraday",
+      "description": "Fetch FX intraday",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "from_symbol": {
+            "type": "string"
+          },
+          "to_symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "outputsize": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "from_symbol",
+          "to_symbol",
+          "interval"
+        ]
+      }
+    },
+    {
+      "name": "fx_daily",
+      "description": "Fetch FX daily",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "from_symbol": {
+            "type": "string"
+          },
+          "to_symbol": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          },
+          "outputsize": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "from_symbol",
+          "to_symbol"
+        ]
+      }
+    },
+    {
+      "name": "fx_weekly",
+      "description": "Fetch FX weekly",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "from_symbol": {
+            "type": "string"
+          },
+          "to_symbol": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "from_symbol",
+          "to_symbol"
+        ]
+      }
+    },
+    {
+      "name": "fx_monthly",
+      "description": "Fetch FX monthly",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "from_symbol": {
+            "type": "string"
+          },
+          "to_symbol": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "from_symbol",
+          "to_symbol"
+        ]
+      }
+    },
+    {
+      "name": "crypto_intraday",
+      "description": "Fetch crypto intraday",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "market": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "outputsize": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "market",
+          "interval"
+        ]
+      }
+    },
+    {
+      "name": "digital_currency_daily",
+      "description": "Fetch digital currency daily",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "market": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "market"
+        ]
+      }
+    },
+    {
+      "name": "digital_currency_weekly",
+      "description": "Fetch digital currency weekly",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "market": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "market"
+        ]
+      }
+    },
+    {
+      "name": "digital_currency_monthly",
+      "description": "Fetch digital currency monthly",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "market": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "market"
+        ]
+      }
+    },
+    {
+      "name": "wti_crude_oil",
+      "description": "Fetch WTI crude oil",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "interval": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "brent_crude_oil",
+      "description": "Fetch Brent crude oil",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "interval": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "natural_gas",
+      "description": "Fetch natural gas",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "interval": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "copper",
+      "description": "Fetch copper",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "interval": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "aluminum",
+      "description": "Fetch aluminum",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "interval": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "wheat",
+      "description": "Fetch wheat",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "interval": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "corn",
+      "description": "Fetch corn",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "interval": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "cotton",
+      "description": "Fetch cotton",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "interval": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "sugar",
+      "description": "Fetch sugar",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "interval": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "coffee",
+      "description": "Fetch coffee",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "interval": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "all_commodities",
+      "description": "Fetch all commodities",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "interval": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "real_gdp",
+      "description": "Fetch real GDP",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "interval": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "real_gdp_per_capita",
+      "description": "Fetch real GDP per capita",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "treasury_yield",
+      "description": "Fetch treasury yield",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "interval": {
+            "type": "string"
+          },
+          "maturity": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "federal_funds_rate",
+      "description": "Fetch federal funds rate",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "interval": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "cpi",
+      "description": "Fetch consumer price index",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "interval": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "inflation",
+      "description": "Fetch inflation",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "retail_sales",
+      "description": "Fetch retail sales",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "durables",
+      "description": "Fetch durables",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "unemployment",
+      "description": "Fetch unemployment",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "nonfarm_payroll",
+      "description": "Fetch nonfarm payroll",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "sma",
+      "description": "Fetch simple moving average",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "time_period": {
+            "type": "number"
+          },
+          "series_type": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "time_period",
+          "series_type"
+        ]
+      }
+    },
+    {
+      "name": "ema",
+      "description": "Fetch exponential moving average",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "time_period": {
+            "type": "number"
+          },
+          "series_type": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "time_period",
+          "series_type"
+        ]
+      }
+    },
+    {
+      "name": "wma",
+      "description": "Fetch weighted moving average",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "time_period": {
+            "type": "number"
+          },
+          "series_type": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "time_period",
+          "series_type"
+        ]
+      }
+    },
+    {
+      "name": "dema",
+      "description": "Fetch double exponential moving average",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "time_period": {
+            "type": "number"
+          },
+          "series_type": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "time_period",
+          "series_type"
+        ]
+      }
+    },
+    {
+      "name": "trima",
+      "description": "Fetch triangular moving average",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "time_period": {
+            "type": "number"
+          },
+          "series_type": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "time_period",
+          "series_type"
+        ]
+      }
+    },
+    {
+      "name": "kama",
+      "description": "Fetch Kaufman adaptive moving average",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "time_period": {
+            "type": "number"
+          },
+          "series_type": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "mama",
+      "description": "Fetch MESA adaptive moving average",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "series_type": {
+            "type": "string"
+          },
+          "fastlimit": {
+            "type": "number"
+          },
+          "slowlimit": {
+            "type": "number"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "series_type",
+          "fastlimit",
+          "slowlimit"
+        ]
+      }
+    },
+    {
+      "name": "vwap",
+      "description": "Fetch volume weighted average price",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval"
+        ]
+      }
+    },
+    {
+      "name": "t3",
+      "description": "Fetch triple exponential moving average",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "time_period": {
+            "type": "number"
+          },
+          "series_type": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "time_period",
+          "series_type"
+        ]
+      }
+    },
+    {
+      "name": "macd",
+      "description": "Fetch moving average convergence divergence",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "series_type": {
+            "type": "string"
+          },
+          "fastperiod": {
+            "type": "number"
+          },
+          "slowperiod": {
+            "type": "number"
+          },
+          "signalperiod": {
+            "type": "number"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "series_type"
+        ]
+      }
+    },
+    {
+      "name": "macdext",
+      "description": "Fetch moving average convergence divergence next",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "series_type": {
+            "type": "string"
+          },
+          "fastperiod": {
+            "type": "number"
+          },
+          "slowperiod": {
+            "type": "number"
+          },
+          "signalperiod": {
+            "type": "number"
+          },
+          "fastmatype": {
+            "type": "number"
+          },
+          "slowmatype": {
+            "type": "number"
+          },
+          "signalmatype": {
+            "type": "number"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "series_type"
+        ]
+      }
+    },
+    {
+      "name": "stoch",
+      "description": "Fetch stochastic oscillator",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "fastkperiod": {
+            "type": "number"
+          },
+          "slowkperiod": {
+            "type": "number"
+          },
+          "slowdperiod": {
+            "type": "number"
+          },
+          "slowkmatype": {
+            "type": "string"
+          },
+          "slowdmatype": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval"
+        ]
+      }
+    },
+    {
+      "name": "stochf",
+      "description": "Fetch stochastic oscillator fast",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "fastkperiod": {
+            "type": "number"
+          },
+          "fastdperiod": {
+            "type": "number"
+          },
+          "fastdmatype": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval"
+        ]
+      }
+    },
+    {
+      "name": "rsi",
+      "description": "Fetch relative strength index",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "time_period": {
+            "type": "number"
+          },
+          "series_type": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "time_period",
+          "series_type"
+        ]
+      }
+    },
+    {
+      "name": "stochrsi",
+      "description": "Fetch stochastic relative strength index",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "time_period": {
+            "type": "number"
+          },
+          "series_type": {
+            "type": "string"
+          },
+          "fastkperiod": {
+            "type": "number"
+          },
+          "fastdperiod": {
+            "type": "number"
+          },
+          "fastdmatype": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "time_period",
+          "series_type"
+        ]
+      }
+    },
+    {
+      "name": "willr",
+      "description": "Fetch williams percent range",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "time_period": {
+            "type": "number"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "time_period"
+        ]
+      }
+    },
+    {
+      "name": "adx",
+      "description": "Fetch average directional movement index",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "time_period": {
+            "type": "number"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "time_period"
+        ]
+      }
+    },
+    {
+      "name": "adxr",
+      "description": "Fetch average directional movement index rating",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "time_period": {
+            "type": "number"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "time_period"
+        ]
+      }
+    },
+    {
+      "name": "apo",
+      "description": "Fetch absolute price oscillator",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "series_type": {
+            "type": "string"
+          },
+          "fastperiod": {
+            "type": "number"
+          },
+          "slowperiod": {
+            "type": "number"
+          },
+          "matype": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "series_type",
+          "fastperiod",
+          "slowperiod"
+        ]
+      }
+    },
+    {
+      "name": "ppo",
+      "description": "Fetch percentage price oscillator",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "series_type": {
+            "type": "string"
+          },
+          "fastperiod": {
+            "type": "number"
+          },
+          "slowperiod": {
+            "type": "number"
+          },
+          "matype": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "series_type",
+          "fastperiod",
+          "slowperiod"
+        ]
+      }
+    },
+    {
+      "name": "mom",
+      "description": "Fetch momentum",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "time_period": {
+            "type": "number"
+          },
+          "series_type": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "time_period",
+          "series_type"
+        ]
+      }
+    },
+    {
+      "name": "bop",
+      "description": "Fetch balance of power",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval"
+        ]
+      }
+    },
+    {
+      "name": "cci",
+      "description": "Fetch commodity channel index",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "time_period": {
+            "type": "number"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "time_period"
+        ]
+      }
+    },
+    {
+      "name": "cmo",
+      "description": "Fetch chande momentum oscillator",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "time_period": {
+            "type": "number"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "time_period"
+        ]
+      }
+    },
+    {
+      "name": "roc",
+      "description": "Fetch rate of change",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "time_period": {
+            "type": "number"
+          },
+          "series_type": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "time_period",
+          "series_type"
+        ]
+      }
+    },
+    {
+      "name": "rocr",
+      "description": "Fetch rate of change ratio",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "time_period": {
+            "type": "number"
+          },
+          "series_type": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "time_period",
+          "series_type"
+        ]
+      }
+    },
+    {
+      "name": "aroon",
+      "description": "Fetch aroon",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "time_period": {
+            "type": "number"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "time_period"
+        ]
+      }
+    },
+    {
+      "name": "aroonosc",
+      "description": "Fetch aroon oscillator",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "time_period": {
+            "type": "number"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "time_period"
+        ]
+      }
+    },
+    {
+      "name": "mfi",
+      "description": "Fetch money flow index",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "time_period": {
+            "type": "number"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "time_period"
+        ]
+      }
+    },
+    {
+      "name": "trix",
+      "description": "Fetch triple exponential average",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "time_period": {
+            "type": "number"
+          },
+          "series_type": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "time_period",
+          "series_type"
+        ]
+      }
+    },
+    {
+      "name": "ultosc",
+      "description": "Fetch ultimate oscillator",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "timeperiod1": {
+            "type": "number"
+          },
+          "timeperiod2": {
+            "type": "number"
+          },
+          "timeperiod3": {
+            "type": "number"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "timeperiod1",
+          "timeperiod2",
+          "timeperiod3"
+        ]
+      }
+    },
+    {
+      "name": "dx",
+      "description": "Fetch directional movement index",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "time_period": {
+            "type": "number"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "time_period"
+        ]
+      }
+    },
+    {
+      "name": "minus_di",
+      "description": "Fetch minus directional indicator",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "time_period": {
+            "type": "number"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "time_period"
+        ]
+      }
+    },
+    {
+      "name": "plus_di",
+      "description": "Fetch plus directional indicator",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "time_period": {
+            "type": "number"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "time_period"
+        ]
+      }
+    },
+    {
+      "name": "minus_dm",
+      "description": "Fetch minus directional movement",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "time_period": {
+            "type": "number"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "time_period"
+        ]
+      }
+    },
+    {
+      "name": "plus_dm",
+      "description": "Fetch plus directional movement",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "time_period": {
+            "type": "number"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "time_period"
+        ]
+      }
+    },
+    {
+      "name": "bbands",
+      "description": "Fetch bollinger bands",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "time_period": {
+            "type": "number"
+          },
+          "series_type": {
+            "type": "string"
+          },
+          "nbdevup": {
+            "type": "number"
+          },
+          "nbdevdn": {
+            "type": "number"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "time_period",
+          "series_type",
+          "nbdevup",
+          "nbdevdn"
+        ]
+      }
+    },
+    {
+      "name": "midpoint",
+      "description": "Fetch midpoint",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "time_period": {
+            "type": "number"
+          },
+          "series_type": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "time_period",
+          "series_type"
+        ]
+      }
+    },
+    {
+      "name": "midprice",
+      "description": "Fetch midprice",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "time_period": {
+            "type": "number"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "time_period"
+        ]
+      }
+    },
+    {
+      "name": "sar",
+      "description": "Fetch parabolic sar",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "acceleration": {
+            "type": "number"
+          },
+          "maximum": {
+            "type": "number"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval"
+        ]
+      }
+    },
+    {
+      "name": "trange",
+      "description": "Fetch true range",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval"
+        ]
+      }
+    },
+    {
+      "name": "atr",
+      "description": "Fetch average true range",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "time_period": {
+            "type": "number"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "time_period"
+        ]
+      }
+    },
+    {
+      "name": "natr",
+      "description": "Fetch normalized average true range",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "time_period": {
+            "type": "number"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "time_period"
+        ]
+      }
+    },
+    {
+      "name": "ad",
+      "description": "Fetch accumulation/distribution line",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval"
+        ]
+      }
+    },
+    {
+      "name": "adosc",
+      "description": "Fetch accumulation/distribution oscillator",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "fastperiod": {
+            "type": "number"
+          },
+          "slowperiod": {
+            "type": "number"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "fastperiod",
+          "slowperiod"
+        ]
+      }
+    },
+    {
+      "name": "obv",
+      "description": "Fetch on balance volume",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval"
+        ]
+      }
+    },
+    {
+      "name": "ht_trendline",
+      "description": "Fetch hilbert transform - trendline",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "series_type": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "series_type"
+        ]
+      }
+    },
+    {
+      "name": "ht_sine",
+      "description": "Fetch hilbert transform - sine wave",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "series_type": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval",
+          "series_type"
+        ]
+      }
+    },
+    {
+      "name": "ht_trendmode",
+      "description": "Fetch hilbert transform - trend mode",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval"
+        ]
+      }
+    },
+    {
+      "name": "ht_dcperiod",
+      "description": "Fetch hilbert transform - dominant cycle period",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "series_type": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval"
+        ]
+      }
+    },
+    {
+      "name": "ht_dcphase",
+      "description": "Fetch hilbert transform - dominant cycle phase",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval"
+        ]
+      }
+    },
+    {
+      "name": "ht_phasor",
+      "description": "Fetch hilbert transform - phasor components",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "interval": {
+            "type": "string"
+          },
+          "month": {
+            "type": "string"
+          },
+          "datatype": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "interval"
+        ]
+      }
+    }
+  ]
 }

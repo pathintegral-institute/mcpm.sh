@@ -39,5 +39,1125 @@
         "mcp-server-docker"
       ]
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "list_containers",
+      "description": "List all Docker containers",
+      "inputSchema": {
+        "$defs": {
+          "ListContainersFilters": {
+            "properties": {
+              "label": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Filter by label, either `key` or `key=value` format",
+                "title": "Label"
+              }
+            },
+            "title": "ListContainersFilters",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "all": {
+            "default": false,
+            "description": "Show all containers (default shows just running)",
+            "title": "All",
+            "type": "boolean"
+          },
+          "filters": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/ListContainersFilters"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Filter containers"
+          }
+        },
+        "title": "ListContainersInput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_container",
+      "description": "Create a new Docker container",
+      "inputSchema": {
+        "description": "Schema for creating a new container.\n\nThis is passed to the Python Docker SDK directly, so the fields are the same\nas the `docker.containers.create` method.",
+        "properties": {
+          "detach": {
+            "default": true,
+            "description": "Run container in the background. Should be True for long-running containers, can be false for short-lived containers",
+            "title": "Detach",
+            "type": "boolean"
+          },
+          "image": {
+            "description": "Docker image name",
+            "title": "Image",
+            "type": "string"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Container name",
+            "title": "Name"
+          },
+          "entrypoint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Entrypoint to run in container",
+            "title": "Entrypoint"
+          },
+          "command": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Command to run in container",
+            "title": "Command"
+          },
+          "network": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Network to attach the container to",
+            "title": "Network"
+          },
+          "environment": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Environment variables dictionary",
+            "title": "Environment"
+          },
+          "ports": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "items": {
+                        "type": "integer"
+                      },
+                      "type": "array"
+                    },
+                    {
+                      "maxItems": 2,
+                      "minItems": 2,
+                      "prefixItems": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "integer"
+                        }
+                      ],
+                      "type": "array"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Mapping of container_port to host_port",
+            "title": "Ports"
+          },
+          "volumes": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object"
+                },
+                "type": "object"
+              },
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Volume mappings",
+            "title": "Volumes"
+          },
+          "labels": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Container labels, either as a dictionary or a list of key=value strings",
+            "title": "Labels"
+          },
+          "auto_remove": {
+            "default": false,
+            "description": "Automatically remove the container",
+            "title": "Auto Remove",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "image"
+        ],
+        "title": "CreateContainerInput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "run_container",
+      "description": "Run an image in a new Docker container",
+      "inputSchema": {
+        "description": "Schema for creating a new container.\n\nThis is passed to the Python Docker SDK directly, so the fields are the same\nas the `docker.containers.create` method.",
+        "properties": {
+          "detach": {
+            "default": true,
+            "description": "Run container in the background. Should be True for long-running containers, can be false for short-lived containers",
+            "title": "Detach",
+            "type": "boolean"
+          },
+          "image": {
+            "description": "Docker image name",
+            "title": "Image",
+            "type": "string"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Container name",
+            "title": "Name"
+          },
+          "entrypoint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Entrypoint to run in container",
+            "title": "Entrypoint"
+          },
+          "command": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Command to run in container",
+            "title": "Command"
+          },
+          "network": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Network to attach the container to",
+            "title": "Network"
+          },
+          "environment": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Environment variables dictionary",
+            "title": "Environment"
+          },
+          "ports": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "items": {
+                        "type": "integer"
+                      },
+                      "type": "array"
+                    },
+                    {
+                      "maxItems": 2,
+                      "minItems": 2,
+                      "prefixItems": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "integer"
+                        }
+                      ],
+                      "type": "array"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Mapping of container_port to host_port",
+            "title": "Ports"
+          },
+          "volumes": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object"
+                },
+                "type": "object"
+              },
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Volume mappings",
+            "title": "Volumes"
+          },
+          "labels": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Container labels, either as a dictionary or a list of key=value strings",
+            "title": "Labels"
+          },
+          "auto_remove": {
+            "default": false,
+            "description": "Automatically remove the container",
+            "title": "Auto Remove",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "image"
+        ],
+        "title": "CreateContainerInput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "recreate_container",
+      "description": "Stop and remove a container, then run a new container. Fails if the container does not exist.",
+      "inputSchema": {
+        "properties": {
+          "detach": {
+            "default": true,
+            "description": "Run container in the background. Should be True for long-running containers, can be false for short-lived containers",
+            "title": "Detach",
+            "type": "boolean"
+          },
+          "image": {
+            "description": "Docker image name",
+            "title": "Image",
+            "type": "string"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Container name",
+            "title": "Name"
+          },
+          "entrypoint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Entrypoint to run in container",
+            "title": "Entrypoint"
+          },
+          "command": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Command to run in container",
+            "title": "Command"
+          },
+          "network": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Network to attach the container to",
+            "title": "Network"
+          },
+          "environment": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Environment variables dictionary",
+            "title": "Environment"
+          },
+          "ports": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "items": {
+                        "type": "integer"
+                      },
+                      "type": "array"
+                    },
+                    {
+                      "maxItems": 2,
+                      "minItems": 2,
+                      "prefixItems": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "integer"
+                        }
+                      ],
+                      "type": "array"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Mapping of container_port to host_port",
+            "title": "Ports"
+          },
+          "volumes": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object"
+                },
+                "type": "object"
+              },
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Volume mappings",
+            "title": "Volumes"
+          },
+          "labels": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Container labels, either as a dictionary or a list of key=value strings",
+            "title": "Labels"
+          },
+          "auto_remove": {
+            "default": false,
+            "description": "Automatically remove the container",
+            "title": "Auto Remove",
+            "type": "boolean"
+          },
+          "container_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Container ID to recreate. The `name` parameter will be used if this is not provided",
+            "title": "Container Id"
+          }
+        },
+        "required": [
+          "image"
+        ],
+        "title": "RecreateContainerInput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "start_container",
+      "description": "Start a Docker container",
+      "inputSchema": {
+        "properties": {
+          "container_id": {
+            "description": "Container ID or name",
+            "title": "Container Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "container_id"
+        ],
+        "title": "ContainerActionInput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "fetch_container_logs",
+      "description": "Fetch logs for a Docker container",
+      "inputSchema": {
+        "properties": {
+          "container_id": {
+            "description": "Container ID or name",
+            "title": "Container Id",
+            "type": "string"
+          },
+          "tail": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "const": "all",
+                "type": "string"
+              }
+            ],
+            "default": 100,
+            "description": "Number of lines to show from the end",
+            "title": "Tail"
+          }
+        },
+        "required": [
+          "container_id"
+        ],
+        "title": "FetchContainerLogsInput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "stop_container",
+      "description": "Stop a Docker container",
+      "inputSchema": {
+        "properties": {
+          "container_id": {
+            "description": "Container ID or name",
+            "title": "Container Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "container_id"
+        ],
+        "title": "ContainerActionInput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "remove_container",
+      "description": "Remove a Docker container",
+      "inputSchema": {
+        "properties": {
+          "container_id": {
+            "description": "Container ID or name",
+            "title": "Container Id",
+            "type": "string"
+          },
+          "force": {
+            "default": false,
+            "description": "Force remove the container",
+            "title": "Force",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "container_id"
+        ],
+        "title": "RemoveContainerInput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_images",
+      "description": "List Docker images",
+      "inputSchema": {
+        "$defs": {
+          "ListImagesFilters": {
+            "properties": {
+              "dangling": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Show dangling images",
+                "title": "Dangling"
+              },
+              "label": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Filter by label, either `key` or `key=value` format",
+                "title": "Label"
+              }
+            },
+            "title": "ListImagesFilters",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Filter images by repository name, if desired",
+            "title": "Name"
+          },
+          "all": {
+            "default": false,
+            "description": "Show all images (default hides intermediate)",
+            "title": "All",
+            "type": "boolean"
+          },
+          "filters": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/ListImagesFilters"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Filter images"
+          }
+        },
+        "title": "ListImagesInput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "pull_image",
+      "description": "Pull a Docker image",
+      "inputSchema": {
+        "properties": {
+          "repository": {
+            "description": "Image repository",
+            "title": "Repository",
+            "type": "string"
+          },
+          "tag": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": "latest",
+            "description": "Image tag",
+            "title": "Tag"
+          }
+        },
+        "required": [
+          "repository"
+        ],
+        "title": "PullPushImageInput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "push_image",
+      "description": "Push a Docker image",
+      "inputSchema": {
+        "properties": {
+          "repository": {
+            "description": "Image repository",
+            "title": "Repository",
+            "type": "string"
+          },
+          "tag": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": "latest",
+            "description": "Image tag",
+            "title": "Tag"
+          }
+        },
+        "required": [
+          "repository"
+        ],
+        "title": "PullPushImageInput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "build_image",
+      "description": "Build a Docker image from a Dockerfile",
+      "inputSchema": {
+        "properties": {
+          "path": {
+            "description": "Path to build context",
+            "title": "Path",
+            "type": "string"
+          },
+          "tag": {
+            "description": "Image tag",
+            "title": "Tag",
+            "type": "string"
+          },
+          "dockerfile": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Path to Dockerfile",
+            "title": "Dockerfile"
+          }
+        },
+        "required": [
+          "path",
+          "tag"
+        ],
+        "title": "BuildImageInput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "remove_image",
+      "description": "Remove a Docker image",
+      "inputSchema": {
+        "properties": {
+          "image": {
+            "description": "Image ID or name",
+            "title": "Image",
+            "type": "string"
+          },
+          "force": {
+            "default": false,
+            "description": "Force remove the image",
+            "title": "Force",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "image"
+        ],
+        "title": "RemoveImageInput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_networks",
+      "description": "List Docker networks",
+      "inputSchema": {
+        "$defs": {
+          "ListNetworksFilter": {
+            "properties": {
+              "label": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Filter by label, either `key` or `key=value` format",
+                "title": "Label"
+              }
+            },
+            "title": "ListNetworksFilter",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "filters": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/ListNetworksFilter"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Filter networks"
+          }
+        },
+        "title": "ListNetworksInput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_network",
+      "description": "Create a Docker network",
+      "inputSchema": {
+        "properties": {
+          "name": {
+            "description": "Network name",
+            "title": "Name",
+            "type": "string"
+          },
+          "driver": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": "bridge",
+            "description": "Network driver",
+            "title": "Driver"
+          },
+          "internal": {
+            "default": false,
+            "description": "Create an internal network",
+            "title": "Internal",
+            "type": "boolean"
+          },
+          "labels": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Network labels",
+            "title": "Labels"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "CreateNetworkInput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "remove_network",
+      "description": "Remove a Docker network",
+      "inputSchema": {
+        "properties": {
+          "network_id": {
+            "description": "Network ID or name",
+            "title": "Network Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "network_id"
+        ],
+        "title": "RemoveNetworkInput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_volumes",
+      "description": "List Docker volumes",
+      "inputSchema": {
+        "properties": {},
+        "title": "ListVolumesInput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_volume",
+      "description": "Create a Docker volume",
+      "inputSchema": {
+        "properties": {
+          "name": {
+            "description": "Volume name",
+            "title": "Name",
+            "type": "string"
+          },
+          "driver": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": "local",
+            "description": "Volume driver",
+            "title": "Driver"
+          },
+          "labels": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Volume labels",
+            "title": "Labels"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "CreateVolumeInput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "remove_volume",
+      "description": "Remove a Docker volume",
+      "inputSchema": {
+        "properties": {
+          "volume_name": {
+            "description": "Volume name",
+            "title": "Volume Name",
+            "type": "string"
+          },
+          "force": {
+            "default": false,
+            "description": "Force remove the volume",
+            "title": "Force",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "volume_name"
+        ],
+        "title": "RemoveVolumeInput",
+        "type": "object"
+      }
+    }
+  ]
 }
