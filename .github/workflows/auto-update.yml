@@ -51,9 +51,11 @@ jobs:
           ISSUE_NUMBER: ${{ github.event.issue.number }}
         shell: /usr/bin/bash -e {0}
         run: |
-          # Use test-automation branch
+          # Create a unique branch name with issue number
+          BRANCH_NAME="scrape-issue-$ISSUE_NUMBER"
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
+          git checkout -b "$BRANCH_NAME"
           git add local/readme.md
           git commit -m "Update repo with README from issue #$ISSUE_NUMBER" || echo "No changes to commit"
-          git push origin test-automation --force  # Push to test-automation
+          git push origin "$BRANCH_NAME" --force  # Push to the new branch
