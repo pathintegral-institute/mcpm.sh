@@ -38,5 +38,8 @@
       "description": "User wants to verify the value stored in Redis.",
       "prompt": "Yes please verify it"
     }
+  ],
+  "categories": [
+    "Databases"
   ]
 }

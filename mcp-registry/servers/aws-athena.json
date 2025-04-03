@@ -12,8 +12,7 @@
   },
   "license": "MIT",
   "categories": [
-    "database",
-    "AWS"
+    "Databases"
   ],
   "tags": [
     "athena",

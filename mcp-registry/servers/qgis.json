@@ -12,9 +12,7 @@
   },
   "license": "MIT",
   "categories": [
-    "GIS",
-    "AI Integration",
-    "Plugin"
+    "Analytics"
   ],
   "tags": [
     "QGIS"

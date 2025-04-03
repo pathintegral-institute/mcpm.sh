@@ -12,9 +12,7 @@
   },
   "license": "MPLv2",
   "categories": [
-    "RAG",
-    "On-Premises",
-    "Containers"
+    "Knowledge Base"
   ],
   "tags": [
     "ChatGPT",

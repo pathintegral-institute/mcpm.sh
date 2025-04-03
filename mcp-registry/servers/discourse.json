@@ -62,5 +62,8 @@
       "required": true,
       "example": "ash"
     }
-  }
+  },
+  "categories": [
+    "Web Services"
+  ]
 }

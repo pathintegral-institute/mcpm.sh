@@ -12,10 +12,7 @@
   },
   "license": "Apache-2.0",
   "categories": [
-    "chat",
-    "desktop",
-    "app",
-    "LLMs"
+    "MCP Tools"
   ],
   "tags": [
     "LLM",
