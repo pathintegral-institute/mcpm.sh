@@ -26,7 +26,13 @@
         "-y",
         "https://github.com/ravenwits/mcp-server-arangodb"
       ],
-      "description": "Run with npx (requires npm install)"
+      "description": "Run with npx (requires npm install)",
+      "env": {
+        "ARANGO_URL": "${ARANGO_URL}",
+        "ARANGO_DATABASE": "${ARANGO_DATABASE}",
+        "ARANGO_USERNAME": "${ARANGO_USERNAME}",
+        "ARANGO_PASSWORD": "${ARANGO_PASSWORD}"
+      }
     }
   },
   "examples": [
@@ -73,5 +79,165 @@
       "description": "Database password",
       "required": true
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "arango_query",
+      "description": "Execute an AQL query",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "AQL query string"
+          },
+          "bindVars": {
+            "type": "object",
+            "description": "Query bind variables",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "arango_insert",
+      "description": "Insert a document into a collection",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "collection": {
+            "type": "string",
+            "description": "Collection name"
+          },
+          "document": {
+            "type": "object",
+            "description": "Document to insert",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "collection",
+          "document"
+        ]
+      }
+    },
+    {
+      "name": "arango_update",
+      "description": "Update a document in a collection",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "collection": {
+            "type": "string",
+            "description": "Collection name"
+          },
+          "key": {
+            "type": "string",
+            "description": "Document key"
+          },
+          "update": {
+            "type": "object",
+            "description": "Update object",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "collection",
+          "key",
+          "update"
+        ]
+      }
+    },
+    {
+      "name": "arango_remove",
+      "description": "Remove a document from a collection",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "collection": {
+            "type": "string",
+            "description": "Collection name"
+          },
+          "key": {
+            "type": "string",
+            "description": "Document key"
+          }
+        },
+        "required": [
+          "collection",
+          "key"
+        ]
+      }
+    },
+    {
+      "name": "arango_backup",
+      "description": "Backup collections to JSON files.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "outputDir": {
+            "type": "string",
+            "description": "An absolute directory path to store backup files",
+            "default": "./backup",
+            "optional": true
+          },
+          "collection": {
+            "type": "string",
+            "description": "Collection name to backup. If not provided, backs up all collections.",
+            "optional": true
+          },
+          "docLimit": {
+            "type": "integer",
+            "description": "Limit the number of documents to backup. If not provided, backs up all documents.",
+            "optional": true
+          }
+        },
+        "required": [
+          "outputDir"
+        ]
+      }
+    },
+    {
+      "name": "arango_list_collections",
+      "description": "List all collections in the database",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "arango_create_collection",
+      "description": "Create a new collection in the database",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the collection to create"
+          },
+          "type": {
+            "type": {
+              "2": "DOCUMENT_COLLECTION",
+              "3": "EDGE_COLLECTION",
+              "DOCUMENT_COLLECTION": 2,
+              "EDGE_COLLECTION": 3
+            },
+            "description": "Type of collection to create",
+            "default": 2
+          },
+          "waitForSync": {
+            "type": "boolean",
+            "description": "If true, wait for data to be synchronized to disk before returning",
+            "default": false
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    }
+  ]
 }

@@ -62,9 +62,7 @@
         },
         "required": [
           "menuPath"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -80,9 +78,7 @@
         },
         "required": [
           "objectPath"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -118,9 +114,7 @@
         },
         "required": [
           "methodSource"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -137,9 +131,7 @@
             "type": "string",
             "description": "Optional test filter (e.g. specific test name or namespace)"
           }
-        },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        }
       }
     },
     {
@@ -159,9 +151,7 @@
         },
         "required": [
           "message"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     }
   ]

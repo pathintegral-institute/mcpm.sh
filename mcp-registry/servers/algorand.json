@@ -9,7 +9,6 @@
   "homepage": "https://github.com/GoPlausible/algorand-mcp",
   "author": {
     "name": "GoPlausible",
-    "email": "support@goplausible.com",
     "url": "https://goplausible.com"
   },
   "license": "MIT",
@@ -18,8 +17,7 @@
   ],
   "tags": [
     "Algorand",
-    "Blockchain",
-    "Node.js"
+    "Blockchain"
   ],
   "installations": {
     "npm": {
@@ -27,7 +25,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "@GoPlausible/algorand-mcp"
+        "algorand-mcp"
       ],
       "env": {
         "NFD_API_KEY": "${NFD_API_KEY}",

@@ -11,7 +11,11 @@ from mcpm.clients.client_config import ClientConfigManager
 
 # Import all client managers
 from mcpm.clients.managers.claude_desktop import ClaudeDesktopManager
+from mcpm.clients.managers.cline import ClineManager, RooCodeManager
+from mcpm.clients.managers.continue_extension import ContinueManager
 from mcpm.clients.managers.cursor import CursorManager
+from mcpm.clients.managers.fiveire import FiveireManager
+from mcpm.clients.managers.goose import GooseClientManager
 from mcpm.clients.managers.windsurf import WindsurfManager
 
 logger = logging.getLogger(__name__)
@@ -31,6 +35,11 @@ class ClientRegistry:
         "claude-desktop": ClaudeDesktopManager(),
         "windsurf": WindsurfManager(),
         "cursor": CursorManager(),
+        "cline": ClineManager(),
+        "continue": ContinueManager(),
+        "goose": GooseClientManager(),
+        "5ire": FiveireManager(),
+        "roo-code": RooCodeManager()
     }
 
     @classmethod

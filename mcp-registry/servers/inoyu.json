@@ -66,5 +66,96 @@
       "description": "An identifier for the source of the request (e.g., claude-desktop)",
       "required": false
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "get_my_profile",
+      "description": "Get your profile using environment variables.",
+      "inputSchema": {
+        "requireSegments": {
+          "type": "boolean",
+          "description": "Include segment information",
+          "optional": true
+        },
+        "requireScores": {
+          "type": "boolean",
+          "description": "Include scoring information",
+          "optional": true
+        }
+      },
+      "required": []
+    },
+    {
+      "name": "update_my_profile",
+      "description": "Update properties of your profile.",
+      "inputSchema": {
+        "properties": {
+          "type": "object",
+          "description": "Properties to update"
+        }
+      },
+      "required": [
+        "properties"
+      ]
+    },
+    {
+      "name": "get_profile",
+      "description": "Retrieve a specific profile by ID.",
+      "inputSchema": {
+        "profileId": {
+          "type": "string",
+          "description": "ID of the profile to retrieve"
+        }
+      },
+      "required": [
+        "profileId"
+      ]
+    },
+    {
+      "name": "search_profiles",
+      "description": "Search for profiles.",
+      "inputSchema": {
+        "query": {
+          "type": "string",
+          "description": "Search query"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "Maximum number of results to return",
+          "optional": true
+        },
+        "offset": {
+          "type": "integer",
+          "description": "Pagination offset",
+          "optional": true
+        }
+      },
+      "required": [
+        "query"
+      ]
+    },
+    {
+      "name": "create_scope",
+      "description": "Create a new Unomi scope.",
+      "inputSchema": {
+        "scope": {
+          "type": "string",
+          "description": "Identifier for the scope"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the scope",
+          "optional": true
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the scope",
+          "optional": true
+        }
+      },
+      "required": [
+        "scope"
+      ]
+    }
+  ]
 }

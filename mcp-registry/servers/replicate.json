@@ -43,5 +43,212 @@
       "required": true,
       "example": "your_token_here"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "search_models",
+      "description": "Search for models using semantic search",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "list_models",
+      "description": "List available models with optional filtering",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "Filter by model owner"
+          },
+          "cursor": {
+            "type": "string",
+            "description": "Pagination cursor"
+          }
+        }
+      }
+    },
+    {
+      "name": "list_collections",
+      "description": "List available model collections",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "cursor": {
+            "type": "string",
+            "description": "Pagination cursor"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_collection",
+      "description": "Get details of a specific collection",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Collection slug"
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "create_prediction",
+      "description": "Create a new prediction using either a model version (for community models) or model name (for official models)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string",
+            "description": "Model version ID to use (for community models)"
+          },
+          "model": {
+            "type": "string",
+            "description": "Model name to use (for official models)"
+          },
+          "input": {
+            "type": "object",
+            "description": "Input parameters for the model",
+            "additionalProperties": true
+          },
+          "webhook_url": {
+            "type": "string",
+            "description": "Optional webhook URL for notifications"
+          }
+        },
+        "oneOf": [
+          {
+            "required": [
+              "version",
+              "input"
+            ]
+          },
+          {
+            "required": [
+              "model",
+              "input"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "cancel_prediction",
+      "description": "Cancel a running prediction",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prediction_id": {
+            "type": "string",
+            "description": "ID of the prediction to cancel"
+          }
+        },
+        "required": [
+          "prediction_id"
+        ]
+      }
+    },
+    {
+      "name": "get_prediction",
+      "description": "Get details about a specific prediction",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prediction_id": {
+            "type": "string",
+            "description": "ID of the prediction to get details for"
+          }
+        },
+        "required": [
+          "prediction_id"
+        ]
+      }
+    },
+    {
+      "name": "list_predictions",
+      "description": "List recent predictions",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of predictions to return",
+            "default": 10
+          },
+          "cursor": {
+            "type": "string",
+            "description": "Cursor for pagination"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_model",
+      "description": "Get details of a specific model including available versions",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "Model owner"
+          },
+          "name": {
+            "type": "string",
+            "description": "Model name"
+          }
+        },
+        "required": [
+          "owner",
+          "name"
+        ]
+      }
+    },
+    {
+      "name": "view_image",
+      "description": "Display an image in the system's default web browser",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL of the image to display"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    },
+    {
+      "name": "clear_image_cache",
+      "description": "Clear the image viewer cache",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_image_cache_stats",
+      "description": "Get statistics about the image cache",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ]
 }

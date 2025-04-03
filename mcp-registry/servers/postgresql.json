@@ -40,5 +40,19 @@
         "postgresql://host.docker.internal:5432/mydb"
       ]
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "query",
+      "description": "Run a read-only SQL query",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sql": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  ]
 }

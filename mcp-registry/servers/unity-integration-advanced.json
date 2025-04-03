@@ -67,8 +67,7 @@
             "description": "RootObjectsOnly: Returns just root GameObjects. FullHierarchy: Returns complete hierarchy with all children.",
             "default": "RootObjectsOnly"
           }
-        },
-        "additionalProperties": false
+        }
       },
       "category": "Editor State",
       "tags": [
@@ -109,8 +108,7 @@
         },
         "required": [
           "instanceIDs"
-        ],
-        "additionalProperties": false
+        ]
       },
       "category": "Editor State",
       "tags": [
@@ -137,8 +135,7 @@
         },
         "required": [
           "code"
-        ],
-        "additionalProperties": false
+        ]
       },
       "category": "Editor Control",
       "tags": [
@@ -206,8 +203,7 @@
             "type": "string",
             "description": "Filter logs before this ISO timestamp"
           }
-        },
-        "additionalProperties": false
+        }
       },
       "category": "Debugging",
       "tags": [
@@ -226,8 +222,7 @@
       "description": "Verify that the MCP server has an active connection to Unity Editor",
       "inputSchema": {
         "type": "object",
-        "properties": {},
-        "additionalProperties": false
+        "properties": {}
       },
       "category": "Connection",
       "tags": [
@@ -245,8 +240,7 @@
       "description": "Get the current Unity Editor state including project information",
       "inputSchema": {
         "type": "object",
-        "properties": {},
-        "additionalProperties": false
+        "properties": {}
       },
       "category": "Editor State",
       "tags": [
@@ -272,9 +266,7 @@
         },
         "required": [
           "path"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       },
       "category": "Filesystem",
       "tags": [
@@ -299,9 +291,7 @@
         },
         "required": [
           "paths"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       },
       "category": "Filesystem",
       "tags": [
@@ -329,9 +319,7 @@
         "required": [
           "path",
           "content"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       },
       "category": "Filesystem",
       "tags": [
@@ -382,9 +370,7 @@
         "required": [
           "path",
           "edits"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       },
       "category": "Filesystem",
       "tags": [
@@ -407,9 +393,7 @@
         },
         "required": [
           "path"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       },
       "category": "Filesystem",
       "tags": [
@@ -437,9 +421,7 @@
         },
         "required": [
           "path"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       },
       "category": "Filesystem",
       "tags": [
@@ -475,9 +457,7 @@
         "required": [
           "path",
           "pattern"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       },
       "category": "Filesystem",
       "tags": [
@@ -499,9 +479,7 @@
         },
         "required": [
           "path"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       },
       "category": "Filesystem",
       "tags": [
@@ -534,9 +512,7 @@
         },
         "required": [
           "assetType"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       },
       "category": "Filesystem",
       "tags": [

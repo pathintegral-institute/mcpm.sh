@@ -1,3 +1,6 @@
+![PyPI - Version](https://img.shields.io/pypi/v/mcpm)
+![GitHub Release](https://img.shields.io/github/v/release/pathintegral-institute/mcpm.sh)
+
 # MCPM - Model Context Protocol Manager
 
 MCPM is a Homebrew-like service and command-line interface for managing Model Context Protocol (MCP) servers across various MCP clients.
@@ -19,7 +22,12 @@ MCPM will support managing MCP servers for the following clients:
 - Claude Desktop (Anthropic)
 - Cursor
 - Windsurf
-- Additional clients coming soon...
+- Cline
+- Continue
+- Goose
+- 5ire
+- Roo Code
+- More clients coming soon...
 
 ## Command Line Interface (CLI)
 
@@ -122,7 +130,7 @@ mcpm.sh/
    ```
    # Either use the installed package
    mcpm --help
-   
+
    # Or use the development script
    ./test_cli.py --help
    ```

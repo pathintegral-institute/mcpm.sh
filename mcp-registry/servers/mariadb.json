@@ -68,5 +68,23 @@
       "description": "The name of the database to connect to.",
       "required": true
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "query_database",
+      "description": "Execute a read-only operation against the MariaDB database.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "SQL query to execute"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ]
 }

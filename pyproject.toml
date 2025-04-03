@@ -28,6 +28,7 @@ dependencies = [
     "mcp>=1.6.0",
     "boto3>=1.37.25",
     "loguru>=0.7.3",
+    "ruamel-yaml>=0.18.10",
 ]
 
 [project.urls]
@@ -51,3 +52,9 @@ fix = true
 [tool.ruff.lint]
 select = ["F", "E", "W", "I"]
 fixable = ["I", "F401"]
+
+[dependency-groups]
+dev = [
+    "ipython>=8.34.0",
+    "pytest>=8.3.5",
+]

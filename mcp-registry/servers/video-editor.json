@@ -54,5 +54,355 @@
       "required": true,
       "example": "YOURAPIKEY"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "add-video",
+      "description": "Upload video from URL. Begins analysis of video to allow for later information retrieval for automatic video editing an search.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "url"
+        ]
+      }
+    },
+    {
+      "name": "search-remote-videos",
+      "description": "Default method to search videos. Will return videos including video_ids, which allow for information retrieval and building video edits.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Text search query"
+          },
+          "limit": {
+            "type": "integer",
+            "default": 10,
+            "minimum": 1,
+            "description": "Maximum number of results to return"
+          },
+          "project_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Project ID to scope the search"
+          },
+          "duration_min": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Minimum video duration in seconds"
+          },
+          "duration_max": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Maximum video duration in seconds"
+          }
+        },
+        "created_after": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Filter videos created after this datetime"
+        },
+        "created_before": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Filter videos created before this datetime"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true,
+          "description": "Set of tags to filter by"
+        },
+        "include_segments": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether to include video segments in results"
+        },
+        "include_related": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether to include related videos"
+        },
+        "query_audio": {
+          "type": "string",
+          "description": "Audio search query"
+        },
+        "query_img": {
+          "type": "string",
+          "description": "Image search query"
+        },
+        "oneOf": [
+          {
+            "required": [
+              "query"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "search-local-videos",
+      "description": "Search user's local videos in Photos app by keyword",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keyword": {
+            "type": "string"
+          },
+          "start_date": {
+            "type": "string",
+            "description": "ISO 8601 formatted datetime string (e.g. 2024-01-21T15:30:00Z)"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "ISO 8601 formatted datetime string (e.g. 2024-01-21T15:30:00Z)"
+          }
+        },
+        "required": [
+          "keyword"
+        ]
+      }
+    },
+    {
+      "name": "generate-edit-from-videos",
+      "description": "Generate an edit from videos, from within a specific project. Creates a new project to work within no existing project ID (UUID) is passed ",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string",
+            "description": "Either an existing Project UUID or String. A UUID puts the edit in an existing project, and a string creates a new project with that name."
+          },
+          "name": {
+            "type": "string",
+            "description": "Video Edit name"
+          },
+          "open_editor": {
+            "type": "boolean",
+            "description": "Open a live editor with the project's edit"
+          },
+          "resolution": {
+            "type": "string",
+            "description": "Video resolution. Examples include '1920x1080', '1280x720'"
+          },
+          "edit": {
+            "type": "array",
+            "cuts": {
+              "video_id": {
+                "type": "string",
+                "description": "Video UUID"
+              },
+              "video_start_time": {
+                "type": "string",
+                "description": "Clip start time in 00:00:00.000 format"
+              },
+              "video_end_time": {
+                "type": "string",
+                "description": "Clip end time in 00:00:00.000 format"
+              }
+            }
+          }
+        },
+        "required": [
+          "edit",
+          "cuts",
+          "name",
+          "project_id"
+        ]
+      }
+    },
+    {
+      "name": "generate-edit-from-single-video",
+      "description": "Generate a compressed video edit from a single video.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string"
+          },
+          "resolution": {
+            "type": "string"
+          },
+          "video_id": {
+            "type": "string"
+          },
+          "edit": {
+            "type": "array",
+            "cuts": {
+              "video_start_time": "time",
+              "video_end_time": "time"
+            }
+          }
+        },
+        "required": [
+          "edit",
+          "project_id",
+          "video_id",
+          "cuts"
+        ]
+      }
+    },
+    {
+      "name": "update-video-edit",
+      "description": "Update an existing video edit within a specific project.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string",
+            "description": "UUID of the project containing the edit"
+          },
+          "edit_id": {
+            "type": "string",
+            "description": "UUID of the video edit to update"
+          },
+          "name": {
+            "type": "string",
+            "description": "Video Edit name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the video edit"
+          },
+          "video_output_format": {
+            "type": "string",
+            "description": "Output format for the video (e.g., 'mp4', 'webm')"
+          },
+          "video_output_resolution": {
+            "type": "string",
+            "description": "Video resolution. Examples include '1920x1080', '1280x720'"
+          },
+          "video_output_fps": {
+            "type": "number",
+            "description": "Frames per second for the output video"
+          },
+          "video_series_sequential": {
+            "type": "array",
+            "description": "Array of video clips in sequential order",
+            "items": {
+              "type": "object",
+              "properties": {
+                "video_id": {
+                  "type": "string",
+                  "description": "Video UUID"
+                },
+                "video_start_time": {
+                  "type": "string",
+                  "description": "Clip start time in 00:00:00.000 format"
+                },
+                "video_end_time": {
+                  "type": "string",
+                  "description": "Clip end time in 00:00:00.000 format"
+                }
+              }
+            }
+          },
+          "audio_overlay": {
+            "type": "object",
+            "description": "Audio overlay settings and assets"
+          },
+          "rendered": {
+            "type": "boolean",
+            "description": "Whether the edit has been rendered"
+          }
+        },
+        "required": [
+          "project_id",
+          "edit_id"
+        ]
+      }
+    },
+    {
+      "name": "create-video-bar-chart-from-two-axis-data",
+      "description": "Create a video bar chart from two-axis data",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "x_values": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "y_values": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "x_label": {
+            "type": "string"
+          },
+          "y_label": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "filename": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "x_values",
+          "y_values",
+          "x_label",
+          "y_label",
+          "title"
+        ]
+      }
+    },
+    {
+      "name": "create-video-line-chart-from-two-axis-data",
+      "description": "Create a video line chart from two-axis data",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "x_values": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "y_values": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "x_label": {
+            "type": "string"
+          },
+          "y_label": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "filename": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "x_values",
+          "y_values",
+          "x_label",
+          "y_label",
+          "title"
+        ]
+      }
+    }
+  ]
 }

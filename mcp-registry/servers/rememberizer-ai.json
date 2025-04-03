@@ -38,5 +38,120 @@
       "required": true,
       "example": "your_rememberizer_api_token"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "rememberizer_account_information",
+      "description": "Get information about your Rememberizer.ai personal/team knowledge repository account. This includes account holder name and email address.",
+      "inputSchema": {
+        "type": "object"
+      }
+    },
+    {
+      "name": "retrieve_semantically_similar_internal_knowledge",
+      "description": "Send a block of text and retrieve cosine similar matches from your connected Rememberizer personal/team internal knowledge and memory repository.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "match_this": {
+            "type": "string",
+            "description": "Up to a 400-word sentence for which you wish to find semantically similar chunks of knowledge."
+          },
+          "n_results": {
+            "type": "integer",
+            "description": "Number of semantically similar chunks of text to return. Use 'n_results=3' for up to 5, and 'n_results=10' for more information. If you do not receive enough information, consider trying again with a larger 'n_results' value."
+          },
+          "from_datetime_ISO8601": {
+            "type": "string",
+            "description": "Start date in ISO 8601 format with timezone (e.g., 2023-01-01T00:00:00Z). Use this to filter results from a specific date."
+          },
+          "to_datetime_ISO8601": {
+            "type": "string",
+            "description": "End date in ISO 8601 format with timezone (e.g., 2024-01-01T00:00:00Z). Use this to filter results until a specific date."
+          }
+        },
+        "required": [
+          "match_this"
+        ]
+      }
+    },
+    {
+      "name": "smart_search_internal_knowledge",
+      "description": "Search for documents in Rememberizer in its personal/team internal knowledge and memory repository using a simple query that returns the results of an agentic search. The search may include sources such as Slack discussions, Gmail, Dropbox documents, Google Drive documents, and uploaded files. Consider using the tool list_internal_knowledge_systems to find out which are available. Use the tool list_internal_knowledge_systems to find out which sources are available. \n\nYou can specify a from_datetime_ISO8601 and a to_datetime_ISO8601, and you should look at the context of your request to make sure you put reasonable parameters around this by, for example, converting a reference to recently to a start date two weeks before today, or converting yesterday to a timeframe during the last day. But do be aware of the effect of time zone differences in the source data and for the requestor.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Up to a 400-word sentence for which you wish to find semantically similar chunks of knowledge."
+          },
+          "user_context": {
+            "type": "string",
+            "description": "The additional context for the query. You might need to summarize the conversation up to this point for better context-awared results."
+          },
+          "n_results": {
+            "type": "integer",
+            "description": "Number of semantically similar chunks of text to return. Use 'n_results=3' for up to 5, and 'n_results=10' for more information. If you do not receive enough information, consider trying again with a larger 'n_results' value."
+          },
+          "from_datetime_ISO8601": {
+            "type": "string",
+            "description": "Start date in ISO 8601 format with timezone (e.g., 2023-01-01T00:00:00Z). Use this to filter results from a specific date."
+          },
+          "to_datetime_ISO8601": {
+            "type": "string",
+            "description": "End date in ISO 8601 format with timezone (e.g., 2024-01-01T00:00:00Z). Use this to filter results until a specific date."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "list_internal_knowledge_systems",
+      "description": "List the sources of personal/team internal knowledge. These may include Slack discussions, Gmail, Dropbox documents, Google Drive documents, and uploaded files.",
+      "inputSchema": {
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_personal_team_knowledge_documents",
+      "description": "Retrieves a paginated list of all documents in your personal/team knowledge system. Sources could include Slack discussions, Gmail, Dropbox documents, Google Drive documents, and uploaded files. Consider using the tool list_internal_knowledge_systems to find out which are available. \n\nUse this tool to browse through available documents and their metadata.\n\nExamples:\n- List first 100 documents: {\"page\": 1, \"page_size\": 100}\n- Get next page: {\"page\": 2, \"page_size\": 100}\n- Get maximum allowed documents: {\"page\": 1, \"page_size\": 1000}\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "description": "Page number for pagination (starts at 1)",
+            "minimum": 1,
+            "default": 1
+          },
+          "page_size": {
+            "type": "integer",
+            "description": "Number of documents per page (1-1000)",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 100
+          }
+        }
+      }
+    },
+    {
+      "name": "remember_this",
+      "description": "Save a piece of text information in your Rememberizer.ai knowledge system so that it may be recalled in future through tools retrieve_semantically_similar_internal_knowledge or smart_search_internal_knowledge.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the information. This is used to identify the information in the future."
+          },
+          "content": {
+            "type": "string",
+            "description": "The information you wish to memorize."
+          }
+        }
+      }
+    }
+  ]
 }
