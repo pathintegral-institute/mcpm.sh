@@ -1,5 +1,10 @@
 name: Scrape and Update Repo
 
+permissions:
+  contents: write
+  pull-requests: write
+  issues: read
+
 on:
   issues:
     types: [labeled]
