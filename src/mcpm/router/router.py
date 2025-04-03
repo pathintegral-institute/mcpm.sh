@@ -1,124 +1,351 @@
 """
-Main router class that coordinates client and server handlers.
-Acts as the central component for the MCPM router.
+Router implementation for aggregating multiple MCP servers into a single server.
 """
 
-import asyncio
 import logging
-from typing import Any, Dict, List, Tuple
+import typing as t
+from collections import defaultdict
+from contextlib import AsyncExitStack
 
-from .client_handler import ClientHandler
-from .connection_manager import ConnectionManager
-from .connection_types import ConnectionDetails
-from .server_handler import ServerHandler
+import uvicorn
+from mcp import server, types
+from mcp.server import InitializationOptions, NotificationOptions
+from mcp.server.sse import SseServerTransport
+from starlette.applications import Starlette
+from starlette.middleware import Middleware
+from starlette.middleware.cors import CORSMiddleware
+from starlette.requests import Request
+from starlette.routing import Mount, Route
 
-log = logging.getLogger(__name__)
+from .client_connection import SSEClient, STDIOClient
+from .connection_types import ConnectionDetails, ConnectionType
+
+logger = logging.getLogger(__name__)
 
 
 class MCPRouter:
     """
-    Main router class that coordinates the connection between upstream clients
-    and downstream servers. It provides the main API for the application.
+    A router that aggregates multiple MCP servers (SSE/STDIO) and
+    exposes them as a single SSE server.
     """
 
-    def __init__(self, client_info: Any):
+    def __init__(self) -> None:
+        """Initialize the router."""
+        self.server_sessions: t.Dict[str, t.Union[SSEClient, STDIOClient]] = {}
+        self.capabilities_mapping: t.Dict[str, t.Dict[str, t.Any]] = defaultdict(dict)
+        self.tools_mapping: t.Dict[str, t.Dict[str, t.Any]] = {}
+        self.prompts_mapping: t.Dict[str, t.Dict[str, t.Any]] = {}
+        self.resources_mapping: t.Dict[str, t.Dict[str, t.Any]] = {}
+        self.aggregated_server = self._create_aggregated_server()
+
+    async def add_server(self, server_id: str, connection: ConnectionDetails) -> None:
         """
-        Initialize the router with the necessary handlers.
+        Add a server to the router.
 
         Args:
-            client_info: The client info to use when connecting to downstream servers
+            server_id: A unique identifier for the server
+            connection: Connection details for the server
         """
-        self.connection_manager = ConnectionManager()
-        self.server_handler = ServerHandler(self.connection_manager, client_info)
-        self.client_handler = ClientHandler(self.connection_manager)
+        if server_id in self.server_sessions:
+            raise ValueError(f"Server with ID {server_id} already exists")
 
-        # Set up callback for forwarding notifications from servers to clients
-        self.server_handler.set_upstream_notify_callback(self.client_handler.broadcast_notification)
+        # Create client based on connection type
+        if connection.type == ConnectionType.SSE:
+            client = SSEClient(AsyncExitStack(), connection)
+        elif connection.type == ConnectionType.STDIO:
+            # Create a new AsyncExitStack for this client
+            stack = AsyncExitStack()
+            client = STDIOClient(stack, connection)
+        else:
+            raise ValueError(f"Unsupported connection type: {connection.type}")
 
-    async def connect_to_downstream(self, server_id: str, connection_details: ConnectionDetails) -> asyncio.Task:
+        # Connect to the server
+        response = await client.connect_to_server()
+        logger.info(f"Connected to server {server_id} with capabilities: {response.capabilities}")
+
+        # Store the session
+        self.server_sessions[server_id] = client
+
+        # Store the capabilities for this server
+        self.capabilities_mapping[server_id] = response.capabilities.model_dump()
+
+        # Collect server tools, prompts, and resources
+        if response.capabilities.tools:
+            tools = await client.session.list_tools()
+            # Add tools with namespaced names, preserving existing tools
+            self.tools_mapping.update({f"{server_id}.{tool.name}": tool.model_dump() for tool in tools.tools})
+
+        if response.capabilities.prompts:
+            prompts = await client.session.list_prompts()
+            # Add prompts with namespaced names, preserving existing prompts
+            self.prompts_mapping.update(
+                {f"{server_id}.{prompt.name}": prompt.model_dump() for prompt in prompts.prompts}
+            )
+
+        if response.capabilities.resources:
+            resources = await client.session.list_resources()
+            # Add resources with namespaced URIs, preserving existing resources
+            self.resources_mapping.update(
+                {f"{server_id}:{resource.uri}": resource.model_dump() for resource in resources.resources}
+            )
+
+    async def remove_server(self, server_id: str) -> None:
         """
-        Connect to a downstream server.
+        Remove a server from the router.
 
         Args:
-            server_id: Unique identifier for the server
-            connection_details: Connection details for the server
+            server_id: The ID of the server to remove
+        """
+        if server_id not in self.server_sessions:
+            raise ValueError(f"Server with ID {server_id} does not exist")
+
+        # Close the client session
+        await self.server_sessions[server_id].aclose()
+
+        # Remove the server from all collections
+        del self.server_sessions[server_id]
+        del self.capabilities_mapping[server_id]
+        if server_id in self.tools_mapping:
+            del self.tools_mapping[server_id]
+        if server_id in self.prompts_mapping:
+            del self.prompts_mapping[server_id]
+        if server_id in self.resources_mapping:
+            del self.resources_mapping[server_id]
+
+    def _create_aggregated_server(self) -> server.Server[object]:
+        """
+        Create an aggregated server that proxies requests to the underlying servers.
 
         Returns:
-            Task managing the server connection
+            An MCP server instance
         """
-        log.info(f"Router connecting to downstream server: {server_id}")
-        # Create a task for the connection to run in the background
-        task = asyncio.create_task(self.server_handler.connect_to_server(server_id, connection_details))
-        return task
+        app: server.Server[object] = server.Server(name="mcpm-router")
 
-    async def disconnect_from_downstream(self, server_id: str):
+        # Define request handlers
+
+        # List prompts handler
+        async def _list_prompts(_: t.Any) -> types.ServerResult:
+            all_prompts = []
+            for server_id, prompts in self.prompts_mapping.items():
+                for prompt_name, prompt_data in prompts.items():
+                    all_prompts.append(types.PromptInfo(**prompt_data))
+            return types.ServerResult(types.ListPromptsResult(prompts=all_prompts))
+
+        app.request_handlers[types.ListPromptsRequest] = _list_prompts
+
+        # Get prompt handler
+        async def _get_prompt(req: types.GetPromptRequest) -> types.ServerResult:
+            prompt_name = req.params.name
+
+            # Parse server_id from namespaced prompt name
+            if "." in prompt_name:
+                server_id, original_name = prompt_name.split(".", 1)
+                if server_id in self.server_sessions:
+                    result = await self.server_sessions[server_id].session.get_prompt(
+                        original_name, req.params.arguments
+                    )
+                    return types.ServerResult(result)
+
+            # Return error if prompt not found
+            return types.ServerResult(types.ErrorResult(code=404, message=f"Prompt not found: {prompt_name}"))
+
+        app.request_handlers[types.GetPromptRequest] = _get_prompt
+
+        # List resources handler
+        async def _list_resources(_: t.Any) -> types.ServerResult:
+            all_resources = []
+            for server_id, resources in self.resources_mapping.items():
+                for resource_uri, resource_data in resources.items():
+                    all_resources.append(types.ResourceInfo(**resource_data))
+            return types.ServerResult(types.ListResourcesResult(resources=all_resources))
+
+        app.request_handlers[types.ListResourcesRequest] = _list_resources
+
+        # Read resource handler
+        async def _read_resource(req: types.ReadResourceRequest) -> types.ServerResult:
+            resource_uri = req.params.uri
+
+            # Parse server_id from namespaced resource URI
+            if ":" in resource_uri:
+                server_id, original_uri = resource_uri.split(":", 1)
+                if server_id in self.server_sessions:
+                    result = await self.server_sessions[server_id].session.read_resource(original_uri)
+                    return types.ServerResult(result)
+
+            # Return error if resource not found
+            return types.ServerResult(types.ErrorResult(code=404, message=f"Resource not found: {resource_uri}"))
+
+        app.request_handlers[types.ReadResourceRequest] = _read_resource
+
+        # List tools handler
+        async def _list_tools(_: t.Any) -> types.ServerResult:
+            all_tools = []
+            for tool_name, tool_data in self.tools_mapping.items():
+                # Create tool object directly from the data
+                all_tools.append(types.Tool(**tool_data))
+            return types.ServerResult(types.ListToolsResult(tools=all_tools))
+
+        app.request_handlers[types.ListToolsRequest] = _list_tools
+
+        # Call tool handler
+        async def _call_tool(req: types.CallToolRequest) -> types.ServerResult:
+            tool_name = req.params.name
+
+            # Parse server_id from namespaced tool name
+            if "." in tool_name:
+                server_id, original_name = tool_name.split(".", 1)
+                if server_id in self.server_sessions:
+                    try:
+                        result = await self.server_sessions[server_id].session.call_tool(
+                            original_name, req.params.arguments or {}
+                        )
+                        return types.ServerResult(result)
+                    except Exception as e:
+                        return types.ServerResult(
+                            types.CallToolResult(
+                                content=[types.TextContent(type="text", text=str(e))],
+                                isError=True,
+                            ),
+                        )
+
+            # Return error if tool not found
+            return types.ServerResult(
+                types.CallToolResult(
+                    content=[types.TextContent(type="text", text=f"Tool not found: {tool_name}")],
+                    isError=True,
+                ),
+            )
+
+        app.request_handlers[types.CallToolRequest] = _call_tool
+
+        # Complete handler
+        async def _complete(req: types.CompleteRequest) -> types.ServerResult:
+            ref = req.params.ref
+
+            # Parse server_id from reference
+            if ":" in ref:
+                server_id, original_ref = ref.split(":", 1)
+                if server_id in self.server_sessions:
+                    result = await self.server_sessions[server_id].session.complete(
+                        original_ref,
+                        req.params.argument.model_dump(),
+                    )
+                    return types.ServerResult(result)
+
+            # Return error if reference not found
+            return types.ServerResult(
+                types.CallToolResult(
+                    content=[types.TextContent(type="text", text=f"Reference not found: {ref}")],
+                    isError=True,
+                ),
+            )
+
+        app.request_handlers[types.CompleteRequest] = _complete
+
+        return app
+
+    async def start_sse_server(
+        self, host: str = "localhost", port: int = 8080, allow_origins: t.Optional[t.List[str]] = None
+    ) -> None:
         """
-        Disconnect from a downstream server.
+        Start an SSE server that exposes the aggregated MCP server.
 
         Args:
-            server_id: Unique identifier for the server
+            host: The host to bind to
+            port: The port to bind to
+            allow_origins: List of allowed origins for CORS
         """
-        log.info(f"Router disconnecting from downstream server: {server_id}")
-        await self.server_handler.disconnect_from_server(server_id)
+        # Create notification options
+        notification_options = NotificationOptions(
+            prompts_changed=True,
+            resources_changed=True,
+            tools_changed=True,
+        )
 
-    async def start_client_server(self, host: str = "127.0.0.1", port: int = 8765):
-        """
-        Start the SSE server for upstream clients.
+        # Prepare capabilities
+        has_prompts = any(
+            server_capabilities.get("prompts") for server_capabilities in self.capabilities_mapping.values()
+        )
+        has_resources = any(
+            server_capabilities.get("resources") for server_capabilities in self.capabilities_mapping.values()
+        )
+        has_tools = any(server_capabilities.get("tools") for server_capabilities in self.capabilities_mapping.values())
+        has_logging = any(
+            server_capabilities.get("logging") for server_capabilities in self.capabilities_mapping.values()
+        )
 
-        Args:
-            host: Host to bind the server to
-            port: Port to bind the server to
-        """
-        log.info(f"Starting client-facing SSE server on {host}:{port}")
-        # This will start the SSE server and keep it running
-        await self.client_handler.start_sse_server(host, port)
+        # Create capability objects as needed
+        prompts_capability = (
+            types.PromptsCapability(listChanged=notification_options.prompts_changed) if has_prompts else None
+        )
+        resources_capability = (
+            types.ResourcesCapability(subscribe=False, listChanged=notification_options.resources_changed)
+            if has_resources
+            else None
+        )
+        tools_capability = types.ToolsCapability(listChanged=notification_options.tools_changed) if has_tools else None
+        logging_capability = types.LoggingCapability() if has_logging else None
 
-    def get_aggregated_capabilities(self, capability_type: str) -> List[Dict[str, Any]]:
-        """
-        Get aggregated capabilities of a specific type from all connected servers.
+        # Create server capabilities
+        capabilities = types.ServerCapabilities(
+            prompts=prompts_capability,
+            resources=resources_capability,
+            tools=tools_capability,
+            logging=logging_capability,
+            experimental={},
+        )
 
-        Args:
-            capability_type: Type of capabilities to get (tools, resources, prompts)
+        # Set initialization options
+        self.aggregated_server.initialization_options = InitializationOptions(
+            server_name="mcpm-router",
+            server_version="1.0.0",
+            capabilities=capabilities,
+        )
 
-        Returns:
-            List of capability schemas
-        """
-        return self.server_handler.get_aggregated_capabilities_list(capability_type)
+        # Create SSE transport
+        sse = SseServerTransport("/messages/")
 
-    def get_connected_servers(self) -> List[str]:
-        """
-        Get a list of connected server IDs.
+        # Handle SSE connections
+        async def handle_sse(request: Request) -> None:
+            async with sse.connect_sse(
+                request.scope,
+                request.receive,
+                request._send,  # noqa: SLF001
+            ) as (read_stream, write_stream):
+                await self.aggregated_server.run(
+                    read_stream,
+                    write_stream,
+                    self.aggregated_server.initialization_options,
+                )
 
-        Returns:
-            List of server IDs
-        """
-        return list(self.connection_manager.get_downstream_servers().keys())
+        # Set up middleware for CORS if needed
+        middleware: t.List[Middleware] = []
+        if allow_origins is not None:
+            middleware.append(
+                Middleware(
+                    CORSMiddleware,
+                    allow_origins=allow_origins,
+                    allow_methods=["*"],
+                    allow_headers=["*"],
+                ),
+            )
 
-    def namespace_id(self, server_id: str, original_id: str) -> str:
-        """
-        Create a namespaced ID by combining server ID and original ID.
+        # Create Starlette app
+        app = Starlette(
+            debug=False,
+            middleware=middleware,
+            routes=[
+                Route("/sse", endpoint=handle_sse),
+                Mount("/messages/", app=sse.handle_post_message),
+            ],
+        )
 
-        Args:
-            server_id: ID of the server
-            original_id: Original ID of the resource/tool/prompt
-
-        Returns:
-            Namespaced ID
-        """
-        return f"{server_id}/{original_id}"
-
-    def denamespace_id(self, namespaced_id: str) -> Tuple[str, str]:
-        """
-        Split a namespaced ID into server ID and original ID.
-
-        Args:
-            namespaced_id: Combined ID in the format "server_id/original_id"
-
-        Returns:
-            Tuple of (server_id, original_id)
-        """
-        parts = namespaced_id.split("/", 1)
-        if len(parts) != 2:
-            log.error(f"Invalid namespaced ID format: {namespaced_id}")
-            raise ValueError(f"Invalid namespaced ID format: {namespaced_id}")
-        return parts[0], parts[1]
+        # Configure and start the server
+        config = uvicorn.Config(
+            app,
+            host=host,
+            port=port,
+            log_level="info",
+        )
+        server_instance = uvicorn.Server(config)
+        await server_instance.serve()

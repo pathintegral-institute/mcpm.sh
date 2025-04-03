@@ -3,10 +3,10 @@ Defines Pydantic models and enums for connection details used by the manager.
 """
 
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 # Import Pydantic components
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, model_validator
 
 
 class ConnectionType(Enum):
@@ -18,13 +18,16 @@ class ConnectionType(Enum):
 
 
 class ConnectionDetails(BaseModel):
-    """Pydantic model holding the details needed to establish a client transport connection."""
+    """Details for connecting to an MCP server."""
 
-    type: ConnectionType  # Use the Enum
+    id: str
+    type: ConnectionType
+    command: str | None = None
+    args: list[str] | None = None
+    env: dict[str, str] | None = None
+    url: str | None = None
 
     # Stdio specific
-    command: Optional[str] = None  # Command for stdio transport
-    args: List[str] = Field(default_factory=list)  # Args for stdio transport
     env: Optional[Dict[str, str]] = None  # Environment variables for stdio
 
     # SSE / HTTP specific

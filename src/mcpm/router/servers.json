@@ -1,0 +1,22 @@
+[
+    {
+        "id": "server-everything",
+        "type": "stdio",
+        "command": "npx",
+        "args": [
+            "-y",
+            "@modelcontextprotocol/server-everything"
+        ]
+    },
+    {
+        "id": "time",
+        "type": "stdio",
+        "command": "uvx",
+        "args": [
+            "mcp-server-time"
+        ],
+        "env": {
+            "TZ": "Americas/New_York"
+        }
+    }
+]
