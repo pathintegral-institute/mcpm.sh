@@ -32,11 +32,9 @@
       "type": "uvx",
       "command": "uvx",
       "args": [
-        "mcp-server-time"
+        "mcp-server-time",
+        "--local-timezone=${TZ}"
       ],
-      "env": {
-        "TZ": "${TZ}"
-      },
       "description": "Install and run using uvx (recommended)",
       "recommended": true
     },
@@ -45,11 +43,9 @@
       "command": "python",
       "args": [
         "-m",
-        "mcp_server_time"
+        "mcp_server_time",
+        "--local-timezone=${TZ}"
       ],
-      "env": {
-        "TZ": "${TZ}"
-      },
       "description": "Run with Python module (requires pip install)"
     },
     "docker": {
@@ -59,13 +55,9 @@
         "run",
         "-i",
         "--rm",
-        "-e",
-        "TZ",
-        "mcp/time"
+        "mcp/time",
+        "--local-timezone=${TZ}"
       ],
-      "env": {
-        "TZ": "${TZ}"
-      },
       "description": "Run with Docker"
     }
   },
