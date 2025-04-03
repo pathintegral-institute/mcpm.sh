@@ -12,8 +12,7 @@
   },
   "license": "MIT",
   "categories": [
-    "Data Pipeline",
-    "Workflow Automation"
+    "Dev Tools"
   ],
   "tags": [
     "Apache Airflow",

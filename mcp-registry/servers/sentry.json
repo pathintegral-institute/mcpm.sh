@@ -12,8 +12,7 @@
   },
   "license": "MIT",
   "categories": [
-    "monitoring",
-    "error-reporting"
+    "Dev Tools"
   ],
   "tags": [
     "sentry",

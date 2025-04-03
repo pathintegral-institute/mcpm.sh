@@ -60,6 +60,9 @@
       "example": "http://localhost:5000/callback"
     }
   },
+  "categories": [
+    "Finance"
+  ],
   "tools": [
     {
       "name": "authenticate",

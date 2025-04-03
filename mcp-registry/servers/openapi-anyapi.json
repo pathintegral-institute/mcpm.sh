@@ -12,9 +12,7 @@
   },
   "license": "MIT",
   "categories": [
-    "API",
-    "OpenAPI",
-    "Server"
+    "Dev Tools"
   ],
   "installations": {
     "docker": {

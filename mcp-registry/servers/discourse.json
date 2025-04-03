@@ -63,6 +63,9 @@
       "example": "ash"
     }
   },
+  "categories": [
+    "Web Services"
+  ],
   "tools": [
     {
       "name": "search_posts",

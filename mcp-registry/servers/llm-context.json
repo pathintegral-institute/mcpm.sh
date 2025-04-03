@@ -12,9 +12,7 @@
   },
   "license": "Apache 2.0",
   "categories": [
-    "Development Tools",
-    "AI",
-    "Chat Interfaces"
+    "Dev Tools"
   ],
   "tags": [
     "LLM",

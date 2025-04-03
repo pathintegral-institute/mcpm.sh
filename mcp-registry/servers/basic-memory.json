@@ -12,9 +12,7 @@
   },
   "license": "AGPL-3.0",
   "categories": [
-    "Knowledge Management",
-    "AI",
-    "Markdown"
+    "Knowledge Base"
   ],
   "installations": {
     "uvx": {

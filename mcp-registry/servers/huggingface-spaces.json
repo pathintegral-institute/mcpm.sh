@@ -11,9 +11,7 @@
   },
   "license": "MIT",
   "categories": [
-    "Image Generation",
-    "Text-to-Speech",
-    "Speech-to-Text"
+    "AI Systems"
   ],
   "tags": [
     "Hugging Face",

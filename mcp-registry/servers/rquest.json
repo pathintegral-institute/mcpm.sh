@@ -12,9 +12,7 @@
   },
   "license": "MIT",
   "categories": [
-    "HTTP",
-    "Browser Emulation",
-    "Document Conversion"
+    "Web Services"
   ],
   "tags": [
     "http",
