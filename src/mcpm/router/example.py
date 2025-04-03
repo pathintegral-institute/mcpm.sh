@@ -8,6 +8,7 @@ import json
 import logging
 import os
 import pathlib
+import traceback
 from typing import List
 
 from pydantic import BaseModel
@@ -47,6 +48,7 @@ async def main(servers_config: ServersConfig, host: str, port: int, allow_origin
             await router.add_server(connection.id, connection)
             logger.info(f"Successfully added server {connection.id}")
         except Exception as e:
+            traceback.print_exc()
             logger.error(f"Failed to add server {connection.id}: {e}")
 
     # Start the SSE server

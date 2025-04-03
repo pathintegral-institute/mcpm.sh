@@ -5,7 +5,6 @@ from contextlib import AsyncExitStack
 from typing import Any
 
 import aiohttp
-import anyio
 from mcp import ClientSession, InitializeResult, StdioServerParameters, stdio_client
 
 from .connection_types import ConnectionDetails, ConnectionType
@@ -71,7 +70,7 @@ class SSEClient(AbstractMcpClient):
 
     async def aclose(self):
         if self.session:
-            await self.session.aclose()
+            await self.session.__aexit__(None, None, None)
             self.session = None
         if self._client_session:
             await self._client_session.close()
@@ -86,8 +85,6 @@ class STDIOClient(AbstractMcpClient):
     def __init__(self, exit_stack: AsyncExitStack, connection_details: ConnectionDetails):
         if connection_details.type != ConnectionType.STDIO:
             raise ValueError(f"Expected STDIO connection type, got {connection_details.type}")
-        if not connection_details.command:
-            raise ValueError("Command is required for stdio connection")
 
         # Initialize session and client objects
         self._exit_stack = exit_stack
@@ -114,53 +111,33 @@ class STDIOClient(AbstractMcpClient):
         if self.session:
             raise RuntimeError("Server already connected")
 
-        # For backward compatibility, check if command is a script path
-        if not self.connection_details.args and (
-            self.connection_details.command.endswith(".py") or self.connection_details.command.endswith(".js")
-        ):
-            is_python = self.connection_details.command.endswith(".py")
-            script_path = self.connection_details.command
-            command = "python" if is_python else "node"
-            args = [script_path]
-        else:
-            command = self.connection_details.command
-            args = self.connection_details.args or []
+        logger.info(
+            f"Connecting to server with command: {self.connection_details.command}, args: {self.connection_details.args}, env: {(self.connection_details.env or {}).keys()}"
+        )
 
-        # Handle common executables that might not be in PATH by using full paths
-        import shutil
-
-        # Initialize environment if not provided
-        env = self._inject_server_env(self.connection_details.env)
-
-        # For node and npx commands, ensure we're using the full path
-        if command in ["node", "npx"]:
-            cmd_path = shutil.which(command, path=env["PATH"])
-            if cmd_path:
-                command = cmd_path
-
-        logger.info(f"Connecting to server with command: {command}, args: {args}, env: {env.keys()}")
-
-        server_params = StdioServerParameters(command=command, args=args, env=env)
+        server_params = StdioServerParameters(
+            command=self.connection_details.command, args=self.connection_details.args, env=self.connection_details.env
+        )
 
         self.stdio, self.write = await self._exit_stack.enter_async_context(stdio_client(server_params))
         self.session = await self._exit_stack.enter_async_context(ClientSession(self.stdio, self.write))
         assert self.session
 
         result = await self.session.initialize()
-        self._server_task = asyncio.create_task(self._print_error_log())
+        # self._server_task = asyncio.create_task(self._print_error_log())
         return result
 
-    async def _print_error_log(self):
-        # we have to consume the incoming_messages, otherwise it will block our whole system
-        assert self.session
+    # async def _print_error_log(self):
+    #     # we have to consume the incoming_messages, otherwise it will block our whole system
+    #     assert self.session
 
-        try:
-            while 1:
-                async for message in self.session.incoming_messages:
-                    if isinstance(message, Exception):
-                        logger.warning(f"Unable to process stdio: {message}")
-        except anyio.ClosedResourceError:
-            logger.info(f"{self.connection_details.id} incoming messages closed")
+    #     try:
+    #         while 1:
+    #             async for message in self.session.incoming_messages:
+    #                 if isinstance(message, Exception):
+    #                     logger.warning(f"Unable to process stdio: {message}")
+    #     except anyio.ClosedResourceError:
+    #         logger.info(f"{self.connection_details.id} incoming messages closed")
 
     async def aclose(self):
         try:

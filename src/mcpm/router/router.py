@@ -182,7 +182,9 @@ class MCPRouter:
             all_tools = []
             for tool_name, tool_data in self.tools_mapping.items():
                 # Create tool object directly from the data
-                all_tools.append(types.Tool(**tool_data))
+                tool = types.Tool(**tool_data)
+                tool.name = tool_name
+                all_tools.append(tool)
             return types.ServerResult(types.ListToolsResult(tools=all_tools))
 
         app.request_handlers[types.ListToolsRequest] = _list_tools
