@@ -8,6 +8,17 @@ if ! docker info &> /dev/null; then
     exit 1
 fi
 
+# Check if fswatch is installed, if not install it
+if ! command -v fswatch &> /dev/null; then
+    echo "🔄 Installing fswatch..."
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        brew install fswatch
+    else
+        echo "❌ fswatch is required but not installed. Please install it manually for your system."
+        exit 1
+    fi
+fi
+
 # Cleanup previous development files
 echo -e "🗑️ Cleaning up previously generated files...\n"
 rm -rf pages/api/servers
@@ -26,15 +37,30 @@ rm -rf "$DEV_DIR"/*
 echo -e "🔄 Copying site content to development directory...\n"
 cp -r pages/* "$DEV_DIR"/
 
+# Function to run prepare.sh
+run_prepare() {
+    echo -e "\n🔄 Changes detected, updating development environment..."
+    cp -r pages/* "$DEV_DIR"/
+    ./scripts/prepare.sh "$DEV_DIR"
+    echo -e "✅ Update complete!\n"
+}
+
 # Run the common preparation script
 mkdir -p "$DEV_DIR/registry"
 ./scripts/prepare.sh "$DEV_DIR"
 
 echo -e "✅ Setup complete!\n"
 
-echo -e "\n🌐 Starting Jekyll development server..."
+echo -e "\n👀 Watching for changes in pages directory..."
+echo -e "🌐 Starting Jekyll development server..."
 echo "   Access the site at http://localhost:4000"
 echo -e "   Press Ctrl+C to stop the server\n"
+
+# Start fswatch in the background to watch for changes
+fswatch -o pages | while read; do
+    run_prepare
+done &
+
 # Start Jekyll dev server using Docker from the _dev directory
 cd "$DEV_DIR" && docker run --rm -it \
   -v "$PWD:/srv/jekyll" \

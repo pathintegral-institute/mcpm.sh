@@ -2,6 +2,7 @@
 ---
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,7 +17,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/json.min.js"></script>
     <!-- JSON formatter for collapsible view -->
     <script src="https://cdn.jsdelivr.net/npm/json-formatter-js@2.3.4/dist/json-formatter.umd.min.js"></script>
-    
+
     <style>
         {% include colors.css %}
         {% include common.css %}
@@ -34,33 +35,33 @@
             --button-bg: var(--accent-color);
             --button-hover: var(--accent-dark);
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
             line-height: 1.6;
             color: var(--text);
             background-color: var(--background);
         }
-        
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 2rem;
         }
-        
+
         .logo {
             font-size: 1.5rem;
             font-weight: 700;
             color: var(--accent-highlight);
             text-decoration: none;
         }
-        
+
         .github-corner {
             position: absolute;
             top: 0;
@@ -70,42 +71,42 @@
             opacity: 0.8;
             color: var(--text);
         }
-        
+
         .github-corner:hover {
             opacity: 1;
         }
-        
+
         .nav a {
             /* Remove all nav link styles */
         }
-        
+
         .nav a:hover {
             /* Remove all nav link styles */
         }
-        
+
         main {
             padding: 1.5rem 0;
             /* Remove margin-top as it's handled by nav.html */
         }
-        
+
         h1 {
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
             background: linear-gradient(90deg, var(--accent-color), var(--accent-highlight));
             -webkit-background-clip: text;
             background-clip: text;
-            color: var(--accent-color);
+            color: transparent;
             letter-spacing: -0.05em;
         }
-        
+
         .highlight {
             display: inline-block;
             position: relative;
             color: var(--primary);
             padding: 0 0.25rem;
         }
-        
+
         .highlight::before {
             content: '';
             position: absolute;
@@ -117,27 +118,27 @@
             opacity: 0.3;
             z-index: -1;
         }
-        
+
         .subtitle {
             font-size: 1.25rem;
             color: var(--secondary);
             margin-bottom: 0.75rem;
             line-height: 1.6;
         }
-        
+
         .community-note {
             font-size: 0.95rem;
             color: var(--light-text);
             margin-bottom: 2rem;
             text-align: center;
         }
-        
+
         .search-container {
             margin: 1.5rem 0 1rem;
             display: flex;
             gap: 1rem;
         }
-        
+
         .search-input {
             flex: 1;
             padding: 0.6rem 0.75rem;
@@ -148,30 +149,30 @@
             background-color: var(--bg-accent);
             color: var(--text-primary);
         }
-        
+
         .search-input:focus {
             outline: none;
             border-color: var(--secondary);
             box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
         }
-        
+
         .tag-filters-container {
             margin-bottom: 1.5rem;
         }
-        
+
         .tag-filters-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 0.5rem;
         }
-        
+
         .tag-filters-title {
             font-weight: 500;
             color: var(--text-primary);
             font-size: 0.9rem;
         }
-        
+
         .toggle-tags-btn {
             background: none;
             border: none;
@@ -182,11 +183,11 @@
             border-radius: 0.25rem;
             transition: background-color 0.2s;
         }
-        
+
         .toggle-tags-btn:hover {
             background-color: var(--accent);
         }
-        
+
         .tag-filters {
             display: flex;
             flex-wrap: wrap;
@@ -195,32 +196,35 @@
             overflow: hidden;
             transition: max-height 0.3s ease;
         }
-        
+
         .tag-filters.expanded {
-            max-height: 200px; /* Limit height to show scrollbar */
-            overflow-y: auto; /* Add vertical scrollbar when needed */
-            padding-right: 5px; /* Add some padding for the scrollbar */
+            max-height: 200px;
+            /* Limit height to show scrollbar */
+            overflow-y: auto;
+            /* Add vertical scrollbar when needed */
+            padding-right: 5px;
+            /* Add some padding for the scrollbar */
         }
-        
+
         /* Custom scrollbar styling for better appearance */
         .tag-filters.expanded::-webkit-scrollbar {
             width: 6px;
         }
-        
+
         .tag-filters.expanded::-webkit-scrollbar-track {
             background: var(--accent);
             border-radius: 10px;
         }
-        
+
         .tag-filters.expanded::-webkit-scrollbar-thumb {
             background: var(--border);
             border-radius: 10px;
         }
-        
+
         .tag-filters.expanded::-webkit-scrollbar-thumb:hover {
             background: var(--secondary);
         }
-        
+
         .tag-filter {
             background-color: var(--bg-accent);
             color: var(--text-primary);
@@ -233,20 +237,21 @@
             transition: all 0.2s ease;
             line-height: 1.2;
         }
-        
-        .tag-filter:hover, .tag-filter.active {
+
+        .tag-filter:hover,
+        .tag-filter.active {
             background-color: var(--accent-highlight);
             border-color: var(--accent-highlight);
             color: white;
         }
-        
+
         .servers-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 1.5rem;
             margin-top: 1.5rem;
         }
-        
+
         .server-card {
             background-color: var(--bg-accent);
             border-radius: 0.6rem;
@@ -258,13 +263,13 @@
             border: 1px solid var(--border);
             cursor: pointer;
         }
-        
+
         .server-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 0 0 1px var(--accent-highlight);
             border-color: var(--accent-highlight);
         }
-        
+
         .server-content {
             padding: 1.25rem;
             flex: 1;
@@ -272,14 +277,14 @@
             flex-direction: column;
             gap: 0.75rem;
         }
-        
+
         .server-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 0.5rem;
         }
-        
+
         .server-card h3 {
             font-size: 1.1rem;
             font-weight: 600;
@@ -291,7 +296,7 @@
             background-clip: text;
             color: transparent;
         }
-        
+
         .server-card .description {
             color: var(--secondary);
             font-size: 0.85rem;
@@ -305,14 +310,14 @@
             text-overflow: ellipsis;
             min-height: 5.4rem;
         }
-        
+
         .server-card .tags {
             display: flex;
             flex-wrap: wrap;
             gap: 0.35rem;
             margin-bottom: 0.5rem;
         }
-        
+
         .server-card .tag {
             background-color: var(--bg-accent);
             color: var(--text-primary);
@@ -324,14 +329,36 @@
             transition: all 0.2s ease;
             line-height: 1;
         }
-        
+
         .server-card .tag:hover {
             background-color: var(--accent-highlight);
             border-color: var(--accent-highlight);
             color: white;
             transform: translateY(-1px);
         }
+
+        /* Category styles */
+        .server-card .category {
+            background-color: transparent;
+            color: var(--accent-color);
+            padding: 0.2rem 0.45rem;
+            border-radius: 0.75rem;
+            font-size: 0.65rem;
+            font-weight: 600;
+            border: 1px solid var(--accent-color);
+            transition: all 0.2s ease;
+            line-height: 1;
+            display: inline-flex;
+            align-items: center;
+            margin: 0;
+        }
         
+        .server-card .category:hover {
+            background-color: var(--accent-color);
+            color: white;
+            transform: translateY(-1px);
+        }
+
         .server-card .meta {
             font-size: 0.7rem;
             color: var(--light-text);
@@ -343,7 +370,7 @@
             margin-top: auto;
             margin-bottom: 0;
         }
-        
+
         .server-card .meta .author {
             color: var(--accent-highlight);
             font-weight: 600;
@@ -351,37 +378,37 @@
             display: flex;
             align-items: center;
         }
-        
+
         .server-card .meta .stars {
             display: flex;
             align-items: center;
             font-size: 0.7rem;
         }
-        
+
         .server-card .meta .author svg {
             margin-right: 0.25rem;
             width: 10px;
             height: 10px;
         }
-        
+
         .server-card .meta .stars svg {
             margin-right: 0.25rem;
             width: 10px;
             height: 10px;
         }
-        
+
         .author-placeholder,
         .stars-placeholder,
         .author-tag.author-placeholder {
             transition: opacity 0.3s ease;
         }
-        
+
         .server-links {
             display: flex;
             gap: 0.5rem;
             margin-top: 1.25rem;
         }
-        
+
         .server-link {
             padding: 0.4rem 0.75rem;
             border-radius: 0.375rem;
@@ -396,38 +423,38 @@
             transition: all 0.2s ease;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         }
-        
+
         .primary-link {
             background-color: var(--accent-highlight);
             color: white;
             border: 1px solid var(--accent-highlight);
             font-weight: 600;
         }
-        
+
         .primary-link:hover {
             background-color: var(--accent-dark);
             transform: translateY(-1px);
         }
-        
+
         .secondary-link {
             background-color: var(--accent);
             color: var(--text-primary);
             border: 1px solid var(--border);
         }
-        
+
         .secondary-link:hover {
             background-color: var(--border);
             transform: translateY(-1px);
             color: var(--text-primary);
         }
-        
+
         /* Tab Styles */
         .tabs {
             display: flex;
             margin: 1.5rem 0 1rem;
             border-bottom: 1px solid var(--border);
         }
-        
+
         .tab-button {
             background: none;
             border: none;
@@ -440,16 +467,16 @@
             margin-right: 1rem;
             font-family: 'Inter', sans-serif;
         }
-        
+
         .tab-button:hover {
             color: var(--text);
         }
-        
+
         .tab-button.active {
             color: var(--text-primary);
             font-weight: 600;
         }
-        
+
         .tab-button.active::after {
             content: '';
             position: absolute;
@@ -459,15 +486,15 @@
             height: 2px;
             background-color: var(--accent-highlight);
         }
-        
+
         .tab-content {
             display: none;
         }
-        
+
         .tab-content.active {
             display: block;
         }
-        
+
         /* JSON view styles */
         .json-container {
             background-color: var(--code-bg);
@@ -475,9 +502,9 @@
             overflow: hidden;
             margin: 1.5rem 0;
             border: 1px solid var(--border);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
         }
-        
+
         .json-header {
             display: flex;
             justify-content: space-between;
@@ -486,18 +513,18 @@
             background-color: var(--bg-accent);
             border-bottom: 1px solid var(--border);
         }
-        
+
         .json-title {
             color: var(--text-primary);
             font-size: 0.875rem;
             font-weight: 600;
         }
-        
+
         .json-header-actions {
             display: flex;
             gap: 0.5rem;
         }
-        
+
         .json-action-btn {
             color: var(--text-primary);
             background-color: var(--bg-accent);
@@ -508,22 +535,21 @@
             cursor: pointer;
             transition: all 0.2s ease;
         }
-        
+
         .json-action-btn:hover {
             background-color: var(--accent-highlight);
             color: white;
             border-color: var(--accent-highlight);
         }
-        
+
         .json-content {
-            padding: 1rem;
             overflow-x: auto;
             color: var(--text-primary);
             font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
             font-size: 0.875rem;
             line-height: 1.5;
         }
-        
+
         /* Container background for JSON formatter */
         #jsonFormatterContainer {
             background-color: var(--code-bg);
@@ -531,16 +557,15 @@
             padding: 1rem;
             color: var(--text-primary);
         }
-        
+
         /* API URL container styling */
         .api-url-container {
-            padding: 1rem;
             border-bottom: 1px solid var(--border);
             background-color: var(--bg-accent);
             margin-bottom: 1rem;
             border-radius: 0.375rem;
         }
-        
+
         .api-url-container h3 {
             margin-top: 0;
             margin-bottom: 0.5rem;
@@ -548,7 +573,7 @@
             font-weight: 500;
             color: var(--text-primary);
         }
-        
+
         .api-url {
             display: flex;
             align-items: center;
@@ -559,118 +584,134 @@
             overflow-x: auto;
             border: 1px solid var(--border);
         }
-        
+
         .api-url code {
             font-family: monospace;
             word-break: break-all;
             flex: 1;
             color: #e2e8f0;
         }
-        
+
         /* Syntax highlighting adjustments for dark theme */
         .hljs {
-            color: #e2e8f0 !important; /* Override highlight.js base text color */
+            color: #e2e8f0 !important;
+            /* Override highlight.js base text color */
             background: var(--code-bg) !important;
         }
-        
+
         .hljs-attr {
-            color: #60a5fa !important; /* Light blue for attributes */
+            color: #60a5fa !important;
+            /* Light blue for attributes */
             font-weight: bold;
         }
-        
+
         .hljs-string {
-            color: #fca5a5 !important; /* Light red for strings */
+            color: #fca5a5 !important;
+            /* Light red for strings */
         }
-        
+
         .hljs-number {
-            color: #c4b5fd !important; /* Light purple for numbers */
+            color: #c4b5fd !important;
+            /* Light purple for numbers */
         }
-        
+
         .hljs-boolean {
-            color: #f9a8d4 !important; /* Light pink for booleans */
+            color: #f9a8d4 !important;
+            /* Light pink for booleans */
             font-weight: bold;
         }
-        
+
         .hljs-null {
-            color: #9ca3af !important; /* Grey for null values */
+            color: #9ca3af !important;
+            /* Grey for null values */
         }
-        
+
         /* JSON formatter overrides for better visibility */
-        .json-formatter-row, .json-formatter-row a, .json-formatter-row a:hover{
-            color: #e2e8f0 !important; /* Light gray for base text */
+        .json-formatter-row,
+        .json-formatter-row a,
+        .json-formatter-row a:hover {
+            color: #e2e8f0 !important;
+            /* Light gray for base text */
         }
-        
+
         .json-formatter-row .json-formatter-row {
             margin-left: 1rem;
         }
-        
+
         .json-formatter-row .json-formatter-key {
-            color: #60a5fa !important; /* Light blue for keys */
+            color: #60a5fa !important;
+            /* Light blue for keys */
             font-weight: 600;
         }
-        
+
         .json-formatter-row .json-formatter-string {
-            color: #fca5a5 !important; /* Light red for strings */
+            color: #fca5a5 !important;
+            /* Light red for strings */
         }
-        
+
         .json-formatter-row .json-formatter-number {
-            color: #c4b5fd !important; /* Light purple for numbers */
+            color: #c4b5fd !important;
+            /* Light purple for numbers */
         }
-        
+
         .json-formatter-row .json-formatter-boolean {
-            color: #f9a8d4 !important; /* Light pink for booleans */
+            color: #f9a8d4 !important;
+            /* Light pink for booleans */
         }
-        
+
         .json-formatter-row .json-formatter-null {
-            color: #9ca3af !important; /* Grey for null values */
+            color: #9ca3af !important;
+            /* Grey for null values */
         }
-        
+
         .json-formatter-row .json-formatter-bracket {
-            color: #e2e8f0 !important; /* Light gray for brackets */
+            color: #e2e8f0 !important;
+            /* Light gray for brackets */
         }
-        
+
         .json-formatter-row .json-formatter-comma {
-            color: #e2e8f0 !important; /* Light gray for commas */
+            color: #e2e8f0 !important;
+            /* Light gray for commas */
         }
-        
+
         /* Override JSON formatter default styling */
         .json-formatter-dark.json-formatter-row,
         .json-formatter-dark.json-formatter-row .json-formatter-row {
             background: none !important;
             color: #e2e8f0 !important;
         }
-        
+
         .json-formatter-dark.json-formatter-row .toggler:after {
             color: #e2e8f0 !important;
         }
-        
+
         /* Fix JSON formatter toggler (expand/collapse arrow) */
         .json-formatter-row .toggler {
             font-size: 0.8em;
             margin-right: 0.2em;
             opacity: 0.8;
-            color: #e2e8f0 !important; 
+            color: #e2e8f0 !important;
         }
-        
+
         .json-formatter-row .toggler:hover {
             opacity: 1;
             color: white !important;
         }
-        
+
         /* Installation options styling */
         .installation-options {
             margin-bottom: 1.5rem;
             border-bottom: 1px solid var(--border);
             padding-bottom: 1.5rem;
         }
-        
+
         .installation-tabs {
             display: flex;
             flex-wrap: wrap;
             gap: 0.5rem;
             margin-bottom: 1rem;
         }
-        
+
         .installation-tab {
             padding: 0.5rem 1rem;
             background-color: var(--bg-accent);
@@ -685,29 +726,29 @@
             transition: all 0.2s ease;
             color: var(--text-primary);
         }
-        
+
         .installation-tab.active {
             background-color: var(--accent-highlight);
             color: white;
             border-color: var(--accent-highlight);
         }
-        
+
         .installation-tab:hover:not(.active) {
             background-color: var(--accent-highlight);
             color: white;
         }
-        
+
         .installation-tab svg {
             width: 14px;
             height: 14px;
         }
-        
+
         .installation-tab .recommended {
             font-size: 0.75rem;
             font-weight: 400;
             opacity: 0.8;
         }
-        
+
         .installation-panel {
             display: none;
             padding: 1rem;
@@ -715,11 +756,11 @@
             border-radius: 0.375rem;
             background-color: var(--accent);
         }
-        
+
         .installation-panel.active {
             display: block;
         }
-        
+
         .installation-command h4,
         .installation-env h4 {
             margin-top: 0;
@@ -727,7 +768,7 @@
             font-size: 0.875rem;
             font-weight: 600;
         }
-        
+
         .command-box {
             display: flex;
             align-items: stretch;
@@ -736,7 +777,7 @@
             border-radius: 0.375rem;
             overflow: hidden;
         }
-        
+
         .command-box pre {
             margin: 0;
             padding: 0.75rem;
@@ -746,33 +787,33 @@
             overflow-x: auto;
             color: var(--text);
         }
-        
+
         .command-box .copy-button {
             border-radius: 0;
             margin: 0;
             height: auto;
             border-left: 1px solid var(--border);
         }
-        
+
         .env-table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 0.5rem;
             font-size: 0.875rem;
         }
-        
+
         .env-table th,
         .env-table td {
             border: 1px solid var(--border);
             padding: 0.5rem 0.75rem;
             text-align: left;
         }
-        
+
         .env-table th {
             background-color: var(--bg-accent);
             font-weight: 600;
         }
-        
+
         .env-table td code {
             background-color: var(--accent);
             padding: 0.125rem 0.25rem;
@@ -781,73 +822,65 @@
             font-size: 0.8125rem;
             color: var(--text);
         }
-        
+
         .installation-env {
             margin-top: 1.5rem;
         }
-        
+
         .json-content {
             margin-top: 1.5rem;
         }
-        
-        .json-content h3 {
-            color: var(--text-primary);
-            font-size: 1rem;
-            margin-bottom: 0.75rem;
+
+        .json-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
         }
-        
+
+        .json-header-row h3 {
+            margin: 0;
+        }
+
         .json-content pre {
             background-color: var(--code-bg);
-            padding: 1rem;
+            padding: 0.75rem;
             border-radius: 0.375rem;
             overflow-x: auto;
             font-family: monospace;
-            margin: 0.5rem 0 1rem;
+            margin: 0.5rem 0;
             max-height: 400px;
             overflow-y: auto;
             white-space: pre-wrap;
             border: 1px solid var(--border);
             color: #e2e8f0;
         }
-        
+
         /* Footer styling moved to footer.html include */
-        
+
         @media (max-width: 768px) {
             main {
-                padding-top: calc(80px + 1.5rem) !important; /* Adjust for taller mobile nav */
+                padding-top: calc(80px + 1.5rem) !important;
+                /* Adjust for taller mobile nav */
             }
-            
+
             .header-content {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 1rem;
             }
-            
+
             .nav {
                 margin-top: 1rem;
             }
-            
+
             .nav a {
                 margin-left: 0;
                 margin-right: 1.5rem;
             }
-            
-            h1 {
-                font-size: 2rem;
-                font-weight: 700;
-                margin-bottom: 0.5rem;
-                background: linear-gradient(90deg, var(--accent-color), var(--accent-highlight));
-                -webkit-background-clip: text;
-                background-clip: text;
-                color: transparent;
-                letter-spacing: -0.05em;
-            }
-            
-            .subtitle {
-                font-size: 1rem;
-            }
+
         }
-        
+
         /* Modal Styles */
         .modal {
             display: none;
@@ -862,7 +895,7 @@
             align-items: center;
             padding: 1rem;
         }
-        
+
         .modal-content {
             background-color: var(--bg-accent);
             border-radius: 0.5rem;
@@ -870,12 +903,12 @@
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
-            padding: 2rem;
+            padding: 1.5rem;
             position: relative;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
             border: 1px solid var(--border);
         }
-        
+
         #modalTitle {
             background: linear-gradient(90deg, var(--accent-color), var(--accent-highlight));
             -webkit-background-clip: text;
@@ -884,14 +917,14 @@
             font-size: 1.5rem;
             margin-bottom: 1rem;
         }
-        
+
         .manifest-info h3 {
             color: var(--accent-color);
             font-size: 1.1rem;
             margin-top: 1.5rem;
             margin-bottom: 0.5rem;
         }
-        
+
         .close-button {
             position: absolute;
             top: 1rem;
@@ -900,11 +933,11 @@
             cursor: pointer;
             color: var(--light-text);
         }
-        
+
         .manifest-info {
             margin-top: 1.5rem;
         }
-        
+
         .copy-button {
             background-color: var(--bg-accent);
             color: var(--text-primary);
@@ -918,43 +951,285 @@
             transition: all 0.2s ease;
             font-weight: 600;
         }
-        
+
         .copy-button:hover {
             background-color: var(--accent-highlight);
             transform: translateY(-1px);
             color: white;
             border-color: var(--accent-highlight);
         }
-        
+
         .modal-content .api-url {
             border-left: 3px solid var(--accent-highlight);
             margin: 0.5rem 0 1.5rem;
         }
-        
+
         .modal-content .json-content pre {
             border-left: 3px solid var(--accent-highlight);
         }
+
+        .modal-content .category {
+            background-color: transparent;
+            color: var(--accent-color);
+            padding: 0.3rem 0.6rem;
+            border-radius: 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid var(--accent-color);
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        /* Server Details Styling */
+        .server-details {
+            margin: 0.75rem 0;
+        }
+
+        .details-section {
+            margin-bottom: 0.75rem;
+            padding: 0.5rem;
+            background-color: var(--bg-accent);
+            border-radius: 0.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .details-section h3 {
+            color: var(--accent-color);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.25rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.25rem;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: row;
+            align-items: baseline;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .description-item {
+            grid-column: 1 / -1;
+            margin-top: 0.25rem;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            min-width: 80px;
+            flex-shrink: 0;
+        }
+
+        .detail-value {
+            color: var(--secondary);
+            word-break: break-word;
+            flex: 1;
+        }
+
+        /* Meta Information Styling */
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.25rem;
+        }
+
+        .meta-column {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: row;
+            align-items: baseline;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .meta-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            min-width: 70px;
+            flex-shrink: 0;
+        }
+
+        .meta-value {
+            color: var(--secondary);
+            word-break: break-word;
+            flex: 1;
+        }
+
+        /* Collapsible Sections */
+        .collapsible .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 0.25rem 0;
+        }
+
+        .collapsible .section-header h3 {
+            margin: 0;
+            border: none;
+            padding: 0;
+        }
+
+        .toggle-icon {
+            font-size: 0.8rem;
+            color: var(--secondary);
+            transition: transform 0.2s ease;
+        }
+
+        .collapsible.collapsed .toggle-icon {
+            transform: rotate(-90deg);
+        }
+
+        .section-content {
+            display: none;
+            padding-top: 0.5rem;
+        }
+
+        .collapsible:not(.collapsed) .section-content {
+            display: block;
+        }
+
+        /* Lists Styling */
+        .argument-list, .tool-list, .resource-list, .prompt-list {
+            font-size: 0.8rem;
+            color: var(--secondary);
+        }
+
+        .argument-list ul, .tool-list ul, .resource-list ul, .prompt-list ul {
+            margin: 0;
+            padding-left: 1.5rem;
+            list-style-type: none;
+        }
+
+        .argument-list li, .tool-list li, .resource-list li, .prompt-list li {
+            margin-bottom: 0.25rem;
+        }
+
+        /* Details/Summary Styling */
+        details {
+            margin: 0.5rem 0;
+        }
+
+        details > summary {
+            cursor: pointer;
+            color: var(--accent-color);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        details > summary:hover {
+            color: var(--accent-highlight);
+        }
+
+        details > ul {
+            margin-left: 1rem !important;
+            padding: 0.5rem 0 0.5rem 1rem !important;
+            border-left: 2px solid var(--border);
+        }
+
+        details pre {
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            background-color: var(--code-bg);
+            border-radius: 0.25rem;
+            font-family: monospace;
+            font-size: 0.85em;
+            white-space: pre-wrap;
+            color: var(--text-primary);
+        }
+
+        .section-content {
+            padding: 0.75rem;
+            background: var(--code-bg);
+            border-radius: 0.25rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Links */
+        .detail-value a, .meta-value a {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+
+        .detail-value a:hover, .meta-value a:hover {
+            text-decoration: underline;
+        }
+
+        /* Tags and Categories */
+        #detailCategories, #detailTags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+        }
+
+        #detailCategories .category, #detailTags .tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.1rem 0.3rem;
+            border-radius: 0.375rem;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        #detailCategories .category {
+            background-color: transparent;
+            color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+        }
+
+        #detailTags .tag {
+            background-color: var(--bg-accent);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
     </style>
 </head>
+
 <body>
     {% include nav.html %}
-    
+
     <main>
         <div class="container">
             <h1>MCP Server Registry</h1>
-            
+
             <p class="subtitle">The single open MCP registry we all need.</p>
-            
+
             <div class="tabs">
-                <button class="tab-button active" data-tab="registry"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px; vertical-align: -3px;"><circle cx="12" cy="7" r="4"></circle><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path></svg> GUI</button>
-                <button class="tab-button" data-tab="json"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px; vertical-align: -3px;"><rect x="3" y="11" width="18" height="10" rx="2" ry="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path><line x1="8" y1="16" x2="8" y2="16"></line><line x1="16" y1="16" x2="16" y2="16"></line><line x1="12" y1="15" x2="12" y2="17"></line></svg> API</button>
+                <button class="tab-button active" data-tab="registry"><svg xmlns="http://www.w3.org/2000/svg" width="16"
+                        height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px; vertical-align: -3px;">
+                        <circle cx="12" cy="7" r="4"></circle>
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    </svg> GUI</button>
+                <button class="tab-button" data-tab="json"><svg xmlns="http://www.w3.org/2000/svg" width="16"
+                        height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px; vertical-align: -3px;">
+                        <rect x="3" y="11" width="18" height="10" rx="2" ry="2"></rect>
+                        <circle cx="12" cy="5" r="2"></circle>
+                        <path d="M12 7v4"></path>
+                        <line x1="8" y1="16" x2="8" y2="16"></line>
+                        <line x1="16" y1="16" x2="16" y2="16"></line>
+                        <line x1="12" y1="15" x2="12" y2="17"></line>
+                    </svg> API</button>
             </div>
-            
+
             <div id="registryTab" class="tab-content active">
                 <div class="search-container">
                     <input type="text" id="searchInput" class="search-input" placeholder="Search servers...">
                 </div>
-                
+
                 <div class="tag-filters-container">
                     <div class="tag-filters-header">
                         <span class="tag-filters-title">Filter by tag:</span>
@@ -964,12 +1239,12 @@
                         <span class="tag-filter active" data-tag="all">All</span>
                     </div>
                 </div>
-                
+
                 <div class="servers-grid" id="serversGrid">
                     <!-- Server cards are populated dynamically -->
                 </div>
             </div>
-            
+
             <div id="jsonTab" class="tab-content">
                 <div class="json-container">
                     <div class="json-header">
@@ -980,7 +1255,7 @@
                             <button id="copyJsonBtn" class="json-action-btn">Copy JSON</button>
                         </div>
                     </div>
-                    
+
                     <div class="api-url-container">
                         <h3>Servers Manifest API Endpoint:</h3>
                         <div class="api-url">
@@ -988,44 +1263,136 @@
                             <button id="copyCombinedUrl" class="copy-button">Copy</button>
                         </div>
                     </div>
-                    
+
                     <div id="jsonFormatterContainer" class="json-content"></div>
                 </div>
             </div>
         </div>
     </main>
-    
+
     {% include footer.html %}
     {% include github-corner.html %}
-    
+
     <div id="serverModal" class="modal">
         <div class="modal-content">
             <span class="close-button">&times;</span>
             <h2 id="modalTitle">Server Manifest</h2>
             <div class="manifest-info">
-                <h3>API Endpoint:</h3>
+                <h3>Server Information</h3>
+                <div class="meta-grid">
+                    <div class="meta-column">
+                        <div class="meta-item">
+                            <span class="meta-label">Name:</span>
+                            <span class="meta-value" id="detailName"></span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Display Name:</span>
+                            <span class="meta-value" id="detailDisplayName"></span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Version:</span>
+                            <span class="meta-value" id="detailVersion"></span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">License:</span>
+                            <span class="meta-value" id="detailLicense"></span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Categories:</span>
+                            <div class="meta-value" id="detailCategories"></div>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Tags:</span>
+                            <div class="meta-value" id="detailTags"></div>
+                        </div>
+                    </div>
+                    <div class="meta-column">
+                        <div class="meta-item">
+                            <span class="meta-label">Author:</span>
+                            <span class="meta-value" id="detailAuthorName"></span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Repository:</span>
+                            <span class="meta-value" id="detailRepoUrl"></span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Homepage:</span>
+                            <span class="meta-value" id="detailHomepage"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="meta-item description-item">
+                    <span class="meta-label">Description:</span>
+                    <span class="meta-value" id="detailDescription"></span>
+                </div>
+            </div>
+
+            <div class="details-section collapsible collapsed">
+                <div class="section-header">
+                    <h3>Arguments</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div id="detailArguments" class="argument-list"></div>
+                </div>
+            </div>
+
+            <div class="details-section collapsible collapsed">
+                <div class="section-header">
+                    <h3>MCP Tools</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div id="detailTools" class="tool-list"></div>
+                </div>
+            </div>
+
+            <div class="details-section collapsible collapsed">
+                <div class="section-header">
+                    <h3>Resources</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div id="detailResources" class="resource-list"></div>
+                </div>
+            </div>
+
+            <div class="details-section collapsible collapsed">
+                <div class="section-header">
+                    <h3>Prompts</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div id="detailPrompts" class="prompt-list"></div>
+                </div>
+            </div>
+
+            <div class="api-url-container">
+                <h3>Server API Endpoint:</h3>
                 <div class="api-url">
                     <code id="apiUrl"></code>
                     <button id="copyUrl" class="copy-button">Copy</button>
                 </div>
-                
-                <div class="json-content">
-                    <h3>Manifest Content:</h3>
-                    <pre id="jsonContent"></pre>
+            </div>
+
+            <div class="json-content">
+                <div class="json-header-row">
+                    <h3>Raw Manifest:</h3>
                     <button id="copyContent" class="copy-button">Copy JSON</button>
                 </div>
+                <pre id="jsonContent"></pre>
             </div>
         </div>
     </div>
-    
+
     <script>
         // Server data - to be loaded from the combined JSON file (as a map with server names as keys)
         let serversMap = {};
         let serversArray = []; // Also keep an array version for rendering
-        
+
         // Fetch all servers data
         const serverDataUrl = '/api/servers.json';
-        
+
         // First load GitHub star counts, then fetch server data
         loadGitHubStarCounts()
             .then(() => fetch(serverDataUrl))
@@ -1038,10 +1405,10 @@
             .then(data => {
                 serversMap = data;
                 serversArray = Object.values(serversMap);
-                
+
                 // Generate tag filters dynamically from server data
                 generateTagFilters(serversArray);
-                
+
                 // Initialize the UI after data is loaded
                 renderServerCards(serversArray);
             })
@@ -1054,22 +1421,22 @@
                     </div>
                 `;
             });
-        
+
         // Get server data from the already loaded servers map
         function getServerByName(name) {
             return serversMap[name];
         }
-        
+
         // Helper function to format numbers (1000 → 1k)
         function formatNumber(num) {
             if (num < 1000) return num.toString();
             if (num < 10000) return (num / 1000).toFixed(1) + 'k';
             return Math.floor(num / 1000) + 'k';
         }
-        
+
         // Object to store star counts from stars.json
         let githubStarCounts = {};
-        
+
         // Load GitHub star counts from stars.json
         async function loadGitHubStarCounts() {
             try {
@@ -1081,7 +1448,7 @@
                 // Silently fail - stars just won't be displayed
             }
         }
-        
+
         // Function to update star count element with the pre-fetched data
         function updateStarCount(serverName, starCountElement) {
             const starCount = githubStarCounts[serverName];
@@ -1096,52 +1463,270 @@
                 starCountElement.remove();
             }
         }
-        
+
         // Open modal with server manifest details
         function openServerModal(server) {
             const modal = document.getElementById('serverModal');
             const modalTitle = document.getElementById('modalTitle');
-            const apiUrl = document.getElementById('apiUrl');
             const jsonContent = document.getElementById('jsonContent');
-            
-            // Set modal title and API URL
+
+            if (!modal || !modalTitle || !jsonContent) {
+                console.error('Required modal elements not found');
+                return;
+            }
+
+            // Set modal title
             modalTitle.textContent = `${server.display_name || server.name} Manifest`;
-            
-            // Full URL for API endpoint
-            const fullApiUrl = `${window.location.origin}/api/servers/${server.name}.json`;
-            apiUrl.textContent = fullApiUrl;
-            
-            // Display the server data directly from our already loaded servers array
+
+            // Set API URL
+            const apiUrlElement = document.getElementById('apiUrl');
+            if (apiUrlElement) {
+                const fullApiUrl = `${window.location.origin}/api/servers/${server.name}.json`;
+                apiUrlElement.textContent = fullApiUrl;
+            }
+
+            // Helper function to safely set text content
+            const safeSetText = (id, value) => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.textContent = value || 'N/A';
+                }
+            };
+
+            // Helper function to safely set HTML content
+            const safeSetHTML = (id, value) => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.innerHTML = value || 'N/A';
+                }
+            };
+
+            // Populate basic information
+            safeSetText('detailName', server.name);
+            safeSetText('detailDisplayName', server.display_name);
+            safeSetText('detailDescription', server.description);
+            safeSetText('detailVersion', server.version);
+            safeSetText('detailLicense', server.license);
+
+            // Populate categories
+            const categoriesContainer = document.getElementById('detailCategories');
+            if (categoriesContainer) {
+                categoriesContainer.innerHTML = '';
+                if (server.categories && server.categories.length > 0) {
+                    server.categories.forEach(category => {
+                        const categorySpan = document.createElement('span');
+                        categorySpan.className = 'category';
+                        categorySpan.textContent = category;
+                        categoriesContainer.appendChild(categorySpan);
+                    });
+                } else {
+                    categoriesContainer.textContent = 'N/A';
+                }
+            }
+
+            // Populate tags
+            const tagsContainer = document.getElementById('detailTags');
+            if (tagsContainer) {
+                tagsContainer.innerHTML = '';
+                if (server.tags && server.tags.length > 0) {
+                    server.tags.forEach(tag => {
+                        const tagSpan = document.createElement('span');
+                        tagSpan.className = 'tag';
+                        tagSpan.textContent = tag;
+                        tagsContainer.appendChild(tagSpan);
+                    });
+                } else {
+                    tagsContainer.textContent = 'N/A';
+                }
+            }
+
+            // Populate author
+            safeSetText('detailAuthorName', server.author?.name);
+
+            // Populate repository URL
+            const repoUrl = document.getElementById('detailRepoUrl');
+            if (repoUrl) {
+                if (server.repository?.url) {
+                    repoUrl.innerHTML = `<a href="${server.repository.url}" target="_blank">${server.repository.url}</a>`;
+                } else {
+                    repoUrl.textContent = 'N/A';
+                }
+            }
+
+            // Populate homepage
+            const homepageLink = document.getElementById('detailHomepage');
+            if (homepageLink) {
+                if (server.links?.homepage) {
+                    homepageLink.innerHTML = `<a href="${server.links.homepage}" target="_blank">${server.links.homepage}</a>`;
+                } else if (server.repository?.url) {
+                    homepageLink.innerHTML = `<a href="${server.repository.url}" target="_blank">${server.repository.url}</a>`;
+                } else {
+                    homepageLink.textContent = 'N/A';
+                }
+            }
+
+            // Helper function to safely populate a list section
+            const populateListSection = (containerId, items, itemRenderer) => {
+                const container = document.getElementById(containerId);
+                if (!container) return;
+
+                container.innerHTML = '';
+                if (!items || items.length === 0) {
+                    container.textContent = 'None defined';
+                    return;
+                }
+
+                const ul = document.createElement('ul');
+                items.forEach((item, index) => {
+                    const li = document.createElement('li');
+                    itemRenderer(li, item, index);
+                    ul.appendChild(li);
+                });
+                container.appendChild(ul);
+            };
+
+            // Populate arguments
+            populateListSection('detailArguments', Object.entries(server.arguments || {}), (li, [key, value]) => {
+                if (typeof value === 'object' && value !== null) {
+                    const details = document.createElement('details');
+                    const summary = document.createElement('summary');
+                    summary.textContent = key;
+                    details.appendChild(summary);
+                    
+                    const subUl = document.createElement('ul');
+                    Object.entries(value).forEach(([subKey, subValue]) => {
+                        const subLi = document.createElement('li');
+                        if (typeof subValue === 'object' && subValue !== null) {
+                            subLi.innerHTML = `${subKey}: <pre>${JSON.stringify(subValue, null, 2)}</pre>`;
+                        } else {
+                            subLi.textContent = `${subKey}: ${subValue}`;
+                        }
+                        subUl.appendChild(subLi);
+                    });
+                    details.appendChild(subUl);
+                    li.appendChild(details);
+                } else {
+                    li.textContent = `${key}: ${value}`;
+                }
+            });
+
+            // Populate tools
+            populateListSection('detailTools', server.tools, (li, tool, index) => {
+                if (typeof tool === 'object' && tool !== null) {
+                    const details = document.createElement('details');
+                    const summary = document.createElement('summary');
+                    summary.textContent = tool.name || `Tool ${index + 1}`;
+                    details.appendChild(summary);
+                    
+                    const subUl = document.createElement('ul');
+                    Object.entries(tool).forEach(([key, value]) => {
+                        const subLi = document.createElement('li');
+                        if (key === 'inputSchema' && typeof value === 'object') {
+                            subLi.innerHTML = `${key}:<pre>${JSON.stringify(value, null, 2)}</pre>`;
+                        } else {
+                            subLi.textContent = `${key}: ${value}`;
+                        }
+                        subUl.appendChild(subLi);
+                    });
+                    details.appendChild(subUl);
+                    li.appendChild(details);
+                } else {
+                    li.textContent = tool;
+                }
+            });
+
+            // Populate resources
+            populateListSection('detailResources', server.resources, (li, resource, index) => {
+                if (typeof resource === 'object' && resource !== null) {
+                    const details = document.createElement('details');
+                    const summary = document.createElement('summary');
+                    summary.textContent = resource.name || `Resource ${index + 1}`;
+                    details.appendChild(summary);
+                    
+                    const subUl = document.createElement('ul');
+                    Object.entries(resource).forEach(([key, value]) => {
+                        const subLi = document.createElement('li');
+                        if (typeof value === 'object' && value !== null) {
+                            subLi.innerHTML = `${key}:<pre>${JSON.stringify(value, null, 2)}</pre>`;
+                        } else {
+                            subLi.textContent = `${key}: ${value}`;
+                        }
+                        subUl.appendChild(subLi);
+                    });
+                    details.appendChild(subUl);
+                    li.appendChild(details);
+                } else {
+                    li.textContent = resource;
+                }
+            });
+
+            // Populate prompts
+            populateListSection('detailPrompts', server.prompts, (li, prompt, index) => {
+                if (typeof prompt === 'object' && prompt !== null) {
+                    const details = document.createElement('details');
+                    const summary = document.createElement('summary');
+                    summary.textContent = prompt.name || `Prompt ${index + 1}`;
+                    details.appendChild(summary);
+                    
+                    const subUl = document.createElement('ul');
+                    Object.entries(prompt).forEach(([key, value]) => {
+                        const subLi = document.createElement('li');
+                        if (typeof value === 'object' && value !== null) {
+                            subLi.innerHTML = `${key}:<pre>${JSON.stringify(value, null, 2)}</pre>`;
+                        } else {
+                            subLi.textContent = `${key}: ${value}`;
+                        }
+                        subUl.appendChild(subLi);
+                    });
+                    details.appendChild(subUl);
+                    li.appendChild(details);
+                } else {
+                    li.textContent = prompt;
+                }
+            });
+
+            // Initialize all collapsible sections as expanded
+            document.querySelectorAll('.collapsible').forEach(section => {
+                section.classList.remove('collapsed');
+            });
+
+            // Add click handlers for collapsible sections
+            document.querySelectorAll('.section-header').forEach(header => {
+                header.addEventListener('click', () => {
+                    const section = header.parentElement;
+                    section.classList.toggle('collapsed');
+                });
+            });
+
+            // Display the raw JSON
             const formattedJson = JSON.stringify(server, null, 2);
             jsonContent.textContent = formattedJson;
-            
-            // Apply syntax highlighting to the JSON
             jsonContent.classList.add('language-json');
             hljs.highlightElement(jsonContent);
-            
+
             // Display modal
             modal.style.display = 'flex';
         }
-        
+
         // Copy text to clipboard - using simple, compatible method
         function copyToClipboard(text, button) {
             // Create a temporary textarea element
             const textArea = document.createElement('textarea');
             textArea.value = text;
-            
+
             // Make the textarea out of the user's sight but still technically visible
             textArea.style.position = 'fixed';
             textArea.style.left = '-9999px';
             textArea.style.top = '0';
             textArea.style.opacity = '0';
-            
+
             document.body.appendChild(textArea);
             textArea.select();
-            
+
             try {
                 // Execute copy command
                 const successful = document.execCommand('copy');
-                
+
                 if (successful) {
                     // Provide visual feedback
                     const originalText = button.textContent;
@@ -1153,48 +1738,99 @@
             } catch (err) {
                 console.log('Simple copy failed:', err);
             }
-            
+
             // Remove the temporary element
             document.body.removeChild(textArea);
         }
-        
-        // Render server cards
-        
+
+        // Modal functions
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('serverModal');
+            const closeButton = document.querySelector('.close-button');
+            const copyUrlButton = document.getElementById('copyUrl');
+            const copyContentButton = document.getElementById('copyContent');
+            const copyCombinedUrlButton = document.getElementById('copyCombinedUrl');
+
+            if (closeButton) {
+                closeButton.addEventListener('click', () => {
+                    modal.style.display = 'none';
+                });
+            }
+
+            // Close modal when clicking outside of it
+            window.addEventListener('click', (event) => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+
+            // Copy URL button
+            if (copyUrlButton) {
+                copyUrlButton.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    const apiUrl = document.getElementById('apiUrl')?.textContent;
+                    if (apiUrl) {
+                        copyToClipboard(apiUrl, copyUrlButton);
+                    }
+                });
+            }
+
+            // Copy JSON content button
+            if (copyContentButton) {
+                copyContentButton.addEventListener('click', () => {
+                    const jsonContent = document.getElementById('jsonContent')?.textContent;
+                    if (jsonContent) {
+                        copyToClipboard(jsonContent, copyContentButton);
+                    }
+                });
+            }
+
+            // Copy combined API URL button
+            if (copyCombinedUrlButton) {
+                copyCombinedUrlButton.addEventListener('click', () => {
+                    const combinedApiUrl = document.getElementById('combinedApiUrl')?.textContent;
+                    if (combinedApiUrl) {
+                        copyToClipboard(combinedApiUrl, copyCombinedUrlButton);
+                    }
+                });
+            }
+        });
+
         // Render server cards
         function renderServerCards(serversToRender) {
             const serversGrid = document.getElementById('serversGrid');
             serversGrid.innerHTML = '';
-            
+
             if (serversToRender.length === 0) {
                 serversGrid.innerHTML = '<p>No servers found matching your search criteria.</p>';
                 return;
             }
-            
+
             serversToRender.forEach(server => {
                 const serverCard = document.createElement('div');
                 serverCard.className = 'server-card';
                 serverCard.setAttribute('data-name', server.name);
-                
+
                 const serverContent = document.createElement('div');
                 serverContent.className = 'server-content';
-                
+
                 // Create header with title and stars
                 const serverHeader = document.createElement('div');
                 serverHeader.className = 'server-header';
-                
+
                 const heading = document.createElement('h3');
                 heading.textContent = server.display_name || server.name;
                 serverHeader.appendChild(heading);
-                
+
                 // Add placeholder for GitHub stars in the header
                 const starCount = document.createElement('span');
                 starCount.className = 'stars stars-placeholder';
                 starCount.textContent = 'Loading stars...';
                 starCount.style.opacity = '0';
                 serverHeader.appendChild(starCount);
-                
+
                 serverContent.appendChild(serverHeader);
-                
+
                 const description = document.createElement('p');
                 description.className = 'description';
                 description.textContent = server.description;
@@ -1214,8 +1850,6 @@
                     });
                 }
                 
-                // We've moved the author to the meta section
-                
                 // Append tags container to server content
                 serverContent.appendChild(tagsContainer);
                 
@@ -1229,6 +1863,14 @@
                 authorMeta.style.opacity = '0';
                 meta.appendChild(authorMeta);
                 
+                // Add categories if they exist
+                if (server.categories && server.categories.length > 0) {
+                    const categorySpan = document.createElement('span');
+                    categorySpan.className = 'category';
+                    categorySpan.textContent = server.categories[0]; // Display first category
+                    meta.appendChild(categorySpan);
+                }
+                
                 // Update author information directly from server data (no need to fetch)
                 if (server.author && server.author.name) {
                     // Add user icon before author name
@@ -1239,16 +1881,16 @@
                     // Remove placeholder if no author found
                     authorMeta.remove();
                 }
-                
+
                 // Use the star count element created in the header
-                
+
                 serverContent.appendChild(meta);
-                
+
                 const linksContainer = document.createElement('div');
                 linksContainer.className = 'server-links';
-                
+
                 // Docs and GitHub buttons removed as requested
-                
+
                 // Extract GitHub repo info from repository URL for star count
                 if (server.repository && server.repository.url && server.repository.url.includes('github.com')) {
                     const repoUrlParts = server.repository.url.replace('https://github.com/', '').split('/');
@@ -1258,7 +1900,7 @@
                         // Update star count from our pre-fetched data
                         const headerStarCount = serverHeader.querySelector('.stars');
                         updateStarCount(server.name, headerStarCount);
-                        
+
                         // Make the stars clickable to navigate to the repository
                         headerStarCount.style.cursor = 'pointer';
                         headerStarCount.addEventListener('click', (event) => {
@@ -1275,46 +1917,44 @@
                     const headerStarCount = serverHeader.querySelector('.stars');
                     if (headerStarCount) headerStarCount.remove();
                 }
-                
+
                 serverContent.appendChild(linksContainer);
-                
+
                 // Make the entire card clickable
                 serverCard.addEventListener('click', () => openServerModal(server));
                 serverCard.style.cursor = 'pointer';
-                
+
                 serverCard.appendChild(serverContent);
                 serversGrid.appendChild(serverCard);
             });
         }
-        
-        // Initial render will happen after data is loaded
-        
+
         // Search functionality
         const searchInput = document.getElementById('searchInput');
         searchInput.addEventListener('input', handleSearch);
-        
+
         // Function to generate tag filters from server data
         function generateTagFilters(servers) {
             const tagFiltersContainer = document.getElementById('tagFilters');
             const allTags = new Set();
-            
+
             // Collect all unique tags from servers
             servers.forEach(server => {
                 if (server.tags && Array.isArray(server.tags)) {
                     server.tags.forEach(tag => allTags.add(tag.toLowerCase()));
                 }
             });
-            
+
             // Sort tags alphabetically
             const sortedTags = Array.from(allTags).sort();
-            
+
             // Create filter elements (skip 'all' as it's already in the HTML)
             sortedTags.forEach(tag => {
                 const tagElement = document.createElement('span');
                 tagElement.className = 'tag-filter';
                 tagElement.setAttribute('data-tag', tag);
                 tagElement.textContent = tag.charAt(0).toUpperCase() + tag.slice(1); // Capitalize first letter
-                
+
                 // Add click event listener
                 tagElement.addEventListener('click', () => {
                     document.querySelectorAll('.tag-filter').forEach(f => f.classList.remove('active'));
@@ -1322,10 +1962,10 @@
                     activeTag = tag;
                     handleSearch();
                 });
-                
+
                 tagFiltersContainer.appendChild(tagElement);
             });
-            
+
             // Add click event listener to the 'All' tag that was already there
             const allTagFilter = document.querySelector('.tag-filter[data-tag="all"]');
             allTagFilter.addEventListener('click', () => {
@@ -1334,11 +1974,11 @@
                 activeTag = 'all';
                 handleSearch();
             });
-            
+
             // Setup toggle button for expanding/collapsing tags
             const toggleTagsBtn = document.getElementById('toggleTagsBtn');
             const tagFilters = document.getElementById('tagFilters');
-            
+
             toggleTagsBtn.addEventListener('click', () => {
                 tagFilters.classList.toggle('expanded');
                 if (tagFilters.classList.contains('expanded')) {
@@ -1347,7 +1987,7 @@
                     toggleTagsBtn.textContent = 'Show more';
                 }
             });
-            
+
             // Check if we need the toggle button (if tags fit in one line)
             if (sortedTags.length <= 10) {
                 toggleTagsBtn.style.display = 'none';
@@ -1356,81 +1996,82 @@
         }
 
         let activeTag = 'all';
-        
+
         function handleSearch() {
             const searchTerm = searchInput.value.toLowerCase();
-            
+
             let filteredServers = serversArray;
-            
+
             // Filter by tag first (if not 'all')
             if (activeTag && activeTag !== 'all') {
-                filteredServers = filteredServers.filter(server => 
-                    server.tags && 
-                    Array.isArray(server.tags) && 
+                filteredServers = filteredServers.filter(server =>
+                    server.tags &&
+                    Array.isArray(server.tags) &&
                     server.tags.some(tag => tag.toLowerCase() === activeTag.toLowerCase())
                 );
             }
-            
+
             // Then filter by search term
             if (searchTerm) {
-                filteredServers = filteredServers.filter(server => 
-                    (server.display_name && server.display_name.toLowerCase().includes(searchTerm)) || 
-                    (server.name && server.name.toLowerCase().includes(searchTerm)) || 
+                filteredServers = filteredServers.filter(server =>
+                    (server.display_name && server.display_name.toLowerCase().includes(searchTerm)) ||
+                    (server.name && server.name.toLowerCase().includes(searchTerm)) ||
                     (server.description && server.description.toLowerCase().includes(searchTerm)) ||
-                    (server.tags && server.tags.some(tag => tag.toLowerCase().includes(searchTerm)))
+                    (server.tags && server.tags.some(tag => tag.toLowerCase().includes(searchTerm))) ||
+                    (server.categories && server.categories.some(category => category.toLowerCase().includes(searchTerm)))
                 );
             }
-            
+
             renderServerCards(filteredServers);
         }
-        
+
         // Tab switching
         const tabButtons = document.querySelectorAll('.tab-button');
         const tabContents = document.querySelectorAll('.tab-content');
-        
+
         tabButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const tabId = button.dataset.tab;
-                
+
                 // Deactivate all tabs
                 tabButtons.forEach(btn => btn.classList.remove('active'));
                 tabContents.forEach(content => content.classList.remove('active'));
-                
+
                 // Activate selected tab
                 button.classList.add('active');
                 document.getElementById(tabId + 'Tab').classList.add('active');
-                
+
                 // Load JSON data when JSON tab is selected
                 if (tabId === 'json') { // API tab
                     loadAndFormatJson();
                 }
             });
         });
-        
+
         // Variable to store the JSON formatter instance
         let jsonFormatter = null;
-        
+
         // Function to load and format JSON data with collapsible view
         function loadAndFormatJson() {
             const jsonContainer = document.getElementById('jsonFormatterContainer');
             jsonContainer.innerHTML = 'Loading...';
-            
+
             // Configure hljs to highlight JSON according to the schema
             hljs.configure({
                 languages: ['json'],
                 cssSelector: 'pre code.language-json'
             });
-            
+
             // Set the combined API URL
             const combinedApiUrl = document.getElementById('combinedApiUrl');
             const fullApiUrl = `${window.location.origin}/api/servers.json`;
             combinedApiUrl.textContent = fullApiUrl;
-            
+
             fetch('/api/servers.json')
                 .then(response => response.json())
                 .then(data => {
                     jsonContainer.innerHTML = ''; // Clear loading text
-                    
+
                     // Create a new JSON formatter with improved configuration for minimal aesthetic
                     jsonFormatter = new JSONFormatter(data, 1, {
                         hoverPreviewEnabled: true,
@@ -1442,10 +2083,10 @@
                         useToJSON: true,
                         maxArrayItems: 100
                     });
-                    
+
                     // Add the formatted JSON to the container
                     jsonContainer.appendChild(jsonFormatter.render());
-                    
+
                     // Setup expand/collapse buttons
                     setupJsonControls();
                 })
@@ -1454,7 +2095,7 @@
                     jsonContainer.innerHTML = 'Error loading JSON data. Please try again later.';
                 });
         }
-        
+
         // Setup controls for JSON formatter
         function setupJsonControls() {
             // Expand all button
@@ -1463,7 +2104,7 @@
                     jsonFormatter.openAtDepth(Infinity);
                 }
             });
-            
+
             // Collapse all button
             document.getElementById('collapseAllBtn').addEventListener('click', () => {
                 if (jsonFormatter) {
@@ -1471,7 +2112,7 @@
                 }
             });
         }
-        
+
         // Copy JSON to clipboard
         document.getElementById('copyJsonBtn').addEventListener('click', () => {
             if (jsonFormatter) {
@@ -1490,54 +2131,9 @@
                     });
             }
         });
-        
+
         // Tag filtering is now handled in the fetch promise
-        
-        // Modal functions
-        document.addEventListener('DOMContentLoaded', () => {
-            const modal = document.getElementById('serverModal');
-            const closeButton = document.querySelector('.close-button');
-            const copyUrlButton = document.getElementById('copyUrl');
-            const copyContentButton = document.getElementById('copyContent');
-            
-            // Close modal when clicking close button
-            closeButton.addEventListener('click', () => {
-                modal.style.display = 'none';
-            });
-            
-            // Close modal when clicking outside of it
-            window.addEventListener('click', (event) => {
-                if (event.target === modal) {
-                    modal.style.display = 'none';
-                }
-            });
-            
-            // Copy URL button
-            copyUrlButton.addEventListener('click', (event) => {
-                // Prevent event bubbling
-                event.stopPropagation();
-                
-                const apiUrl = document.getElementById('apiUrl').textContent;
-                if (apiUrl) {
-                    copyToClipboard(apiUrl, copyUrlButton);
-                } else {
-                    console.error('API URL is empty or undefined');
-                }
-            });
-            
-            // Copy JSON content button
-            copyContentButton.addEventListener('click', () => {
-                const jsonContent = document.getElementById('jsonContent').textContent;
-                copyToClipboard(jsonContent, copyContentButton);
-            });
-            
-            // Copy combined API URL button
-            const copyCombinedUrlButton = document.getElementById('copyCombinedUrl');
-            copyCombinedUrlButton.addEventListener('click', () => {
-                const combinedApiUrl = document.getElementById('combinedApiUrl').textContent;
-                copyToClipboard(combinedApiUrl, copyCombinedUrlButton);
-            });
-        });
     </script>
 </body>
+
 </html>
