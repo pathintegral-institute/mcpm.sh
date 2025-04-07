@@ -1,0 +1,51 @@
+{
+  "display_name": "Lingo.dev MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lingodotdev/lingo.dev"
+  },
+  "homepage": "https://lingo.dev",
+  "author": {
+    "name": "lingodotdev"
+  },
+  "license": "Apache-2.0",
+  "tags": [
+    "translation",
+    "localization",
+    "mcp"
+  ],
+  "arguments": {
+    "api-key": {
+      "description": "Your Lingo.dev project API key",
+      "required": true,
+      "example": "<api-key>"
+    }
+  },
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "lingo.dev",
+        "mcp",
+        "${api-key}"
+      ],
+      "description": "Run the Lingo.dev MCP server using npx",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Translate content",
+      "description": "Ask the AI tool to translate content using Lingo.dev",
+      "prompt": "Translate this text to Spanish: 'Hello world'"
+    }
+  ],
+  "name": "lingo-dev",
+  "description": "The [Model Context Protocol](https://modelcontextprotocol.io/introduction) (MCP) is a standard for connecting Large Language Models (LLMs) to external services. This guide will walk you through how to connect AI tools to Lingo.dev using MCP.",
+  "categories": [
+    "Dev Tools"
+  ],
+  "is_official": true
+}

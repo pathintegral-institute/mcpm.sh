@@ -1,0 +1,74 @@
+{
+  "display_name": "Ramp MCP",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ramp-public/ramp-mcp"
+  },
+  "homepage": "https://ramp.com",
+  "author": {
+    "name": "ramp-public"
+  },
+  "license": "MIT",
+  "tags": [
+    "ramp",
+    "finance",
+    "api",
+    "database",
+    "etl"
+  ],
+  "arguments": {
+    "RAMP_CLIENT_ID": {
+      "description": "Ramp API client ID",
+      "required": true,
+      "example": "<CLIENT_ID>"
+    },
+    "RAMP_CLIENT_SECRET": {
+      "description": "Ramp API client secret",
+      "required": true,
+      "example": "<CLIENT_SECRET>"
+    },
+    "RAMP_ENV": {
+      "description": "Ramp environment (demo, qa, or prd)",
+      "required": true,
+      "example": "demo"
+    },
+    "-s": {
+      "description": "Comma-separated list of API scopes to enable",
+      "required": true,
+      "example": "transactions:read,reimbursements:read"
+    }
+  },
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/ramp-public/ramp-mcp.git",
+        "ramp-mcp",
+        "-s",
+        "${-s}"
+      ],
+      "env": {
+        "RAMP_CLIENT_ID": "${RAMP_CLIENT_ID}",
+        "RAMP_CLIENT_SECRET": "${RAMP_CLIENT_SECRET}",
+        "RAMP_ENV": "${RAMP_ENV}"
+      },
+      "description": "Run using uv package manager",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Query transactions",
+      "description": "Load and analyze transaction data from Ramp",
+      "prompt": "Load my recent transactions and show me the top 5 vendors by spend amount."
+    }
+  ],
+  "name": "ramp-mcp",
+  "description": "A Model Context Protocol server for retrieving and analyzing data or running tasks for [Ramp](https://ramp.com) using [Developer API](https://docs.ramp.com/developer-api/v1/overview/introduction). In order to get around token and input size limitations, this server implements a simple ETL pipeline + ephemeral sqlite database in memory for analysis by an LLM. All requests are made to demo by default, but can be changed by setting `RAMP_ENV=prd`. Large datasets may not be processable due to API and/or your MCP client limitations.",
+  "categories": [
+    "Finance"
+  ],
+  "is_official": true
+}

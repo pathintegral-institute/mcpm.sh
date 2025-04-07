@@ -1,0 +1,71 @@
+{
+  "display_name": "Aiven MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Aiven-Open/mcp-aiven"
+  },
+  "homepage": "[NOT GIVEN]",
+  "author": {
+    "name": "Aiven-Open"
+  },
+  "license": "[NOT GIVEN]",
+  "tags": [
+    "PostgreSQL",
+    "Kafka",
+    "ClickHouse",
+    "Valkey",
+    "OpenSearch"
+  ],
+  "arguments": {
+    "AIVEN_BASE_URL": {
+      "description": "The Aiven API url",
+      "required": true,
+      "example": "https://api.aiven.io"
+    },
+    "AIVEN_TOKEN": {
+      "description": "The authentication token",
+      "required": true,
+      "example": "$AIVEN_TOKEN"
+    }
+  },
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/Aiven-Open/mcp-aiven.git",
+        "mcp-aiven"
+      ],
+      "env": {
+        "AIVEN_BASE_URL": "https://api.aiven.io",
+        "AIVEN_TOKEN": "$AIVEN_TOKEN"
+      },
+      "description": "Run using uv package manager",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "List Projects",
+      "description": "List all projects on your Aiven account",
+      "prompt": "List all my Aiven projects"
+    },
+    {
+      "title": "List Services",
+      "description": "List all services in a specific Aiven project",
+      "prompt": "Show me all services in my Aiven project"
+    },
+    {
+      "title": "Get Service Details",
+      "description": "Get the detail of your service in a specific Aiven project",
+      "prompt": "Get details about my PostgreSQL service in Aiven"
+    }
+  ],
+  "name": "mcp-aiven",
+  "description": "A [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server for Aiven.",
+  "categories": [
+    "Databases"
+  ],
+  "is_official": true
+}

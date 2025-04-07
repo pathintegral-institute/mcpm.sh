@@ -1,0 +1,568 @@
+{
+  "display_name": "Dart MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/its-dart/dart-mcp-server"
+  },
+  "license": "MIT",
+  "homepage": "https://www.itsdart.com/?nr=1",
+  "author": {
+    "name": "its-dart"
+  },
+  "tags": [
+    "AI",
+    "MCP",
+    "Model Context Protocol",
+    "Project Management"
+  ],
+  "arguments": {
+    "DART_TOKEN": {
+      "description": "Authentication token from Dart profile",
+      "required": true,
+      "example": "dsa_..."
+    }
+  },
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "dart-mcp-server"
+      ],
+      "package": "dart-mcp-server",
+      "env": {
+        "DART_TOKEN": "dsa_..."
+      },
+      "description": "Run using npx",
+      "recommended": true
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "DART_TOKEN",
+        "mcp/dart"
+      ],
+      "env": {
+        "DART_TOKEN": "dsa_..."
+      },
+      "description": "Run using Docker"
+    }
+  },
+  "examples": [
+    {
+      "title": "Create Task",
+      "description": "Create a new task in Dart with title, description, status, priority, and assignee",
+      "prompt": "create-task"
+    },
+    {
+      "title": "Create Document",
+      "description": "Create a new document in Dart with title, text content, and folder",
+      "prompt": "create-doc"
+    },
+    {
+      "title": "Summarize Tasks",
+      "description": "Get a summary of tasks with optional filtering by status and assignee",
+      "prompt": "summarize-tasks"
+    }
+  ],
+  "name": "dart-mcp-server",
+  "description": "<h1>Dart MCP Server</h1>",
+  "categories": [
+    "Dev Tools"
+  ],
+  "tools": [
+    {
+      "name": "get_config",
+      "description": "Get information about the user's space, including all of the possible values that can be provided to other endpoints. This includes available assignees, dartboards, folders, statuses, tags, priorities, and sizes.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "list_tasks",
+      "description": "List tasks from Dart with optional filtering parameters. You can filter by assignee, status, dartboard, priority, due date, and more.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "assignee": {
+            "type": "string",
+            "description": "Filter by assignee name or email"
+          },
+          "assignee_duid": {
+            "type": "string",
+            "description": "Filter by assignee DUID"
+          },
+          "dartboard": {
+            "type": "string",
+            "description": "Filter by dartboard title"
+          },
+          "dartboard_duid": {
+            "type": "string",
+            "description": "Filter by dartboard DUID"
+          },
+          "description": {
+            "type": "string",
+            "description": "Filter by description content"
+          },
+          "due_at_before": {
+            "type": "string",
+            "description": "Filter by due date before (ISO format)"
+          },
+          "due_at_after": {
+            "type": "string",
+            "description": "Filter by due date after (ISO format)"
+          },
+          "duids": {
+            "type": "string",
+            "description": "Filter by DUIDs"
+          },
+          "in_trash": {
+            "type": "boolean",
+            "description": "Filter by trash status"
+          },
+          "is_draft": {
+            "type": "boolean",
+            "description": "Filter by draft status"
+          },
+          "kind": {
+            "type": "string",
+            "description": "Filter by task kind"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Number of results per page"
+          },
+          "offset": {
+            "type": "number",
+            "description": "Initial index for pagination"
+          },
+          "priority": {
+            "type": "string",
+            "description": "Filter by priority"
+          },
+          "size": {
+            "type": "number",
+            "description": "Filter by task size"
+          },
+          "start_at_before": {
+            "type": "string",
+            "description": "Filter by start date before (ISO format)"
+          },
+          "start_at_after": {
+            "type": "string",
+            "description": "Filter by start date after (ISO format)"
+          },
+          "status": {
+            "type": "string",
+            "description": "Filter by status"
+          },
+          "status_duid": {
+            "type": "string",
+            "description": "Filter by status DUID"
+          },
+          "subscriber_duid": {
+            "type": "string",
+            "description": "Filter by subscriber DUID"
+          },
+          "tag": {
+            "type": "string",
+            "description": "Filter by tag"
+          },
+          "title": {
+            "type": "string",
+            "description": "Filter by title"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "create_task",
+      "description": "Create a new task in Dart. You can specify title, description, status, priority, size, dates, dartboard, assignees, tags, and parent task.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "The title of the task (required)"
+          },
+          "description": {
+            "type": "string",
+            "description": "A longer description of the task, which can include markdown formatting"
+          },
+          "status": {
+            "type": "string",
+            "description": "The status from the list of available statuses"
+          },
+          "priority": {
+            "type": "string",
+            "description": "The priority (Critical, High, Medium, or Low)"
+          },
+          "size": {
+            "type": "number",
+            "description": "A number that represents the amount of work needed"
+          },
+          "startAt": {
+            "type": "string",
+            "description": "The start date in ISO format (should be at 9:00am in user's timezone)"
+          },
+          "dueAt": {
+            "type": "string",
+            "description": "The due date in ISO format (should be at 9:00am in user's timezone)"
+          },
+          "dartboard": {
+            "type": "string",
+            "description": "The title of the dartboard (project or list of tasks)"
+          },
+          "assignees": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of assignee names or emails (if workspace allows multiple assignees)"
+          },
+          "assignee": {
+            "type": "string",
+            "description": "Single assignee name or email (if workspace doesn't allow multiple assignees)"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of tags to apply to the task"
+          },
+          "parentId": {
+            "type": "string",
+            "description": "The ID of the parent task"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      }
+    },
+    {
+      "name": "get_task",
+      "description": "Retrieve an existing task by its ID. Returns the task's information including title, description, status, priority, dates, and more.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The 12-character alphanumeric ID of the task",
+            "pattern": "^[a-zA-Z0-9]{12}$"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "update_task",
+      "description": "Update an existing task. You can modify any of its properties including title, description, status, priority, dates, assignees, and more.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The 12-character alphanumeric ID of the task",
+            "pattern": "^[a-zA-Z0-9]{12}$"
+          },
+          "title": {
+            "type": "string",
+            "description": "The title of the task"
+          },
+          "description": {
+            "type": "string",
+            "description": "A longer description of the task, which can include markdown formatting"
+          },
+          "status": {
+            "type": "string",
+            "description": "The status from the list of available statuses"
+          },
+          "priority": {
+            "type": "string",
+            "description": "The priority (Critical, High, Medium, or Low)"
+          },
+          "size": {
+            "type": "number",
+            "description": "A number that represents the amount of work needed"
+          },
+          "startAt": {
+            "type": "string",
+            "description": "The start date in ISO format (should be at 9:00am in user's timezone)"
+          },
+          "dueAt": {
+            "type": "string",
+            "description": "The due date in ISO format (should be at 9:00am in user's timezone)"
+          },
+          "dartboard": {
+            "type": "string",
+            "description": "The title of the dartboard (project or list of tasks)"
+          },
+          "assignees": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of assignee names or emails (if workspace allows multiple assignees)"
+          },
+          "assignee": {
+            "type": "string",
+            "description": "Single assignee name or email (if workspace doesn't allow multiple assignees)"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of tags to apply to the task"
+          },
+          "parentId": {
+            "type": "string",
+            "description": "The ID of the parent task"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "delete_task",
+      "description": "Move an existing task to the trash, where it can be recovered if needed. Nothing else about the task will be changed.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The 12-character alphanumeric ID of the task",
+            "pattern": "^[a-zA-Z0-9]{12}$"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "list_docs",
+      "description": "List docs from Dart with optional filtering parameters. You can filter by folder, title, text content, and more.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "folder": {
+            "type": "string",
+            "description": "Filter by folder title"
+          },
+          "folder_duid": {
+            "type": "string",
+            "description": "Filter by folder DUID"
+          },
+          "duids": {
+            "type": "string",
+            "description": "Filter by DUIDs"
+          },
+          "in_trash": {
+            "type": "boolean",
+            "description": "Filter by trash status"
+          },
+          "is_draft": {
+            "type": "boolean",
+            "description": "Filter by draft status"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Number of results per page"
+          },
+          "offset": {
+            "type": "number",
+            "description": "Initial index for pagination"
+          },
+          "s": {
+            "type": "string",
+            "description": "Search by title, text, or folder title"
+          },
+          "text": {
+            "type": "string",
+            "description": "Filter by text content"
+          },
+          "title": {
+            "type": "string",
+            "description": "Filter by title"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "create_doc",
+      "description": "Create a new doc in Dart. You can specify title, text content, and folder.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "The title of the doc (required)"
+          },
+          "text": {
+            "type": "string",
+            "description": "The text content of the doc, which can include markdown formatting"
+          },
+          "folder": {
+            "type": "string",
+            "description": "The title of the folder to place the doc in"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      }
+    },
+    {
+      "name": "get_doc",
+      "description": "Retrieve an existing doc by its ID. Returns the doc's information including title, text content, folder, and more.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The 12-character alphanumeric ID of the doc",
+            "pattern": "^[a-zA-Z0-9]{12}$"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "update_doc",
+      "description": "Update an existing doc. You can modify its title, text content, and folder.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The 12-character alphanumeric ID of the doc",
+            "pattern": "^[a-zA-Z0-9]{12}$"
+          },
+          "title": {
+            "type": "string",
+            "description": "The title of the doc"
+          },
+          "text": {
+            "type": "string",
+            "description": "The text content of the doc, which can include markdown formatting"
+          },
+          "folder": {
+            "type": "string",
+            "description": "The title of the folder to place the doc in"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "delete_doc",
+      "description": "Move an existing doc to the trash, where it can be recovered if needed. Nothing else about the doc will be changed.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The 12-character alphanumeric ID of the doc",
+            "pattern": "^[a-zA-Z0-9]{12}$"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    }
+  ],
+  "prompts": [
+    {
+      "name": "create-task",
+      "description": "Create a new task in Dart",
+      "arguments": [
+        {
+          "name": "title",
+          "description": "Title of the task",
+          "required": true
+        },
+        {
+          "name": "description",
+          "description": "Description of the task",
+          "required": false
+        },
+        {
+          "name": "status",
+          "description": "Status of the task",
+          "required": false
+        },
+        {
+          "name": "priority",
+          "description": "Priority of the task",
+          "required": false
+        },
+        {
+          "name": "assignee",
+          "description": "Email of the assignee",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "create-doc",
+      "description": "Create a new document in Dart",
+      "arguments": [
+        {
+          "name": "title",
+          "description": "Title of the document",
+          "required": true
+        },
+        {
+          "name": "text",
+          "description": "Content of the document",
+          "required": false
+        },
+        {
+          "name": "folder",
+          "description": "Folder to place the document in",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "summarize-tasks",
+      "description": "Get a summary of tasks with optional filtering",
+      "arguments": [
+        {
+          "name": "status",
+          "description": "Filter by status (e.g., 'In Progress', 'Done')",
+          "required": false
+        },
+        {
+          "name": "assignee",
+          "description": "Filter by assignee email",
+          "required": false
+        }
+      ]
+    }
+  ],
+  "resources": [],
+  "is_official": true
+}

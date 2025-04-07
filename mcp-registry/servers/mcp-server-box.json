@@ -1,0 +1,73 @@
+{
+  "display_name": "MCP Server Box",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/box-community/mcp-server-box"
+  },
+  "homepage": "https://github.com/box-community/mcp-server-box",
+  "author": {
+    "name": "box-community"
+  },
+  "license": "[NOT GIVEN]",
+  "tags": [
+    "box",
+    "ai",
+    "file-management",
+    "search",
+    "text-extraction"
+  ],
+  "arguments": {
+    "BOX_CLIENT_ID": {
+      "description": "Box API Client ID",
+      "required": true,
+      "example": "your_client_id"
+    },
+    "BOX_CLIENT_SECRET": {
+      "description": "Box API Client Secret",
+      "required": true,
+      "example": "your_client_secret"
+    }
+  },
+  "installations": {
+    "python": {
+      "type": "python",
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/path/to/mcp-server-box",
+        "run",
+        "src/mcp_server_box.py"
+      ],
+      "package": "[NOT GIVEN]",
+      "env": {
+        "BOX_CLIENT_ID": "your_client_id",
+        "BOX_CLIENT_SECRET": "your_client_secret"
+      },
+      "description": "Run using uv package manager",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Search for files in Box",
+      "description": "Search for files with specific extensions in Box",
+      "prompt": "Search for PDF files containing 'quarterly report'"
+    },
+    {
+      "title": "Extract data using Box AI",
+      "description": "Extract structured data from a document using Box AI",
+      "prompt": "Extract the following fields from file 123456: title, date, amount"
+    },
+    {
+      "title": "Ask questions about a document",
+      "description": "Ask Box AI questions about a specific document",
+      "prompt": "What are the key findings in the document with ID 123456?"
+    }
+  ],
+  "name": "mcp-server-box",
+  "description": "MCP Server Box is a Python project that integrates with the Box API to perform various operations such as file search, text extraction, AI-based querying, and data extraction. It leverages the `box-sdk-gen` library and provides a set of tools to interact with Box files and folders.",
+  "categories": [
+    "Knowledge Base"
+  ],
+  "is_official": true
+}

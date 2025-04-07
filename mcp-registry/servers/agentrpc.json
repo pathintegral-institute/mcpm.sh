@@ -1,0 +1,61 @@
+{
+  "display_name": "AgentRPC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agentrpc/agentrpc"
+  },
+  "homepage": "https://docs.agentrpc.com",
+  "author": {
+    "name": "agentrpc"
+  },
+  "license": "Apache License 2.0",
+  "tags": [
+    "RPC",
+    "AI agents",
+    "MCP",
+    "OpenAI",
+    "multi-language"
+  ],
+  "arguments": {
+    "AGENTRPC_API_SECRET": {
+      "description": "API secret for authentication",
+      "required": true,
+      "example": "<YOUR_API_SECRET>"
+    }
+  },
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "agentrpc",
+        "mcp"
+      ],
+      "package": "agentrpc",
+      "env": {
+        "AGENTRPC_API_SECRET": "<YOUR_API_SECRET>"
+      },
+      "description": "Run the MCP server using npm",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Claude Desktop Integration",
+      "description": "Add to your claude_desktop_config.json",
+      "prompt": "{\n  \"mcpServers\": {\n    \"agentrpc\": {\n      \"command\": \"npx\",\n      \"args\": [\n        \"-y\",\n        \"agentrpc\",\n        \"mcp\"\n      ],\n      \"env\": {\n        \"AGENTRPC_API_SECRET\": \"<YOUR_API_SECRET>\"\n      }\n    }\n  }\n}"
+    },
+    {
+      "title": "Cursor Integration",
+      "description": "Add to your ~/.cursor/mcp.json",
+      "prompt": "{\n  \"mcpServers\": {\n    \"agentrpc\": {\n      \"command\": \"npx\",\n      \"args\": [\"-y\", \"agentrpc\", \"mcp\"],\n      \"env\": {\n        \"AGENTRPC_API_SECRET\": \"<YOUR_API_SECRET>\"\n      }\n    }\n  }\n}"
+    }
+  ],
+  "name": "agentrpc",
+  "description": "> Universal RPC layer for AI agents across network boundaries and languages",
+  "categories": [
+    "Dev Tools"
+  ],
+  "is_official": true
+}

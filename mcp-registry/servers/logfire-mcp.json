@@ -1,0 +1,142 @@
+{
+  "display_name": "Logfire MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pydantic/logfire-mcp"
+  },
+  "license": "MIT",
+  "homepage": "https://logfire.pydantic.dev",
+  "author": {
+    "name": "pydantic"
+  },
+  "tags": [
+    "OpenTelemetry",
+    "traces",
+    "metrics",
+    "logging",
+    "monitoring"
+  ],
+  "arguments": {
+    "read_token": {
+      "description": "Logfire read token for accessing the Logfire APIs",
+      "required": true,
+      "example": "YOUR_READ_TOKEN"
+    },
+    "base_url": {
+      "description": "Base URL for the Logfire API (defaults to https://logfire-api.pydantic.dev)",
+      "required": false,
+      "example": "https://your-logfire-instance.com"
+    }
+  },
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "logfire-mcp"
+      ],
+      "env": {
+        "LOGFIRE_READ_TOKEN": "YOUR_READ_TOKEN"
+      },
+      "description": "Run using uvx (provided by uv)",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Find exceptions",
+      "description": "Find all exceptions in traces from the last hour",
+      "prompt": "What exceptions occurred in traces from the last hour across all services?"
+    },
+    {
+      "title": "Analyze file errors",
+      "description": "Show recent errors in a specific file with trace context",
+      "prompt": "Show me the recent errors in the file 'app/api.py' with their trace context"
+    },
+    {
+      "title": "Error count by service",
+      "description": "Count errors in the last 24 hours per service",
+      "prompt": "How many errors were there in the last 24 hours per service?"
+    }
+  ],
+  "name": "logfire-mcp",
+  "description": "This repository contains a Model Context Protocol (MCP) server with tools that can access the OpenTelemetry traces and",
+  "categories": [
+    "Dev Tools"
+  ],
+  "tools": [
+    {
+      "name": "find_exceptions",
+      "description": "Get the exceptions on a file.\n\n    Args:\n        age: Number of minutes to look back, e.g. 30 for last 30 minutes. Maximum allowed value is 7 days.\n    ",
+      "inputSchema": {
+        "properties": {
+          "age": {
+            "title": "Age",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "age"
+        ],
+        "title": "find_exceptionsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "find_exceptions_in_file",
+      "description": "Get the details about the 10 most recent exceptions on the file.\n\n    Args:\n        filepath: The path to the file to find exceptions in.\n        age: Number of minutes to look back, e.g. 30 for last 30 minutes. Maximum allowed value is 7 days.\n    ",
+      "inputSchema": {
+        "properties": {
+          "filepath": {
+            "title": "Filepath",
+            "type": "string"
+          },
+          "age": {
+            "title": "Age",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "filepath",
+          "age"
+        ],
+        "title": "find_exceptions_in_fileArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "arbitrary_query",
+      "description": "Run an arbitrary query on the Logfire database.\n\n    The schema is available via the `get_logfire_records_schema` tool.\n\n    Args:\n        query: The query to run, as a SQL string.\n        age: Number of minutes to look back, e.g. 30 for last 30 minutes. Maximum allowed value is 7 days.\n    ",
+      "inputSchema": {
+        "properties": {
+          "query": {
+            "title": "Query",
+            "type": "string"
+          },
+          "age": {
+            "title": "Age",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "query",
+          "age"
+        ],
+        "title": "arbitrary_queryArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_logfire_records_schema",
+      "description": "Get the records schema from Logfire.\n\n    To perform the `arbitrary_query` tool, you can use the `schema://records` to understand the schema.\n    ",
+      "inputSchema": {
+        "properties": {},
+        "title": "get_logfire_records_schemaArguments",
+        "type": "object"
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": true
+}

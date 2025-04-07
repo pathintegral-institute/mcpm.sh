@@ -1,0 +1,55 @@
+{
+  "display_name": "Metoro MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/metoro-io/metoro-mcp-server"
+  },
+  "homepage": "https://metoro.io/",
+  "author": {
+    "name": "metoro-io"
+  },
+  "license": "MIT",
+  "tags": [
+    "kubernetes",
+    "observability",
+    "eBPF",
+    "microservices"
+  ],
+  "arguments": {
+    "METORO_AUTH_TOKEN": {
+      "description": "Authentication token for Metoro API access",
+      "required": true,
+      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjdXN0b21lcklkIjoiOThlZDU1M2QtYzY4ZC00MDRhLWFhZjItNDM2ODllNWJiMGUzIiwiZW1haWwiOiJ0ZXN0QGNocmlzYmF0dGFyYmVlLmNvbSIsImV4cCI6MTgyMTI0NzIzN30.7G6alDpcZh_OThYj293Jce5rjeOBqAhOlANR_Fl5auw"
+    },
+    "METORO_API_URL": {
+      "description": "URL for the Metoro API",
+      "required": true,
+      "example": "https://us-east.metoro.io"
+    }
+  },
+  "installations": {
+    "custom": {
+      "type": "custom",
+      "command": "metoro-mcp-server",
+      "args": [],
+      "description": "Run the Metoro MCP server executable built from Go",
+      "env": {
+        "METORO_AUTH_TOKEN": "<your auth token>",
+        "METORO_API_URL": "https://us-east.metoro.io"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Kubernetes Cluster Interaction",
+      "description": "Ask questions about your Kubernetes cluster through Claude Desktop App",
+      "prompt": "What services are running in my Kubernetes cluster?"
+    }
+  ],
+  "name": "metoro-mcp-server",
+  "description": "This MCP Server allows you to interact with your Kubernetes cluster via the Claude Desktop App!",
+  "categories": [
+    "MCP Tools"
+  ],
+  "is_official": true
+}

@@ -1,0 +1,1344 @@
+{
+  "display_name": "thirdweb MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thirdweb-dev/ai"
+  },
+  "homepage": "https://thirdweb.com",
+  "author": {
+    "name": "thirdweb-dev"
+  },
+  "license": "Apache-2.0",
+  "tags": [
+    "blockchain",
+    "mcp",
+    "thirdweb",
+    "web3",
+    "ipfs"
+  ],
+  "arguments": {
+    "THIRDWEB_SECRET_KEY": {
+      "description": "Your thirdweb API secret key from dashboard",
+      "required": true,
+      "example": "your-secret-key"
+    },
+    "THIRDWEB_ENGINE_URL": {
+      "description": "URL endpoint for thirdweb Engine service",
+      "required": false,
+      "example": "https://your-engine-url"
+    },
+    "THIRDWEB_ENGINE_AUTH_JWT": {
+      "description": "Authentication JWT token for Engine",
+      "required": false,
+      "example": "your-jwt-token"
+    },
+    "THIRDWEB_ENGINE_BACKEND_WALLET_ADDRESS": {
+      "description": "Wallet address for Engine backend",
+      "required": false,
+      "example": "0x..."
+    },
+    "chain-id": {
+      "description": "Blockchain network IDs to connect to (e.g., 1 for Ethereum mainnet, 137 for Polygon)",
+      "required": false,
+      "example": "1"
+    }
+  },
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "thirdweb-mcp"
+      ],
+      "env": {
+        "THIRDWEB_SECRET_KEY": "your-secret-key"
+      },
+      "description": "Run with uvx package manager",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Basic Usage",
+      "description": "Basic usage with default settings (stdio transport with Nebula and Insight)",
+      "prompt": "THIRDWEB_SECRET_KEY=... thirdweb-mcp"
+    },
+    {
+      "title": "SSE Transport",
+      "description": "Using SSE transport on a custom port",
+      "prompt": "THIRDWEB_SECRET_KEY=... thirdweb-mcp --transport sse --port 8080"
+    },
+    {
+      "title": "Full Configuration",
+      "description": "Enabling all services with specific chain IDs",
+      "prompt": "THIRDWEB_SECRET_KEY=... thirdweb-mcp --chain-id 1 --chain-id 137 \\\n    --engine-url YOUR_ENGINE_URL \\\n    --engine-auth-jwt YOUR_ENGINE_JWT \\\n    --engine-backend-wallet-address YOUR_ENGINE_BACKEND_WALLET_ADDRESS"
+    }
+  ],
+  "name": "thirdweb",
+  "description": "Read/write to over 2k blockchains, enabling data querying, contract analysis/deployment, and transaction execution, powered by Thirdweb",
+  "categories": [
+    "AI Systems"
+  ],
+  "tools": [
+    {
+      "name": "chat",
+      "description": "Send a message to Nebula AI and get a response. This can be used for blockchain queries, contract interactions, and access to thirdweb tools.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "description": "The natural language message to process. Can be a question about blockchain data, a request to execute a transaction, or any web3-related query.",
+            "title": "Message",
+            "type": "string"
+          },
+          "session_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Optional session ID to maintain conversation context. If provided, this message will be part of an ongoing conversation; if omitted, a new session is created.",
+            "title": "Session Id"
+          },
+          "context": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Contextual information for processing the request, including: chainIds (array of chain identifiers) and walletAddress (user's wallet for transaction signing). Example: {'chainIds': ['1', '137'], 'walletAddress': '0x123...'}",
+            "title": "Context"
+          }
+        },
+        "required": [
+          "message"
+        ]
+      }
+    },
+    {
+      "name": "get_session",
+      "description": "Fetch complete information about a specific Nebula AI session, including conversation history, context settings, and metadata. Use this to examine past interactions or resume an existing conversation thread.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "session_id": {
+            "description": "Unique identifier for the target session. This UUID references a specific conversation history in the Nebula system.",
+            "title": "Session Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "session_id"
+        ]
+      }
+    },
+    {
+      "name": "list_sessions",
+      "description": "Retrieve all available Nebula AI sessions for the authenticated account. Returns an array of session metadata including IDs, titles, and creation timestamps, allowing you to find and reference existing conversations.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "decode_signature",
+      "description": "Decode a function or event signature. Use this when you need to understand what a specific function selector or event signature does and what parameters it accepts.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "signature": {
+            "description": "Function or event signature to decode (e.g., '0x095ea7b3' for the approve function). Usually begins with 0x.",
+            "title": "Signature",
+            "type": "string"
+          },
+          "chain": {
+            "anyOf": [
+              {
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Chain ID(s) to query (e.g., 1 for Ethereum). Specify to improve signature lookup accuracy.",
+            "title": "Chain"
+          }
+        },
+        "required": [
+          "signature"
+        ]
+      }
+    },
+    {
+      "name": "get_address_transactions",
+      "description": "Look up transactions for a wallet or contract address. Use this when asked about a specific Ethereum address (e.g., '0x1234...') to get account details including balance, transaction count, and contract verification status. This tool is specifically for addresses (accounts and contracts), NOT transaction hashes or ENS names.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "description": "Wallet or contract address to look up (e.g., '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045' for Vitalik's address). Must be a valid blockchain address starting with 0x and 42 characters long.",
+            "title": "Address",
+            "type": "string"
+          },
+          "chain": {
+            "anyOf": [
+              {
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Chain ID(s) to query (e.g., 1 for Ethereum). Specify the blockchain network for the address.",
+            "title": "Chain"
+          }
+        },
+        "required": [
+          "address"
+        ]
+      }
+    },
+    {
+      "name": "get_all_events",
+      "description": "Retrieve blockchain events with flexible filtering options. Use this to search for specific events or to analyze event patterns across multiple blocks. Do not use this tool to simply look up a single transaction.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chain": {
+            "anyOf": [
+              {
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Chain ID(s) to query (e.g., 1 for Ethereum Mainnet, 137 for Polygon). Specify multiple IDs as a list [1, 137] for cross-chain queries (max 5).",
+            "title": "Chain"
+          },
+          "contract_address": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Contract address to filter events by (e.g., '0x1234...'). Only return events emitted by this contract.",
+            "title": "Contract Address"
+          },
+          "block_number_gte": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Minimum block number to start querying from (inclusive).",
+            "title": "Block Number Gte"
+          },
+          "block_number_lt": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Maximum block number to query up to (exclusive).",
+            "title": "Block Number Lt"
+          },
+          "transaction_hash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Specific transaction hash to filter events by (e.g., '0xabc123...'). Useful for examining events in a particular transaction.",
+            "title": "Transaction Hash"
+          },
+          "topic_0": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Filter by event signature hash (first topic). For example, '0xa6697e974e6a320f454390be03f74955e8978f1a6971ea6730542e37b66179bc' for Transfer events.",
+            "title": "Topic 0"
+          },
+          "limit": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Maximum number of events to return per request. Default is 20, adjust for pagination.",
+            "title": "Limit"
+          },
+          "page": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Page number for paginated results, starting from 0. Use with limit parameter.",
+            "title": "Page"
+          },
+          "sort_order": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": "desc",
+            "description": "Sort order for the events. Default is 'desc' for descending order. Use 'asc' for ascending order.",
+            "title": "Sort Order"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "get_all_transactions",
+      "description": "Retrieve blockchain transactions with flexible filtering options. Use this to analyze transaction patterns, track specific transactions, or monitor wallet activity.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chain": {
+            "anyOf": [
+              {
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Chain ID(s) to query (e.g., 1 for Ethereum, 137 for Polygon). Specify multiple IDs as a list for cross-chain queries.",
+            "title": "Chain"
+          },
+          "from_address": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Filter transactions sent from this address (e.g., '0x1234...'). Useful for tracking outgoing transactions from a wallet.",
+            "title": "From Address"
+          },
+          "to_address": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Filter transactions sent to this address (e.g., '0x1234...'). Useful for tracking incoming transactions to a contract or wallet.",
+            "title": "To Address"
+          },
+          "function_selector": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Filter by function selector (e.g., '0x095ea7b3' for the approve function). Useful for finding specific contract interactions.",
+            "title": "Function Selector"
+          },
+          "sort_order": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": "desc",
+            "description": "Sort order for the transactions. Default is 'asc' for ascending order. Use 'desc' for descending order.",
+            "title": "Sort Order"
+          },
+          "limit": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Maximum number of transactions to return per request. Default is 20, adjust based on your needs.",
+            "title": "Limit"
+          },
+          "page": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Page number for paginated results, starting from 0. Use with limit parameter for browsing large result sets.",
+            "title": "Page"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "get_block_details",
+      "description": "Get detailed information about a specific block by its number or hash. Use this when asked about blockchain blocks (e.g., 'What's in block 12345678?' or 'Tell me about this block: 0xabc123...'). This tool is specifically for block data, NOT transactions, addresses, or contracts.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "block_identifier": {
+            "description": "Block number or block hash to look up. Can be either a simple number (e.g., '12345678') or a block hash (e.g., '0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3' for Ethereum block 0). Use for queries like 'what happened in block 14000000' or 'show me block 0xd4e56...'.",
+            "title": "Block Identifier",
+            "type": "string"
+          },
+          "chain": {
+            "anyOf": [
+              {
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Chain ID(s) to query (e.g., 1 for Ethereum). Specify the blockchain network where the block exists.",
+            "title": "Chain"
+          }
+        },
+        "required": [
+          "block_identifier"
+        ]
+      }
+    },
+    {
+      "name": "get_contract_events",
+      "description": "Retrieve events from a specific contract address. Use this to analyze activity or monitor events for a particular smart contract.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "contract_address": {
+            "description": "The contract address to query events for (e.g., '0x1234...'). Must be a valid Ethereum address.",
+            "title": "Contract Address",
+            "type": "string"
+          },
+          "chain": {
+            "anyOf": [
+              {
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Chain ID(s) to query (e.g., 1 for Ethereum Mainnet, 137 for Polygon). Specify multiple IDs as a list for cross-chain queries (max 5).",
+            "title": "Chain"
+          },
+          "block_number_gte": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Only return events from blocks with number greater than or equal to this value. Useful for querying recent history.",
+            "title": "Block Number Gte"
+          },
+          "topic_0": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Filter by event signature hash (first topic). For example, Transfer event has a specific signature hash.",
+            "title": "Topic 0"
+          },
+          "limit": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Maximum number of events to return per request. Default is 20, increase for more results.",
+            "title": "Limit"
+          },
+          "page": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Page number for paginated results, starting from 0. Use with limit parameter for browsing large result sets.",
+            "title": "Page"
+          },
+          "sort_order": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": "desc",
+            "description": "Sort order for the events. Default is 'desc' for descending order. Use 'asc' for ascending order.",
+            "title": "Sort Order"
+          }
+        },
+        "required": [
+          "contract_address"
+        ]
+      }
+    },
+    {
+      "name": "get_contract_metadata",
+      "description": "Get contract ABI and metadata about a smart contract, including name, symbol, decimals, and other contract-specific information. Use this when asked about a contract's functions, interface, or capabilities. This tool specifically retrieves details about deployed smart contracts (NOT regular wallet addresses or transaction hashes).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "contract_address": {
+            "description": "The contract address to get metadata for (e.g., '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2' for WETH). Must be a deployed smart contract address (not a regular wallet). Use this for queries like 'what functions does this contract have' or 'get the ABI for contract 0x1234...'.",
+            "title": "Contract Address",
+            "type": "string"
+          },
+          "chain": {
+            "anyOf": [
+              {
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Chain ID(s) where the contract is deployed (e.g., 1 for Ethereum). Specify the correct network.",
+            "title": "Chain"
+          }
+        },
+        "required": [
+          "contract_address"
+        ]
+      }
+    },
+    {
+      "name": "get_ens_transactions",
+      "description": "Look up transactions associated with an ENS domain name (anything ending in .eth like 'vitalik.eth'). This tool is specifically for ENS domains, NOT addresses, transaction hashes, or contract queries.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ens_name": {
+            "description": "ENS name to resolve (e.g., 'vitalik.eth', 'thirdweb.eth'). Must be a valid ENS domain ending with .eth.",
+            "title": "Ens Name",
+            "type": "string"
+          },
+          "chain": {
+            "anyOf": [
+              {
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Chain ID(s) to query (e.g., 1 for Ethereum). ENS is primarily on Ethereum mainnet.",
+            "title": "Chain"
+          }
+        },
+        "required": [
+          "ens_name"
+        ]
+      }
+    },
+    {
+      "name": "get_erc1155_tokens",
+      "description": "Retrieve ERC1155 tokens (semi-fungible tokens) owned by a specified address. Shows balances of multi-token contracts with metadata.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "owner_address": {
+            "description": "The wallet address to get ERC1155 tokens for (e.g., '0x1234...'). Returns all token IDs and their quantities.",
+            "title": "Owner Address",
+            "type": "string"
+          },
+          "chain": {
+            "anyOf": [
+              {
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Chain ID(s) to query (e.g., 1 for Ethereum, 137 for Polygon). Specify multiple IDs as a list for cross-chain queries.",
+            "title": "Chain"
+          },
+          "include_price": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Set to True to include estimated prices for tokens where available. Useful for valuation.",
+            "title": "Include Price"
+          },
+          "include_spam": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Set to True to include suspected spam tokens. Default is False to filter out potentially unwanted items.",
+            "title": "Include Spam"
+          }
+        },
+        "required": [
+          "owner_address"
+        ]
+      }
+    },
+    {
+      "name": "get_erc20_tokens",
+      "description": "Retrieve ERC20 token balances for a specified address. Lists all fungible tokens owned with their balances, metadata, and optionally prices.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "owner_address": {
+            "description": "The wallet address to get ERC20 token balances for (e.g., '0x1234...'). Must be a valid Ethereum address.",
+            "title": "Owner Address",
+            "type": "string"
+          },
+          "chain": {
+            "anyOf": [
+              {
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Chain ID(s) to query (e.g., 1 for Ethereum, 137 for Polygon). Specify multiple IDs as a list for cross-chain queries.",
+            "title": "Chain"
+          },
+          "include_price": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Set to True to include current market prices for tokens. Useful for calculating portfolio value.",
+            "title": "Include Price"
+          },
+          "include_spam": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Set to True to include suspected spam tokens. Default is False to filter out unwanted tokens.",
+            "title": "Include Spam"
+          }
+        },
+        "required": [
+          "owner_address"
+        ]
+      }
+    },
+    {
+      "name": "get_erc721_tokens",
+      "description": "Retrieve ERC721 NFTs (non-fungible tokens) owned by a specified address. Lists all unique NFTs with their metadata and optionally prices.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "owner_address": {
+            "description": "The wallet address to get ERC721 NFTs for (e.g., '0x1234...'). Returns all NFTs owned by this address.",
+            "title": "Owner Address",
+            "type": "string"
+          },
+          "chain": {
+            "anyOf": [
+              {
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Chain ID(s) to query (e.g., 1 for Ethereum, 137 for Polygon). Specify multiple IDs as a list for cross-chain queries.",
+            "title": "Chain"
+          },
+          "include_price": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Set to True to include estimated prices for NFTs where available. Useful for valuation.",
+            "title": "Include Price"
+          },
+          "include_spam": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Set to True to include suspected spam NFTs. Default is False to filter out potentially unwanted items.",
+            "title": "Include Spam"
+          }
+        },
+        "required": [
+          "owner_address"
+        ]
+      }
+    },
+    {
+      "name": "get_nft_owners",
+      "description": "Get ownership information for NFTs in a specific collection. Shows which addresses own which token IDs and in what quantities.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "contract_address": {
+            "description": "The NFT contract address to query ownership for (e.g., '0x1234...'). Must be an ERC721 or ERC1155 contract.",
+            "title": "Contract Address",
+            "type": "string"
+          },
+          "token_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Specific token ID to query owners for (e.g., '42'). If provided, shows all owners of this specific NFT.",
+            "title": "Token Id"
+          },
+          "chain": {
+            "anyOf": [
+              {
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Chain ID(s) where the NFT contract is deployed (e.g., 1 for Ethereum). Specify the correct network.",
+            "title": "Chain"
+          },
+          "limit": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Maximum number of ownership records to return per request. Default is 20, adjust for pagination.",
+            "title": "Limit"
+          },
+          "page": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Page number for paginated results, starting from 0. Use with limit parameter for browsing large collections.",
+            "title": "Page"
+          }
+        },
+        "required": [
+          "contract_address"
+        ]
+      }
+    },
+    {
+      "name": "get_nft_transfers",
+      "description": "Track NFT transfers for a collection, specific token, or transaction. Useful for monitoring NFT trading activity or verifying transfers.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "contract_address": {
+            "description": "The NFT contract address to query transfers for (e.g., '0x1234...'). Must be an ERC721 or ERC1155 contract.",
+            "title": "Contract Address",
+            "type": "string"
+          },
+          "token_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Specific token ID to query transfers for (e.g., '42'). If provided, only shows transfers of this NFT.",
+            "title": "Token Id"
+          },
+          "chain": {
+            "anyOf": [
+              {
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Chain ID(s) to query (e.g., 1 for Ethereum). Specify the chain where the NFT contract is deployed.",
+            "title": "Chain"
+          },
+          "limit": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Maximum number of transfer records to return per request. Default is 20, adjust for pagination.",
+            "title": "Limit"
+          },
+          "page": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Page number for paginated results, starting from 0. Use with limit parameter for browsing transfer history.",
+            "title": "Page"
+          }
+        },
+        "required": [
+          "contract_address"
+        ]
+      }
+    },
+    {
+      "name": "get_nfts",
+      "description": "Retrieve detailed information about NFTs from a specific collection, including metadata, attributes, and images. Optionally get data for a specific token ID.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "contract_address": {
+            "description": "The NFT contract address to query (e.g., '0x1234...'). Must be an ERC721 or ERC1155 contract.",
+            "title": "Contract Address",
+            "type": "string"
+          },
+          "token_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Specific token ID to query (e.g., '42'). If provided, returns data only for this NFT. Otherwise returns collection data.",
+            "title": "Token Id"
+          },
+          "chain": {
+            "anyOf": [
+              {
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Chain ID(s) where the NFT contract is deployed (e.g., 1 for Ethereum). Specify the correct network.",
+            "title": "Chain"
+          },
+          "include_metadata": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Set to True to include full NFT metadata like attributes, image URL, etc. Useful for displaying NFT details.",
+            "title": "Include Metadata"
+          }
+        },
+        "required": [
+          "contract_address"
+        ]
+      }
+    },
+    {
+      "name": "get_token_prices",
+      "description": "Get current market prices for native and ERC20 tokens. Useful for valuation, tracking portfolio value, or monitoring price changes.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "token_addresses": {
+            "description": "List of token contract addresses to get prices for (e.g., ['0x1234...', '0x5678...']). Can include ERC20 tokens. Use '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' for native tokens (ETH, POL, MATIC, etc.).",
+            "items": {
+              "type": "string"
+            },
+            "title": "Token Addresses",
+            "type": "array"
+          },
+          "chain": {
+            "anyOf": [
+              {
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Chain ID(s) where the tokens exist (e.g., 1 for Ethereum, 137 for Polygon). Must match the token network.",
+            "title": "Chain"
+          }
+        },
+        "required": [
+          "token_addresses"
+        ]
+      }
+    },
+    {
+      "name": "get_transaction_details",
+      "description": "Get detailed information about a specific transaction by its hash. Use this when asked to analyze, look up, check, or get details about a transaction hash (e.g., 'What can you tell me about this transaction: 0x5407ea41...'). This tool specifically deals with transaction hashes (txid/txhash), NOT addresses, contracts, or ENS names.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "transaction_hash": {
+            "description": "Transaction hash to look up (e.g., '0x5407ea41de24b7353d70eab42d72c92b42a44e140f930e349973cfc7b8c9c1d7'). Must be a valid transaction hash beginning with 0x and typically 66 characters long. Use this for queries like 'tell me about this transaction' or 'what happened in transaction 0x1234...'.",
+            "title": "Transaction Hash",
+            "type": "string"
+          },
+          "chain": {
+            "anyOf": [
+              {
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Chain ID(s) to query (e.g., 1 for Ethereum). Specify the blockchain network where the transaction exists.",
+            "title": "Chain"
+          }
+        },
+        "required": [
+          "transaction_hash"
+        ]
+      }
+    },
+    {
+      "name": "fetch_ipfs_content",
+      "description": "Fetch content from IPFS by hash. Retrieves data stored on IPFS using the thirdweb gateway.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ipfs_hash": {
+            "description": "The IPFS hash/URI to fetch content from (e.g., 'ipfs://QmXyZ...'). Must start with 'ipfs://'.",
+            "title": "Ipfs Hash",
+            "type": "string"
+          }
+        },
+        "required": [
+          "ipfs_hash"
+        ]
+      }
+    },
+    {
+      "name": "upload_to_ipfs",
+      "description": "Upload a file, directory, or JSON data to IPFS. Stores any type on decentralized storage and returns an IPFS URI.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "description": "Data to upload: can be a file path, directory path, dict, dataclass, or BaseModel instance.",
+            "title": "Data"
+          }
+        },
+        "required": [
+          "data"
+        ]
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": true
+}

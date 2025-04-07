@@ -1,0 +1,66 @@
+{
+  "display_name": "Gitee MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oschina/mcp-gitee"
+  },
+  "homepage": "https://gitee.com/oschina/mcp-gitee",
+  "author": {
+    "name": "oschina"
+  },
+  "license": "MIT",
+  "tags": [
+    "gitee",
+    "mcp",
+    "repository",
+    "issues",
+    "pull requests"
+  ],
+  "arguments": {
+    "GITEE_ACCESS_TOKEN": {
+      "description": "Gitee access token",
+      "required": true,
+      "example": "<your personal access token>"
+    },
+    "api-base": {
+      "description": "Gitee API base URL",
+      "required": false,
+      "example": "https://gitee.com/api/v5"
+    }
+  },
+  "installations": {
+    "custom": {
+      "type": "custom",
+      "command": "go",
+      "args": [
+        "install",
+        "gitee.com/oschina/mcp-gitee@latest"
+      ],
+      "description": "Install using Go",
+      "recommended": false
+    }
+  },
+  "examples": [
+    {
+      "title": "Get repository Issues",
+      "description": "Retrieve issues from a Gitee repository",
+      "prompt": "Use the list_repo_issues tool to get all issues from my repository"
+    },
+    {
+      "title": "Create Pull Request",
+      "description": "Implement code and create a Pull Request based on Issue details",
+      "prompt": "Create a pull request to fix issue #123 in my repository"
+    },
+    {
+      "title": "Comment & Close Issue",
+      "description": "Add a comment to an issue and close it",
+      "prompt": "Comment on issue #123 saying the fix is complete and close the issue"
+    }
+  ],
+  "name": "mcp-gitee",
+  "description": "Gitee MCP Server is a Model Context Protocol (MCP) server implementation for Gitee. It provides a set of tools for interacting with Gitee's API, allowing AI assistants to manage repositories, issues, pull requests, and more.",
+  "categories": [
+    "Dev Tools"
+  ],
+  "is_official": true
+}

@@ -1,0 +1,105 @@
+{
+  "display_name": "UnifAI MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/unifai-network/unifai-mcp-server"
+  },
+  "license": "MIT",
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "-p",
+        "unifai-sdk",
+        "unifai-tools-mcp"
+      ],
+      "env": {
+        "UNIFAI_AGENT_API_KEY": "${UNIFAI_AGENT_API_KEY}"
+      },
+      "description": "Available in UnifAI Node SDK"
+    },
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "unifai-sdk",
+        "unifai-tools-mcp"
+      ],
+      "env": {
+        "UNIFAI_AGENT_API_KEY": "${UNIFAI_AGENT_API_KEY}"
+      },
+      "description": "Available in UnifAI Python SDK"
+    }
+  },
+  "homepage": "https://github.com/unifai-network/unifai-mcp-server",
+  "author": {
+    "name": "unifai-network"
+  },
+  "arguments": {
+    "UNIFAI_AGENT_API_KEY": {
+      "description": "UnifAI Agent API Key for authentication",
+      "required": true,
+      "example": "<UNIFAI_AGENT_API_KEY>"
+    }
+  },
+  "tags": [
+    "unifai",
+    "mcp"
+  ],
+  "name": "unifai-mcp-server",
+  "description": "Dynamically search and call tools using UnifAI Network",
+  "categories": [
+    "MCP Tools"
+  ],
+  "is_official": true,
+  "tools": [
+    {
+      "name": "search_services",
+      "description": "Search for tools. The tools cover a wide range of domains include data source, API, SDK, etc. Try searching whenever you need to use a tool. Returned actions should ONLY be used in invoke_service.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The query to search for tools, you can describe what you want to do or what tools you want to use"
+          },
+          "limit": {
+            "type": "number",
+            "description": "The maximum number of tools to return, must be between 1 and 100, default is 10, recommend at least 10"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "invoke_service",
+      "description": "Call a tool returned by search_services",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "description": "The exact action you want to call in the search_services result."
+          },
+          "payload": {
+            "type": "string",
+            "description": "Action payload, based on the payload schema in the search_services result. You can pass either the json object directly or json encoded string of the object."
+          },
+          "payment": {
+            "type": "number",
+            "description": "Amount to authorize in USD. Positive number means you will be charged no more than this amount, negative number means you are requesting to get paid for at least this amount. Only include this field if the action you are calling includes payment information."
+          }
+        },
+        "required": [
+          "action",
+          "payload"
+        ]
+      }
+    }
+  ]
+}

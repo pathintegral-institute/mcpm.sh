@@ -1,0 +1,70 @@
+{
+  "display_name": "MCP Server for Milvus",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zilliztech/mcp-server-milvus"
+  },
+  "homepage": "https://github.com/zilliztech/mcp-server-milvus",
+  "author": {
+    "name": "zilliztech"
+  },
+  "license": "[NOT GIVEN]",
+  "tags": [
+    "milvus",
+    "vector database",
+    "mcp",
+    "model context protocol"
+  ],
+  "arguments": {
+    "milvus-uri": {
+      "description": "Milvus server URI",
+      "required": true,
+      "example": "http://localhost:19530"
+    },
+    "milvus-token": {
+      "description": "Optional authentication token",
+      "required": false,
+      "example": "[NOT GIVEN]"
+    },
+    "milvus-db": {
+      "description": "Database name",
+      "required": false,
+      "example": "default"
+    }
+  },
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/zilliztech/mcp-server-milvus",
+        "mcp-server-milvus"
+      ],
+      "description": "Run directly with uv without installation"
+    }
+  },
+  "examples": [
+    {
+      "title": "Listing Collections",
+      "description": "List all collections in the Milvus database",
+      "prompt": "What are the collections I have in my Milvus DB?"
+    },
+    {
+      "title": "Searching for Documents",
+      "description": "Search for documents using full text search",
+      "prompt": "Find documents in my text_collection that mention \"machine learning\""
+    },
+    {
+      "title": "Creating a Collection",
+      "description": "Create a new collection with specified schema",
+      "prompt": "Create a new collection called 'articles' in Milvus with fields for title (string), content (string), and a vector field (128 dimensions)"
+    }
+  ],
+  "name": "mcp-server-milvus",
+  "description": "This repository contains a MCP server that provides access to Milvus vector database functionality.",
+  "categories": [
+    "Databases"
+  ],
+  "is_official": true
+}

@@ -1,0 +1,161 @@
+{
+  "display_name": "Oxylabs Scraper",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oxylabs/oxylabs-mcp"
+  },
+  "homepage": "https://github.com/oxylabs/oxylabs-mcp",
+  "author": {
+    "name": "oxylabs"
+  },
+  "license": "MIT",
+  "tags": [
+    "web scraping",
+    "data extraction",
+    "web unblocker"
+  ],
+  "arguments": {
+    "url": {
+      "description": "The URL to scrape",
+      "required": true,
+      "example": "https://www.google.com/search?q=ai"
+    },
+    "parse": {
+      "description": "Enable structured data extraction",
+      "required": false,
+      "example": "True"
+    },
+    "render": {
+      "description": "Use headless browser rendering",
+      "required": false,
+      "example": "html"
+    }
+  },
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "oxylabs-mcp"
+      ],
+      "env": {
+        "OXYLABS_USERNAME": "YOUR_USERNAME_HERE",
+        "OXYLABS_PASSWORD": "YOUR_PASSWORD_HERE"
+      },
+      "description": "Install using uv in Claude Desktop"
+    }
+  },
+  "examples": [
+    {
+      "title": "Basic Google Search",
+      "description": "Scrape a Google search results page",
+      "prompt": "Could you scrape https://www.google.com/search?q=ai page?"
+    },
+    {
+      "title": "Amazon Product with Parse",
+      "description": "Scrape an Amazon product page with parsing enabled",
+      "prompt": "Scrape https://www.amazon.de/-/en/Smartphone-Contract-Function-Manufacturer-Exclusive/dp/B0CNKD651V with parse enabled"
+    },
+    {
+      "title": "Amazon Bestsellers with Parse and Render",
+      "description": "Scrape an Amazon bestsellers page with parsing and rendering enabled",
+      "prompt": "Scrape https://www.amazon.de/-/en/gp/bestsellers/beauty/ref=zg_bs_nav_beauty_0 with parse and render enabled"
+    },
+    {
+      "title": "Best Buy with Web Unblocker",
+      "description": "Use web unblocker with rendering to scrape a Best Buy page",
+      "prompt": "Use web unblocker with render to scrape https://www.bestbuy.com/site/top-deals/all-electronics-on-sale/pcmcat1674241939957.c"
+    }
+  ],
+  "name": "oxylabs-mcp",
+  "description": "A Model Context Protocol (MCP) server that enables AI assistants like Claude to seamlessly access web data through Oxylabs' powerful web scraping technology.",
+  "categories": [
+    "Web Services"
+  ],
+  "is_official": true,
+  "tools": [
+    {
+      "name": "oxylabs_scraper",
+      "description": "Scrape url using Oxylabs Web Api",
+      "inputSchema": {
+        "properties": {
+          "url": {
+            "description": "Url to scrape",
+            "title": "Url",
+            "type": "string"
+          },
+          "parse": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Should result be parsed. If result should not be parsed then html will be stripped and converted to markdown file",
+            "title": "Parse"
+          },
+          "render": {
+            "anyOf": [
+              {
+                "enum": [
+                  "html",
+                  "None"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Whether a headless browser should be used to render the page. See: https://developers.oxylabs.io/scraper-apis/web-scraper-api/features/javascript-rendering `html` will return rendered html page `None` will not use render for scraping.",
+            "title": "Render"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "title": "scrape_urlArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "oxylabs_web_unblocker",
+      "description": "Scrape url using Oxylabs Web Unblocker",
+      "inputSchema": {
+        "properties": {
+          "url": {
+            "description": "Url to scrape with web unblocker",
+            "title": "Url",
+            "type": "string"
+          },
+          "render": {
+            "anyOf": [
+              {
+                "enum": [
+                  "html",
+                  "None"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Whether a headless browser should be used to render the page. See: https://developers.oxylabs.io/advanced-proxy-solutions/web-unblocker/headless-browser/javascript-rendering `html` will return rendered html page `None` will not use render for scraping.",
+            "title": "Render"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "title": "scrape_with_web_unblockerArguments",
+        "type": "object"
+      }
+    }
+  ]
+}

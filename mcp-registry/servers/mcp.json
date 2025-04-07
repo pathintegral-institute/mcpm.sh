@@ -1,0 +1,268 @@
+{
+  "display_name": "Semgrep MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/semgrep/mcp"
+  },
+  "homepage": "https://semgrep.dev",
+  "author": {
+    "name": "semgrep"
+  },
+  "license": "MIT",
+  "tags": [
+    "security",
+    "static analysis",
+    "code scanning",
+    "vulnerability detection"
+  ],
+  "arguments": {
+    "SEMGREP_APP_TOKEN": {
+      "description": "Token for connecting to Semgrep AppSec Platform",
+      "required": false,
+      "example": "<token>"
+    }
+  },
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "semgrep-mcp"
+      ],
+      "package": "semgrep-mcp",
+      "description": "Run using Python package with uv",
+      "recommended": true
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "ghcr.io/semgrep/mcp",
+        "-t",
+        "stdio"
+      ],
+      "description": "Run using Docker container",
+      "recommended": false
+    }
+  },
+  "name": "mcp",
+  "description": "An MCP server for using Semgrep to scan code for security vulnerabilies. Secure your vibe coding! ",
+  "categories": [
+    "Dev Tools"
+  ],
+  "tools": [
+    {
+      "name": "semgrep_rule_schema",
+      "description": "\n    Get the schema for a Semgrep rule\n\n    Use this tool when you need to:\n      - get the schema required to write a Semgrep rule\n      - need to see what fields are available for a Semgrep rule\n      - verify what fields are available for a Semgrep rule\n      - verify the syntax for a Semgrep rule is correct\n    ",
+      "inputSchema": {
+        "properties": {},
+        "title": "semgrep_rule_schemaArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_supported_languages",
+      "description": "\n    Returns a list of supported languages by Semgrep\n\n    Only use this tool if you are not sure what languages Semgrep supports.\n    ",
+      "inputSchema": {
+        "properties": {},
+        "title": "get_supported_languagesArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "semgrep_scan_with_custom_rule",
+      "description": "\n    Runs a Semgrep scan with a custom rule on provided code content\n    and returns the findings in JSON format\n\n    Use this tool when you need to:\n      - scan code files for specific security vulnerability not covered by the default Semgrep rules\n      - scan code files for specific issue not covered by the default Semgrep rules\n    ",
+      "inputSchema": {
+        "$defs": {
+          "CodeFile": {
+            "properties": {
+              "filename": {
+                "description": "Relative path to the code file",
+                "title": "Filename",
+                "type": "string"
+              },
+              "content": {
+                "description": "Content of the code file",
+                "title": "Content",
+                "type": "string"
+              }
+            },
+            "required": [
+              "filename",
+              "content"
+            ],
+            "title": "CodeFile",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "code_files": {
+            "description": "List of dictionaries with 'filename' and 'content' keys",
+            "items": {
+              "$ref": "#/$defs/CodeFile"
+            },
+            "title": "Code Files",
+            "type": "array"
+          },
+          "rule": {
+            "description": "Semgrep YAML rule string",
+            "title": "Rule",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code_files",
+          "rule"
+        ],
+        "title": "semgrep_scan_with_custom_ruleArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "semgrep_scan",
+      "description": "\n    Runs a Semgrep scan on provided code content and returns the findings in JSON format\n\n    Use this tool when you need to:\n      - scan code files for security vulnerabilities\n      - scan code files for other issues\n    ",
+      "inputSchema": {
+        "$defs": {
+          "CodeFile": {
+            "properties": {
+              "filename": {
+                "description": "Relative path to the code file",
+                "title": "Filename",
+                "type": "string"
+              },
+              "content": {
+                "description": "Content of the code file",
+                "title": "Content",
+                "type": "string"
+              }
+            },
+            "required": [
+              "filename",
+              "content"
+            ],
+            "title": "CodeFile",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "code_files": {
+            "description": "List of dictionaries with 'filename' and 'content' keys",
+            "items": {
+              "$ref": "#/$defs/CodeFile"
+            },
+            "title": "Code Files",
+            "type": "array"
+          },
+          "config": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Optional Semgrep configuration string (e.g. 'p/docker', 'p/xss', 'auto')",
+            "title": "Config"
+          }
+        },
+        "required": [
+          "code_files"
+        ],
+        "title": "semgrep_scanArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "security_check",
+      "description": "\n    Runs a fast security check on code and returns any issues found.\n\n    Use this tool when you need to:\n      - scan code for security vulnerabilities\n      - verify that code is secure\n      - double check that code is secure before committing\n      - get a second opinion on code security\n\n    If there are no issues, you can be reasonably confident that the code is secure.\n    ",
+      "inputSchema": {
+        "$defs": {
+          "CodeFile": {
+            "properties": {
+              "filename": {
+                "description": "Relative path to the code file",
+                "title": "Filename",
+                "type": "string"
+              },
+              "content": {
+                "description": "Content of the code file",
+                "title": "Content",
+                "type": "string"
+              }
+            },
+            "required": [
+              "filename",
+              "content"
+            ],
+            "title": "CodeFile",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "code_files": {
+            "description": "List of dictionaries with 'filename' and 'content' keys",
+            "items": {
+              "$ref": "#/$defs/CodeFile"
+            },
+            "title": "Code Files",
+            "type": "array"
+          }
+        },
+        "required": [
+          "code_files"
+        ],
+        "title": "security_checkArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_abstract_syntax_tree",
+      "description": "\n    Returns the Abstract Syntax Tree (AST) for the provided code file in JSON format\n\n    Use this tool when you need to:\n      - get the Abstract Syntax Tree (AST) for the provided code file      - get the AST of a file\n      - understand the structure of the code in a more granular way\n      - see what a parser sees in the code\n    ",
+      "inputSchema": {
+        "properties": {
+          "code": {
+            "description": "The code to get the AST for",
+            "title": "Code",
+            "type": "string"
+          },
+          "language": {
+            "description": "The programming language of the code",
+            "title": "Language",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "language"
+        ],
+        "title": "get_abstract_syntax_treeArguments",
+        "type": "object"
+      }
+    }
+  ],
+  "prompts": [
+    {
+      "name": "write_custom_semgrep_rule",
+      "description": "\n    Write a custom Semgrep rule for the provided code and language\n\n    Use this prompt when you need to:\n      - write a custom Semgrep rule\n      - write a Semgrep rule for a specific issue or pattern\n    ",
+      "arguments": [
+        {
+          "name": "code",
+          "description": "The code to get the AST for",
+          "required": true
+        },
+        {
+          "name": "language",
+          "description": "The programming language of the code",
+          "required": true
+        }
+      ]
+    }
+  ],
+  "resources": [],
+  "is_official": true
+}

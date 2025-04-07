@@ -1,0 +1,62 @@
+{
+  "display_name": "gotoHuman MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gotohuman/gotohuman-mcp-server"
+  },
+  "homepage": "https://app.gotohuman.com",
+  "author": {
+    "name": "gotohuman"
+  },
+  "license": "MIT",
+  "tags": [
+    "human review",
+    "AI agents",
+    "webhook",
+    "automation"
+  ],
+  "arguments": {
+    "GOTOHUMAN_API_KEY": {
+      "description": "Your gotoHuman API key",
+      "required": true,
+      "example": "your-api-key"
+    }
+  },
+  "installations": {
+    "custom": {
+      "type": "custom",
+      "command": "node",
+      "args": [
+        "build/index.js"
+      ],
+      "env": {
+        "GOTOHUMAN_API_KEY": "${GOTOHUMAN_API_KEY}"
+      },
+      "description": "Run the gotoHuman MCP server using Node.js",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "List forms",
+      "description": "List all available review forms in your account",
+      "prompt": "list-forms"
+    },
+    {
+      "title": "Get form schema",
+      "description": "Get the schema for a specific form",
+      "prompt": "get-form-schema formId=<your-form-id>"
+    },
+    {
+      "title": "Request human review",
+      "description": "Request a human review using a specific form",
+      "prompt": "request-human-review-with-form formId=<your-form-id> fieldData=<content-and-configuration> metadata=<optional-additional-data> assignToUsers=<optional-user-emails>"
+    }
+  ],
+  "name": "gotohuman-mcp-server",
+  "description": "Let your **AI agents ask for human reviews** in gotoHuman via MCP.",
+  "categories": [
+    "AI Systems"
+  ],
+  "is_official": true
+}

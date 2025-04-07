@@ -1,0 +1,172 @@
+{
+  "display_name": "Tavily MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tavily-ai/tavily-mcp"
+  },
+  "homepage": "https://github.com/tavily-ai/tavily-mcp",
+  "author": {
+    "name": "tavily-ai"
+  },
+  "license": "MIT",
+  "tags": [
+    "search",
+    "web",
+    "extract",
+    "mcp",
+    "claude"
+  ],
+  "arguments": {
+    "TAVILY_API_KEY": {
+      "description": "API key for Tavily services",
+      "required": true,
+      "example": "your-api-key-here"
+    }
+  },
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "tavily-mcp"
+      ],
+      "description": "Run with npx (requires npm install)",
+      "env": {
+        "TAVILY_API_KEY": "your-api-key-here"
+      }
+    }
+  },
+  "name": "tavily-mcp",
+  "description": "Search engine for AI agents (search + extract) powered by Tavily",
+  "categories": [
+    "Web Services"
+  ],
+  "is_official": true,
+  "tools": [
+    {
+      "name": "tavily-search",
+      "description": "A powerful web search tool that provides comprehensive, real-time results using Tavily's AI search engine. Returns relevant web content with customizable parameters for result count, content type, and domain filtering. Ideal for gathering current information, news, and detailed web content analysis.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query"
+          },
+          "search_depth": {
+            "type": "string",
+            "enum": [
+              "basic",
+              "advanced"
+            ],
+            "description": "The depth of the search. It can be 'basic' or 'advanced'",
+            "default": "basic"
+          },
+          "topic": {
+            "type": "string",
+            "enum": [
+              "general",
+              "news"
+            ],
+            "description": "The category of the search. This will determine which of our agents will be used for the search",
+            "default": "general"
+          },
+          "days": {
+            "type": "number",
+            "description": "The number of days back from the current date to include in the search results. This specifies the time frame of data to be retrieved. Please note that this feature is only available when using the 'news' search topic",
+            "default": 3
+          },
+          "time_range": {
+            "type": "string",
+            "description": "The time range back from the current date to include in the search results. This feature is available for both 'general' and 'news' search topics",
+            "enum": [
+              "day",
+              "week",
+              "month",
+              "year",
+              "d",
+              "w",
+              "m",
+              "y"
+            ]
+          },
+          "max_results": {
+            "type": "number",
+            "description": "The maximum number of search results to return",
+            "default": 10,
+            "minimum": 5,
+            "maximum": 20
+          },
+          "include_images": {
+            "type": "boolean",
+            "description": "Include a list of query-related images in the response",
+            "default": false
+          },
+          "include_image_descriptions": {
+            "type": "boolean",
+            "description": "Include a list of query-related images and their descriptions in the response",
+            "default": false
+          },
+          "include_raw_content": {
+            "type": "boolean",
+            "description": "Include the cleaned and parsed HTML content of each search result",
+            "default": false
+          },
+          "include_domains": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "A list of domains to specifically include in the search results, if the user asks to search on specific sites set this to the domain of the site",
+            "default": []
+          },
+          "exclude_domains": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of domains to specifically exclude, if the user asks to exclude a domain set this to the domain of the site",
+            "default": []
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "tavily-extract",
+      "description": "A powerful web content extraction tool that retrieves and processes raw content from specified URLs, ideal for data collection, content analysis, and research tasks.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "urls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of URLs to extract content from"
+          },
+          "extract_depth": {
+            "type": "string",
+            "enum": [
+              "basic",
+              "advanced"
+            ],
+            "description": "Depth of extraction - 'basic' or 'advanced', if usrls are linkedin use 'advanced' or if explicitly told to use advanced",
+            "default": "basic"
+          },
+          "include_images": {
+            "type": "boolean",
+            "description": "Include a list of images extracted from the urls in the response",
+            "default": false
+          }
+        },
+        "required": [
+          "urls"
+        ]
+      }
+    }
+  ]
+}

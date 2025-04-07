@@ -1,0 +1,93 @@
+{
+  "display_name": "Exa MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/exa-labs/exa-mcp-server"
+  },
+  "homepage": "https://github.com/exa-labs/exa-mcp-server",
+  "author": {
+    "name": "exa-labs"
+  },
+  "license": "MIT",
+  "tags": [
+    "search",
+    "web search",
+    "AI",
+    "Claude",
+    "MCP",
+    "Model Context Protocol"
+  ],
+  "arguments": {
+    "EXA_API_KEY": {
+      "description": "API key from dashboard.exa.ai/api-keys",
+      "required": true,
+      "example": "your-api-key-here"
+    }
+  },
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "exa-mcp-server"
+      ],
+      "env": {
+        "EXA_API_KEY": "your-api-key-here"
+      },
+      "description": "Run with NPX",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Web Search",
+      "description": "Search for recent developments in quantum computing",
+      "prompt": "Can you search for recent developments in quantum computing?"
+    },
+    {
+      "title": "News Search",
+      "description": "Search for and summarize news about AI startups",
+      "prompt": "Search for and summarize the latest news about artificial intelligence startups in new york."
+    },
+    {
+      "title": "Research Paper Search",
+      "description": "Find research papers about climate change",
+      "prompt": "Find and analyze recent research papers about climate change solutions."
+    },
+    {
+      "title": "Twitter Search",
+      "description": "Search for tweets from specific users",
+      "prompt": "Search Twitter for posts from @elonmusk about SpaceX."
+    }
+  ],
+  "name": "exa-mcp-server",
+  "description": "A Model Context Protocol (MCP) server lets AI assistants like Claude use the Exa AI Search API for web searches. This setup allows AI models to get real-time web information in a safe and controlled way.",
+  "categories": [
+    "Web Services"
+  ],
+  "tools": [
+    {
+      "name": "web_search",
+      "description": "Search the web using Exa AI - performs real-time web searches and can scrape content from specific URLs. Supports configurable result counts and returns the content from the most relevant websites.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query"
+          },
+          "numResults": {
+            "type": "number",
+            "description": "Number of search results to return (default: 5)"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": true
+}

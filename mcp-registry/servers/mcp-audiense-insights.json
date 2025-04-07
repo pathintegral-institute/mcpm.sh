@@ -1,0 +1,69 @@
+{
+  "display_name": "Audiense Insights",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AudienseCo/mcp-audiense-insights"
+  },
+  "homepage": "https://github.com/AudienseCo/mcp-audiense-insights",
+  "author": {
+    "name": "AudienseCo"
+  },
+  "license": "Apache 2.0",
+  "tags": [
+    "marketing",
+    "audience analysis",
+    "insights",
+    "demographics",
+    "influencers"
+  ],
+  "arguments": {
+    "AUDIENSE_CLIENT_ID": {
+      "description": "Audiense API client ID",
+      "required": true,
+      "example": "your_client_id_here"
+    },
+    "AUDIENSE_CLIENT_SECRET": {
+      "description": "Audiense API client secret",
+      "required": true,
+      "example": "your_client_secret_here"
+    },
+    "TWITTER_BEARER_TOKEN": {
+      "description": "X/Twitter API Bearer Token for enriched influencer data",
+      "required": false,
+      "example": "your_token_here"
+    }
+  },
+  "installations": {
+    "custom": {
+      "type": "npm",
+      "command": "node",
+      "args": [
+        "/ABSOLUTE/PATH/TO/YOUR/build/index.js"
+      ],
+      "env": {
+        "AUDIENSE_CLIENT_ID": "your_client_id_here",
+        "AUDIENSE_CLIENT_SECRET": "your_client_secret_here",
+        "TWITTER_BEARER_TOKEN": "your_token_here"
+      },
+      "description": "Manual installation by configuring Claude Desktop"
+    }
+  },
+  "examples": [
+    {
+      "title": "Audiense Demo",
+      "description": "Helps analyze Audiense reports interactively",
+      "prompt": "audiense-demo"
+    },
+    {
+      "title": "Segment Matching",
+      "description": "Match and compare audience segments across Audiense reports, identifying similarities, unique traits, and key insights",
+      "prompt": "segment-matching"
+    }
+  ],
+  "name": "mcp-audiense-insights",
+  "description": "This server, based on the [Model Context Protocol (MCP)](https://github.com/modelcontextprotocol), allows **Claude** or any other MCP-compatible client to interact with your [Audiense Insights](https://www.audiense.com/) account. It extracts **marketing insights and audience analysis** from Audiense reports, covering **demographic, cultural, influencer, and content engagement analysis**.",
+  "categories": [
+    "Analytics"
+  ],
+  "is_official": true
+}

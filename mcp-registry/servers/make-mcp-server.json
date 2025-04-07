@@ -1,0 +1,69 @@
+{
+  "display_name": "Make MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/integromat/make-mcp-server"
+  },
+  "homepage": "https://github.com/integromat/make-mcp-server",
+  "author": {
+    "name": "integromat"
+  },
+  "license": "MIT",
+  "tags": [
+    "make",
+    "automation",
+    "ai",
+    "mcp",
+    "scenarios"
+  ],
+  "arguments": {
+    "MAKE_API_KEY": {
+      "description": "API key generated in your Make profile",
+      "required": true,
+      "example": "<your-api-key>"
+    },
+    "MAKE_ZONE": {
+      "description": "The zone your organization is hosted in",
+      "required": true,
+      "example": "eu2.make.com"
+    },
+    "MAKE_TEAM": {
+      "description": "Team ID found in the URL of the Team page",
+      "required": true,
+      "example": "<your-team-id>"
+    }
+  },
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@makehq/mcp-server"
+      ],
+      "env": {
+        "MAKE_API_KEY": "<your-api-key>",
+        "MAKE_ZONE": "<your-zone>",
+        "MAKE_TEAM": "<your-team-id>"
+      },
+      "description": "Install and run using npm",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Using Make scenarios with Claude Desktop",
+      "description": "Configure the Make MCP server in Claude Desktop to access your Make scenarios",
+      "prompt": "I'd like to use my Make scenarios as tools. Can you help me set that up?"
+    }
+  ],
+  "name": "make-mcp-server",
+  "description": "A Model Context Protocol server that enables Make scenarios to be utilized as tools by AI assistants. This integration allows AI systems to trigger and interact with your Make automation workflows.",
+  "categories": [
+    "Productivity"
+  ],
+  "tools": [],
+  "prompts": [],
+  "resources": [],
+  "is_official": true
+}

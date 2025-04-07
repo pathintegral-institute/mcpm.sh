@@ -1,0 +1,92 @@
+{
+  "display_name": "GreptimeDB MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GreptimeTeam/greptimedb-mcp-server"
+  },
+  "homepage": "https://github.com/GreptimeTeam/greptimedb-mcp-server",
+  "author": {
+    "name": "GreptimeTeam"
+  },
+  "license": "MIT",
+  "tags": [
+    "database",
+    "sql",
+    "greptimedb",
+    "mcp"
+  ],
+  "arguments": {
+    "GREPTIMEDB_HOST": {
+      "description": "Database host",
+      "required": true,
+      "example": "localhost"
+    },
+    "GREPTIMEDB_PORT": {
+      "description": "Database port",
+      "required": false,
+      "example": "4002"
+    },
+    "GREPTIMEDB_USER": {
+      "description": "Database username",
+      "required": true,
+      "example": "root"
+    },
+    "GREPTIMEDB_PASSWORD": {
+      "description": "Database password",
+      "required": true,
+      "example": ""
+    },
+    "GREPTIMEDB_DATABASE": {
+      "description": "Database name",
+      "required": true,
+      "example": "public"
+    }
+  },
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "greptimedb-mcp-server"
+      ],
+      "env": {
+        "GREPTIMEDB_HOST": "localhost",
+        "GREPTIMEDB_PORT": "4002",
+        "GREPTIMEDB_USER": "root",
+        "GREPTIMEDB_PASSWORD": "",
+        "GREPTIMEDB_DATABASE": "public"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Basic Usage",
+      "description": "Connect to GreptimeDB and explore tables",
+      "prompt": "Connect to my GreptimeDB instance and list all available tables."
+    }
+  ],
+  "name": "greptimedb-mcp-server",
+  "description": "A Model Context Protocol (MCP) server implementation for [GreptimeDB](https://github.com/GreptimeTeam/greptimedb).",
+  "categories": [
+    "Databases"
+  ],
+  "is_official": true,
+  "tools": [
+    {
+      "name": "execute_sql",
+      "description": "Execute an SQL query on the GreptimeDB server",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The SQL query to execute"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ]
+}

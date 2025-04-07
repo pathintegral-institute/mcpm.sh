@@ -1,0 +1,68 @@
+{
+  "display_name": "OceanBase MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oceanbase/mcp-oceanbase"
+  },
+  "homepage": "https://github.com/oceanbase/mcp-oceanbase",
+  "author": {
+    "name": "oceanbase"
+  },
+  "license": "Apache-2.0",
+  "tags": [
+    "database",
+    "OceanBase"
+  ],
+  "arguments": {
+    "OB_HOST": {
+      "description": "Database host for connecting to the OceanBase server.",
+      "required": true,
+      "example": "localhost"
+    },
+    "OB_PORT": {
+      "description": "Optional: Database port to connect to OceanBase, defaults to 2881 if not specified.",
+      "required": false,
+      "example": "2881"
+    },
+    "OB_USER": {
+      "description": "Username for authenticating with the OceanBase database.",
+      "required": true,
+      "example": "your_username"
+    },
+    "OB_PASSWORD": {
+      "description": "Password for the specified database user.",
+      "required": true,
+      "example": "your_password"
+    },
+    "OB_DATABASE": {
+      "description": "Name of the OceanBase database to connect to.",
+      "required": true,
+      "example": "your_database"
+    }
+  },
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/oceanbase/mcp-oceanbase",
+        "oceanbase_mcp_server"
+      ],
+      "env": {
+        "OB_HOST": "${OB_HOST}",
+        "OB_PORT": "${OB_PORT}",
+        "OB_USER": "${OB_USER}",
+        "OB_PASSWORD": "${OB_PASSWORD}",
+        "OB_DATABASE": "${OB_DATABASE}"
+      },
+      "description": "A Model Context Protocol (MCP) server that enables secure interaction with OceanBase databases."
+    }
+  },
+  "name": "mcp-oceanbase",
+  "description": "MCP Server for OceanBase database and its tools",
+  "categories": [
+    "Databases"
+  ],
+  "is_official": true
+}

@@ -1,0 +1,36 @@
+{
+  "display_name": "Browserbase MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/browserbase/mcp-server-browserbase"
+  },
+  "license": "[NOT GIVEN]",
+  "homepage": "https://www.browserbase.com/",
+  "author": {
+    "name": "browserbase"
+  },
+  "tags": [
+    "browser automation",
+    "puppeteer",
+    "stagehand",
+    "web interaction",
+    "screenshots",
+    "javascript"
+  ],
+  "installations": {
+    "custom": {
+      "type": "custom",
+      "command": "node",
+      "args": [
+        "src/build/dist/index.js"
+      ],
+      "description": "Run using Node.js"
+    }
+  },
+  "name": "mcp-server-browserbase",
+  "description": "[The Model Context Protocol (MCP)](https://modelcontextprotocol.io/introduction) is an open protocol that enables seamless integration between LLM applications and external data sources and tools. Whether you\u2019re building an AI-powered IDE, enhancing a chat interface, or creating custom AI workflows, MCP provides a standardized way to connect LLMs with the context they need.",
+  "categories": [
+    "Dev Tools"
+  ],
+  "is_official": true
+}

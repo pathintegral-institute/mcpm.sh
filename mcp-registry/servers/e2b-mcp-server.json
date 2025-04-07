@@ -1,0 +1,69 @@
+{
+  "display_name": "E2B MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/e2b-dev/mcp-server"
+  },
+  "homepage": "https://e2b.dev",
+  "author": {
+    "name": "e2b-dev"
+  },
+  "license": "[NOT GIVEN]",
+  "tags": [
+    "code-interpreter",
+    "claude",
+    "sandbox"
+  ],
+  "arguments": {
+    "e2bApiKey": {
+      "description": "E2B API key",
+      "required": true
+    }
+  },
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@e2b/mcp-server"
+      ],
+      "env": {
+        "E2B_API_KEY": "${e2bApiKey}"
+      }
+    },
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "e2b-mcp-server"
+      ],
+      "env": {
+        "E2B_API_KEY": "${e2bApiKey}"
+      }
+    }
+  },
+  "name": "e2b-mcp-server",
+  "description": "This repository contains the source code for the [E2B](https://e2b.dev) MCP server.",
+  "categories": [
+    "MCP Tools"
+  ],
+  "is_official": true,
+  "tools": [
+    {
+      "name": "run_code",
+      "description": "Run python code in a secure sandbox by E2B. Using the Jupyter Notebook syntax.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ]
+      }
+    }
+  ]
+}

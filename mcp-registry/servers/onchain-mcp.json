@@ -1,0 +1,406 @@
+{
+  "display_name": "Bankless Onchain MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bankless/onchain-mcp"
+  },
+  "homepage": "https://docs.bankless.com/bankless-api/other-services/onchain-mcp",
+  "author": {
+    "name": "bankless"
+  },
+  "license": "MIT",
+  "tags": [
+    "blockchain",
+    "MCP",
+    "smart contracts",
+    "ethereum",
+    "onchain"
+  ],
+  "arguments": {
+    "BANKLESS_API_TOKEN": {
+      "description": "API token for Bankless API authentication",
+      "required": true,
+      "example": "your_api_token_here"
+    }
+  },
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "@bankless/onchain-mcp"
+      ],
+      "package": "@bankless/onchain-mcp",
+      "env": {
+        "BANKLESS_API_TOKEN": "your_api_token_here"
+      },
+      "description": "Run directly using npx",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Read Contract State",
+      "description": "Read the balance of an address from a token contract",
+      "prompt": "What's the balance of address 0xabcd... in the token contract at 0x1234...?"
+    },
+    {
+      "title": "Get Proxy Implementation",
+      "description": "Find the implementation address for a proxy contract",
+      "prompt": "What's the implementation contract for the proxy at 0x1234...?"
+    },
+    {
+      "title": "Fetch Event Logs",
+      "description": "Get Transfer events for a specific token contract",
+      "prompt": "Show me the recent Transfer events for the contract at 0x1234..."
+    }
+  ],
+  "name": "onchain-mcp",
+  "description": "MCP (Model Context Protocol) server for blockchain data interaction through the Bankless API.",
+  "categories": [
+    "Finance"
+  ],
+  "tools": [
+    {
+      "name": "read_contract",
+      "description": "Read contract state from a blockchain. important:  \n                \n                In case of a tuple, don't use type tuple, but specify the inner types (found in the source) in order. For nested structs, include the substructs types.\n    \n    Example: \n    struct DataTypeA {\n    DataTypeB b;\n    //the liquidity index. Expressed in ray\n    uint128 liquidityIndex;\n    }\n    \n    struct DataTypeB {\n    address token;\n    }\n    \n    results in outputs for function with return type DataTypeA (tuple in abi): outputs: [{\"type\": \"address\"}, {\"type\": \"uint128\"}]",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "network": {
+            "type": "string",
+            "description": "The blockchain network (e.g., \"ethereum\", \"base\")"
+          },
+          "contract": {
+            "type": "string",
+            "description": "The contract address"
+          },
+          "method": {
+            "type": "string",
+            "description": "The contract method to call"
+          },
+          "inputs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "The type of the input parameter"
+                },
+                "value": {
+                  "description": "The value of the input parameter"
+                }
+              },
+              "required": [
+                "type"
+              ],
+              "additionalProperties": false
+            },
+            "description": "Input parameters for the method call"
+          },
+          "outputs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "Expected output types for the method call. \n    In case of a tuple, don't use type tuple, but specify the inner types (found in the source) in order. For nested structs, include the substructs types.\n    \n    Example: \n    struct DataTypeA {\n    DataTypeB b;\n    //the liquidity index. Expressed in ray\n    uint128 liquidityIndex;\n    }\n    \n    struct DataTypeB {\n    address token;\n    }\n    \n    results in outputs for function with return type DataTypeA (tuple in abi): outputs: [{\"type\": \"address\"}, {\"type\": \"uint128\"}]\n  "
+                },
+                "components": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/properties/outputs/items"
+                  },
+                  "description": "optional components for tuple types"
+                }
+              },
+              "required": [
+                "type"
+              ],
+              "additionalProperties": false
+            },
+            "description": "Expected output types for the method call. \n    In case of a tuple, don't use type tuple, but specify the inner types (found in the source) in order. For nested structs, include the substructs types.\n    \n    Example: \n    struct DataTypeA {\n    DataTypeB b;\n    //the liquidity index. Expressed in ray\n    uint128 liquidityIndex;\n    }\n    \n    struct DataTypeB {\n    address token;\n    }\n    \n    results in outputs for function with return type DataTypeA (tuple in abi): outputs: [{\"type\": \"address\"}, {\"type\": \"uint128\"}]\n  "
+          }
+        },
+        "required": [
+          "network",
+          "contract",
+          "method",
+          "inputs",
+          "outputs"
+        ]
+      }
+    },
+    {
+      "name": "get_proxy",
+      "description": "Gets the proxy address for a given network and contract",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "network": {
+            "type": "string",
+            "description": "The blockchain network (e.g., \"ethereum\", \"base\")"
+          },
+          "contract": {
+            "type": "string",
+            "description": "The contract address to request the proxy implementation contract for"
+          }
+        },
+        "required": [
+          "network",
+          "contract"
+        ]
+      }
+    },
+    {
+      "name": "get_abi",
+      "description": "Gets the ABI for a given contract on a specific network",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "network": {
+            "type": "string",
+            "description": "The blockchain network (e.g., \"ethereum\", \"base\")"
+          },
+          "contract": {
+            "type": "string",
+            "description": "The contract address"
+          }
+        },
+        "required": [
+          "network",
+          "contract"
+        ]
+      }
+    },
+    {
+      "name": "get_source",
+      "description": "Gets the source code for a given contract on a specific network",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "network": {
+            "type": "string",
+            "description": "The blockchain network (e.g., \"ethereum\", \"base\")"
+          },
+          "contract": {
+            "type": "string",
+            "description": "The contract address"
+          }
+        },
+        "required": [
+          "network",
+          "contract"
+        ]
+      }
+    },
+    {
+      "name": "get_events",
+      "description": "Fetches event logs for a given network and filter criteria",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "network": {
+            "type": "string",
+            "description": "The blockchain network (e.g., \"ethereum\", \"base\")"
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of contract addresses to filter events"
+          },
+          "topic": {
+            "type": "string",
+            "description": "Primary topic to filter events"
+          },
+          "optionalTopics": {
+            "type": "array",
+            "items": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "description": "Optional additional topics"
+          },
+          "fromBlock": {
+            "type": "number",
+            "description": "Block number to start fetching logs from"
+          },
+          "toBlock": {
+            "type": "number",
+            "description": "Block number to stop fetching logs at"
+          }
+        },
+        "required": [
+          "network",
+          "addresses",
+          "topic"
+        ]
+      }
+    },
+    {
+      "name": "build_event_topic",
+      "description": "Builds an event topic signature based on event name and arguments",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "network": {
+            "type": "string",
+            "description": "The blockchain network (e.g., \"ethereum\", \"base\")"
+          },
+          "name": {
+            "type": "string",
+            "description": "Event name (e.g., \"Transfer(address,address,uint256)\")"
+          },
+          "arguments": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "Expected output types for the method call. \n    In case of a tuple, don't use type tuple, but specify the inner types (found in the source) in order. For nested structs, include the substructs types.\n    \n    Example: \n    struct DataTypeA {\n    DataTypeB b;\n    //the liquidity index. Expressed in ray\n    uint128 liquidityIndex;\n    }\n    \n    struct DataTypeB {\n    address token;\n    }\n    \n    results in outputs for function with return type DataTypeA (tuple in abi): outputs: [{\"type\": \"address\"}, {\"type\": \"uint128\"}]\n  "
+                },
+                "components": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/properties/arguments/items"
+                  },
+                  "description": "optional components for tuple types"
+                }
+              },
+              "required": [
+                "type"
+              ],
+              "additionalProperties": false
+            },
+            "description": "Event arguments types"
+          }
+        },
+        "required": [
+          "network",
+          "name",
+          "arguments"
+        ]
+      }
+    },
+    {
+      "name": "get_transaction_history_for_user",
+      "description": "Gets transaction history for a user and optional contract",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "network": {
+            "type": "string",
+            "description": "The blockchain network (e.g., \"ethereum\", \"base\")"
+          },
+          "user": {
+            "type": "string",
+            "description": "The user address"
+          },
+          "contract": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The contract address (optional)"
+          },
+          "methodId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The method ID to filter by (optional)"
+          },
+          "startBlock": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The starting block number (optional)"
+          },
+          "includeData": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether to include transaction data"
+          }
+        },
+        "required": [
+          "network",
+          "user"
+        ]
+      }
+    },
+    {
+      "name": "get_transaction_info",
+      "description": "Gets detailed information about a specific transaction",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "network": {
+            "type": "string",
+            "description": "The blockchain network (e.g., \"ethereum\", \"polygon\")"
+          },
+          "txHash": {
+            "type": "string",
+            "description": "The transaction hash to fetch details for"
+          }
+        },
+        "required": [
+          "network",
+          "txHash"
+        ]
+      }
+    },
+    {
+      "name": "get_token_balances_on_network",
+      "description": "Gets all token balances for a given address on a specific network",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "network": {
+            "type": "string",
+            "description": "The blockchain network (e.g., \"ethereum\", \"base\")"
+          },
+          "address": {
+            "type": "string",
+            "description": "The address to check token balances for"
+          }
+        },
+        "required": [
+          "network",
+          "address"
+        ]
+      }
+    },
+    {
+      "name": "get_block_info",
+      "description": "Gets detailed information about a specific block by number or hash",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "network": {
+            "type": "string",
+            "description": "The blockchain network (e.g., \"ethereum\", \"base\")"
+          },
+          "blockId": {
+            "type": "string",
+            "description": "The block number or block hash to fetch information for"
+          }
+        },
+        "required": [
+          "network",
+          "blockId"
+        ]
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": true
+}

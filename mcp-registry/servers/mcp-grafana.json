@@ -1,0 +1,67 @@
+{
+  "display_name": "Grafana MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/grafana/mcp-grafana"
+  },
+  "license": "Apache License, Version 2.0",
+  "homepage": "https://github.com/grafana/mcp-grafana",
+  "author": {
+    "name": "grafana"
+  },
+  "tags": [
+    "grafana",
+    "mcp",
+    "model context protocol"
+  ],
+  "arguments": {
+    "GRAFANA_URL": {
+      "description": "URL of your Grafana instance",
+      "required": true,
+      "example": "http://localhost:3000"
+    },
+    "GRAFANA_API_KEY": {
+      "description": "Service account token for Grafana authentication",
+      "required": true,
+      "example": "<your service account token>"
+    }
+  },
+  "installations": {
+    "custom": {
+      "type": "custom",
+      "command": "go",
+      "args": [
+        "install",
+        "github.com/grafana/mcp-grafana/cmd/mcp-grafana@latest"
+      ],
+      "env": {
+        "GOBIN": "$HOME/go/bin"
+      },
+      "description": "Install from source using Go",
+      "recommended": false
+    }
+  },
+  "examples": [
+    {
+      "title": "Search for dashboards",
+      "description": "Search for dashboards in your Grafana instance",
+      "prompt": "Find dashboards related to Kubernetes in my Grafana instance"
+    },
+    {
+      "title": "Query Prometheus metrics",
+      "description": "Execute a Prometheus query against a datasource",
+      "prompt": "Show me the CPU usage for the last hour from my Prometheus datasource"
+    },
+    {
+      "title": "Check current on-call users",
+      "description": "Find out who is currently on-call",
+      "prompt": "Who is currently on-call according to Grafana OnCall?"
+    }
+  ],
+  "name": "mcp-grafana",
+  "description": "A [Model Context Protocol][mcp] (MCP) server for Grafana.",
+  "categories": [
+    "Analytics"
+  ],
+  "is_official": true
+}

@@ -1,0 +1,284 @@
+{
+  "display_name": "DevHub CMS MCP",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/devhub/devhub-cms-mcp"
+  },
+  "homepage": "https://smithery.ai/server/@devhub/devhub-cms-mcp",
+  "author": {
+    "name": "devhub"
+  },
+  "license": "[NOT GIVEN]",
+  "tags": [
+    "cms",
+    "content management",
+    "devhub"
+  ],
+  "arguments": {
+    "DEVHUB_API_KEY": {
+      "description": "Your DevHub API key",
+      "required": true,
+      "example": "YOUR_KEY_HERE"
+    },
+    "DEVHUB_API_SECRET": {
+      "description": "Your DevHub API secret",
+      "required": true,
+      "example": "YOUR_SECRET_HERE"
+    },
+    "DEVHUB_BASE_URL": {
+      "description": "Your DevHub base URL",
+      "required": true,
+      "example": "https://yourbrand.cloudfrontend.net"
+    }
+  },
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "devhub-cms-mcp"
+      ],
+      "env": {
+        "DEVHUB_API_KEY": "YOUR_KEY_HERE",
+        "DEVHUB_API_SECRET": "YOUR_SECRET_HERE",
+        "DEVHUB_BASE_URL": "https://yourbrand.cloudfrontend.net"
+      },
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Get business information",
+      "description": "Retrieve all businesses within the DevHub account",
+      "prompt": "Can you list all the businesses in my DevHub account?"
+    },
+    {
+      "title": "Create a blog post",
+      "description": "Create a new blog post for a specific site",
+      "prompt": "Create a new blog post titled 'Summer Specials' for my site with content about our seasonal offerings."
+    }
+  ],
+  "name": "devhub-cms-mcp",
+  "description": "A [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) integration for managing content in the [DevHub CMS system](https://www.devhub.com/).",
+  "categories": [
+    "Productivity"
+  ],
+  "tools": [
+    {
+      "name": "get_hours_of_operation",
+      "description": "Get the hours of operation for a DevHub location\n\n    Returns a list of items representing days of the week\n\n    Except for the special case formatting, this object is a list of 7 items which represent each day.\n\n    Each day can can have one-four time ranges. For example, two time ranges denotes a \"lunch-break\". No time ranges denotes closed.\n\n    Examples:\n    9am-5pm [[\"09:00:00\", \"17:00:00\"]]\n    9am-12pm and 1pm-5pm [[\"09:00:00\", \"12:00:00\"], [\"13:00:00\", \"17:00:00\"]]\n    Closed - an empty list []\n\n    Args:\n        location_id: DevHub Location ID\n        hours_type: Defaults to 'primary' unless the user specifies a different type\n    ",
+      "inputSchema": {
+        "properties": {
+          "location_id": {
+            "title": "Location Id",
+            "type": "integer"
+          },
+          "hours_type": {
+            "default": "primary",
+            "title": "Hours Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "location_id"
+        ],
+        "title": "get_hours_of_operationArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_businesses",
+      "description": "Get all businesses within the DevHub account\n\n    Returns a list of businesses with the following fields:\n    - id: Business ID that can be used in the other tools\n    - business_name: Business name\n\n    If only one business exists in the account, you can assume that the user wants to use that business for any business_id related tools.\n    ",
+      "inputSchema": {
+        "properties": {},
+        "title": "get_businessesArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_locations",
+      "description": "Get all locations for a business\n\n    Returns a list of locations with the following fields:\n    - id: Location ID that can be used in the other tools\n    - location_name: Location name\n    - location_url: Location URL in DevHub\n    - street: Street address\n    - city: City\n    - state: State\n    - country: Country\n    - postal_code: Postal code\n    - lat: Latitude\n    - lon: Longitude\n    ",
+      "inputSchema": {
+        "properties": {
+          "business_id": {
+            "title": "Business Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "business_id"
+        ],
+        "title": "get_locationsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_hours",
+      "description": "Update the hours of operation for a DevHub location\n\n    Send a list of items representing days of the week\n\n    Except for the special case formatting, this object is a list of 7 items which represent each day.\n\n    Each day can can have one-four time ranges. For example, two time ranges denotes a \"lunch-break\". No time ranges denotes closed.\n\n    Examples:\n    9am-5pm [[\"09:00:00\", \"17:00:00\"]]\n    9am-12pm and 1pm-5pm [[\"09:00:00\", \"12:00:00\"], [\"13:00:00\", \"17:00:00\"]]\n    Closed - an empty list []\n\n    Args:\n        location_id: DevHub Location ID\n        new_hours: Structured format of the new hours\n        hours_type: Defaults to 'primary' unless the user specifies a different type\n    ",
+      "inputSchema": {
+        "properties": {
+          "location_id": {
+            "title": "Location Id",
+            "type": "integer"
+          },
+          "new_hours": {
+            "items": {},
+            "title": "New Hours",
+            "type": "array"
+          },
+          "hours_type": {
+            "default": "primary",
+            "title": "Hours Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "location_id",
+          "new_hours"
+        ],
+        "title": "update_hoursArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "site_from_url",
+      "description": "Get the DevHub site ID from a URL.\n\n    Can prompt the user for the URL instead of passing a site_id.\n\n    Returns details about the Site matches the URL that can be used in the other tools.\n    - Site ID: ID of the DevHub site\n    - Site URL: URL of the DevHub site\n    - Site Location IDs: List of location IDs associated with the site\n\n    Args:\n        url: URL of the DevHub site, all lowercase and ends with a slash\n    ",
+      "inputSchema": {
+        "properties": {
+          "url": {
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "title": "site_from_urlArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "upload_image",
+      "description": "Upload an image to the DevHub media gallery\n\n    Supports webp, jpeg and png images\n\n    Args:\n        base64_image_content: Base 64 encoded content of the image file\n        filename: Filename including the extension\n    ",
+      "inputSchema": {
+        "properties": {
+          "base64_image_content": {
+            "title": "Base64 Image Content",
+            "type": "string"
+          },
+          "filename": {
+            "title": "Filename",
+            "type": "string"
+          }
+        },
+        "required": [
+          "base64_image_content",
+          "filename"
+        ],
+        "title": "upload_imageArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_blog_post",
+      "description": "Get a single blog post\n\n    Args:\n        post_id: Blog post id\n    ",
+      "inputSchema": {
+        "properties": {
+          "post_id": {
+            "title": "Post Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "post_id"
+        ],
+        "title": "get_blog_postArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_blog_post",
+      "description": "Create a new blog post\n\n    Args:\n        site_id: Website ID where the post will be published. Prompt the user for this ID.\n        title: Blog post title\n        content: HTML content of blog post. Should not include a <h1> tag, only h2+\n    ",
+      "inputSchema": {
+        "properties": {
+          "site_id": {
+            "title": "Site Id",
+            "type": "integer"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "content": {
+            "title": "Content",
+            "type": "string"
+          }
+        },
+        "required": [
+          "site_id",
+          "title",
+          "content"
+        ],
+        "title": "create_blog_postArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_blog_post",
+      "description": "Update a single blog post\n\n    Args:\n        post_id: Blog post ID\n        title: Blog post title\n        content: HTML content of blog post. Should not include a <h1> tag, only h2+\n    ",
+      "inputSchema": {
+        "properties": {
+          "post_id": {
+            "title": "Post Id",
+            "type": "integer"
+          },
+          "title": {
+            "default": null,
+            "title": "Title",
+            "type": "string"
+          },
+          "content": {
+            "default": null,
+            "title": "Content",
+            "type": "string"
+          }
+        },
+        "required": [
+          "post_id"
+        ],
+        "title": "update_blog_postArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_nearest_location",
+      "description": "Get the nearest DevHub location\n\n    Args:\n        business_id: DevHub Business ID associated with the location. Prompt the user for this ID\n        latitude: Latitude of the location\n        longitude: Longitude of the location\n    ",
+      "inputSchema": {
+        "properties": {
+          "business_id": {
+            "title": "Business Id",
+            "type": "integer"
+          },
+          "latitude": {
+            "title": "Latitude",
+            "type": "number"
+          },
+          "longitude": {
+            "title": "Longitude",
+            "type": "number"
+          }
+        },
+        "required": [
+          "business_id",
+          "latitude",
+          "longitude"
+        ],
+        "title": "get_nearest_locationArguments",
+        "type": "object"
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": true
+}

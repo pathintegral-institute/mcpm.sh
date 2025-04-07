@@ -1,0 +1,131 @@
+{
+  "display_name": "Kagi MCP server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kagisearch/kagimcp"
+  },
+  "homepage": "https://github.com/kagisearch/kagimcp",
+  "author": {
+    "name": "kagisearch"
+  },
+  "license": "MIT",
+  "tags": [
+    "search",
+    "summarizer"
+  ],
+  "arguments": {
+    "KAGI_API_KEY": {
+      "description": "Your Kagi API key",
+      "required": true,
+      "example": "YOUR_API_KEY_HERE"
+    },
+    "KAGI_SUMMARIZER_ENGINE": {
+      "description": "Summarizer engine choice (defaults to 'cecil')",
+      "required": false,
+      "example": "daphne"
+    },
+    "FASTMCP_LOG_LEVEL": {
+      "description": "Level of logging",
+      "required": false,
+      "example": "ERROR"
+    }
+  },
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "kagimcp"
+      ],
+      "env": {
+        "KAGI_API_KEY": "YOUR_API_KEY_HERE",
+        "KAGI_SUMMARIZER_ENGINE": "YOUR_ENGINE_CHOICE_HERE"
+      },
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Search Example",
+      "description": "Use Kagi search to answer a factual question",
+      "prompt": "Who was time's 2024 person of the year?"
+    },
+    {
+      "title": "Summarizer Example",
+      "description": "Use Kagi to summarize a video",
+      "prompt": "summarize this video: https://www.youtube.com/watch?v=jNQXAC9IVRw"
+    }
+  ],
+  "name": "kagimcp",
+  "description": "<a href=\"https://glama.ai/mcp/servers/xabrrs4bka\">",
+  "categories": [
+    "Analytics"
+  ],
+  "tools": [
+    {
+      "name": "kagi_search_fetch",
+      "description": "Fetch web results based on one or more queries using the Kagi Search API. Use for general search and when the user explicitly tells you to 'fetch' results/information. Results are from all queries given. They are numbered continuously, so that a user may be able to refer to a result by a specific number.",
+      "inputSchema": {
+        "properties": {
+          "queries": {
+            "description": "One or more concise, keyword-focused search queries. Include essential context within each query for standalone use.",
+            "items": {
+              "type": "string"
+            },
+            "title": "Queries",
+            "type": "array"
+          }
+        },
+        "required": [
+          "queries"
+        ],
+        "title": "kagi_search_fetchArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "kagi_summarizer",
+      "description": "Summarize content from a URL using the Kagi Summarizer API. The Summarizer can summarize any document type (text webpage, video, audio, etc.)",
+      "inputSchema": {
+        "properties": {
+          "url": {
+            "description": "A URL to a document to summarize.",
+            "title": "Url",
+            "type": "string"
+          },
+          "summary_type": {
+            "default": "summary",
+            "description": "Type of summary to produce. Options are 'summary' for paragraph prose and 'takeaway' for a bulleted list of key points.",
+            "enum": [
+              "summary",
+              "takeaway"
+            ],
+            "title": "Summary Type",
+            "type": "string"
+          },
+          "target_language": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Desired output language using language codes (e.g., 'EN' for English). If not specified, the document's original language influences the output.",
+            "title": "Target Language"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "title": "kagi_summarizerArguments",
+        "type": "object"
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": true
+}

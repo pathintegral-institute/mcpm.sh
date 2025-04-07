@@ -1,0 +1,67 @@
+{
+  "display_name": "ZenML MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zenml-io/mcp-zenml"
+  },
+  "homepage": "https://zenml.io",
+  "author": {
+    "name": "zenml-io"
+  },
+  "license": "MIT",
+  "tags": [
+    "zenml",
+    "mcp",
+    "ai",
+    "ml",
+    "pipelines"
+  ],
+  "arguments": {
+    "ZENML_STORE_URL": {
+      "description": "URL of your ZenML server",
+      "required": true,
+      "example": "https://d534d987a-zenml.cloudinfra.zenml.io"
+    },
+    "ZENML_STORE_API_KEY": {
+      "description": "API key for your ZenML server",
+      "required": true,
+      "example": "your-api-key-here"
+    },
+    "LOGLEVEL": {
+      "description": "Logging level",
+      "required": false,
+      "example": "INFO"
+    }
+  },
+  "installations": {
+    "custom": {
+      "type": "custom",
+      "command": "uv",
+      "args": [
+        "run",
+        "path/to/zenml_server.py"
+      ],
+      "env": {
+        "LOGLEVEL": "INFO",
+        "NO_COLOR": "1",
+        "PYTHONUNBUFFERED": "1",
+        "PYTHONIOENCODING": "UTF-8",
+        "ZENML_STORE_URL": "https://your-zenml-server-goes-here.com",
+        "ZENML_STORE_API_KEY": "your-api-key-here"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Query ZenML Information",
+      "description": "Ask about ZenML pipelines, runs, and other resources",
+      "prompt": "Can you show me the latest pipeline runs in my ZenML server?"
+    }
+  ],
+  "name": "mcp-zenml",
+  "description": "Interact with your MLOps and LLMOps pipelines through your ZenML MCP server",
+  "categories": [
+    "Dev Tools"
+  ],
+  "is_official": true
+}

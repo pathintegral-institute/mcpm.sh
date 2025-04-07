@@ -1,0 +1,590 @@
+{
+  "display_name": "Chronulus MCP",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ChronulusAI/chronulus-mcp"
+  },
+  "license": "[NOT GIVEN]",
+  "homepage": "https://www.chronulus.com",
+  "author": {
+    "name": "ChronulusAI"
+  },
+  "tags": [
+    "forecasting",
+    "prediction",
+    "AI agents"
+  ],
+  "arguments": {
+    "CHRONULUS_API_KEY": {
+      "description": "API key for Chronulus services",
+      "required": true,
+      "example": "<YOUR_CHRONULUS_API_KEY>"
+    }
+  },
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "chronulus-mcp"
+      ],
+      "env": {
+        "CHRONULUS_API_KEY": "<YOUR_CHRONULUS_API_KEY>"
+      },
+      "description": "Install and run using uvx"
+    },
+    "pip": {
+      "type": "python",
+      "command": "python",
+      "args": [
+        "-m",
+        "chronulus_mcp"
+      ],
+      "package": "chronulus-mcp",
+      "env": {
+        "CHRONULUS_API_KEY": "<YOUR_CHRONULUS_API_KEY>"
+      },
+      "description": "Install using pip from PyPI"
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "CHRONULUS_API_KEY",
+        "chronulus-mcp"
+      ],
+      "env": {
+        "CHRONULUS_API_KEY": "<YOUR_CHRONULUS_API_KEY>"
+      },
+      "description": "Run using Docker"
+    }
+  },
+  "name": "chronulus-mcp",
+  "description": "<img width=\"150px\" src=\"https://www.chronulus.com/brand-assets/chronulus-logo-blue-on-alpha-square.png\" alt=\"Chronulus AI\">",
+  "categories": [
+    "MCP Tools"
+  ],
+  "is_official": true,
+  "tools": [
+    {
+      "name": "create_chronulus_session",
+      "description": "\nA tool that creates a new Chronulus Session and returns a session_id\n\nWhen to use this tool:\n- Use this tool when a user has requested a forecast or prediction for a new use case\n- Before calling this tool make sure you have enough information to write a well-defined situation and task. You might\nneed to ask clarifying questions in order to get this from the user.\n- The same session_id can be reused as long as the situation and task remain the same\n- If user wants to forecast a different use case, create a new session and then use that\n\nHow to use this tool:\n- To create a session, you need to provide a situation and task that describe the forecasting use case \n- If the user has not provided enough detail for you to decompose the use case into a \n    situation (broad or background context) and task (specific requirements for the forecast), \n    ask them to elaborate since more detail will result in a better / more accurate forecast.\n- Once created, this will generate a unique session_id that can be used to when calling other tools about this use case.\n",
+      "inputSchema": {
+        "properties": {
+          "name": {
+            "description": "A short descriptive name for the use case defined in the session.",
+            "title": "Name",
+            "type": "string"
+          },
+          "situation": {
+            "description": "The broader context for the use case",
+            "title": "Situation",
+            "type": "string"
+          },
+          "task": {
+            "description": "Specific details on the forecasting or prediction task.",
+            "title": "Task",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "situation",
+          "task"
+        ],
+        "title": "create_chronulus_sessionArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_forecasting_agent_and_get_forecast",
+      "description": "\nThis tool creates a NormalizedForecaster agent with your session and input data model and then provides a forecast input \ndata to the agent and returns the prediction data and text explanation from the agent.\n\nWhen to use this tool:\n- Use this tool to request a forecast from Chronulus\n- This tool is specifically made to forecast values between 0 and 1 and does not require historical data\n- The prediction can be thought of as seasonal weights, probabilities, or shares of something as in the decimal representation of a percent\n\nHow to use this tool:\n- First, make sure you have a session_id for the forecasting or prediction use case.\n- Next, think about the features / characteristics most suitable for producing the requested forecast and then \ncreate an input_data_model that corresponds to the input_data you will provide for the thing being forecasted.\n- Remember to pass all relevant information to Chronulus including text and images provided by the user. \n- If a user gives you files about a thing you are forecasting or predicting, you should pass these as inputs to the \nagent using one of the following types: \n    - ImageFromFile\n    - List[ImageFromFile]\n    - TextFromFile\n    - List[TextFromFile]\n    - PdfFromFile\n    - List[PdfFromFile]\n- If you have a large amount of text (over 500 words) to pass to the agent, you should use the Text or List[Text] field types\n- Finally, add information about the forecasting horizon and time scale requested by the user\n- Assume the dates and datetimes in the prediction results are already converted to the appropriate local timezone if location is a factor in the use case. So do not try to convert from UTC to local time when plotting.\n- When plotting the predictions, use a Rechart time series with the appropriate axes labeled and with the prediction explanation displayed as a caption below the plot\n",
+      "inputSchema": {
+        "$defs": {
+          "InputField": {
+            "properties": {
+              "name": {
+                "description": "Field name. Should be a valid python variable name.",
+                "title": "Name",
+                "type": "string"
+              },
+              "description": {
+                "description": "A description of the value you will pass in the field.",
+                "title": "Description",
+                "type": "string"
+              },
+              "type": {
+                "default": "str",
+                "description": "The type of the field. \n        ImageFromFile takes a single named-argument, 'file_path' as input which should be absolute path to the image to be included. So you should provide this input as json, eg. {'file_path': '/path/to/image'}.\n        ",
+                "enum": [
+                  "str",
+                  "Text",
+                  "List[Text]",
+                  "TextFromFile",
+                  "List[TextFromFile]",
+                  "PdfFromFile",
+                  "List[PdfFromFile]",
+                  "ImageFromFile",
+                  "List[ImageFromFile]"
+                ],
+                "title": "Type",
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "description"
+            ],
+            "title": "InputField",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "session_id": {
+            "description": "The session_id for the forecasting or prediction use case",
+            "title": "Session Id",
+            "type": "string"
+          },
+          "input_data_model": {
+            "description": "Metadata on the fields you will include in the input_data.",
+            "items": {
+              "$ref": "#/$defs/InputField"
+            },
+            "title": "Input Data Model",
+            "type": "array"
+          },
+          "input_data": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "items": {
+                    "additionalProperties": true,
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              ]
+            },
+            "description": "The forecast inputs that you will pass to the chronulus agent to make the prediction. The keys of the dict should correspond to the InputField name you provided in input_fields.",
+            "title": "Input Data",
+            "type": "object"
+          },
+          "forecast_start_dt_str": {
+            "description": "The datetime str in '%Y-%m-%d %H:%M:%S' format of the first value in the forecast horizon.",
+            "title": "Forecast Start Dt Str",
+            "type": "string"
+          },
+          "time_scale": {
+            "default": "days",
+            "description": "The times scale of the forecast horizon. Valid time scales are 'hours', 'days', and 'weeks'.",
+            "title": "Time Scale",
+            "type": "string"
+          },
+          "horizon_len": {
+            "default": 60,
+            "description": "The integer length of the forecast horizon. Eg., 60 if a 60 day forecast was requested.",
+            "title": "Horizon Len",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "session_id",
+          "input_data_model",
+          "input_data",
+          "forecast_start_dt_str"
+        ],
+        "title": "create_forecasting_agent_and_get_forecastArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "reuse_forecasting_agent_and_get_forecast",
+      "description": "\nThis tool creates a NormalizedForecaster agent with your session and input data model and then provides a forecast input \ndata to the agent and returns the prediction data and text explanation from the agent.\n\nWhen to use this tool:\n- Use this tool to request a forecast from Chronulus\n- This tool is specifically made to forecast values between 0 and 1 and does not require historical data\n- The prediction can be thought of as seasonal weights, probabilities, or shares of something as in the decimal representation of a percent\n\nHow to use this tool:\n- First, make sure you have a session_id for the forecasting or prediction use case.\n- Next, think about the features / characteristics most suitable for producing the requested forecast and then \ncreate an input_data_model that corresponds to the input_data you will provide for the thing being forecasted.\n- Remember to pass all relevant information to Chronulus including text and images provided by the user. \n- If a user gives you files about a thing you are forecasting or predicting, you should pass these as inputs to the \nagent using one of the following types: \n    - ImageFromFile\n    - List[ImageFromFile]\n    - TextFromFile\n    - List[TextFromFile]\n    - PdfFromFile\n    - List[PdfFromFile]\n- If you have a large amount of text (over 500 words) to pass to the agent, you should use the Text or List[Text] field types\n- Finally, add information about the forecasting horizon and time scale requested by the user\n- Assume the dates and datetimes in the prediction results are already converted to the appropriate local timezone if location is a factor in the use case. So do not try to convert from UTC to local time when plotting.\n- When plotting the predictions, use a Rechart time series with the appropriate axes labeled and with the prediction explanation displayed as a caption below the plot\n",
+      "inputSchema": {
+        "properties": {
+          "agent_id": {
+            "description": "The agent_id for the forecasting or prediction use case and previously defined input_data_model",
+            "title": "Agent Id",
+            "type": "string"
+          },
+          "input_data": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "items": {
+                    "additionalProperties": true,
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              ]
+            },
+            "description": "The forecast inputs that you will pass to the chronulus agent to make the prediction. The keys of the dict should correspond to the InputField name you provided in input_fields.",
+            "title": "Input Data",
+            "type": "object"
+          },
+          "forecast_start_dt_str": {
+            "description": "The datetime str in '%Y-%m-%d %H:%M:%S' format of the first value in the forecast horizon.",
+            "title": "Forecast Start Dt Str",
+            "type": "string"
+          },
+          "time_scale": {
+            "default": "days",
+            "description": "The times scale of the forecast horizon. Valid time scales are 'hours', 'days', and 'weeks'.",
+            "title": "Time Scale",
+            "type": "string"
+          },
+          "horizon_len": {
+            "default": 60,
+            "description": "The integer length of the forecast horizon. Eg., 60 if a 60 day forecast was requested.",
+            "title": "Horizon Len",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "agent_id",
+          "input_data",
+          "forecast_start_dt_str"
+        ],
+        "title": "reuse_forecasting_agent_and_get_forecastArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "rescale_forecast",
+      "description": "\nA tool that rescales the prediction data (values between 0 and 1) from the NormalizedForecaster agent to scale required for a use case\n\nWhen to use this tool:\n- Use this tool when there is enough information from the user or use cases to determine a reasonable min and max for the forecast predictions\n- Do not attempt to rescale or denormalize the predictions on your own without using this tool.\n- Also, if the best min and max for the use case is 0 and 1, then no rescaling is needed since that is already the scale of the predictions.\n- If a user requests to convert from probabilities to a unit in levels, be sure to caveat your use of this tool by noting that\n    probabilities do not always scale uniformly to levels. Rescaling can be used as a rough first-pass estimate. But for best results, \n    it would be better to start a new Chronulus forecasting use case predicting in levels from the start.\n    \nHow to use this tool:\n- To use this tool present prediction_id from the normalized prediction and the min and max as floats\n- If the user is also changing units, consider if the units will be inverted and set the inverse scale to True if needed.\n- When plotting the rescaled predictions, use a Rechart time series plot with the appropriate axes labeled and include the chronulus \n    prediction explanation as a caption below the plot. \n- If you would like to add additional notes about the scaled series, put these below the original prediction explanation. \n",
+      "inputSchema": {
+        "properties": {
+          "prediction_id": {
+            "description": "The prediction_id from a prediction result",
+            "title": "Prediction Id",
+            "type": "string"
+          },
+          "y_min": {
+            "description": "The expected smallest value for the use case. E.g., for product sales, 0 would be the least possible value for sales.",
+            "title": "Y Min",
+            "type": "number"
+          },
+          "y_max": {
+            "description": "The expected largest value for the use case. E.g., for product sales, 0 would be the largest possible value would be given by the user or determined from this history of sales for the product in question or a similar product.",
+            "title": "Y Max",
+            "type": "number"
+          },
+          "invert_scale": {
+            "default": false,
+            "description": "Set this flag to true if the scale of the new units will run in the opposite direction from the inputs.",
+            "title": "Invert Scale",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "prediction_id",
+          "y_min",
+          "y_max"
+        ],
+        "title": "rescale_forecastArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "save_forecast",
+      "description": "\nA tool that saves a Chronulus forecast from NormalizedForecaster to separate CSV and TXT files\n\nWhen to use this tool:\n- Use this tool when you need to save both the forecast data and its explanation to files\n- The forecast data will be saved as a CSV file for data analysis\n- The forecast explanation will be saved as a TXT file for reference\n- Both files will be saved in the same directory specified by output_path\n- This tool can also be used to directly save rescaled predictions without first calling the rescaling tool\n\nHow to use this tool:\n- Provide the prediction_id from a previous forecast\n- Specify the output_path where both files should be saved\n- Provide csv_name for the forecast data file (must end in .csv)\n- Provide txt_name for the explanation file (must end in .txt)\n- Optionally provide y_min and y_max to rescale the predictions (defaults to 0)\n- Set invert_scale to True if the target units run in the opposite direction\n- The tool will provide status updates through the MCP context\n",
+      "inputSchema": {
+        "properties": {
+          "prediction_id": {
+            "description": "The prediction_id from a prediction result",
+            "title": "Prediction Id",
+            "type": "string"
+          },
+          "output_path": {
+            "description": "The path where the CSV file should be saved. Should end in .csv",
+            "title": "Output Path",
+            "type": "string"
+          },
+          "csv_name": {
+            "description": "The path where the CSV file should be saved. Should end in .csv",
+            "title": "Csv Name",
+            "type": "string"
+          },
+          "txt_name": {
+            "description": "The name of the TXT file to be saved. Should end in .txt",
+            "title": "Txt Name",
+            "type": "string"
+          },
+          "y_min": {
+            "default": 0.0,
+            "description": "The expected smallest value for the use case. E.g., for product sales, 0 would be the least possible value for sales.",
+            "title": "Y Min",
+            "type": "number"
+          },
+          "y_max": {
+            "default": 1.0,
+            "description": "The expected largest value for the use case. E.g., for product sales, 0 would be the largest possible value would be given by the user or determined from this history of sales for the product in question or a similar product.",
+            "title": "Y Max",
+            "type": "number"
+          },
+          "invert_scale": {
+            "default": false,
+            "description": "Set this flag to true if the scale of the new units will run in the opposite direction from the inputs.",
+            "title": "Invert Scale",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "prediction_id",
+          "output_path",
+          "csv_name",
+          "txt_name"
+        ],
+        "title": "save_forecastArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_prediction_agent_and_get_predictions",
+      "description": "\nThis tool creates a BinaryPredictor agent with your session and input data model and then provides prediction input \ndata to the agent and returns the consensus a prediction from a panel of experts along with their individual estimates\nand text explanations. The agent also returns the alpha and beta parameters for a Beta distribution that allows you to\nestimate the confidence interval of its consensus probability estimate.\n\nWhen to use this tool:\n- Use this tool to request a probability estimate from Chronulus in situation when there is a binary outcome\n- This tool is specifically made to estimate the probability of an event occurring and not occurring and does not \nrequire historical data\n\nHow to use this tool:\n- First, make sure you have a session_id for the prediction use case.\n- Next, think about the features / characteristics most suitable for producing the requested prediction and then \ncreate an input_data_model that corresponds to the input_data you will provide for the thing or event being predicted.\n- Remember to pass all relevant information to Chronulus including text and images provided by the user. \n- If a user gives you files about a thing you are forecasting or predicting, you should pass these as inputs to the \nagent using one of the following types: \n    - ImageFromFile\n    - List[ImageFromFile]\n    - TextFromFile\n    - List[TextFromFile]\n    - PdfFromFile\n    - List[PdfFromFile]\n- If you have a large amount of text (over 500 words) to pass to the agent, you should use the Text or List[Text] field types\n- Finally, provide the number of experts to consult. The minimum and default number is 2, but users may request up to 30\n30 opinions in situations where reproducibility and risk sensitively is of the utmost importance. In most cases, 2 to 5 \nexperts is sufficient. \n",
+      "inputSchema": {
+        "$defs": {
+          "InputField": {
+            "properties": {
+              "name": {
+                "description": "Field name. Should be a valid python variable name.",
+                "title": "Name",
+                "type": "string"
+              },
+              "description": {
+                "description": "A description of the value you will pass in the field.",
+                "title": "Description",
+                "type": "string"
+              },
+              "type": {
+                "default": "str",
+                "description": "The type of the field. \n        ImageFromFile takes a single named-argument, 'file_path' as input which should be absolute path to the image to be included. So you should provide this input as json, eg. {'file_path': '/path/to/image'}.\n        ",
+                "enum": [
+                  "str",
+                  "Text",
+                  "List[Text]",
+                  "TextFromFile",
+                  "List[TextFromFile]",
+                  "PdfFromFile",
+                  "List[PdfFromFile]",
+                  "ImageFromFile",
+                  "List[ImageFromFile]"
+                ],
+                "title": "Type",
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "description"
+            ],
+            "title": "InputField",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "session_id": {
+            "description": "The session_id for the forecasting or prediction use case",
+            "title": "Session Id",
+            "type": "string"
+          },
+          "input_data_model": {
+            "description": "Metadata on the fields you will include in the input_data.",
+            "items": {
+              "$ref": "#/$defs/InputField"
+            },
+            "title": "Input Data Model",
+            "type": "array"
+          },
+          "input_data": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "items": {
+                    "additionalProperties": true,
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              ]
+            },
+            "description": "The forecast inputs that you will pass to the chronulus agent to make the prediction. The keys of the dict should correspond to the InputField name you provided in input_fields.",
+            "title": "Input Data",
+            "type": "object"
+          },
+          "num_experts": {
+            "description": "The number of experts to consult when forming consensus",
+            "title": "Num Experts",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "session_id",
+          "input_data_model",
+          "input_data",
+          "num_experts"
+        ],
+        "title": "create_prediction_agent_and_get_predictionsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "reuse_prediction_agent_and_get_prediction",
+      "description": "\nThis tool provides prediction input data to a previously created Chronulus BinaryPredictor agent and returns the \nconsensus a prediction from a panel of experts along with their individual estimates and text explanations. The agent \nalso returns the alpha and beta parameters for a Beta distribution that allows you to estimate the confidence interval \nof its consensus probability estimate.\n\nWhen to use this tool:\n- Use this tool to request a prediction from a Chronulus prediction agent that you have already created and when your \ninput data model is unchanged\n- Use this tool to request a probability estimate from an existing prediction agent in a situation when there is a binary outcome\n- This tool is specifically made to estimate the probability of an event occurring and not occurring and does not \nrequire historical data\n\nHow to use this tool:\n- First, make sure you have a session_id for the prediction use case.\n- Next, think about the features / characteristics most suitable for producing the requested prediction and then \ncreate an input_data_model that corresponds to the input_data you will provide for the thing or event being predicted.\n- Remember to pass all relevant information to Chronulus including text and images provided by the user. \n- If a user gives you files about a thing you are forecasting or predicting, you should pass these as inputs to the \nagent using one of the following types: \n    - ImageFromFile\n    - List[ImageFromFile]\n    - TextFromFile\n    - List[TextFromFile]\n    - PdfFromFile\n    - List[PdfFromFile]\n- If you have a large amount of text (over 500 words) to pass to the agent, you should use the Text or List[Text] field types\n- Finally, provide the number of experts to consult. The minimum and default number is 2, but users may request up to 30\n30 opinions in situations where reproducibility and risk sensitively is of the utmost importance. In most cases, 2 to 5 \nexperts is sufficient. \n\nHow to use this tool:\n- First, make sure you have an agent_id for the prediction agent. The agent is already attached to the correct session. \nSo you do not need to provide a session_id.\n- Next, reference the input data model that you previously used with the agent and create new input data for the item \nbeing predicted that aligns with the previously specified input data model\n- Remember to pass all relevant information to Chronulus including text and images provided by the user. \n- If a user gives you files about a thing you are forecasting or predicting, you should pass these as inputs to the \nagent using one of the following types: \n    - ImageFromFile\n    - List[ImageFromFile]\n    - TextFromFile\n    - List[TextFromFile]\n    - PdfFromFile\n    - List[PdfFromFile]\n- If you have a large amount of text (over 500 words) to pass to the agent, you should use the Text or List[Text] field types\n- Finally, provide the number of experts to consult. The minimum and default number is 2, but users may request up to 30\n30 opinions in situations where reproducibility and risk sensitively is of the utmost importance. In most cases, 2 to 5 \nexperts is sufficient. \n",
+      "inputSchema": {
+        "properties": {
+          "agent_id": {
+            "description": "The agent_id for the forecasting or prediction use case and previously defined input_data_model",
+            "title": "Agent Id",
+            "type": "string"
+          },
+          "input_data": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "items": {
+                    "additionalProperties": true,
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              ]
+            },
+            "description": "The forecast inputs that you will pass to the chronulus agent to make the prediction. The keys of the dict should correspond to the InputField name you provided in input_fields.",
+            "title": "Input Data",
+            "type": "object"
+          },
+          "num_experts": {
+            "description": "The number of experts to consult when forming consensus",
+            "title": "Num Experts",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "agent_id",
+          "input_data",
+          "num_experts"
+        ],
+        "title": "reuse_prediction_agent_and_get_predictionArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "save_prediction_analysis_html",
+      "description": "\nA tool that saves an analysis of a BinaryPredictor prediction to HTML. \n\nThe analysis includes a plot of the theoretical and empirical beta distribution estimated by Chronulus and also\nlist the opinions provided by each expert.\n\nWhen to use this tool:\n- Use this tool when you need to save the BinaryPredictor estimates to for the user\n\nHow to use this tool:\n- Provide the request_id from a previous prediction response\n- Specify the output_path where the html should be saved\n- Provide html_name for the file (must end in .html)\n- The tool will provide status updates through the MCP context\n",
+      "inputSchema": {
+        "properties": {
+          "request_id": {
+            "description": "The request_id from the BinaryPredictor result",
+            "title": "Request Id",
+            "type": "string"
+          },
+          "output_path": {
+            "description": "The path where the HTML file should be saved.",
+            "title": "Output Path",
+            "type": "string"
+          },
+          "html_name": {
+            "description": "The path where the HTML file should be saved.",
+            "title": "Html Name",
+            "type": "string"
+          },
+          "title": {
+            "description": "Title of analysis",
+            "title": "Title",
+            "type": "string"
+          },
+          "plot_label": {
+            "description": "Label for the Beta plot",
+            "title": "Plot Label",
+            "type": "string"
+          },
+          "chronulus_prediction_summary": {
+            "description": "A summary paragraph distilling prediction results and expert opinions provided by Chronulus",
+            "title": "Chronulus Prediction Summary",
+            "type": "string"
+          },
+          "dist_shape": {
+            "description": "A one line description of the shape of the distribution of predictions",
+            "title": "Dist Shape",
+            "type": "string"
+          },
+          "dist_shape_interpretation": {
+            "description": "2-3 sentences interpreting the shape of the distribution of predictions in layman's terms",
+            "title": "Dist Shape Interpretation",
+            "type": "string"
+          }
+        },
+        "required": [
+          "request_id",
+          "output_path",
+          "html_name",
+          "title",
+          "plot_label",
+          "chronulus_prediction_summary",
+          "dist_shape",
+          "dist_shape_interpretation"
+        ],
+        "title": "save_prediction_analysis_htmlArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_risk_assessment_scorecard",
+      "description": "\nA tool that retrieves the risk assessment scorecard for the Chronulus Session in Markdown format\n\nWhen to use this tool:\n- Use this tool when the use asks about the risk level or safety concerns of a forecasting use case\n- You may also use this tool to provide justification to a user if you would like to warn them of the implications of \n    what they are asking you to forecasting or predict.\n\nHow to use this tool:\n- Make sure you have a session_id for the forecasting or prediction use case\n- When displaying the scorecard markdown for the user, you should use an MDX-style React component\n",
+      "inputSchema": {
+        "properties": {
+          "session_id": {
+            "description": "The session_id for the forecasting or prediction use case",
+            "title": "Session Id",
+            "type": "string"
+          },
+          "as_json": {
+            "description": "If true, returns the scorecard in JSON format, otherwise returns a markdown formatted scorecard",
+            "title": "As Json",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "session_id",
+          "as_json"
+        ],
+        "title": "get_risk_assessment_scorecardArguments",
+        "type": "object"
+      }
+    }
+  ]
+}

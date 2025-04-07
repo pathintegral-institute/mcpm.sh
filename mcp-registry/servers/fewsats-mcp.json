@@ -1,0 +1,136 @@
+{
+  "display_name": "Fewsats MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Fewsats/fewsats-mcp"
+  },
+  "license": "[NOT GIVEN]",
+  "homepage": "https://fewsats.com",
+  "author": {
+    "name": "Fewsats"
+  },
+  "tags": [
+    "payments",
+    "wallet",
+    "offers"
+  ],
+  "arguments": {
+    "FEWSATS_API_KEY": {
+      "description": "API key obtained from Fewsats.com",
+      "required": true,
+      "example": "YOUR_FEWSATS_API_KEY"
+    }
+  },
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "fewsats-mcp"
+      ],
+      "description": "Run using uv (recommended)",
+      "recommended": true,
+      "env": {
+        "FEWSATS_API_KEY": "YOUR_FEWSATS_API_KEY"
+      }
+    },
+    "pip": {
+      "type": "python",
+      "command": "fewsats-mcp",
+      "args": [],
+      "package": "fewsats-mcp",
+      "description": "Install via pip and run as a script",
+      "recommended": false
+    }
+  },
+  "examples": [
+    {
+      "title": "Check Balance",
+      "description": "Retrieve the balance of the user's wallet",
+      "prompt": "What's my current wallet balance?"
+    },
+    {
+      "title": "View Payment Methods",
+      "description": "Retrieve the user's payment methods",
+      "prompt": "Show me my available payment methods."
+    },
+    {
+      "title": "Pay an Offer",
+      "description": "Pay for an offer using the pay_offer tool",
+      "prompt": "Pay for the offer with ID 12345."
+    },
+    {
+      "title": "Get Payment Information",
+      "description": "Retrieve details about a specific payment",
+      "prompt": "Show me the details of payment with ID abc123."
+    }
+  ],
+  "name": "fewsats-mcp",
+  "description": "This MCP server integrates with [Fewsats](https://fewsats.com) and allows AI Agents to purchase anything in a secure way.",
+  "categories": [
+    "Finance"
+  ],
+  "tools": [
+    {
+      "name": "balance",
+      "description": "Retrieve the balance of the user's wallet.\n    You will rarely need to call this unless instructed by the user, or to troubleshoot payment issues.\n    Fewsats will automatically add balance when needed.",
+      "inputSchema": {
+        "properties": {},
+        "title": "balanceArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "payment_methods",
+      "description": "Retrieve the user's payment methods.\n    You will rarely need to call this unless instructed by the user, or to troubleshoot payment issues.\n    Fewsats will automatically select the best payment method.",
+      "inputSchema": {
+        "properties": {},
+        "title": "payment_methodsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "pay_offer",
+      "description": "Pays an offer_id from the l402_offers.\n\n    The l402_offer parameter must be a dict with this structure:\n    {\n        'offers': [\n            {\n                'offer_id': 'test_offer_2',  # String identifier for the offer\n                'amount': 1,                 # Numeric cost value\n                'currency': 'usd',           # Currency code\n                'description': 'Test offer', # Text description\n                'title': 'Test Package'      # Title of the package\n            }\n        ],\n        'payment_context_token': '60a8e027-8b8b-4ccf-b2b9-380ed0930283',  # Payment context token\n        'payment_request_url': 'https://api.fewsats.com/v0/l402/payment-request',  # Payment URL\n        'version': '0.2.2'  # API version\n    }\n\n    Returns payment status response. \n    If payment status is `needs_review` inform the user he will have to approve it at app.fewsats.com",
+      "inputSchema": {
+        "properties": {
+          "offer_id": {
+            "title": "Offer Id",
+            "type": "string"
+          },
+          "l402_offer": {
+            "additionalProperties": true,
+            "title": "L402 Offer",
+            "type": "object"
+          }
+        },
+        "required": [
+          "offer_id",
+          "l402_offer"
+        ],
+        "title": "pay_offerArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "payment_info",
+      "description": "Retrieve the details of a payment.\n    If payment status is `needs_review` inform the user he will have to approve it at app.fewsats.com",
+      "inputSchema": {
+        "properties": {
+          "pid": {
+            "title": "Pid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "pid"
+        ],
+        "title": "payment_infoArguments",
+        "type": "object"
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": true
+}

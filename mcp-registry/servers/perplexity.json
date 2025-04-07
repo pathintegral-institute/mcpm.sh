@@ -1,0 +1,106 @@
+{
+  "display_name": "Perplexity Ask MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ppl-ai/modelcontextprotocol"
+  },
+  "homepage": "https://github.com/ppl-ai/modelcontextprotocol",
+  "author": {
+    "name": "ppl-ai"
+  },
+  "license": "MIT",
+  "tags": [
+    "perplexity",
+    "search",
+    "sonar-api",
+    "web-search"
+  ],
+  "arguments": {
+    "PERPLEXITY_API_KEY": {
+      "description": "API key for the Perplexity Sonar API",
+      "required": true,
+      "example": "YOUR_API_KEY_HERE"
+    }
+  },
+  "installations": {
+    "npx": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "server-perplexity-ask"
+      ],
+      "package": "server-perplexity-ask",
+      "env": {
+        "PERPLEXITY_API_KEY": "YOUR_API_KEY_HERE"
+      },
+      "description": "Run using NPX"
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "PERPLEXITY_API_KEY",
+        "mcp/perplexity-ask"
+      ],
+      "env": {
+        "PERPLEXITY_API_KEY": "YOUR_API_KEY_HERE"
+      },
+      "description": "Run using Docker"
+    }
+  },
+  "examples": [
+    {
+      "title": "Web Search",
+      "description": "Use Perplexity to search the web for information",
+      "prompt": "Search the web for the latest information about climate change policies."
+    }
+  ],
+  "name": "perplexity",
+  "description": "An MCP server implementation that integrates the Sonar API to provide Claude with unparalleled real-time, web-wide research.",
+  "categories": [
+    "Web Services"
+  ],
+  "tools": [
+    {
+      "name": "perplexity_ask",
+      "description": "Engages in a conversation using the Sonar API. Accepts an array of messages (each with a role and content) and returns a ask completion response from the Perplexity model.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "role": {
+                  "type": "string",
+                  "description": "Role of the message (e.g., system, user, assistant)"
+                },
+                "content": {
+                  "type": "string",
+                  "description": "The content of the message"
+                }
+              },
+              "required": [
+                "role",
+                "content"
+              ]
+            },
+            "description": "Array of conversation messages"
+          }
+        },
+        "required": [
+          "messages"
+        ]
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": true
+}
