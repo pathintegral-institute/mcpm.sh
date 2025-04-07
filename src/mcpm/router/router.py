@@ -6,11 +6,13 @@ import logging
 import typing as t
 from collections import defaultdict
 from contextlib import AsyncExitStack
+from typing import Union
 
 import uvicorn
 from mcp import server, types
 from mcp.server import InitializationOptions, NotificationOptions
 from mcp.server.sse import SseServerTransport
+from pydantic import AnyUrl
 from starlette.applications import Starlette
 from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
@@ -36,6 +38,7 @@ class MCPRouter:
         self.tools_mapping: t.Dict[str, t.Dict[str, t.Any]] = {}
         self.prompts_mapping: t.Dict[str, t.Dict[str, t.Any]] = {}
         self.resources_mapping: t.Dict[str, t.Dict[str, t.Any]] = {}
+        self.resources_templates_mapping: t.Dict[str, t.Dict[str, t.Any]] = {}
         self.aggregated_server = self._create_aggregated_server()
 
     async def add_server(self, server_id: str, connection: ConnectionDetails) -> None:
@@ -71,22 +74,27 @@ class MCPRouter:
 
         # Collect server tools, prompts, and resources
         if response.capabilities.tools:
-            tools = await client.session.list_tools()
+            tools = await client.session.list_tools() # type: ignore
             # Add tools with namespaced names, preserving existing tools
             self.tools_mapping.update({f"{server_id}.{tool.name}": tool.model_dump() for tool in tools.tools})
 
         if response.capabilities.prompts:
-            prompts = await client.session.list_prompts()
+            prompts = await client.session.list_prompts()  # type: ignore
             # Add prompts with namespaced names, preserving existing prompts
             self.prompts_mapping.update(
                 {f"{server_id}.{prompt.name}": prompt.model_dump() for prompt in prompts.prompts}
             )
 
         if response.capabilities.resources:
-            resources = await client.session.list_resources()
+            resources = await client.session.list_resources()  # type: ignore
             # Add resources with namespaced URIs, preserving existing resources
             self.resources_mapping.update(
                 {f"{server_id}:{resource.uri}": resource.model_dump() for resource in resources.resources}
+            )
+            resources_templates = await client.session.list_resource_templates()  # type: ignore
+            # Add resource templates with namespaced URIs, preserving existing templates
+            self.resources_templates_mapping.update(
+                {f"{server_id}:{resource_template.uriTemplate}": resource_template.model_dump() for resource_template in resources_templates.resourceTemplates}
             )
 
     async def remove_server(self, server_id: str) -> None:
@@ -111,6 +119,8 @@ class MCPRouter:
             del self.prompts_mapping[server_id]
         if server_id in self.resources_mapping:
             del self.resources_mapping[server_id]
+        if server_id in self.resources_templates_mapping:
+            del self.resources_templates_mapping[server_id]
 
     def _create_aggregated_server(self) -> server.Server[object]:
         """
@@ -126,9 +136,9 @@ class MCPRouter:
         # List prompts handler
         async def _list_prompts(_: t.Any) -> types.ServerResult:
             all_prompts = []
-            for server_id, prompts in self.prompts_mapping.items():
-                for prompt_name, prompt_data in prompts.items():
-                    all_prompts.append(types.PromptInfo(**prompt_data))
+            for server_prompt_id, prompts in self.prompts_mapping.items():
+                prompts.update({"name": server_prompt_id})
+                all_prompts.append(types.Prompt(**prompts))
             return types.ServerResult(types.ListPromptsResult(prompts=all_prompts))
 
         app.request_handlers[types.ListPromptsRequest] = _list_prompts
@@ -147,33 +157,43 @@ class MCPRouter:
                     return types.ServerResult(result)
 
             # Return error if prompt not found
-            return types.ServerResult(types.ErrorResult(code=404, message=f"Prompt not found: {prompt_name}"))
+            return types.ServerResult(types.EmptyResult())
 
         app.request_handlers[types.GetPromptRequest] = _get_prompt
 
         # List resources handler
         async def _list_resources(_: t.Any) -> types.ServerResult:
             all_resources = []
-            for server_id, resources in self.resources_mapping.items():
-                for resource_uri, resource_data in resources.items():
-                    all_resources.append(types.ResourceInfo(**resource_data))
+            for server_resource_id, resource in self.resources_mapping.items():
+                resource.update({"uri": server_resource_id})
+                all_resources.append(types.Resource(**resource))
             return types.ServerResult(types.ListResourcesResult(resources=all_resources))
 
         app.request_handlers[types.ListResourcesRequest] = _list_resources
+
+        # List resource templates handler
+        async def _list_resource_templates(_: t.Any) -> types.ServerResult:
+            all_resource_templates = []
+            for server_resource_template_id, resource_template in self.resources_templates_mapping.items():
+                resource_template.update({"uriTemplate": server_resource_template_id})
+                all_resource_templates.append(types.ResourceTemplate(**resource_template))
+            return types.ServerResult(types.ListResourceTemplatesResult(resourceTemplates=all_resource_templates))
+
+        app.request_handlers[types.ListResourceTemplatesRequest] = _list_resource_templates
 
         # Read resource handler
         async def _read_resource(req: types.ReadResourceRequest) -> types.ServerResult:
             resource_uri = req.params.uri
 
             # Parse server_id from namespaced resource URI
-            if ":" in resource_uri:
-                server_id, original_uri = resource_uri.split(":", 1)
+            if ":" in str(resource_uri):
+                server_id, original_uri = str(resource_uri).split(":", 1)
                 if server_id in self.server_sessions:
-                    result = await self.server_sessions[server_id].session.read_resource(original_uri)
+                    result = await self.server_sessions[server_id].session.read_resource(AnyUrl(original_uri))
                     return types.ServerResult(result)
 
             # Return error if resource not found
-            return types.ServerResult(types.ErrorResult(code=404, message=f"Resource not found: {resource_uri}"))
+            return types.ServerResult(types.EmptyResult())
 
         app.request_handlers[types.ReadResourceRequest] = _read_resource
 
@@ -224,15 +244,21 @@ class MCPRouter:
         async def _complete(req: types.CompleteRequest) -> types.ServerResult:
             ref = req.params.ref
 
-            # Parse server_id from reference
-            if ":" in ref:
-                server_id, original_ref = ref.split(":", 1)
-                if server_id in self.server_sessions:
-                    result = await self.server_sessions[server_id].session.complete(
-                        original_ref,
-                        req.params.argument.model_dump(),
-                    )
-                    return types.ServerResult(result)
+            # distinguish ref to resource reference and prompt reference
+            ref: Union[types.ResourceReference, types.PromptReference]
+            if isinstance(ref, types.ResourceReference):
+                server_id, resource_uri = str(ref.uri).split(":", 1)
+                ref = types.ResourceReference(uri=resource_uri, type="ref/resource")
+            else:
+                server_id, prompt_name = ref.name.split(".", 1)
+                ref = types.PromptReference(name=prompt_name, type="ref/prompt")
+
+            if server_id in self.server_sessions:
+                result = await self.server_sessions[server_id].session.complete(
+                    ref,
+                    req.params.argument.model_dump(),
+                )
+                return types.ServerResult(result)
 
             # Return error if reference not found
             return types.ServerResult(

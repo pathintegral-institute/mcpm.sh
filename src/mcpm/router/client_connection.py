@@ -1,11 +1,10 @@
-import asyncio
 import logging
 from abc import ABC
 from contextlib import AsyncExitStack
-from typing import Any
+from typing import Any, Optional
 
-import aiohttp
 from mcp import ClientSession, InitializeResult, StdioServerParameters, stdio_client
+from mcp.client.sse import sse_client
 
 from .connection_types import ConnectionDetails, ConnectionType
 
@@ -35,10 +34,10 @@ class SSEClient(AbstractMcpClient):
             raise ValueError("URL is required for SSE connection")
 
         self._exit_stack = exit_stack
-        self._client_session = None
-        self._sse_connection = None
+        # self._client_session = None
+        # self._sse_connection = None
         self._name = f"SSE Client ({connection_details.url})"
-        self.session = None
+        self.session: Optional[ClientSession] = None
         self.connection_details = connection_details
 
     async def connect_to_server(self) -> InitializeResult:
@@ -53,31 +52,26 @@ class SSEClient(AbstractMcpClient):
         logger.info(f"Connecting to SSE server at {self.connection_details.url}")
 
         # Create aiohttp client session
-        self._client_session = aiohttp.ClientSession()
-        await self._exit_stack.enter_async_context(self._client_session)
+        # self._client_session = aiohttp.ClientSession()
+        # await self._exit_stack.enter_async_context(self._client_session)
 
-        # Connect to SSE endpoint
-        self._sse_connection = await self._client_session.get(self.connection_details.url)
-        await self._exit_stack.enter_async_context(self._sse_connection)
+        # # Connect to SSE endpoint
+        # self._sse_connection = await self._client_session.get(self.connection_details.url)
+        # await self._exit_stack.enter_async_context(self._sse_connection)
+        read, write = await self._exit_stack.enter_async_context(
+            sse_client(self.connection_details.url, headers=self.connection_details.headers)
+        )
 
         # Create MCP client session
         self.session = await self._exit_stack.enter_async_context(
-            ClientSession(self._sse_connection.content, self._sse_connection.content)
+            ClientSession(read, write)
         )
         assert self.session
 
         return await self.session.initialize()
 
     async def aclose(self):
-        if self.session:
-            await self.session.__aexit__(None, None, None)
-            self.session = None
-        if self._client_session:
-            await self._client_session.close()
-            self._client_session = None
-        if self._sse_connection:
-            await self._sse_connection.close()
-            self._sse_connection = None
+        await self._exit_stack.aclose()
         logger.info(f"{self._name} closed")
 
 
@@ -89,7 +83,7 @@ class STDIOClient(AbstractMcpClient):
         # Initialize session and client objects
         self._exit_stack = exit_stack
         self._server_task = None
-        self.session = None
+        self.session: Optional[ClientSession] = None
         self.connection_details = connection_details
 
     def _inject_server_env(self, env: dict[str, Any]):
@@ -140,12 +134,5 @@ class STDIOClient(AbstractMcpClient):
     #         logger.info(f"{self.connection_details.id} incoming messages closed")
 
     async def aclose(self):
-        try:
-            if self._server_task and not self._server_task.done():
-                task = self._server_task
-                self._server_task = None
-                task.cancel()
-                await task
-        except asyncio.CancelledError:
-            pass
+        await self._exit_stack.aclose()
         logger.info(f"{self.connection_details.id} closed")
