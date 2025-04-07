@@ -278,9 +278,7 @@
       "uri": "search1api://info",
       "name": "Search1API Information",
       "description": "Basic information about Search1API capabilities",
-      "mimeType": "application/json",
-      "size": null,
-      "annotations": null
+      "mimeType": "application/json"
     }
   ],
   "is_official": true

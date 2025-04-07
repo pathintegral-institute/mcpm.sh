@@ -242,7 +242,6 @@
       "name": "Insights from Tinybird",
       "description": "A living document of discovered insights",
       "mimeType": "text/plain",
-      "size": null,
       "annotations": null
     },
     {
@@ -250,7 +249,6 @@
       "name": "Context for datasource definition",
       "description": "Syntax and context to build .datasource datafiles",
       "mimeType": "text/plain",
-      "size": null,
       "annotations": null
     }
   ],

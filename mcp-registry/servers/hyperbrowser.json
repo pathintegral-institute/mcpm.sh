@@ -483,7 +483,6 @@
       "name": "Welcome to Hyperbrowser | Hyperbrowser",
       "description": "Hyperbrowser documentation provides an introduction to web scraping and automation using the Hyperbrowser tool.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -491,7 +490,6 @@
       "name": "What are Headless browsers ? | Hyperbrowser",
       "description": "The page explains headless browsers and their role in Hyperbrowser for web scraping and automation tasks.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -499,7 +497,6 @@
       "name": "Scraping | Hyperbrowser",
       "description": "The \"Scraping\" page in Hyperbrowser details how to extract data from websites using the tool's functionalities.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -507,7 +504,6 @@
       "name": "Crawling | Hyperbrowser",
       "description": "The \"Crawling\" page of Hyperbrowser covers the tool's web scraping capabilities and how to implement them.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -515,7 +511,6 @@
       "name": "Quickstart | Hyperbrowser",
       "description": "Quickstart guide for Hyperbrowser provides initial setup and functionality instructions for effective web scraping and automation.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -523,7 +518,6 @@
       "name": "Puppeteer | Hyperbrowser",
       "description": "Puppeteer integration with Hyperbrowser enables web scraping and automation through headless browser control.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -531,7 +525,6 @@
       "name": "Playwright | Hyperbrowser",
       "description": "The page discusses using Playwright with Hyperbrowser for web scraping and automation tasks.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -539,7 +532,6 @@
       "name": "Selenium | Hyperbrowser",
       "description": "Selenium integration with Hyperbrowser allows for enhanced web scraping and automation capabilities.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -547,7 +539,6 @@
       "name": "Overview | Hyperbrowser",
       "description": "Overview of Hyperbrowser, a tool for web scraping and automation, detailing its features and functionalities.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -555,7 +546,6 @@
       "name": "Session Parameters | Hyperbrowser",
       "description": "This page details session parameters for configuring Hyperbrowser's web scraping and automation features.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -563,7 +553,6 @@
       "name": "Advanced Privacy & Anti-Detection | Hyperbrowser",
       "description": "This page discusses Hyperbrowser's advanced privacy features and anti-detection capabilities for web scraping and automation.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -571,7 +560,6 @@
       "name": "Profiles | Hyperbrowser",
       "description": "The \"Profiles\" page in Hyperbrowser outlines how to manage user profiles for data scraping and automation tasks.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -579,7 +567,6 @@
       "name": "Recordings | Hyperbrowser",
       "description": "The page covers Hyperbrowser's recording feature for efficient web scraping and automation processes.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -587,7 +574,6 @@
       "name": "Live View | Hyperbrowser",
       "description": "The Live View feature in Hyperbrowser allows real-time monitoring and interaction with web scraping tasks.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -595,7 +581,6 @@
       "name": "Extensions | Hyperbrowser",
       "description": "The page discusses extensions for Hyperbrowser, enhancing its web scraping and automation capabilities.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -603,7 +588,6 @@
       "name": "Scrape | Hyperbrowser",
       "description": "\"Scrape\" page in Hyperbrowser documentation focuses on scraping data from web pages using the tool's features.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -611,7 +595,6 @@
       "name": "Crawl | Hyperbrowser",
       "description": "The page discusses how to utilize Hyperbrowser for effective web crawling.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -619,7 +602,6 @@
       "name": "Extract | Hyperbrowser",
       "description": "The Extract page of Hyperbrowser provides guidelines for web scraping and data extraction techniques using the tool.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -627,7 +609,6 @@
       "name": "Browser Use | Hyperbrowser",
       "description": "The page discusses using Hyperbrowser for web scraping and automation tasks via browser interactions.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -635,7 +616,6 @@
       "name": "Claude Computer Use | Hyperbrowser",
       "description": "The page provides guidelines on using Claude with Hyperbrowser for effective web scraping and automation.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -643,7 +623,6 @@
       "name": "OpenAI CUA | Hyperbrowser",
       "description": "The page discusses the integration of OpenAI's CUA with Hyperbrowser for enhanced web scraping and automation capabilities.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -651,7 +630,6 @@
       "name": "AI Function Calling | Hyperbrowser",
       "description": "The page discusses AI function calling features within Hyperbrowser for enhanced web scraping and automation.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -659,7 +637,6 @@
       "name": "Scraping | Hyperbrowser",
       "description": "The page covers web scraping techniques and documentation for using Hyperbrowser effectively.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -667,7 +644,6 @@
       "name": "Extract Information with an LLM | Hyperbrowser",
       "description": "Learn how to extract information using a Large Language Model with Hyperbrowser.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -675,7 +651,6 @@
       "name": "Using Hyperbrowser Session | Hyperbrowser",
       "description": "The page describes how to use sessions in Hyperbrowser for efficient web scraping and automation.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -683,7 +658,6 @@
       "name": "CAPTCHA Solving | Hyperbrowser",
       "description": "Hyperbrowser provides tools and guidance for CAPTCHA solving in web scraping and automation processes.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -691,7 +665,6 @@
       "name": "Model Context Protocol | Hyperbrowser",
       "description": "The page covers the Model Context Protocol used in Hyperbrowser for web scraping and automation.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -699,7 +672,6 @@
       "name": "SDKs | Hyperbrowser",
       "description": "The page discusses Hyperbrowser SDKs for web scraping and automation, including features and usage details.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -707,7 +679,6 @@
       "name": "Node | Hyperbrowser",
       "description": "Overview of the Node module in Hyperbrowser for web scraping and automation.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -715,7 +686,6 @@
       "name": "Sessions | Hyperbrowser",
       "description": "The page discusses sessions in Hyperbrowser, detailing how to manage and utilize them effectively for web scraping tasks.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -723,7 +693,6 @@
       "name": "Profiles | Hyperbrowser",
       "description": "The \"Profiles\" page of Hyperbrowser covers user profiles and their management within the tool.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -731,7 +700,6 @@
       "name": "Scrape | Hyperbrowser",
       "description": "The \"Scrape\" page of Hyperbrowser outlines techniques and tools for web scraping and automation.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -739,7 +707,6 @@
       "name": "Crawl | Hyperbrowser",
       "description": "The \"Crawl\" page of Hyperbrowser details how to use the tool for web scraping and automated data extraction.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -747,7 +714,6 @@
       "name": "Extensions | Hyperbrowser",
       "description": "The Extensions page for Hyperbrowser details available extensions that enhance web scraping and automation functionalities.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -755,7 +721,6 @@
       "name": "Python | Hyperbrowser",
       "description": "The page provides documentation on using Hyperbrowser with Python for web scraping and automation tasks.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -763,7 +728,6 @@
       "name": "Sessions | Hyperbrowser",
       "description": "The page discusses managing sessions in Hyperbrowser for effective web scraping and automation tasks.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -771,7 +735,6 @@
       "name": "Profiles | Hyperbrowser",
       "description": "The \"Profiles\" page in Hyperbrowser documentation explains how to manage and use user profiles for web scraping tasks.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -779,7 +742,6 @@
       "name": "Scrape | Hyperbrowser",
       "description": "The page explains how to use Hyperbrowser for web scraping tasks.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -787,7 +749,6 @@
       "name": "Crawl | Hyperbrowser",
       "description": "The Crawl section of Hyperbrowser\u2019s documentation explains web scraping techniques and automation processes.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -795,7 +756,6 @@
       "name": "Extensions | Hyperbrowser",
       "description": "Explore Hyperbrowser extensions for enhanced web scraping and automation capabilities in your projects.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -803,7 +763,6 @@
       "name": "API Reference | Hyperbrowser",
       "description": "API Reference for Hyperbrowser provides detailed information on using its web scraping and automation features.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -811,7 +770,6 @@
       "name": "Sessions | Hyperbrowser",
       "description": "The \"Sessions\" page in Hyperbrowser covers managing and utilizing sessions for web scraping and automation tasks.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -819,7 +777,6 @@
       "name": "Crawl | Hyperbrowser",
       "description": "The \"Crawl\" section of Hyperbrowser documentation explains how to use the tool for web scraping and automation tasks.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -827,7 +784,6 @@
       "name": "Scrape | Hyperbrowser",
       "description": "The \"Scrape\" section of Hyperbrowser documentation explains web scraping techniques and automation features of the tool.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -835,7 +791,6 @@
       "name": "Extract | Hyperbrowser",
       "description": "The Extract page of Hyperbrowser provides guidelines on data extraction methods and tools for web scraping.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -843,7 +798,6 @@
       "name": "Agents | Hyperbrowser",
       "description": "The \"Agents\" page in Hyperbrowser documentation discusses automated entities for web scraping and task execution.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -851,7 +805,6 @@
       "name": "Browser Use | Hyperbrowser",
       "description": "The page explains how to effectively utilize browser features in Hyperbrowser for web scraping and automation tasks.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -859,7 +812,6 @@
       "name": "Claude Computer Use | Hyperbrowser",
       "description": "The page discusses using Claude for web scraping and automation with Hyperbrowser tools.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -867,7 +819,6 @@
       "name": "OpenAI CUA | Hyperbrowser",
       "description": "OpenAI CUA for Hyperbrowser details integration and automation features for effective web scraping.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -875,7 +826,6 @@
       "name": "Profiles | Hyperbrowser",
       "description": "The \"Profiles\" page in Hyperbrowser documentation explains how to manage and configure user profiles for scraping tasks.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -883,7 +833,6 @@
       "name": "Extensions | Hyperbrowser",
       "description": "The page discusses extensions for Hyperbrowser that enhance its web scraping and automation capabilities.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -891,7 +840,6 @@
       "name": "LangChain | Hyperbrowser",
       "description": "LangChain integrates with Hyperbrowser for enhanced web scraping and automation capabilities.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -899,7 +847,6 @@
       "name": "LlamaIndex | Hyperbrowser",
       "description": "LlamaIndex documentation for integrating with Hyperbrowser for web scraping and automation tasks.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     },
     {
@@ -907,7 +854,6 @@
       "name": "Hyperbrowser",
       "description": "Hyperbrowser is a web scraping and automation tool, offering extensive documentation for users.",
       "mimeType": "text/markdown",
-      "size": null,
       "annotations": null
     }
   ],

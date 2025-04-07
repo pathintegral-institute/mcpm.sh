@@ -100,7 +100,6 @@
       "name": "All Databases",
       "description": "List all databases in StarRocks",
       "mimeType": "text/plain",
-      "size": null,
       "annotations": null
     }
   ],

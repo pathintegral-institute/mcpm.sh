@@ -1,4 +1,6 @@
 {
+  "name": "mcp-server-motherduck",
+  "description": "Query and analyze data with MotherDuck and local DuckDB",
   "display_name": "MotherDuck MCP Server",
   "repository": {
     "type": "git",
@@ -40,34 +42,32 @@
         "${input:motherduck_token}"
       ],
       "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Create a new database and table",
+      "description": "Create a new database and table in MotherDuck",
+      "prompt": "Create a new database and table in MotherDuck"
     },
-    "examples": [
-      {
-        "title": "Create a new database and table",
-        "description": "Create a new database and table in MotherDuck",
-        "prompt": "Create a new database and table in MotherDuck"
-      },
-      {
-        "title": "Query local CSV file",
-        "description": "Query data from a local CSV file",
-        "prompt": "Query data from my local CSV file"
-      },
-      {
-        "title": "Join data across sources",
-        "description": "Join data from local DuckDB with MotherDuck tables",
-        "prompt": "Join data from my local DuckDB database with a table in MotherDuck"
-      },
-      {
-        "title": "Analyze S3 data",
-        "description": "Analyze data stored in Amazon S3",
-        "prompt": "Analyze data stored in Amazon S3"
-      }
-    ],
-    "name": "mcp-server-motherduck",
-    "description": "An MCP server implementation that integrates MotherDuck and local DuckDB, providing SQL analytics capabilities to Claude.",
-    "categories": [
-      "Databases"
-    ],
-    "is_official": true
-  }
+    {
+      "title": "Query local CSV file",
+      "description": "Query data from a local CSV file",
+      "prompt": "Query data from my local CSV file"
+    },
+    {
+      "title": "Join data across sources",
+      "description": "Join data from local DuckDB with MotherDuck tables",
+      "prompt": "Join data from my local DuckDB database with a table in MotherDuck"
+    },
+    {
+      "title": "Analyze S3 data",
+      "description": "Analyze data stored in Amazon S3",
+      "prompt": "Analyze data stored in Amazon S3"
+    }
+  ],
+  "categories": [
+    "Databases"
+  ],
+  "is_official": true
 }
