@@ -27,11 +27,16 @@
     },
     "repository": {
       "type": "object",
-      "required": ["type", "url"],
+      "required": [
+        "type",
+        "url"
+      ],
       "properties": {
         "type": {
           "type": "string",
-          "enum": ["git"]
+          "enum": [
+            "git"
+          ]
         },
         "url": {
           "type": "string"
@@ -43,7 +48,9 @@
     },
     "author": {
       "type": "object",
-      "required": ["name"],
+      "required": [
+        "name"
+      ],
       "properties": {
         "name": {
           "type": "string"
@@ -62,7 +69,22 @@
     "categories": {
       "type": "array",
       "items": {
-        "type": "string"
+        "type": "string",
+        "enum": [
+          "Databases",
+          "Dev Tools",
+          "Productivity",
+          "Media Creation",
+          "Web Services",
+          "Knowledge Base",
+          "AI Systems",
+          "System Tools",
+          "Messaging",
+          "Finance",
+          "Analytics",
+          "Professional Apps",
+          "MCP Tools"
+        ]
       }
     },
     "tags": {
@@ -76,7 +98,10 @@
       "description": "Configuration arguments required by the server",
       "additionalProperties": {
         "type": "object",
-        "required": ["description", "required"],
+        "required": [
+          "description",
+          "required"
+        ],
         "properties": {
           "description": {
             "type": "string",
@@ -98,7 +123,9 @@
       "description": "Tools provided by this server",
       "items": {
         "type": "object",
-        "required": ["name"],
+        "required": [
+          "name"
+        ],
         "properties": {
           "name": {
             "type": "string"
@@ -123,12 +150,23 @@
       "description": "Different methods to install and run this server",
       "additionalProperties": {
         "type": "object",
-        "required": ["type", "command", "args"],
+        "required": [
+          "type",
+          "command",
+          "args"
+        ],
         "properties": {
           "type": {
             "type": "string",
             "description": "Type of installation method",
-            "enum": ["npm", "python", "docker", "cli", "uvx", "custom"]
+            "enum": [
+              "npm",
+              "python",
+              "docker",
+              "cli",
+              "uvx",
+              "custom"
+            ]
           },
           "command": {
             "type": "string",
@@ -167,7 +205,11 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["title", "description", "prompt"],
+        "required": [
+          "title",
+          "description",
+          "prompt"
+        ],
         "properties": {
           "title": {
             "type": "string"
