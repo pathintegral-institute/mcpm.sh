@@ -1,11 +1,9 @@
 """
 Router implementation for aggregating multiple MCP servers into a single server.
 """
-
 import logging
 import typing as t
 from collections import defaultdict
-from contextlib import AsyncExitStack
 from typing import Union
 
 import uvicorn
@@ -41,6 +39,36 @@ class MCPRouter:
         self.resources_templates_mapping: t.Dict[str, t.Dict[str, t.Any]] = {}
         self.aggregated_server = self._create_aggregated_server()
 
+    async def update_servers(self, connections: list[ConnectionDetails]):
+        """
+        Update the servers based on the configuration file.
+
+        Args:
+            connections: List of connection details for the servers
+        """
+        if not connections:
+            return
+
+        current_servers = list(self.server_sessions.keys())
+        new_servers = [connection.id for connection in connections]
+
+        connection_to_add = [connection for connection in connections if connection.id not in current_servers]
+        connection_id_to_remove = [server_id for server_id in current_servers if server_id not in new_servers]
+
+        if connection_to_add:
+            for connection in connection_to_add:
+                try:
+                    logger.info(f"Adding server {connection.id}")
+                    await self.add_server(connection.id, connection)
+                except Exception as e:
+                    # if went wrong, skip the update
+                    logger.error(f"Failed to add server {connection.id}: {e}")
+
+        if connection_id_to_remove:
+            for server_id in connection_id_to_remove:
+                logger.info(f"Removing server {server_id}")
+                await self.remove_server(server_id)
+
     async def add_server(self, server_id: str, connection: ConnectionDetails) -> None:
         """
         Add a server to the router.
@@ -54,11 +82,10 @@ class MCPRouter:
 
         # Create client based on connection type
         if connection.type == ConnectionType.SSE:
-            client = SSEClient(AsyncExitStack(), connection)
+            client = SSEClient(connection)
         elif connection.type == ConnectionType.STDIO:
             # Create a new AsyncExitStack for this client
-            stack = AsyncExitStack()
-            client = STDIOClient(stack, connection)
+            client = STDIOClient(connection)
         else:
             raise ValueError(f"Unsupported connection type: {connection.type}")
 
@@ -108,19 +135,28 @@ class MCPRouter:
             raise ValueError(f"Server with ID {server_id} does not exist")
 
         # Close the client session
-        await self.server_sessions[server_id].aclose()
+        logger.info(f"server_sessions: {self.server_sessions}")
+        client = self.server_sessions[server_id]
+        client.request_close()
+        logger.info(f"server_sessions after close: {self.server_sessions}")
 
         # Remove the server from all collections
         del self.server_sessions[server_id]
         del self.capabilities_mapping[server_id]
-        if server_id in self.tools_mapping:
-            del self.tools_mapping[server_id]
-        if server_id in self.prompts_mapping:
-            del self.prompts_mapping[server_id]
-        if server_id in self.resources_mapping:
-            del self.resources_mapping[server_id]
-        if server_id in self.resources_templates_mapping:
-            del self.resources_templates_mapping[server_id]
+
+        # Delete registered tools, resources and prompts
+        for key in list(self.tools_mapping.keys()):
+            if key.startswith(f"{server_id}."):
+                self.tools_mapping.pop(key)
+        for key in list(self.prompts_mapping.keys()):
+            if key.startswith(f"{server_id}."):
+                self.prompts_mapping.pop(key)
+        for key in list(self.resources_mapping.keys()):
+            if key.startswith(f"{server_id}:"):
+                self.resources_mapping.pop(key)
+        for key in list(self.resources_templates_mapping.keys()):
+            if key.startswith(f"{server_id}:"):
+                self.resources_templates_mapping.pop(key)
 
     def _create_aggregated_server(self) -> server.Server[object]:
         """
@@ -200,6 +236,7 @@ class MCPRouter:
         # List tools handler
         async def _list_tools(_: t.Any) -> types.ServerResult:
             all_tools = []
+            logger.info(f"Listing tools: {self.tools_mapping}")
             for tool_name, tool_data in self.tools_mapping.items():
                 # Create tool object directly from the data
                 tool = types.Tool(**tool_data)

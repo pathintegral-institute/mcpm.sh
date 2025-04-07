@@ -11,10 +11,12 @@ import pathlib
 import traceback
 from typing import List
 
+import pydantic
 from pydantic import BaseModel
 
 from .connection_types import ConnectionDetails, ConnectionType
 from .router import MCPRouter
+from .watcher import ConfigWatcher
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
@@ -27,7 +29,34 @@ class ServersConfig(BaseModel):
     servers: list[ConnectionDetails]
 
 
-async def main(servers_config: ServersConfig, host: str, port: int, allow_origins: List[str] = None):
+def load_local_configures(config_path: str) -> ServersConfig:
+    if os.path.exists(config_path):
+        try:
+            with open(config_path, "r") as f:
+                raw_config = json.load(f)
+                # Parse the entire config into ServersConfig
+                servers_config = ServersConfig.model_validate({"servers": raw_config})
+                logger.info(f"Loaded configuration from {config_path}")
+        except pydantic.ValidationError as e:
+            # for the case modification is not yet complete
+            logger.warning(f"Failed to load configuration from {config_path}: {e}")
+            return ServersConfig(servers=[])
+    else:
+        logger.warning(f"Config file not found: {config_path}")
+        logger.info("Using example configuration")
+        servers_config = ServersConfig(
+            servers=[
+                ConnectionDetails(
+                    id="example1",
+                    type=ConnectionType.STDIO,
+                    command="python",
+                    args=["-m", "mcp.examples.simple_server"],
+                )
+            ]
+        )
+    return servers_config
+
+async def main(config_path: str, host: str, port: int, allow_origins: List[str] = None):
     """
     Main function to run the router example.
 
@@ -37,11 +66,22 @@ async def main(servers_config: ServersConfig, host: str, port: int, allow_origin
         port: Port to bind the SSE server to
         allow_origins: List of allowed origins for CORS
     """
+    # Load and parse servers configuration
     router = MCPRouter()
+
+    async def update_servers_callback():
+        # bind the config file
+        servers_config = load_local_configures(config_path)
+        await router.update_servers(servers_config.servers)
+
+    watcher = ConfigWatcher(config_path) # server config
+    watcher.register_modification_callback(update_servers_callback)
+    await watcher.start()
 
     logger.info(f"Starting MCPRouter - will expose SSE server on http://{host}:{port}")
 
     # Add each server to the router
+    servers_config = load_local_configures(config_path)
     for connection in servers_config.servers:
         try:
             logger.info(f"Adding server {connection.id} ({connection.type})")
@@ -61,6 +101,8 @@ async def main(servers_config: ServersConfig, host: str, port: int, allow_origin
         logger.info("Shutting down...")
     except Exception as e:
         logger.error(f"Error starting SSE server: {e}")
+    finally:
+        await watcher.stop()
 
 
 if __name__ == "__main__":
@@ -84,25 +126,4 @@ if __name__ == "__main__":
     if args.config is None:
         args.config = os.path.join(script_dir, "servers.json")
 
-    # Load and parse servers configuration
-    if os.path.exists(args.config):
-        with open(args.config, "r") as f:
-            raw_config = json.load(f)
-            # Parse the entire config into ServersConfig
-            servers_config = ServersConfig.model_validate({"servers": raw_config})
-            logger.info(f"Loaded configuration from {args.config}")
-    else:
-        logger.warning(f"Config file not found: {args.config}")
-        logger.info("Using example configuration")
-        servers_config = ServersConfig(
-            servers=[
-                ConnectionDetails(
-                    id="example1",
-                    type=ConnectionType.STDIO,
-                    command="python",
-                    args=["-m", "mcp.examples.simple_server"],
-                )
-            ]
-        )
-
-    asyncio.run(main(servers_config, args.host, args.port, allow_origins))
+    asyncio.run(main(args.config, args.host, args.port, allow_origins))

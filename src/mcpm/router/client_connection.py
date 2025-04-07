@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from abc import ABC
 from contextlib import AsyncExitStack
@@ -13,6 +14,19 @@ logger = logging.getLogger(__name__)
 
 class AbstractMcpClient(ABC):
     session: ClientSession
+    _close_event: asyncio.Event
+    _exit_stack: AsyncExitStack
+
+    def request_close(self):
+        # Set the close event to signal the client to close
+        self._close_event.set()
+
+    async def _monitor_close_signal(self):
+        await self._close_event.wait()
+        try:
+            await self._exit_stack.aclose()
+        except Exception:
+            pass
 
     async def connect_to_server(self) -> InitializeResult:
         """Connect to an MCP server using the provided connection details.
@@ -27,15 +41,14 @@ class AbstractMcpClient(ABC):
 
 
 class SSEClient(AbstractMcpClient):
-    def __init__(self, exit_stack: AsyncExitStack, connection_details: ConnectionDetails):
+    def __init__(self, connection_details: ConnectionDetails):
         if connection_details.type != ConnectionType.SSE:
             raise ValueError(f"Expected SSE connection type, got {connection_details.type}")
         if not connection_details.url:
             raise ValueError("URL is required for SSE connection")
 
-        self._exit_stack = exit_stack
-        # self._client_session = None
-        # self._sse_connection = None
+        self._exit_stack = AsyncExitStack()
+        self._close_event = asyncio.Event()
         self._name = f"SSE Client ({connection_details.url})"
         self.session: Optional[ClientSession] = None
         self.connection_details = connection_details
@@ -68,20 +81,20 @@ class SSEClient(AbstractMcpClient):
         )
         assert self.session
 
-        return await self.session.initialize()
-
-    async def aclose(self):
-        await self._exit_stack.aclose()
-        logger.info(f"{self._name} closed")
+        response = await self.session.initialize()
+        # Start monitoring the close signal
+        asyncio.create_task(self._monitor_close_signal())
+        return response
 
 
 class STDIOClient(AbstractMcpClient):
-    def __init__(self, exit_stack: AsyncExitStack, connection_details: ConnectionDetails):
+    def __init__(self, connection_details: ConnectionDetails):
         if connection_details.type != ConnectionType.STDIO:
             raise ValueError(f"Expected STDIO connection type, got {connection_details.type}")
 
         # Initialize session and client objects
-        self._exit_stack = exit_stack
+        self._exit_stack = AsyncExitStack()
+        self._close_event = asyncio.Event()
         self._server_task = None
         self.session: Optional[ClientSession] = None
         self.connection_details = connection_details
@@ -119,6 +132,7 @@ class STDIOClient(AbstractMcpClient):
 
         result = await self.session.initialize()
         # self._server_task = asyncio.create_task(self._print_error_log())
+        asyncio.create_task(self._monitor_close_signal())
         return result
 
     # async def _print_error_log(self):
@@ -132,7 +146,3 @@ class STDIOClient(AbstractMcpClient):
     #                     logger.warning(f"Unable to process stdio: {message}")
     #     except anyio.ClosedResourceError:
     #         logger.info(f"{self.connection_details.id} incoming messages closed")
-
-    async def aclose(self):
-        await self._exit_stack.aclose()
-        logger.info(f"{self.connection_details.id} closed")
