@@ -122,7 +122,7 @@
     },
     "chatmcp": {
         "npm": "not executable"
-    },  
+    },
     "dune-analytics-mcp": {
         "uvx": "not executable"
     },
@@ -130,12 +130,15 @@
         "uvx": "not executable"
     },
     "volcengine-tos": {
-        "uvx":"No executable found in pyproject.toml"
+        "uvx": "No executable found in pyproject.toml"
     },
     "ntfy-mcp": {
         "npm": "not executable"
     },
     "cryptopanic-mcp-server": {
         "uvx": "No executable found in pyproject.toml"
+    },
+    "mcp-server-adfin": {
+        "uvx": "not executable"
     }
 }

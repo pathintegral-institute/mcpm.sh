@@ -1,15 +1,17 @@
 """Generate MCP server manifests from GitHub repositories."""
+
+import asyncio
 import json
 import os
 import sys
-import asyncio
-import requests
-from typing import Dict, Optional, List, Any
+import traceback
+from typing import Any, Dict, List, Optional
 
 import boto3
+import requests
+from categorization import CategorizationAgent, LLMModel
 from loguru import logger
-
-from scripts.categorization import LLMModel, CategorizationAgent
+from utils import McpClient
 
 
 class ManifestGenerator:
@@ -17,12 +19,12 @@ class ManifestGenerator:
 
     def __init__(self):
         """Initialize with AWS Bedrock client."""
-        self.client = boto3.client('bedrock-runtime')
+        self.client = boto3.client("bedrock-runtime")
 
     def _extract_server_info_from_url(self, repo_url: str) -> Dict[str, str]:
         """Extract server information directly from GitHub URL.
 
-        For URLs from the modelcontextprotocol/servers repo, extracts 
+        For URLs from the modelcontextprotocol/servers repo, extracts
         server name from path. For other repos, extracts from repo name.
 
         Args:
@@ -32,23 +34,19 @@ class ManifestGenerator:
             Dictionary with 'name', 'url', and placeholder for 'desc'
         """
         # Parse URL to extract components
-        parts = repo_url.strip('/').split('/')
+        parts = repo_url.strip("/").split("/")
 
-        if len(parts) < 5 or parts[2] != 'github.com':
+        if len(parts) < 5 or parts[2] != "github.com":
             logger.warning(f"Not a valid GitHub URL: {repo_url}")
-            return {
-                "name": "",
-                "url": repo_url,
-                "desc": ""
-            }
+            return {"name": "", "url": repo_url, "desc": ""}
 
         # Handle official MCP servers repo URLs which have a specific pattern
-        if parts[3] == 'modelcontextprotocol' and parts[4] == 'servers':
+        if parts[3] == "modelcontextprotocol" and parts[4] == "servers":
             # Find the 'src' directory index
             # Usually it comes after 'blob/main' or 'blob/master'
             src_index = -1
             for i, part in enumerate(parts):
-                if part == 'src':
+                if part == "src":
                     src_index = i
                     break
 
@@ -63,13 +61,12 @@ class ManifestGenerator:
                 return {
                     "name": server_name,
                     "url": url,
-                    "desc": ""  # Will be extracted from README
+                    "desc": "",  # Will be extracted from README
                 }
             else:
                 # Fallback to repo name if structure is unexpected
                 server_name = parts[4]  # 'servers'
-                logger.warning(
-                    f"Could not find server name in URL: {repo_url}")
+                logger.warning(f"Could not find server name in URL: {repo_url}")
         else:
             # Third-party repo: use repo name as server name
             server_name = parts[4]
@@ -80,7 +77,7 @@ class ManifestGenerator:
         return {
             "name": server_name,
             "url": f"https://github.com/{parts[3]}/{parts[4]}",
-            "desc": ""  # Will be extracted from README
+            "desc": "",  # Will be extracted from README
         }
 
     def _extract_description_from_readme(self, readme_content: str) -> str:
@@ -97,7 +94,7 @@ class ManifestGenerator:
         """
         try:
             # Split readme into lines
-            lines = readme_content.split('\n')
+            lines = readme_content.split("\n")
 
             # Skip empty lines and headers
             description = ""
@@ -111,7 +108,7 @@ class ManifestGenerator:
                     continue
 
                 # Skip headers, badges and links at the beginning
-                if line.strip().startswith('#') or '![' in line or line.strip() == '':
+                if line.strip().startswith("#") or "![" in line or line.strip() == "":
                     continue
 
                 # Found a potential description line
@@ -122,7 +119,7 @@ class ManifestGenerator:
             # If we couldn't find a good description, try to use the project title
             if not description:
                 for line in lines:
-                    if line.strip().startswith('# '):
+                    if line.strip().startswith("# "):
                         # Remove the heading marker and return the title
                         title = line.strip()[2:]
                         if len(title) > 3:  # Make sure it's not just a symbol
@@ -149,28 +146,33 @@ class ManifestGenerator:
         raw_url = self._convert_to_raw_url(repo_url)
         response = requests.get(raw_url)
 
-        if response.status_code != 200 and 'main' in raw_url:
-            raw_url = raw_url.replace('/main/', '/master/')
+        if response.status_code != 200 and "main" in raw_url:
+            logger.warning(
+                f"Failed to fetch README.md from {repo_url} with {raw_url}. Status code: {response.status_code}"
+            )
+            raw_url = raw_url.replace("/main/", "/master/")
             response = requests.get(raw_url)
 
         if response.status_code != 200:
             raise ValueError(
-                f"Failed to fetch README.md from {repo_url}. "
-                f"Status code: {response.status_code}"
+                f"Failed to fetch README.md from {repo_url} with {raw_url}. Status code: {response.status_code}"
             )
 
         return response.text
 
     def _convert_to_raw_url(self, repo_url: str) -> str:
         """Convert GitHub URL to raw content URL for README.md."""
-        if 'github.com' not in repo_url:
+        if "github.com" not in repo_url:
             raise ValueError(f"Invalid GitHub URL: {repo_url}")
 
-        if '/blob/' in repo_url:
-            raw_url = repo_url.replace('/blob/', '/raw/')
-            return raw_url if raw_url.endswith('README.md') else f"{raw_url}/README.md"
+        if "/tree/" in repo_url:
+            return repo_url.replace("/tree/", "/raw/")
 
-        raw_url = repo_url.replace('github.com', 'raw.githubusercontent.com')
+        if "/blob/" in repo_url:
+            raw_url = repo_url.replace("/blob/", "/raw/")
+            return raw_url if raw_url.endswith(".md") else f"{raw_url}/README.md"
+
+        raw_url = repo_url.replace("github.com", "raw.githubusercontent.com")
         return f"{raw_url.rstrip('/')}/main/README.md"
 
     def extract_repo_info(self, repo_url: str) -> Dict[str, str]:
@@ -185,21 +187,14 @@ class ManifestGenerator:
         Raises:
             ValueError: If URL format is invalid
         """
-        parts = repo_url.strip('/').split('/')
-        if len(parts) < 5 or parts[2] != 'github.com':
+        parts = repo_url.strip("/").split("/")
+        if len(parts) < 5 or parts[2] != "github.com":
             raise ValueError(f"Invalid GitHub URL: {repo_url}")
 
         owner, repo = parts[3], parts[4]
-        return {
-            'owner': owner,
-            'name': repo,
-            'full_url': f"https://github.com/{owner}/{repo}"
-        }
+        return {"owner": owner, "name": repo, "full_url": f"https://github.com/{owner}/{repo}"}
 
-    async def categorize_servers(
-        self,
-        servers: List[Dict[str, str]]
-    ) -> List[Dict[str, Any]]:
+    async def categorize_servers(self, servers: List[Dict[str, str]]) -> List[Dict[str, Any]]:
         """Categorize a list of servers.
 
         Args:
@@ -213,9 +208,7 @@ class ManifestGenerator:
 
         for server in servers:
             result = await agent.execute(
-                server_name=server["name"],
-                server_description=server["description"],
-                include_examples=True
+                server_name=server["name"], server_description=server["description"], include_examples=True
             )
             result["server_name"] = server["name"]
             results.append(result)
@@ -225,8 +218,8 @@ class ManifestGenerator:
     def _format_server_name(self, repo_name: str) -> str:
         """Convert repository name to kebab-case."""
         name = repo_name.lower()
-        name = ''.join('-' if not char.isalnum() else char for char in name)
-        return '-'.join(filter(None, name.strip('-').split('--')))
+        name = "".join("-" if not char.isalnum() else char for char in name)
+        return "-".join(filter(None, name.strip("-").split("--")))
 
     def _create_prompt(self, repo_url: str, readme_content: str) -> tuple[str, str]:
         """Create prompt for manifest information extraction, returning static and variable parts.
@@ -243,18 +236,13 @@ class ManifestGenerator:
                 "description": "Create a manifest file for an MCP server according to the schema",
                 "parameters": {
                     "type": "object",
-                    "required": ["display_name", "version",
-                                 "repository", "license", "installations"],
+                    "required": ["display_name", "repository", "license", "installations"],
                     "properties": {
                         "display_name": {"type": "string", "description": "Human-readable server name"},
-                        "version": {"type": "string", "description": "Server version in semver format"},
                         "repository": {
                             "type": "object",
                             "required": ["type", "url"],
-                            "properties": {
-                                "type": {"type": "string", "enum": ["git"]},
-                                "url": {"type": "string"}
-                            }
+                            "properties": {"type": {"type": "string", "enum": ["git"]}, "url": {"type": "string"}},
                         },
                         "homepage": {"type": "string"},
                         "author": {
@@ -263,8 +251,8 @@ class ManifestGenerator:
                             "properties": {
                                 "name": {"type": "string"},
                                 "email": {"type": "string"},
-                                "url": {"type": "string"}
-                            }
+                                "url": {"type": "string"},
+                            },
                         },
                         "license": {"type": "string"},
                         "tags": {"type": "array", "items": {"type": "string"}},
@@ -275,11 +263,14 @@ class ManifestGenerator:
                                 "type": "object",
                                 "required": ["description", "required"],
                                 "properties": {
-                                    "description": {"type": "string", "description": "Human-readable description of the argument"},
+                                    "description": {
+                                        "type": "string",
+                                        "description": "Human-readable description of the argument",
+                                    },
                                     "required": {"type": "boolean", "description": "Whether this argument is required"},
-                                    "example": {"type": "string", "description": "Example value for this argument"}
-                                }
-                            }
+                                    "example": {"type": "string", "description": "Example value for this argument"},
+                                },
+                            },
                         },
                         "installations": {
                             "type": "object",
@@ -288,17 +279,24 @@ class ManifestGenerator:
                                 "type": "object",
                                 "required": ["type", "command", "args"],
                                 "properties": {
-                                    "type": {"type": "string", "enum": ["npm", "python", "docker", "cli", "uvx", "custom"]},
+                                    "type": {
+                                        "type": "string",
+                                        "enum": ["npm", "python", "docker", "cli", "uvx", "custom"],
+                                    },
                                     "command": {"type": "string", "description": "Command to run the server"},
-                                    "args": {"type": "array", "description": "Arguments to pass to the command",
-                                             "items": {"type": "string"}},
-                                    "package": {"type": "string", "description": "Package name (for npm, pip, etc.)"},
-                                    "env": {"type": "object", "description": "Environment variables to set",
-                                            "additionalProperties": {"type": "string"}},
+                                    "args": {
+                                        "type": "array",
+                                        "description": "Arguments to pass to the command",
+                                        "items": {"type": "string"},
+                                    },
+                                    "env": {
+                                        "type": "object",
+                                        "description": "Environment variables to set",
+                                        "additionalProperties": {"type": "string"},
+                                    },
                                     "description": {"type": "string", "description": "Human-readable description"},
-                                    "recommended": {"type": "boolean", "description": "Whether this is recommended"}
-                                }
-                            }
+                                },
+                            },
                         },
                         "examples": {
                             "type": "array",
@@ -308,13 +306,13 @@ class ManifestGenerator:
                                 "properties": {
                                     "title": {"type": "string"},
                                     "description": {"type": "string"},
-                                    "prompt": {"type": "string"}
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                    "prompt": {"type": "string"},
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         }
 
         static_content = (
@@ -346,28 +344,27 @@ class ManifestGenerator:
         try:
             response = self.client.converse(
                 modelId=LLMModel.CLAUDE_3_7_SONNET,
-                system=[
-                    {"text": "You are a helpful assistant for README analysis."}
+                system=[{"text": "You are a helpful assistant for README analysis."}],
+                messages=[
+                    {
+                        "role": "user",
+                        "content": [
+                            {"text": static_content},
+                            {"cachePoint": {"type": "default"}},
+                            {"text": variable_content},
+                        ],
+                    }
                 ],
-                messages=[{
-                    "role": "user",
-                    "content": [
-                        {"text": static_content},
-                        {"cachePoint": {"type": "default"}},
-                        {"text": variable_content}
-                    ]
-                }],
-                inferenceConfig={"temperature": 0.0}
+                inferenceConfig={"temperature": 0.0},
             )
 
             # Remove debug output of full JSON response
             # Extract the text from the response with better error handling
-            if 'output' in response and 'message' in response['output'] and 'content' in response['output']['message']:
-                content = response['output']['message']['content']
+            if "output" in response and "message" in response["output"] and "content" in response["output"]["message"]:
+                content = response["output"]["message"]["content"]
 
                 # Find the first text item
-                text_items = [item.get('text')
-                              for item in content if 'text' in item]
+                text_items = [item.get("text") for item in content if "text" in item]
                 if text_items:
                     try:
                         # Look for JSON content within the text
@@ -379,22 +376,19 @@ class ManifestGenerator:
                         except json.JSONDecodeError:
                             # If not, try to find JSON in the text (it might be surrounded by other text)
                             import re
-                            json_match = re.search(
-                                r'(\{.*\})', text_content, re.DOTALL)
+
+                            json_match = re.search(r"(\{.*\})", text_content, re.DOTALL)
                             if json_match:
                                 return json.loads(json_match.group(1))
                             else:
-                                logger.error(
-                                    f"No JSON content found in response: {text_content[:100]}...")
+                                logger.error(f"No JSON content found in response: {text_content[:100]}...")
                                 return self._get_minimal_manifest()
                     except (json.JSONDecodeError, ValueError) as e:
-                        logger.error(
-                            f"Failed to parse JSON from response: {e}")
+                        logger.error(f"Failed to parse JSON from response: {e}")
                 else:
                     logger.error("No text items found in response content")
             else:
-                logger.error(
-                    f"Unexpected response structure: {response.keys()}")
+                logger.error(f"Unexpected response structure: {response.keys()}")
 
             # If we get here, something went wrong with the parsing
             return self._get_minimal_manifest()
@@ -411,12 +405,11 @@ class ManifestGenerator:
         return {
             "name": "",
             "display_name": "",
-            "version": "0.1.0",
             "description": "",
             "repository": {"type": "git", "url": ""},
             "license": "MIT",
             "installations": {},
-            "tags": []
+            "tags": [],
         }
 
     def generate_manifest(self, repo_url: str, server_name: Optional[str] = None) -> Dict:
@@ -440,50 +433,82 @@ class ManifestGenerator:
 
         # If no server name was explicitly provided, use the one from URL
         if not server_name:
-            server_name = server_info['name']
+            server_name = server_info["name"]
 
         # If server info doesn't have a description, extract from README
-        if not server_info['desc']:
-            server_info['desc'] = self._extract_description_from_readme(
-                readme_content)
+        if not server_info["desc"]:
+            server_info["desc"] = self._extract_description_from_readme(readme_content)
 
         # Get prompt as tuple and extract manifest
         prompt = self._create_prompt(repo_url, readme_content)
         manifest = self._extract_with_llms(prompt)
 
         # Update manifest with repository information
-        manifest.update({
-            'name': server_name,
-            'repository': {'type': 'git', 'url': repo_info['full_url']},
-            'author': {'name': repo_info['owner']}
-        })
-
-        # Always set a default version if none is provided
-        if not manifest.get('version') or manifest.get('version') == "[NOT GIVEN]":
-            manifest['version'] = "0.1.0"
+        manifest.update(
+            {
+                "name": server_name,
+                "repository": {"type": "git", "url": repo_info["full_url"]},
+                "author": {"name": repo_info["owner"]},
+            }
+        )
 
         # Enrich with description from README if not already meaningful
-        if not manifest.get('description') or manifest.get('description') == "[NOT GIVEN]":
-            manifest['description'] = server_info['desc']
+        if not manifest.get("description") or manifest.get("description") == "[NOT GIVEN]":
+            manifest["description"] = server_info["desc"]
 
         # Categorize the server
-        sample_server = {
-            "name": manifest.get("name", ""),
-            "description": manifest.get("description", "")
-        }
+        sample_server = {"name": manifest.get("name", ""), "description": manifest.get("description", "")}
 
-        categorized_servers = asyncio.run(
-            self.categorize_servers([sample_server]))
+        categorized_servers = asyncio.run(self.categorize_servers([sample_server]))
         if categorized_servers:
-            manifest["categories"] = [
-                categorized_servers[0].get("category", "Unknown")]
+            manifest["categories"] = [categorized_servers[0].get("category", "Unknown")]
             manifest["tags"] = manifest.get("tags", [])
             logger.info(f"Server categorized as: {manifest['categories'][0]}")
 
+        # Sort installations by priority before running
+        manifest["installations"] = self._filter_and_sort_installations(manifest.get("installations", {}))
+        logger.info(f"Server installations: {manifest['installations']}")
+        try:
+            capabilities = asyncio.run(self._run_server_and_extract_capabilities(manifest))
+            if capabilities:
+                manifest.update(capabilities)
+        except Exception as e:
+            logger.error(f"Failed to extract capabilities: {e}")
         return manifest
 
+    async def _run_server_and_extract_capabilities(self, manifest: dict[str, Any]) -> dict:
+        mcp_client = McpClient()
+        installation = list(manifest.get("installations", {}).values())[0]
+        envs = installation.get("env", {})
+        env_vars = {}
+        if envs:
+            for k, v in envs.items():
+                env_vars[k] = manifest.get("arguments", {}).get(k, {}).get("example", v)
+        await mcp_client.connect_to_server(installation["command"], installation["args"], env_vars)
+        result = {}
+        try:
+            tools = await mcp_client.list_tools()
+            result["tools"] = [json.loads(tool.model_dump_json()) for tool in tools.tools]  # to avoid $schema field
+            prompts = await mcp_client.list_prompts()
+            result["prompts"] = [json.loads(prompt.model_dump_json()) for prompt in prompts.prompts]
+            resources = await mcp_client.list_resources()
+            result["resources"] = [json.loads(resource.model_dump_json()) for resource in resources.resources]
+        except Exception as e:
+            traceback.print_exc()
+            logger.error(f"Failed to list tools: {e}")
+            return {}
+        finally:
+            await mcp_client.close()
+        return result
 
-def main(repo_url: str):
+    def _filter_and_sort_installations(self, installations: dict[str, dict[str, Any]]):
+        priority = {"uvx": 0, "npm": 1, "python": 2, "docker": 3, "cli": 4, "custom": 5}
+        filtered_installations = {k: v for k, v in installations.items() if k in priority}
+        sorted_installations = sorted(filtered_installations.items(), key=lambda x: priority.get(x[0], 6))
+        return dict(sorted_installations)
+
+
+def main(repo_url: str, is_official: bool = False):
     try:
         # Ensure the target directory exists
         os.makedirs("mcp-registry/servers", exist_ok=True)
@@ -491,14 +516,33 @@ def main(repo_url: str):
         # Generate the manifest
         generator = ManifestGenerator()
         manifest = generator.generate_manifest(repo_url)
+        if is_official:
+            manifest["is_official"] = is_official
 
         # Ensure the manifest has a valid name
-        if not manifest.get('name'):
+        if not manifest.get("name"):
             raise ValueError("Generated manifest is missing a name")
 
         # Save to mcp-registry/servers directory
         filename = f"mcp-registry/servers/{manifest['name']}.json"
-        with open(filename, 'w', encoding='utf-8') as file:
+        if is_official and os.path.exists(filename):
+            # If the manifest already exists, check if it's official
+            # If it's not official, save it with a new name with the author's name
+            with open(filename, "r", encoding="utf-8") as file:
+                existing_manifest = json.load(file)
+                if existing_manifest.get("repository").get("url") != manifest["repository"][
+                    "url"
+                ] and not existing_manifest.get("is_official"):
+                    new_name = f"@{existing_manifest['author']['name']}/{existing_manifest['name']}"
+                    new_filename = (
+                        f"mcp-registry/servers/{existing_manifest['name']}@{existing_manifest['author']['name']}.json"
+                    )
+                    existing_manifest["name"] = new_name
+                    with open(new_filename, "w", encoding="utf-8") as file:
+                        json.dump(existing_manifest, file, indent=2)
+                    logger.info(f"Previous community manifest saved to {new_filename}")
+
+        with open(filename, "w", encoding="utf-8") as file:
             json.dump(manifest, file, indent=2)
         logger.info(f"Manifest saved to {filename}")
 
@@ -514,11 +558,12 @@ if __name__ == "__main__":
         sys.exit(1)
 
     repo_url = sys.argv[1].strip()
-    if not repo_url.startswith(('http://', 'https://')):
+    is_official = bool(sys.argv[2]) if len(sys.argv) > 2 else False
+    if not repo_url.startswith(("http://", "https://")):
         logger.error("Error: URL must start with http:// or https://")
         sys.exit(1)
 
     logger.add(sys.stderr, format="{time} {level} {message}", level="INFO")
     logger.info(f"Processing GitHub URL: {repo_url}")
 
-    main(repo_url)
+    main(repo_url, is_official)

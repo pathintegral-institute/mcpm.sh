@@ -1,0 +1,62 @@
+{
+  "display_name": "Financial Datasets MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/financial-datasets/mcp-server"
+  },
+  "homepage": "https://www.financialdatasets.ai/",
+  "author": {
+    "name": "financial-datasets"
+  },
+  "license": "MIT",
+  "tags": [
+    "finance",
+    "stock market",
+    "financial data"
+  ],
+  "arguments": {
+    "FINANCIAL_DATASETS_API_KEY": {
+      "description": "API key for Financial Datasets",
+      "required": true,
+      "example": "your-financial-datasets-api-key"
+    }
+  },
+  "installations": {
+    "custom": {
+      "type": "custom",
+      "command": "uv",
+      "args": [
+        "run",
+        "server.py"
+      ],
+      "env": {
+        "FINANCIAL_DATASETS_API_KEY": "your-financial-datasets-api-key"
+      },
+      "description": "Run using uv package manager",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Income Statement Query",
+      "description": "Ask for a company's income statements",
+      "prompt": "What are Apple's recent income statements?"
+    },
+    {
+      "title": "Current Stock Price",
+      "description": "Get the current price of a stock",
+      "prompt": "Show me the current price of Tesla stock"
+    },
+    {
+      "title": "Historical Stock Prices",
+      "description": "Get historical stock prices for a specific date range",
+      "prompt": "Get historical prices for MSFT from 2024-01-01 to 2024-12-31"
+    }
+  ],
+  "name": "financial-datasets",
+  "description": "This is a Model Context Protocol (MCP) server that provides access to stock market data from [Financial Datasets](https://www.financialdatasets.ai/).",
+  "categories": [
+    "Finance"
+  ],
+  "is_official": true
+}

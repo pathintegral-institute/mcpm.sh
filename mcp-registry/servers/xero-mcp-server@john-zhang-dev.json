@@ -1,0 +1,220 @@
+{
+  "name": "@john-zhang-dev/xero-mcp-server",
+  "display_name": "Xero",
+  "description": "Enabling clients to interact with Xero system for streamlined accounting, invoicing, and business operations.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/john-zhang-dev/xero-mcp"
+  },
+  "license": "MIT",
+  "examples": [
+    {
+      "title": "Visualize my financial position over the last month",
+      "description": "",
+      "prompt": "Visualize my financial position over the last month"
+    },
+    {
+      "title": "Track my spendings over last week",
+      "description": "",
+      "prompt": "Track my spendings over last week"
+    },
+    {
+      "title": "Add all transactions from the monthly statement into my revenue account (account code 201) as receive money",
+      "description": "",
+      "prompt": "Add all transactions from the monthly statement into my revenue account (account code 201) as receive money"
+    }
+  ],
+  "author": {
+    "name": "john-zhang-dev"
+  },
+  "homepage": "https://github.com/john-zhang-dev/xero-mcp",
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "xero-mcp@latest"
+      ],
+      "env": {
+        "XERO_CLIENT_ID": "${XERO_CLIENT_ID}",
+        "XERO_CLIENT_SECRET": "${XERO_CLIENT_SECRET}",
+        "XERO_REDIRECT_URI": "${XERO_REDIRECT_URI}"
+      }
+    }
+  },
+  "arguments": {
+    "XERO_CLIENT_ID": {
+      "description": "The Client ID obtained from the Xero Developer center after creating an OAuth 2.0 app, required for authentication.",
+      "required": true,
+      "example": "YOUR_CLIENT_ID"
+    },
+    "XERO_CLIENT_SECRET": {
+      "description": "The Client Secret generated in the Xero Developer center, necessary for authenticating requests.",
+      "required": true,
+      "example": "YOUR_CLIENT_SECRET"
+    },
+    "XERO_REDIRECT_URI": {
+      "description": "The URI to redirect to after authentication, should typically match the redirect URI specified in the OAuth 2.0 app settings.",
+      "required": false,
+      "example": "http://localhost:5000/callback"
+    }
+  },
+  "categories": [
+    "Finance"
+  ],
+  "tools": [
+    {
+      "name": "authenticate",
+      "description": "Authenticate with Xero using OAuth2",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "create_bank_transactions",
+      "description": "Creates one or more spent or received money transaction. Only use this tool when user has directly and explicitly ask you to create transactions.",
+      "inputSchema": {
+        "type": "object",
+        "description": "Transactions with an array of BankTransaction objects to create",
+        "properties": {
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          },
+          "Warnings": {
+            "description": "Displays array of warning messages from the API",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            }
+          },
+          "BankTransactions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BankTransaction"
+            }
+          }
+        },
+        "example": "{ bankTransactions: [{ type: \"SPEND\", date: \"2023-01-01\", reference: \"INV-001\", subTotal: \"100\", total: \"115\", totalTax: \"15\", lineItems: [{ accountCode: \"401\", description: \"taxi fare\", lineAmount: \"115\" }], contact: { contactId: \"00000000-0000-0000-0000-000000000000\", name: \"John Doe\" }, \"bankAccount\": { \"accountID\": \"6f7594f2-f059-4d56-9e67-47ac9733bfe9\", \"Code\": \"088\", \"Name\": \"Business Wells Fargo\" } }]}"
+      }
+    },
+    {
+      "name": "create_contacts",
+      "description": "Creates one or multiple contacts in a Xero organisation. Only use this tool when user has directly and explicitly ask you to create contact.",
+      "inputSchema": {
+        "type": "object",
+        "description": "Contacts with an array of Contact objects to create",
+        "properties": {
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          },
+          "Warnings": {
+            "description": "Displays array of warning messages from the API",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            }
+          },
+          "Contacts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Contact"
+            }
+          }
+        },
+        "example": "{ contacts: [{ name: \"John Doe\" }]}"
+      }
+    },
+    {
+      "name": "get_balance_sheet",
+      "description": "Returns a balance sheet for the end of the month of the specified date. It also returns the value at the end of the same month for the previous year.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_accounts",
+      "description": "Retrieves the full chart of accounts",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_bank_transactions",
+      "description": "Retrieves any spent or received money transactions",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "where": {
+            "type": "string",
+            "description": "Filter bank transactions. See example",
+            "example": "Date >= DateTime(2015, 01, 01) && Date < DateTime(2015, 12, 31)"
+          }
+        }
+      }
+    },
+    {
+      "name": "list_contacts",
+      "description": "Retrieves all contacts in a Xero organisation",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_invoices",
+      "description": "Retrieves sales invoices or purchase bills",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "where": {
+            "type": "string",
+            "description": "Filter invoices. See example",
+            "example": "Date >= DateTime(2015, 01, 01) && Date < DateTime(2015, 12, 31), DueDate < DateTime(2015, 12, 31)"
+          }
+        }
+      }
+    },
+    {
+      "name": "list_journals",
+      "description": "Retrieves journals",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_organisations",
+      "description": "Retrieves Xero organisation details",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_payments",
+      "description": "Retrieves payments for invoices and credit notes",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "where": {
+            "type": "string",
+            "description": "Filter payments. See example",
+            "example": "Date >= DateTime(2015, 01, 01) && Date < DateTime(2015, 12, 31)"
+          }
+        }
+      }
+    },
+    {
+      "name": "list_quotes",
+      "description": "Retrieves sales quotes",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ]
+}

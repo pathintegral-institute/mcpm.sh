@@ -1,0 +1,68 @@
+{
+  "display_name": "Neon MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/neondatabase/mcp-server-neon"
+  },
+  "homepage": "https://neon.tech",
+  "author": {
+    "name": "neondatabase"
+  },
+  "license": "MIT",
+  "tags": [
+    "database",
+    "postgres",
+    "neon",
+    "mcp",
+    "llm"
+  ],
+  "arguments": {
+    "NEON_API_KEY": {
+      "description": "Neon API key - you can generate one through the Neon console",
+      "required": true
+    }
+  },
+  "installations": {
+    "cli": {
+      "type": "cli",
+      "command": "npx",
+      "args": [
+        "@neondatabase/mcp-server-neon",
+        "init",
+        "$NEON_API_KEY"
+      ],
+      "package": "@neondatabase/mcp-server-neon",
+      "env": {},
+      "description": "Install via npm",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "List projects",
+      "description": "List all Neon projects",
+      "prompt": "List me all my Neon projects"
+    },
+    {
+      "title": "Create database and table",
+      "description": "Create a new Postgres database and add a users table",
+      "prompt": "Let's create a new Postgres database, and call it \"my-database\". Let's then create a table called users with the following columns: id, name, email, and password."
+    },
+    {
+      "title": "Run migration",
+      "description": "Run a migration to alter a table",
+      "prompt": "I want to run a migration on my project called \"my-project\" that alters the users table to add a new column called \"created_at\"."
+    },
+    {
+      "title": "Project summary",
+      "description": "Get a summary of all projects and data",
+      "prompt": "Can you give me a summary of all of my Neon projects and what data is in each one?"
+    }
+  ],
+  "name": "mcp-server-neon",
+  "description": "This lets you use Claude Desktop, or any MCP Client, to use natural language to accomplish things with Neon.",
+  "categories": [
+    "Databases"
+  ],
+  "is_official": true
+}

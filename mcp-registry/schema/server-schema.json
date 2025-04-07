@@ -145,6 +145,71 @@
         }
       }
     },
+    "resources": {
+      "type": "array",
+      "description": "Resources provided by the server",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "uri"
+        ],
+        "properties": {
+          "uri": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "mimeType": {
+            "type": "string"
+          },
+          "size": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "prompts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "arguments": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "required": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "installations": {
       "type": "object",
       "description": "Different methods to install and run this server",
@@ -222,6 +287,9 @@
           }
         }
       }
+    },
+    "is_official": {
+      "type": "boolean"
     }
   }
 }

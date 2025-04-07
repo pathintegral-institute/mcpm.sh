@@ -1,0 +1,2007 @@
+{
+  "display_name": "Unstructured API MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Unstructured-IO/UNS-MCP"
+  },
+  "homepage": "https://docs.unstructured.io/",
+  "author": {
+    "name": "Unstructured-IO"
+  },
+  "license": "[NOT GIVEN]",
+  "tags": [
+    "unstructured",
+    "api",
+    "document processing",
+    "workflow",
+    "connectors"
+  ],
+  "arguments": {
+    "UNSTRUCTURED_API_KEY": {
+      "description": "API key for the Unstructured platform",
+      "required": true,
+      "example": "YOUR_KEY"
+    }
+  },
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "uns_mcp"
+      ],
+      "env": {
+        "UNSTRUCTURED_API_KEY": "YOUR_KEY"
+      },
+      "description": "Run using Python with uv",
+      "recommended": true
+    }
+  },
+  "name": "uns-mcp",
+  "description": "An MCP server implementation for interacting with the Unstructured API. This server provides tools to list sources and workflows.",
+  "categories": [
+    "Knowledge Base"
+  ],
+  "is_official": true,
+  "tools": [
+    {
+      "name": "create_s3_source",
+      "description": "Create an S3 source connector.\n\n    Args:\n        name: A unique name for this connector\n        remote_url: The S3 URI to the bucket or folder (e.g., s3://my-bucket/)\n        recursive: Whether to access subfolders within the bucket\n\n    Returns:\n        String containing the created source connector information\n    ",
+      "inputSchema": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "remote_url": {
+            "title": "Remote Url",
+            "type": "string"
+          },
+          "recursive": {
+            "default": false,
+            "title": "Recursive",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "remote_url"
+        ],
+        "title": "create_s3_sourceArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_s3_source",
+      "description": "Update an S3 source connector.\n\n    Args:\n        source_id: ID of the source connector to update\n        remote_url: The S3 URI to the bucket or folder\n        recursive: Whether to access subfolders within the bucket\n\n    Returns:\n        String containing the updated source connector information\n    ",
+      "inputSchema": {
+        "properties": {
+          "source_id": {
+            "title": "Source Id",
+            "type": "string"
+          },
+          "remote_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Remote Url"
+          },
+          "recursive": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Recursive"
+          }
+        },
+        "required": [
+          "source_id"
+        ],
+        "title": "update_s3_sourceArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "delete_s3_source",
+      "description": "Delete an S3 source connector.\n\n    Args:\n        source_id: ID of the source connector to delete\n\n    Returns:\n        String containing the result of the deletion\n    ",
+      "inputSchema": {
+        "properties": {
+          "source_id": {
+            "title": "Source Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "source_id"
+        ],
+        "title": "delete_s3_sourceArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_azure_source",
+      "description": "Create an Azure source connector.\n\n    Args:\n        name: A unique name for this connector\n        remote_url: The Azure Storage remote URL,\n        with the format az://<container-name>/<path/to/file/or/folder/in/container/as/needed>\n        recursive: Whether to access subfolders within the bucket\n\n    Returns:\n        String containing the created source connector information\n    ",
+      "inputSchema": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "remote_url": {
+            "title": "Remote Url",
+            "type": "string"
+          },
+          "recursive": {
+            "default": false,
+            "title": "Recursive",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "remote_url"
+        ],
+        "title": "create_azure_sourceArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_azure_source",
+      "description": "Update an azure source connector.\n\n    Args:\n        source_id: ID of the source connector to update\n        remote_url: The Azure Storage remote URL, with the format\n        az://<container-name>/<path/to/file/or/folder/in/container/as/needed>\n        recursive: Whether to access subfolders within the bucket\n\n    Returns:\n        String containing the updated source connector information\n    ",
+      "inputSchema": {
+        "properties": {
+          "source_id": {
+            "title": "Source Id",
+            "type": "string"
+          },
+          "remote_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Remote Url"
+          },
+          "recursive": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Recursive"
+          }
+        },
+        "required": [
+          "source_id"
+        ],
+        "title": "update_azure_sourceArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "delete_azure_source",
+      "description": "Delete an azure source connector.\n\n    Args:\n        source_id: ID of the source connector to delete\n\n    Returns:\n        String containing the result of the deletion\n    ",
+      "inputSchema": {
+        "properties": {
+          "source_id": {
+            "title": "Source Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "source_id"
+        ],
+        "title": "delete_azure_sourceArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_gdrive_source",
+      "description": "Create a gdrive source connector.\n\n    Args:\n        name: A unique name for this connector\n        remote_url: The gdrive URI to the bucket or folder (e.g., gdrive://my-bucket/)\n        recursive: Whether to access subfolders within the bucket\n\n    Returns:\n        String containing the created source connector information\n    ",
+      "inputSchema": {
+        "$defs": {
+          "Nullable_List_str__": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "OptionalNullable_List_str__": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Nullable_List_str__"
+              },
+              {
+                "$ref": "#/$defs/Unset"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "Unset": {
+            "properties": {},
+            "title": "Unset",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "drive_id": {
+            "title": "Drive Id",
+            "type": "string"
+          },
+          "recursive": {
+            "default": false,
+            "title": "Recursive",
+            "type": "boolean"
+          },
+          "extensions": {
+            "$ref": "#/$defs/OptionalNullable_List_str__",
+            "default": "~?~unset~?~sentinel~?~"
+          }
+        },
+        "required": [
+          "name",
+          "drive_id"
+        ],
+        "title": "create_gdrive_sourceArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_gdrive_source",
+      "description": "Update an gdrive source connector.\n\n    Args:\n        source_id: ID of the source connector to update\n        remote_url: The gdrive URI to the bucket or folder\n        recursive: Whether to access subfolders within the bucket\n\n    Returns:\n        String containing the updated source connector information\n    ",
+      "inputSchema": {
+        "$defs": {
+          "Nullable_List_str__": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "OptionalNullable_List_str__": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Nullable_List_str__"
+              },
+              {
+                "$ref": "#/$defs/Unset"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "Unset": {
+            "properties": {},
+            "title": "Unset",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "source_id": {
+            "title": "Source Id",
+            "type": "string"
+          },
+          "drive_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Drive Id"
+          },
+          "recursive": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Recursive"
+          },
+          "extensions": {
+            "$ref": "#/$defs/OptionalNullable_List_str__",
+            "default": "~?~unset~?~sentinel~?~"
+          }
+        },
+        "required": [
+          "source_id"
+        ],
+        "title": "update_gdrive_sourceArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "delete_gdrive_source",
+      "description": "Delete an gdrive source connector.\n\n    Args:\n        source_id: ID of the source connector to delete\n\n    Returns:\n        String containing the result of the deletion\n    ",
+      "inputSchema": {
+        "properties": {
+          "source_id": {
+            "title": "Source Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "source_id"
+        ],
+        "title": "delete_gdrive_sourceArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_onedrive_source",
+      "description": "Create a OneDrive source connector.\n\n    Args:\n        name: A unique name for this connector\n        path: The path to the target folder in the OneDrive account,\n            starting with the account\u2019s root folder\n        user_pname: The User Principal Name (UPN) for the OneDrive user account in Entra ID.\n            This is typically the user\u2019s email address.\n        recursive: Whether to access subfolders\n        authority_url: The authentication token provider URL for the Entra ID app registration.\n            The default is https://login.microsoftonline.com.\n\n    Returns:\n        String containing the created source connector information\n    ",
+      "inputSchema": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "user_pname": {
+            "title": "User Pname",
+            "type": "string"
+          },
+          "recursive": {
+            "default": false,
+            "title": "Recursive",
+            "type": "boolean"
+          },
+          "authority_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": "https://login.microsoftonline.com",
+            "title": "Authority Url"
+          }
+        },
+        "required": [
+          "name",
+          "path",
+          "user_pname"
+        ],
+        "title": "create_onedrive_sourceArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_onedrive_source",
+      "description": "Update a OneDrive source connector.\n\n    Args:\n        source_id: ID of the source connector to update\n        path: The path to the target folder in the OneDrive account,\n            starting with the account\u2019s root folder\n        user_pname: The User Principal Name (UPN) for the OneDrive user account in Entra ID.\n            This is typically the user\u2019s email address.\n        recursive: Whether to access subfolders\n        authority_url: The authentication token provider URL for the Entra ID app registration.\n            The default is https://login.microsoftonline.com.\n        tenant: The directory (tenant) ID of the Entra ID app registration.\n        client_id: The application (client) ID of the Microsoft Entra ID app registration\n            that has access to the OneDrive account.\n\n    Returns:\n        String containing the updated source connector information\n    ",
+      "inputSchema": {
+        "properties": {
+          "source_id": {
+            "title": "Source Id",
+            "type": "string"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Path"
+          },
+          "user_pname": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "User Pname"
+          },
+          "recursive": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Recursive"
+          },
+          "authority_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Authority Url"
+          },
+          "tenant": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Tenant"
+          },
+          "client_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Client Id"
+          }
+        },
+        "required": [
+          "source_id"
+        ],
+        "title": "update_onedrive_sourceArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "delete_onedrive_source",
+      "description": "Delete a OneDrive source connector.\n\n    Args:\n        source_id: ID of the source connector to delete\n\n    Returns:\n        String containing the result of the deletion\n    ",
+      "inputSchema": {
+        "properties": {
+          "source_id": {
+            "title": "Source Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "source_id"
+        ],
+        "title": "delete_onedrive_sourceArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_s3_destination",
+      "description": "Create an S3 destination connector.\n\n    Args:\n        name: A unique name for this connector\n        remote_url: The S3 URI to the bucket or folder\n        key: The AWS access key ID\n        secret: The AWS secret access key\n        token: The AWS STS session token for temporary access (optional)\n        endpoint_url: Custom URL if connecting to a non-AWS S3 bucket\n\n    Returns:\n        String containing the created destination connector information\n    ",
+      "inputSchema": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "remote_url": {
+            "title": "Remote Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "remote_url"
+        ],
+        "title": "create_s3_destinationArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_s3_destination",
+      "description": "Update an S3 destination connector.\n\n    Args:\n        destination_id: ID of the destination connector to update\n        remote_url: The S3 URI to the bucket or folder\n\n    Returns:\n        String containing the updated destination connector information\n    ",
+      "inputSchema": {
+        "properties": {
+          "destination_id": {
+            "title": "Destination Id",
+            "type": "string"
+          },
+          "remote_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Remote Url"
+          },
+          "recursive": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Recursive"
+          }
+        },
+        "required": [
+          "destination_id"
+        ],
+        "title": "update_s3_destinationArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "delete_s3_destination",
+      "description": "Delete an S3 destination connector.\n\n    Args:\n        destination_id: ID of the destination connector to delete\n\n    Returns:\n        String containing the result of the deletion\n    ",
+      "inputSchema": {
+        "properties": {
+          "destination_id": {
+            "title": "Destination Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "destination_id"
+        ],
+        "title": "delete_s3_destinationArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_weaviate_destination",
+      "description": "Create an weaviate vector database destination connector.\n\n    Args:\n        cluster_url: URL of the weaviate cluster\n        collection : Name of the collection to use in the weaviate cluster\n        Note: The collection is a table in the weaviate cluster.\n              In platform, there are dedicated code to generate collection for users\n              here, due to the simplicity of the server, we are not generating it for users.\n\n    Returns:\n        String containing the created destination connector information\n    ",
+      "inputSchema": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "cluster_url": {
+            "title": "Cluster Url",
+            "type": "string"
+          },
+          "collection": {
+            "title": "Collection",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "cluster_url",
+          "collection"
+        ],
+        "title": "create_weaviate_destinationArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_weaviate_destination",
+      "description": "Update an weaviate destination connector.\n\n    Args:\n        destination_id: ID of the destination connector to update\n        cluster_url (optional): URL of the weaviate cluster\n        collection (optional): Name of the collection(like a file) to use in the weaviate cluster\n\n    Returns:\n        String containing the updated destination connector information\n    ",
+      "inputSchema": {
+        "properties": {
+          "destination_id": {
+            "title": "Destination Id",
+            "type": "string"
+          },
+          "cluster_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Cluster Url"
+          },
+          "collection": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Collection"
+          }
+        },
+        "required": [
+          "destination_id"
+        ],
+        "title": "update_weaviate_destinationArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "delete_weaviate_destination",
+      "description": "Delete an weaviate destination connector.\n\n    Args:\n        destination_id: ID of the destination connector to delete\n\n    Returns:\n        String containing the result of the deletion\n    ",
+      "inputSchema": {
+        "properties": {
+          "destination_id": {
+            "title": "Destination Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "destination_id"
+        ],
+        "title": "delete_weaviate_destinationArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_astradb_destination",
+      "description": "Create an AstraDB destination connector.\n\n    Args:\n        name: A unique name for this connector\n        collection_name: The name of the collection to use\n        keyspace: The AstraDB keyspace\n        batch_size: The batch size for inserting documents, must be positive (default: 20)\n\n        Note: A collection in AstraDB is a schemaless document store optimized for NoSQL workloads,\n              equivalent to a table in traditional databases.\n              A keyspace is the top-level namespace in AstraDB that groups multiple collections.\n              We require the users to create their own collection and keyspace before\n              creating the connector.\n\n    Returns:\n        String containing the created destination connector information\n    ",
+      "inputSchema": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "collection_name": {
+            "title": "Collection Name",
+            "type": "string"
+          },
+          "keyspace": {
+            "title": "Keyspace",
+            "type": "string"
+          },
+          "batch_size": {
+            "default": 20,
+            "title": "Batch Size",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "collection_name",
+          "keyspace"
+        ],
+        "title": "create_astradb_destinationArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_astradb_destination",
+      "description": "Update an AstraDB destination connector.\n\n    Args:\n        destination_id: ID of the destination connector to update\n        collection_name: The name of the collection to use (optional)\n        keyspace: The AstraDB keyspace (optional)\n        batch_size: The batch size for inserting documents (optional)\n\n        Note: We require the users to create their own collection and\n                keyspace before creating the connector.\n\n    Returns:\n        String containing the updated destination connector information\n    ",
+      "inputSchema": {
+        "properties": {
+          "destination_id": {
+            "title": "Destination Id",
+            "type": "string"
+          },
+          "collection_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Collection Name"
+          },
+          "keyspace": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Keyspace"
+          },
+          "batch_size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Batch Size"
+          }
+        },
+        "required": [
+          "destination_id"
+        ],
+        "title": "update_astradb_destinationArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "delete_astradb_destination",
+      "description": "Delete an AstraDB destination connector.\n\n    Args:\n        destination_id: ID of the destination connector to delete\n\n    Returns:\n        String containing the result of the deletion\n    ",
+      "inputSchema": {
+        "properties": {
+          "destination_id": {
+            "title": "Destination Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "destination_id"
+        ],
+        "title": "delete_astradb_destinationArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_neo4j_destination",
+      "description": "Create an neo4j destination connector.\n\n    Args:\n        name: A unique name for this connector\n        database: The neo4j database, e.g. \"neo4j\"\n        uri: The neo4j URI, e.g. neo4j+s://<neo4j_instance_id>.databases.neo4j.io\n        username: The neo4j username\n\n\n    Returns:\n        String containing the created destination connector information\n    ",
+      "inputSchema": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "database": {
+            "title": "Database",
+            "type": "string"
+          },
+          "uri": {
+            "title": "Uri",
+            "type": "string"
+          },
+          "username": {
+            "title": "Username",
+            "type": "string"
+          },
+          "batch_size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": 100,
+            "title": "Batch Size"
+          }
+        },
+        "required": [
+          "name",
+          "database",
+          "uri",
+          "username"
+        ],
+        "title": "create_neo4j_destinationArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_neo4j_destination",
+      "description": "Update an neo4j destination connector.\n\n    Args:\n        destination_id: ID of the destination connector to update\n        database: The neo4j database, e.g. \"neo4j\"\n        uri: The neo4j URI, e.g. neo4j+s://<neo4j_instance_id>.databases.neo4j.io\n        username: The neo4j username\n\n\n    Returns:\n        String containing the updated destination connector information\n    ",
+      "inputSchema": {
+        "properties": {
+          "destination_id": {
+            "title": "Destination Id",
+            "type": "string"
+          },
+          "database": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Database"
+          },
+          "uri": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Uri"
+          },
+          "username": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Username"
+          },
+          "batch_size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Batch Size"
+          }
+        },
+        "required": [
+          "destination_id"
+        ],
+        "title": "update_neo4j_destinationArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "delete_neo4j_destination",
+      "description": "Delete an neo4j destination connector.\n\n    Args:\n        destination_id: ID of the destination connector to delete\n\n    Returns:\n        String containing the result of the deletion\n    ",
+      "inputSchema": {
+        "properties": {
+          "destination_id": {
+            "title": "Destination Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "destination_id"
+        ],
+        "title": "delete_neo4j_destinationArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_mongodb_destination",
+      "description": "Create an MongoDB destination connector.\n\n    Args:\n        name: A unique name for this connector\n        database: The name of the database to connect to.\n        collection: The name of the target MongoDB collection\n    Returns:\n        String containing the created destination connector information\n    ",
+      "inputSchema": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "database": {
+            "title": "Database",
+            "type": "string"
+          },
+          "collection": {
+            "title": "Collection",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "database",
+          "collection"
+        ],
+        "title": "create_mongodb_destinationArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_mongodb_destination",
+      "description": "Update an MongoDB destination connector.\n\n    Args:\n        destination_id: ID of the destination connector to update\n        database: The name of the database to connect to.\n        collection: The name of the target MongoDB collection\n\n    Returns:\n        String containing the updated destination connector information\n    ",
+      "inputSchema": {
+        "properties": {
+          "destination_id": {
+            "title": "Destination Id",
+            "type": "string"
+          },
+          "database": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Database"
+          },
+          "collection": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Collection"
+          }
+        },
+        "required": [
+          "destination_id"
+        ],
+        "title": "update_mongodb_destinationArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "delete_mongodb_destination",
+      "description": "Delete an MongoDB destination connector.\n\n    Args:\n        destination_id: ID of the destination connector to delete\n\n    Returns:\n        String containing the result of the deletion\n    ",
+      "inputSchema": {
+        "properties": {
+          "destination_id": {
+            "title": "Destination Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "destination_id"
+        ],
+        "title": "delete_mongodb_destinationArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_databricks_volumes_destination",
+      "description": "Create an databricks volume destination connector.\n\n    Args:\n        name: A unique name for this connector\n        catalog: Name of the catalog in the Databricks Unity Catalog service for the workspace.\n        host: The Databricks host URL for the Databricks workspace.\n        volume: Name of the volume associated with the schema.\n        schema: Name of the schema associated with the volume. The default value is \"default\".\n        volume_path: Any target folder path within the volume, starting from the root of the volume.\n    Returns:\n        String containing the created destination connector information\n    ",
+      "inputSchema": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "catalog": {
+            "title": "Catalog",
+            "type": "string"
+          },
+          "volume": {
+            "title": "Volume",
+            "type": "string"
+          },
+          "host": {
+            "title": "Host",
+            "type": "string"
+          },
+          "schema": {
+            "default": "default",
+            "title": "Schema",
+            "type": "string"
+          },
+          "volume_path": {
+            "default": "/",
+            "title": "Volume Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "catalog",
+          "volume",
+          "host"
+        ],
+        "title": "create_databricks_volumes_destinationArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_databricks_volumes_destination",
+      "description": "Update an databricks volumes destination connector.\n\n    Args:\n        destination_id: ID of the destination connector to update\n        catalog: Name of the catalog to update in the Databricks Unity Catalog\n        service for the workspace.\n        host: The Databricks host URL for the Databricks workspace to update.\n        volume: Name of the volume associated with the schema to update.\n        schema: Name of the schema associated with the volume to update.\n        The default value is \"default\".\n        volume_path: Any target folder path within the volume to update,\n        starting from the root of the volume.\n\n\n\n    Returns:\n        String containing the updated destination connector information\n    ",
+      "inputSchema": {
+        "properties": {
+          "destination_id": {
+            "title": "Destination Id",
+            "type": "string"
+          },
+          "catalog": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Catalog"
+          },
+          "volume": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Volume"
+          },
+          "host": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Host"
+          },
+          "schema": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Schema"
+          },
+          "volume_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Volume Path"
+          }
+        },
+        "required": [
+          "destination_id"
+        ],
+        "title": "update_databricks_volumes_destinationArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "delete_databricks_volumes_destination",
+      "description": "Delete an databricks volumes destination connector.\n\n    Args:\n        destination_id: ID of the destination connector to delete\n\n    Returns:\n        String containing the result of the deletion\n    ",
+      "inputSchema": {
+        "properties": {
+          "destination_id": {
+            "title": "Destination Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "destination_id"
+        ],
+        "title": "delete_databricks_volumes_destinationArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_databricks_delta_table_destination",
+      "description": "Create an databricks volume destination connector.\n\n    Args:\n        name: A unique name for this connector\n        catalog: Name of the catalog in the Databricks Unity Catalog service for the workspace.\n        database: The name of the schema (formerly known as a database)\n        in Unity Catalog for the target table\n        http_path: The cluster\u2019s or SQL warehouse\u2019s HTTP Path value\n        server_hostname: The Databricks cluster\u2019s or SQL warehouse\u2019s Server Hostname value\n        table_name: The name of the table in the schema\n        volume: Name of the volume associated with the schema.\n        schema: Name of the schema associated with the volume. The default value is \"default\".\n        volume_path: Any target folder path within the volume, starting from the root of the volume.\n    Returns:\n        String containing the created destination connector information\n    ",
+      "inputSchema": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "catalog": {
+            "title": "Catalog",
+            "type": "string"
+          },
+          "database": {
+            "title": "Database",
+            "type": "string"
+          },
+          "http_path": {
+            "title": "Http Path",
+            "type": "string"
+          },
+          "server_hostname": {
+            "title": "Server Hostname",
+            "type": "string"
+          },
+          "table_name": {
+            "title": "Table Name",
+            "type": "string"
+          },
+          "volume": {
+            "title": "Volume",
+            "type": "string"
+          },
+          "schema": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": "default",
+            "title": "Schema"
+          },
+          "volume_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": "/",
+            "title": "Volume Path"
+          }
+        },
+        "required": [
+          "name",
+          "catalog",
+          "database",
+          "http_path",
+          "server_hostname",
+          "table_name",
+          "volume"
+        ],
+        "title": "create_databricks_delta_table_destinationArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_databricks_delta_table_destination",
+      "description": "Update an databricks volumes destination connector.\n\n    Args:\n        destination_id: ID of the destination connector to update\n        database: The name of the schema (formerly known as a database)\n        in Unity Catalog for the target table\n        http_path: The cluster\u2019s or SQL warehouse\u2019s HTTP Path value\n        server_hostname: The Databricks cluster\u2019s or SQL warehouse\u2019s Server Hostname value\n        volume_path: Any target folder path within the volume to update,\n        starting from the root of the volume.\n\n\n\n    Returns:\n        String containing the updated destination connector information\n    ",
+      "inputSchema": {
+        "properties": {
+          "destination_id": {
+            "title": "Destination Id",
+            "type": "string"
+          },
+          "catalog": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Catalog"
+          },
+          "database": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Database"
+          },
+          "http_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Http Path"
+          },
+          "server_hostname": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Server Hostname"
+          },
+          "table_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Table Name"
+          },
+          "schema": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Schema"
+          },
+          "volume": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Volume"
+          },
+          "volume_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Volume Path"
+          }
+        },
+        "required": [
+          "destination_id"
+        ],
+        "title": "update_databricks_delta_table_destinationArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "delete_databricks_delta_table_destination",
+      "description": "Delete an databricks volumes destination connector.\n\n    Args:\n        destination_id: ID of the destination connector to delete\n\n    Returns:\n        String containing the result of the deletion\n    ",
+      "inputSchema": {
+        "properties": {
+          "destination_id": {
+            "title": "Destination Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "destination_id"
+        ],
+        "title": "delete_databricks_delta_table_destinationArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "invoke_firecrawl_crawlhtml",
+      "description": "Start an asynchronous web crawl job using Firecrawl to retrieve HTML content.\n\n    Args:\n        url: URL to crawl\n        s3_uri: S3 URI where results will be uploaded\n        limit: Maximum number of pages to crawl (default: 100)\n\n    Returns:\n        Dictionary with crawl job information including the job ID\n    ",
+      "inputSchema": {
+        "properties": {
+          "url": {
+            "title": "Url",
+            "type": "string"
+          },
+          "s3_uri": {
+            "title": "S3 Uri",
+            "type": "string"
+          },
+          "limit": {
+            "default": 100,
+            "title": "Limit",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "url",
+          "s3_uri"
+        ],
+        "title": "invoke_firecrawl_crawlhtmlArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "check_crawlhtml_status",
+      "description": "Check the status of an existing Firecrawl HTML crawl job.\n\n    Args:\n        crawl_id: ID of the crawl job to check\n\n    Returns:\n        Dictionary containing the current status of the crawl job\n    ",
+      "inputSchema": {
+        "properties": {
+          "crawl_id": {
+            "title": "Crawl Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "crawl_id"
+        ],
+        "title": "check_crawlhtml_statusArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "invoke_firecrawl_llmtxt",
+      "description": "Start an asynchronous llmfull.txt generation job using Firecrawl.\n    This file is a standardized markdown file containing information to help LLMs\n    use a website at inference time.\n    The llmstxt endpoint leverages Firecrawl to crawl your website and extracts data\n    using gpt-4o-mini\n    Args:\n        url: URL to crawl\n        s3_uri: S3 URI where results will be uploaded\n        max_urls: Maximum number of pages to crawl (1-100, default: 10)\n\n    Returns:\n        Dictionary with job information including the job ID\n    ",
+      "inputSchema": {
+        "properties": {
+          "url": {
+            "title": "Url",
+            "type": "string"
+          },
+          "s3_uri": {
+            "title": "S3 Uri",
+            "type": "string"
+          },
+          "max_urls": {
+            "default": 10,
+            "title": "Max Urls",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "url",
+          "s3_uri"
+        ],
+        "title": "invoke_firecrawl_llmtxtArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "check_llmtxt_status",
+      "description": "Check the status of an existing llmfull.txt generation job.\n\n    Args:\n        job_id: ID of the llmfull.txt generation job to check\n\n    Returns:\n        Dictionary containing the current status of the job and text content if completed\n    ",
+      "inputSchema": {
+        "properties": {
+          "job_id": {
+            "title": "Job Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "job_id"
+        ],
+        "title": "check_llmtxt_statusArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "cancel_crawlhtml_job",
+      "description": "Cancel an in-progress Firecrawl HTML crawl job.\n\n    Args:\n        crawl_id: ID of the crawl job to cancel\n\n    Returns:\n        Dictionary containing the result of the cancellation\n    ",
+      "inputSchema": {
+        "properties": {
+          "crawl_id": {
+            "title": "Crawl Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "crawl_id"
+        ],
+        "title": "cancel_crawlhtml_jobArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_sources",
+      "description": "\n    List available sources from the Unstructured API.\n\n    Args:\n        source_type: Optional source connector type to filter by\n\n    Returns:\n        String containing the list of sources\n    ",
+      "inputSchema": {
+        "properties": {
+          "source_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Source Type"
+          }
+        },
+        "title": "list_sourcesArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_source_info",
+      "description": "Get detailed information about a specific source connector.\n\n    Args:\n        source_id: ID of the source connector to get information for, should be valid UUID\n\n    Returns:\n        String containing the source connector information\n    ",
+      "inputSchema": {
+        "properties": {
+          "source_id": {
+            "title": "Source Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "source_id"
+        ],
+        "title": "get_source_infoArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_destinations",
+      "description": "List available destinations from the Unstructured API.\n\n    Args:\n        destination_type: Optional destination connector type to filter by\n\n    Returns:\n        String containing the list of destinations\n    ",
+      "inputSchema": {
+        "properties": {
+          "destination_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Destination Type"
+          }
+        },
+        "title": "list_destinationsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_destination_info",
+      "description": "Get detailed information about a specific destination connector.\n\n    Args:\n        destination_id: ID of the destination connector to get information for\n\n    Returns:\n        String containing the destination connector information\n    ",
+      "inputSchema": {
+        "properties": {
+          "destination_id": {
+            "title": "Destination Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "destination_id"
+        ],
+        "title": "get_destination_infoArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_workflows",
+      "description": "\n    List workflows from the Unstructured API.\n\n    Args:\n        destination_id: Optional destination connector ID to filter by\n        source_id: Optional source connector ID to filter by\n        status: Optional workflow status to filter by\n\n    Returns:\n        String containing the list of workflows\n    ",
+      "inputSchema": {
+        "properties": {
+          "destination_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Destination Id"
+          },
+          "source_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Source Id"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          }
+        },
+        "title": "list_workflowsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_workflow_info",
+      "description": "Get detailed information about a specific workflow.\n\n    Args:\n        workflow_id: ID of the workflow to get information for\n\n    Returns:\n        String containing the workflow information\n    ",
+      "inputSchema": {
+        "properties": {
+          "workflow_id": {
+            "title": "Workflow Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "workflow_id"
+        ],
+        "title": "get_workflow_infoArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_workflow",
+      "description": "Create a new workflow.\n\n    Args:\n        workflow_config: A Typed Dictionary containing required fields (destination_id - should be a\n        valid UUID, name, source_id - should be a valid UUID, workflow_type) and non-required fields\n        (schedule, and workflow_nodes). Note workflow_nodes is only enabled when workflow_type\n        is `custom` and is a list of WorkflowNodeTypedDict: partition, prompter,chunk, embed\n        Below is an example of a partition workflow node:\n            {\n                \"name\": \"vlm-partition\",\n                \"type\": \"partition\",\n                \"sub_type\": \"vlm\",\n                \"settings\": {\n                            \"provider\": \"your favorite provider\",\n                            \"model\": \"your favorite model\"\n                            }\n            }\n\n\n    Returns:\n        String containing the created workflow information\n    \n\nCustom workflow DAG nodes\n- If WorkflowType is set to custom, you must also specify the settings for the workflow\u2019s\ndirected acyclic graph (DAG) nodes. These nodes\u2019 settings are specified in the workflow_nodes array.\n- A Source node is automatically created when you specify the source_id value outside of the\nworkflow_nodes array.\n- A Destination node is automatically created when you specify the destination_id value outside\nof the workflow_nodes array.\n- You can specify Partitioner, Chunker, Prompter, and Embedder nodes.\n- The order of the nodes in the workflow_nodes array will be the same order that these nodes appear\nin the DAG, with the first node in the array added directly after the Source node.\nThe Destination node follows the last node in the array.\n- Be sure to specify nodes in the allowed order. The following DAG placements are all allowed:\n    - Source -> Partitioner -> Destination,\n    - Source -> Partitioner -> Chunker -> Destination,\n    - Source -> Partitioner -> Chunker -> Embedder -> Destination,\n    - Source -> Partitioner -> Prompter -> Chunker -> Destination,\n    - Source -> Partitioner -> Prompter -> Chunker -> Embedder -> Destination\n\nPartitioner node\nA Partitioner node has a type of partition and a subtype of auto, vlm, hi_res, or fast.\n\nExamples:\n- auto strategy:\n{\n    \"name\": \"Partitioner\",\n    \"type\": \"partition\",\n    \"subtype\": \"vlm\",\n    \"settings\": {\n        \"provider\": \"anthropic\", (required)\n        \"model\": \"claude-3-5-sonnet-20241022\", (required)\n        \"output_format\": \"text/html\",\n        \"user_prompt\": null,\n        \"format_html\": true,\n        \"unique_element_ids\": true,\n        \"is_dynamic\": true,\n        \"allow_fast\": true\n    }\n}\n\n- vlm strategy:\n    Allowed values are provider and model. Below are examples:\n        - \"provider\": \"anthropic\" \"model\": \"claude-3-5-sonnet-20241022\",\n        - \"provider\": \"openai\" \"model\": \"gpt-4o\"\n\n\n- hi_res strategy:\n{\n    \"name\": \"Partitioner\",\n    \"type\": \"partition\",\n    \"subtype\": \"unstructured_api\",\n    \"settings\": {\n        \"strategy\": \"hi_res\",\n        \"include_page_breaks\": <true|false>,\n        \"pdf_infer_table_structure\": <true|false>,\n        \"exclude_elements\": [\n            \"<element-name>\",\n            \"<element-name>\"\n        ],\n        \"xml_keep_tags\": <true|false>,\n        \"encoding\": \"<encoding>\",\n        \"ocr_languages\": [\n            \"<language>\",\n            \"<language>\"\n        ],\n        \"extract_image_block_types\": [\n            \"image\",\n            \"table\"\n        ],\n        \"infer_table_structure\": <true|false>\n    }\n}\n- fast strategy\n{\n    \"name\": \"Partitioner\",\n    \"type\": \"partition\",\n    \"subtype\": \"unstructured_api\",\n    \"settings\": {\n        \"strategy\": \"fast\",\n        \"include_page_breaks\": <true|false>,\n        \"pdf_infer_table_structure\": <true|false>,\n        \"exclude_elements\": [\n            \"<element-name>\",\n            \"<element-name>\"\n        ],\n        \"xml_keep_tags\": <true|false>,\n        \"encoding\": \"<encoding>\",\n        \"ocr_languages\": [\n            \"<language-code>\",\n            \"<language-code>\"\n        ],\n        \"extract_image_block_types\": [\n            \"image\",\n            \"table\"\n        ],\n        \"infer_table_structure\": <true|false>\n    }\n}\n\n\nChunker node\nA Chunker node has a type of chunk and subtype of chunk_by_character or chunk_by_title.\n\n- chunk_by_character\n{\n    \"name\": \"Chunker\",\n    \"type\": \"chunk\",\n    \"subtype\": \"chunk_by_character\",\n    \"settings\": {\n        \"include_orig_elements\": <true|false>,\n        \"new_after_n_chars\": <new-after-n-chars>, (required, if not provided\nset same as max_characters)\n        \"max_characters\": <max-characters>, (required)\n        \"overlap\": <overlap>, (required, if not provided set default to 0)\n        \"overlap_all\": <true|false>,\n        \"contextual_chunking_strategy\": \"v1\"\n    }\n}\n\n- chunk_by_title\n{\n    \"name\": \"Chunker\",\n    \"type\": \"chunk\",\n    \"subtype\": \"chunk_by_title\",\n    \"settings\": {\n        \"multipage_sections\": <true|false>,\n        \"combine_text_under_n_chars\": <combine-text-under-n-chars>,\n        \"include_orig_elements\": <true|false>,\n        \"new_after_n_chars\": <new-after-n-chars>,  (required, if not provided\nset same as max_characters)\n        \"max_characters\": <max-characters>, (required)\n        \"overlap\": <overlap>,  (required, if not provided set default to 0)\n        \"overlap_all\": <true|false>,\n        \"contextual_chunking_strategy\": \"v1\"\n    }\n}\n\n\nPrompter node\nAn Prompter node has a type of prompter and subtype of:\n- openai_image_description,\n- anthropic_image_description,\n- bedrock_image_description,\n- vertexai_image_description,\n- openai_table_description,\n- anthropic_table_description,\n- bedrock_table_description,\n- vertexai_table_description,\n- openai_table2html,\n- openai_ner\n\nExample:\n{\n    \"name\": \"Prompter\",\n    \"type\": \"prompter\",\n    \"subtype\": \"<subtype>\",\n    \"settings\": {}\n}\n\n\nEmbedder node\nAn Embedder node has a type of embed\n\nAllowed values for subtype and model_name include:\n\n- \"subtype\": \"azure_openai\"\n    - \"model_name\": \"text-embedding-3-small\"\n    - \"model_name\": \"text-embedding-3-large\"\n    - \"model_name\": \"text-embedding-ada-002\"\n- \"subtype\": \"bedrock\"\n    - \"model_name\": \"amazon.titan-embed-text-v2:0\"\n    - \"model_name\": \"amazon.titan-embed-text-v1\"\n    - \"model_name\": \"amazon.titan-embed-image-v1\"\n    - \"model_name\": \"cohere.embed-english-v3\"\n    - \"model_name\": \"cohere.embed-multilingual-v3\"\n- \"subtype\": \"togetherai\":\n    - \"model_name\": \"togethercomputer/m2-bert-80M-2k-retrieval\"\n    - \"model_name\": \"togethercomputer/m2-bert-80M-8k-retrieval\"\n    - \"model_name\": \"togethercomputer/m2-bert-80M-32k-retrieval\"\n\nExample:\n{\n    \"name\": \"Embedder\",\n    \"type\": \"embed\",\n    \"subtype\": \"<subtype>\",\n    \"settings\": {\n        \"model_name\": \"<model-name>\"\n    }\n}\n",
+      "inputSchema": {
+        "$defs": {
+          "CreateWorkflowTypedDict": {
+            "properties": {
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "workflow_type": {
+                "$ref": "#/$defs/WorkflowType"
+              },
+              "destination_id": {
+                "$ref": "#/$defs/Nullable_str_"
+              },
+              "schedule": {
+                "$ref": "#/$defs/Nullable_Schedule_"
+              },
+              "source_id": {
+                "$ref": "#/$defs/Nullable_str_"
+              },
+              "workflow_nodes": {
+                "$ref": "#/$defs/Nullable_List_WorkflowNodeTypedDict__"
+              }
+            },
+            "required": [
+              "name",
+              "workflow_type"
+            ],
+            "title": "CreateWorkflowTypedDict",
+            "type": "object"
+          },
+          "Nullable_Dict_str__Any__": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "Nullable_List_WorkflowNodeTypedDict__": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/$defs/WorkflowNodeTypedDict"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "Nullable_Schedule_": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Schedule"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "Nullable_str_": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "Schedule": {
+            "enum": [
+              "every 15 minutes",
+              "every hour",
+              "every 2 hours",
+              "every 4 hours",
+              "every 6 hours",
+              "every 8 hours",
+              "every 10 hours",
+              "every 12 hours",
+              "daily",
+              "weekly",
+              "monthly"
+            ],
+            "title": "Schedule",
+            "type": "string"
+          },
+          "WorkflowNodeType": {
+            "enum": [
+              "partition",
+              "prompter",
+              "chunk",
+              "embed"
+            ],
+            "title": "WorkflowNodeType",
+            "type": "string"
+          },
+          "WorkflowNodeTypedDict": {
+            "properties": {
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "subtype": {
+                "title": "Subtype",
+                "type": "string"
+              },
+              "type": {
+                "$ref": "#/$defs/WorkflowNodeType"
+              },
+              "id": {
+                "$ref": "#/$defs/Nullable_str_"
+              },
+              "settings": {
+                "$ref": "#/$defs/Nullable_Dict_str__Any__"
+              }
+            },
+            "required": [
+              "name",
+              "subtype",
+              "type"
+            ],
+            "title": "WorkflowNodeTypedDict",
+            "type": "object"
+          },
+          "WorkflowType": {
+            "enum": [
+              "basic",
+              "advanced",
+              "platinum",
+              "custom"
+            ],
+            "title": "WorkflowType",
+            "type": "string"
+          }
+        },
+        "properties": {
+          "workflow_config": {
+            "$ref": "#/$defs/CreateWorkflowTypedDict"
+          }
+        },
+        "required": [
+          "workflow_config"
+        ],
+        "title": "create_workflowArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "run_workflow",
+      "description": "Run a specific workflow.\n\n    Args:\n        workflow_id: ID of the workflow to run\n\n    Returns:\n        String containing the response from the workflow execution\n    ",
+      "inputSchema": {
+        "properties": {
+          "workflow_id": {
+            "title": "Workflow Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "workflow_id"
+        ],
+        "title": "run_workflowArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_workflow",
+      "description": "Update an existing workflow.\n\n    Args:\n        workflow_id: ID of the workflow to update\n        workflow_config: A Typed Dictionary containing required fields (destination_id,\n        name, source_id, workflow_type) and non-required fields (schedule, and workflow_nodes)\n\n    Returns:\n        String containing the updated workflow information\n    \n\nCustom workflow DAG nodes\n- If WorkflowType is set to custom, you must also specify the settings for the workflow\u2019s\ndirected acyclic graph (DAG) nodes. These nodes\u2019 settings are specified in the workflow_nodes array.\n- A Source node is automatically created when you specify the source_id value outside of the\nworkflow_nodes array.\n- A Destination node is automatically created when you specify the destination_id value outside\nof the workflow_nodes array.\n- You can specify Partitioner, Chunker, Prompter, and Embedder nodes.\n- The order of the nodes in the workflow_nodes array will be the same order that these nodes appear\nin the DAG, with the first node in the array added directly after the Source node.\nThe Destination node follows the last node in the array.\n- Be sure to specify nodes in the allowed order. The following DAG placements are all allowed:\n    - Source -> Partitioner -> Destination,\n    - Source -> Partitioner -> Chunker -> Destination,\n    - Source -> Partitioner -> Chunker -> Embedder -> Destination,\n    - Source -> Partitioner -> Prompter -> Chunker -> Destination,\n    - Source -> Partitioner -> Prompter -> Chunker -> Embedder -> Destination\n\nPartitioner node\nA Partitioner node has a type of partition and a subtype of auto, vlm, hi_res, or fast.\n\nExamples:\n- auto strategy:\n{\n    \"name\": \"Partitioner\",\n    \"type\": \"partition\",\n    \"subtype\": \"vlm\",\n    \"settings\": {\n        \"provider\": \"anthropic\", (required)\n        \"model\": \"claude-3-5-sonnet-20241022\", (required)\n        \"output_format\": \"text/html\",\n        \"user_prompt\": null,\n        \"format_html\": true,\n        \"unique_element_ids\": true,\n        \"is_dynamic\": true,\n        \"allow_fast\": true\n    }\n}\n\n- vlm strategy:\n    Allowed values are provider and model. Below are examples:\n        - \"provider\": \"anthropic\" \"model\": \"claude-3-5-sonnet-20241022\",\n        - \"provider\": \"openai\" \"model\": \"gpt-4o\"\n\n\n- hi_res strategy:\n{\n    \"name\": \"Partitioner\",\n    \"type\": \"partition\",\n    \"subtype\": \"unstructured_api\",\n    \"settings\": {\n        \"strategy\": \"hi_res\",\n        \"include_page_breaks\": <true|false>,\n        \"pdf_infer_table_structure\": <true|false>,\n        \"exclude_elements\": [\n            \"<element-name>\",\n            \"<element-name>\"\n        ],\n        \"xml_keep_tags\": <true|false>,\n        \"encoding\": \"<encoding>\",\n        \"ocr_languages\": [\n            \"<language>\",\n            \"<language>\"\n        ],\n        \"extract_image_block_types\": [\n            \"image\",\n            \"table\"\n        ],\n        \"infer_table_structure\": <true|false>\n    }\n}\n- fast strategy\n{\n    \"name\": \"Partitioner\",\n    \"type\": \"partition\",\n    \"subtype\": \"unstructured_api\",\n    \"settings\": {\n        \"strategy\": \"fast\",\n        \"include_page_breaks\": <true|false>,\n        \"pdf_infer_table_structure\": <true|false>,\n        \"exclude_elements\": [\n            \"<element-name>\",\n            \"<element-name>\"\n        ],\n        \"xml_keep_tags\": <true|false>,\n        \"encoding\": \"<encoding>\",\n        \"ocr_languages\": [\n            \"<language-code>\",\n            \"<language-code>\"\n        ],\n        \"extract_image_block_types\": [\n            \"image\",\n            \"table\"\n        ],\n        \"infer_table_structure\": <true|false>\n    }\n}\n\n\nChunker node\nA Chunker node has a type of chunk and subtype of chunk_by_character or chunk_by_title.\n\n- chunk_by_character\n{\n    \"name\": \"Chunker\",\n    \"type\": \"chunk\",\n    \"subtype\": \"chunk_by_character\",\n    \"settings\": {\n        \"include_orig_elements\": <true|false>,\n        \"new_after_n_chars\": <new-after-n-chars>, (required, if not provided\nset same as max_characters)\n        \"max_characters\": <max-characters>, (required)\n        \"overlap\": <overlap>, (required, if not provided set default to 0)\n        \"overlap_all\": <true|false>,\n        \"contextual_chunking_strategy\": \"v1\"\n    }\n}\n\n- chunk_by_title\n{\n    \"name\": \"Chunker\",\n    \"type\": \"chunk\",\n    \"subtype\": \"chunk_by_title\",\n    \"settings\": {\n        \"multipage_sections\": <true|false>,\n        \"combine_text_under_n_chars\": <combine-text-under-n-chars>,\n        \"include_orig_elements\": <true|false>,\n        \"new_after_n_chars\": <new-after-n-chars>,  (required, if not provided\nset same as max_characters)\n        \"max_characters\": <max-characters>, (required)\n        \"overlap\": <overlap>,  (required, if not provided set default to 0)\n        \"overlap_all\": <true|false>,\n        \"contextual_chunking_strategy\": \"v1\"\n    }\n}\n\n\nPrompter node\nAn Prompter node has a type of prompter and subtype of:\n- openai_image_description,\n- anthropic_image_description,\n- bedrock_image_description,\n- vertexai_image_description,\n- openai_table_description,\n- anthropic_table_description,\n- bedrock_table_description,\n- vertexai_table_description,\n- openai_table2html,\n- openai_ner\n\nExample:\n{\n    \"name\": \"Prompter\",\n    \"type\": \"prompter\",\n    \"subtype\": \"<subtype>\",\n    \"settings\": {}\n}\n\n\nEmbedder node\nAn Embedder node has a type of embed\n\nAllowed values for subtype and model_name include:\n\n- \"subtype\": \"azure_openai\"\n    - \"model_name\": \"text-embedding-3-small\"\n    - \"model_name\": \"text-embedding-3-large\"\n    - \"model_name\": \"text-embedding-ada-002\"\n- \"subtype\": \"bedrock\"\n    - \"model_name\": \"amazon.titan-embed-text-v2:0\"\n    - \"model_name\": \"amazon.titan-embed-text-v1\"\n    - \"model_name\": \"amazon.titan-embed-image-v1\"\n    - \"model_name\": \"cohere.embed-english-v3\"\n    - \"model_name\": \"cohere.embed-multilingual-v3\"\n- \"subtype\": \"togetherai\":\n    - \"model_name\": \"togethercomputer/m2-bert-80M-2k-retrieval\"\n    - \"model_name\": \"togethercomputer/m2-bert-80M-8k-retrieval\"\n    - \"model_name\": \"togethercomputer/m2-bert-80M-32k-retrieval\"\n\nExample:\n{\n    \"name\": \"Embedder\",\n    \"type\": \"embed\",\n    \"subtype\": \"<subtype>\",\n    \"settings\": {\n        \"model_name\": \"<model-name>\"\n    }\n}\n",
+      "inputSchema": {
+        "$defs": {
+          "CreateWorkflowTypedDict": {
+            "properties": {
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "workflow_type": {
+                "$ref": "#/$defs/WorkflowType"
+              },
+              "destination_id": {
+                "$ref": "#/$defs/Nullable_str_"
+              },
+              "schedule": {
+                "$ref": "#/$defs/Nullable_Schedule_"
+              },
+              "source_id": {
+                "$ref": "#/$defs/Nullable_str_"
+              },
+              "workflow_nodes": {
+                "$ref": "#/$defs/Nullable_List_WorkflowNodeTypedDict__"
+              }
+            },
+            "required": [
+              "name",
+              "workflow_type"
+            ],
+            "title": "CreateWorkflowTypedDict",
+            "type": "object"
+          },
+          "Nullable_Dict_str__Any__": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "Nullable_List_WorkflowNodeTypedDict__": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/$defs/WorkflowNodeTypedDict"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "Nullable_Schedule_": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Schedule"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "Nullable_str_": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "Schedule": {
+            "enum": [
+              "every 15 minutes",
+              "every hour",
+              "every 2 hours",
+              "every 4 hours",
+              "every 6 hours",
+              "every 8 hours",
+              "every 10 hours",
+              "every 12 hours",
+              "daily",
+              "weekly",
+              "monthly"
+            ],
+            "title": "Schedule",
+            "type": "string"
+          },
+          "WorkflowNodeType": {
+            "enum": [
+              "partition",
+              "prompter",
+              "chunk",
+              "embed"
+            ],
+            "title": "WorkflowNodeType",
+            "type": "string"
+          },
+          "WorkflowNodeTypedDict": {
+            "properties": {
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "subtype": {
+                "title": "Subtype",
+                "type": "string"
+              },
+              "type": {
+                "$ref": "#/$defs/WorkflowNodeType"
+              },
+              "id": {
+                "$ref": "#/$defs/Nullable_str_"
+              },
+              "settings": {
+                "$ref": "#/$defs/Nullable_Dict_str__Any__"
+              }
+            },
+            "required": [
+              "name",
+              "subtype",
+              "type"
+            ],
+            "title": "WorkflowNodeTypedDict",
+            "type": "object"
+          },
+          "WorkflowType": {
+            "enum": [
+              "basic",
+              "advanced",
+              "platinum",
+              "custom"
+            ],
+            "title": "WorkflowType",
+            "type": "string"
+          }
+        },
+        "properties": {
+          "workflow_id": {
+            "title": "Workflow Id",
+            "type": "string"
+          },
+          "workflow_config": {
+            "$ref": "#/$defs/CreateWorkflowTypedDict"
+          }
+        },
+        "required": [
+          "workflow_id",
+          "workflow_config"
+        ],
+        "title": "update_workflowArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "delete_workflow",
+      "description": "Delete a specific workflow.\n\n    Args:\n        workflow_id: ID of the workflow to delete\n\n    Returns:\n        String containing the response from the workflow deletion\n    ",
+      "inputSchema": {
+        "properties": {
+          "workflow_id": {
+            "title": "Workflow Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "workflow_id"
+        ],
+        "title": "delete_workflowArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_jobs",
+      "description": "\n    List jobs via the Unstructured API.\n\n    Args:\n        workflow_id: Optional workflow ID to filter by\n        status: Optional job status to filter by\n\n    Returns:\n        String containing the list of jobs\n    ",
+      "inputSchema": {
+        "properties": {
+          "workflow_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Workflow Id"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          }
+        },
+        "title": "list_jobsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_job_info",
+      "description": "Get detailed information about a specific job.\n\n    Args:\n        job_id: ID of the job to get information for\n\n    Returns:\n        String containing the job information\n    ",
+      "inputSchema": {
+        "properties": {
+          "job_id": {
+            "title": "Job Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "job_id"
+        ],
+        "title": "get_job_infoArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "cancel_job",
+      "description": "Delete a specific job.\n\n    Args:\n        job_id: ID of the job to cancel\n\n    Returns:\n        String containing the response from the job cancellation\n    ",
+      "inputSchema": {
+        "properties": {
+          "job_id": {
+            "title": "Job Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "job_id"
+        ],
+        "title": "cancel_jobArguments",
+        "type": "object"
+      }
+    }
+  ]
+}

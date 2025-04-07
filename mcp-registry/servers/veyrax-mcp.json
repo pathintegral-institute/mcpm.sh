@@ -1,0 +1,48 @@
+{
+  "display_name": "VeyraX MCP",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/VeyraX/veyrax-mcp"
+  },
+  "homepage": "https://www.veyrax.com",
+  "author": {
+    "name": "VeyraX"
+  },
+  "license": "[NOT GIVEN]",
+  "tags": [
+    "MCP",
+    "Model Context Protocol",
+    "AI tools",
+    "LLM integration"
+  ],
+  "arguments": {
+    "VEYRAX_API_KEY": {
+      "description": "Your VeyraX API key found in your account settings",
+      "required": true
+    }
+  },
+  "installations": {
+    "custom": {
+      "type": "custom",
+      "command": "node",
+      "args": [
+        "path/to/veyrax-mcp/build/src/index.js",
+        "--config",
+        "\"{\\\"VEYRAX_API_KEY\\\":\\\"${VEYRAX_API_KEY}\\\"}\""
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "Getting Started with VeyraX MCP",
+      "description": "Basic setup for VeyraX MCP",
+      "prompt": "How do I set up VeyraX MCP in my environment?"
+    }
+  ],
+  "name": "veyrax-mcp",
+  "description": "Single tool to control all 100+ API integrations, and UI components",
+  "categories": [
+    "MCP Tools"
+  ],
+  "is_official": true
+}

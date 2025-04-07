@@ -1,0 +1,61 @@
+{
+  "display_name": "Verodat MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Verodat/verodat-mcp-server"
+  },
+  "homepage": "https://verodat.io",
+  "author": {
+    "name": "Verodat"
+  },
+  "license": "LICENSE",
+  "tags": [
+    "MCP",
+    "AI",
+    "Data Management",
+    "Claude Desktop"
+  ],
+  "arguments": {
+    "VERODAT_AI_API_KEY": {
+      "description": "Your Verodat AI API key",
+      "required": true,
+      "example": "your-verodat-ai-api-key"
+    }
+  },
+  "installations": {
+    "custom": {
+      "type": "custom",
+      "description": "Run with custom command",
+      "command": "node",
+      "args": [
+        "path/to/verodat-mcp-server/build/src/index.js"
+      ],
+      "env": {
+        "VERODAT_AI_API_KEY": "${VERODAT_AI_API_KEY}"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "List accounts",
+      "description": "List all accessible Verodat accounts",
+      "prompt": "get-accounts"
+    },
+    {
+      "title": "List workspaces",
+      "description": "List workspaces in an account",
+      "prompt": "get-workspaces"
+    },
+    {
+      "title": "Execute AI query",
+      "description": "Run AI queries on datasets",
+      "prompt": "execute-ai-query"
+    }
+  ],
+  "name": "verodat-mcp-server",
+  "description": "A Model Context Protocol (MCP) server implementation for [Verodat](https://verodat.io), enabling seamless integration of Verodat's data management capabilities with AI systems like Claude Desktop.",
+  "categories": [
+    "Databases"
+  ],
+  "is_official": true
+}
