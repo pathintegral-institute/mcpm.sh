@@ -121,8 +121,7 @@
         },
         "required": [
           "message"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -139,8 +138,7 @@
         },
         "required": [
           "session_id"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -149,8 +147,7 @@
       "inputSchema": {
         "type": "object",
         "properties": {},
-        "required": [],
-        "additionalProperties": false
+        "required": []
       }
     },
     {
@@ -196,8 +193,7 @@
         },
         "required": [
           "signature"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -243,8 +239,7 @@
         },
         "required": [
           "address"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -387,8 +382,7 @@
             "title": "Sort Order"
           }
         },
-        "required": [],
-        "additionalProperties": false
+        "required": []
       }
     },
     {
@@ -505,8 +499,7 @@
             "title": "Page"
           }
         },
-        "required": [],
-        "additionalProperties": false
+        "required": []
       }
     },
     {
@@ -552,8 +545,7 @@
         },
         "required": [
           "block_identifier"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -664,8 +656,7 @@
         },
         "required": [
           "contract_address"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -711,8 +702,7 @@
         },
         "required": [
           "contract_address"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -758,8 +748,7 @@
         },
         "required": [
           "ens_name"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -831,8 +820,7 @@
         },
         "required": [
           "owner_address"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -904,8 +892,7 @@
         },
         "required": [
           "owner_address"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -977,8 +964,7 @@
         },
         "required": [
           "owner_address"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -1063,8 +1049,7 @@
         },
         "required": [
           "contract_address"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -1149,8 +1134,7 @@
         },
         "required": [
           "contract_address"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -1222,8 +1206,7 @@
         },
         "required": [
           "contract_address"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -1272,8 +1255,7 @@
         },
         "required": [
           "token_addresses"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -1319,8 +1301,7 @@
         },
         "required": [
           "transaction_hash"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -1337,8 +1318,7 @@
         },
         "required": [
           "ipfs_hash"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -1354,8 +1334,7 @@
         },
         "required": [
           "data"
-        ],
-        "additionalProperties": false
+        ]
       }
     }
   ],

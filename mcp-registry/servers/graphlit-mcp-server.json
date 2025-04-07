@@ -1,6 +1,5 @@
 {
   "display_name": "Graphlit MCP Server",
-  "version": "1.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/graphlit/graphlit-mcp-server"
@@ -102,9 +101,7 @@
             "default": "ANTHROPIC",
             "description": "Preferred model provider service type, i.e. Anthropic, OpenAI, Google. Defaults to Anthropic if not provided."
           }
-        },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        }
       }
     },
     {
@@ -120,9 +117,7 @@
         },
         "required": [
           "prompt"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -191,9 +186,7 @@
         },
         "required": [
           "prompt"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -259,9 +252,7 @@
         },
         "required": [
           "url"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -286,9 +277,7 @@
         "required": [
           "text",
           "schema"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -311,9 +300,7 @@
         },
         "required": [
           "name"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -337,9 +324,7 @@
         "required": [
           "id",
           "contents"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -363,9 +348,7 @@
         "required": [
           "id",
           "contents"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -381,9 +364,7 @@
         },
         "required": [
           "id"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -399,9 +380,7 @@
         },
         "required": [
           "id"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -417,9 +396,7 @@
         },
         "required": [
           "id"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -454,9 +431,7 @@
             "default": 100,
             "description": "Limit the number of feeds to be deleted. Defaults to 100."
           }
-        },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        }
       }
     },
     {
@@ -470,9 +445,7 @@
             "default": 100,
             "description": "Limit the number of collections to be deleted. Defaults to 100."
           }
-        },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        }
       }
     },
     {
@@ -521,9 +494,7 @@
             "default": 1000,
             "description": "Limit the number of contents to be deleted. Defaults to 1000."
           }
-        },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        }
       }
     },
     {
@@ -621,9 +592,7 @@
             "default": 100,
             "description": "Limit the number of contents to be returned. Defaults to 100."
           }
-        },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        }
       }
     },
     {
@@ -641,9 +610,7 @@
             "default": 100,
             "description": "Limit the number of collections to be returned. Defaults to 100."
           }
-        },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        }
       }
     },
     {
@@ -682,9 +649,7 @@
             "default": 100,
             "description": "Limit the number of feeds to be returned. Defaults to 100."
           }
-        },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        }
       }
     },
     {
@@ -700,9 +665,7 @@
         },
         "required": [
           "id"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -718,9 +681,7 @@
         },
         "required": [
           "id"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -728,9 +689,7 @@
       "description": "Lists available Notion databases.\n    Returns a list of Notion databases, where the database identifier can be used with ingestNotionPages to ingest pages into Graphlit knowledge base.",
       "inputSchema": {
         "type": "object",
-        "properties": {},
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "properties": {}
       }
     },
     {
@@ -738,9 +697,7 @@
       "description": "Lists available Linear projects.\n    Returns a list of Linear projects, where the project name can be used with ingestLinearIssues to ingest issues into Graphlit knowledge base.",
       "inputSchema": {
         "type": "object",
-        "properties": {},
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "properties": {}
       }
     },
     {
@@ -748,9 +705,7 @@
       "description": "Lists available Slack channels.\n    Returns a list of Slack channels, where the channel name can be used with ingestSlackMessages to ingest messages into Graphlit knowledge base.",
       "inputSchema": {
         "type": "object",
-        "properties": {},
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "properties": {}
       }
     },
     {
@@ -758,9 +713,7 @@
       "description": "Lists available SharePoint libraries.\n    Returns a list of SharePoint libraries, where the selected libraryId can be used with listSharePointFolders to enumerate SharePoint folders in a library.",
       "inputSchema": {
         "type": "object",
-        "properties": {},
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "properties": {}
       }
     },
     {
@@ -776,9 +729,7 @@
         },
         "required": [
           "libraryId"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -802,9 +753,7 @@
         },
         "required": [
           "libraryId"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -817,9 +766,7 @@
             "type": "number",
             "description": "Number of files to ingest, optional. Defaults to 100."
           }
-        },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        }
       }
     },
     {
@@ -832,9 +779,7 @@
             "type": "number",
             "description": "Number of files to ingest, optional. Defaults to 100."
           }
-        },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        }
       }
     },
     {
@@ -851,9 +796,7 @@
             "type": "number",
             "description": "Number of files to ingest, optional. Defaults to 100."
           }
-        },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        }
       }
     },
     {
@@ -871,9 +814,7 @@
             "type": "number",
             "description": "Number of files to ingest, optional. Defaults to 100."
           }
-        },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        }
       }
     },
     {
@@ -898,9 +839,7 @@
         "required": [
           "repositoryName",
           "repositoryOwner"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -920,9 +859,7 @@
         },
         "required": [
           "databaseId"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -947,9 +884,7 @@
         "required": [
           "teamId",
           "channelId"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -969,9 +904,7 @@
         },
         "required": [
           "channelName"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -991,9 +924,7 @@
         },
         "required": [
           "channelName"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -1013,9 +944,7 @@
         },
         "required": [
           "userName"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -1035,9 +964,7 @@
         },
         "required": [
           "query"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -1057,9 +984,7 @@
         },
         "required": [
           "subredditName"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -1072,9 +997,7 @@
             "type": "number",
             "description": "Number of emails to ingest, optional. Defaults to 100."
           }
-        },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        }
       }
     },
     {
@@ -1087,9 +1010,7 @@
             "type": "number",
             "description": "Number of emails to ingest, optional. Defaults to 100."
           }
-        },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        }
       }
     },
     {
@@ -1109,9 +1030,7 @@
         },
         "required": [
           "projectName"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -1136,9 +1055,7 @@
         "required": [
           "repositoryName",
           "repositoryOwner"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -1163,9 +1080,7 @@
         "required": [
           "url",
           "projectName"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -1185,9 +1100,7 @@
         },
         "required": [
           "url"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -1203,9 +1116,7 @@
         },
         "required": [
           "url"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -1231,9 +1142,7 @@
         },
         "required": [
           "query"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -1253,9 +1162,7 @@
         },
         "required": [
           "url"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -1271,9 +1178,7 @@
         },
         "required": [
           "url"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -1308,9 +1213,7 @@
         "required": [
           "name",
           "text"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -1326,9 +1229,7 @@
         },
         "required": [
           "filePath"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -1343,9 +1244,7 @@
         },
         "required": [
           "url"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -1364,9 +1263,7 @@
         "required": [
           "prompt",
           "url"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -1384,9 +1281,7 @@
         },
         "required": [
           "id"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -1418,9 +1313,7 @@
         "required": [
           "name",
           "text"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -1448,9 +1341,7 @@
         "required": [
           "url",
           "text"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -1478,9 +1369,7 @@
         "required": [
           "channelName",
           "text"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -1495,9 +1384,7 @@
         },
         "required": [
           "text"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -1532,9 +1419,7 @@
           "subject",
           "to",
           "text"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     }
   ],

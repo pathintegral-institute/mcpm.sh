@@ -1,6 +1,5 @@
 {
   "display_name": "21st.dev Magic AI Agent",
-  "version": "0.1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/21st-dev/magic-mcp"
@@ -95,9 +94,7 @@
           "searchQuery",
           "absolutePathToCurrentFile",
           "absolutePathToProjectDirectory"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -126,9 +123,7 @@
         "required": [
           "queries",
           "format"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -149,9 +144,7 @@
         "required": [
           "message",
           "searchQuery"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -177,9 +170,7 @@
           "userMessage",
           "absolutePathToRefiningFile",
           "context"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     }
   ],

@@ -1,6 +1,5 @@
 {
   "display_name": "APIMatic Validator MCP Server",
-  "version": "0.1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/apimatic/apimatic-validator-mcp"

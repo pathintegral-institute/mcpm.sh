@@ -1,6 +1,5 @@
 {
   "display_name": "Hyperbrowser MCP Server",
-  "version": "[NOT GIVEN]",
   "repository": {
     "type": "git",
     "url": "https://github.com/hyperbrowserai/mcp"
@@ -127,9 +126,7 @@
         "required": [
           "url",
           "outputFormat"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -204,9 +201,7 @@
           "url",
           "outputFormat",
           "followLinks"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -261,9 +256,7 @@
         "required": [
           "urls",
           "prompt"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -318,9 +311,7 @@
         },
         "required": [
           "task"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -375,9 +366,7 @@
         },
         "required": [
           "task"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -432,9 +421,7 @@
         },
         "required": [
           "task"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -485,9 +472,7 @@
         },
         "required": [
           "query"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     }
   ],

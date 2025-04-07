@@ -1,6 +1,5 @@
 {
   "display_name": "Exa MCP Server",
-  "version": "1.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/exa-labs/exa-mcp-server"
@@ -84,9 +83,7 @@
         },
         "required": [
           "query"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     }
   ],

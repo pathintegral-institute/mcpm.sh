@@ -70,9 +70,7 @@
       "description": "List all contacts in Xero. This includes Suppliers and Customers.",
       "inputSchema": {
         "type": "object",
-        "properties": {},
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "properties": {}
       }
     },
     {
@@ -100,9 +98,7 @@
         },
         "required": [
           "page"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -124,9 +120,7 @@
         },
         "required": [
           "name"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -176,9 +170,7 @@
         "required": [
           "contactId",
           "lineItems"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -186,9 +178,7 @@
       "description": "Lists all accounts in Xero. Use this tool to get the account codes and names to be used when creating invoices in Xero",
       "inputSchema": {
         "type": "object",
-        "properties": {},
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "properties": {}
       }
     },
     {
@@ -196,9 +186,7 @@
       "description": "Lists all tax rates in Xero. Use this tool to get the tax rates to be used when creating invoices in Xero",
       "inputSchema": {
         "type": "object",
-        "properties": {},
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "properties": {}
       }
     },
     {
@@ -216,9 +204,7 @@
         },
         "required": [
           "page"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -280,9 +266,7 @@
         "required": [
           "contactId",
           "lineItems"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -341,9 +325,7 @@
         "required": [
           "contactId",
           "name"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -396,9 +378,7 @@
         },
         "required": [
           "invoiceId"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -416,9 +396,7 @@
         },
         "required": [
           "page"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -468,9 +446,7 @@
         "required": [
           "contactId",
           "lineItems"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     }
   ],

@@ -1,6 +1,5 @@
 {
   "display_name": "Bankless Onchain MCP Server",
-  "version": "0.6.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/bankless/onchain-mcp"
@@ -131,8 +130,7 @@
           "method",
           "inputs",
           "outputs"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -153,8 +151,7 @@
         "required": [
           "network",
           "contract"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -175,8 +172,7 @@
         "required": [
           "network",
           "contract"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -197,9 +193,7 @@
         "required": [
           "network",
           "contract"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -246,8 +240,7 @@
           "network",
           "addresses",
           "topic"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -293,8 +286,7 @@
           "network",
           "name",
           "arguments"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -341,9 +333,7 @@
         "required": [
           "network",
           "user"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -364,9 +354,7 @@
         "required": [
           "network",
           "txHash"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     },
     {
@@ -387,8 +375,7 @@
         "required": [
           "network",
           "address"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -409,8 +396,7 @@
         "required": [
           "network",
           "blockId"
-        ],
-        "additionalProperties": false
+        ]
       }
     }
   ],

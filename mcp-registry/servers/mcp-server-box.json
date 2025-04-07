@@ -1,6 +1,5 @@
 {
   "display_name": "MCP Server Box",
-  "version": "0.1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/box-community/mcp-server-box"

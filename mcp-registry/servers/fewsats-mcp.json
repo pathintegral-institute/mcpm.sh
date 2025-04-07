@@ -1,6 +1,5 @@
 {
   "display_name": "Fewsats MCP Server",
-  "version": "0.1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/Fewsats/fewsats-mcp"

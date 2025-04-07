@@ -1,6 +1,5 @@
 {
   "display_name": "E2B MCP Server",
-  "version": "0.1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/e2b-dev/mcp-server"
@@ -63,9 +62,7 @@
         },
         "required": [
           "code"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        ]
       }
     }
   ]
