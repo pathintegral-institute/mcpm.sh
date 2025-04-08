@@ -12,47 +12,73 @@ from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.prompt import Confirm
 
 from mcpm.clients.client_registry import ClientRegistry
+from mcpm.profile.profile_manager import ProfileManager
 from mcpm.utils.repository import RepositoryManager
 from mcpm.utils.server_config import ServerConfig
 
 console = Console()
 repo_manager = RepositoryManager()
+profile_manager = ProfileManager()
 
 
 @click.command()
 @click.argument("server_name")
 @click.option("--force", is_flag=True, help="Force reinstall if server is already installed")
 @click.option("--alias", help="Alias for the server", required=False)
-def add(server_name, force=False, alias=None):
+@click.option("--profile", help="Profile to add server to", required=False)
+def add(server_name, force=False, alias=None, profile=None):
     """Add an MCP server to a client configuration.
 
     Examples:
         mcpm add time
         mcpm add everything --force
         mcpm add youtube --alias yt
+        mcpm add youtube --profile myprofile
     """
-    # Get the active client info
-    client = ClientRegistry.get_active_client()
-    if not client:
-        console.print("[bold red]Error:[/] No active client found.")
-        console.print("Please set an active client with 'mcpm client set <client>'.")
-        return
-    console.print(f"[yellow]Using active client: {client}[/]")
-
-    # Get client manager
-    client_manager = ClientRegistry.get_active_client_manager()
-    if client_manager is None:
-        console.print(f"[bold red]Error:[/] Unsupported client '{client}'.")
-        return
-
     config_name = alias or server_name
 
-    # Check if server already exists in client config
-    existing_server = client_manager.get_server(config_name)
-    if existing_server and not force:
-        console.print(f"[yellow]Server '{config_name}' is already added to {client}.[/]")
-        console.print("Use '--force' to overwrite the existing configuration.")
-        return
+    if profile is None:
+        # Get the active client info
+        client = ClientRegistry.get_active_client()
+        if not client:
+            console.print("[bold red]Error:[/] No active client found.")
+            console.print("Please set an active client with 'mcpm client set <client>'.")
+            return
+        console.print(f"[yellow]Using active client: {client}[/]")
+
+        # Get client manager
+        client_manager = ClientRegistry.get_active_client_manager()
+        if client_manager is None:
+            console.print(f"[bold red]Error:[/] Unsupported client '{client}'.")
+            return
+
+        # Check if server already exists in client config
+        existing_server = client_manager.get_server(config_name)
+        if existing_server and not force:
+            console.print(f"[yellow]Server '{config_name}' is already added to {client}.[/]")
+            console.print("Use '--force' to overwrite the existing configuration.")
+            return
+
+        target_display_name = client_manager.display_name
+    else:
+        # Get profile
+        profile_info = profile_manager.get_profile(profile)
+        if profile_info is None:
+            console.print(f"[yellow]Profile '{profile}' not found. Create new profile? [bold]y/n[/]", end=" ")
+            if not Confirm.ask():
+                return
+            profile_manager.new_profile(profile)
+            console.print(f"[green]Profile '{profile}' added successfully.[/]\n")
+            profile_info = []
+
+        # Check if server already exists in client config
+        for server in profile_info:
+            if server.name == config_name and not force:
+                console.print(f"[yellow]Server '{config_name}' is already added to {client}.[/]")
+                console.print("Use '--force' to overwrite the existing configuration.")
+                return
+
+        target_display_name = profile
 
     # Get server metadata from repository
     server_metadata = repo_manager.get_server_metadata(server_name)
@@ -74,12 +100,8 @@ def add(server_name, force=False, alias=None):
         author_url = author_info.get("url", "")
         console.print(f"[dim]Author: {author_name} {author_url}[/]")
 
-    # Get client display name from the utility
-    client_info = ClientRegistry.get_client_info(client)
-    client_display_name = client_info.get("name", client)
-
     # Confirm addition
-    if not force and not Confirm.ask(f"Add this server to {client_display_name}{' as ' + alias if alias else ''}?"):
+    if not force and not Confirm.ask(f"Add this server to {target_display_name}{' as ' + alias if alias else ''}?"):
         console.print("[yellow]Operation cancelled.[/]")
         return
 
@@ -333,12 +355,16 @@ def add(server_name, force=False, alias=None):
         installation=installation_method,
     )
 
-    # Add the server to the client configuration
-    success = client_manager.add_server(server_config)
+    if not profile:
+        # Add the server to the client configuration
+        success = client_manager.add_server(server_config)
+    else:
+        # Add the server to the profile configuration
+        success = profile_manager.set_profile(profile, server_config)
 
     if success:
         # Server has been successfully added to the client configuration
-        console.print(f"[bold green]Successfully added {display_name} to {client_display_name}![/]")
+        console.print(f"[bold green]Successfully added {display_name} to {target_display_name}![/]")
 
         # Display usage examples if available
         examples = server_metadata.get("examples", [])
@@ -353,4 +379,4 @@ def add(server_name, force=False, alias=None):
                 if prompt:
                     console.print(f'  Try: [italic]"{prompt}"[/]\n')
     else:
-        console.print(f"[bold red]Failed to add {server_name} to {client}.[/]")
+        console.print(f"[bold red]Failed to add {server_name} to {target_display_name}.[/]")
