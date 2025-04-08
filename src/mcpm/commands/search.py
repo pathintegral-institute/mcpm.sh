@@ -5,14 +5,11 @@ Search command for MCPM - Search and display available MCP servers from the regi
 import click
 from rich.console import Console
 from rich.table import Table
-from rich.panel import Panel
 
 from mcpm.utils.repository import RepositoryManager
-from mcpm.utils.config import ConfigManager
 
 console = Console()
 repo_manager = RepositoryManager()
-config_manager = ConfigManager()
 
 
 @click.command()
