@@ -1,9 +1,11 @@
 """
 Router implementation for aggregating multiple MCP servers into a single server.
 """
+
 import logging
 import typing as t
 from collections import defaultdict
+from contextlib import asynccontextmanager
 from typing import Union
 
 import uvicorn
@@ -16,9 +18,10 @@ from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
 from starlette.requests import Request
 from starlette.routing import Mount, Route
+from starlette.types import AppType
 
-from .client_connection import SSEClient, STDIOClient
-from .connection_types import ConnectionDetails, ConnectionType
+from .client_connection import ServerConnection
+from .connection_types import ConnectionDetails
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +34,7 @@ class MCPRouter:
 
     def __init__(self) -> None:
         """Initialize the router."""
-        self.server_sessions: t.Dict[str, t.Union[SSEClient, STDIOClient]] = {}
+        self.server_sessions: t.Dict[str, ServerConnection] = {}
         self.capabilities_mapping: t.Dict[str, t.Dict[str, t.Any]] = defaultdict(dict)
         self.tools_mapping: t.Dict[str, t.Dict[str, t.Any]] = {}
         self.prompts_mapping: t.Dict[str, t.Dict[str, t.Any]] = {}
@@ -58,7 +61,6 @@ class MCPRouter:
         if connection_to_add:
             for connection in connection_to_add:
                 try:
-                    logger.info(f"Adding server {connection.id}")
                     await self.add_server(connection.id, connection)
                 except Exception as e:
                     # if went wrong, skip the update
@@ -66,7 +68,6 @@ class MCPRouter:
 
         if connection_id_to_remove:
             for server_id in connection_id_to_remove:
-                logger.info(f"Removing server {server_id}")
                 await self.remove_server(server_id)
 
     async def add_server(self, server_id: str, connection: ConnectionDetails) -> None:
@@ -81,16 +82,14 @@ class MCPRouter:
             raise ValueError(f"Server with ID {server_id} already exists")
 
         # Create client based on connection type
-        if connection.type == ConnectionType.SSE:
-            client = SSEClient(connection)
-        elif connection.type == ConnectionType.STDIO:
-            # Create a new AsyncExitStack for this client
-            client = STDIOClient(connection)
-        else:
-            raise ValueError(f"Unsupported connection type: {connection.type}")
+        client = ServerConnection(connection)
 
         # Connect to the server
-        response = await client.connect_to_server()
+        await client.wait_for_initialization()
+        if not client.healthy():
+            raise ValueError(f"Failed to connect to server {server_id}")
+
+        response = client.session_initialized_response
         logger.info(f"Connected to server {server_id} with capabilities: {response.capabilities}")
 
         # Store the session
@@ -101,7 +100,7 @@ class MCPRouter:
 
         # Collect server tools, prompts, and resources
         if response.capabilities.tools:
-            tools = await client.session.list_tools() # type: ignore
+            tools = await client.session.list_tools()  # type: ignore
             # Add tools with namespaced names, preserving existing tools
             self.tools_mapping.update({f"{server_id}.{tool.name}": tool.model_dump() for tool in tools.tools})
 
@@ -121,7 +120,10 @@ class MCPRouter:
             resources_templates = await client.session.list_resource_templates()  # type: ignore
             # Add resource templates with namespaced URIs, preserving existing templates
             self.resources_templates_mapping.update(
-                {f"{server_id}:{resource_template.uriTemplate}": resource_template.model_dump() for resource_template in resources_templates.resourceTemplates}
+                {
+                    f"{server_id}:{resource_template.uriTemplate}": resource_template.model_dump()
+                    for resource_template in resources_templates.resourceTemplates
+                }
             )
 
     async def remove_server(self, server_id: str) -> None:
@@ -135,10 +137,8 @@ class MCPRouter:
             raise ValueError(f"Server with ID {server_id} does not exist")
 
         # Close the client session
-        logger.info(f"server_sessions: {self.server_sessions}")
         client = self.server_sessions[server_id]
-        client.request_close()
-        logger.info(f"server_sessions after close: {self.server_sessions}")
+        await client.request_for_shutdown()
 
         # Remove the server from all collections
         del self.server_sessions[server_id]
@@ -383,6 +383,15 @@ class MCPRouter:
                     self.aggregated_server.initialization_options,
                 )
 
+        @asynccontextmanager
+        async def lifespan(app: AppType):
+            yield
+            logger.info("ready to shut down all alive client sessions...")
+            for _, client in self.server_sessions.items():
+                if client.healthy():
+                    await client.request_for_shutdown()
+            logger.info("all alive client sessions have been shut down")
+
         # Set up middleware for CORS if needed
         middleware: t.List[Middleware] = []
         if allow_origins is not None:
@@ -403,6 +412,7 @@ class MCPRouter:
                 Route("/sse", endpoint=handle_sse),
                 Mount("/messages/", app=sse.handle_post_message),
             ],
+            lifespan=lifespan,
         )
 
         # Configure and start the server

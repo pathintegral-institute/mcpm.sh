@@ -8,8 +8,8 @@ from watchfiles import Change, awatch
 
 logger = logging.getLogger(__name__)
 
-class ConfigWatcher:
 
+class ConfigWatcher:
     def __init__(self, config_path: str):
         self.config_path = Path(config_path)
         self.running = False
@@ -34,15 +34,13 @@ class ConfigWatcher:
 
                 for change_type, file_path in changes:
                     if Path(file_path) == self.config_path:
-                        if change_type in (
-                            Change.modified, Change.added
-                        ):
+                        if change_type in (Change.modified, Change.added):
                             await self._reload()
 
         except asyncio.CancelledError:
             pass
-        # except Exception as e:
-        #     logger.error(f"Error watching config file: {e}")
+        except Exception as e:
+            logger.error(f"Error watching config file: {e}")
 
     async def _reload(self):
         async with self.reload_lock:

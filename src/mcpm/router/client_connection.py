@@ -2,12 +2,12 @@ import asyncio
 import logging
 from abc import ABC
 from contextlib import AsyncExitStack
-from typing import Any, Optional
+from typing import Any, Optional, cast
 
 from mcp import ClientSession, InitializeResult, StdioServerParameters, stdio_client
 from mcp.client.sse import sse_client
 
-from .connection_types import ConnectionDetails, ConnectionType
+from .connection_types import ConnectionDetails, ConnectionType, SSEConnectionDetails, StdioConnectionDetails
 
 logger = logging.getLogger(__name__)
 
@@ -76,9 +76,7 @@ class SSEClient(AbstractMcpClient):
         )
 
         # Create MCP client session
-        self.session = await self._exit_stack.enter_async_context(
-            ClientSession(read, write)
-        )
+        self.session = await self._exit_stack.enter_async_context(ClientSession(read, write))
         assert self.session
 
         response = await self.session.initialize()
@@ -146,3 +144,65 @@ class STDIOClient(AbstractMcpClient):
     #                     logger.warning(f"Unable to process stdio: {message}")
     #     except anyio.ClosedResourceError:
     #         logger.info(f"{self.connection_details.id} incoming messages closed")
+
+
+def _stdio_transport_context(connection_details: ConnectionDetails):
+    stdio_connection_details = cast(StdioConnectionDetails, connection_details)
+    server_params = StdioServerParameters(
+        command=stdio_connection_details.command, args=stdio_connection_details.args, env=stdio_connection_details.env
+    )
+    return stdio_client(server_params)
+
+
+def _sse_transport_context(connection_details: ConnectionDetails):
+    sse_connection_details = cast(SSEConnectionDetails, connection_details)
+    return sse_client(sse_connection_details.url, headers=sse_connection_details.headers)
+
+
+class ServerConnection:
+    def __init__(self, connection_details: ConnectionDetails) -> None:
+        self.session: Optional[ClientSession] = None
+        self.session_initialized_response: Optional[InitializeResult] = None
+        self._initialized = False
+        self.connection_details = connection_details
+        # double event
+        self._initialized_event = asyncio.Event()
+        self._shutdown_event = asyncio.Event()
+
+        self._transport_context_factory = (
+            _stdio_transport_context if connection_details.type == ConnectionType.STDIO else _sse_transport_context
+        )
+
+        self._server_task = asyncio.create_task(self._server_lifespan_cycle())
+
+    def healthy(self) -> bool:
+        return self.session is not None and self._initialized
+
+    # block until client session is initialized
+    async def wait_for_initialization(self):
+        await self._initialized_event.wait()
+
+    # request for client session to gracefully close
+    async def request_for_shutdown(self):
+        self._shutdown_event.set()
+
+    # block until client session is shutdown
+    async def wait_for_shutdown_request(self):
+        await self._shutdown_event.wait()
+
+    async def _server_lifespan_cycle(self):
+        try:
+            async with self._transport_context_factory(self.connection_details) as (read, write):
+                async with ClientSession(read, write) as session:
+                    self.session_initialized_response = await session.initialize()
+
+                    self.session = session
+                    self._initialized = True
+                    self._initialized_event.set()
+                    # block here so that the session will not be closed after exit scope
+                    # we could retrieve alive session through self.session
+                    await self.wait_for_shutdown_request()
+        except Exception as e:
+            logger.error(f"Failed to connect to server {self.connection_details.id}: {e}")
+            self._initialized_event.set()
+            self._shutdown_event.set()
