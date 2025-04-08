@@ -4,6 +4,7 @@ Utility functions for displaying MCP server configurations
 
 from rich.console import Console
 from rich.markup import escape
+from rich.table import Table
 
 console = Console()
 
@@ -43,3 +44,53 @@ def print_server_config(server_name, server_info, is_stashed=False):
 
     # Add a separator line between servers
     console.print("  " + "-" * 50)
+
+
+def print_servers_table(servers):
+    """Display a formatted table of server information.
+
+    Args:
+        servers: List of server dictionaries containing server information
+    """
+    table = Table(show_header=True, header_style="bold")
+    table.add_column("Name", style="cyan")
+    table.add_column("Description")
+    table.add_column("Categories/Tags", overflow="fold")
+
+    for server in sorted(servers, key=lambda s: s["name"]):
+        # Get server data
+        name = server["name"]
+        display_name = server.get("display_name", name)
+        description = server.get("description", "No description")
+
+        # Build categories and tags
+        categories = server.get("categories", [])
+        tags = server.get("tags", [])
+        meta_info = ", ".join([f"[dim]{c}[/]" for c in categories] + [f"[dim]{t}[/]" for t in tags])
+
+        # Add row to table
+        table.add_row(f"{display_name}\n[dim]({name})[/]", description, meta_info)
+
+    console.print(table)
+
+
+def print_error(message, details=None):
+    """Print a standardized error message.
+
+    Args:
+        message: The main error message
+        details: Optional additional error details
+    """
+    console.print(f"[bold red]Error:[/] {message}")
+    if details:
+        console.print(f"[red]{details}[/]")
+
+
+def print_client_error(client_name):
+    """Print a standardized client-related error message.
+
+    Args:
+        client_name: Name of the client that caused the error
+    """
+    console.print(f"[bold red]Error:[/] Unsupported active client")
+    console.print(f"Please switch to a supported client using 'mcpm client <client-name>'")

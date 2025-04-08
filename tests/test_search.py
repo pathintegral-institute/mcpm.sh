@@ -144,7 +144,8 @@ def test_search_error_handling(monkeypatch):
     result = runner.invoke(search, [])
 
     assert result.exit_code == 0
-    assert "Error searching for servers: Test error" in result.output
+    assert "Error: Error searching for servers" in result.output
+    assert "Test error" in result.output
     mock_repo_manager.search_servers.assert_called_once_with(None)
 
 

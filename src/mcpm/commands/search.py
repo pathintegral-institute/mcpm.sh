@@ -4,8 +4,8 @@ Search command for MCPM - Search and display available MCP servers from the regi
 
 import click
 from rich.console import Console
-from rich.table import Table
 
+from mcpm.utils.display import print_error, print_servers_table
 from mcpm.utils.repository import RepositoryManager
 
 console = Console()
@@ -50,37 +50,13 @@ def search(query, detailed=False):
         if detailed:
             _display_detailed_results(servers)
         else:
-            _display_table_results(servers)
+            print_servers_table(servers)
 
         # Show summary count
         console.print(f"\n[green]Found {len(servers)} server(s) matching search criteria[/]")
 
     except Exception as e:
-        console.print(f"[bold red]Error searching for servers:[/] {str(e)}")
-
-
-def _display_table_results(servers):
-    """Display search results in a compact table"""
-    table = Table(show_header=True, header_style="bold")
-    table.add_column("Name", style="cyan")
-    table.add_column("Description")
-    table.add_column("Categories/Tags", overflow="fold")
-
-    for server in sorted(servers, key=lambda s: s["name"]):
-        # Get server data
-        name = server["name"]
-        display_name = server.get("display_name", name)
-        description = server.get("description", "No description")
-
-        # Build categories and tags
-        categories = server.get("categories", [])
-        tags = server.get("tags", [])
-        meta_info = ", ".join([f"[dim]{c}[/]" for c in categories] + [f"[dim]{t}[/]" for t in tags])
-
-        # Add row to table
-        table.add_row(f"{display_name}\n[dim]({name})[/]", description, meta_info)
-
-    console.print(table)
+        print_error("Error searching for servers", str(e))
 
 
 def _display_detailed_results(servers):
