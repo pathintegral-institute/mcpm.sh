@@ -1,5 +1,6 @@
 import click
 from rich.console import Console
+from rich.markup import escape
 from rich.table import Table
 
 from mcpm.clients.client_registry import ClientRegistry
@@ -78,19 +79,19 @@ def apply(profile, server):
 
     # Check if the server exists in the active client
     server_info = client_manager.get_server(server)
-    if not server_info:
+    if server_info is None:
         console.print(f"[bold red]Error:[/] Server '{server}' not found in {client_name}.")
         return
 
     # Get profile
     profile_info = profile_manager.get_profile(profile)
-    if not profile_info:
+    if profile_info is None:
         console.print(f"[bold red]Error:[/] Profile '{profile}' not found.")
         return
 
     # Save profile
     profile_manager.set_profile(profile, server_info)
-    console.print(f"\n[green]Config '{server}' applied to profile '{profile}' successfully.[/]\n")
+    console.print(f"\n[green]Server '{server}' applied to profile '{profile}' successfully.[/]\n")
 
 
 @click.command()
@@ -128,9 +129,45 @@ def remove_server(server, profile):
     console.print(f"\n[green]Server '{server}' removed from profile '{profile}' successfully.[/]\n")
 
 
+@click.command()
+@click.argument("profile")
+def show(profile):
+    """Show the servers in an MCPM profile."""
+    profile_info = profile_manager.get_profile(profile)
+    if profile_info is None:
+        console.print(f"[bold red]Error:[/] Profile '{profile}' not found.")
+        return
+    console.print(f"\n[green]Profile '{profile}' contains the following servers:[/]\n")
+    for server in profile_info:
+        console.print(f"[bold cyan]{server.name}[/]")
+        command = server.command
+        console.print(f"  Command: [green]{command}[/]")
+
+        # Display arguments
+        args = server.args
+        if args:
+            console.print("  Arguments:")
+            for i, arg in enumerate(args):
+                console.print(f"    {i}: [yellow]{escape(arg)}[/]")
+
+        # Display environment variables
+        env_vars = server.env
+        if env_vars:
+            console.print("  Environment Variables:")
+            for key, value in env_vars.items():
+                console.print(f'    [bold blue]{key}[/] = [green]"{value}"[/]')
+        else:
+            console.print("  Environment Variables: [italic]None[/]")
+
+        # Add a separator line between servers
+        console.print("  " + "-" * 50)
+    console.print("\n")
+
+
 # Register all commands with the profile group
 profile.add_command(list)
 profile.add_command(add)
+profile.add_command(show)
 profile.add_command(apply)
 profile.add_command(delete)
 profile.add_command(rename)
