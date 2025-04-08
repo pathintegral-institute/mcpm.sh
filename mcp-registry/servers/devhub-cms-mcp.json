@@ -4,7 +4,7 @@
     "type": "git",
     "url": "https://github.com/devhub/devhub-cms-mcp"
   },
-  "homepage": "https://smithery.ai/server/@devhub/devhub-cms-mcp",
+  "homepage": "https://github.com/devhub/devhub-cms-mcp",
   "author": {
     "name": "devhub"
   },
@@ -59,7 +59,7 @@
     }
   ],
   "name": "devhub-cms-mcp",
-  "description": "A [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) integration for managing content in the [DevHub CMS system](https://www.devhub.com/).",
+  "description": "Manage and utilize website content within the DevHub CMS platform",
   "categories": [
     "Productivity"
   ],

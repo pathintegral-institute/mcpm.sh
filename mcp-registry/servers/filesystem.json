@@ -270,5 +270,6 @@
         "required": []
       }
     }
-  ]
+  ],
+  "is_official": true
 }

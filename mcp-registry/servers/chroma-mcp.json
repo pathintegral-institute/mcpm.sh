@@ -97,7 +97,7 @@
     }
   ],
   "name": "chroma-mcp",
-  "description": "<a href=\"https://trychroma.com\"><img src=\"https://user-images.githubusercontent.com/891664/227103090-6624bf7d-9524-4e05-9d2c-c28d5d451481.png\" alt=\"Chroma logo\"></a>",
+  "description": "Embeddings, vector search, document storage, and full-text search with the open-source AI application database",
   "categories": [
     "Databases"
   ],

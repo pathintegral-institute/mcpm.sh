@@ -49,7 +49,7 @@
     }
   ],
   "name": "rember-mcp",
-  "description": "Allow Claude to create flashcards for you with the official [Model Context Protocol (MCP)](https://modelcontextprotocol.com/) for [Rember](https://rember.com/). Rember helps you study and remember anything you care about by scheduling spaced repetition reviews.",
+  "description": "Create spaced repetition flashcards in Rember to remember anything you learn in your chats",
   "categories": [
     "Knowledge Base"
   ],

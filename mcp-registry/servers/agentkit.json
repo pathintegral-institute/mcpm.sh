@@ -4,7 +4,7 @@
     "type": "git",
     "url": "https://github.com/chargebee/agentkit"
   },
-  "homepage": "https://modelcontextprotocol.io/introduction",
+  "homepage": "https://github.com/chargebee/agentkit",
   "author": {
     "name": "chargebee"
   },
@@ -15,13 +15,6 @@
     "AI",
     "LLM"
   ],
-  "arguments": {
-    "[NOT GIVEN]": {
-      "description": "[NOT GIVEN]",
-      "required": false,
-      "example": "[NOT GIVEN]"
-    }
-  },
   "installations": {
     "npm": {
       "type": "npm",
@@ -30,39 +23,8 @@
         "-y",
         "@chargebee/mcp@latest"
       ],
-      "package": "@chargebee/mcp",
       "recommended": true,
       "description": "Run the Chargebee MCP server using Node.js npx"
-    },
-    "cursor": {
-      "type": "custom",
-      "command": "npx",
-      "args": [
-        "-y",
-        "@chargebee/mcp"
-      ],
-      "description": "Add to Cursor IDE via mcp.json configuration",
-      "recommended": false
-    },
-    "windsurf": {
-      "type": "custom",
-      "command": "npx",
-      "args": [
-        "-y",
-        "@chargebee/mcp"
-      ],
-      "description": "Add to Windsurf via mcp_config.json configuration",
-      "recommended": false
-    },
-    "vscode": {
-      "type": "custom",
-      "command": "code",
-      "args": [
-        "--add-mcp",
-        "{\"name\":\"chargebee\",\"command\":\"npx\",\"args\":[\"-y\",\"@chargebee/mcp\"]}"
-      ],
-      "description": "Install in VS Code using CLI",
-      "recommended": false
     }
   },
   "examples": [
@@ -78,7 +40,7 @@
     }
   ],
   "name": "agentkit",
-  "description": "data-color-mode=\"auto\" data-light-theme=\"light\" data-dark-theme=\"dark\"",
+  "description": "MCP Server that connects AI agents to Chargebee platform.",
   "categories": [
     "Dev Tools"
   ],

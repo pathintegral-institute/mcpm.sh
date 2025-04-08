@@ -1,5 +1,5 @@
 {
-  "display_name": "Neo4j MCP",
+  "display_name": "Neo4j MCP (Memory)",
   "repository": {
     "type": "git",
     "url": "https://github.com/neo4j-contrib/mcp-neo4j"
@@ -76,7 +76,7 @@
     }
   ],
   "name": "mcp-neo4j-memory",
-  "description": "Model Context Protocol (MCP) is a [standardized protocol](https://modelcontextprotocol.io/introduction) for managing context between large language models (LLMs) and external systems.",
+  "description": "Neo4j graph database server (schema + read/write-cypher) and separate graph database backed memory",
   "categories": [
     "Databases"
   ],
