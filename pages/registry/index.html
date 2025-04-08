@@ -1214,6 +1214,29 @@
             color: var(--text-primary);
             border: 1px solid var(--border);
         }
+
+        .server-card .meta .category {
+            background-color: var(--accent-light);
+            color: var(--accent-color);
+            padding: 0.1rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.7rem;
+            margin-left: 0.5rem;
+        }
+
+        .official-badge {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 2px;
+            margin-left: 8px;
+            vertical-align: middle;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
     </style>
 </head>
 
@@ -1840,6 +1863,15 @@
 
                 const heading = document.createElement('h3');
                 heading.textContent = server.display_name || server.name;
+                
+                // Add official badge if the server is marked as official
+                if (server.is_official) {
+                    const officialBadge = document.createElement('span');
+                    officialBadge.className = 'official-badge';
+                    officialBadge.textContent = 'Official';
+                    heading.appendChild(officialBadge);
+                }
+                
                 serverHeader.appendChild(heading);
 
                 // Add placeholder for GitHub stars in the header

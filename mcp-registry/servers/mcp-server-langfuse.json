@@ -60,7 +60,7 @@
     }
   ],
   "name": "mcp-server-langfuse",
-  "description": "[Model Context Protocol](https://github.com/modelcontextprotocol) (MCP) Server for [Langfuse Prompt Management](https://langfuse.com/docs/prompts/get-started). This server allows you to access and manage your Langfuse prompts through the Model Context Protocol.",
+  "description": "Open-source tool for collaborative editing, versioning, evaluating, and releasing prompts.",
   "categories": [
     "Dev Tools"
   ],

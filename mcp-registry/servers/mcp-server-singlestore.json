@@ -65,7 +65,7 @@
     }
   ],
   "name": "mcp-server-singlestore",
-  "description": "[Model Context Protocol]((https://modelcontextprotocol.io/introduction)) (MCP) is a standardized protocol designed to manage context between large language models (LLMs) and external systems. This repository provides an installer and an MCP Server for Singlestore, enabling seamless integration.",
+  "description": "Interact with the SingleStore database platform",
   "categories": [
     "Databases"
   ],

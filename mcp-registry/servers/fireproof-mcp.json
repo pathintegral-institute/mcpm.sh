@@ -35,7 +35,7 @@
     }
   ],
   "name": "fireproof-mcp",
-  "description": "This is a simple example of how to use a [Fireproof](https://fireproof.storage/) database in a [Model Context Protocol](https://github.com/modelcontextprotocol) server (used for plugging code and data into A.I. systems such as [Claude Desktop](https://claude.ai/download)).",
+  "description": "Immutable ledger database with live synchronization",
   "categories": [
     "Databases"
   ],

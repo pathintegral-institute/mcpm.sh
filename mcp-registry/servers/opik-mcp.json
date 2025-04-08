@@ -59,7 +59,7 @@
     }
   ],
   "name": "opik-mcp",
-  "description": "<h1 align=\"center\" style=\"border-bottom: none\">",
+  "description": " Query and analyze your Opik logs, traces, prompts and all other telemtry data from your LLMs in natural language.",
   "categories": [
     "MCP Tools"
   ],

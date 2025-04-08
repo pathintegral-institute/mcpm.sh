@@ -116,5 +116,6 @@
       "description": "Convert time between timezones",
       "prompt": "Convert 3:30 PM EST to Paris time."
     }
-  ]
+  ],
+  "is_official": true
 }
