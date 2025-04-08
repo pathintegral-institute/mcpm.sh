@@ -12,6 +12,7 @@ from rich.panel import Panel
 from rich.prompt import Confirm
 
 from mcpm.clients.client_registry import ClientRegistry
+from mcpm.utils.display import print_server_config
 
 console = Console()
 
@@ -110,27 +111,7 @@ def edit():
                 if server_count > 0:
                     console.print("\n[bold]MCP Server Details:[/]")
                     for server_name, server_config in config_json.get("mcpServers", {}).items():
-                        console.print(f"\n[bold cyan]{server_name}[/]")
-                        console.print(f"  Command: [green]{server_config.get('command', 'N/A')}[/]")
-
-                        # Display arguments
-                        args = server_config.get("args", [])
-                        if args:
-                            console.print("  Arguments:")
-                            for i, arg in enumerate(args):
-                                console.print(f"    {i}: [yellow]{arg}[/]")
-
-                        # Display environment variables
-                        env_vars = server_config.get("env", {})
-                        if env_vars:
-                            console.print("  Environment Variables:")
-                            for key, value in env_vars.items():
-                                console.print(f'    [bold blue]{key}[/] = [green]"{value}"[/]')
-                        else:
-                            console.print("  Environment Variables: [italic]None[/]")
-
-                        # Add a separator line
-                        console.print("  " + "-" * 50)
+                        print_server_config(server_name, server_config)
 
             except json.JSONDecodeError:
                 console.print("[yellow]Warning: Config file contains invalid JSON[/]")
