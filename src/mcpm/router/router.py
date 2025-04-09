@@ -6,12 +6,10 @@ import logging
 import typing as t
 from collections import defaultdict
 from contextlib import asynccontextmanager
-from typing import Union
 
 import uvicorn
 from mcp import server, types
 from mcp.server import InitializationOptions, NotificationOptions
-from mcp.server.sse import SseServerTransport
 from pydantic import AnyUrl
 from starlette.applications import Starlette
 from starlette.middleware import Middleware
@@ -22,8 +20,16 @@ from starlette.types import AppType
 
 from .client_connection import ServerConnection
 from .connection_types import ConnectionDetails
+from .profile import ProfileManager
+from .transport import RouterSseTransport
 
 logger = logging.getLogger(__name__)
+
+
+TOOL_SPLITOR = "_t_"
+RESOURCE_SPLITOR = ":"
+RESOURCE_TEMPLATE_SPLITOR = ":"
+PROMPT_SPLITOR = "_p_"
 
 
 class MCPRouter:
@@ -41,6 +47,7 @@ class MCPRouter:
         self.resources_mapping: t.Dict[str, t.Dict[str, t.Any]] = {}
         self.resources_templates_mapping: t.Dict[str, t.Dict[str, t.Any]] = {}
         self.aggregated_server = self._create_aggregated_server()
+        self.profile_manager = ProfileManager(self)  # type: ignore
 
     async def update_servers(self, connections: list[ConnectionDetails]):
         """
@@ -102,26 +109,31 @@ class MCPRouter:
         if response.capabilities.tools:
             tools = await client.session.list_tools()  # type: ignore
             # Add tools with namespaced names, preserving existing tools
-            self.tools_mapping.update({f"{server_id}.{tool.name}": tool.model_dump() for tool in tools.tools})
+            self.tools_mapping.update(
+                {f"{server_id}{TOOL_SPLITOR}{tool.name}": tool.model_dump() for tool in tools.tools}
+            )
 
         if response.capabilities.prompts:
             prompts = await client.session.list_prompts()  # type: ignore
             # Add prompts with namespaced names, preserving existing prompts
             self.prompts_mapping.update(
-                {f"{server_id}.{prompt.name}": prompt.model_dump() for prompt in prompts.prompts}
+                {f"{server_id}{PROMPT_SPLITOR}{prompt.name}": prompt.model_dump() for prompt in prompts.prompts}
             )
 
         if response.capabilities.resources:
             resources = await client.session.list_resources()  # type: ignore
             # Add resources with namespaced URIs, preserving existing resources
             self.resources_mapping.update(
-                {f"{server_id}:{resource.uri}": resource.model_dump() for resource in resources.resources}
+                {
+                    f"{server_id}{RESOURCE_SPLITOR}{resource.uri}": resource.model_dump()
+                    for resource in resources.resources
+                }
             )
             resources_templates = await client.session.list_resource_templates()  # type: ignore
             # Add resource templates with namespaced URIs, preserving existing templates
             self.resources_templates_mapping.update(
                 {
-                    f"{server_id}:{resource_template.uriTemplate}": resource_template.model_dump()
+                    f"{server_id}{RESOURCE_TEMPLATE_SPLITOR}{resource_template.uriTemplate}": resource_template.model_dump()
                     for resource_template in resources_templates.resourceTemplates
                 }
             )
@@ -146,17 +158,151 @@ class MCPRouter:
 
         # Delete registered tools, resources and prompts
         for key in list(self.tools_mapping.keys()):
-            if key.startswith(f"{server_id}."):
+            if key.startswith(f"{server_id}{TOOL_SPLITOR}"):
                 self.tools_mapping.pop(key)
         for key in list(self.prompts_mapping.keys()):
-            if key.startswith(f"{server_id}."):
+            if key.startswith(f"{server_id}{PROMPT_SPLITOR}"):
                 self.prompts_mapping.pop(key)
         for key in list(self.resources_mapping.keys()):
-            if key.startswith(f"{server_id}:"):
+            if key.startswith(f"{server_id}{RESOURCE_SPLITOR}"):
                 self.resources_mapping.pop(key)
         for key in list(self.resources_templates_mapping.keys()):
-            if key.startswith(f"{server_id}:"):
+            if key.startswith(f"{server_id}{RESOURCE_TEMPLATE_SPLITOR}"):
                 self.resources_templates_mapping.pop(key)
+
+    def _patch_handler_func(self, app: server.Server) -> server.Server:
+        def get_active_servers(profile: str) -> list[str]:
+            return self.profile_manager.get_profile_server_ids(profile)
+
+        def parse_namespaced_id(id_value, splitor):
+            """Parse namespaced ID, return server ID and original ID."""
+            if splitor in str(id_value):
+                return str(id_value).split(splitor, 1)
+            return None, None
+
+        def empty_result() -> types.ServerResult:
+            return types.ServerResult(types.EmptyResult())
+
+        async def list_prompts(req: types.ListPromptsRequest) -> types.ServerResult:
+            prompts: list[types.Prompt] = []
+            active_servers = get_active_servers(req.params.meta.profile)  # type: ignore
+            for server_prompt_id, prompt in self.prompts_mapping.items():
+                server_id, _ = parse_namespaced_id(server_prompt_id, PROMPT_SPLITOR)
+                if server_id in active_servers:
+                    prompt.update({"name": server_prompt_id})
+                    prompts.append(types.Prompt(**prompt))
+            return types.ServerResult(types.ListPromptsResult(prompts=prompts))
+
+        async def get_prompt(req: types.GetPromptRequest) -> types.ServerResult:
+            active_servers = get_active_servers(req.params.meta.profile)  # type: ignore
+
+            server_id, prompt_name = parse_namespaced_id(req.params.name, PROMPT_SPLITOR)
+            if server_id is None or prompt_name is None:
+                return empty_result()
+
+            if server_id not in active_servers:
+                return empty_result()
+
+            result = await self.server_sessions[server_id].session.get_prompt(prompt_name, req.params.arguments)
+            return types.ServerResult(result)
+
+        async def list_resources(req: types.ListResourcesRequest) -> types.ServerResult:
+            resources: list[types.Resource] = []
+            active_servers = get_active_servers(req.params.meta.profile)  # type: ignore
+            for server_resource_id, resource in self.resources_mapping.items():
+                server_id, _ = parse_namespaced_id(server_resource_id, RESOURCE_SPLITOR)
+                if server_id in active_servers:
+                    resource.update({"uri": server_resource_id})
+                    resources.append(types.Resource(**resource))
+            return types.ServerResult(types.ListResourcesResult(resources=resources))
+
+        async def list_resource_templates(req: types.ListResourceTemplatesRequest) -> types.ServerResult:
+            resource_templates: list[types.ResourceTemplate] = []
+            active_servers = get_active_servers(req.params.meta.profile)  # type: ignore
+            for server_resource_template_id, resource_template in self.resources_templates_mapping.items():
+                server_id, _ = parse_namespaced_id(server_resource_template_id, RESOURCE_TEMPLATE_SPLITOR)
+                if server_id in active_servers:
+                    resource_template.update({"uriTemplate": server_resource_template_id})
+                    resource_templates.append(types.ResourceTemplate(**resource_template))
+            return types.ServerResult(types.ListResourceTemplatesResult(resourceTemplates=resource_templates))
+
+        async def read_resource(req: types.ReadResourceRequest) -> types.ServerResult:
+            active_servers = get_active_servers(req.params.meta.profile)  # type: ignore
+
+            server_id, resource_uri = parse_namespaced_id(req.params.uri, RESOURCE_SPLITOR)
+            if server_id is None or resource_uri is None:
+                return empty_result()
+            if server_id not in active_servers:
+                return empty_result()
+
+            result = await self.server_sessions[server_id].session.read_resource(AnyUrl(resource_uri))
+            return types.ServerResult(result)
+
+        async def list_tools(req: types.ListToolsRequest) -> types.ServerResult:
+            tools: list[types.Tool] = []
+            active_servers = get_active_servers(req.params.meta.profile)  # type: ignore
+            for server_tool_id, tool in self.tools_mapping.items():
+                server_id, _ = parse_namespaced_id(server_tool_id, TOOL_SPLITOR)
+                if server_id in active_servers:
+                    tool.update({"name": server_tool_id})
+                    tools.append(types.Tool(**tool))
+
+            if not tools:
+                return empty_result()
+
+            return types.ServerResult(types.ListToolsResult(tools=tools))
+
+        async def call_tool(req: types.CallToolRequest) -> types.ServerResult:
+            active_servers = get_active_servers(req.params.meta.profile)  # type: ignore
+            logger.info(f"call_tool: {req} with active servers: {active_servers}")
+
+            server_id, tool_name = parse_namespaced_id(req.params.name, TOOL_SPLITOR)
+            if server_id is None or tool_name is None:
+                return empty_result()
+            if server_id not in active_servers:
+                return empty_result()
+
+            try:
+                result = await self.server_sessions[server_id].session.call_tool(tool_name, req.params.arguments or {})
+                return types.ServerResult(result)
+            except Exception as e:
+                return types.ServerResult(
+                    types.CallToolResult(
+                        content=[types.TextContent(type="text", text=str(e))],
+                        isError=True,
+                    ),
+                )
+
+        async def complete(req: types.CompleteRequest) -> types.ServerResult:
+            active_servers = get_active_servers(req.params.meta.profile)  # type: ignore
+
+            if isinstance(req.params.ref, types.PromptReference):
+                server_id, prompt_name = parse_namespaced_id(req.params.ref.name, PROMPT_SPLITOR)
+                if server_id is None or prompt_name is None:
+                    return empty_result()
+                ref = types.PromptReference(name=prompt_name, type="ref/prompt")
+            elif isinstance(req.params.ref, types.ResourceReference):
+                server_id, resource_uri = parse_namespaced_id(req.params.ref.uri, RESOURCE_SPLITOR)
+                if server_id is None or resource_uri is None:
+                    return empty_result()
+                ref = types.ResourceReference(uri=resource_uri, type="ref/resource")
+
+            if server_id not in active_servers:
+                return empty_result()
+
+            result = await self.server_sessions[server_id].session.complete(ref, req.params.argument.model_dump())
+            return types.ServerResult(result)
+
+        app.request_handlers[types.ListPromptsRequest] = list_prompts
+        app.request_handlers[types.GetPromptRequest] = get_prompt
+        app.request_handlers[types.ListResourcesRequest] = list_resources
+        app.request_handlers[types.ReadResourceRequest] = read_resource
+        app.request_handlers[types.ListResourceTemplatesRequest] = list_resource_templates
+        app.request_handlers[types.CallToolRequest] = call_tool
+        app.request_handlers[types.ListToolsRequest] = list_tools
+        app.request_handlers[types.CompleteRequest] = complete
+
+        return app
 
     def _create_aggregated_server(self) -> server.Server[object]:
         """
@@ -166,148 +312,7 @@ class MCPRouter:
             An MCP server instance
         """
         app: server.Server[object] = server.Server(name="mcpm-router")
-
-        # Define request handlers
-
-        # List prompts handler
-        async def _list_prompts(_: t.Any) -> types.ServerResult:
-            all_prompts = []
-            for server_prompt_id, prompts in self.prompts_mapping.items():
-                prompts.update({"name": server_prompt_id})
-                all_prompts.append(types.Prompt(**prompts))
-            return types.ServerResult(types.ListPromptsResult(prompts=all_prompts))
-
-        app.request_handlers[types.ListPromptsRequest] = _list_prompts
-
-        # Get prompt handler
-        async def _get_prompt(req: types.GetPromptRequest) -> types.ServerResult:
-            prompt_name = req.params.name
-
-            # Parse server_id from namespaced prompt name
-            if "." in prompt_name:
-                server_id, original_name = prompt_name.split(".", 1)
-                if server_id in self.server_sessions:
-                    result = await self.server_sessions[server_id].session.get_prompt(
-                        original_name, req.params.arguments
-                    )
-                    return types.ServerResult(result)
-
-            # Return error if prompt not found
-            return types.ServerResult(types.EmptyResult())
-
-        app.request_handlers[types.GetPromptRequest] = _get_prompt
-
-        # List resources handler
-        async def _list_resources(_: t.Any) -> types.ServerResult:
-            all_resources = []
-            for server_resource_id, resource in self.resources_mapping.items():
-                resource.update({"uri": server_resource_id})
-                all_resources.append(types.Resource(**resource))
-            return types.ServerResult(types.ListResourcesResult(resources=all_resources))
-
-        app.request_handlers[types.ListResourcesRequest] = _list_resources
-
-        # List resource templates handler
-        async def _list_resource_templates(_: t.Any) -> types.ServerResult:
-            all_resource_templates = []
-            for server_resource_template_id, resource_template in self.resources_templates_mapping.items():
-                resource_template.update({"uriTemplate": server_resource_template_id})
-                all_resource_templates.append(types.ResourceTemplate(**resource_template))
-            return types.ServerResult(types.ListResourceTemplatesResult(resourceTemplates=all_resource_templates))
-
-        app.request_handlers[types.ListResourceTemplatesRequest] = _list_resource_templates
-
-        # Read resource handler
-        async def _read_resource(req: types.ReadResourceRequest) -> types.ServerResult:
-            resource_uri = req.params.uri
-
-            # Parse server_id from namespaced resource URI
-            if ":" in str(resource_uri):
-                server_id, original_uri = str(resource_uri).split(":", 1)
-                if server_id in self.server_sessions:
-                    result = await self.server_sessions[server_id].session.read_resource(AnyUrl(original_uri))
-                    return types.ServerResult(result)
-
-            # Return error if resource not found
-            return types.ServerResult(types.EmptyResult())
-
-        app.request_handlers[types.ReadResourceRequest] = _read_resource
-
-        # List tools handler
-        async def _list_tools(_: t.Any) -> types.ServerResult:
-            all_tools = []
-            logger.info(f"Listing tools: {self.tools_mapping}")
-            for tool_name, tool_data in self.tools_mapping.items():
-                # Create tool object directly from the data
-                tool = types.Tool(**tool_data)
-                tool.name = tool_name
-                all_tools.append(tool)
-            return types.ServerResult(types.ListToolsResult(tools=all_tools))
-
-        app.request_handlers[types.ListToolsRequest] = _list_tools
-
-        # Call tool handler
-        async def _call_tool(req: types.CallToolRequest) -> types.ServerResult:
-            tool_name = req.params.name
-
-            # Parse server_id from namespaced tool name
-            if "." in tool_name:
-                server_id, original_name = tool_name.split(".", 1)
-                if server_id in self.server_sessions:
-                    try:
-                        result = await self.server_sessions[server_id].session.call_tool(
-                            original_name, req.params.arguments or {}
-                        )
-                        return types.ServerResult(result)
-                    except Exception as e:
-                        return types.ServerResult(
-                            types.CallToolResult(
-                                content=[types.TextContent(type="text", text=str(e))],
-                                isError=True,
-                            ),
-                        )
-
-            # Return error if tool not found
-            return types.ServerResult(
-                types.CallToolResult(
-                    content=[types.TextContent(type="text", text=f"Tool not found: {tool_name}")],
-                    isError=True,
-                ),
-            )
-
-        app.request_handlers[types.CallToolRequest] = _call_tool
-
-        # Complete handler
-        async def _complete(req: types.CompleteRequest) -> types.ServerResult:
-            ref = req.params.ref
-
-            # distinguish ref to resource reference and prompt reference
-            ref: Union[types.ResourceReference, types.PromptReference]
-            if isinstance(ref, types.ResourceReference):
-                server_id, resource_uri = str(ref.uri).split(":", 1)
-                ref = types.ResourceReference(uri=resource_uri, type="ref/resource")
-            else:
-                server_id, prompt_name = ref.name.split(".", 1)
-                ref = types.PromptReference(name=prompt_name, type="ref/prompt")
-
-            if server_id in self.server_sessions:
-                result = await self.server_sessions[server_id].session.complete(
-                    ref,
-                    req.params.argument.model_dump(),
-                )
-                return types.ServerResult(result)
-
-            # Return error if reference not found
-            return types.ServerResult(
-                types.CallToolResult(
-                    content=[types.TextContent(type="text", text=f"Reference not found: {ref}")],
-                    isError=True,
-                ),
-            )
-
-        app.request_handlers[types.CompleteRequest] = _complete
-
-        return app
+        return self._patch_handler_func(app)
 
     async def start_sse_server(
         self, host: str = "localhost", port: int = 8080, allow_origins: t.Optional[t.List[str]] = None
@@ -320,6 +325,11 @@ class MCPRouter:
             port: The port to bind to
             allow_origins: List of allowed origins for CORS
         """
+        # waiting all servers to be initialized
+        mcp_servers = self.profile_manager.initialize_servers()
+        for mcp_server in mcp_servers:
+            await self.add_server(mcp_server.id, mcp_server)
+
         # Create notification options
         notification_options = NotificationOptions(
             prompts_changed=True,
@@ -368,7 +378,7 @@ class MCPRouter:
         )
 
         # Create SSE transport
-        sse = SseServerTransport("/messages/")
+        sse = RouterSseTransport("/messages/")
 
         # Handle SSE connections
         async def handle_sse(request: Request) -> None:
@@ -386,7 +396,6 @@ class MCPRouter:
         @asynccontextmanager
         async def lifespan(app: AppType):
             yield
-            logger.info("ready to shut down all alive client sessions...")
             for _, client in self.server_sessions.items():
                 if client.healthy():
                     await client.request_for_shutdown()
@@ -406,7 +415,7 @@ class MCPRouter:
 
         # Create Starlette app
         app = Starlette(
-            debug=False,
+            debug=True,  # TODO: debug
             middleware=middleware,
             routes=[
                 Route("/sse", endpoint=handle_sse),
