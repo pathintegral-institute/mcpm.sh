@@ -84,24 +84,6 @@
       },
       "description": "Run server using uv"
     },
-    "python": {
-      "type": "python",
-      "command": "uv",
-      "args": [
-        "venv",
-        "&&",
-        "source",
-        ".venv/bin/activate",
-        "&&",
-        "uv",
-        "pip",
-        "install",
-        "-e",
-        "."
-      ],
-      "env": {},
-      "description": "Install using uv (recommended)"
-    }
   },
   "examples": [
     {
