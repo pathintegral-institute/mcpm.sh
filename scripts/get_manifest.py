@@ -26,7 +26,7 @@ class ManifestGenerator:
             api_key=os.environ.get("OPENROUTER_API_KEY"),
         )
 
-    def extract_description_from_readme(self, readme_content: str) -> str:
+    def extract_description_from_readme(self, readme_content: str, repo_url: str = "") -> str:
         """Extract a concise description from README content.
 
         Looks for the first meaningful description paragraph near the beginning
@@ -35,6 +35,7 @@ class ManifestGenerator:
 
         Args:
             readme_content: Contents of README.md
+            repo_url: GitHub repository URL to extract name for title matching
 
         Returns:
             Extracted description or empty string if not found
@@ -90,10 +91,10 @@ class ManifestGenerator:
 
             # If we couldn't find a good description in regular text,
             # check content under main repo name heading
-            if not description:
+            if not description and repo_url:
                 for heading, content in title_content.items():
                     # Look for the repo name in the heading
-                    if heading and "/" in repo_url:
+                    if heading:
                         repo_name = repo_url.strip('/').split('/')[-1].lower()
                         if repo_name.lower() in heading.lower():
                             for line in content:
@@ -184,13 +185,31 @@ class ManifestGenerator:
         if "github.com" not in repo_url:
             raise ValueError(f"Invalid GitHub URL: {repo_url}")
 
+        # Handle subdirectory URLs (tree format)
         if "/tree/" in repo_url:
-            return repo_url.replace("/tree/", "/raw/")
+            # For URLs like github.com/user/repo/tree/branch/path/to/dir
+            parts = repo_url.split("/tree/")
+            base_url = parts[0].replace(
+                "github.com", "raw.githubusercontent.com")
+            path_parts = parts[1].split("/", 1)
 
+            if len(path_parts) > 1:
+                branch = path_parts[0]
+                subdir = path_parts[1]
+                return f"{base_url}/{branch}/{subdir}/README.md"
+            else:
+                branch = path_parts[0]
+                return f"{base_url}/{branch}/README.md"
+
+        # Handle direct file URLs
         if "/blob/" in repo_url:
             raw_url = repo_url.replace("/blob/", "/raw/")
-            return raw_url if raw_url.endswith(".md") else f"{raw_url}/README.md"
+            if raw_url.endswith(".md"):
+                return raw_url
+            else:
+                return f"{raw_url}/README.md"
 
+        # Handle repository root URLs
         raw_url = repo_url.replace("github.com", "raw.githubusercontent.com")
         return f"{raw_url.rstrip('/')}/main/README.md"
 
@@ -434,7 +453,15 @@ class ManifestGenerator:
             # Extract repo info
             parts = repo_url.strip("/").split("/")
             owner = parts[3]
-            name = parts[4]
+
+            # Extract name, handling subdirectories in tree format
+            if "/tree/" in repo_url and "/src/" in repo_url:
+                # For subdirectories in the src folder, use the subdirectory name
+                src_path = repo_url.split("/src/")[1]
+                name = src_path.split("/")[0]
+            else:
+                # Default is the last path component
+                name = parts[-1]
 
             # If no server name was explicitly provided, use the one from URL
             if server_name:
@@ -445,7 +472,6 @@ class ManifestGenerator:
 
             # Get prompt as tuple and extract manifest
             manifest = self.extract_with_llms(repo_url, readme_content)
-
             # Update manifest with repository information
             manifest.update({
                 "name": name,
@@ -455,7 +481,8 @@ class ManifestGenerator:
             })
 
             # Update manifest with description
-            description = self.extract_description_from_readme(readme_content)
+            description = self.extract_description_from_readme(
+                readme_content, repo_url)
             if not description:
                 description = self.extract_description_from_readme_with_llms(
                     readme_content)
@@ -620,7 +647,6 @@ if __name__ == "__main__":
         sys.exit(1)
 
     repo_url = sys.argv[1].strip()
-
     # Check if the URL is a simple URL without protocol
     if not repo_url.startswith(("http://", "https://")):
         # Add https:// if it's a github.com URL without protocol
