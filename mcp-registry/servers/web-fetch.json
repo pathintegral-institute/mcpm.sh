@@ -96,5 +96,6 @@
       },
       "required": ["url"]
     }
-  ]
+  ],
+  "is_official": true
 }

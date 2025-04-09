@@ -60,5 +60,6 @@
       },
       "required": ["code"]
     }
-  ]
+  ],
+  "is_official": true
 }

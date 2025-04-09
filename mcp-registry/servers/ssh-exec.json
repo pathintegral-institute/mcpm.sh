@@ -83,7 +83,7 @@
         "SSH_ARGUMENTS_BLACKLIST": "-rf,-fr,--force"
       },
       "description": "Run server using uv"
-    },
+    }
   },
   "examples": [
     {
@@ -140,5 +140,6 @@
         "type": "object"
       }
     }
-  ]
+  ],
+  "is_official": true
 }
