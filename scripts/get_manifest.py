@@ -1,25 +1,30 @@
 """Generate MCP server manifests from GitHub repositories."""
 
-import asyncio
-import json
 import os
 import sys
-import traceback
 from typing import Any, Dict, List, Optional
 
-import openai
+import json
+import asyncio
 import requests
-from categorization import CategorizationAgent, LLMModel
+from openai import OpenAI
 from loguru import logger
 from utils import McpClient
+from categorization import CategorizationAgent
+
+import dotenv
+dotenv.load_dotenv()
 
 
 class ManifestGenerator:
     """Generate and manage MCP server manifests from GitHub repositories."""
 
     def __init__(self):
-        """Initialize with AWS Bedrock client."""
-        self.client = boto3.client("bedrock-runtime")
+        """Initialize with OpenAI client."""
+        self.client = OpenAI(
+            base_url="https://openrouter.ai/api/v1",
+            api_key=os.environ.get("OPENROUTER_API_KEY"),
+        )
 
     def extract_description_from_readme(self, readme_content: str) -> str:
         """Extract a concise description from README content.
@@ -40,8 +45,20 @@ class ManifestGenerator:
             description = ""
             in_code_block = False
             in_html_block = False
+            title_content = {}  # Store content under headings
 
-            for line in lines:
+            current_heading = None
+
+            for i, line in enumerate(lines):
+                # Track headings and their content
+                if line.strip().startswith("#"):
+                    current_heading = line.strip().lstrip("#").strip()
+                    title_content[current_heading] = []
+                    continue
+
+                if current_heading:
+                    title_content[current_heading].append(line)
+
                 # Skip code blocks
                 if line.strip().startswith("```"):
                     in_code_block = not in_code_block
@@ -60,12 +77,10 @@ class ManifestGenerator:
                     continue
 
                 # Skip badges, links, and empty lines
-                if (line.strip().startswith("#") or
-                    "![" in line or
+                if ("![" in line or
                     line.strip().startswith("[") or
                     line.strip() == "" or
-                    line.strip().startswith(">") or
-                        line.strip().startswith("##")):
+                        line.strip().startswith(">")):
                     continue
 
                 # Found a potential description line
@@ -73,12 +88,28 @@ class ManifestGenerator:
                     description = line.strip()
                     break
 
+            # If we couldn't find a good description in regular text,
+            # check content under main repo name heading
+            if not description:
+                for heading, content in title_content.items():
+                    # Look for the repo name in the heading
+                    if heading and "/" in repo_url:
+                        repo_name = repo_url.strip('/').split('/')[-1].lower()
+                        if repo_name.lower() in heading.lower():
+                            for line in content:
+                                if len(line.strip()) > 20 and "![" not in line:
+                                    description = line.strip()
+                                    break
+                            if description:
+                                break
+
             # If we couldn't find a good description, return empty string
             if not description:
-                logger.warning(
-                    f"No description found in README for {repo_url}")
+                logger.warning("No description found in README")
                 return ""
-            return description
+            else:
+                logger.info(f"Extracted description: {description}")
+                return description
 
         except Exception as e:
             logger.error(f"Error extracting description from README: {e}")
@@ -86,7 +117,34 @@ class ManifestGenerator:
 
     def extract_description_from_readme_with_llms(self, readme_content: str) -> str:
         """Extract a concise description from README content using LLM."""
-        pass
+        try:
+            completion = self.client.chat.completions.create(
+                extra_headers={
+                    "HTTP-Referer": os.environ.get("SITE_URL", "https://mcpm.sh"),
+                    "X-Title": "MCPM",
+                },
+                model="anthropic/claude-3-sonnet",
+                messages=[
+                    {
+                        "role": "system",
+                        "content": "You are a helpful assistant that extracts concise descriptions."
+                    },
+                    {
+                        "role": "user",
+                        "content": (
+                            f"Extract a single concise description paragraph from this README "
+                            f"content. Focus on what the project does, not how to use it. "
+                            f"Keep it under 200 characters if possible:\n\n{readme_content}"
+                        )
+                    }
+                ],
+                temperature=0.1,
+                max_tokens=200
+            )
+            return completion.choices[0].message.content.strip()
+        except Exception as e:
+            logger.error(f"Error extracting description with LLM: {e}")
+            return ""
 
     def fetch_readme(self, repo_url: str) -> str:
         """Fetch README.md content from a GitHub repository.
@@ -136,14 +194,16 @@ class ManifestGenerator:
         raw_url = repo_url.replace("github.com", "raw.githubusercontent.com")
         return f"{raw_url.rstrip('/')}/main/README.md"
 
-    async def categorize_servers_with_llms(self, name, description) -> str:
-        """Categorize a list of servers.
+    @staticmethod
+    async def categorize_servers_with_llms(name, description) -> str:
+        """Categorize a server based on name and description.
 
         Args:
-            servers: List of server dictionaries with 'name' and 'description'
+            name: Server name
+            description: Server description
 
         Returns:
-            List of dictionaries with categorization results
+            Category string
         """
         agent = CategorizationAgent()
 
@@ -249,62 +309,114 @@ class ManifestGenerator:
         return static_content, variable_content
 
     def extract_with_llms(self, repo_url: str, readme_content: str) -> Dict:
-        """Extract manifest information using Amazon Bedrock with optimized caching.
+        """Extract manifest information using OpenAI with OpenRouter.
 
         Args:
-            prompt: Tuple of (static_content, variable_content) from _create_prompt
+            repo_url: GitHub repository URL
+            readme_content: Content of the README file
 
         Returns:
             Dictionary containing the extracted manifest information
         """
-        static_content, variable_content = self._create_prompt(
-            repo_url, readme_content)
+        try:
+            static_content, variable_content = self._create_prompt(
+                repo_url, readme_content)
 
-        response = self.client.converse(
-            modelId=LLMModel.CLAUDE_3_7_SONNET,
-            system=[
-                {"text": "You are a helpful assistant for README analysis."}],
-            messages=[
-                {
-                    "role": "user",
-                    "content": [
-                        {"text": static_content},
-                        {"cachePoint": {"type": "default"}},
-                        {"text": variable_content},
-                    ],
+            schema = {
+                "name": "create_mcp_server_manifest",
+                "description": "Create a manifest file for an MCP server according to the schema",
+                "parameters": {
+                    "type": "object",
+                    "required": ["display_name", "repository", "license", "installations"],
+                    "properties": {
+                        "display_name": {"type": "string", "description": "Human-readable server name"},
+                        "license": {"type": "string"},
+                        "tags": {"type": "array", "items": {"type": "string"}},
+                        "arguments": {
+                            "type": "object",
+                            "description": "Configuration arguments required by the server",
+                            "additionalProperties": {
+                                "type": "object",
+                                "required": ["description", "required"],
+                                "properties": {
+                                    "description": {
+                                        "type": "string",
+                                        "description": "Human-readable description of the argument",
+                                    },
+                                    "required": {"type": "boolean", "description": "Whether this argument is required"},
+                                    "example": {"type": "string", "description": "Example value for this argument"},
+                                },
+                            },
+                        },
+                        "installations": {
+                            "type": "object",
+                            "description": "Different methods to install and run this server",
+                            "additionalProperties": {
+                                "type": "object",
+                                "required": ["type", "command", "args"],
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "enum": ["npm", "python", "docker", "cli", "uvx", "custom"],
+                                    },
+                                    "command": {"type": "string", "description": "Command to run the server"},
+                                    "args": {
+                                        "type": "array",
+                                        "description": "Arguments to pass to the command",
+                                        "items": {"type": "string"},
+                                    },
+                                    "env": {
+                                        "type": "object",
+                                        "description": "Environment variables to set",
+                                        "additionalProperties": {"type": "string"},
+                                    },
+                                    "description": {"type": "string", "description": "Human-readable description"},
+                                },
+                            },
+                        },
+                        "examples": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "required": ["title", "description", "prompt"],
+                                "properties": {
+                                    "title": {"type": "string"},
+                                    "description": {"type": "string"},
+                                    "prompt": {"type": "string"},
+                                },
+                            },
+                        },
+                    }
                 }
-            ],
-            inferenceConfig={"temperature": 0.0},
-        )
+            }
 
-        # Extract the text from the response
-        if "output" in response and "message" in response["output"] and "content" in response["output"]["message"]:
-            content = response["output"]["message"]["content"]
+            completion = self.client.chat.completions.create(
+                extra_headers={
+                    "HTTP-Referer": os.environ.get("SITE_URL", "https://mcpm.sh"),
+                    "X-Title": "MCPM",
+                },
+                model="anthropic/claude-3-sonnet",
+                messages=[
+                    {
+                        "role": "system",
+                        "content": "You are a helpful assistant that analyzes GitHub README.md files and extracts information for MCP server manifests."
+                    },
+                    {
+                        "role": "user",
+                        "content": f"GitHub URL: {repo_url}\n\nREADME Content:\n{readme_content}\n\nExtract the necessary information to create an MCP server manifest."
+                    }
+                ],
+                tools=[{"type": "function", "function": schema}],
+                tool_choice={"type": "function", "function": {
+                    "name": "create_mcp_server_manifest"}}
+            )
 
-            # Find the first text item
-            text_items = [item.get("text")
-                          for item in content if "text" in item]
-            if text_items:
-                text_content = text_items[0]
-                try:
-                    # Try to extract JSON from the response text
-                    # First check if it's already valid JSON
-                    return json.loads(text_content)
-                except json.JSONDecodeError:
-                    # If not, try to find JSON in the text
-                    import re
-                    json_match = re.search(
-                        r"(\{.*\})", text_content, re.DOTALL)
-                    if json_match:
-                        return json.loads(json_match.group(1))
-                    else:
-                        logger.error(
-                            f"No JSON content found in response: {text_content[:100]}...")
-            else:
-                logger.error("No text items found in response content")
-        else:
-            logger.error(
-                f"Unexpected response structure: {response.keys()}")
+            tool_call = completion.choices[0].message.tool_calls[0]
+            result = json.loads(tool_call.function.arguments)
+            return result
+        except Exception as e:
+            logger.error(f"Error extracting manifest with LLM: {e}")
+            return {}
 
     def generate_manifest(self, repo_url: str, server_name: Optional[str] = None) -> Dict:
         """Generate MCP server manifest from GitHub repository.
@@ -331,12 +443,6 @@ class ManifestGenerator:
             # Fetch README content
             readme_content = self.fetch_readme(repo_url)
 
-            # If server info doesn't have a description, extract the description from README
-            description = self.extract_description_from_readme(readme_content)
-            if not description:
-                description = self.extract_description_from_readme_with_llms(
-                    readme_content)
-
             # Get prompt as tuple and extract manifest
             manifest = self.extract_with_llms(repo_url, readme_content)
 
@@ -347,6 +453,13 @@ class ManifestGenerator:
                 "homepage": repo_url,
                 "author": {"name": owner},
             })
+
+            # Update manifest with description
+            description = self.extract_description_from_readme(readme_content)
+            if not description:
+                description = self.extract_description_from_readme_with_llms(
+                    readme_content)
+            manifest["description"] = description
 
             # Categorize the server
             categorized_category = asyncio.run(
@@ -414,7 +527,11 @@ class ManifestGenerator:
                 env_vars[k] = manifest.get("arguments", {}).get(
                     k, {}).get("example", v)
 
-        await mcp_client.connect_to_server(installation["command"], installation["args"], env_vars)
+        # Use the command and args from the installation directly
+        command = installation["command"]
+        args = installation["args"]
+
+        await mcp_client.connect_to_server(command, args, env_vars)
         result = {}
 
         try:
@@ -525,7 +642,7 @@ if __name__ == "__main__":
     else:
         is_official = False
 
-    logger.add(sys.stderr, format="{time} {level} {message}", level="INFO")
+    # Initialize logger only once to avoid duplicate logs
     logger.info(f"Processing GitHub URL: {repo_url}")
 
     main(repo_url, is_official)
