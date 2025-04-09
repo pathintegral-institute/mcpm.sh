@@ -1,0 +1,67 @@
+{
+  "display_name": "Opik MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/comet-ml/opik-mcp"
+  },
+  "homepage": "https://www.comet.com/site/products/opik/",
+  "author": {
+    "name": "comet-ml"
+  },
+  "license": "Apache 2.0",
+  "tags": [
+    "MCP",
+    "Opik",
+    "IDE Integration"
+  ],
+  "arguments": {
+    "apiUrl": {
+      "description": "URL for the Opik API",
+      "required": true,
+      "example": "https://www.comet.com/opik/api"
+    },
+    "apiKey": {
+      "description": "Your Opik API key",
+      "required": true,
+      "example": "YOUR_API_KEY"
+    },
+    "workspace": {
+      "description": "Workspace name",
+      "required": true,
+      "example": "default"
+    },
+    "debug": {
+      "description": "Enable debug mode",
+      "required": false,
+      "example": "true"
+    }
+  },
+  "installations": {
+    "custom": {
+      "type": "custom",
+      "command": "node",
+      "args": [
+        "/path/to/opik-mcp/build/index.js"
+      ],
+      "env": {
+        "OPIK_API_BASE_URL": "https://www.comet.com/opik/api",
+        "OPIK_API_KEY": "YOUR_API_KEY",
+        "OPIK_WORKSPACE_NAME": "default"
+      },
+      "description": "Manual installation from source"
+    }
+  },
+  "examples": [
+    {
+      "title": "Cursor IDE Integration",
+      "description": "Configure Opik MCP Server in Cursor IDE",
+      "prompt": "Create a .cursor/mcp.json file with the Opik MCP Server configuration"
+    }
+  ],
+  "name": "opik-mcp",
+  "description": " Query and analyze your Opik logs, traces, prompts and all other telemtry data from your LLMs in natural language.",
+  "categories": [
+    "MCP Tools"
+  ],
+  "is_official": true
+}

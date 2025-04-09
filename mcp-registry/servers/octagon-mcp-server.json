@@ -1,0 +1,257 @@
+{
+  "display_name": "Octagon MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OctagonAI/octagon-mcp-server"
+  },
+  "homepage": "https://docs.octagonagents.com",
+  "author": {
+    "name": "OctagonAI"
+  },
+  "license": "MIT",
+  "tags": [
+    "market intelligence",
+    "financial analysis",
+    "SEC filings",
+    "earnings calls",
+    "stock market data",
+    "private company research",
+    "funding rounds",
+    "M&A",
+    "IPO",
+    "web scraping"
+  ],
+  "arguments": {
+    "OCTAGON_API_KEY": {
+      "description": "Your Octagon API key",
+      "required": true,
+      "example": "your_octagon_api_key"
+    }
+  },
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "octagon-mcp"
+      ],
+      "env": {
+        "OCTAGON_API_KEY": "your_octagon_api_key"
+      },
+      "description": "Run directly with npx",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "SEC Filing Analysis",
+      "description": "Extract information from SEC filings",
+      "prompt": "What was Apple's gross margin percentage from their latest 10-Q filing?"
+    },
+    {
+      "title": "Earnings Call Analysis",
+      "description": "Analyze earnings call transcripts",
+      "prompt": "What did NVIDIA's CEO say about AI chip demand in their latest earnings call?"
+    },
+    {
+      "title": "Financial Metrics",
+      "description": "Retrieve financial metrics and ratios",
+      "prompt": "Calculate the price-to-earnings ratio for Tesla over the last 4 quarters"
+    },
+    {
+      "title": "Stock Market Data",
+      "description": "Access stock market data",
+      "prompt": "How has Apple's stock performed compared to the S&P 500 over the last 6 months?"
+    },
+    {
+      "title": "Private Company Research",
+      "description": "Research private company information",
+      "prompt": "What is the employee count and funding history for Anthropic?"
+    }
+  ],
+  "name": "octagon-mcp-server",
+  "description": "A Model Context Protocol (MCP) server implementation that integrates with Octagon Market Intelligence API.",
+  "categories": [
+    "Analytics"
+  ],
+  "is_official": true,
+  "tools": [
+    {
+      "name": "octagon-sec-agent",
+      "description": "[PUBLIC MARKET INTELLIGENCE] A specialized agent for SEC filings analysis and financial data extraction. Covers over 8,000 public companies from SEC EDGAR with comprehensive coverage of financial statements from annual and quarterly reports (10-K, 10-Q, 20-F), offering filings (S-1), amendments, and event filings (8-K). Updated daily with historical data dating back to 2018 for time-series analysis. Best for extracting financial and segment metrics, management discussion, footnotes, risk factors, and quantitative data from SEC filings. Example queries: 'What was Apple's R&D expense as a percentage of revenue in their latest fiscal year?', 'Find the risk factors related to supply chain in Tesla's latest 10-K', 'Extract quarterly revenue growth rates for Microsoft over the past 2 years'.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "Your natural language query or request for the agent"
+          }
+        },
+        "required": [
+          "prompt"
+        ]
+      }
+    },
+    {
+      "name": "octagon-transcripts-agent",
+      "description": "[PUBLIC MARKET INTELLIGENCE] A specialized agent for analyzing earnings call transcripts and management commentary. Covers over 8,000 public companies with continuous daily updates for real-time insights. Historical data dating back to 2018 enables robust time-series analysis. Extract information from earnings call transcripts, including executive statements, financial guidance, analyst questions, and forward-looking statements. Best for analyzing management sentiment, extracting guidance figures, and identifying key business trends. Example queries: 'What did Amazon's CEO say about AWS growth expectations in the latest earnings call?', 'Summarize key financial metrics mentioned in Tesla's Q2 2023 earnings call', 'What questions did analysts ask about margins during Netflix's latest earnings call?'.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "Your natural language query or request for the agent"
+          }
+        },
+        "required": [
+          "prompt"
+        ]
+      }
+    },
+    {
+      "name": "octagon-financials-agent",
+      "description": "[PUBLIC MARKET INTELLIGENCE] Specialized agent for financial statement analysis and ratio calculations. Capabilities: Analyze financial statements, calculate financial metrics, compare ratios, and evaluate performance indicators. Best for: Deep financial analysis and comparison of company financial performance. Example queries: 'Compare the gross margins, operating margins, and net margins of Apple, Microsoft, and Google over the last 3 years', 'Analyze Tesla's cash flow statements from 2021 to 2023 and calculate free cash flow trends', 'Calculate and explain key financial ratios for Amazon including P/E, EV/EBITDA, and ROIC'.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "Your natural language query or request for the agent"
+          }
+        },
+        "required": [
+          "prompt"
+        ]
+      }
+    },
+    {
+      "name": "octagon-stock-data-agent",
+      "description": "[PUBLIC MARKET INTELLIGENCE] Specialized agent for stock market data and equity investment analysis. Capabilities: Analyze stock price movements, trading volumes, market trends, valuation metrics, and technical indicators. Best for: Stock market research, equity analysis, and trading pattern identification. Example queries: 'How has Apple's stock performed compared to the S&P 500 over the last 6 months?', 'Analyze the trading volume patterns for Tesla stock before and after earnings releases', 'What were the major price movements for NVIDIA in 2023 and what were the catalysts?'.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "Your natural language query or request for the agent"
+          }
+        },
+        "required": [
+          "prompt"
+        ]
+      }
+    },
+    {
+      "name": "octagon-companies-agent",
+      "description": "[PRIVATE MARKET INTELLIGENCE] A specialized database agent for looking up company information and financials. Capabilities: Query comprehensive company financial information and business intelligence from Octagon's company database. Best for: Finding basic information about companies, their financial metrics, and industry benchmarks. NOTE: For better and more accurate results, provide the company's website URL instead of just the company name. Example queries: 'What is the employee trends for Stripe (stripe.com)?', 'List the top 5 companies in the AI sector by revenue growth', 'Who are the top competitors to Databricks (databricks.com)?'.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "Your natural language query or request for the agent"
+          }
+        },
+        "required": [
+          "prompt"
+        ]
+      }
+    },
+    {
+      "name": "octagon-funding-agent",
+      "description": "[PRIVATE MARKET INTELLIGENCE] A specialized database agent for company funding transactions and venture capital research. Capabilities: Extract information about funding rounds, investors, valuations, and investment trends. Best for: Researching startup funding history, investor activity, and venture capital patterns. NOTE: For better and more accurate results, provide the company's website URL instead of just the company name. Example queries: 'What was Anthropic's latest funding round size, valuation, and key investors (anthropic.com)?', 'How much has OpenAI raised in total funding and at what valuation (openai.com)?', 'Who were the lead investors in Databricks' Series G round and what was the post-money valuation (databricks.com)?'.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "Your natural language query or request for the agent"
+          }
+        },
+        "required": [
+          "prompt"
+        ]
+      }
+    },
+    {
+      "name": "octagon-deals-agent",
+      "description": "[PRIVATE MARKET INTELLIGENCE] A specialized database agent for M&A and IPO transaction analysis. Capabilities: Retrieve information about mergers, acquisitions, initial public offerings, and other financial transactions. Best for: Research on corporate transactions, IPO valuations, and M&A activity. NOTE: For better and more accurate results, provide the company's website URL instead of just the company name. Example queries: 'What was the acquisition price when Microsoft (microsoft.com) acquired GitHub (github.com)?', 'List the valuation multiples for AI companies in 2024', 'List all the acquisitions and price, valuation by Salesforce (salesforce.com) in 2023?'.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "Your natural language query or request for the agent"
+          }
+        },
+        "required": [
+          "prompt"
+        ]
+      }
+    },
+    {
+      "name": "octagon-investors-agent",
+      "description": "[PRIVATE MARKET INTELLIGENCE] A specialized database agent for looking up information on investors. Capabilities: Retrieve information about investors, their investment criteria, and past activities. Best for: Research on investors and details about their investment activities. NOTE: For better and more accurate results, provide the investor's website URL instead of just the investor name. Example queries: 'What is the latest investment criteria of Insight Partners (insightpartners.com)?', 'How many investments did Andreessen Horowitz (a16z.com) make in the last 6 months', 'What is the typical check size for QED Investors (qedinvestors.com)'.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "Your natural language query or request for the agent"
+          }
+        },
+        "required": [
+          "prompt"
+        ]
+      }
+    },
+    {
+      "name": "octagon-scraper-agent",
+      "description": "[PUBLIC & PRIVATE MARKET INTELLIGENCE] Specialized agent for financial data extraction from investor websites. Capabilities: Extract structured financial data from investor relations websites, tables, and online financial sources. Best for: Gathering financial data from websites that don't have accessible APIs. Example queries: 'Extract all data fields from zillow.com/san-francisco-ca/', 'Extract all data fields from www.carvana.com/cars/'.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "Your natural language query or request for the agent"
+          }
+        },
+        "required": [
+          "prompt"
+        ]
+      }
+    },
+    {
+      "name": "octagon-deep-research-agent",
+      "description": "[PUBLIC & PRIVATE MARKET INTELLIGENCE] A comprehensive agent that can utilize multiple sources for deep research analysis. Capabilities: Aggregate research across multiple data sources, synthesize information, and provide comprehensive investment research. Best for: Investment research questions requiring up-to-date aggregated information from the web. Example queries: 'Research the financial impact of Apple's privacy changes on digital advertising companies' revenue and margins', 'Analyze the competitive landscape in the cloud computing sector, focusing on AWS, Azure, and Google Cloud margin and growth trends', 'Investigate the factors driving electric vehicle adoption and their impact on battery supplier financials'.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "Your natural language query or request for the agent"
+          }
+        },
+        "required": [
+          "prompt"
+        ]
+      }
+    },
+    {
+      "name": "octagon-debts-agent",
+      "description": "[PRIVATE MARKET INTELLIGENCE] A specialized database agent for analyzing private debts and lenders. Capabilities: Retrieve information about private debts and lenders. Best for: Research on borrowers, and lenders and details about the private debt facilities. Example queries: 'List all the debt activities from borrower American Tower', 'Compile all the debt activities from lender ING Group in Q4 2024'.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "Your natural language query or request for the agent"
+          }
+        },
+        "required": [
+          "prompt"
+        ]
+      }
+    }
+  ]
+}

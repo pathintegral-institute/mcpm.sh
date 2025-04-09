@@ -1,0 +1,56 @@
+{
+  "display_name": "JetBrains MCP Proxy Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JetBrains/mcp-jetbrains"
+  },
+  "license": "Apache-2.0",
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@jetbrains/mcp-proxy"
+      ],
+      "package": "@jetbrains/mcp-proxy",
+      "description": "Install via npm package",
+      "recommended": true
+    }
+  },
+  "homepage": "https://github.com/JetBrains/mcp-jetbrains",
+  "author": {
+    "name": "JetBrains"
+  },
+  "tags": [
+    "jetbrains",
+    "ide",
+    "proxy"
+  ],
+  "arguments": {
+    "IDE_PORT": {
+      "description": "Port of IDE's built-in webserver",
+      "required": false,
+      "example": "<port of IDE's built-in webserver>"
+    },
+    "HOST": {
+      "description": "Host/address of IDE's built-in webserver (defaults to 127.0.0.1)",
+      "required": false,
+      "example": "<host/address of IDE's built-in webserver>"
+    },
+    "LOG_ENABLED": {
+      "description": "Enable logging",
+      "required": false,
+      "example": "true"
+    }
+  },
+  "name": "mcp-jetbrains",
+  "description": "The server proxies requests from client to JetBrains IDE.",
+  "categories": [
+    "Dev Tools"
+  ],
+  "tools": [],
+  "prompts": [],
+  "resources": [],
+  "is_official": true
+}

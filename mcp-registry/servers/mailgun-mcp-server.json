@@ -1,0 +1,56 @@
+{
+  "display_name": "Mailgun MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mailgun/mailgun-mcp-server"
+  },
+  "homepage": "https://github.com/mailgun/mailgun-mcp-server",
+  "author": {
+    "name": "mailgun"
+  },
+  "license": "Apache-2.0",
+  "tags": [
+    "email",
+    "mailgun",
+    "mcp"
+  ],
+  "arguments": {
+    "MAILGUN_API_KEY": {
+      "description": "Your Mailgun API key",
+      "required": true,
+      "example": "YOUR-mailgun-api-key"
+    }
+  },
+  "installations": {
+    "custom": {
+      "type": "custom",
+      "command": "node",
+      "args": [
+        "path/to/mailgun-mcp-server/src/mailgun-mcp.js"
+      ],
+      "env": {
+        "MAILGUN_API_KEY": "YOUR-mailgun-api-key"
+      },
+      "description": "Run the server using Node.js",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Send an Email",
+      "description": "Send an email with a funny body from IT Desk",
+      "prompt": "Can you send an email to EMAIL_HERE with a funny email body that makes it sound like it's from the IT Desk from Office Space? Please use the sending domain DOMAIN_HERE, and make the email from \"postmaster@DOMAIN_HERE\"!"
+    },
+    {
+      "title": "Fetch and Visualize Sending Statistics",
+      "description": "Create a chart with email delivery statistics",
+      "prompt": "Would you be able to make a chart with email delivery statistics for the past week?"
+    }
+  ],
+  "name": "mailgun",
+  "description": "A Model Context Protocol (MCP) server implementation for [Mailgun](https://mailgun.com), enabling MCP-compatible AI clients like Claude Desktop to interract with the service.",
+  "categories": [
+    "Messaging"
+  ],
+  "is_official": true
+}

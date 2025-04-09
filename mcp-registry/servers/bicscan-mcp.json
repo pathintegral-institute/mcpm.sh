@@ -1,0 +1,107 @@
+{
+  "display_name": "BICScan MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ahnlabio/bicscan-mcp"
+  },
+  "homepage": "https://bicscan.io",
+  "author": {
+    "name": "ahnlabio"
+  },
+  "license": "[NOT GIVEN]",
+  "tags": [
+    "blockchain",
+    "risk scoring",
+    "crypto",
+    "API"
+  ],
+  "arguments": {
+    "BICSCAN_API_KEY": {
+      "description": "API key obtained from https://bicscan.io",
+      "required": true,
+      "example": "YOUR_BICSCAN_API_KEY_HERE"
+    }
+  },
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/ahnlabio/bicscan-mcp",
+        "bicscan-mcp"
+      ],
+      "env": {
+        "BICSCAN_API_KEY": "{BICSCAN_API_KEY}"
+      },
+      "description": "Run directly using uvx"
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "--interactive",
+        "--env",
+        "BICSCAN_API_KEY={BICSCAN_API_KEY}",
+        "bicscan-mcp"
+      ],
+      "description": "Run using Docker"
+    }
+  },
+  "examples": [
+    {
+      "title": "Risk Scoring",
+      "description": "Obtain risk scores for blockchain entities like crypto addresses, domain names, and dApp URLs",
+      "prompt": "[NOT GIVEN]"
+    },
+    {
+      "title": "Asset Information",
+      "description": "Retrieve detailed asset holdings for crypto addresses across multiple blockchain networks",
+      "prompt": "[NOT GIVEN]"
+    }
+  ],
+  "name": "bicscan-mcp",
+  "description": "A powerful and efficient Blockchain address risk scoring API MCP Server, leveraging the BICScan API to provide comprehensive risk assessments and asset information for blockchain addresses, domains, and decentralized applications (dApps).",
+  "categories": [
+    "Finance"
+  ],
+  "is_official": true,
+  "tools": [
+    {
+      "name": "get_risk_score",
+      "description": "Get Risk Score for Crypto, Domain Name, ENS, CNS, KNS or even Hostname Address\n\n    Args:\n        address: EOA, CA, ENS, CNS, KNS or even HostName\n    Returns:\n        Dict: where summary.bicscan_score is from 0 to 100. 100 is high risk.\n    ",
+      "inputSchema": {
+        "properties": {
+          "address": {
+            "title": "Address",
+            "type": "string"
+          }
+        },
+        "required": [
+          "address"
+        ],
+        "title": "get_risk_scoreArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_assets",
+      "description": "Get Assets holdings by CryptoAddress\n\n    Args:\n        address: EOA, CA, ENS, CNS, KNS.\n    Returns:\n        Dict: where assets is a list of assets\n    ",
+      "inputSchema": {
+        "properties": {
+          "address": {
+            "title": "Address",
+            "type": "string"
+          }
+        },
+        "required": [
+          "address"
+        ],
+        "title": "get_assetsArguments",
+        "type": "object"
+      }
+    }
+  ]
+}

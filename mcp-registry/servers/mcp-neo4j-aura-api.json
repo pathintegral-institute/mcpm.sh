@@ -1,0 +1,313 @@
+{
+  "display_name": "Neo4j MCP (Aura API)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/neo4j-contrib/mcp-neo4j"
+  },
+  "homepage": "https://github.com/neo4j-contrib/mcp-neo4j",
+  "author": {
+    "name": "neo4j-contrib"
+  },
+  "license": "MIT",
+  "tags": [
+    "neo4j",
+    "mcp",
+    "knowledge graph",
+    "aura"
+  ],
+  "arguments": {
+    "NEO4J_CLIENT_ID": {
+      "description": "Neo4j client ID",
+      "required": true,
+      "example": "<client_id>"
+    },
+    "NEO4J_CLIENT_SECRET": {
+      "description": "Neo4j client secret",
+      "required": true,
+      "example": "<client_secret>"
+    }
+  },
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "mcp-neo4j-aura-manager",
+        "--client-id",
+        "${NEO4J_CLIENT_ID}",
+        "--client-secret",
+        "${NEO4J_CLIENT_SECRET}"
+      ],
+      "description": "Clone the repository to access multiple Neo4j MCP servers",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Database Schema Query",
+      "description": "Get information about what's in the graph database",
+      "prompt": "What is in this graph?"
+    },
+    {
+      "title": "Data Visualization",
+      "description": "Generate charts from graph data",
+      "prompt": "Render a chart from the top products sold by frequency, total and average volume"
+    },
+    {
+      "title": "Instance Management",
+      "description": "List Neo4j Aura instances",
+      "prompt": "List my instances"
+    },
+    {
+      "title": "Instance Creation",
+      "description": "Create a new Neo4j Aura instance",
+      "prompt": "Create a new instance named mcp-test for Aura Professional with 4GB and Graph Data Science enabled"
+    },
+    {
+      "title": "Knowledge Storage",
+      "description": "Store information in the knowledge graph",
+      "prompt": "Store the fact that I worked on the Neo4j MCP Servers today with Andreas and Oskar"
+    }
+  ],
+  "name": "mcp-neo4j-aura-api",
+  "description": "Neo4j graph database server (schema + read/write-cypher) and separate graph database backed memory",
+  "categories": [
+    "Databases"
+  ],
+  "is_official": true,
+  "tools": [
+    {
+      "name": "list_instances",
+      "description": "List all Neo4j Aura database instances",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_instance_details",
+      "description": "Get details for one or more Neo4j Aura instances by ID, including status, region, memory, storage",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "instance_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of instance IDs to retrieve"
+          }
+        },
+        "required": [
+          "instance_ids"
+        ]
+      }
+    },
+    {
+      "name": "get_instance_by_name",
+      "description": "Find a Neo4j Aura instance by name and returns the details including the id",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the instance to find"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    {
+      "name": "create_instance",
+      "description": "Create a new Neo4j Aura database instance",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tenant_id": {
+            "type": "string",
+            "description": "ID of the tenant/project where the instance will be created"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name for the new instance"
+          },
+          "memory": {
+            "type": "integer",
+            "description": "Memory allocation in GB",
+            "default": 1
+          },
+          "region": {
+            "type": "string",
+            "description": "Region for the instance (e.g., 'us-east-1')",
+            "default": "us-central1"
+          },
+          "type": {
+            "type": "string",
+            "description": "Instance type (free-db, professional-db, enterprise-db, or business-critical)",
+            "default": "free-db"
+          },
+          "vector_optimized": {
+            "type": "boolean",
+            "description": "Whether the instance is optimized for vector operations",
+            "default": false
+          },
+          "cloud_provider": {
+            "type": "string",
+            "description": "Cloud provider (gcp, aws, azure)",
+            "default": "gcp"
+          },
+          "graph_analytics_plugin": {
+            "type": "boolean",
+            "description": "Whether to enable the graph analytics plugin",
+            "default": false
+          },
+          "source_instance_id": {
+            "type": "string",
+            "description": "ID of the source instance to clone from (for professional/enterprise instances)"
+          }
+        },
+        "required": [
+          "tenant_id",
+          "name"
+        ]
+      }
+    },
+    {
+      "name": "update_instance_name",
+      "description": "Update the name of a Neo4j Aura instance",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "instance_id": {
+            "type": "string",
+            "description": "ID of the instance to update"
+          },
+          "name": {
+            "type": "string",
+            "description": "New name for the instance"
+          }
+        },
+        "required": [
+          "instance_id",
+          "name"
+        ]
+      }
+    },
+    {
+      "name": "update_instance_memory",
+      "description": "Update the memory allocation of a Neo4j Aura instance",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "instance_id": {
+            "type": "string",
+            "description": "ID of the instance to update"
+          },
+          "memory": {
+            "type": "integer",
+            "description": "New memory allocation in GB"
+          }
+        },
+        "required": [
+          "instance_id",
+          "memory"
+        ]
+      }
+    },
+    {
+      "name": "update_instance_vector_optimization",
+      "description": "Update the vector optimization setting of a Neo4j Aura instance",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "instance_id": {
+            "type": "string",
+            "description": "ID of the instance to update"
+          },
+          "vector_optimized": {
+            "type": "boolean",
+            "description": "Whether the instance should be optimized for vector operations"
+          }
+        },
+        "required": [
+          "instance_id",
+          "vector_optimized"
+        ]
+      }
+    },
+    {
+      "name": "pause_instance",
+      "description": "Pause a Neo4j Aura database instance",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "instance_id": {
+            "type": "string",
+            "description": "ID of the instance to pause"
+          }
+        },
+        "required": [
+          "instance_id"
+        ]
+      }
+    },
+    {
+      "name": "resume_instance",
+      "description": "Resume a paused Neo4j Aura database instance",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "instance_id": {
+            "type": "string",
+            "description": "ID of the instance to resume"
+          }
+        },
+        "required": [
+          "instance_id"
+        ]
+      }
+    },
+    {
+      "name": "list_tenants",
+      "description": "List all Neo4j Aura tenants/projects",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_tenant_details",
+      "description": "Get details for a specific Neo4j Aura tenant/project",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tenant_id": {
+            "type": "string",
+            "description": "ID of the tenant/project to retrieve"
+          }
+        },
+        "required": [
+          "tenant_id"
+        ]
+      }
+    },
+    {
+      "name": "delete_instance",
+      "description": "Delete a Neo4j Aura database instance",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "instance_id": {
+            "type": "string",
+            "description": "ID of the instance to delete"
+          }
+        },
+        "required": [
+          "instance_id"
+        ]
+      }
+    }
+  ]
+}

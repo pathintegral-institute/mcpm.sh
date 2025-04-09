@@ -1,0 +1,57 @@
+{
+  "display_name": "Rember MCP",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rember/rember-mcp"
+  },
+  "homepage": "https://rember.com",
+  "author": {
+    "name": "rember"
+  },
+  "license": "MIT",
+  "tags": [
+    "flashcards",
+    "spaced repetition",
+    "learning",
+    "memory"
+  ],
+  "arguments": {
+    "api-key": {
+      "description": "Your Rember API key from the Settings page",
+      "required": true,
+      "example": "rember_32randomcharacters"
+    }
+  },
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@getrember/mcp",
+        "--api-key=${api-key}"
+      ],
+      "env": {},
+      "description": "Run using npx",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Create flashcards from chat",
+      "description": "Ask Claude to create flashcards from your conversation",
+      "prompt": "I like your answer, help me remember it"
+    },
+    {
+      "title": "Create flashcards from PDF",
+      "description": "Ask Claude to create flashcards from a PDF document",
+      "prompt": "Create flashcards from chapter 2 of this PDF"
+    }
+  ],
+  "name": "rember-mcp",
+  "description": "Create spaced repetition flashcards in Rember to remember anything you learn in your chats",
+  "categories": [
+    "Knowledge Base"
+  ],
+  "is_official": true
+}

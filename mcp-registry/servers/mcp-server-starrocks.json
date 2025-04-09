@@ -1,0 +1,107 @@
+{
+  "display_name": "StarRocks Official MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/StarRocks/mcp-server-starrocks"
+  },
+  "homepage": "https://github.com/StarRocks/mcp-server-starrocks",
+  "author": {
+    "name": "StarRocks"
+  },
+  "license": "Apache-2.0",
+  "tags": [
+    "database",
+    "sql",
+    "starrocks"
+  ],
+  "arguments": {
+    "STARROCKS_HOST": {
+      "description": "StarRocks database host",
+      "required": false,
+      "example": "localhost"
+    },
+    "STARROCKS_PORT": {
+      "description": "StarRocks database port",
+      "required": false,
+      "example": "9030"
+    },
+    "STARROCKS_USER": {
+      "description": "StarRocks database user",
+      "required": false,
+      "example": "root"
+    },
+    "STARROCKS_PASSWORD": {
+      "description": "StarRocks database password",
+      "required": false,
+      "example": ""
+    }
+  },
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "mcp-server-starrocks"
+      ],
+      "env": {
+        "STARROCKS_HOST": "localhost",
+        "STARROCKS_PORT": "9030",
+        "STARROCKS_USER": "root",
+        "STARROCKS_PASSWORD": ""
+      },
+      "description": "Run using Python with uv package manager",
+      "recommended": true
+    }
+  },
+  "examples": [],
+  "name": "mcp-server-starrocks",
+  "description": "The StarRocks MCP Server acts as a bridge between AI assistants and StarRocks databases, allowing for direct SQL execution and database exploration without requiring complex setup or configuration.",
+  "categories": [
+    "Databases"
+  ],
+  "tools": [
+    {
+      "name": "read_query",
+      "description": "Execute a SELECT query or commands that return a ResultSet",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "SQL query to execute"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "write_query",
+      "description": "Execute an DDL/DML or other StarRocks command that do not have a ResultSet",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "SQL to execute"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [
+    {
+      "uri": "starrocks:///databases",
+      "name": "All Databases",
+      "description": "List all databases in StarRocks",
+      "mimeType": "text/plain",
+      "annotations": null
+    }
+  ],
+  "is_official": true
+}

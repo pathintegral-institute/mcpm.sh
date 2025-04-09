@@ -71,3 +71,6 @@ _dev/
 
 # macos system files
 .DS_Store
+
+# folder
+local/

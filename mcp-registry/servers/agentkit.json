@@ -1,0 +1,116 @@
+{
+  "display_name": "Chargebee Model Context Protocol (MCP) Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chargebee/agentkit"
+  },
+  "homepage": "https://github.com/chargebee/agentkit",
+  "author": {
+    "name": "chargebee"
+  },
+  "license": "MIT",
+  "tags": [
+    "MCP",
+    "Chargebee",
+    "AI",
+    "LLM"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@chargebee/mcp@latest"
+      ],
+      "recommended": true,
+      "description": "Run the Chargebee MCP server using Node.js npx"
+    }
+  },
+  "examples": [
+    {
+      "title": "Search Chargebee Documentation",
+      "description": "Use the documentation search tool to retrieve detailed information",
+      "prompt": "Search for information about Chargebee subscription APIs"
+    },
+    {
+      "title": "Generate Code Snippets",
+      "description": "Get context-aware code snippets for Chargebee integration",
+      "prompt": "Create a code sample for implementing a subscription creation flow with Chargebee"
+    }
+  ],
+  "name": "agentkit",
+  "description": "MCP Server that connects AI agents to Chargebee platform.",
+  "categories": [
+    "Dev Tools"
+  ],
+  "tools": [
+    {
+      "name": "chargebee_documentation_search",
+      "description": "\nDo not use this tool for code generation. For code generation use \"chargebee_code_planner\" tool. \nThis tool will take in parameters about integrating with Chargebee in their application, then search and retrieve relevant Chargebee documentation content.\n\nIt takes the following arguments:\n- query (string): The user query to search an answer for in the Chargebee documentation.\n- language (enum): The programming language for the documentation. Check the user's application language.\n- userRequest (string): User's original request to you.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The user query to search an answer for in the Chargebee documentation."
+          },
+          "userRequest": {
+            "type": "string",
+            "description": "User's original request to you."
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "node",
+              "python",
+              "curl",
+              "java",
+              "go",
+              "ruby",
+              "php",
+              "dotnet"
+            ],
+            "description": "The programming language for the documentation. Check the user's application language."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "chargebee_code_planner",
+      "description": "\nAlways use this tool to get the accurate integeration code guide for Chargebee.\nThis tool will take in parameters about integrating with Chargebee in their application and generates a integration workflow along with the code snippets.\n\nIt takes the following arguments:\n- goal (string): What is the user's goal?\n- language (enum): Programming language the code to be generated in. Check the user's application language.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "goal": {
+            "type": "string",
+            "description": "What is the user's goal?"
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "node",
+              "python",
+              "curl",
+              "java",
+              "go",
+              "ruby",
+              "php",
+              "dotnet"
+            ],
+            "description": "Programming language the code to be generated in. Check the user's application language."
+          }
+        },
+        "required": [
+          "goal"
+        ]
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": true
+}

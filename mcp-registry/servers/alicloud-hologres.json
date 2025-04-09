@@ -1,0 +1,171 @@
+{
+  "display_name": "Hologres MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aliyun/alibabacloud-hologres-mcp-server"
+  },
+  "homepage": "https://github.com/aliyun/alibabacloud-hologres-mcp-server",
+  "author": {
+    "name": "aliyun"
+  },
+  "license": "Apache-2.0",
+  "tags": [
+    "hologres",
+    "database",
+    "SQL"
+  ],
+  "arguments": {
+    "HOLOGRES_HOST": {
+      "description": "Hologres database host",
+      "required": true,
+      "example": "host"
+    },
+    "HOLOGRES_PORT": {
+      "description": "Hologres database port",
+      "required": true,
+      "example": "port"
+    },
+    "HOLOGRES_USER": {
+      "description": "Hologres database user (access_id)",
+      "required": true,
+      "example": "access_id"
+    },
+    "HOLOGRES_PASSWORD": {
+      "description": "Hologres database password (access_key)",
+      "required": true,
+      "example": "access_key"
+    },
+    "HOLOGRES_DATABASE": {
+      "description": "Hologres database name",
+      "required": true,
+      "example": "database"
+    }
+  },
+  "installations": {
+    "local_file": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "hologres-mcp-server"
+      ],
+      "env": {
+        "HOLOGRES_HOST": "host",
+        "HOLOGRES_PORT": "port",
+        "HOLOGRES_USER": "access_id",
+        "HOLOGRES_PASSWORD": "access_key",
+        "HOLOGRES_DATABASE": "database"
+      },
+      "description": "Run using local file"
+    }
+  },
+  "examples": [],
+  "name": "alicloud-hologres",
+  "description": "Hologres MCP Server serves as a universal interface between AI Agents and Hologres databases. It enables seamless communication between AI Agents and Hologres, helping AI Agents retrieve Hologres database metadata and execute SQL operations.",
+  "categories": [
+    "Databases"
+  ],
+  "is_official": true,
+  "tools": [
+    {
+      "name": "execute_select_sql",
+      "description": "Execute SELECT SQL to query data from Hologres database.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The (SELECT) SQL query to execute"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "execute_dml_sql",
+      "description": "Execute (INSERT, UPDATE, DELETE) SQL to insert, update, and delete data in Hologres databse.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The DML SQL query to execute"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "execute_ddl_sql",
+      "description": "Execute (CREATE, ALTER, DROP) SQL statements to CREATE, ALTER, or DROP tables, views, procedures, GUCs etc. in Hologres databse.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The DDL SQL query to execute"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "gather_table_statistics",
+      "description": "Execute the ANALYZE TABLE command to have Hologres collect table statistics, enabling QO to generate better query plans",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "schema": {
+            "type": "string",
+            "description": "Schema name"
+          },
+          "table": {
+            "type": "string",
+            "description": "Table name"
+          }
+        },
+        "required": [
+          "schema",
+          "table"
+        ]
+      }
+    },
+    {
+      "name": "get_query_plan",
+      "description": "Get query plan for a SQL query",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The SQL query to analyze"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "get_execution_plan",
+      "description": "Get actual execution plan with runtime statistics for a SQL query",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The SQL query to analyze"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ]
+}

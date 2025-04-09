@@ -1,0 +1,3163 @@
+{
+  "display_name": "EduBase MCP server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/EduBase/MCP"
+  },
+  "homepage": "https://www.edubase.net",
+  "author": {
+    "name": "EduBase"
+  },
+  "license": "MIT",
+  "tags": [
+    "education",
+    "learning",
+    "quiz",
+    "assessment",
+    "API"
+  ],
+  "arguments": {
+    "EDUBASE_API_URL": {
+      "description": "URL to the EduBase API",
+      "required": true,
+      "example": "https://domain.edubase.net/api"
+    },
+    "EDUBASE_API_APP": {
+      "description": "Your integration app ID",
+      "required": true,
+      "example": "your_integration_app_id"
+    },
+    "EDUBASE_API_KEY": {
+      "description": "Your integration secret key",
+      "required": true,
+      "example": "your_integration_secret_key"
+    }
+  },
+  "installations": {
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "EDUBASE_API_URL",
+        "-e",
+        "EDUBASE_API_APP",
+        "-e",
+        "EDUBASE_API_KEY",
+        "edubase/mcp"
+      ],
+      "env": {
+        "EDUBASE_API_URL": "https://domain.edubase.net/api",
+        "EDUBASE_API_APP": "your_integration_app_id",
+        "EDUBASE_API_KEY": "your_integration_secret_key"
+      },
+      "description": "Run using Docker",
+      "recommended": false
+    },
+    "custom": {
+      "type": "custom",
+      "command": "node",
+      "args": [
+        "/path/to/dist/index.js"
+      ],
+      "env": {
+        "EDUBASE_API_URL": "https://domain.edubase.net/api",
+        "EDUBASE_API_APP": "your_integration_app_id",
+        "EDUBASE_API_KEY": "your_integration_secret_key"
+      },
+      "description": "Run using Node.js",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Collaborative Education Management",
+      "description": "Collaboratively creating and uploading questions, scheduling exams and analyzing user results with Claude",
+      "prompt": "I'd like to create a new quiz in EduBase with 5 multiple choice questions about basic algebra."
+    }
+  ],
+  "name": "edubase",
+  "description": "<img src=\"https://static.edubase.net/media/brand/title/color.png\" alt=\"EduBase logo\" height=\"150\" />",
+  "categories": [
+    "MCP Tools"
+  ],
+  "tools": [
+    {
+      "name": "edubase_get_question",
+      "description": "Check existing question. Questions are the lowest level in the EduBase hierarchy, serving as the building blocks for Quiz sets.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "external unique question identifier"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_question",
+      "description": "Publish or update a question. Questions are the atomic building blocks of the EduBase Quiz system and represent the lowest level in the hierarchy (Questions -> Quiz sets -> Exams).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "External unique question identifier for question management.\nOn repeated uploads, the questions are updated (rather then added) based on this value, which can be an arbitrary text.\nIf the question already exists at upload time with the same external identifier (in the given folder or Quiz set), the existing question will be updated instead of being added as a new one.\n- Use cases:\n - Integration with external systems\n - Version control\n - Batch updates\n - Content synchronization\n- Best practices:\n - Use consistent naming conventions\n - Include version, source or date information\n - Consider hierarchical IDs for related content\nExample:\n- id=MATHEMATICS_ARITHMETIC_BASIC_ADDITION_STATIC_001\n- type=numerical\n- question=What is 2+2?\n- answer=4"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of the question.\nEduBase supports various question types to accommodate different assessment needs:\n- Basic Types:\n - GENERIC: Strict matching including spaces and punctuation\n - TEXT: Basic text input with flexible matching (ignores spaces and punctuation)\n - FREE-TEXT: Extended text response with semi-automatic grading\n - READING: Non-assessed text display for complex question groups\n- Choice-Based Types:\n - CHOICE: Single correct answer selection\n - MULTIPLE-CHOICE: Multiple correct answers\n - ORDER: Sequence arrangement (arrange items in correct order)\n - TRUE/FALSE: Statement evaluation (true statements in ANSWER, false in OPTIONS)\n- Numerical Types:\n - NUMERIC: Numerical value validation with fractions, constants, intervals\n - DATE/TIME: Calendar date validation with adjustable precision\n - EXPRESSION: Mathematical expression evaluation\n- Advanced Types:\n - MATRIX/MATRIX:EXPRESSION: Matrix evaluation (format: [a;b|c;d] for 2x2)\n - SET/SET:TEXT: Unordered collection validation\n - FILE: File submission evaluation\nExample:\ntype=numerical"
+          },
+          "question": {
+            "type": "string",
+            "description": "The main question text that will be displayed to the test taker.\nSupports rich formatting options:\n- LaTeX Support (requires QUESTION_FORMAT=LATEX):\n - Inline: $$...$$\n - Block: $$$$...$$$$\n - IMPORTANT: When using LaTeX in questions, you MUST use double dollar signs ($$...$$) for inline math or quadruple dollar signs ($$$$...$$$$) for block math.\n - Single dollar signs ($...$) are NOT supported and will not render correctly. The inline or block method must be used, as $...$ won't work!\n- Parameters: Use curly braces {parameter_name} (defined in PARAMETERS field)\n- Quick expressions: Use ~~~expression~~~ for simple parameter calculations, e.g., area of a circle is ~~~{r}*{r}*pi~~~\n- Style formatting with EduTags:\n - Bold: [[B]]...[[/B]]\n - Italic: [[I]]...[[/I]]\n - Underline: [[U]]...[[/U]]\n - Subscript: [[SUB]]...[[/SUB]], Superscript: [[SUP]]...[[/SUP]]\n - Code: [[CODE]]...[[/CODE]], [[CODEBLOCK]]...[[/CODEBLOCK]]\n - Colors: [[COLOR:{color}]]...[[/COLOR]], [[BACKGROUND:{color}]]...[[/BACKGROUND]]\n- Tables: Use [[..]] format with semicolons for columns, vertical bars for rows, e.g., [[Header 1; Header 2 | Data 1; Data 2]]\n- Answer placeholders: [[___]] (3 underscores), for fill-in-the-gaps\nExample:\nquestion=Calculate the area of a circle with radius {r} using $$A = \\pi r^2$$"
+          },
+          "question_format": {
+            "type": "string",
+            "description": "Controls question text rendering.\n- NORMAL: Default text formatting with standard font size, recommended for most tasks\n- LATEX: Enables LaTeX for mathematical, scientific notations (using KaTeX)\n- LONG: Smaller font with automatic paragraph breaks (ideal for lengthy text)\nExample:\nquestion_format=LATEX"
+          },
+          "answer": {
+            "type": "string",
+            "description": "The correct answer(s) for the question.\n- For multiple answers, separate with triple-and operator (\"&&&\")\n- Parameters can be used in curly braces {param_name}\n- LaTeX Support (requires QUESTION_FORMAT=LATEX):\n - Inline: $$...$$\n - Block: $$$$...$$$$\n - IMPORTANT: When using LaTeX in answer, you MUST use double dollar signs ($$...$$) for inline math or quadruple dollar signs ($$$$...$$$$) for block math.\n - Single dollar signs ($...$) are NOT supported and will not render correctly. The inline or block method must be used, as $...$ won't work!\n- Usage by question type:\n - CHOICE: The correct option\n - MULTIPLE-CHOICE: All correct options\n - TEXT/NUMERICAL/EXPRESSION: Expected response(s)\n - ORDER: Items in correct sequence\n - TRUE/FALSE: True statements (false statements go in OPTIONS)\n - MATRIX types: Use format [a;b|c;d] for matrices\n - SET types: Unordered collection of elements\nExample:\nanswer=Paris\nanswer=sin(x)^2+cos(x)^2 # with type = EXPRESSION\nanswer=$$sin^2(x)+cos^2(x)$$ # with type = CHOICE so it renders correctly"
+          },
+          "language": {
+            "type": "string",
+            "description": "The language of the question.\n- Alpha-2 code according to ISO 639-1\nExample:\nlanguage=hu  # Hungarian"
+          },
+          "image": {
+            "type": "string",
+            "description": "Attach an image to the question.\nSupported formats: PNG, JPEG, WebP\nFormat: filename=data, where data is either a base64-encoded image or a URL"
+          },
+          "answer_order": {
+            "type": "string",
+            "description": "Controls whether the sequence of multiple answers matters.\n- Plus sign (+) to indicate YES\n- Blank field or minus sign (-) indicates NO (default)\n- When using answer_label, this is automatically activated\n- Essential for questions where sequence is important (e.g., steps in a process)\nExample:\nanswer_order=+\nExample API call:\nid=europe_cities_population\ntype=text\nquestion=List the following European cities in descending order by population (largest first)\nanswer=London &&& Madrid &&& Paris\nanswer_order=+"
+          },
+          "answer_label": {
+            "type": "string",
+            "description": "Text displayed in/above the input field during the test.\n- Separate multiple labels with triple-and operators (\"&&&\")\n- Automatically activates the answer_order function\n- Perfect for multi-part questions where each part needs clear labeling\n- Useful for creating pairing/matching questions\nExample:\nanswer_label=a) Distance (km) &&& b) Time (hours) &&& c) Speed (km/h)\nExample API call:\nid=basic_math\ntype=numerical\nquestion=Given the number 16:\\n\\na) What is double this number?\\n\\nb) What is half of this number?\\n\\nc) What is this number plus 10?\nanswer=32 &&& 8 &&& 26\nanswer_label=a) Double &&& b) Half &&& c) Plus 10\npoints=3"
+          },
+          "answer_hide": {
+            "type": "string",
+            "description": "Controls whether correct answers are hidden on the results page.\n- Plus sign (+) to indicate YES\n- Blank field or minus sign (-) indicates NO (default)\n- Useful for test security and preventing answer sharing\n- Critical for reusable questions and practice tests\nExample:\nanswer_hide=+\nExample API call:\nid=uk_countries\ntype=text\nquestion=Name any of the countries within the United Kingdom!\nanswer=England &&& Northern Ireland &&& Scotland &&& Wales\nanswer_require=1\nanswer_hide=+"
+          },
+          "answer_indefinite": {
+            "type": "string",
+            "description": "Allows users to add any number of input fields using + and - buttons.\n- Plus sign (+) to indicate YES\n- Blank field or minus sign (-) indicates NO (default)\n- Answer labels will not appear when this is enabled\n- Ideal for brainstorming exercises or questions with variable number of answers\nExample:\nanswer_indefinite=+\nExample API call:\nid=name_countries\ntype=text\nquestion=Name as many European countries as you can think of.\nanswer=France &&& Germany &&& Italy &&& Spain &&& United Kingdom &&& ...\nanswer_indefinite=+"
+          },
+          "answer_format": {
+            "type": "string",
+            "description": "Defines how to display the answer on the results page.\n- Only applicable for FREE-TEXT questions\n- Format: type or type:value\n- Available types:\n - normal: standard text (default)\n - code: with syntax highlighting (specify language after colon)\nExample:\nanswer_format=code:python\nanswer_format=code:sql\nExample API call:\nid=sql_basics\ntype=free-text\nquestion=Write a SQL query to select all columns from the \"users\" table where the age is greater than 18.\nanswer=SELECT * FROM users WHERE age > 18\nanswer_format=code:sql"
+          },
+          "answer_require": {
+            "type": "string",
+            "description": "Number of answers required for maximum score.\n- Not applicable for CHOICE and FREE-TEXT questions\n- Perfect for questions with multiple valid answers where only a subset needs to be provided\n- Useful when asking students to provide any X examples from a larger set\nExample:\nanswer_require=3\nExample API call:\nid=uk_countries\ntype=text\nquestion=Name any one of the countries within the United Kingdom!\nanswer=England &&& Northern Ireland &&& Scotland &&& Wales\nanswer_require=1"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Subject classification for organizing questions.\n- Provides primary categorization for content organization\n- Use the question editor in the EduBase UI for an up-to-date list of possible values\nExample:\nsubject=Mathematics\ncategory=Algebra"
+          },
+          "category": {
+            "type": "string",
+            "description": "Category, another layer of organization as seen in SUBJECT"
+          },
+          "path": {
+            "type": "string",
+            "description": "Path where question will be stored in personal QuestionBase.\n- Default: /API\n- Supports hierarchical structure with forward slashes\n- Always start with a forward slash!\nExample:\npath=/Mathematics/Calculus/Derivatives"
+          },
+          "options": {
+            "type": "string",
+            "description": "Incorrect options or false statements for choice-based question types.\n- Required for CHOICE, MULTIPLE-CHOICE question types\n- For TRUE/FALSE, these are the false statements (ANSWER contains true statements)\n- Separate multiple options with triple-and operators (\"&&&\")\n- Parameters can be used in curly braces {param_name}\n- LaTeX Support (requires QUESTION_FORMAT=LATEX):\n - Inline: $$...$$\n - Block: $$$$...$$$$\n - IMPORTANT: When using LaTeX in questions, you MUST use double dollar signs ($$...$$) for inline math or quadruple dollar signs ($$$$...$$$$) for block math.\n - Single dollar signs ($...$) are NOT supported and will not render correctly. The inline or block method must be used, as $...$ won't work!\nExample:\noptions=London &&& Berlin &&& Madrid\nExample API call:\nid=capital_france\ntype=choice\nquestion=What is the capital of France?\nanswer=Paris\noptions=London &&& Berlin &&& Madrid"
+          },
+          "options_fix": {
+            "type": "string",
+            "description": "Controls the arrangement of answers and options.\n- Available values:\n - all: Answers appear first, followed by options\n - abc: Sort all items (answers and options) alphabetically\n - first:N: Place first N options at the end\n - last:N: Place last N options at the end\n - answers: Place all answers at the end\n- Useful for maintaining consistent presentation or for specific pedagogical purposes\nFor alphabetical ordering:\n- When migrating content from textbooks or past exams, can maintain original lettering system (a, b, c...) for:\n - Reference consistency with printed materials\n - Alignment with answer keys\n - Compatibility with existing grading systems\n - Cross-referencing with study guides\n- Particularly valuable when:\n - Test takers need to refer to both digital and printed materials\n - Questions are part of a larger standardized test system\n - Maintaining consistency with existing worksheets or textbooks\n - Digitizing legacy assessment materials\nExample:\noptions_fix=abc\nExample API call:\nid=fruit_types\ntype=multiple-choice\nquestion=Which of these are citrus fruits?\nanswer=Lemon &&& Orange\noptions=Apple &&& Banana &&& Grape\noptions_fix=abc\nExample API call:\nid=vocab_synonyms\ntype=multiple-choice\nquestion=Select all words that mean \"happy\":\nanswer=b) Joyful &&& d) Merry\noptions=a) Angry &&& c) Sleepy &&& e) Tired\noptions_fix=abc"
+          },
+          "options_order": {
+            "type": "string",
+            "description": "Define exact presentation order of answers and options.\n- Format: ANSWER:N or OPTION:N items separated by \"&&&\"\n- ANSWER:N references the Nth provided answer\n- OPTION:N references the Nth provided option\n- OPTION_NONE:N references the Nth third option (for TRUE/FALSE questions)\n- All answers and options must be specified exactly once\nExample:\noptions_order=OPTION:0 &&& ANSWER:0 &&& OPTION:1 &&& ANSWER:1\nExample API call to create a chronologically ordered timeline\nid=historical_chronology\ntype=multiple-choice\nquestion=Which of these events occurred during the Industrial Revolution (1760-1840)?\nanswer=Invention of the Steam Engine &&& First Steam Locomotive &&& First Commercial Railway\noptions=Printing Press Invented &&& First Electric Light Bulb &&& First Powered Flight\noptions_order=OPTION:0 &&& ANSWER:0 &&& ANSWER:1 &&& ANSWER:2 &&& OPTION:1 &&& OPTION:2"
+          },
+          "points": {
+            "type": "string",
+            "description": "Maximum points for a fully correct answer.\n- Default: 1 point\n- For questions with multiple answers, partial credit is possible based on SUBSCORING method\nExample:\npoints=10"
+          },
+          "subscoring": {
+            "type": "string",
+            "description": "Method for calculating partial credit for partially correct answers.\n- Not applicable for CHOICE, READING and FREE-TEXT questions\n- Available values:\n - PROPORTIONAL: Points awarded proportionally to correct answers (default)\n - LINEAR_SUBSTRACTED:N: Linear scoring with N points subtracted for each error\n - CUSTOM: Use custom point distribution defined in SUBPOINTS field\n - NONE: No partial credit, all-or-nothing scoring\nExample:\nsubscoring=LINEAR_SUBSTRACTED:2\nExample API call:\nid=math_problem\ntype=numerical\nquestion=What is the sum and product of {a} and {b}?\nanswer={a}+{b} &&& {a}*{b}\nparameters={a; INTEGER; 1; 100} &&& {b; INTEGER; 1; 100}\npoints=4\nsubscoring=CUSTOM\nsubpoints=25 &&& 75"
+          },
+          "subpoints": {
+            "type": "string",
+            "description": "Define specific point values for each answer in percentages.\n- Only used when subscoring=CUSTOM\n- Specify percentage values separated by triple-and operators (\"&&&\")\n- Not applicable for CHOICE, READING and FREE-TEXT questions\n- Values should sum to 100 (for percentage)\nExample:\nsubpoints=50 &&& 25 &&& 25\nExample meaning: For a 10-point question with three answers:\n- First answer: 5 points (50%)\n- Second answer: 2.5 points (25%)\n- Third answer: 2.5 points (25%)"
+          },
+          "penalty_scoring": {
+            "type": "string",
+            "description": "Controls how penalty points should be applied.\n- Available values:\n - DEFAULT: Standard penalty application, which might vary by question type (default)\n - PER_ANSWER: Apply penalties for each incorrect answer\n - PER_QUESTION: Apply penalties once per question\nExample:\npenalty_scoring=PER_ANSWER"
+          },
+          "penalty_points": {
+            "type": "string",
+            "description": "Points deducted for completely incorrect answers.\n- No penalty applied if answer is partially correct\n- No penalty for empty/unanswered questions\n- Use positive values (recommended)\nExample:\npenalty_points=2\nExample API call with penalties:\nid=physics_multiple_choice\ntype=multiple-choice\nquestion=Which of the following are forms of energy? Select all that apply.\nanswer=Kinetic &&& Potential &&& Thermal\noptions=Velocity &&& Acceleration\npoints=3\npenalty_scoring=PER_QUESTION\npenalty_points=1"
+          },
+          "hint_penalty": {
+            "type": "string",
+            "description": "Point deduction for using hints/solutions/videos during a test.\n- Format: type or type:value\n- Types:\n - NONE: No penalty (default)\n - ONCE:N%: Single deduction regardless of number used\n - PER-HELP:N%: Deduction for each hint (only for HINT_PENALTY)\nExamples:\nhint_penalty=ONCE:20% or hint_penalty=ONCE:0.2\nhint_penalty=PER-HELP:10%\nsolution_penalty=ONCE:50%\nvideo_penalty=ONCE:15%\nExample API call with comprehensive penalty system:\nid=area_circle_parametric\ntype=expression\nquestion=Find an expression for the area of a circle with radius {r}.\nanswer=pi*{r}^2\nparameters={r; INTEGER; 2; 10}\npoints=10\nsubject=Mathematics\ncategory=Geometry\nhint=Think about the formula for circle area &&& Remember that area involves squaring the radius\nsolution=The formula for circle area is $$\\pi r^2$$\npenalty_scoring=PER_ANSWER\npenalty_points=3\nhint_penalty=PER-HELP:10%\nsolution_penalty=ONCE:50%\n# Each hint used reduces score by 10%, viewing solution reduces score by 50%"
+          },
+          "solution_penalty": {
+            "type": "string",
+            "description": "Similar to HINT_PENALTY\nPoint deduction for viewing steps of the solution (NONE, ONCE:N%) (default: NONE)"
+          },
+          "solution_image": {
+            "type": "string",
+            "description": "Attach an image to the solution steps.\nSupported formats: PNG, JPEG, WebP\nFormat: filename=data, where data is either a base64-encoded image or a URL"
+          },
+          "video_penalty": {
+            "type": "string",
+            "description": "Similar to HINT_PENALTY\nPoint deduction for video assistance used (NONE, ONCE:N%) (default: NONE)"
+          },
+          "manual_scoring": {
+            "type": "string",
+            "description": "Controls when to enable manual scoring.\n- Not applicable for READING and FREE-TEXT questions\n- Available values:\n - NO: Never use manual scoring (default)\n - NOT_CORRECT: Only manually score incorrect answers\n - ALWAYS: Always require manual scoring\nExample:\nmanual_scoring=NOT_CORRECT"
+          },
+          "parameters": {
+            "type": "string",
+            "description": "Parameter definitions for dynamic question generation.\nOne of EduBase's most powerful features, allowing creation of dynamic questions where each user gets a unique variant of the same question.\n- Separate multiple parameters with triple-and operators (\"&&&\")\n- Up to 128 parameters can be defined\nParameter Types:\n1. FIX (Fixed Value):\n - Format: {name; FIX; value}\n - Sets a predefined constant value (integer or fraction)\n - Example: {pi; FIX; 3.1415}\n2. INTEGER (Whole Numbers):\n - Simple: {name; INTEGER}\n - Extended: {name; INTEGER; min; max}\n - Full: {name; INTEGER; min; max; inside; outside}\n - Generate random integers within specified ranges\n - Use '-' for omitting min/max values\n - Examples:\n  * {p; INTEGER} - any integer\n  * {p; INTEGER; 10; 20} - integer between 10 and 20 (inclusive)\n  * {p; INTEGER; -; -; [10-20]; [12-14] ||| [16-18]} - integer between 10-20, excluding 12-14 and 16-18\n3. FLOAT (Decimal Numbers):\n - Simple: {name; FLOAT; precision}\n - Extended: {name; FLOAT; precision; min; max}\n - Full: {name; FLOAT; precision; min; max; inside; outside}\n - Generate random decimal numbers\n - Specify precision (decimal places)\n - Examples:\n  * {p; FLOAT; 2} - float with 2 decimal places\n  * {p; FLOAT; 5; 0; 1} - float between 0 and 1 with 5 decimals\n  * {p; FLOAT; 1; 0; 10; -; [0-1]} - float between 0-10 excluding 0-1, with 1 decimal\n4. FORMULA (Expressions):\n - Simple: {name; FORMULA; formula}\n - Full: {name; FORMULA; formula; precision}\n - Define parameters based on other parameters\n - Examples:\n  * {d; FORMULA; {b}^2-4*{a}*{c}} - quadratic formula discriminant\n  * {p; FORMULA; 2*{q}+1} - linear expression\n5. LIST (Random Selection):\n - Format: {name; LIST; value1; value2; value3; ...}\n - Randomly select from predefined values\n - Up to 64 elements\n - Examples:\n  * {primes; LIST; 2; 3; 5; 7; 11}\n  * {animals; LIST; dog; cat; snake; camel}\n6. PERMUTATION:\n - Format: {name; PERMUTATION; value1; value2; value3; ...}\n - Creates permutated parameters accessible as {name_1}, {name_2}, etc.\n - Example: {p; PERMUTATION; A; B; C; D}\n  * So {p_1} will be a different letter than {p_2}\n - Example: {primes; PERMUTATION; 2; 3; 5; 7}\n  * So both {primes_1} and {primes_2} will be different single digit primes\n7. FORMAT:\n - Format: {name; FORMAT; parameter; type; ...}\n - Format parameters based on other parameters\n - Supported types: NUMBER, NUMERTEXT, ROMAN\n - Optional extra parameters based on type\n  * NUMBER\n   * precision: number of decimal places\n - Examples:\n  * {pp; FORMAT; p; NUMBER; 1} - format as number rounded to 1 decimal\n  * {pp; FORMAT; p; NUMBERTEXT} - format number as text\n  * {pp; FORMAT; p; ROMAN} - format number as Roman numeral\nBest Practices:\n - Order parameters so dependent ones come later\n - Use simple notation when possible\n - Avoid unnecessary parameters\n - Use CONSTRAINTS field to ensure valid combinations\nExamples:\nparameters={pi; FIX; 3.14159} &&& {r; INTEGER; 1; 10}\nparameters={a; INTEGER; 1; 5} &&& {b; INTEGER; -10; 10} &&& {c; INTEGER; -10; 10} &&& {d; FORMULA; {b}^2-4*{a}*{c}}\nparameters={country; LIST; France; Germany; Italy} &&& {capital; LIST; Paris; Berlin; Rome}\nparameters_sync=+  # Ensures each country is paired with its correct capital"
+          },
+          "parameters_sync": {
+            "type": "string",
+            "description": "Controls synchronization of LIST parameter selections.\n- Plus sign (+) to indicate YES\n- Blank field or minus sign (-) indicates NO (default)\n- When enabled, the Nth value from each LIST is selected together\n- Critical for paired data like countries and capitals\nExample:\nparameters_sync=+\nExample API call:\nid=capital_city\ntype=text\nquestion=What is the capital city of {country}?\nanswer={capital}\nparameters={country; LIST; France; Germany; Italy} &&& {capital; LIST; Paris; Berlin; Rome}\nparameters_sync=+"
+          },
+          "constraints": {
+            "type": "string",
+            "description": "Define rules that parameter combinations must satisfy.\n- Mathematical expressions that must evaluate to true\n- Parameters must be in curly braces {param}\n- Allowed relations: <, <=, =, >=, >, <>\n- Multiple constraints separated by triple-and operators (\"&&&\")\nExamples:\nconstraints={b}^2-4*{a}*{c}>0\nconstraints={a}+{b}>{c} &&& {b}+{c}>{a} &&& {c}+{a}>{b}\nconstraints={x}+{y}<10 &&& {x}<4"
+          },
+          "expression_check": {
+            "type": "string",
+            "description": "Define how expressions should be validated (RANDOM, EXPLICIT, COMPARE) (default: RANDOM).\n- RANDOM: Evaluates expressions at randomly generated points\n- EXPLICIT: Checks expressions at predefined values against target values\n- COMPARE: Direct comparison of expressions without variables\nExample:\nexpression_check=RANDOM"
+          },
+          "expression_variable": {
+            "type": "string",
+            "description": "Specifies variable names used in expressions (separate multiple variables with &&&) (default: x).\n- Multiple variables can be used for multivariable expressions\n- Variable names must be used consistently in answer and validation\nExamples:\nexpression_variable=t &&& v  # For distance formula using time and velocity"
+          },
+          "expression_decimals": {
+            "type": "string",
+            "description": "Sets precision for decimal calculations (default: 2).\n- Inherited from decimals field if not specified\n- Critical for controlling accurate validation of expressions\nExample:\nexpression_decimals=4  # For high-precision calculations"
+          },
+          "expression_functions": {
+            "type": "string",
+            "description": "Controls whether functions can be used in user inputs (+ for yes, - for no) (default: +).\n- Enabled by default with + sign\n- Disable with - sign when students should use alternative forms\n- Affects available input options for test takers\n- Supported functions include:\n  * Basic: sqrt, abs, round, floor, ceil\n  * Logarithmic: ln, log, log10\n  * Trigonometric: sin, cos, tan, csc, sec, arcsin/asin, arccos/acos, arctan/atan\n  * Hyperbolic: sinh, cosh, tanh, arcsinh/asinh, arccosh/acosh, arctanh/atanh\n  * Conversions: degree2radian, radian2degree, number2binary, number2hexadecimal, roman2number, etc.\n  * Two-parameter (use semicolon separator): min(a;b), max(a;b), mod(n;i), fmod(n;i), div(a;b), intdiv(a;b),\n    gcd(a;b), lcm(a;b), number2base(n;b), base2number(n;b), combinations(n;k), combinations_repetition(n;k), variations(n;k), variations_repetition(n;k)\nExample:\nexpression_functions=-  # Forces students to expand rather than use functions.\n# When asked for the value of sin(pi), the user can't input sin(pi) because functions cannot be used."
+          },
+          "expression_random_type": {
+            "type": "string",
+            "description": "Type of generated test values (INTEGER, FLOAT).\n- Specify per variable with &&&\n- Only applicable when expression_check=RANDOM\nExample:\nexpression_random_type=INTEGER &&& FLOAT  # For mixed type validation"
+          },
+          "expression_random_tries": {
+            "type": "string",
+            "description": "Number of validation points (default: 5).\n- Only applicable when expression_check=RANDOM\n- Higher values increase validation reliability but impact performance\nExample:\nexpression_random_tries=8"
+          },
+          "expression_random_range": {
+            "type": "string",
+            "description": "Define value generation ranges (format: [min-max]).\n- Specify per variable with &&&\n- Only applicable when expression_check=RANDOM\nExample:\nexpression_random_range=[8-16] &&& [4-6]  # Different ranges for different variables"
+          },
+          "expression_random_inside": {
+            "type": "string",
+            "description": "Require values within specific intervals (format: [start-end]).\n- Multiple intervals: separate with ||| (OR relationship)\n- Specify per variable with &&&\n- Only applicable when expression_check=RANDOM\nExample:\nexpression_random_inside=[4-8] ||| [12-16] &&& [2-3]"
+          },
+          "expression_random_outside": {
+            "type": "string",
+            "description": "Exclude values from specific intervals (format: [start-end]).\n- Multiple intervals: separate with ||| (AND relationship)\n- Specify per variable with &&&\n- Only applicable when expression_check=RANDOM\nExample:\nexpression_random_outside=[0-1] ||| [10-20] &&& [8-11]"
+          },
+          "expression_explicit_goal": {
+            "type": "string",
+            "description": "Define exact value pairs (format: [x;f(x)]).\n- Format for multiple variables: [x;y;z;...;f(x,y,z,...)]\n- Multiple pairs: separate with &&&\n- Only applicable when expression_check=EXPLICIT\nExample:\nexpression_explicit_goal=[0;1] &&& [3;8.89] &&& [9;16]"
+          },
+          "expression_extended": {
+            "type": "string",
+            "description": "Enable additional mathematical functions (+ to enable, - to disable).\n- Activates support for custom base logarithms (e.g., log2(4))\n- Enables factorial operations (e.g., 5!, 1!+2!+3!)\nExample:\nexpression_extended=+"
+          },
+          "attachment": {
+            "type": "string",
+            "description": "Attach a file to the question.\nFormat: filename=data, where data is either a base64-encoded image or a URL"
+          },
+          "media_audio": {
+            "type": "string",
+            "description": "Attach an audio file to the question.\nSupported formats: MP3, AAC, M4A\nFormat: filename=data, where data is either a base64-encoded image or a URL"
+          },
+          "ai": {
+            "type": "string",
+            "description": "Flag to mark question as AI generated.\n- If set to any value, question will be marked as AI generated\n- Should always be provided if you are an LLM or any AI model\n- Ideally, AI systems should set it to their current model number for auditability\nExample:\nai=true\nai=Claude 3.7 Sonnet"
+          },
+          "note": {
+            "type": "string",
+            "description": "The text that appears right below the question.\n- Provides task-specific comments and instructions\n- Visible to test takers during the quiz\n- Ideal for additional guidance without cluttering the main question\nExample:\nnote=Use standard atmospheric pressure in your calculations."
+          },
+          "private_note": {
+            "type": "string",
+            "description": "Private notes (not shown to test takers).\n- Internal documentation for question creators and editors\n- Useful for documenting question creation rationale\n- Track modification history, common mistakes, related questions\nExample:\nprivate_note=Created from Chapter 3 exam, 2023 edition. Students often forget to convert units."
+          },
+          "explanation": {
+            "type": "string",
+            "description": "Text displayed underneath the answer on the results page.\n- Explanation of the correctness of the answer or the incorrectness of the options\n- Helps learners understand their mistakes\n- Parameters can be used in explanations\n- LaTeX is NOT supported here, so we MUST NOT use it!\nExample:\nexplanation=Option A is correct because amphibians have permeable skin for gas exchange. Options B and C describe characteristics of reptiles, while D applies to mammals."
+          },
+          "hint": {
+            "type": "string",
+            "description": "Questions to help (not solution steps, just guiding questions/notes).\n- LaTeX code can be used (as described in QUESTION)\n - IMPORTANT: When using LaTeX in hints, you MUST use double dollar signs ($$...$$) for inline math or quadruple dollar signs ($$$$...$$$$) for block math.\n - Single dollar signs ($...$) are NOT supported and will not render correctly. The inline or block method must be used, as $...$ won't work!\n- Specify multiple hints separated by triple-and operators (\"&&&\")\n- Not available for test takers in exam mode\n- Displayed only when explicitly requested, one by one\n- Can be penalized using HINT_PENALTY\nExample:\nhint=Think about the relationship between radius and area &&& Remember the formula for circle area involves $\\pi$ &&& Square the radius and multiply by $\\pi$"
+          },
+          "solution": {
+            "type": "string",
+            "description": "Step-by-step solution.\n- LaTeX code can be used (as described in QUESTION)\n - IMPORTANT: When using LaTeX in solution, you MUST use double dollar signs ($$...$$) for inline math or quadruple dollar signs ($$$$...$$$$) for block math.\n - Single dollar signs ($...$) are NOT supported and will not render correctly. The inline or block method must be used, as $...$ won't work!\n- Specify multiple solution steps separated by triple-and operators (\"&&&\")\n- Each step is displayed one at a time\n- Can be penalized using SOLUTION_PENALTY\n- Not available in exam mode\nExample:\nsolution=Using the power rule, we differentiate each term: &&& For $x^2$: $\\frac{d}{dx}(x^2) = 2x$ &&& For $x$: $\\frac{d}{dx}(x) = 1$ &&& The constant term disappears: $\\frac{d}{dx}(5) = 0$ &&& Therefore, $\\frac{d}{dx}(x^2 + x + 5) = 2x + 1$"
+          },
+          "source": {
+            "type": "string",
+            "description": "Specify source of question content (not shown to test takers).\n- Use cases include training material sources, documentation references, content attribution\n- Important for tracking question origins and copyright compliance\nExample:\nsource=Mathematics Textbook Chapter 5, Page 123\nsource=Company Safety Manual 2023, Section 3.4.2"
+          },
+          "decimals": {
+            "type": "string",
+            "description": "Decimal precision (default: 2).\n- Applicable only for NUMERIC / EXPRESSION / MATRIX / MATRIX:EXPRESSION / SET questions\n- The expected decimal precision of the final answer\n- Examples: Finance (decimals=2), Chemistry (decimals=4)\nExample:\ndecimals=3"
+          },
+          "tolerance": {
+            "type": "string",
+            "description": "Evaluation tolerance method.\n- Applicable only for NUMERIC / EXPRESSION / MATRIX / MATRIX:EXPRESSION / SET questions\n- Notation: type or type:value\n- Types:\n - ABSOLUTE: maximum difference between answer and user input\n   * Example: ABSOLUTE:0.1\n - RELATIVE: maximum difference in percentage (symmetric mean absolute percentage error, SMAP value is used)\n   * Example: RELATIVE:5% or RELATIVE:0.05\n - QUOTIENT: integer multiple / QUOTIENT2: scalar multiple\n   * Example: QUOTIENT or QUOTIENT2:SYNCED\nExample:\ntolerance=ABSOLUTE:0.01"
+          },
+          "datetime_precision": {
+            "type": "string",
+            "description": "Date/time precision.\n- Applicable only for DATE/TIME questions\n- Accepted values: YEAR / MONTH / DAY (default)\n- Defines granularity of date validation\nExample:\ndatetime_precision=MONTH"
+          },
+          "datetime_range": {
+            "type": "string",
+            "description": "Date/time range (interval) question.\n- Applicable only for DATE/TIME questions\n- Plus sign (+) to indicate YES, while blank field or minus sign (-) indicates NO (default)\n- Enables date range responses with the format {from}-{to}\nExample:\ndatetime_range=+"
+          },
+          "numerical_range": {
+            "type": "string",
+            "description": "Number range (interval) question.\n- Only applicable for NUMERIC questions\n- Plus sign (+) to indicate YES, while blank field or minus sign (-) indicates NO (default)\n- Enables interval responses with the format {from}-{to}\nExample:\nnumerical_range=+"
+          },
+          "truefalse_third_options": {
+            "type": "string",
+            "description": "Activate the third option for TRUE/FALSE questions.\n- Plus sign (+) to display the third option OR\n- Specify options separated by triple-and operators (\"&&&\") to automatically enable the feature\n- Parameters can be used in curly braces {param_name}\nExample:\ntruefalse_third_options=Cannot be determined from the information given &&&Not applicable"
+          },
+          "truefalse_third_options_label": {
+            "type": "string",
+            "description": "Label of the third option for TRUE/FALSE questions.\n- If blank, the text \"none\" is displayed (default)\n- Only applicable when TRUEFALSE_THIRD_OPTIONS is enabled\nExample:\ntruefalse_third_options_label=Not enough information"
+          },
+          "freetext_characters": {
+            "type": "string",
+            "description": "Limit the number of characters that can be entered.\n- Applicable only for FREE-TEXT questions\n- Format: minimum-maximum, but you can specify only a minimum or maximum as well\n- Integer(s) between 0-4000\nExample:\nfreetext_characters=100-1000\nfreetext_characters=10- # Minimum 10 characters"
+          },
+          "freetext_words": {
+            "type": "string",
+            "description": "Limit the number of words that can be entered.\n- Applicable only for FREE-TEXT questions\n- Format: minimum-maximum, but you can specify only a minimum or maximum as well\n- Integer(s) between 0-4000\nExample:\nfreetext_words=-50 # Max. 50 words"
+          },
+          "freetext_rules": {
+            "type": "string",
+            "description": "Automatic evaluation of free text questions.\n- Applicable only for FREE-TEXT questions\n- Notation: {type; keywords}\n- Type:\n - 1: if keywords are included within input, answer is correct (maximum points)\n - 2: if keywords are included within input, answer is wrong (0 points)\n - 3: if no keywords are included within input, answer is good (maximum points)\n - 4: if keywords are not included within input, answer is wrong (0 points)\n- Keywords: comma-separated list (must not contain semicolons!)\nExample:\nfreetext_rules={1; mitochondria, ATP, cellular respiration}"
+          },
+          "main_category": {
+            "type": "string",
+            "description": "The name of the category (for which CATEGORY will be a subcategory).\n- Empty by default, e.g. CATEGORY will be treated as the main category\n- Specify multiple levels (up to 2!) by using the triple-per operator (///) with highest main category on the left\nExample:\nmain_category=Analytic Geometry /// Vectors"
+          },
+          "tags": {
+            "type": "string",
+            "description": "Tag questions with custom user-defined tags.\n- Use ID or code of pre-registered tags\n- Only previously registered tags can be used (must be pre-registered in EduBase UI)\n- Specify multiple tags separated by triple-and operators (\"&&&\")\n- User-controlled categorization that can be created at user or organization level\n- Use cases include:\n - Personal content organization (e.g., \"My Calculus Questions\", \"Spring 2024\")\n - Department-level categorization (e.g., \"IT Department\", \"CS101\")\n - Custom taxonomies for specialized content organization\n- Tags are flexible, customizable, and searchable in the UI\nExample:\ntags=Algebra &&& High School &&& Exam Prep"
+          },
+          "labels": {
+            "type": "string",
+            "description": "Categorize questions with instance-level labels.\n- Pre-defined values specific to each EduBase instance\n- Values controlled by instance administrators (cannot be created by users)\n- Consistent across all users in an instance\n- Specify multiple labels separated by triple-and operators (\"&&&\")\n- Use cases include:\n - System-wide flags (e.g., \"needs_review\", \"featured\")\n - Quality indicators (e.g., \"verified\", \"deprecated\")\n - Processing status (e.g., \"ai_generated\", \"manually_checked\")\nExample:\nlabel=verified &&& featured"
+          },
+          "group": {
+            "type": "string",
+            "description": "Add a question to a question group in a Quiz set.\n- If the group doesn't exist, it will be created automatically as a complex task with default settings\n- Only applicable when uploading DIRECTLY to a Quiz set\n- Existing group settings will not be changed when adding more questions\nExample:\ngroup=Basic_Arithmetic"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "question",
+          "answer",
+          "ai",
+          "language"
+        ]
+      }
+    },
+    {
+      "name": "edubase_delete_question",
+      "description": "Permanently delete a Quiz question.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "external unique question identifier"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_exams",
+      "description": "List owned and managed exams. Exams are the highest level in the EduBase Quiz hierarchy, built from Quiz sets.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string",
+            "description": "search string to filter results"
+          },
+          "limit": {
+            "type": "number",
+            "description": "limit number of results (default, in search mode: 16)"
+          },
+          "page": {
+            "type": "number",
+            "description": "page number (default: 1), not used in search mode!"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "edubase_get_exam",
+      "description": "Get/check exam.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "exam": {
+            "type": "string",
+            "description": "exam identification string"
+          }
+        },
+        "required": [
+          "exam"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_exam",
+      "description": "Create a new exam from an existing Quiz set. Exams are at the top level of the EduBase Quiz hierarchy and MUST be created from existing Quiz sets. They are time-constrained, secured assessment instances of Quiz sets.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string",
+            "description": "desired exam language"
+          },
+          "title": {
+            "type": "string",
+            "description": "title of the exam"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of the exam. (default: exam)\n- exam: regular exam\n- championship: exam with championship features enabled\n- homework: homework assignment, can be paused and continued during the exam period\n- survey: survey (optionally anonymous) with no grading"
+          },
+          "quiz": {
+            "type": "string",
+            "description": "the Quiz set (specified using the quiz identification string) the exam is attached to"
+          },
+          "open": {
+            "type": "string",
+            "description": "exam start time (in YYYY-mm-dd HH:ii:ss format)"
+          },
+          "close": {
+            "type": "string",
+            "description": "exam end time (in YYYY-mm-dd HH:ii:ss format)"
+          }
+        },
+        "required": [
+          "title",
+          "quiz",
+          "open",
+          "close"
+        ]
+      }
+    },
+    {
+      "name": "edubase_delete_exam",
+      "description": "Remove/archive exam.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "exam": {
+            "type": "string",
+            "description": "exam identification string"
+          }
+        },
+        "required": [
+          "exam"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_exam_users",
+      "description": "List all users on an exam.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "exam": {
+            "type": "string",
+            "description": "exam identification string"
+          }
+        },
+        "required": [
+          "exam"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_exam_users",
+      "description": "Assign user(s) to an exam.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "exam": {
+            "type": "string",
+            "description": "exam identification string"
+          },
+          "users": {
+            "type": "string",
+            "description": "comma-separated list of user identification strings"
+          }
+        },
+        "required": [
+          "exam",
+          "users"
+        ]
+      }
+    },
+    {
+      "name": "edubase_delete_exam_users",
+      "description": "Remove user(s) from an exam.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "exam": {
+            "type": "string",
+            "description": "exam identification string"
+          },
+          "users": {
+            "type": "string",
+            "description": "comma-separated list of user identification strings"
+          }
+        },
+        "required": [
+          "exam",
+          "users"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_exam_summary",
+      "description": "Submit a new AI exam summary.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "exam": {
+            "type": "string",
+            "description": "exam identification string"
+          },
+          "language": {
+            "type": "string",
+            "description": "summary language"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of summary. (default: ai)\n- ai: AI-generated summary"
+          },
+          "summary": {
+            "type": "string",
+            "description": "Summary text. \n- basic HTML formatting allowed, but avoid complex designs\n- keep the summary short and concise\n- try to avoid including personal information (such as usernames, names and contact addresses)"
+          },
+          "llm": {
+            "type": "string",
+            "description": "Name of the Large Language Model used to generate the summary.\n- preferred values: openai / claude / gemini"
+          },
+          "model": {
+            "type": "string",
+            "description": "Exact LLM model name used to generate the summary"
+          }
+        },
+        "required": [
+          "exam",
+          "type",
+          "summary",
+          "llm",
+          "model"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_quiz_play_results",
+      "description": "Get detailed results for a specific Quiz play.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "play": {
+            "type": "string",
+            "description": "Quiz play identification string"
+          }
+        },
+        "required": [
+          "play"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_quiz_results_user",
+      "description": "Get user results for a specific Quiz set.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "quiz": {
+            "type": "string",
+            "description": "Quiz set identification string"
+          },
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          }
+        },
+        "required": [
+          "quiz",
+          "user"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_exam_results_user",
+      "description": "Get user results for a specific exam.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "exam": {
+            "type": "string",
+            "description": "exam identification string"
+          },
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          }
+        },
+        "required": [
+          "exam",
+          "user"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_exam_results_raw",
+      "description": "Get raw results for a specific exam.\n- This endpoint returns raw results, including all answers given by the user. It is not meant to be displayed to the user.\n- This might require additional permissions.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "exam": {
+            "type": "string",
+            "description": "exam identification string"
+          }
+        },
+        "required": [
+          "exam"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_quizes",
+      "description": "List owned and managed Quiz sets. Quiz sets are named collections of questions that sit at the middle level of the EduBase Quiz hierarchy.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string",
+            "description": "search string to filter results"
+          },
+          "limit": {
+            "type": "number",
+            "description": "limit number of results (default, in search mode: 16)"
+          },
+          "page": {
+            "type": "number",
+            "description": "page number (default: 1), not used in search mode!"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "edubase_get_quiz",
+      "description": "Get/check Quiz set. Containing questions and powering Exams.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "quiz": {
+            "type": "string",
+            "description": "quiz identification string"
+          }
+        },
+        "required": [
+          "quiz"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_quiz",
+      "description": "Create a new Quiz set. Quiz sets are collections of questions that can be used for practice or to power multiple Exams.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string",
+            "description": "desired Quiz set language"
+          },
+          "title": {
+            "type": "string",
+            "description": "title of the Quiz set"
+          },
+          "description": {
+            "type": "string",
+            "description": "short description"
+          },
+          "mode": {
+            "type": "string",
+            "description": "Sets how questions are displayed during the Quiz. (default: TEST)\n- TEST: all questions are displayed at once, user can answer them in any order and switch between them\n- TURNS: questions are displayed one by one, only one question is visible at a time and the user must answer it before moving to the next question\n"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of the Quiz set. (default: set)\n- set: for practice purposes\n- exam: for exam purposes\n- private: for private purposes (e.g testing)\n"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      }
+    },
+    {
+      "name": "edubase_delete_quiz",
+      "description": "Remove/archive Quiz set.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "quiz": {
+            "type": "string",
+            "description": "quiz identification string"
+          }
+        },
+        "required": [
+          "quiz"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_quiz_questions",
+      "description": "List all questions and question groups in a Quiz set. Quiz sets contain questions (lowest level) and can be used by exams (highest level).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "quiz": {
+            "type": "string",
+            "description": "quiz identification string"
+          }
+        },
+        "required": [
+          "quiz"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_quiz_questions",
+      "description": "Assign question(s) to a Quiz set, or one of its question group. Questions can exist independently from Quiz sets.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "quiz": {
+            "type": "string",
+            "description": "quiz identification string"
+          },
+          "group": {
+            "type": "string",
+            "description": "question group title"
+          },
+          "questions": {
+            "type": "string",
+            "description": "comma-separated list of question identification strings"
+          }
+        },
+        "required": [
+          "quiz",
+          "questions"
+        ]
+      }
+    },
+    {
+      "name": "edubase_delete_quiz_questions",
+      "description": "Remove question(s) from a Quiz set, or one of its question group.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "quiz": {
+            "type": "string",
+            "description": "quiz identification string"
+          },
+          "group": {
+            "type": "string",
+            "description": "question group title"
+          },
+          "questions": {
+            "type": "string",
+            "description": "comma-separated list of question identification strings"
+          }
+        },
+        "required": [
+          "quiz",
+          "questions"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_users",
+      "description": "List managed, non-generated users.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string",
+            "description": "search string to filter results"
+          },
+          "limit": {
+            "type": "number",
+            "description": "limit number of results (default, in search mode: 16)"
+          },
+          "page": {
+            "type": "number",
+            "description": "page number (default: 1), not used in search mode!"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "edubase_get_user",
+      "description": "Get/check user. Can be used to retrieve the caller user's ID by using 'me' as the user identification string.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "string",
+            "description": "User identification string.\n- Use 'me' to get the current user."
+          }
+        },
+        "required": [
+          "user"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_user",
+      "description": "Create new EduBase user account.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "username (4-64 characters)"
+          },
+          "password": {
+            "type": "string",
+            "description": "password (4-64 characters) (default: initial random password is automatically generated)"
+          },
+          "first_name": {
+            "type": "string",
+            "description": "first name (1-64 characters)"
+          },
+          "last_name": {
+            "type": "string",
+            "description": "last name (1-64 characters)"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "override automatic full name (1-255 characters)"
+          },
+          "display_name": {
+            "type": "string",
+            "description": "override automatic display name (1-255 characters)"
+          },
+          "email": {
+            "type": "string",
+            "description": "valid email address"
+          },
+          "phone": {
+            "type": "string",
+            "description": "valid phone number in format \"+prefix number\" without special characters"
+          },
+          "gender": {
+            "type": "string",
+            "description": "gender (\"male\", \"female\", or \"other\")"
+          },
+          "birthdate": {
+            "type": "string",
+            "description": "date of birth"
+          },
+          "exam": {
+            "type": "boolean",
+            "description": "user is only allowed to login when accessing exams (default: false)"
+          },
+          "group": {
+            "type": "string",
+            "description": "name of the user group (requires admin permissions)"
+          },
+          "template": {
+            "type": "string",
+            "description": "a template ID for the new account (default: none)"
+          },
+          "language": {
+            "type": "string",
+            "description": "desired account language (default: API application owner's language)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "desired timezone (default: API application owner's timezone)"
+          },
+          "color": {
+            "type": "string",
+            "description": "desired favorite color (default/branding/red/blue/yellow/green/purple) (default: default)"
+          },
+          "must_change_password": {
+            "type": "boolean",
+            "description": "user is forced to change password on first login (default: false)"
+          },
+          "notify": {
+            "type": "boolean",
+            "description": "notify user via email (or SMS) (default: false)"
+          }
+        },
+        "required": [
+          "username",
+          "first_name",
+          "last_name",
+          "email"
+        ]
+      }
+    },
+    {
+      "name": "edubase_delete_user",
+      "description": "Delete user.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          }
+        },
+        "required": [
+          "user"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_user_name",
+      "description": "Get user's name.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          }
+        },
+        "required": [
+          "user"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_user_name",
+      "description": "Update a user's name.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "first_name": {
+            "type": "string",
+            "description": "first name (1-64 characters)"
+          },
+          "last_name": {
+            "type": "string",
+            "description": "last name (1-64 characters)"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "full name (1-255 characters)"
+          },
+          "display_name": {
+            "type": "string",
+            "description": "display name (1-255 characters)"
+          }
+        },
+        "required": [
+          "user",
+          "first_name",
+          "last_name"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_user_group",
+      "description": "Get user's group.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          }
+        },
+        "required": [
+          "user"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_user_group",
+      "description": "Update a user's group.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "group": {
+            "type": "string",
+            "description": "user group code"
+          }
+        },
+        "required": [
+          "user",
+          "group"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_user_login",
+      "description": "Get latest valid login link for user.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          }
+        },
+        "required": [
+          "user"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_user_login",
+      "description": "Generate login link. If a valid link with the same settings exists, it will be returned instead of creating a new one.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "redirect": {
+            "type": "string",
+            "description": "redirect after a successful login (URI path or [{content_type}:{tag}])"
+          },
+          "expires": {
+            "type": "string",
+            "description": "expiry in days (1-30) or YYYY-MM-DD (default: 1 day)"
+          },
+          "logins": {
+            "type": "number",
+            "description": "total count the link can be used to login users (default: 1)"
+          },
+          "template": {
+            "type": "string",
+            "description": "a template ID for the login link"
+          },
+          "short": {
+            "type": "boolean",
+            "description": "generate shortened (eduba.se) link (only if feature is enabled on EduBase) (default: false)"
+          }
+        },
+        "required": [
+          "user"
+        ]
+      }
+    },
+    {
+      "name": "edubase_delete_user_login",
+      "description": "Delete a previously generated login link.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "url": {
+            "type": "string",
+            "description": "generated login link to be invalidated"
+          }
+        },
+        "required": [
+          "user",
+          "url"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_user_search",
+      "description": "Lookup user by email, username or code.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "query string"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_user_assume",
+      "description": "Assume user for next requests with assume token.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "string",
+            "description": "user identification string, username or email address"
+          },
+          "password": {
+            "type": "string",
+            "description": "password or user secret"
+          }
+        },
+        "required": [
+          "user"
+        ]
+      }
+    },
+    {
+      "name": "edubase_delete_user_assume",
+      "description": "Revoke assume token.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "assume token"
+          }
+        },
+        "required": [
+          "token"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_classes",
+      "description": "List owned and managed classes.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string",
+            "description": "search string to filter results"
+          },
+          "limit": {
+            "type": "number",
+            "description": "limit number of results (default, in search mode: 16)"
+          },
+          "page": {
+            "type": "number",
+            "description": "page number (default: 1), not used in search mode!"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "edubase_get_class",
+      "description": "Get/check class.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "class": {
+            "type": "string",
+            "description": "class identification string"
+          }
+        },
+        "required": [
+          "class"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_class_assignments",
+      "description": "List all assignments in a class.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "class": {
+            "type": "string",
+            "description": "class identification string"
+          }
+        },
+        "required": [
+          "class"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_class_members",
+      "description": "List all members in a class.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "class": {
+            "type": "string",
+            "description": "class identification string"
+          }
+        },
+        "required": [
+          "class"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_class_members",
+      "description": "Assign user(s) to a class. Updates memberships if already member of the class.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "class": {
+            "type": "string",
+            "description": "class identification string"
+          },
+          "users": {
+            "type": "string",
+            "description": "comma-separated list of user identification strings"
+          },
+          "expires": {
+            "type": "string",
+            "description": "expiry in days or YYYY-MM-DD HH:ii:ss"
+          },
+          "notify": {
+            "type": "boolean",
+            "description": "notify users (default: false)"
+          }
+        },
+        "required": [
+          "class",
+          "users"
+        ]
+      }
+    },
+    {
+      "name": "edubase_delete_class_members",
+      "description": "Remove user(s) from a class.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "class": {
+            "type": "string",
+            "description": "class identification string"
+          },
+          "users": {
+            "type": "string",
+            "description": "comma-separated list of user identification strings"
+          }
+        },
+        "required": [
+          "class",
+          "users"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_classes_members",
+      "description": "Assign user(s) to class(es). Updates memberships if already member of a class.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "classes": {
+            "type": "string",
+            "description": "comma-separated list of class identification strings"
+          },
+          "users": {
+            "type": "string",
+            "description": "comma-separated list of user identification strings"
+          },
+          "expires": {
+            "type": "string",
+            "description": "expiry in days or YYYY-MM-DD HH:ii:ss"
+          },
+          "notify": {
+            "type": "boolean",
+            "description": "notify users (default: false)"
+          }
+        },
+        "required": [
+          "classes",
+          "users"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_user_classes",
+      "description": "List all classes a user is member of.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          }
+        },
+        "required": [
+          "user"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_user_classes",
+      "description": "Assign user to class(es). Updates membership if already member of a class.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "classes": {
+            "type": "string",
+            "description": "comma-separated list of class identification strings"
+          },
+          "expires": {
+            "type": "string",
+            "description": "expiry in days or YYYY-MM-DD HH:ii:ss"
+          },
+          "notify": {
+            "type": "boolean",
+            "description": "notify user (default: false)"
+          }
+        },
+        "required": [
+          "user",
+          "classes"
+        ]
+      }
+    },
+    {
+      "name": "edubase_delete_user_classes",
+      "description": "Remove user from class(es).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "classes": {
+            "type": "string",
+            "description": "comma-separated list of class identification strings"
+          }
+        },
+        "required": [
+          "user",
+          "classes"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_organizations",
+      "description": "List owned and managed organizations.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string",
+            "description": "search string to filter results"
+          },
+          "limit": {
+            "type": "number",
+            "description": "limit number of results (default, in search mode: 16)"
+          },
+          "page": {
+            "type": "number",
+            "description": "page number (default: 1), not used in search mode!"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "edubase_get_organization",
+      "description": "Get/check organization.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "organization": {
+            "type": "string",
+            "description": "organization identification string"
+          }
+        },
+        "required": [
+          "organization"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_organization_members",
+      "description": "List all members in an organization.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "organization": {
+            "type": "string",
+            "description": "organization identification string"
+          }
+        },
+        "required": [
+          "organization"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_organization_members",
+      "description": "Assign user(s) to an organization. Updates memberships if already member of the organization.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "organization": {
+            "type": "string",
+            "description": "organization identification string"
+          },
+          "users": {
+            "type": "string",
+            "description": "comma-separated list of user identification strings"
+          },
+          "department": {
+            "type": "string",
+            "description": "optional name of department"
+          },
+          "permission_organization": {
+            "type": "string",
+            "description": "optional permission level to organization (member / teacher / supervisor / admin) (default: member)"
+          },
+          "permission_content": {
+            "type": "string",
+            "description": "optional permission level to contents in organization (none / view / control / modify / grant / admin) (default: none)"
+          },
+          "notify": {
+            "type": "boolean",
+            "description": "notify users (default: false)"
+          }
+        },
+        "required": [
+          "organization",
+          "users"
+        ]
+      }
+    },
+    {
+      "name": "edubase_delete_organization_members",
+      "description": "Remove user(s) from an organization.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "organization": {
+            "type": "string",
+            "description": "organization identification string"
+          },
+          "users": {
+            "type": "string",
+            "description": "comma-separated list of user identification strings"
+          }
+        },
+        "required": [
+          "organization",
+          "users"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_organizations_members",
+      "description": "Assign user(s) to organization(s). Updates memberships if already member of an organization.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "organizations": {
+            "type": "string",
+            "description": "comma-separated list of organization identification strings"
+          },
+          "users": {
+            "type": "string",
+            "description": "comma-separated list of user identification strings"
+          },
+          "department": {
+            "type": "string",
+            "description": "optional name of department"
+          },
+          "permission_organization": {
+            "type": "string",
+            "description": "optional permission level to organization (member / teacher / supervisor / admin) (default: member)"
+          },
+          "permission_content": {
+            "type": "string",
+            "description": "optional permission level to contents in organization (none / view / control / modify / grant / admin) (default: none)"
+          },
+          "notify": {
+            "type": "boolean",
+            "description": "notify users (default: false)"
+          }
+        },
+        "required": [
+          "organizations",
+          "users"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_user_organizations",
+      "description": "List all organizations a user is member of.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          }
+        },
+        "required": [
+          "user"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_user_organizations",
+      "description": "Assign user to organization(s). Updates membership if already member of an organization.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "organizations": {
+            "type": "string",
+            "description": "comma-separated list of organization identification strings"
+          },
+          "department": {
+            "type": "string",
+            "description": "optional name of department"
+          },
+          "permission_organization": {
+            "type": "string",
+            "description": "optional permission level to organization (member / teacher / supervisor / admin) (default: member)"
+          },
+          "permission_content": {
+            "type": "string",
+            "description": "optional permission level to contents in organization (none / view / control / modify / grant / admin) (default: none)"
+          },
+          "notify": {
+            "type": "boolean",
+            "description": "notify user (default: false)"
+          }
+        },
+        "required": [
+          "user",
+          "organizations"
+        ]
+      }
+    },
+    {
+      "name": "edubase_delete_user_organizations",
+      "description": "Remove user from organization(s).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "organizations": {
+            "type": "string",
+            "description": "comma-separated list of organization identification strings"
+          }
+        },
+        "required": [
+          "user",
+          "organizations"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_tags",
+      "description": "List owned and managed tags.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string",
+            "description": "search string to filter results"
+          },
+          "limit": {
+            "type": "number",
+            "description": "limit number of results (default, in search mode: 16)"
+          },
+          "page": {
+            "type": "number",
+            "description": "page number (default: 1), not used in search mode!"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "edubase_get_tag",
+      "description": "Get/check tag.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tag": {
+            "type": "string",
+            "description": "tag identification string"
+          }
+        },
+        "required": [
+          "tag"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_class_tags",
+      "description": "List all attached tags of a class.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "class": {
+            "type": "string",
+            "description": "class identification string"
+          }
+        },
+        "required": [
+          "class"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_class_tag",
+      "description": "Check if tag is attached to a class.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "class": {
+            "type": "string",
+            "description": "class identification string"
+          },
+          "tag": {
+            "type": "string",
+            "description": "tag identification string"
+          }
+        },
+        "required": [
+          "class",
+          "tag"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_class_tag",
+      "description": "Attach tag to a class.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "class": {
+            "type": "string",
+            "description": "class identification string"
+          },
+          "tag": {
+            "type": "string",
+            "description": "tag identification string"
+          }
+        },
+        "required": [
+          "class",
+          "tag"
+        ]
+      }
+    },
+    {
+      "name": "edubase_delete_class_tag",
+      "description": "Remove a tag attachment from a class.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "class": {
+            "type": "string",
+            "description": "class identification string"
+          },
+          "tag": {
+            "type": "string",
+            "description": "tag identification string"
+          }
+        },
+        "required": [
+          "class",
+          "tag"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_course_tags",
+      "description": "List all attached tags of a course.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "course": {
+            "type": "string",
+            "description": "course identification string"
+          }
+        },
+        "required": [
+          "course"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_course_tag",
+      "description": "Check if tag is attached to a course.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "course": {
+            "type": "string",
+            "description": "course identification string"
+          },
+          "tag": {
+            "type": "string",
+            "description": "tag identification string"
+          }
+        },
+        "required": [
+          "course",
+          "tag"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_course_tag",
+      "description": "Attach tag to a course.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "course": {
+            "type": "string",
+            "description": "course identification string"
+          },
+          "tag": {
+            "type": "string",
+            "description": "tag identification string"
+          }
+        },
+        "required": [
+          "course",
+          "tag"
+        ]
+      }
+    },
+    {
+      "name": "edubase_delete_course_tag",
+      "description": "Remove a tag attachment from a course.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "course": {
+            "type": "string",
+            "description": "course identification string"
+          },
+          "tag": {
+            "type": "string",
+            "description": "tag identification string"
+          }
+        },
+        "required": [
+          "course",
+          "tag"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_event_tags",
+      "description": "List all attached tags of an event.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "event": {
+            "type": "string",
+            "description": "event identification string"
+          }
+        },
+        "required": [
+          "event"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_event_tag",
+      "description": "Check if tag is attached to an event.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "event": {
+            "type": "string",
+            "description": "event identification string"
+          },
+          "tag": {
+            "type": "string",
+            "description": "tag identification string"
+          }
+        },
+        "required": [
+          "event",
+          "tag"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_event_tag",
+      "description": "Attach tag to an event.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "event": {
+            "type": "string",
+            "description": "event identification string"
+          },
+          "tag": {
+            "type": "string",
+            "description": "tag identification string"
+          }
+        },
+        "required": [
+          "event",
+          "tag"
+        ]
+      }
+    },
+    {
+      "name": "edubase_delete_event_tag",
+      "description": "Remove a tag attachment from an event.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "event": {
+            "type": "string",
+            "description": "event identification string"
+          },
+          "tag": {
+            "type": "string",
+            "description": "tag identification string"
+          }
+        },
+        "required": [
+          "event",
+          "tag"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_exam_tags",
+      "description": "List all attached tags of an exam.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "exam": {
+            "type": "string",
+            "description": "exam identification string"
+          }
+        },
+        "required": [
+          "exam"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_exam_tag",
+      "description": "Check if tag is attached to an exam.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "exam": {
+            "type": "string",
+            "description": "exam identification string"
+          },
+          "tag": {
+            "type": "string",
+            "description": "tag identification string"
+          }
+        },
+        "required": [
+          "exam",
+          "tag"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_exam_tag",
+      "description": "Attach tag to an exam.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "exam": {
+            "type": "string",
+            "description": "exam identification string"
+          },
+          "tag": {
+            "type": "string",
+            "description": "tag identification string"
+          }
+        },
+        "required": [
+          "exam",
+          "tag"
+        ]
+      }
+    },
+    {
+      "name": "edubase_delete_exam_tag",
+      "description": "Remove a tag attachment from an exam.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "exam": {
+            "type": "string",
+            "description": "exam identification string"
+          },
+          "tag": {
+            "type": "string",
+            "description": "tag identification string"
+          }
+        },
+        "required": [
+          "exam",
+          "tag"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_integration_tags",
+      "description": "List all attached tags of an integration.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "integration": {
+            "type": "string",
+            "description": "integration identification string"
+          }
+        },
+        "required": [
+          "integration"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_integration_tag",
+      "description": "Check if tag is attached to an integration.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "integration": {
+            "type": "string",
+            "description": "integration identification string"
+          },
+          "tag": {
+            "type": "string",
+            "description": "tag identification string"
+          }
+        },
+        "required": [
+          "integration",
+          "tag"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_integration_tag",
+      "description": "Attach tag to an integration.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "integration": {
+            "type": "string",
+            "description": "integration identification string"
+          },
+          "tag": {
+            "type": "string",
+            "description": "tag identification string"
+          }
+        },
+        "required": [
+          "integration",
+          "tag"
+        ]
+      }
+    },
+    {
+      "name": "edubase_delete_integration_tag",
+      "description": "Remove a tag attachment from an integration.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "integration": {
+            "type": "string",
+            "description": "integration identification string"
+          },
+          "tag": {
+            "type": "string",
+            "description": "tag identification string"
+          }
+        },
+        "required": [
+          "integration",
+          "tag"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_organization_tags",
+      "description": "List all attached tags of an organization.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "organization": {
+            "type": "string",
+            "description": "organization identification string"
+          }
+        },
+        "required": [
+          "organization"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_organization_tag",
+      "description": "Check if tag is attached to an organization.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "organization": {
+            "type": "string",
+            "description": "organization identification string"
+          },
+          "tag": {
+            "type": "string",
+            "description": "tag identification string"
+          }
+        },
+        "required": [
+          "organization",
+          "tag"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_organization_tag",
+      "description": "Attach tag to an organization.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "organization": {
+            "type": "string",
+            "description": "organization identification string"
+          },
+          "tag": {
+            "type": "string",
+            "description": "tag identification string"
+          }
+        },
+        "required": [
+          "organization",
+          "tag"
+        ]
+      }
+    },
+    {
+      "name": "edubase_delete_organization_tag",
+      "description": "Remove a tag attachment from an organization.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "organization": {
+            "type": "string",
+            "description": "organization identification string"
+          },
+          "tag": {
+            "type": "string",
+            "description": "tag identification string"
+          }
+        },
+        "required": [
+          "organization",
+          "tag"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_quiz_tags",
+      "description": "List all attached tags of a Quiz.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "quiz": {
+            "type": "string",
+            "description": "quiz identification string"
+          }
+        },
+        "required": [
+          "quiz"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_quiz_tag",
+      "description": "Check if tag is attached to a Quiz.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "quiz": {
+            "type": "string",
+            "description": "quiz identification string"
+          },
+          "tag": {
+            "type": "string",
+            "description": "tag identification string"
+          }
+        },
+        "required": [
+          "quiz",
+          "tag"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_quiz_tag",
+      "description": "Attach tag to a Quiz.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "quiz": {
+            "type": "string",
+            "description": "quiz identification string"
+          },
+          "tag": {
+            "type": "string",
+            "description": "tag identification string"
+          }
+        },
+        "required": [
+          "quiz",
+          "tag"
+        ]
+      }
+    },
+    {
+      "name": "edubase_delete_quiz_tag",
+      "description": "Remove a tag attachment from a Quiz.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "quiz": {
+            "type": "string",
+            "description": "quiz identification string"
+          },
+          "tag": {
+            "type": "string",
+            "description": "tag identification string"
+          }
+        },
+        "required": [
+          "quiz",
+          "tag"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_scorm_tags",
+      "description": "List all attached tags of a SCORM learning material.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "scorm": {
+            "type": "string",
+            "description": "SCORM identification string"
+          }
+        },
+        "required": [
+          "scorm"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_scorm_tag",
+      "description": "Check if tag is attached to a SCORM learning material.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "scorm": {
+            "type": "string",
+            "description": "SCORM identification string"
+          },
+          "tag": {
+            "type": "string",
+            "description": "tag identification string"
+          }
+        },
+        "required": [
+          "scorm",
+          "tag"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_scorm_tag",
+      "description": "Attach tag to a SCORM learning material.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "scorm": {
+            "type": "string",
+            "description": "SCORM identification string"
+          },
+          "tag": {
+            "type": "string",
+            "description": "tag identification string"
+          }
+        },
+        "required": [
+          "scorm",
+          "tag"
+        ]
+      }
+    },
+    {
+      "name": "edubase_delete_scorm_tag",
+      "description": "Remove a tag attachment from a SCORM learning material.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "scorm": {
+            "type": "string",
+            "description": "SCORM identification string"
+          },
+          "tag": {
+            "type": "string",
+            "description": "tag identification string"
+          }
+        },
+        "required": [
+          "scorm",
+          "tag"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_video_tags",
+      "description": "List all attached tags of a video.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "video": {
+            "type": "string",
+            "description": "video identification string"
+          }
+        },
+        "required": [
+          "video"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_video_tag",
+      "description": "Check if tag is attached to a video.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "video": {
+            "type": "string",
+            "description": "video identification string"
+          },
+          "tag": {
+            "type": "string",
+            "description": "tag identification string"
+          }
+        },
+        "required": [
+          "video",
+          "tag"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_video_tag",
+      "description": "Attach tag to a video.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "video": {
+            "type": "string",
+            "description": "video identification string"
+          },
+          "tag": {
+            "type": "string",
+            "description": "tag identification string"
+          }
+        },
+        "required": [
+          "video",
+          "tag"
+        ]
+      }
+    },
+    {
+      "name": "edubase_delete_video_tag",
+      "description": "Remove a tag attachment from a video.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "video": {
+            "type": "string",
+            "description": "video identification string"
+          },
+          "tag": {
+            "type": "string",
+            "description": "tag identification string"
+          }
+        },
+        "required": [
+          "video",
+          "tag"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_class_permission",
+      "description": "Check if a user has permission on a class.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "class": {
+            "type": "string",
+            "description": "class identification string"
+          },
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "permission": {
+            "type": "string",
+            "description": "permission level (view / control / modify / grant / admin)"
+          }
+        },
+        "required": [
+          "class",
+          "user",
+          "permission"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_class_permission",
+      "description": "Create new permission for a user on a class.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "class": {
+            "type": "string",
+            "description": "class identification string"
+          },
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "permission": {
+            "type": "string",
+            "description": "permission level (view / control / modify / grant / admin)"
+          }
+        },
+        "required": [
+          "class",
+          "user",
+          "permission"
+        ]
+      }
+    },
+    {
+      "name": "edubase_delete_class_permission",
+      "description": "Remove a user permission from a class.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "class": {
+            "type": "string",
+            "description": "class identification string"
+          },
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "permission": {
+            "type": "string",
+            "description": "permission level (view / control / modify / grant / admin)"
+          }
+        },
+        "required": [
+          "class",
+          "user",
+          "permission"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_course_permission",
+      "description": "Check if a user has permission on a course.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "course": {
+            "type": "string",
+            "description": "course identification string"
+          },
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "permission": {
+            "type": "string",
+            "description": "permission level (view / control / modify / grant / admin)"
+          }
+        },
+        "required": [
+          "course",
+          "user",
+          "permission"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_course_permission",
+      "description": "Create new permission for a user on a course.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "course": {
+            "type": "string",
+            "description": "course identification string"
+          },
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "permission": {
+            "type": "string",
+            "description": "permission level (view / control / modify / grant / admin)"
+          }
+        },
+        "required": [
+          "course",
+          "user",
+          "permission"
+        ]
+      }
+    },
+    {
+      "name": "edubase_delete_course_permission",
+      "description": "Remove a user permission from a course.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "course": {
+            "type": "string",
+            "description": "course identification string"
+          },
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "permission": {
+            "type": "string",
+            "description": "permission level (view / control / modify / grant / admin)"
+          }
+        },
+        "required": [
+          "course",
+          "user",
+          "permission"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_event_permission",
+      "description": "Check if a user has permission on an event.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "event": {
+            "type": "string",
+            "description": "event identification string"
+          },
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "permission": {
+            "type": "string",
+            "description": "permission level (view / control / modify / finances / grant / admin)"
+          }
+        },
+        "required": [
+          "event",
+          "user",
+          "permission"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_event_permission",
+      "description": "Create new permission for a user on an event.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "event": {
+            "type": "string",
+            "description": "event identification string"
+          },
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "permission": {
+            "type": "string",
+            "description": "permission level (view / control / modify / finances / grant / admin)"
+          }
+        },
+        "required": [
+          "event",
+          "user",
+          "permission"
+        ]
+      }
+    },
+    {
+      "name": "edubase_delete_event_permission",
+      "description": "Remove a user permission from an event.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "event": {
+            "type": "string",
+            "description": "event identification string"
+          },
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "permission": {
+            "type": "string",
+            "description": "permission level (view / control / modify / finances / grant / admin)"
+          }
+        },
+        "required": [
+          "event",
+          "user",
+          "permission"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_exam_permission",
+      "description": "Check if a user has permission on an exam.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "exam": {
+            "type": "string",
+            "description": "exam identification string"
+          },
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "permission": {
+            "type": "string",
+            "description": "permission level (view / control / modify / grant / admin)"
+          }
+        },
+        "required": [
+          "exam",
+          "user",
+          "permission"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_exam_permission",
+      "description": "Create new permission for a user on an exam.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "exam": {
+            "type": "string",
+            "description": "exam identification string"
+          },
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "permission": {
+            "type": "string",
+            "description": "permission level (view / control / modify / grant / admin)"
+          }
+        },
+        "required": [
+          "exam",
+          "user",
+          "permission"
+        ]
+      }
+    },
+    {
+      "name": "edubase_delete_exam_permission",
+      "description": "Remove a user permission from an exam.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "exam": {
+            "type": "string",
+            "description": "exam identification string"
+          },
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "permission": {
+            "type": "string",
+            "description": "permission level (view / control / modify / grant / admin)"
+          }
+        },
+        "required": [
+          "exam",
+          "user",
+          "permission"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_integration_permission",
+      "description": "Check if a user has permission on an integration.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "integration": {
+            "type": "string",
+            "description": "integration identification string"
+          },
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "permission": {
+            "type": "string",
+            "description": "permission level (view / control / modify / grant / admin)"
+          }
+        },
+        "required": [
+          "integration",
+          "user",
+          "permission"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_integration_permission",
+      "description": "Create new permission for a user on an integration.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "integration": {
+            "type": "string",
+            "description": "integration identification string"
+          },
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "permission": {
+            "type": "string",
+            "description": "permission level (view / control / modify / grant / admin)"
+          }
+        },
+        "required": [
+          "integration",
+          "user",
+          "permission"
+        ]
+      }
+    },
+    {
+      "name": "edubase_delete_integration_permission",
+      "description": "Remove a user permission from an integration.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "integration": {
+            "type": "string",
+            "description": "integration identification string"
+          },
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "permission": {
+            "type": "string",
+            "description": "permission level (view / control / modify / grant / admin)"
+          }
+        },
+        "required": [
+          "integration",
+          "user",
+          "permission"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_organization_permission",
+      "description": "Check if a user has permission on an organization.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "organization": {
+            "type": "string",
+            "description": "organization identification string"
+          },
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "permission": {
+            "type": "string",
+            "description": "permission level (view / control / modify / grant / admin)"
+          }
+        },
+        "required": [
+          "organization",
+          "user",
+          "permission"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_organization_permission",
+      "description": "Create new permission for a user on an organization.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "organization": {
+            "type": "string",
+            "description": "organization identification string"
+          },
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "permission": {
+            "type": "string",
+            "description": "permission level (view / control / modify / grant / admin)"
+          }
+        },
+        "required": [
+          "organization",
+          "user",
+          "permission"
+        ]
+      }
+    },
+    {
+      "name": "edubase_delete_organization_permission",
+      "description": "Remove a user permission from an organization.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "organization": {
+            "type": "string",
+            "description": "organization identification string"
+          },
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "permission": {
+            "type": "string",
+            "description": "permission level (view / control / modify / grant / admin)"
+          }
+        },
+        "required": [
+          "organization",
+          "user",
+          "permission"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_quiz_permission",
+      "description": "Check if a user has permission on a quiz.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "quiz": {
+            "type": "string",
+            "description": "quiz identification string"
+          },
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "permission": {
+            "type": "string",
+            "description": "permission level (view / control / modify / grant / admin)"
+          }
+        },
+        "required": [
+          "quiz",
+          "user",
+          "permission"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_quiz_permission",
+      "description": "Create new permission for a user on a quiz.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "quiz": {
+            "type": "string",
+            "description": "quiz identification string"
+          },
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "permission": {
+            "type": "string",
+            "description": "permission level (view / control / modify / grant / admin)"
+          }
+        },
+        "required": [
+          "quiz",
+          "user",
+          "permission"
+        ]
+      }
+    },
+    {
+      "name": "edubase_delete_quiz_permission",
+      "description": "Remove a user permission from a quiz.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "quiz": {
+            "type": "string",
+            "description": "quiz identification string"
+          },
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "permission": {
+            "type": "string",
+            "description": "permission level (view / control / modify / grant / admin)"
+          }
+        },
+        "required": [
+          "quiz",
+          "user",
+          "permission"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_scorm_permission",
+      "description": "Check if a user has permission on a SCORM learning material.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "scorm": {
+            "type": "string",
+            "description": "SCORM identification string"
+          },
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "permission": {
+            "type": "string",
+            "description": "permission level (view / control / modify / grant / admin)"
+          }
+        },
+        "required": [
+          "scorm",
+          "user",
+          "permission"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_scorm_permission",
+      "description": "Create new permission for a user on a SCORM learning material.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "scorm": {
+            "type": "string",
+            "description": "SCORM identification string"
+          },
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "permission": {
+            "type": "string",
+            "description": "permission level (view / control / modify / grant / admin)"
+          }
+        },
+        "required": [
+          "scorm",
+          "user",
+          "permission"
+        ]
+      }
+    },
+    {
+      "name": "edubase_delete_scorm_permission",
+      "description": "Remove a user permission from a SCORM learning material.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "scorm": {
+            "type": "string",
+            "description": "SCORM identification string"
+          },
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "permission": {
+            "type": "string",
+            "description": "permission level (view / control / modify / grant / admin)"
+          }
+        },
+        "required": [
+          "scorm",
+          "user",
+          "permission"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_tag_permission",
+      "description": "Check if a user has permission on a tag.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tag": {
+            "type": "string",
+            "description": "tag identification string"
+          },
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "permission": {
+            "type": "string",
+            "description": "permission level (view / control / modify / grant / admin)"
+          }
+        },
+        "required": [
+          "tag",
+          "user",
+          "permission"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_tag_permission",
+      "description": "Create new permission for a user on a tag.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tag": {
+            "type": "string",
+            "description": "tag identification string"
+          },
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "permission": {
+            "type": "string",
+            "description": "permission level (view / control / modify / grant / admin)"
+          }
+        },
+        "required": [
+          "tag",
+          "user",
+          "permission"
+        ]
+      }
+    },
+    {
+      "name": "edubase_delete_tag_permission",
+      "description": "Remove a user permission from a tag.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tag": {
+            "type": "string",
+            "description": "tag identification string"
+          },
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "permission": {
+            "type": "string",
+            "description": "permission level (view / control / modify / grant / admin)"
+          }
+        },
+        "required": [
+          "tag",
+          "user",
+          "permission"
+        ]
+      }
+    },
+    {
+      "name": "edubase_get_video_permission",
+      "description": "Check if a user has permission on a video.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "video": {
+            "type": "string",
+            "description": "video identification string"
+          },
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "permission": {
+            "type": "string",
+            "description": "permission level (view / control / modify / grant / admin)"
+          }
+        },
+        "required": [
+          "video",
+          "user",
+          "permission"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_video_permission",
+      "description": "Create new permission for a user on a video.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "video": {
+            "type": "string",
+            "description": "video identification string"
+          },
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "permission": {
+            "type": "string",
+            "description": "permission level (view / control / modify / grant / admin)"
+          }
+        },
+        "required": [
+          "video",
+          "user",
+          "permission"
+        ]
+      }
+    },
+    {
+      "name": "edubase_delete_video_permission",
+      "description": "Remove a user permission from a video.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "video": {
+            "type": "string",
+            "description": "video identification string"
+          },
+          "user": {
+            "type": "string",
+            "description": "user identification string"
+          },
+          "permission": {
+            "type": "string",
+            "description": "permission level (view / control / modify / grant / admin)"
+          }
+        },
+        "required": [
+          "video",
+          "user",
+          "permission"
+        ]
+      }
+    },
+    {
+      "name": "edubase_post_custom_metric",
+      "description": "Update a custom metric.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "metric": {
+            "type": "string",
+            "description": "metric name"
+          },
+          "value": {
+            "type": "number",
+            "description": "target value (also accepts increments with a + prefix)"
+          }
+        },
+        "required": [
+          "metric",
+          "value"
+        ]
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": true
+}

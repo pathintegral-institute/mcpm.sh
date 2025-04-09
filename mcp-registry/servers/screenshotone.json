@@ -1,0 +1,51 @@
+{
+  "display_name": "ScreenshotOne MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/screenshotone/mcp"
+  },
+  "homepage": "https://screenshotone.com",
+  "author": {
+    "name": "screenshotone"
+  },
+  "license": "MIT",
+  "tags": [
+    "screenshot",
+    "website",
+    "image"
+  ],
+  "arguments": {
+    "SCREENSHOTONE_API_KEY": {
+      "description": "API key for ScreenshotOne service",
+      "required": true,
+      "example": "<your api key>"
+    }
+  },
+  "installations": {
+    "custom": {
+      "type": "custom",
+      "command": "node",
+      "args": [
+        "build/index.js"
+      ],
+      "env": {
+        "SCREENSHOTONE_API_KEY": "your_api_key"
+      },
+      "description": "Run as standalone server",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Render Website Screenshot",
+      "description": "Render a screenshot of a website and return it as an image",
+      "prompt": "Take a screenshot of the website https://example.com"
+    }
+  ],
+  "name": "screenshotone",
+  "description": "An official implementation of an [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) server for [ScreenshotOne](https://screenshotone.com).",
+  "categories": [
+    "Web Services"
+  ],
+  "is_official": true
+}

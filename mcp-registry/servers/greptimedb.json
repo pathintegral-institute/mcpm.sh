@@ -1,0 +1,95 @@
+{
+  "display_name": "GreptimeDB",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GreptimeTeam/greptimedb"
+  },
+  "homepage": "https://greptime.com",
+  "author": {
+    "name": "GreptimeTeam"
+  },
+  "license": "Apache License 2.0",
+  "tags": [
+    "database",
+    "timeseries",
+    "observability",
+    "metrics",
+    "logs",
+    "events"
+  ],
+  "arguments": {
+    "http-addr": {
+      "description": "HTTP address to bind to",
+      "required": true,
+      "example": "0.0.0.0:4000"
+    },
+    "rpc-bind-addr": {
+      "description": "RPC address to bind to",
+      "required": true,
+      "example": "0.0.0.0:4001"
+    },
+    "mysql-addr": {
+      "description": "MySQL protocol address to bind to",
+      "required": true,
+      "example": "0.0.0.0:4002"
+    },
+    "postgres-addr": {
+      "description": "PostgreSQL protocol address to bind to",
+      "required": true,
+      "example": "0.0.0.0:4003"
+    }
+  },
+  "installations": {
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-p",
+        "127.0.0.1:4000-4003:4000-4003",
+        "-v",
+        "$(pwd)/greptimedb:./greptimedb_data",
+        "--name",
+        "greptime",
+        "--rm",
+        "greptime/greptimedb:latest",
+        "standalone",
+        "start",
+        "--http-addr",
+        "0.0.0.0:4000",
+        "--rpc-bind-addr",
+        "0.0.0.0:4001",
+        "--mysql-addr",
+        "0.0.0.0:4002",
+        "--postgres-addr",
+        "0.0.0.0:4003"
+      ],
+      "recommended": true,
+      "description": "Run GreptimeDB in a Docker container"
+    },
+    "source": {
+      "type": "custom",
+      "command": "cargo",
+      "args": [
+        "run",
+        "--",
+        "standalone",
+        "start"
+      ],
+      "description": "Build and run GreptimeDB from source"
+    }
+  },
+  "examples": [
+    {
+      "title": "Start a standalone server",
+      "description": "Run a standalone GreptimeDB server",
+      "prompt": "cargo run -- standalone start"
+    }
+  ],
+  "name": "greptimedb",
+  "description": "<source media=\"(prefers-color-scheme: light)\" srcset=\"https://cdn.jsdelivr.net/gh/GreptimeTeam/greptimedb@main/docs/logo-text-padding.png\">",
+  "categories": [
+    "Databases"
+  ],
+  "is_official": true
+}

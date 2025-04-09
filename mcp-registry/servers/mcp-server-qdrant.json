@@ -1,0 +1,137 @@
+{
+  "display_name": "Qdrant MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qdrant/mcp-server-qdrant"
+  },
+  "homepage": "https://github.com/qdrant/mcp-server-qdrant/",
+  "author": {
+    "name": "qdrant"
+  },
+  "license": "Apache License 2.0",
+  "tags": [
+    "vector-search",
+    "qdrant",
+    "memory",
+    "semantic-search"
+  ],
+  "arguments": {
+    "QDRANT_URL": {
+      "description": "URL of the Qdrant server",
+      "required": false,
+      "example": "http://localhost:6333"
+    },
+    "QDRANT_API_KEY": {
+      "description": "API key for the Qdrant server",
+      "required": false,
+      "example": "your-api-key"
+    },
+    "COLLECTION_NAME": {
+      "description": "Name of the collection to use",
+      "required": true,
+      "example": "my-collection"
+    },
+    "QDRANT_LOCAL_PATH": {
+      "description": "Path to the local Qdrant database (alternative to QDRANT_URL)",
+      "required": false,
+      "example": "/path/to/qdrant/database"
+    },
+    "EMBEDDING_PROVIDER": {
+      "description": "Embedding provider to use (currently only \"fastembed\" is supported)",
+      "required": false,
+      "example": "fastembed"
+    },
+    "EMBEDDING_MODEL": {
+      "description": "Name of the embedding model to use",
+      "required": false,
+      "example": "sentence-transformers/all-MiniLM-L6-v2"
+    },
+    "TOOL_STORE_DESCRIPTION": {
+      "description": "Custom description for the store tool",
+      "required": false,
+      "example": "Store reusable code snippets for later retrieval."
+    },
+    "TOOL_FIND_DESCRIPTION": {
+      "description": "Custom description for the find tool",
+      "required": false,
+      "example": "Search for relevant code snippets based on natural language descriptions."
+    }
+  },
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "mcp-server-qdrant"
+      ],
+      "env": {
+        "QDRANT_URL": "http://localhost:6333",
+        "QDRANT_API_KEY": "your_api_key",
+        "COLLECTION_NAME": "my-collection",
+        "EMBEDDING_MODEL": "sentence-transformers/all-MiniLM-L6-v2"
+      },
+      "description": "Run using uvx without specific installation",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Basic Usage",
+      "description": "Store and retrieve information from Qdrant",
+      "prompt": "I want to store some information in Qdrant and then retrieve it later. Can you help me with that?"
+    },
+    {
+      "title": "Code Snippet Storage",
+      "description": "Store and retrieve code snippets with descriptions",
+      "prompt": "I need to store this function that calculates Fibonacci numbers and retrieve it later when I need it."
+    }
+  ],
+  "name": "mcp-server-qdrant",
+  "description": "This repository is an example of how to create a MCP server for Qdrant, a vector search engine.",
+  "categories": [
+    "Databases"
+  ],
+  "is_official": true,
+  "tools": [
+    {
+      "name": "qdrant-store",
+      "description": "Keep the memory for later use, when you are asked to remember something.",
+      "inputSchema": {
+        "properties": {
+          "information": {
+            "title": "Information",
+            "type": "string"
+          },
+          "metadata": {
+            "additionalProperties": true,
+            "default": null,
+            "title": "Metadata",
+            "type": "object"
+          }
+        },
+        "required": [
+          "information"
+        ],
+        "title": "storeArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "qdrant-find",
+      "description": "Look up memories in Qdrant. Use this tool when you need to: \n - Find memories by their content \n - Access memories for further analysis \n - Get some personal information about the user",
+      "inputSchema": {
+        "properties": {
+          "query": {
+            "title": "Query",
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "title": "findArguments",
+        "type": "object"
+      }
+    }
+  ]
+}

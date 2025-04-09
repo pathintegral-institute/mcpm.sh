@@ -1,0 +1,400 @@
+{
+  "display_name": "SingleStore MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/singlestore-labs/mcp-server-singlestore"
+  },
+  "homepage": "https://github.com/singlestore-labs/mcp-server-singlestore",
+  "author": {
+    "name": "singlestore-labs"
+  },
+  "license": "MIT",
+  "tags": [
+    "singlestore",
+    "database",
+    "sql",
+    "mcp",
+    "model context protocol"
+  ],
+  "arguments": {
+    "SINGLESTORE_API_KEY": {
+      "description": "SingleStore's management API key",
+      "required": true,
+      "example": "your_api_key_here"
+    },
+    "SINGLESTORE_DB_USERNAME": {
+      "description": "Database username",
+      "required": false,
+      "example": "your_db_username_here"
+    },
+    "SINGLESTORE_DB_PASSWORD": {
+      "description": "Database password",
+      "required": false,
+      "example": "your_db_password_here"
+    }
+  },
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "singlestore-mcp-server"
+      ],
+      "env": {
+        "SINGLESTORE_DB_USERNAME": "${SINGLESTORE_DB_USERNAME}",
+        "SINGLESTORE_DB_PASSWORD": "${SINGLESTORE_DB_PASSWORD}",
+        "SINGLESTORE_API_KEY": "${SINGLESTORE_API_KEY}"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Query SingleStore Database",
+      "description": "Execute a SQL query on a connected workspace",
+      "prompt": "Can you help me execute a SQL query to list all tables in my SingleStore database?"
+    },
+    {
+      "title": "Create a Virtual Workspace",
+      "description": "Set up a new starter workspace in SingleStore",
+      "prompt": "I need to create a new starter workspace in SingleStore. Can you help me set it up?"
+    },
+    {
+      "title": "Workspace Information",
+      "description": "Get information about available workspaces",
+      "prompt": "Show me all the workspace groups I have access to in my SingleStore account."
+    }
+  ],
+  "name": "mcp-server-singlestore",
+  "description": "Interact with the SingleStore database platform",
+  "categories": [
+    "Databases"
+  ],
+  "is_official": true,
+  "tools": [
+    {
+      "name": "workspace_groups_info",
+      "description": "List all workspace groups accessible to the user in SingleStore.\n\nReturns detailed information for each group:\n- name: Display name of the workspace group\n- deploymentType: Type of deployment (e.g., 'PRODUCTION')\n- state: Current status (e.g., 'ACTIVE', 'PAUSED')\n- workspaceGroupID: Unique identifier for the group\n- firewallRanges: Array of allowed IP ranges for access control\n- createdAt: Timestamp of group creation\n- regionID: Identifier for deployment region\n- updateWindow: Maintenance window configuration\n\nUse this tool to:\n1. Get workspace group IDs for other operations\n2. Plan maintenance windows\n\nRelated operations:\n- Use workspaces_info to list workspaces within a group\n- Use execute_sql to run queries on workspaces in a group\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "workspaces_info",
+      "description": "List all workspaces within a specified workspace group in SingleStore.\n\nReturns detailed information for each workspace:\n- createdAt: Timestamp of workspace creation\n- deploymentType: Type of deployment (e.g., 'PRODUCTION')\n- endpoint: Connection URL for database access\n- name: Display name of the workspace\n- size: Compute and storage configuration\n- state: Current status (e.g., 'ACTIVE', 'PAUSED')\n- terminatedAt: Timestamp of termination if applicable\n- workspaceGroupID: Workspacegroup identifier\n- workspaceID: Unique workspace identifier\n\nUse this tool to:\n1. Monitor workspace status\n2. Get connection details for database operations\n3. Track workspace lifecycle\n\nRequired parameter:\n- workspaceGroupID: Unique identifier of the workspace group\n\nRelated operations:\n- Use workspace_groups_info first to get workspacegroupID\n- Use execute_sql to run queries on specific workspace\n\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspaceGroupID": {
+            "type": "string",
+            "description": "The unique identifier of the workspace group to retrieve workspaces from."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "organization_info",
+      "description": "Retrieve information about the current user's organization in SingleStore.\n\nReturns organization details including:\n- orgID: Unique identifier for the organization\n- name: Organization display name\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "list_of_regions",
+      "description": "List all available deployment regions where SingleStore workspaces can be deployed for the user.\n\nReturns region information including:\n- regionID: Unique identifier for the region\n- provider: Cloud provider (AWS, GCP, or Azure)\n- name: Human-readable region name (e.g., Europe West 2 (London),US West 2 (Oregon)) \n\nUse this tool to:\n1. Select optimal deployment regions based on:\n   - Geographic proximity to users\n   - Compliance requirements\n   - Cost considerations\n   - Available cloud providers\n2. Plan multi-region deployments\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "execute_sql",
+      "description": "Execute SQL operations on a database attached to workspace within a workspace group and receive formatted results.\n\nReturns:\n- Query results with column names and typed values\n- Row count and metadata\n- Execution status\n\n\u26a0\ufe0f CRITICAL SECURITY WARNINGS:\n- Never display or log credentials in responses\n- Use only READ-ONLY queries (SELECT, SHOW, DESCRIBE)\n- DO NOT USE data modification statements:\n  \u00d7 No INSERT/UPDATE/DELETE\n  \u00d7 No DROP/CREATE/ALTER\n- Ensure queries are properly sanitized\n\nRequired parameters:\n- workspace_group_identifier: ID/name of the workspace group\n- workspace_identifier: ID/name of the specific workspace within the workspace group\n- database: Name of the database to query\n- sql_query: The SQL query to execute\n\nOptional parameters:\n- username: Username for database access (defaults to SINGLESTORE_DB_USERNAME)\n- password: Password for database access (defaults to SINGLESTORE_DB_PASSWORD)\n\nAllowed query examples:\n- SELECT * FROM table_name\n- SELECT COUNT(*) FROM table_name\n- SHOW TABLES\n- DESCRIBE table_name\n\nNote: For data modifications, please use appropriate admin tools or APIs.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspace_group_identifier": {
+            "type": "string",
+            "description": "The ID or name of the workspace group containing the target workspace."
+          },
+          "workspace_identifier": {
+            "type": "string",
+            "description": "The ID or name of the specific workspace where the query will run."
+          },
+          "database": {
+            "type": "string",
+            "description": "The name of the database to query within the workspace."
+          },
+          "sql_query": {
+            "type": "string",
+            "description": "The SQL query to execute. Must be valid SingleStore SQL."
+          },
+          "username": {
+            "type": "string",
+            "description": "Optional: Username for database connection. Will use environment default if not specified."
+          },
+          "password": {
+            "type": "string",
+            "description": "Optional: Password for database connection. Will use environment default if not specified."
+          }
+        },
+        "required": [
+          "workspace_group_identifier",
+          "workspace_identifier",
+          "database",
+          "sql_query"
+        ]
+      }
+    },
+    {
+      "name": "list_virtual_workspaces",
+      "description": "List all starter (virtual) workspaces available to the user in SingleStore.\n\nReturns detailed information about each starter workspace:\n- virtualWorkspaceID: Unique identifier for the workspace\n- name: Display name of the workspace\n- endpoint: Connection endpoint URL\n- databaseName: Name of the primary database\n- mysqlDmlPort: Port for MySQL protocol connections\n- webSocketPort: Port for WebSocket connections\n- state: Current status of the workspace\n\nUse this tool to:\n1. Get virtual workspace IDs for other operations\n2. Check starter workspace availability and status\n3. Obtain connection details for database access\n\nNote: This tool only lists starter workspaces, not standard workspaces.\nUse workspaces_info for standard workspace information.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "create_virtual_workspace",
+      "description": "Create a new starter (virtual) workspace in SingleStore and set up user access.\n\nProcess:\n1. Creates a virtual workspace with specified name and database\n2. Creates a user account for accessing the workspace\n3. Returns both workspace details and access credentials\n\nRequired parameters:\n- name: Unique name for the starter workspace\n- database_name: Name for the database to create\n- username:  Username for accessing the starter workspace\n- password: Password for accessing the starter workspace\n\nUsage notes:\n- Workspace names must be unique\n- Passwords should meet security requirements\n- Use execute_sql_on_virtual_workspace to interact with the created starter workspace",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Unique name for the new starter workspace"
+          },
+          "database_name": {
+            "type": "string",
+            "description": "Name of the database to create in the starter workspace"
+          },
+          "username": {
+            "type": "string",
+            "description": "Username for accessing the new starter workspace"
+          },
+          "password": {
+            "type": "string",
+            "description": "Password for accessing the new starter workspace"
+          }
+        },
+        "required": [
+          "name",
+          "database_name",
+          "username",
+          "password"
+        ]
+      }
+    },
+    {
+      "name": "execute_sql_on_virtual_workspace",
+      "description": "Execute SQL operations on a virtual (starter) workspace and receive formatted results.\n\nReturns:\n- Query results with column names and typed values\n- Row count\n- Column metadata\n- Execution status\n\n\u26a0\ufe0f CRITICAL SECURITY WARNING:\n- Never display or log credentials in responses\n- Ensure SQL queries are properly sanitized\n- ONLY USE SELECT statements or queries that don't modify data\n- DO NOT USE INSERT, UPDATE, DELETE, DROP, CREATE, or ALTER statements\n\nRequired input parameters:\n- virtual_workspace_id: Unique identifier of the starter workspace\n- sql_query: The SQL query to execute (READ-ONLY queries only)\n\nOptional input parameters:\n- username: For accessing the starter workspace (defaults to SINGLESTORE_DB_USERNAME)\n- password: For accessing the starter workspace (defaults to SINGLESTORE_DB_PASSWORD)\n\nAllowed query examples:\n- SELECT * FROM table_name\n- SELECT COUNT(*) FROM table_name\n- SHOW TABLES\n- DESCRIBE table_name\n\nNote: This tool is specifically designed for read-only operations on starter workspaces.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "virtual_workspace_id": {
+            "type": "string",
+            "description": "Unique identifier of the starter workspace to connect to"
+          },
+          "sql_query": {
+            "type": "string",
+            "description": "SQL query to execute on the starter workspace"
+          },
+          "username": {
+            "type": "string",
+            "description": "Optional: Username for accessing the starter workspace. Will use environment default if not specified."
+          },
+          "password": {
+            "type": "string",
+            "description": "Optional: Password for accessing the starter workspace, Will use environment default if not specified."
+          }
+        },
+        "required": [
+          "virtual_workspace_id",
+          "sql_query"
+        ]
+      }
+    },
+    {
+      "name": "organization_billing_usage",
+      "description": "Retrieve detailed billing and usage metrics for your organization over a specified time period. Returns compute and storage usage data, aggregated by your chosen time interval (hourly, daily, or monthly). This tool is essential for: \n1. Monitoring resource consumption patterns\n2. Analyzing cost trends\nRequired input parameters:\n- start_time: Beginning of the usage period (UTC ISO 8601 format, e.g., '2023-07-30T18:30:00Z')\n- end_time: End of the usage period (UTC ISO 8601 format)\n- aggregate_type: Time interval for data grouping ('hour', 'day', or 'month')\n\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "start_time": {
+            "type": "string",
+            "description": "Start of the usage period in UTC ISO 8601 format (e.g., '2023-07-30T18:30:00Z')"
+          },
+          "end_time": {
+            "type": "string",
+            "description": "End of the usage period in UTC ISO 8601 format (e.g., '2023-07-30T18:30:00Z')"
+          },
+          "aggregate_type": {
+            "type": "string",
+            "description": "How to group the usage data: 'hour', 'day', or 'month'"
+          }
+        },
+        "required": [
+          "start_time",
+          "end_time",
+          "aggregate_type"
+        ]
+      }
+    },
+    {
+      "name": "list_notebook_samples",
+      "description": "Retrieve a catalog of pre-built notebook templates available in SingleStore Spaces.\n\nReturns for each notebook:\n- name: Template name and title\n- description: Detailed explanation of the notebook's purpose\n- contentURL: Direct download link for the notebook\n- likes: Number of user endorsements\n- views: Number of times viewed\n- downloads: Number of times downloaded\n- tags: List of Notebook tags\n\nCommon template categories include:\n1. Getting Started guides\n2. Data loading and ETL patterns\n3. Query optimization examples\n4. Machine learning integrations\n5. Performance monitoring\n6. Best practices demonstrations\n\nUse this tool to:\n1. Find popular and well-tested example code\n2. Learn SingleStore features and best practices\n3. Start new projects with proven patterns\n4. Discover trending notebook templates\n\nRelated operations:\nRelated operations:\n- list_notebook_samples: To find example templates\n- list_shared_files: To check existing notebooks\n- create_scheduled_job: To automate notebook execution\n- get_notebook_path : To reference created notebooks\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "create_notebook",
+      "description": "Create a new Jupyter notebook in your personal space. Only supports python and markdown. Do not try to use any other languange\n\nParameters:\n- notebook_name (required): Name for the new notebook\n  - Can include or omit .ipynb extension\n  - Must be unique in your personal space\n  - Examples: 'my_analysis' or 'my_analysis.ipynb'\n\n- content (optional): Custom notebook content\n  - Must be valid Jupyter notebook JSON format\n  - If omitted, creates template with:\n    \u2022 SingleStore connection setup\n    \u2022 Basic query examples\n    \u2022 DataFrame operations\n    \u2022 Best practices\n\nFeatures:\n- Creates notebook with specified name in personal space\n- Automatically adds .ipynb extension if missing\n- Provides default SingleStore template if no content given\n- Supports custom content in Jupyter notebook format\n- Only supports python and markdown cells\n- When creating a connection to the database the jupyter notebook will already have the connection_url defined and you can use directly\n- Install tools in a new cell with !pip3 install <toolname>\n\nDefault template includes:\n- SingleStore connection setup code\n- Basic SQL query examples\n- DataFrame operations with pandas\n- Table creation and data insertion examples\n- Connection management best practices\n\nUse this tool to:\n1. Create data analysis notebooks using python\n2. Build database interaction workflows and much more\n\nRelated operations:\n- list_notebook_samples: To find example templates\n- list_shared_files: To check existing notebooks\n- create_scheduled_job: To automate notebook execution\n- get_notebook_path : To reference created notebooks\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "notebook_name": {
+            "type": "string",
+            "description": "Name for the new notebook (with or without .ipynb extension)"
+          },
+          "content": {
+            "type": "string",
+            "description": "Optional: Custom notebook content in Jupyter JSON format"
+          }
+        },
+        "required": [
+          "notebook_name"
+        ]
+      }
+    },
+    {
+      "name": "list_shared_files",
+      "description": "List all files and notebooks in your shared SingleStore space.\n\nReturns file object meta data for each file:\n- name: Name of the file (e.g., 'analysis.ipynb')\n- path: Full path in shared space (e.g., 'folder/analysis.ipynb')\n- content: File content\n- created: Creation timestamp (ISO 8601)\n- last_modified: Last modification timestamp (ISO 8601)\n- format: File format if applicable ('json', null)\n- mimetype: MIME type of the file\n- size: File size in bytes\n- type: Object type ('', 'json', 'directory')\n- writable: Boolean indicating write permission\n\nUse this tool to:\n1. List workspace contents and structure\n2. Verify file existence before operations\n3. Check file timestamps and sizes\n4. Determine file permissions\n\nRelated operations:\n- create_notebook: To add new notebooks\n- get_notebook_path: To find notebook paths\n- create_scheduled_job: To automate notebook execution\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "create_scheduled_job",
+      "description": "Create an automated job to execute a SingleStore notebook on a schedule.\n\nParameters:\n1. Required Parameters:\n   - name: Name of the job (unique identifier within organization)\n   - notebook_path: Complete path to the notebook\n   - schedule_mode: 'Once' for single execution or 'Recurring' for repeated runs\n\n2. Optional Parameters:\n   - execution_interval_minutes: Time between recurring runs (\u226560 minutes)\n   - start_at: Execution start time (ISO 8601 format, e.g., '2024-03-06T10:00:00Z')\n   - description: Human-readable purpose of the job\n   - create_snapshot: Enable notebook backup before execution (default: True)\n   - runtime_name: Execution environment selection (default: notebooks-cpu-small)\n   - parameters: Runtime variables for notebook\n   - target_config: Advanced runtime settings\n\nReturns Job info with:\n- jobID: UUID of created job\n- status: Current state (SUCCESS, RUNNING, etc.)\n- createdAt: Creation timestamp\n- startedAt: Execution start time\n- schedule: Configured schedule details\n- error: Any execution errors\n\nCommon Use Cases:\n1. Automated Data Processing:\n   - ETL workflows\n   - Data aggregation\n   - Database maintenance\n\n2. Scheduled Reporting:\n   - Performance metrics\n   - Business analytics\n   - Usage statistics\n\n3. Maintenance Tasks:\n   - Health checks\n   - Backup operations\n   - Clean-up routines\n\nRelated Operations:\n- get_job_details: Monitor job\n- list_job_executions: View job execution history\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "notebook_path": {
+            "type": "string",
+            "description": "Full path to the notebook file (use get_notebook_path if needed)"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "Once",
+              "Recurring"
+            ],
+            "description": "Execution mode: 'Once' or 'Recurring'"
+          },
+          "create_snapshot": {
+            "type": "boolean",
+            "description": "Enable notebook backup before execution (default: True)"
+          }
+        },
+        "required": [
+          "notebook_path",
+          "mode",
+          "create_snapshot"
+        ]
+      }
+    },
+    {
+      "name": "get_job_details",
+      "description": "Retrieve comprehensive information about a scheduled notebook job.\n\nParameter required:\njob_id: UUID of the scheduled job to retrieve details for\n\nReturns:\n- jobID: Unique identifier (UUID format)\n- name: Display name of the job\n- description: Human-readable job description\n- createdAt: Creation timestamp (ISO 8601)\n- terminatedAt: End timestamp if completed\n- completedExecutionsCount: Number of successful runs\n- enqueuedBy: User ID who created the job\n- executionConfig: Notebook path and runtime settings\n- schedule: Mode, interval, and start time\n- targetConfig: Database and workspace settings\n- jobMetadata: Execution statistics and status\n\nRelated Operations:\n- create_scheduled_job: Create new jobs\n- list_job_executions: View run history",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "description": "Unique identifier of the scheduled job"
+          }
+        },
+        "required": [
+          "job_id"
+        ]
+      }
+    },
+    {
+      "name": "list_job_executions",
+      "description": "Retrieve execution history and performance metrics for a scheduled notebook job.\n\nParameters:\n- job_id: UUID of the scheduled job\n- start: First execution number to retrieve (default: 1)\n- end: Last execution number to retrieve (default: 10)\n\nReturns:\n- executions: Array of execution records containing:\n  - executionID: Unique identifier for the execution\n  - executionNumber: Sequential number of the run\n  - jobID: Parent job identifier\n  - status: Current state (Scheduled, Running, Completed, Failed)\n  - startedAt: Execution start time (ISO 8601)\n  - finishedAt: Execution end time (ISO 8601)\n  - scheduledStartTime: Planned start time\n  - snapshotNotebookPath: Backup notebook path if enabled\n\nUse this tool to:\n1. Monitor each job execution status\n2. Track execution times and performance\n3. Investigate failed runs\n\nRelated Operations:\n- get_job_details: View job configuration\n- create_scheduled_job: Create new jobs",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "description": "Unique identifier of the scheduled job"
+          },
+          "start": {
+            "type": "integer",
+            "description": "Starting execution number (default: 1)"
+          },
+          "end": {
+            "type": "integer",
+            "description": "Last execution number (default: 10)"
+          }
+        },
+        "required": [
+          "job_id"
+        ]
+      }
+    },
+    {
+      "name": "get_notebook_path",
+      "description": "Find the complete path of a notebook by its name and generate the properly formatted path for API operations.\n\nParameters:\n- notebook_name: Name of the notebook to locate (with or without .ipynb extension)\n- location: Where to search ('personal' or 'shared', defaults to 'personal')\n\nReturns the properly formatted path including project ID and user ID where needed.\nRequired for:\n- Creating scheduled jobs (use returned path as notebook_path parameter)\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "notebook_name": {
+            "type": "string",
+            "description": "Name of the notebook to find (with or without .ipynb extension)"
+          },
+          "location": {
+            "type": "string",
+            "enum": [
+              "personal",
+              "shared"
+            ],
+            "description": "Where to look for the notebook: 'personal' (default) or 'shared' space"
+          }
+        },
+        "required": [
+          "notebook_name"
+        ]
+      }
+    },
+    {
+      "name": "get_project_id",
+      "description": "Retrieve the organization's unique identifier (project ID).\n\nReturns:\n- orgID (string): The organization's unique identifier\n\nRequired for:\n- Constructing paths or references to shared resources\n\nPerformance Tip:\nCache the returned ID when making multiple API calls.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "get_user_id",
+      "description": "Retrieve the current user's unique identifier. \n\nReturns:\n- userID (string): UUID format identifier for the current user\n\nRequired for:\n- Constructing paths or references to personal resources\n\n1. Constructing personal space paths\n\nPerformance Tip:\nCache the returned ID when making multiple making multiple API calls.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    }
+  ]
+}

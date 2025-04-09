@@ -1,0 +1,78 @@
+{
+  "display_name": "Adfin MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Adfin-Engineering/mcp-server-adfin"
+  },
+  "license": "[NOT GIVEN]",
+  "installations": {
+    "python": {
+      "type": "python",
+      "command": "uv",
+      "args": [
+        "--directory",
+        "<absolute_path_to_adfin_mcp_folder>",
+        "run",
+        "main_adfin_mcp.py"
+      ],
+      "env": {
+        "ADFIN_EMAIL": "<email>",
+        "ADFIN_PASSWORD": "<password>"
+      },
+      "description": "Run Adfin MCP server using uv"
+    },
+    "filesystem": {
+      "type": "python",
+      "command": "uv",
+      "args": [
+        "--directory",
+        "<absolute_path_to_adfin_mcp_folder>",
+        "run",
+        "filesystem.py"
+      ],
+      "description": "Run filesystem MCP server using uv"
+    }
+  },
+  "arguments": {
+    "ADFIN_EMAIL": {
+      "description": "Email for Adfin authentication",
+      "required": true
+    },
+    "ADFIN_PASSWORD": {
+      "description": "Password for Adfin authentication",
+      "required": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Request a credit control status",
+      "description": "Get credit control status check",
+      "prompt": "Give me a credit control status check."
+    },
+    {
+      "title": "Create a new invoice",
+      "description": "Create an invoice with specific details",
+      "prompt": "Create a new invoice for 60 GBP for Abc Def that is due in a week. His email is abc.def@example.com."
+    },
+    {
+      "title": "Upload multiple invoices",
+      "description": "Upload PDF invoices from a folder",
+      "prompt": "Upload all pdf invoices from the invoices folder from my Desktop."
+    }
+  ],
+  "tags": [
+    "adfin",
+    "finance",
+    "invoicing"
+  ],
+  "homepage": "[NOT GIVEN]",
+  "author": {
+    "name": "Adfin-Engineering"
+  },
+  "name": "mcp-server-adfin",
+  "description": "1. Python 3.10 or higher",
+  "categories": [
+    "Finance"
+  ],
+  "is_official": true
+}

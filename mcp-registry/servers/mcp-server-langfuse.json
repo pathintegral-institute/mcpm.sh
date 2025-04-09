@@ -1,0 +1,68 @@
+{
+  "display_name": "Langfuse Prompt Management MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/langfuse/mcp-server-langfuse"
+  },
+  "license": "MIT",
+  "homepage": "https://langfuse.com/docs/prompts/get-started",
+  "author": {
+    "name": "langfuse"
+  },
+  "tags": [
+    "prompts",
+    "mcp",
+    "langfuse"
+  ],
+  "arguments": {
+    "LANGFUSE_PUBLIC_KEY": {
+      "description": "Your Langfuse public API key",
+      "required": true,
+      "example": "your-public-key"
+    },
+    "LANGFUSE_SECRET_KEY": {
+      "description": "Your Langfuse secret API key",
+      "required": true,
+      "example": "your-secret-key"
+    },
+    "LANGFUSE_BASEURL": {
+      "description": "Langfuse API base URL",
+      "required": true,
+      "example": "https://cloud.langfuse.com"
+    }
+  },
+  "installations": {
+    "custom": {
+      "type": "custom",
+      "command": "node",
+      "args": [
+        "./build/index.js"
+      ],
+      "env": {
+        "LANGFUSE_PUBLIC_KEY": "your-public-key",
+        "LANGFUSE_SECRET_KEY": "your-secret-key",
+        "LANGFUSE_BASEURL": "https://cloud.langfuse.com"
+      },
+      "description": "Run the server using Node.js",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "List all available prompts",
+      "description": "Use the prompts/list endpoint to get all available prompts",
+      "prompt": "Use the Langfuse MCP server to list all available prompts"
+    },
+    {
+      "title": "Get a specific prompt",
+      "description": "Retrieve and compile a specific prompt with variables",
+      "prompt": "Use the Langfuse MCP server to get the prompt named 'example-prompt' with the variables {\"key\": \"value\"}"
+    }
+  ],
+  "name": "mcp-server-langfuse",
+  "description": "Open-source tool for collaborative editing, versioning, evaluating, and releasing prompts.",
+  "categories": [
+    "Dev Tools"
+  ],
+  "is_official": true
+}

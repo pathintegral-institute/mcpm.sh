@@ -11,7 +11,7 @@
   },
   "license": "MIT",
   "categories": [
-    "Data Retrieval"
+    "System Tools"
   ],
   "tags": [
     "TOS",
@@ -23,6 +23,8 @@
       "type": "uvx",
       "command": "uvx",
       "args": [
+        "--from",
+        "git+https://github.com/dinghuazhou/sample-mcp-server-tos",
         "tos-mcp-server"
       ]
     }

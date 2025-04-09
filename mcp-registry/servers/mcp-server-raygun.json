@@ -1,0 +1,1028 @@
+{
+  "display_name": "Raygun MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MindscapeHQ/mcp-server-raygun"
+  },
+  "homepage": "https://github.com/MindscapeHQ/mcp-server-raygun",
+  "author": {
+    "name": "MindscapeHQ"
+  },
+  "license": "MIT",
+  "tags": [
+    "raygun",
+    "crash reporting",
+    "real user monitoring",
+    "error management",
+    "performance monitoring"
+  ],
+  "arguments": {
+    "RAYGUN_PAT_TOKEN": {
+      "description": "Your Raygun PAT token",
+      "required": true,
+      "example": "your-pat-token-here"
+    },
+    "SOURCEMAP_ALLOWED_DIRS": {
+      "description": "Comma-separated list of directories allowed for source map operations",
+      "required": false
+    }
+  },
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@raygun.io/mcp-server-raygun"
+      ],
+      "package": "@raygun.io/mcp-server-raygun",
+      "env": {
+        "RAYGUN_PAT_TOKEN": "your-pat-token-here"
+      },
+      "description": "Install and run using npm",
+      "recommended": true
+    },
+    "custom": {
+      "type": "custom",
+      "command": "/path/to/server-raygun/build/index.js",
+      "args": [],
+      "env": {
+        "RAYGUN_PAT_TOKEN": "your-pat-token-ken"
+      },
+      "description": "Run from a local build",
+      "recommended": false
+    }
+  },
+  "examples": [],
+  "name": "mcp-server-raygun",
+  "description": "MCP Server for Raygun's API V3 endpoints for interacting with your Crash Reporting and Real User Monitoring applications. This server provides comprehensive access to Raygun's API features through the Model Context Protocol.",
+  "categories": [
+    "Dev Tools"
+  ],
+  "tools": [
+    {
+      "name": "list_applications",
+      "description": "List all applications under the users account on Raygun",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "number",
+            "description": "Limits the number of items in the response"
+          },
+          "offset": {
+            "type": "number",
+            "description": "Number of items to skip before returning results"
+          },
+          "orderBy": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "name",
+                "name desc",
+                "apikey",
+                "apikey desc"
+              ]
+            },
+            "description": "Order items by property values"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_application",
+      "description": "Get application by identifier",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "applicationIdentifier": {
+            "type": "string",
+            "description": "Application identifier"
+          }
+        },
+        "required": [
+          "applicationIdentifier"
+        ]
+      }
+    },
+    {
+      "name": "get_application_by_api_key",
+      "description": "Get application by API key",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "apiKey": {
+            "type": "string",
+            "description": "Application api key"
+          }
+        },
+        "required": [
+          "apiKey"
+        ]
+      }
+    },
+    {
+      "name": "regenerate_application_api_key",
+      "description": "Regenerate application API key",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "applicationIdentifier": {
+            "type": "string",
+            "description": "Application identifier"
+          }
+        },
+        "required": [
+          "applicationIdentifier"
+        ]
+      }
+    },
+    {
+      "name": "list_customers",
+      "description": "List customers for an application",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "number",
+            "description": "Limits the number of items in the response"
+          },
+          "offset": {
+            "type": "number",
+            "description": "Number of items to skip before returning results"
+          },
+          "applicationIdentifier": {
+            "type": "string"
+          },
+          "orderBy": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "isAnonymous",
+                "isAnonymous desc",
+                "firstSeenAt",
+                "firstSeenAt desc",
+                "lastSeenAt",
+                "lastSeenAt desc"
+              ]
+            },
+            "description": "Order items by property values"
+          }
+        },
+        "required": [
+          "applicationIdentifier"
+        ]
+      }
+    },
+    {
+      "name": "list_deployments",
+      "description": "List deployments for an application",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "number",
+            "description": "Limits the number of items in the response"
+          },
+          "offset": {
+            "type": "number",
+            "description": "Number of items to skip before returning results"
+          },
+          "applicationIdentifier": {
+            "type": "string"
+          },
+          "orderBy": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "version",
+                "version desc",
+                "emailAddress",
+                "emailAddress desc",
+                "ownerName",
+                "ownerName desc",
+                "comment",
+                "comment desc",
+                "deployedAt",
+                "deployedAt desc"
+              ]
+            },
+            "description": "Order items by property values"
+          }
+        },
+        "required": [
+          "applicationIdentifier"
+        ]
+      }
+    },
+    {
+      "name": "get_deployment",
+      "description": "Get deployment by identifier",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "applicationIdentifier": {
+            "type": "string",
+            "description": "Application identifier"
+          },
+          "deploymentIdentifier": {
+            "type": "string",
+            "description": "Deployment identifier"
+          }
+        },
+        "required": [
+          "applicationIdentifier",
+          "deploymentIdentifier"
+        ]
+      }
+    },
+    {
+      "name": "delete_deployment",
+      "description": "Delete deployment",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "applicationIdentifier": {
+            "type": "string",
+            "description": "Application identifier"
+          },
+          "deploymentIdentifier": {
+            "type": "string",
+            "description": "Deployment identifier"
+          }
+        },
+        "required": [
+          "applicationIdentifier",
+          "deploymentIdentifier"
+        ]
+      }
+    },
+    {
+      "name": "update_deployment",
+      "description": "Update deployment details",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "applicationIdentifier": {
+            "type": "string",
+            "description": "Application identifier"
+          },
+          "deploymentIdentifier": {
+            "type": "string",
+            "description": "Deployment identifier"
+          },
+          "version": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "ownerName": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "emailAddress": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 128
+          },
+          "comment": {
+            "type": "string"
+          },
+          "scmIdentifier": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "scmType": {
+            "type": "string",
+            "enum": [
+              "gitHub",
+              "gitLab",
+              "azureDevOps",
+              "bitbucket"
+            ]
+          },
+          "deployedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "applicationIdentifier",
+          "deploymentIdentifier"
+        ]
+      }
+    },
+    {
+      "name": "reprocess_deployment_commits",
+      "description": "Reprocess deployment commits",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "applicationIdentifier": {
+            "type": "string",
+            "description": "Application identifier"
+          },
+          "deploymentIdentifier": {
+            "type": "string",
+            "description": "Deployment identifier"
+          }
+        },
+        "required": [
+          "applicationIdentifier",
+          "deploymentIdentifier"
+        ]
+      }
+    },
+    {
+      "name": "list_error_groups",
+      "description": "List error groups for an application",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "number",
+            "description": "Limits the number of items in the response"
+          },
+          "offset": {
+            "type": "number",
+            "description": "Number of items to skip before returning results"
+          },
+          "applicationIdentifier": {
+            "type": "string"
+          },
+          "orderBy": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "message",
+                "message desc",
+                "status",
+                "status desc",
+                "lastOccurredAt",
+                "lastOccurredAt desc",
+                "createdAt",
+                "createdAt desc"
+              ]
+            },
+            "description": "Order items by property values"
+          }
+        },
+        "required": [
+          "applicationIdentifier"
+        ]
+      }
+    },
+    {
+      "name": "get_error_group",
+      "description": "Get error group by identifier",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "applicationIdentifier": {
+            "type": "string",
+            "description": "Application identifier"
+          },
+          "errorGroupIdentifier": {
+            "type": "string",
+            "description": "Error group identifier"
+          }
+        },
+        "required": [
+          "applicationIdentifier",
+          "errorGroupIdentifier"
+        ]
+      }
+    },
+    {
+      "name": "resolve_error_group",
+      "description": "Set the status of the error group to resolved",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "applicationIdentifier": {
+            "type": "string",
+            "description": "Application identifier"
+          },
+          "errorGroupIdentifier": {
+            "type": "string",
+            "description": "Error group identifier"
+          },
+          "version": {
+            "type": "string",
+            "description": "The version that this error was resolved in"
+          },
+          "discardFromPreviousVersions": {
+            "type": "boolean",
+            "default": true,
+            "description": "When true, occurrences from previous versions will be discarded"
+          }
+        },
+        "required": [
+          "applicationIdentifier",
+          "errorGroupIdentifier",
+          "version"
+        ]
+      }
+    },
+    {
+      "name": "activate_error_group",
+      "description": "Set the status of the error group to active",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "applicationIdentifier": {
+            "type": "string",
+            "description": "Application identifier"
+          },
+          "errorGroupIdentifier": {
+            "type": "string",
+            "description": "Error group identifier"
+          }
+        },
+        "required": [
+          "applicationIdentifier",
+          "errorGroupIdentifier"
+        ]
+      }
+    },
+    {
+      "name": "ignore_error_group",
+      "description": "Set the status of the error group to ignored",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "applicationIdentifier": {
+            "type": "string",
+            "description": "Application identifier"
+          },
+          "errorGroupIdentifier": {
+            "type": "string",
+            "description": "Error group identifier"
+          }
+        },
+        "required": [
+          "applicationIdentifier",
+          "errorGroupIdentifier"
+        ]
+      }
+    },
+    {
+      "name": "permanently_ignore_error_group",
+      "description": "Set the status of the error group to permanently ignored",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "applicationIdentifier": {
+            "type": "string",
+            "description": "Application identifier"
+          },
+          "errorGroupIdentifier": {
+            "type": "string",
+            "description": "Error group identifier"
+          },
+          "discardNewOccurrences": {
+            "type": "boolean",
+            "description": "When true, new occurrences of this error will not be stored or count towards your error quota"
+          }
+        },
+        "required": [
+          "applicationIdentifier",
+          "errorGroupIdentifier",
+          "discardNewOccurrences"
+        ]
+      }
+    },
+    {
+      "name": "list_pages",
+      "description": "List pages for an application",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "number",
+            "description": "Limits the number of items in the response"
+          },
+          "offset": {
+            "type": "number",
+            "description": "Number of items to skip before returning results"
+          },
+          "applicationIdentifier": {
+            "type": "string"
+          },
+          "orderBy": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "lastSeenAt",
+                "lastSeenAt desc",
+                "uri",
+                "uri desc",
+                "name",
+                "name desc"
+              ]
+            },
+            "description": "Order items by property values"
+          }
+        },
+        "required": [
+          "applicationIdentifier"
+        ]
+      }
+    },
+    {
+      "name": "get_page_metrics_time_series",
+      "description": "Get time-series metrics for pages",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "applicationIdentifier": {
+            "type": "string"
+          },
+          "start": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "end": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "granularity": {
+            "type": "string",
+            "pattern": "^\\d+[mhd]$",
+            "description": "Time granularity in format like '1h', '30m', '1d'"
+          },
+          "aggregation": {
+            "type": "string",
+            "enum": [
+              "count",
+              "average",
+              "median",
+              "sum",
+              "min",
+              "max",
+              "p95",
+              "p99"
+            ]
+          },
+          "metrics": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "pageViews",
+                "loadTime",
+                "firstPaint",
+                "firstContentfulPaint",
+                "firstInputDelay",
+                "largestContentfulPaint",
+                "cumulativeLayoutShift",
+                "interactionToNextPaint"
+              ]
+            }
+          },
+          "filter": {
+            "type": "string",
+            "description": "Case-sensitive filter in the format 'pageIdentifier = abc123' or 'pageIdentifier IN (abc123, def456)'"
+          }
+        },
+        "required": [
+          "applicationIdentifier",
+          "start",
+          "end",
+          "granularity",
+          "aggregation",
+          "metrics"
+        ]
+      }
+    },
+    {
+      "name": "get_page_metrics_histogram",
+      "description": "Get histogram metrics for pages",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "applicationIdentifier": {
+            "type": "string"
+          },
+          "start": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "end": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "metrics": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "loadTime",
+                "firstPaint",
+                "firstContentfulPaint",
+                "firstInputDelay",
+                "largestContentfulPaint",
+                "cumulativeLayoutShift",
+                "interactionToNextPaint"
+              ]
+            }
+          },
+          "filter": {
+            "type": "string",
+            "description": "Case-sensitive filter in the format 'pageIdentifier = abc123' or 'pageIdentifier IN (abc123, def456)'"
+          }
+        },
+        "required": [
+          "applicationIdentifier",
+          "start",
+          "end",
+          "metrics"
+        ]
+      }
+    },
+    {
+      "name": "get_error_metrics_time_series",
+      "description": "Get time-series metrics for errors",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "applicationIdentifier": {
+            "type": "string"
+          },
+          "start": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "end": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "granularity": {
+            "type": "string",
+            "pattern": "^\\d+[mhd]$",
+            "description": "Time granularity in format like '1h', '30m', '1d'"
+          },
+          "aggregation": {
+            "type": "string",
+            "const": "count"
+          },
+          "metrics": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "const": "errorInstances"
+            }
+          },
+          "filter": {
+            "type": "string",
+            "description": "Case-sensitive filter in the format 'errorGroupIdentifier = abc123' or 'errorGroupIdentifier IN (abc123, def456)'"
+          }
+        },
+        "required": [
+          "applicationIdentifier",
+          "start",
+          "end",
+          "granularity",
+          "aggregation",
+          "metrics"
+        ]
+      }
+    },
+    {
+      "name": "list_sessions",
+      "description": "List sessions for an application",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "number",
+            "description": "Limits the number of items in the response"
+          },
+          "offset": {
+            "type": "number",
+            "description": "Number of items to skip before returning results"
+          },
+          "applicationIdentifier": {
+            "type": "string"
+          },
+          "filter": {
+            "type": "string",
+            "description": "Filter items by an expression. Currently only supports filtering by `xhr.uri`. Example: xhr.uri eq https://example.com"
+          },
+          "orderBy": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "customerIdentifier",
+                "customerIdentifier desc",
+                "startedAt",
+                "startedAt desc",
+                "updatedAt",
+                "updatedAt desc",
+                "endedAt",
+                "endedAt desc",
+                "countryCode",
+                "countryCode desc",
+                "platformName",
+                "platformName desc",
+                "operatingSystemName",
+                "operatingSystemName desc",
+                "operatingSystemVersion",
+                "operatingSystemVersion desc",
+                "browserName",
+                "browserName desc",
+                "browserVersion",
+                "browserVersion desc",
+                "viewportWidth",
+                "viewportWidth desc",
+                "viewportHeight",
+                "viewportHeight desc",
+                "deploymentVersion",
+                "deploymentVersion desc"
+              ]
+            },
+            "description": "Order items by property values"
+          }
+        },
+        "required": [
+          "applicationIdentifier"
+        ]
+      }
+    },
+    {
+      "name": "get_session",
+      "description": "Get session by identifier",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "applicationIdentifier": {
+            "type": "string"
+          },
+          "sessionIdentifier": {
+            "type": "string"
+          },
+          "include": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "pageViews",
+                "errors"
+              ]
+            },
+            "description": "Include additional information for the session"
+          }
+        },
+        "required": [
+          "applicationIdentifier",
+          "sessionIdentifier"
+        ]
+      }
+    },
+    {
+      "name": "list_invitations",
+      "description": "Returns a list invitations that the token and token owner has access to",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "number",
+            "description": "Limits the number of items in the response"
+          },
+          "offset": {
+            "type": "number",
+            "description": "Number of items to skip before returning results"
+          },
+          "orderBy": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "emailAddress",
+                "emailAddress desc",
+                "createdAt",
+                "createdAt desc"
+              ]
+            },
+            "description": "Order items by property values"
+          }
+        }
+      }
+    },
+    {
+      "name": "send_invitation",
+      "description": "Send an invitation to a user",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "emailAddress": {
+            "type": "string",
+            "format": "email",
+            "description": "Email address to send the invitation to"
+          }
+        },
+        "required": [
+          "emailAddress"
+        ]
+      }
+    },
+    {
+      "name": "get_invitation",
+      "description": "Get an invitation by identifier",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "invitationIdentifier": {
+            "type": "string",
+            "description": "Invitation identifier"
+          }
+        },
+        "required": [
+          "invitationIdentifier"
+        ]
+      }
+    },
+    {
+      "name": "revoke_invitation",
+      "description": "Revoke a sent invitation",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "invitationIdentifier": {
+            "type": "string",
+            "description": "Invitation identifier"
+          }
+        },
+        "required": [
+          "invitationIdentifier"
+        ]
+      }
+    },
+    {
+      "name": "list_source_maps",
+      "description": "Returns a list of source maps for the specified application",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "number",
+            "description": "Limits the number of items in the response"
+          },
+          "offset": {
+            "type": "number",
+            "description": "Number of items to skip before returning results"
+          },
+          "applicationIdentifier": {
+            "type": "string",
+            "description": "Application identifier"
+          },
+          "orderBy": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "uri",
+                "uri desc",
+                "fileName",
+                "fileName desc",
+                "fileSizeBytes",
+                "fileSizeBytes desc",
+                "uploadedAt",
+                "uploadedAt desc",
+                "createdAt",
+                "createdAt desc",
+                "updatedAt",
+                "updatedAt desc"
+              ]
+            },
+            "description": "Order items by property values"
+          }
+        },
+        "required": [
+          "applicationIdentifier"
+        ]
+      }
+    },
+    {
+      "name": "get_source_map",
+      "description": "Returns a single source map by identifier",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "applicationIdentifier": {
+            "type": "string",
+            "description": "Application identifier"
+          },
+          "sourceMapIdentifier": {
+            "type": "string",
+            "description": "Source map identifier"
+          }
+        },
+        "required": [
+          "applicationIdentifier",
+          "sourceMapIdentifier"
+        ]
+      }
+    },
+    {
+      "name": "update_source_map",
+      "description": "Update the details of a source map",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "applicationIdentifier": {
+            "type": "string",
+            "description": "Application identifier"
+          },
+          "sourceMapIdentifier": {
+            "type": "string",
+            "description": "Source map identifier"
+          },
+          "uri": {
+            "type": "string",
+            "format": "uri",
+            "description": "New URI for the source map"
+          }
+        },
+        "required": [
+          "applicationIdentifier",
+          "sourceMapIdentifier",
+          "uri"
+        ]
+      }
+    },
+    {
+      "name": "delete_source_map",
+      "description": "Delete a source map",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "applicationIdentifier": {
+            "type": "string",
+            "description": "Application identifier"
+          },
+          "sourceMapIdentifier": {
+            "type": "string",
+            "description": "Source map identifier"
+          }
+        },
+        "required": [
+          "applicationIdentifier",
+          "sourceMapIdentifier"
+        ]
+      }
+    },
+    {
+      "name": "upload_source_map",
+      "description": "Uploads a source map to the specified application",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "applicationIdentifier": {
+            "type": "string",
+            "description": "Application identifier"
+          },
+          "filePath": {
+            "type": "string",
+            "description": "Path to the source map file"
+          },
+          "uri": {
+            "type": "string",
+            "format": "uri",
+            "description": "URI to associate with the source map"
+          }
+        },
+        "required": [
+          "applicationIdentifier",
+          "filePath",
+          "uri"
+        ]
+      }
+    },
+    {
+      "name": "delete_all_source_maps",
+      "description": "Deletes all source maps",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "applicationIdentifier": {
+            "type": "string",
+            "description": "Application identifier"
+          }
+        },
+        "required": [
+          "applicationIdentifier"
+        ]
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": true
+}

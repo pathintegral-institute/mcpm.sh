@@ -1,0 +1,63 @@
+{
+  "display_name": "wxflows MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/IBM/wxflows/tree/main/examples/mcp"
+  },
+  "homepage": "https://github.com/IBM/wxflows/",
+  "author": {
+    "name": "IBM"
+  },
+  "license": "MIT",
+  "tags": [
+    "mcp",
+    "ai",
+    "tools",
+    "watsonx"
+  ],
+  "arguments": {
+    "WXFLOWS_APIKEY": {
+      "description": "API key for wxflows service",
+      "required": true,
+      "example": "YOUR_WXFLOWS_APIKEY"
+    },
+    "WXFLOWS_ENDPOINT": {
+      "description": "Endpoint URL for wxflows service",
+      "required": true,
+      "example": "YOUR_WXFLOWS_ENDPOINT"
+    }
+  },
+  "installations": {
+    "custom": {
+      "type": "custom",
+      "command": "node",
+      "args": [
+        "build/index.js"
+      ],
+      "env": {
+        "WXFLOWS_APIKEY": "YOUR_WXFLOWS_APIKEY",
+        "WXFLOWS_ENDPOINT": "YOUR_WXFLOWS_ENDPOINT"
+      },
+      "description": "Run the MCP server using Node.js",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Search for books",
+      "description": "Use the google_books tool to search for books",
+      "prompt": "Find me books about artificial intelligence"
+    },
+    {
+      "title": "Look up information on Wikipedia",
+      "description": "Use the wikipedia tool to search for information",
+      "prompt": "Find information about machine learning on Wikipedia"
+    }
+  ],
+  "name": "wxflows",
+  "description": "data-color-mode=\"auto\" data-light-theme=\"light\" data-dark-theme=\"dark\"",
+  "categories": [
+    "Dev Tools"
+  ],
+  "is_official": true
+}

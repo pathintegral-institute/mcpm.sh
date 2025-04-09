@@ -62,5 +62,27 @@
       "required": true,
       "example": "ash"
     }
-  }
+  },
+  "categories": [
+    "Web Services"
+  ],
+  "tools": [
+    {
+      "name": "search_posts",
+      "description": "Search Discourse posts",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 5,
+            "description": "Query"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ]
 }

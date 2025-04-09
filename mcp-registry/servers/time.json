@@ -12,8 +12,7 @@
   },
   "license": "MIT",
   "categories": [
-    "utility",
-    "time"
+    "System Tools"
   ],
   "tags": [
     "time",
@@ -33,11 +32,9 @@
       "type": "uvx",
       "command": "uvx",
       "args": [
-        "mcp-server-time"
+        "mcp-server-time",
+        "--local-timezone=${TZ}"
       ],
-      "env": {
-        "TZ": "${TZ}"
-      },
       "description": "Install and run using uvx (recommended)",
       "recommended": true
     },
@@ -46,11 +43,9 @@
       "command": "python",
       "args": [
         "-m",
-        "mcp_server_time"
+        "mcp_server_time",
+        "--local-timezone=${TZ}"
       ],
-      "env": {
-        "TZ": "${TZ}"
-      },
       "description": "Run with Python module (requires pip install)"
     },
     "docker": {
@@ -60,16 +55,56 @@
         "run",
         "-i",
         "--rm",
-        "-e",
-        "TZ",
-        "mcp/time"
+        "mcp/time",
+        "--local-timezone=${TZ}"
       ],
-      "env": {
-        "TZ": "${TZ}"
-      },
       "description": "Run with Docker"
     }
   },
+  "tools": [
+    {
+      "name": "get_current_time",
+      "description": "Get current time in a specific timezones",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "timezone": {
+            "type": "string",
+            "description": "IANA timezone name (e.g., 'America/New_York', 'Europe/London'). Use local timezone if no timezone provided by the user."
+          }
+        },
+        "required": [
+          "timezone"
+        ]
+      }
+    },
+    {
+      "name": "convert_time",
+      "description": "Convert time between timezones",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "source_timezone": {
+            "type": "string",
+            "description": "Source IANA timezone name (e.g., 'America/New_York', 'Europe/London'). Use local timezone if no source timezone provided by the user."
+          },
+          "time": {
+            "type": "string",
+            "description": "Time to convert in 24-hour format (HH:MM)"
+          },
+          "target_timezone": {
+            "type": "string",
+            "description": "Target IANA timezone name (e.g., 'Asia/Tokyo', 'America/San_Francisco'). Use local timezone if no target timezone provided by the user."
+          }
+        },
+        "required": [
+          "source_timezone",
+          "time",
+          "target_timezone"
+        ]
+      }
+    }
+  ],
   "examples": [
     {
       "title": "Current time",
@@ -81,5 +116,6 @@
       "description": "Convert time between timezones",
       "prompt": "Convert 3:30 PM EST to Paris time."
     }
-  ]
+  ],
+  "is_official": true
 }

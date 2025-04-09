@@ -1,0 +1,63 @@
+{
+  "display_name": "Opik",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/comet-ml/opik"
+  },
+  "homepage": "https://www.comet.com/site/products/opik/",
+  "author": {
+    "name": "comet-ml"
+  },
+  "license": "MIT",
+  "tags": [
+    "llm",
+    "evaluation",
+    "tracing",
+    "monitoring"
+  ],
+  "arguments": {
+    "use_local": {
+      "description": "Configure SDK to run on local installation",
+      "required": false,
+      "example": "True"
+    }
+  },
+  "installations": {
+    "docker": {
+      "type": "docker",
+      "command": "./opik.sh",
+      "args": [],
+      "description": "Start the Opik platform using Docker Compose",
+      "recommended": false
+    },
+    "pip": {
+      "type": "python",
+      "command": "pip",
+      "args": [
+        "install",
+        "opik"
+      ],
+      "package": "opik",
+      "description": "Install the Python SDK",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Basic Trace Logging",
+      "description": "Track LLM function calls using the decorator",
+      "prompt": "import opik\n\nopik.configure(use_local=True) # Run locally\n\n@opik.track\ndef my_llm_function(user_question: str) -> str:\n    # Your LLM code here\n\n    return \"Hello\""
+    },
+    {
+      "title": "Using LLM as a Judge Metrics",
+      "description": "Evaluate LLM outputs for hallucination",
+      "prompt": "from opik.evaluation.metrics import Hallucination\n\nmetric = Hallucination()\nscore = metric.score(\n    input=\"What is the capital of France?\",\n    output=\"Paris\",\n    context=[\"France is a country in Europe.\"]\n)\nprint(score)"
+    }
+  ],
+  "name": "opik",
+  "description": "<div align=\"center\"><b><a href=\"readme.md\">English</a> | <a href=\"readme_CN.md\">\u7b80\u4f53\u4e2d\u6587</a> | <a href=\"readme_JP.md\">\u65e5\u672c\u8a9e</a> | <a href=\"readme_KO.md\">\ud55c\uad6d\uc5b4</a></b></div>",
+  "categories": [
+    "MCP Tools"
+  ],
+  "is_official": true
+}

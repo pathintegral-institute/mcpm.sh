@@ -1,0 +1,51 @@
+{
+  "display_name": "Inbox Zero MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/elie222/inbox-zero"
+  },
+  "homepage": "https://github.com/elie222/inbox-zero/tree/main/apps/mcp-server",
+  "author": {
+    "name": "elie222"
+  },
+  "license": "MIT",
+  "tags": [
+    "email",
+    "inbox",
+    "assistant",
+    "mcp"
+  ],
+  "arguments": {
+    "API_KEY": {
+      "description": "Your Inbox Zero API key from the /settings page in the web app",
+      "required": true,
+      "example": "your-api-key-here"
+    }
+  },
+  "installations": {
+    "custom": {
+      "type": "custom",
+      "command": "node",
+      "args": [
+        "build/index.js"
+      ],
+      "env": {
+        "API_KEY": ""
+      },
+      "description": "Run the MCP server using Node.js"
+    }
+  },
+  "examples": [
+    {
+      "title": "Manage your inbox",
+      "description": "Use the MCP server to interact with your Inbox Zero personal assistant",
+      "prompt": "Help me organize my inbox"
+    }
+  ],
+  "name": "inbox-zero",
+  "description": "data-color-mode=\"auto\" data-light-theme=\"light\" data-dark-theme=\"dark\"",
+  "categories": [
+    "Messaging"
+  ],
+  "is_official": true
+}

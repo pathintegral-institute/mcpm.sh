@@ -1,0 +1,144 @@
+{
+    "crypto-feargreed-mcp": {
+        "uvx": "No executable found in pyproject.toml"
+    },
+    "xiyan-mcp-server": {
+        "python": "Need install first",
+        "uvx": "No executable found in pyproject.toml"
+    },
+    "naver": {
+        "uvx": "No executable found in pyproject.toml"
+    },
+    "unity-catalog": {
+        "uvx": "Missing dependency pandas"
+    },
+    "tavily-search": {
+        "uvx": "No executable found in pyproject.toml"
+    },
+    "glean": {
+        "npm": "not executable"
+    },
+    "google-calendar": {
+        "npm": "need oauth credentials"
+    },
+    "pif": {
+        "npm": "not executable"
+    },
+    "mcp-create": {
+        "npm": "not executable"
+    },
+    "opendota": {
+        "uvx": "No executable found in pyproject.toml"
+    },
+    "discord": {
+        "npm": "not executable"
+    },
+    "starwind-ui": {
+        "npm": "not executable"
+    },
+    "mcp-proxy": {
+        "uvx": "others"
+    },
+    "descope": {
+        "npm": "not executable"
+    },
+    "fingertip": {
+        "npm": "疑似跑路"
+    },
+    "goodnews": {
+        "uvx": "No executable found in pyproject.toml"
+    },
+    "mem0-mcp": {
+        "uvx": "No executable found in pyproject.toml"
+    },
+    "ergo-blockchain-mcp": {
+        "uvx": "no pyproject.toml"
+    },
+    "github-actions": {
+        "npm": "not executable"
+    },
+    "youtube": {
+        "npm": "package not found"
+    },
+    "ableton-live": {
+        "uvx": "not executable"
+    },
+    "aws-s3": {
+        "uvx": "package not found"
+    },
+    "reaper": {
+        "uvx": "import error"
+    },
+    "algorand": {
+        "npm": "not executable"
+    },
+    "intercom": {
+        "npm": "not executable"
+    },
+    "flightradar24": {
+        "npm": "not executable"
+    },
+    "qgis": {
+        "uvx": "No executable found in pyproject.toml"
+    },
+    "whale-tracker-mcp": {
+        "uvx": "No executable found in pyproject.toml"
+    },
+    "webflow": {
+        "npm": "not executable"
+    },
+    "okta": {
+        "npm": "not executable"
+    },
+    "markdownify": {
+        "npm": "not executable"
+    },
+    "aws-cost-explorer": {
+        "uvx": "not executable"
+    },
+    "redis": {
+        "uvx": "not executable"
+    },
+    "ghost": {
+        "uvx": "not executable"
+    },
+    "graphql-schema": {
+        "npm": "not executable"
+    },
+    "fantasy-pl": {
+        "uvx": "missing dependency requests"
+    },
+    "keycloak-mcp": {
+        "npm": "not executable"
+    },
+    "eunomia": {
+        "uvx": "deprecated"
+    },
+    "notion": {
+        "npm": "not executable"
+    },
+    "openapi": {
+        "npm": "others"
+    },
+    "chatmcp": {
+        "npm": "not executable"
+    },
+    "dune-analytics-mcp": {
+        "uvx": "not executable"
+    },
+    "fastn-ai-unified-api-mcp-server": {
+        "uvx": "not executable"
+    },
+    "volcengine-tos": {
+        "uvx": "No executable found in pyproject.toml"
+    },
+    "ntfy-mcp": {
+        "npm": "not executable"
+    },
+    "cryptopanic-mcp-server": {
+        "uvx": "No executable found in pyproject.toml"
+    },
+    "mcp-server-adfin": {
+        "uvx": "not executable"
+    }
+}

@@ -1,0 +1,56 @@
+{
+  "display_name": "Cloudflare MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cloudflare/mcp-server-cloudflare"
+  },
+  "homepage": "https://github.com/cloudflare/mcp-server-cloudflare",
+  "author": {
+    "name": "cloudflare"
+  },
+  "license": "Apache 2.0",
+  "tags": [
+    "cloudflare",
+    "mcp",
+    "model-context-protocol",
+    "llm",
+    "api"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "@cloudflare/mcp-server-cloudflare",
+        "init"
+      ],
+      "package": "@cloudflare/mcp-server-cloudflare",
+      "env": {},
+      "description": "Install and initialize the Cloudflare MCP server",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Deploy a new Worker",
+      "description": "Create a new Cloudflare Worker with a Durable Object",
+      "prompt": "Please deploy me a new Worker with an example durable object."
+    },
+    {
+      "title": "Query D1 Database",
+      "description": "Get information about data in a D1 database",
+      "prompt": "Can you tell me about the data in my D1 database named '...'?"
+    },
+    {
+      "title": "Copy KV to R2",
+      "description": "Copy entries from a KV namespace to an R2 bucket",
+      "prompt": "Can you copy all the entries from my KV namespace '...' into my R2 bucket '...'?"
+    }
+  ],
+  "name": "mcp-server-cloudflare",
+  "description": "Model Context Protocol (MCP) is a [new, standardized protocol](https://modelcontextprotocol.io/introduction) for managing context between large language models (LLMs) and external systems. In this repository, we provide an installer as well as an MCP Server for [Cloudflare's API](https://api.cloudflare.com).",
+  "categories": [
+    "Dev Tools"
+  ],
+  "is_official": true
+}

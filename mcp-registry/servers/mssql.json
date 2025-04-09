@@ -12,8 +12,7 @@
   },
   "license": "MIT",
   "categories": [
-    "Database",
-    "MCP"
+    "Databases"
   ],
   "tags": [
     "MSSQL",
@@ -62,5 +61,20 @@
       "required": true,
       "example": "your_database"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "execute_sql",
+      "description": "Execute an SQL query on the MSSQL server",
+      "inputSchema": {
+        "query": {
+          "type": "string",
+          "description": "The SQL query to execute"
+        }
+      },
+      "required": [
+        "query"
+      ]
+    }
+  ]
 }

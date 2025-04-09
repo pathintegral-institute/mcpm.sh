@@ -1,0 +1,87 @@
+{
+  "display_name": "AgentQL MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tinyfish-io/agentql-mcp"
+  },
+  "license": "[NOT GIVEN]",
+  "homepage": "https://agentql.com",
+  "author": {
+    "name": "tinyfish-io"
+  },
+  "tags": [
+    "data extraction",
+    "web scraping"
+  ],
+  "arguments": {
+    "AGENTQL_API_KEY": {
+      "description": "API key from AgentQL Dev Portal",
+      "required": true,
+      "example": "YOUR_API_KEY"
+    }
+  },
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "agentql-mcp"
+      ],
+      "package": "agentql-mcp",
+      "env": {
+        "AGENTQL_API_KEY": "YOUR_API_KEY"
+      },
+      "description": "Install via npm and run with npx",
+      "recommended": true
+    },
+    "development": {
+      "type": "custom",
+      "command": "/path/to/agentql-mcp/dist/index.js",
+      "args": [],
+      "env": {
+        "AGENTQL_API_KEY": "YOUR_API_KEY"
+      },
+      "description": "Run development version from local build",
+      "recommended": false
+    }
+  },
+  "examples": [
+    {
+      "title": "Extract YouTube search results",
+      "description": "Extract structured data from YouTube search results",
+      "prompt": "Extract the list of videos from the page https://www.youtube.com/results?search_query=agentql, every video should have a title, an author name, a number of views and a url to the video. Make sure to exclude ads items. Format this as a markdown table."
+    }
+  ],
+  "name": "agentql-mcp",
+  "description": "This is a Model Context Protocol (MCP) server that integrates [AgentQL](https://agentql.com)'s data extraction capabilities.",
+  "categories": [
+    "Web Services"
+  ],
+  "tools": [
+    {
+      "name": "extract-web-data",
+      "description": "Extracts structured data as JSON from a web page given a URL using a Natural Language description of the data.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "The URL of the public webpage to extract data from"
+          },
+          "prompt": {
+            "type": "string",
+            "description": "Natural Language description of the data to extract from the page"
+          }
+        },
+        "required": [
+          "url",
+          "prompt"
+        ]
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": true
+}

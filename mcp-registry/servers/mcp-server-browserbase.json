@@ -1,0 +1,36 @@
+{
+  "display_name": "Browserbase MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/browserbase/mcp-server-browserbase"
+  },
+  "license": "[NOT GIVEN]",
+  "homepage": "https://www.browserbase.com/",
+  "author": {
+    "name": "browserbase"
+  },
+  "tags": [
+    "browser automation",
+    "puppeteer",
+    "stagehand",
+    "web interaction",
+    "screenshots",
+    "javascript"
+  ],
+  "installations": {
+    "custom": {
+      "type": "custom",
+      "command": "node",
+      "args": [
+        "src/build/dist/index.js"
+      ],
+      "description": "Run using Node.js"
+    }
+  },
+  "name": "mcp-server-browserbase",
+  "description": "Automate browser interactions in the cloud (e.g. web navigation, data extraction, form filling, and more)",
+  "categories": [
+    "Dev Tools"
+  ],
+  "is_official": true
+}

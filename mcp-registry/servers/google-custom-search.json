@@ -12,8 +12,7 @@
   },
   "license": "MIT",
   "categories": [
-    "Search Tools",
-    "Web Tools"
+    "Web Services"
   ],
   "tags": [
     "Google",
@@ -57,5 +56,29 @@
       "required": true,
       "example": "012345678901234567890:abcdefghijk"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "search",
+      "description": "Perform a web search query",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query"
+          },
+          "num": {
+            "type": "number",
+            "description": "Number of results (1-10)",
+            "minimum": 1,
+            "maximum": 10
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ]
 }

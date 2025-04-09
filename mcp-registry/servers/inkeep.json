@@ -1,0 +1,79 @@
+{
+  "display_name": "Inkeep MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/inkeep/mcp-server-python"
+  },
+  "homepage": "https://inkeep.com",
+  "author": {
+    "name": "inkeep"
+  },
+  "license": "MIT",
+  "tags": [
+    "rag",
+    "documentation",
+    "product content"
+  ],
+  "arguments": {
+    "INKEEP_API_BASE_URL": {
+      "description": "Base URL for the Inkeep API",
+      "required": true,
+      "example": "https://api.inkeep.com/v1"
+    },
+    "INKEEP_API_KEY": {
+      "description": "API key for authenticating with Inkeep",
+      "required": true,
+      "example": "<YOUR_INKEEP_API_KEY>"
+    },
+    "INKEEP_API_MODEL": {
+      "description": "The Inkeep model to use",
+      "required": true,
+      "example": "inkeep-rag"
+    },
+    "INKEEP_MCP_TOOL_NAME": {
+      "description": "Name of the MCP tool",
+      "required": true,
+      "example": "search-product-content"
+    },
+    "INKEEP_MCP_TOOL_DESCRIPTION": {
+      "description": "Description of the MCP tool",
+      "required": true,
+      "example": "Retrieves product documentation about Inkeep. The query should be framed as a conversational question about Inkeep."
+    }
+  },
+  "installations": {
+    "custom": {
+      "type": "custom",
+      "command": "uv",
+      "args": [
+        "--directory",
+        "<YOUR_INKEEP_MCP_SERVER_ABSOLUTE_PATH>",
+        "run",
+        "-m",
+        "inkeep_mcp_server"
+      ],
+      "env": {
+        "INKEEP_API_BASE_URL": "https://api.inkeep.com/v1",
+        "INKEEP_API_KEY": "<YOUR_INKEEP_API_KEY>",
+        "INKEEP_API_MODEL": "inkeep-rag",
+        "INKEEP_MCP_TOOL_NAME": "search-product-content",
+        "INKEEP_MCP_TOOL_DESCRIPTION": "Retrieves product documentation about Inkeep. The query should be framed as a conversational question about Inkeep."
+      },
+      "description": "Run using uv Python project manager",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Search Inkeep Documentation",
+      "description": "Ask a question about Inkeep's product",
+      "prompt": "How do I integrate Inkeep with my website?"
+    }
+  ],
+  "name": "inkeep",
+  "description": "Inkeep MCP Server powered by your docs and product content.",
+  "categories": [
+    "Knowledge Base"
+  ],
+  "is_official": true
+}

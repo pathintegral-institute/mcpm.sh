@@ -1,0 +1,43 @@
+{
+  "display_name": "Model Context Protocol and Fireproof Demo: JSON Document Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fireproof-storage/mcp-database-server"
+  },
+  "license": "MIT",
+  "installations": {
+    "custom": {
+      "type": "custom",
+      "command": "node",
+      "args": [
+        "/path/to/fireproof-mcp/build/index.js"
+      ],
+      "description": "Run the server using Node.js after installing dependencies and building"
+    }
+  },
+  "homepage": "https://github.com/fireproof-storage/mcp-database-server",
+  "author": {
+    "name": "fireproof-storage"
+  },
+  "tags": [
+    "fireproof",
+    "database",
+    "MCP",
+    "Model Context Protocol",
+    "JSON",
+    "document store"
+  ],
+  "examples": [
+    {
+      "title": "Basic Usage",
+      "description": "Using the server with Claude Desktop",
+      "prompt": "Configure Claude Desktop to use the Fireproof MCP server by adding the server config to the appropriate location."
+    }
+  ],
+  "name": "fireproof-mcp",
+  "description": "Immutable ledger database with live synchronization",
+  "categories": [
+    "Databases"
+  ],
+  "is_official": true
+}

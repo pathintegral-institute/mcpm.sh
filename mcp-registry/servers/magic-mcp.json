@@ -1,0 +1,180 @@
+{
+  "display_name": "21st.dev Magic AI Agent",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/21st-dev/magic-mcp"
+  },
+  "homepage": "https://21st.dev/magic",
+  "author": {
+    "name": "21st-dev"
+  },
+  "license": "MIT",
+  "tags": [
+    "ui",
+    "components",
+    "ai",
+    "generator",
+    "react"
+  ],
+  "arguments": {
+    "API_KEY": {
+      "description": "API key for authentication with Magic AI Agent",
+      "required": true,
+      "example": "your-api-key"
+    }
+  },
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@21st-dev/magic@latest",
+        "API_KEY=\"your-api-key\""
+      ],
+      "package": "@21st-dev/magic",
+      "env": {
+        "API_KEY": "your-api-key"
+      },
+      "description": "Install via npm package",
+      "recommended": true
+    },
+    "cli": {
+      "type": "cli",
+      "command": "npx",
+      "args": [
+        "@21st-dev/cli@latest",
+        "install",
+        "<client>",
+        "--api-key",
+        "<key>"
+      ],
+      "description": "Install using the CLI tool",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Create a navigation bar",
+      "description": "Generate a modern responsive navigation bar component",
+      "prompt": "/ui create a modern navigation bar with responsive design"
+    }
+  ],
+  "name": "magic-mcp",
+  "description": "Magic Component Platform (MCP) is a powerful AI-driven tool that helps developers create beautiful, modern UI components instantly through natural language descriptions. It integrates seamlessly with popular IDEs and provides a streamlined workflow for UI development.",
+  "categories": [
+    "Dev Tools"
+  ],
+  "tools": [
+    {
+      "name": "21st_magic_component_builder",
+      "description": "\n\"Use this tool when the user requests a new UI component\u2014e.g., mentions /ui, /21 /21st, or asks for a button, input, dialog, table, form, banner, card, or other React component.\nThis tool ONLY returns the text snippet for that UI component. \nAfter calling this tool, you must edit or add files to integrate the snippet into the codebase.\"\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Full users message"
+          },
+          "searchQuery": {
+            "type": "string",
+            "description": "Generate a search query for 21st.dev (library for searching UI components) to find a UI component that matches the user's message. Must be a two-four words max or phrase"
+          },
+          "absolutePathToCurrentFile": {
+            "type": "string",
+            "description": "Absolute path to the current file to which we want to apply changes"
+          },
+          "absolutePathToProjectDirectory": {
+            "type": "string",
+            "description": "Absolute path to the project root directory"
+          }
+        },
+        "required": [
+          "message",
+          "searchQuery",
+          "absolutePathToCurrentFile",
+          "absolutePathToProjectDirectory"
+        ]
+      }
+    },
+    {
+      "name": "logo_search",
+      "description": "\nSearch and return logos in specified format (JSX, TSX, SVG).\nSupports single and multiple logo searches with category filtering.\nCan return logos in different themes (light/dark) if available.\n\nWhen to use this tool:\n1. When user types \"/logo\" command (e.g., \"/logo GitHub\")\n2. When user asks to add a company logo that's not in the local project\n\nExample queries:\n- Single company: [\"discord\"]\n- Multiple companies: [\"discord\", \"github\", \"slack\"]\n- Specific brand: [\"microsoft office\"]\n- Command style: \"/logo GitHub\" -> [\"github\"]\n- Request style: \"Add Discord logo to the project\" -> [\"discord\"]\n\nFormat options:\n- TSX: Returns TypeScript React component\n- JSX: Returns JavaScript React component\n- SVG: Returns raw SVG markup\n\nEach result includes:\n- Component name (e.g., DiscordIcon)\n- Component code\n- Import instructions\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "queries": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of company names to search for logos"
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "JSX",
+              "TSX",
+              "SVG"
+            ],
+            "description": "Output format"
+          }
+        },
+        "required": [
+          "queries",
+          "format"
+        ]
+      }
+    },
+    {
+      "name": "21st_magic_component_inspiration",
+      "description": "\n\"Use this tool when the user wants to see component, get inspiration, or /21st fetch data and previews from 21st.dev. This tool returns the JSON data of matching components without generating new code. This tool ONLY returns the text snippet for that UI component. \nAfter calling this tool, you must edit or add files to integrate the snippet into the codebase.\"\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Full users message"
+          },
+          "searchQuery": {
+            "type": "string",
+            "description": "Search query for 21st.dev (library for searching UI components) to find a UI component that matches the user's message. Must be a two-four words max or phrase"
+          }
+        },
+        "required": [
+          "message",
+          "searchQuery"
+        ]
+      }
+    },
+    {
+      "name": "21st_magic_component_refiner",
+      "description": "\n\"Use this tool when the user requests to refine/improve current UI component with /ui or /21 commands, \nor when context is about improving, or refining UI for a React component or molecule (NOT for big pages).\nThis tool improves UI of components and returns improved version of the component and instructions on how to implement it.\"\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "userMessage": {
+            "type": "string",
+            "description": "Full user's message about UI refinement"
+          },
+          "absolutePathToRefiningFile": {
+            "type": "string",
+            "description": "Absolute path to the file that needs to be refined"
+          },
+          "context": {
+            "type": "string",
+            "description": "Extract the specific UI elements and aspects that need improvement based on user messages, code, and conversation history. Identify exactly which components (buttons, forms, modals, etc.) the user is referring to and what aspects (styling, layout, responsiveness, etc.) they want to enhance. Do not include generic improvements - focus only on what the user explicitly mentions or what can be reasonably inferred from the available context. If nothing specific is mentioned or you cannot determine what needs improvement, return an empty string."
+          }
+        },
+        "required": [
+          "userMessage",
+          "absolutePathToRefiningFile",
+          "context"
+        ]
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": true
+}

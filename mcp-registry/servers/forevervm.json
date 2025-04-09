@@ -1,0 +1,54 @@
+{
+  "display_name": "ForeverVM MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jamsocket/forevervm"
+  },
+  "homepage": "https://forevervm.com/docs/guides/forevervm-mcp-server/",
+  "author": {
+    "name": "jamsocket"
+  },
+  "license": "MIT",
+  "tags": [
+    "python",
+    "repl",
+    "claude"
+  ],
+  "arguments": {
+    "client": {
+      "description": "Client to use",
+      "required": true,
+      "example": "claude"
+    }
+  },
+  "installations": {
+    "cli": {
+      "type": "cli",
+      "command": "npx",
+      "args": [
+        "forevervm-mcp",
+        "install",
+        "--client",
+        "${client}"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "Create a Python REPL",
+      "description": "Create a new Python REPL environment",
+      "prompt": "create-python-repl"
+    },
+    {
+      "title": "Run Python code",
+      "description": "Execute Python code in an existing REPL",
+      "prompt": "run-python-in-repl"
+    }
+  ],
+  "name": "forevervm",
+  "description": "data-color-mode=\"auto\" data-light-theme=\"light\" data-dark-theme=\"dark\"",
+  "categories": [
+    "System Tools"
+  ],
+  "is_official": true
+}

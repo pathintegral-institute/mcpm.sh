@@ -12,6 +12,7 @@ from rich.panel import Panel
 from rich.prompt import Confirm
 
 from mcpm.clients.client_registry import ClientRegistry
+from mcpm.utils.display import print_client_error, print_error, print_server_config
 
 console = Console()
 
@@ -38,8 +39,7 @@ def edit():
 
     # Check if client is supported
     if client_manager is None:
-        console.print("[bold red]Error:[/] Unsupported active client")
-        console.print("Please switch to a supported client using 'mcpm client <client-name>'")
+        print_client_error(client_name)
         return
 
     # Get the client config file path
@@ -47,7 +47,7 @@ def edit():
 
     # Check if the client is installed
     if not client_manager.is_client_installed():
-        console.print(f"[bold red]Error:[/] {client_name} installation not detected.")
+        print_error(f"{client_name} installation not detected.")
         return
 
     # Check if config file exists
@@ -86,7 +86,7 @@ def edit():
             console.print("[green]Successfully created config file![/]\n")
             config_exists = True
         except Exception as e:
-            console.print(f"[bold red]Error creating config file:[/] {str(e)}")
+            print_error("Error creating config file", str(e))
             return
 
     # Show the current configuration if it exists
@@ -110,33 +110,13 @@ def edit():
                 if server_count > 0:
                     console.print("\n[bold]MCP Server Details:[/]")
                     for server_name, server_config in config_json.get("mcpServers", {}).items():
-                        console.print(f"\n[bold cyan]{server_name}[/]")
-                        console.print(f"  Command: [green]{server_config.get('command', 'N/A')}[/]")
-
-                        # Display arguments
-                        args = server_config.get("args", [])
-                        if args:
-                            console.print("  Arguments:")
-                            for i, arg in enumerate(args):
-                                console.print(f"    {i}: [yellow]{arg}[/]")
-
-                        # Display environment variables
-                        env_vars = server_config.get("env", {})
-                        if env_vars:
-                            console.print("  Environment Variables:")
-                            for key, value in env_vars.items():
-                                console.print(f'    [bold blue]{key}[/] = [green]"{value}"[/]')
-                        else:
-                            console.print("  Environment Variables: [italic]None[/]")
-
-                        # Add a separator line
-                        console.print("  " + "-" * 50)
+                        print_server_config(server_name, server_config)
 
             except json.JSONDecodeError:
                 console.print("[yellow]Warning: Config file contains invalid JSON[/]")
 
         except Exception as e:
-            console.print(f"[bold red]Error reading config file:[/] {str(e)}")
+            print_error("Error reading config file", str(e))
 
     # Prompt to edit if file exists
     should_edit = False
@@ -156,5 +136,5 @@ def edit():
 
             console.print(f"[italic]After editing, {client_name} must be restarted for changes to take effect.[/]")
         except Exception as e:
-            console.print(f"[bold red]Error opening editor:[/] {str(e)}")
+            print_error("Error opening editor", str(e))
             console.print(f"You can manually edit the file at: {config_path}")

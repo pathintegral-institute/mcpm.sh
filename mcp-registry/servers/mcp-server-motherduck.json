@@ -1,0 +1,73 @@
+{
+  "name": "mcp-server-motherduck",
+  "description": "Query and analyze data with MotherDuck and local DuckDB",
+  "display_name": "MotherDuck MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/motherduckdb/mcp-server-motherduck"
+  },
+  "homepage": "https://motherduck.com",
+  "author": {
+    "name": "motherduckdb"
+  },
+  "license": "MIT",
+  "tags": [
+    "SQL",
+    "DuckDB",
+    "MotherDuck",
+    "analytics",
+    "database"
+  ],
+  "arguments": {
+    "db-path": {
+      "description": "Path to the database to connect to (md: for MotherDuck, :memory: for in-memory, or path to local file)",
+      "required": true,
+      "example": "md:"
+    },
+    "motherduck-token": {
+      "description": "MotherDuck access token for authentication",
+      "required": true,
+      "example": "<YOUR_MOTHERDUCK_TOKEN_HERE>"
+    }
+  },
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "mcp-server-motherduck",
+        "--db-path",
+        "md:",
+        "--motherduck-token",
+        "${input:motherduck_token}"
+      ],
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Create a new database and table",
+      "description": "Create a new database and table in MotherDuck",
+      "prompt": "Create a new database and table in MotherDuck"
+    },
+    {
+      "title": "Query local CSV file",
+      "description": "Query data from a local CSV file",
+      "prompt": "Query data from my local CSV file"
+    },
+    {
+      "title": "Join data across sources",
+      "description": "Join data from local DuckDB with MotherDuck tables",
+      "prompt": "Join data from my local DuckDB database with a table in MotherDuck"
+    },
+    {
+      "title": "Analyze S3 data",
+      "description": "Analyze data stored in Amazon S3",
+      "prompt": "Analyze data stored in Amazon S3"
+    }
+  ],
+  "categories": [
+    "Databases"
+  ],
+  "is_official": true
+}

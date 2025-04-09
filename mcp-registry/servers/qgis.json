@@ -12,9 +12,7 @@
   },
   "license": "MIT",
   "categories": [
-    "GIS",
-    "AI Integration",
-    "Plugin"
+    "Analytics"
   ],
   "tags": [
     "QGIS"
@@ -25,7 +23,7 @@
       "command": "uvx",
       "args": [
         "--from",
-        "https://github.com/jjsantos01/qgis_mcp",
+        "git+https://github.com/jjsantos01/qgis_mcp",
         "src/qgis_mcp/qgis_mcp_server.py"
       ]
     }

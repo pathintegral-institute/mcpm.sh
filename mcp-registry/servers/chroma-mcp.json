@@ -1,0 +1,105 @@
+{
+  "display_name": "Chroma MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chroma-core/chroma-mcp"
+  },
+  "homepage": "https://www.trychroma.com/",
+  "author": {
+    "name": "chroma-core"
+  },
+  "license": "Apache 2.0",
+  "tags": [
+    "vector database",
+    "embeddings",
+    "LLM",
+    "retrieval",
+    "MCP"
+  ],
+  "arguments": {
+    "client-type": {
+      "description": "Type of client to use (ephemeral, persistent, http, cloud)",
+      "required": false,
+      "example": "persistent"
+    },
+    "data-dir": {
+      "description": "Directory to store data for persistent client",
+      "required": false,
+      "example": "/full/path/to/your/data/directory"
+    },
+    "host": {
+      "description": "Host for HTTP client",
+      "required": false,
+      "example": "your-host"
+    },
+    "port": {
+      "description": "Port for HTTP client",
+      "required": false,
+      "example": "your-port"
+    },
+    "tenant": {
+      "description": "Tenant ID for cloud client",
+      "required": false,
+      "example": "your-tenant-id"
+    },
+    "database": {
+      "description": "Database name for cloud client",
+      "required": false,
+      "example": "your-database-name"
+    },
+    "api-key": {
+      "description": "API key for cloud client",
+      "required": false,
+      "example": "your-api-key"
+    },
+    "custom-auth-credentials": {
+      "description": "Custom authentication credentials for HTTP client",
+      "required": false,
+      "example": "your-custom-auth-credentials"
+    },
+    "ssl": {
+      "description": "Whether to use SSL for HTTP client",
+      "required": false,
+      "example": "true"
+    },
+    "dotenv-path": {
+      "description": "Path to .env file",
+      "required": false,
+      "example": "/custom/path/.env"
+    }
+  },
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "chroma-mcp"
+      ],
+      "description": "Install using uvx",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "List Collections",
+      "description": "List all collections with pagination support",
+      "prompt": "Use chroma_list_collections to show me all available collections."
+    },
+    {
+      "title": "Create Collection",
+      "description": "Create a new collection with optional HNSW configuration",
+      "prompt": "Use chroma_create_collection to create a new collection named 'my_documents'."
+    },
+    {
+      "title": "Query Documents",
+      "description": "Query documents using semantic search with advanced filtering",
+      "prompt": "Use chroma_query_documents to find documents in the 'my_documents' collection that are similar to 'machine learning concepts'."
+    }
+  ],
+  "name": "chroma-mcp",
+  "description": "Embeddings, vector search, document storage, and full-text search with the open-source AI application database",
+  "categories": [
+    "Databases"
+  ],
+  "is_official": true
+}

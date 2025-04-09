@@ -1,0 +1,141 @@
+{
+  "display_name": "Vectorize MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vectorize-io/vectorize-mcp-server"
+  },
+  "homepage": "https://vectorize.io/",
+  "author": {
+    "name": "vectorize-io"
+  },
+  "license": "MIT",
+  "tags": [
+    "vector retrieval",
+    "text extraction"
+  ],
+  "arguments": {
+    "VECTORIZE_ORG_ID": {
+      "description": "Vectorize Organization ID",
+      "required": true,
+      "example": "your-org-id"
+    },
+    "VECTORIZE_TOKEN": {
+      "description": "Vectorize Token",
+      "required": true,
+      "example": "your-token"
+    },
+    "VECTORIZE_PIPELINE_ID": {
+      "description": "Vectorize Pipeline ID",
+      "required": true,
+      "example": "your-pipeline-id"
+    }
+  },
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@vectorize-io/vectorize-mcp-server@latest"
+      ],
+      "package": "@vectorize-io/vectorize-mcp-server",
+      "env": {
+        "VECTORIZE_ORG_ID": "${VECTORIZE_ORG_ID}",
+        "VECTORIZE_TOKEN": "${VECTORIZE_TOKEN}",
+        "VECTORIZE_PIPELINE_ID": "${VECTORIZE_PIPELINE_ID}"
+      },
+      "description": "Run with npx",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Retrieve documents",
+      "description": "Perform vector search and retrieve documents",
+      "prompt": "{\"name\":\"retrieve\",\"arguments\":{\"question\":\"Financial health of the company\",\"k\":5}}"
+    },
+    {
+      "title": "Text extraction and chunking",
+      "description": "Extract text from a document and chunk it into Markdown format",
+      "prompt": "{\"name\":\"extract\",\"arguments\":{\"base64document\":\"base64-encoded-document\",\"contentType\":\"application/pdf\"}}"
+    },
+    {
+      "title": "Deep Research",
+      "description": "Generate a Private Deep Research from your pipeline",
+      "prompt": "{\"name\":\"deep-research\",\"arguments\":{\"query\":\"Generate a financial status report about the company\",\"webSearch\":true}}"
+    }
+  ],
+  "name": "vectorize-mcp-server",
+  "description": "A Model Context Protocol (MCP) server implementation that integrates with [Vectorize](https://vectorize.io/) for advanced Vector retrieval and text extraction.",
+  "categories": [
+    "Databases"
+  ],
+  "tools": [
+    {
+      "name": "retrieve",
+      "description": "Retrieve documents from the configured pipeline.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "description": "The term to search for."
+          },
+          "k": {
+            "type": "number",
+            "description": "The number of documents to retrieve.",
+            "default": 4
+          }
+        },
+        "required": [
+          "question"
+        ]
+      }
+    },
+    {
+      "name": "extract",
+      "description": "Perform text extraction and chunking on a document.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "base64Document": {
+            "type": "string",
+            "description": "Document encoded in base64."
+          },
+          "contentType": {
+            "type": "string",
+            "description": "Document content type."
+          }
+        },
+        "required": [
+          "base64Document",
+          "contentType"
+        ]
+      }
+    },
+    {
+      "name": "deep-research",
+      "description": "Generate a deep research on the configured pipeline.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The deep research query."
+          },
+          "webSearch": {
+            "type": "boolean",
+            "description": "Whether to perform a web search."
+          }
+        },
+        "required": [
+          "query",
+          "webSearch"
+        ]
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": true
+}

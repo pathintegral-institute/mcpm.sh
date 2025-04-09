@@ -12,8 +12,7 @@
   },
   "license": "MIT",
   "categories": [
-    "DevRev",
-    "Server"
+    "Knowledge Base"
   ],
   "tags": [
     "devrev",
@@ -38,5 +37,46 @@
       "required": true,
       "example": "YOUR_DEVREV_API_KEY"
     }
-  }
+  },
+  "tools": [
+    {
+      "name": "search",
+      "description": "Search DevRev using the provided query",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "namespace": {
+            "type": "string",
+            "enum": [
+              "article",
+              "issue",
+              "ticket"
+            ]
+          }
+        },
+        "required": [
+          "query",
+          "namespace"
+        ]
+      }
+    },
+    {
+      "name": "get_object",
+      "description": "Get all information about a DevRev object using its ID",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    }
+  ]
 }

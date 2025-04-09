@@ -1,0 +1,177 @@
+{
+  "display_name": "ClickHouse MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ClickHouse/mcp-clickhouse"
+  },
+  "homepage": "https://glama.ai/mcp/servers/yvjy4csvo1",
+  "author": {
+    "name": "ClickHouse"
+  },
+  "license": "[NOT GIVEN]",
+  "tags": [
+    "clickhouse",
+    "database",
+    "sql"
+  ],
+  "arguments": {
+    "CLICKHOUSE_HOST": {
+      "description": "The hostname of your ClickHouse server",
+      "required": true,
+      "example": "sql-clickhouse.clickhouse.com"
+    },
+    "CLICKHOUSE_USER": {
+      "description": "The username for authentication",
+      "required": true,
+      "example": "demo"
+    },
+    "CLICKHOUSE_PASSWORD": {
+      "description": "The password for authentication",
+      "required": true,
+      "example": ""
+    },
+    "CLICKHOUSE_PORT": {
+      "description": "The port number of your ClickHouse server",
+      "required": false,
+      "example": "8443"
+    },
+    "CLICKHOUSE_SECURE": {
+      "description": "Enable/disable HTTPS connection",
+      "required": false,
+      "example": "true"
+    },
+    "CLICKHOUSE_VERIFY": {
+      "description": "Enable/disable SSL certificate verification",
+      "required": false,
+      "example": "true"
+    },
+    "CLICKHOUSE_CONNECT_TIMEOUT": {
+      "description": "Connection timeout in seconds",
+      "required": false,
+      "example": "30"
+    },
+    "CLICKHOUSE_SEND_RECEIVE_TIMEOUT": {
+      "description": "Send/receive timeout in seconds",
+      "required": false,
+      "example": "300"
+    },
+    "CLICKHOUSE_DATABASE": {
+      "description": "Default database to use",
+      "required": false,
+      "example": "your_database"
+    }
+  },
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uv",
+      "args": [
+        "run",
+        "--with",
+        "mcp-clickhouse",
+        "--python",
+        "3.13",
+        "mcp-clickhouse"
+      ],
+      "package": "mcp-clickhouse",
+      "env": {
+        "CLICKHOUSE_HOST": "<clickhouse-host>",
+        "CLICKHOUSE_PORT": "<clickhouse-port>",
+        "CLICKHOUSE_USER": "<clickhouse-user>",
+        "CLICKHOUSE_PASSWORD": "<clickhouse-password>",
+        "CLICKHOUSE_SECURE": "true",
+        "CLICKHOUSE_VERIFY": "true",
+        "CLICKHOUSE_CONNECT_TIMEOUT": "30",
+        "CLICKHOUSE_SEND_RECEIVE_TIMEOUT": "30"
+      },
+      "description": "Install and run using uv package manager",
+      "recommended": true
+    },
+    "python": {
+      "type": "python",
+      "command": "pip",
+      "args": [
+        "install",
+        "mcp-clickhouse"
+      ],
+      "package": "mcp-clickhouse",
+      "description": "Install using pip",
+      "recommended": false
+    }
+  },
+  "examples": [
+    {
+      "title": "Run a SQL query",
+      "description": "Execute a SQL query on your ClickHouse cluster",
+      "prompt": "Run this SQL query: SELECT * FROM system.databases LIMIT 5"
+    },
+    {
+      "title": "List databases",
+      "description": "List all databases on your ClickHouse cluster",
+      "prompt": "List all databases in my ClickHouse instance"
+    },
+    {
+      "title": "List tables",
+      "description": "List all tables in a specific database",
+      "prompt": "Show me all tables in the system database"
+    }
+  ],
+  "name": "mcp-clickhouse",
+  "description": "An MCP server for ClickHouse.",
+  "categories": [
+    "Databases"
+  ],
+  "tools": [
+    {
+      "name": "list_databases",
+      "description": "List available ClickHouse databases",
+      "inputSchema": {
+        "properties": {},
+        "title": "list_databasesArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_tables",
+      "description": "List available ClickHouse tables in a database",
+      "inputSchema": {
+        "properties": {
+          "database": {
+            "title": "Database",
+            "type": "string"
+          },
+          "like": {
+            "default": null,
+            "title": "Like",
+            "type": "string"
+          }
+        },
+        "required": [
+          "database"
+        ],
+        "title": "list_tablesArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "run_select_query",
+      "description": "Run a SELECT query in a ClickHouse database",
+      "inputSchema": {
+        "properties": {
+          "query": {
+            "title": "Query",
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "title": "run_select_queryArguments",
+        "type": "object"
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": true
+}

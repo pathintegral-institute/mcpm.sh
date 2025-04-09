@@ -1,0 +1,196 @@
+{
+  "display_name": "Fibery MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Fibery-inc/fibery-mcp-server"
+  },
+  "homepage": "[NOT GIVEN]",
+  "author": {
+    "name": "Fibery-inc"
+  },
+  "license": "[NOT GIVEN]",
+  "tags": [
+    "fibery",
+    "mcp",
+    "llm"
+  ],
+  "arguments": {
+    "fibery-host": {
+      "description": "Your Fibery domain (e.g., your-domain.fibery.io)",
+      "required": true,
+      "example": "your-domain.fibery.io"
+    },
+    "fibery-api-token": {
+      "description": "Your Fibery API token",
+      "required": true,
+      "example": "your-api-token"
+    }
+  },
+  "installations": {
+    "uv": {
+      "type": "uvx",
+      "command": "uv",
+      "args": [
+        "tool",
+        "run",
+        "fibery-mcp-server",
+        "--fibery-host",
+        "your-domain.fibery.io",
+        "--fibery-api-token",
+        "your-api-token"
+      ],
+      "package": "fibery-mcp-server",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "List Databases",
+      "description": "Retrieves a list of all databases available in your Fibery workspace.",
+      "prompt": "What databases do I have in my Fibery workspace?"
+    },
+    {
+      "title": "Describe Database",
+      "description": "Provides a detailed breakdown of a specific database's structure, showing all fields with their titles, names, and types.",
+      "prompt": "Tell me about the structure of my Tasks database"
+    },
+    {
+      "title": "Query Database",
+      "description": "Offers powerful, flexible access to your Fibery data through the Fibery API.",
+      "prompt": "Find all high priority tasks that are due this week"
+    },
+    {
+      "title": "Create Entity",
+      "description": "Creates new entities in your Fibery workspace with specified field values.",
+      "prompt": "Create a new task called 'Review project proposal' with high priority"
+    },
+    {
+      "title": "Update Entity",
+      "description": "Updates existing entities in your Fibery workspace with new field values.",
+      "prompt": "Change the status of task 'Review project proposal' to 'In Progress'"
+    }
+  ],
+  "name": "fibery-mcp-server",
+  "description": "This MCP (Model Context Protocol) server provides integration between Fibery and any LLM provider supporting the MCP protocol (e.g., Claude for Desktop), allowing you to interact with your Fibery workspace using natural language.",
+  "categories": [
+    "Productivity"
+  ],
+  "tools": [
+    {
+      "name": "current_date",
+      "description": "Get today's date in ISO 8601 format (YYYY-mm-dd.HH:MM:SS.000Z)",
+      "inputSchema": {
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_databases",
+      "description": "Get list of all databases (their names) in user's Fibery workspace (schema)",
+      "inputSchema": {
+        "type": "object"
+      }
+    },
+    {
+      "name": "describe_database",
+      "description": "Get list of all fields (in format of 'Title [name]: type') in the selected Fibery database and for all related databases.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "database_name": {
+            "type": "string",
+            "description": "Database name as defined in Fibery schema"
+          }
+        },
+        "required": [
+          "database_name"
+        ]
+      }
+    },
+    {
+      "name": "query_database",
+      "description": "Run any Fibery API command. This gives tremendous flexibility, but requires a bit of experience with the low-level Fibery API. In case query succeeded, return value contains a list of records with fields you specified in select. If request failed, will return detailed error message.\nExamples (note, that these databases are non-existent, use databases only from user's schema!):\nQuery: What newly created Features do we have for the past 2 months?\nTool use:\n{\n    \"q_from\": \"Dev/Feature\",\n    \"q_select\": {\n        \"Name\": [\"Dev/Name\"],\n        \"Public Id\": [\"fibery/public-id\"],\n        \"Creation Date\": [\"fibery/creation-date\"]\n    },\n    \"q_where\": [\">\", [\"fibery/creation-date\"], \"$twoMonthsAgo\"],\n    \"q_order_by\": {\"fibery/creation-date\": \"q/desc\"},\n    \"q_limit\": 100,\n    \"q_offset\": 0,\n    \"q_params\": {\n        $twoMonthsAgo: \"2025-01-16T00:00:00.000Z\"\n    }\n}\n\nQuery: What Admin Tasks for the past week are Approval or Done?\nTool use:\n{\n    \"q_from\": \"Administrative/Admin Task\",\n    \"q_select\": {\n        \"Name\": [\"Administrative/Name\"],\n        \"Public Id\": [\"fibery/public-id\"],\n        \"Creation Date\": [\"fibery/creation-date\"],\n        \"State\": [\"workflow/state\", \"enum/name\"]\n    },\n    \"q_where\": [\n        \"q/and\", # satisfy time AND states condition\n            [\">\", [\"fibery/creation-date\"], \"$oneWeekAgo\"],\n            [\n                \"q/or\", # nested or, since entity can be in either of these states\n                    [\"=\", [\"workflow/state\", \"enum/name\"], \"$state1\"],\n                    [\"=\", [\"workflow/state\", \"enum/name\"], \"$state2\"]\n            ]\n    ],\n    \"q_order_by\": {\"fibery/creation-date\": \"q/desc\"},\n    \"q_limit\": 100,\n    \"q_offset\": 0,\n    \"q_params\": { # notice that parameters used in \"where\" are always passed in params!\n        $oneWeekAgo: \"2025-03-07T00:00:00.000Z\",\n        $state1: \"Approval\",\n        $state2: \"Done\"\n    }\n}\n\nQuery: What Admin Tasks for the past week are Approval or Done?\nTool use:\n{\n    \"q_from\": \"Administrative/Admin Task\",\n    \"q_select\": {\n        \"State\": [\"workflow/state\", \"enum/name\"],\n        \"Public Id\": [\"fibery/public-id\"],\n        \"Creation Date\": [\"fibery/creation-date\"],\n        \"Modification Date\": [\"fibery/modification-date\"],\n        \"Deadline\": [\"Administrative/Deadline\"],\n        \"Group\": [\"Administrative/Group\", \"Administrative/name\"],\n        \"Name\": [\"Administrative/Name\"],\n        \"Priority\": [\"Administrative/Priority_Administrative/Admin Task\", \"enum/name\"]\n    },\n    \"q_where\": [\"!=\", [\"workflow/state\", \"workflow/Final\"], \"$stateType\"], # Administrative/Admin Task is not \"Finished\" yet\n    \"q_order_by\": {\"fibery/creation-date\": \"q/desc\"},\n    \"q_limit\": 100,\n    \"q_offset\": 0,\n    \"q_params: {\n        \"$stateType\": true\n    }\n}\n\nQuery: Summarize acc contacts with public id 1.\nTool use:\n{\n    \"q_from\": \"Accounting/Acc Contacts\",\n    \"q_select\": {\n        \"Name\": [\"Accounting/Name\"],\n        \"Public Id\": [\"fibery/public-id\"],\n        \"Creation Date\": [\"fibery/creation-date\"],\n        \"Description\": [\"Accounting/Description\"]\n    },\n    \"q_where\": [\"=\", [\"fibery/public-id\"], \"$publicId\"],\n    \"q_limit\": 1,\n    \"q_params\": {\n        $publicId: \"1\",\n    }\n}",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q_from": {
+            "type": "string",
+            "description": "Specifies the entity type in \"Space/Type\" format (e.g., \"Product Management/feature\", \"Product Management/Insight\")"
+          },
+          "q_select": {
+            "type": "object",
+            "description": "Defines what fields to retrieve. Can include:\n  - Primitive fields using format {\"AliasName\": \"FieldName\"} (i.e. {\"Name\": \"Product Management/Name\"})\n  - Related entity fields using format {\"AliasName\": [\"Related entity\", \"related entity field\"]} (i.e. {\"Secret\": [\"Product Management/Description\", \"Collaboration~Documents/secret\"]}). Careful, does not work with 1-* connection!\nTo work with 1-* relationships, you can use sub-querying: {\"AliasName\": {\"q/from\": \"Related type\", \"q/select\": {\"AliasName 2\": \"fibery/id\"}, \"q/limit\": 50}}\nAliasName can be of any arbitrary value."
+          },
+          "q_where": {
+            "type": "object",
+            "description": "Filter conditions in format [operator, [field_path], value] or [\"q/and\"|\"q/or\", ...conditions]. Common usages:\n- Simple comparison: [\"=\", [\"field\", \"path\"], \"$param\"]. You cannot pass value of $param directly in where clause. Use params object instead. Pay really close attention to it as it is not common practice, but that's how it works in our case!\n- Logical combinations: [\"q/and\", [\"<\", [\"field1\"], \"$param1\"], [\"=\", [\"field2\"], \"$param2\"]]\n- Available operators: =, !=, <, <=, >, >=, q/contains, q/not-contains, q/in, q/not-in"
+          },
+          "q_order_by": {
+            "type": "object",
+            "description": "List of sorting criteria in format {\"field1\": \"q/asc\", \"field2\": \"q/desc\"}"
+          },
+          "q_limit": {
+            "type": "integer",
+            "description": "Number of results per page (defaults to 50). Maximum allowed value is 1000"
+          },
+          "q_offset": {
+            "type": "integer",
+            "description": "Number of results to skip. Mainly used in combination with limit and orderBy for pagination."
+          },
+          "q_params": {
+            "type": "object",
+            "description": "Dictionary of parameter values referenced in where using \"$param\" syntax. For example, {$fromDate: \"2025-01-01\"}"
+          }
+        },
+        "required": [
+          "q_from",
+          "q_select"
+        ]
+      }
+    },
+    {
+      "name": "create_entity",
+      "description": "Create Fibery entity with specified fields.\nExamples (note, that these databases are non-existent, use databases only from user's schema!):\nQuery: Create a feature\nTool use:\n{\n    \"database\": \"Product Management/Feature\",\n    \"entity\": {\n        \"Product Management/Name\": \"New Feature\",\n        \"Product Management/Description\": \"Description of the new feature\",\n        \"workflow/state\": \"To Do\"\n    }\n}\nIn case of successful execution, you will get a link to created entity. Make sure to give that link to the user.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "database": {
+            "type": "string",
+            "description": "Fibery Database where to create an entity."
+          },
+          "entity": {
+            "type": "object",
+            "description": "Dictionary that defines what fields to set in format {\"FieldName\": value} (i.e. {\"Product Management/Name\": \"My new entity\"})."
+          }
+        },
+        "required": [
+          "database",
+          "entity"
+        ]
+      }
+    },
+    {
+      "name": "update_entity",
+      "description": "Update Fibery entity with specified fields.\nExamples (note, that these databases are non-existent, use databases only from user's schema!):\nQuery: Update a feature we talked about\nTool use:\n{\n    \"database\": \"Product Management/Feature\",\n    \"entity\": {\n        \"fibery/id\": \"12345678-1234-5678-1234-567812345678\",\n        \"Product Management/Name\": \"New Feature 2\",\n        \"Product Management/Description\": {\"append\": true, \"content\": \"Notes: some notes\"},\n        \"workflow/state\": \"In Progress\"\n    }\n}\nIn case of successful execution, you will get a link to updated entity. Make sure to give that link to the user.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "database": {
+            "type": "string",
+            "description": "Fibery Database where to update an entity."
+          },
+          "entity": {
+            "type": "object",
+            "description": "Dictionary that defines what fields to set in format {\"FieldName\": value} (i.e. {\"Product Management/Name\": \"My new entity\"}).\nException are document fields. For them you must specify append (boolean, whether to append to current content) and content itself: {\"Product Management/Description\": {\"append\": true, \"content\": \"Additional info\"}}"
+          }
+        },
+        "required": [
+          "database",
+          "entity"
+        ]
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": true
+}

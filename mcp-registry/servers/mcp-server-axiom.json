@@ -1,0 +1,80 @@
+{
+  "display_name": "Axiom MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/axiomhq/mcp-server-axiom"
+  },
+  "homepage": "https://axiom.co",
+  "author": {
+    "name": "axiomhq"
+  },
+  "license": "MIT",
+  "tags": [
+    "axiom",
+    "apl",
+    "data",
+    "query"
+  ],
+  "arguments": {
+    "token": {
+      "description": "Axiom API token",
+      "required": true,
+      "example": "xaat-your-token"
+    },
+    "url": {
+      "description": "Axiom API URL",
+      "required": true,
+      "example": "https://api.axiom.co"
+    },
+    "query-rate": {
+      "description": "Rate limit for queries",
+      "required": false,
+      "example": "1"
+    },
+    "query-burst": {
+      "description": "Burst limit for queries",
+      "required": false,
+      "example": "1"
+    },
+    "datasets-rate": {
+      "description": "Rate limit for dataset listing",
+      "required": false,
+      "example": "1"
+    },
+    "datasets-burst": {
+      "description": "Burst limit for dataset listing",
+      "required": false,
+      "example": "1"
+    }
+  },
+  "installations": {
+    "custom": {
+      "type": "custom",
+      "command": "axiom-mcp",
+      "args": [
+        "--config",
+        "config.txt"
+      ],
+      "description": "Run using pre-built binary",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Basic Configuration",
+      "description": "Configure the MCP server with a token",
+      "prompt": "echo \"token xaat-your-token\" > config.txt"
+    },
+    {
+      "title": "Claude Desktop Integration",
+      "description": "Configure Claude desktop app to use the MCP server",
+      "prompt": "code ~/Library/Application\\ Support/Claude/claude_desktop_config.json"
+    }
+  ],
+  "name": "mcp-server-axiom",
+  "description": "A [Model Context Protocol](https://modelcontextprotocol.io/) server implementation for [Axiom](https://axiom.co) that enables AI agents to query your data using Axiom Processing Language (APL).",
+  "categories": [
+    "Analytics"
+  ],
+  "is_official": true
+}

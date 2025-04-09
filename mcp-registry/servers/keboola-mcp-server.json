@@ -1,0 +1,181 @@
+{
+  "display_name": "Keboola MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/keboola/keboola-mcp-server"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/keboola/keboola-mcp-server",
+  "author": {
+    "name": "keboola"
+  },
+  "tags": [
+    "keboola",
+    "data",
+    "storage",
+    "snowflake"
+  ],
+  "arguments": {
+    "api-url": {
+      "description": "Keboola Connection API URL",
+      "required": true,
+      "example": "https://connection.YOUR_REGION.keboola.com"
+    },
+    "KBC_STORAGE_TOKEN": {
+      "description": "Keboola Storage API token",
+      "required": true,
+      "example": "your-keboola-storage-token"
+    },
+    "KBC_WORKSPACE_USER": {
+      "description": "Snowflake workspace username",
+      "required": true,
+      "example": "your-workspace-user"
+    }
+  },
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/keboola/keboola-mcp-server.git",
+        "keboola-mcp",
+        "--api-url",
+        "${api-url}"
+      ],
+      "env": {
+        "KBC_STORAGE_TOKEN": "your-keboola-storage-token",
+        "KBC_WORKSPACE_USER": "your-workspace-user"
+      },
+      "description": "Run the server using Python",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "List buckets and tables",
+      "description": "Get a list of all buckets and tables in your Keboola project",
+      "prompt": "List all the buckets and tables in my Keboola project."
+    },
+    {
+      "title": "Preview table data",
+      "description": "Preview data from a specific table",
+      "prompt": "Show me a preview of the data in table [table_id]."
+    }
+  ],
+  "name": "keboola-mcp-server",
+  "description": "<a href=\"https://glama.ai/mcp/servers/72mwt1x862\"><img width=\"380\" height=\"200\" src=\"https://glama.ai/mcp/servers/72mwt1x862/badge\" alt=\"Keboola Explorer Server MCP server\" /></a>",
+  "categories": [
+    "Analytics"
+  ],
+  "is_official": true,
+  "tools": [
+    {
+      "name": "list_bucket_info",
+      "description": "List information about all buckets in the project.",
+      "inputSchema": {
+        "properties": {},
+        "title": "list_bucket_infoArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_bucket_metadata",
+      "description": "Get detailed information about a specific bucket.",
+      "inputSchema": {
+        "properties": {
+          "bucket_id": {
+            "description": "Unique ID of the bucket.",
+            "title": "Bucket Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "bucket_id"
+        ],
+        "title": "get_bucket_metadataArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_bucket_tables",
+      "description": "List all tables in a specific bucket with their basic information.",
+      "inputSchema": {
+        "properties": {
+          "bucket_id": {
+            "description": "Unique ID of the bucket.",
+            "title": "Bucket Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "bucket_id"
+        ],
+        "title": "list_bucket_tablesArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_table_metadata",
+      "description": "Get detailed information about a specific table including its DB identifier and column information.",
+      "inputSchema": {
+        "properties": {
+          "table_id": {
+            "description": "Unique ID of the table.",
+            "title": "Table Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "table_id"
+        ],
+        "title": "get_table_metadataArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "query_table",
+      "description": "\n    Executes an SQL SELECT query to get the data from the underlying snowflake database.\n    * When constructing the SQL SELECT query make sure to use the fully qualified table names\n      that include the database name, schema name and the table name.\n    * The fully qualified table name can be found in the table information, use a tool to get the information\n      about tables. The fully qualified table name can be found in the response for that tool.\n    * Snowflake is case-sensitive so always wrap the column names in double quotes.\n\n    Examples:\n    * SQL queries must include the fully qualified table names including the database name, e.g.:\n      SELECT * FROM \"db_name\".\"db_schema_name\".\"table_name\";\n    ",
+      "inputSchema": {
+        "properties": {
+          "sql_query": {
+            "description": "SQL SELECT query to run.",
+            "title": "Sql Query",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sql_query"
+        ],
+        "title": "query_tableArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_components",
+      "description": "List all available components and their configurations.",
+      "inputSchema": {
+        "properties": {},
+        "title": "list_componentsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_component_configs",
+      "description": "List all configurations for a specific component.",
+      "inputSchema": {
+        "properties": {
+          "component_id": {
+            "title": "Component Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "component_id"
+        ],
+        "title": "list_component_configsArguments",
+        "type": "object"
+      }
+    }
+  ]
+}
