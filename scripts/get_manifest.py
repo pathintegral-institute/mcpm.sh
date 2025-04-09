@@ -7,7 +7,7 @@ import sys
 import traceback
 from typing import Any, Dict, List, Optional
 
-import boto3
+import openai
 import requests
 from categorization import CategorizationAgent, LLMModel
 from loguru import logger
@@ -21,60 +21,12 @@ class ManifestGenerator:
         """Initialize with AWS Bedrock client."""
         self.client = boto3.client("bedrock-runtime")
 
-    def _extract_server_info_from_url(self, repo_url: str) -> Dict[str, str]:
-        """Extract server information directly from GitHub URL.
-
-        For URLs from the modelcontextprotocol/servers repo, extracts
-        server name from path. For other repos, extracts from repo name.
-
-        Args:
-            repo_url: GitHub repository URL
-
-        Returns:
-            Dictionary with 'name', 'url', and placeholder for 'desc'
-        """
-        # Use extract_repo_info to get the base repository information
-        repo_info = self.extract_repo_info(repo_url)
-        owner, repo_name = repo_info["owner"], repo_info["name"]
-
-        # Check if it's the official MCP servers repository
-        if owner == "modelcontextprotocol" and repo_name == "servers":
-            # For official repo, try to extract server name from URL path
-            parts = repo_url.strip("/").split("/")
-
-            # Find the 'src' directory index
-            src_index = -1
-            for i, part in enumerate(parts):
-                if part == "src":
-                    src_index = i
-                    break
-
-            # If src directory is found and there's another path component after it
-            if src_index > 0 and src_index + 1 < len(parts):
-                server_name = parts[src_index + 1]
-            else:
-                # Fallback to repo name if structure is unexpected
-                server_name = repo_name
-                logger.warning(
-                    f"Could not find server name in URL: {repo_url}")
-        else:
-            # Third-party repo: use repo name as server name
-            server_name = repo_name
-
-        # Format server name to kebab-case
-        server_name = self._format_server_name(server_name)
-
-        return {
-            "name": server_name,
-            "url": repo_info["full_url"],
-            "desc": "",  # Will be extracted from README
-        }
-
-    def _extract_description_from_readme(self, readme_content: str) -> str:
+    def extract_description_from_readme(self, readme_content: str) -> str:
         """Extract a concise description from README content.
 
         Looks for the first meaningful description paragraph near the beginning
-        of the README, typically after the title.
+        of the README, typically after the title. Skips badges, links, and
+        code blocks.
 
         Args:
             readme_content: Contents of README.md
@@ -85,10 +37,10 @@ class ManifestGenerator:
         try:
             # Split readme into lines
             lines = readme_content.split("\n")
-
-            # Skip empty lines and headers
             description = ""
             in_code_block = False
+            in_html_block = False
+
             for line in lines:
                 # Skip code blocks
                 if line.strip().startswith("```"):
@@ -97,8 +49,23 @@ class ManifestGenerator:
                 if in_code_block:
                     continue
 
-                # Skip headers, badges and links at the beginning
-                if line.strip().startswith("#") or "![" in line or line.strip() == "":
+                # Skip HTML blocks
+                if line.strip().startswith("<"):
+                    in_html_block = True
+                    continue
+                if in_html_block and line.strip().endswith(">"):
+                    in_html_block = False
+                    continue
+                if in_html_block:
+                    continue
+
+                # Skip badges, links, and empty lines
+                if (line.strip().startswith("#") or
+                    "![" in line or
+                    line.strip().startswith("[") or
+                    line.strip() == "" or
+                    line.strip().startswith(">") or
+                        line.strip().startswith("##")):
                     continue
 
                 # Found a potential description line
@@ -106,20 +73,20 @@ class ManifestGenerator:
                     description = line.strip()
                     break
 
-            # If we couldn't find a good description, try to use the project title
+            # If we couldn't find a good description, return empty string
             if not description:
-                for line in lines:
-                    if line.strip().startswith("# "):
-                        # Remove the heading marker and return the title
-                        title = line.strip()[2:]
-                        if len(title) > 3:  # Make sure it's not just a symbol
-                            return title
-
+                logger.warning(
+                    f"No description found in README for {repo_url}")
+                return ""
             return description
 
         except Exception as e:
             logger.error(f"Error extracting description from README: {e}")
             return ""
+
+    def extract_description_from_readme_with_llms(self, readme_content: str) -> str:
+        """Extract a concise description from README content using LLM."""
+        pass
 
     def fetch_readme(self, repo_url: str) -> str:
         """Fetch README.md content from a GitHub repository.
@@ -169,26 +136,7 @@ class ManifestGenerator:
         raw_url = repo_url.replace("github.com", "raw.githubusercontent.com")
         return f"{raw_url.rstrip('/')}/main/README.md"
 
-    def extract_repo_info(self, repo_url: str) -> Dict[str, str]:
-        """Extract repository owner and name from GitHub URL.
-
-        Args:
-            repo_url: GitHub repository URL
-
-        Returns:
-            Dictionary containing owner, name, and full URL
-
-        Raises:
-            ValueError: If URL format is invalid
-        """
-        parts = repo_url.strip("/").split("/")
-        if len(parts) < 5 or parts[2] != "github.com":
-            raise ValueError(f"Invalid GitHub URL: {repo_url}")
-
-        owner, repo = parts[3], parts[4]
-        return {"owner": owner, "name": repo, "full_url": f"https://github.com/{owner}/{repo}"}
-
-    async def categorize_servers(self, servers: List[Dict[str, str]]) -> List[Dict[str, Any]]:
+    async def categorize_servers_with_llms(self, name, description) -> str:
         """Categorize a list of servers.
 
         Args:
@@ -198,24 +146,15 @@ class ManifestGenerator:
             List of dictionaries with categorization results
         """
         agent = CategorizationAgent()
-        results = []
 
-        for server in servers:
-            result = await agent.execute(
-                server_name=server["name"], server_description=server["description"], include_examples=True
-            )
-            result["server_name"] = server["name"]
-            results.append(result)
+        result = await agent.execute(
+            server_name=name, server_description=description, include_examples=True
+        )
 
-        return results
+        return result['category']
 
-    def _format_server_name(self, repo_name: str) -> str:
-        """Convert repository name to kebab-case."""
-        name = repo_name.lower()
-        name = "".join("-" if not char.isalnum() else char for char in name)
-        return "-".join(filter(None, name.strip("-").split("--")))
-
-    def _create_prompt(self, repo_url: str, readme_content: str) -> tuple[str, str]:
+    @staticmethod
+    def _create_prompt(repo_url: str, readme_content: str) -> tuple[str, str]:
         """Create prompt for manifest information extraction, returning static and variable parts.
 
         Returns:
@@ -233,21 +172,6 @@ class ManifestGenerator:
                     "required": ["display_name", "repository", "license", "installations"],
                     "properties": {
                         "display_name": {"type": "string", "description": "Human-readable server name"},
-                        "repository": {
-                            "type": "object",
-                            "required": ["type", "url"],
-                            "properties": {"type": {"type": "string", "enum": ["git"]}, "url": {"type": "string"}},
-                        },
-                        "homepage": {"type": "string"},
-                        "author": {
-                            "type": "object",
-                            "required": ["name"],
-                            "properties": {
-                                "name": {"type": "string"},
-                                "email": {"type": "string"},
-                                "url": {"type": "string"},
-                            },
-                        },
                         "license": {"type": "string"},
                         "tags": {"type": "array", "items": {"type": "string"}},
                         "arguments": {
@@ -324,7 +248,7 @@ class ManifestGenerator:
 
         return static_content, variable_content
 
-    def _extract_with_llms(self, prompt: tuple[str, str]) -> Dict:
+    def extract_with_llms(self, repo_url: str, readme_content: str) -> Dict:
         """Extract manifest information using Amazon Bedrock with optimized caching.
 
         Args:
@@ -333,73 +257,54 @@ class ManifestGenerator:
         Returns:
             Dictionary containing the extracted manifest information
         """
-        static_content, variable_content = prompt
+        static_content, variable_content = self._create_prompt(
+            repo_url, readme_content)
 
-        try:
-            response = self.client.converse(
-                modelId=LLMModel.CLAUDE_3_7_SONNET,
-                system=[
-                    {"text": "You are a helpful assistant for README analysis."}],
-                messages=[
-                    {
-                        "role": "user",
-                        "content": [
-                            {"text": static_content},
-                            {"cachePoint": {"type": "default"}},
-                            {"text": variable_content},
-                        ],
-                    }
-                ],
-                inferenceConfig={"temperature": 0.0},
-            )
+        response = self.client.converse(
+            modelId=LLMModel.CLAUDE_3_7_SONNET,
+            system=[
+                {"text": "You are a helpful assistant for README analysis."}],
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {"text": static_content},
+                        {"cachePoint": {"type": "default"}},
+                        {"text": variable_content},
+                    ],
+                }
+            ],
+            inferenceConfig={"temperature": 0.0},
+        )
 
-            # Extract the text from the response
-            if "output" in response and "message" in response["output"] and "content" in response["output"]["message"]:
-                content = response["output"]["message"]["content"]
+        # Extract the text from the response
+        if "output" in response and "message" in response["output"] and "content" in response["output"]["message"]:
+            content = response["output"]["message"]["content"]
 
-                # Find the first text item
-                text_items = [item.get("text")
-                              for item in content if "text" in item]
-                if text_items:
-                    text_content = text_items[0]
-                    try:
-                        # Try to extract JSON from the response text
-                        # First check if it's already valid JSON
-                        return json.loads(text_content)
-                    except json.JSONDecodeError:
-                        # If not, try to find JSON in the text
-                        import re
-                        json_match = re.search(
-                            r"(\{.*\})", text_content, re.DOTALL)
-                        if json_match:
-                            return json.loads(json_match.group(1))
-                        else:
-                            logger.error(
-                                f"No JSON content found in response: {text_content[:100]}...")
-                else:
-                    logger.error("No text items found in response content")
+            # Find the first text item
+            text_items = [item.get("text")
+                          for item in content if "text" in item]
+            if text_items:
+                text_content = text_items[0]
+                try:
+                    # Try to extract JSON from the response text
+                    # First check if it's already valid JSON
+                    return json.loads(text_content)
+                except json.JSONDecodeError:
+                    # If not, try to find JSON in the text
+                    import re
+                    json_match = re.search(
+                        r"(\{.*\})", text_content, re.DOTALL)
+                    if json_match:
+                        return json.loads(json_match.group(1))
+                    else:
+                        logger.error(
+                            f"No JSON content found in response: {text_content[:100]}...")
             else:
-                logger.error(
-                    f"Unexpected response structure: {response.keys()}")
-
-            # If we get here, something went wrong with the parsing
-            return self._get_minimal_manifest()
-
-        except Exception as e:
-            logger.error(f"Error extracting with LLM: {e}")
-            return self._get_minimal_manifest()
-
-    def _get_minimal_manifest(self) -> Dict:
-        """Return a minimal valid manifest when extraction fails."""
-        return {
-            "name": "",
-            "display_name": "",
-            "description": "",
-            "repository": {"type": "git", "url": ""},
-            "license": "MIT",
-            "installations": {},
-            "tags": [],
-        }
+                logger.error("No text items found in response content")
+        else:
+            logger.error(
+                f"Unexpected response structure: {response.keys()}")
 
     def generate_manifest(self, repo_url: str, server_name: Optional[str] = None) -> Dict:
         """Generate MCP server manifest from GitHub repository.
@@ -415,55 +320,47 @@ class ManifestGenerator:
         """
         try:
             # Extract repo info
-            repo_info = self.extract_repo_info(repo_url)
-
-            # Extract server info directly from URL
-            server_info = self._extract_server_info_from_url(repo_url)
+            parts = repo_url.strip("/").split("/")
+            owner = parts[3]
+            name = parts[4]
 
             # If no server name was explicitly provided, use the one from URL
-            if not server_name:
-                server_name = server_info["name"]
+            if server_name:
+                name = server_name
 
             # Fetch README content
             readme_content = self.fetch_readme(repo_url)
 
-            # If server info doesn't have a description, extract from README
-            if not server_info["desc"]:
-                server_info["desc"] = self._extract_description_from_readme(
+            # If server info doesn't have a description, extract the description from README
+            description = self.extract_description_from_readme(readme_content)
+            if not description:
+                description = self.extract_description_from_readme_with_llms(
                     readme_content)
 
             # Get prompt as tuple and extract manifest
-            prompt = self._create_prompt(repo_url, readme_content)
-            manifest = self._extract_with_llms(prompt)
+            manifest = self.extract_with_llms(repo_url, readme_content)
 
             # Update manifest with repository information
             manifest.update({
-                "name": server_name,
-                "repository": {"type": "git", "url": repo_info["full_url"]},
-                "author": {"name": repo_info["owner"]},
+                "name": name,
+                "repository": {"type": "git", "url": repo_url},
+                "homepage": repo_url,
+                "author": {"name": owner},
             })
 
-            # Enrich with description from README if not already meaningful
-            if not manifest.get("description") or manifest.get("description") == "[NOT GIVEN]":
-                manifest["description"] = server_info["desc"]
-
             # Categorize the server
-            info_for_categorization = {
-                "name": manifest.get("name", ""),
-                "description": manifest.get("description", "")
-            }
-
-            categorized_servers = asyncio.run(
-                self.categorize_servers([info_for_categorization]))
-            if categorized_servers:
-                manifest["categories"] = [
-                    categorized_servers[0].get("category", "Unknown")]
-                manifest["tags"] = manifest.get("tags", [])
+            categorized_category = asyncio.run(
+                self.categorize_servers_with_llms(name, description))
+            if categorized_category:
                 logger.info(
-                    f"Server categorized as: {manifest['categories'][0]}")
+                    f"Server categorized as: {categorized_category}")
+                manifest["categories"] = [categorized_category]
+            else:
+                logger.error(
+                    f"Server not categorized: {name} - {description}")
 
             # Sort installations by priority
-            manifest["installations"] = self._filter_and_sort_installations(
+            manifest["installations"] = self.filter_and_sort_installations(
                 manifest.get("installations", {})
             )
 
@@ -473,7 +370,7 @@ class ManifestGenerator:
                     f"Server installations: {manifest['installations']}")
                 try:
                     capabilities = asyncio.run(
-                        self._run_server_and_extract_capabilities(manifest)
+                        self.run_server_and_extract_capabilities(manifest)
                     )
                     if capabilities:
                         manifest.update(capabilities)
@@ -484,9 +381,18 @@ class ManifestGenerator:
 
         except Exception as e:
             logger.error(f"Error generating manifest: {e}")
-            return self._get_minimal_manifest()
+            return {
+                "name": "",
+                "display_name": "",
+                "description": "",
+                "repository": {"type": "git", "url": ""},
+                "license": "MIT",
+                "installations": {},
+                "tags": [],
+            }
 
-    async def _run_server_and_extract_capabilities(self, manifest: dict[str, Any]) -> dict:
+    @staticmethod
+    async def run_server_and_extract_capabilities(manifest: dict[str, Any]) -> dict:
         """Run server and extract its capabilities.
 
         Args:
@@ -534,7 +440,8 @@ class ManifestGenerator:
 
         return result
 
-    def _filter_and_sort_installations(self, installations: dict[str, dict[str, Any]]) -> dict:
+    @staticmethod
+    def filter_and_sort_installations(installations: dict[str, dict[str, Any]]) -> dict:
         """Filter and sort installation methods by priority.
 
         Args:
@@ -560,35 +467,29 @@ def main(repo_url: str, is_official: bool = False):
         # Generate the manifest
         generator = ManifestGenerator()
         manifest = generator.generate_manifest(repo_url)
-        if is_official:
-            manifest["is_official"] = is_official
+        manifest["is_official"] = is_official
 
         # Ensure the manifest has a valid name
-        if not manifest.get("name"):
-            raise ValueError("Generated manifest is missing a name")
+        if not manifest.get("name") or not manifest.get("author", {}).get("name"):
+            raise ValueError(
+                "Generated manifest is missing a name and/or author name")
 
-        # Save to mcp-registry/servers directory
+        # determine the filename
         filename = f"mcp-registry/servers/{manifest['name']}.json"
-        if not is_official and os.path.exists(filename):
-            # If the manifest already exists and  not official, save it with a new name with the author's name
-            with open(filename, "r", encoding="utf-8") as file:
-                existing_manifest = json.load(file)
-                if existing_manifest.get("repository").get("url") != manifest["repository"][
-                    "url"
-                ] and not existing_manifest.get("is_official"):
-                    new_name = f"@{existing_manifest['author']['name']}/{existing_manifest['name']}"
-                    new_filename = (
-                        f"mcp-registry/servers/{existing_manifest['name']}@{existing_manifest['author']['name']}.json"
-                    )
-                    existing_manifest["name"] = new_name
-                    with open(new_filename, "w", encoding="utf-8") as file:
-                        json.dump(existing_manifest, file, indent=2)
-                    logger.info(
-                        f"Previous community manifest saved to {new_filename}")
-        else:
-            with open(filename, "w", encoding="utf-8") as file:
-                json.dump(manifest, file, indent=2)
-            logger.info(f"Manifest saved to {filename}")
+        if not is_official:
+            name = f"@{manifest['author']['name']}/{manifest['name']}"
+            filename = (
+                f"mcp-registry/servers/{manifest['name']}@{manifest['author']['name']}.json"
+            )
+            manifest["name"] = name
+
+        # save the manifest with the determined filename
+        if os.path.exists(filename):
+            logger.warning(
+                f"Official manifest already exists: {filename}. Overwriting...")
+        with open(filename, "w", encoding="utf-8") as file:
+            json.dump(manifest, file, indent=2)
+        logger.info(f"Manifest saved to {filename}")
 
     except Exception as e:
         logger.error(f"Error: {e}")
@@ -619,7 +520,10 @@ if __name__ == "__main__":
         logger.error(f"Not a valid GitHub URL: {repo_url}")
         sys.exit(1)
 
-    is_official = bool(sys.argv[2]) if len(sys.argv) > 2 else False
+    if parts[3] == "modelcontextprotocol":
+        is_official = True
+    else:
+        is_official = False
 
     logger.add(sys.stderr, format="{time} {level} {message}", level="INFO")
     logger.info(f"Processing GitHub URL: {repo_url}")
