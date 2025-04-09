@@ -9,9 +9,10 @@ import os
 import platform
 from typing import Any, Dict, List, Optional, Union
 
+from pydantic import TypeAdapter
 from ruamel.yaml import YAML
 
-from mcpm.utils.server_config import ServerConfig
+from mcpm.schemas.server_config import ServerConfig, STDIOServerConfig
 
 logger = logging.getLogger(__name__)
 
@@ -28,10 +29,10 @@ class BaseClientManager(abc.ABC):
     client_key = ""  # Client identifier (e.g., "claude-desktop")
     display_name = ""  # Human-readable name (e.g., "Claude Desktop")
     download_url = ""  # URL to download the client
+    config_path: str
 
     def __init__(self):
         """Initialize the client manager"""
-        self.config_path = None  # To be set by subclasses
         self._system = platform.system()
 
     @abc.abstractmethod
@@ -56,12 +57,11 @@ class BaseClientManager(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def add_server(self, server_config: Union[ServerConfig, Dict[str, Any]], name: Optional[str] = None) -> bool:
+    def add_server(self, server_config: ServerConfig) -> bool:
         """Add or update a server in the client config
 
         Args:
-            server_config: ServerConfig object or dictionary in client format
-            name: Required server name when using dictionary format
+            server_config: ServerConfig object
 
         Returns:
             bool: Success or failure
@@ -140,6 +140,7 @@ class JSONClientManager(BaseClientManager):
     This class implements the BaseClientManager interface using JSON files
     for configuration storage.
     """
+
     configure_key_name: str = "mcpServers"
 
     def __init__(self):
@@ -231,7 +232,7 @@ class JSONClientManager(BaseClientManager):
         client_config = servers[server_name]
         return self.from_client_format(server_name, client_config)
 
-    def add_server(self, server_config: Union[ServerConfig, Dict[str, Any]], name: Optional[str] = None) -> bool:
+    def add_server(self, server_config: ServerConfig) -> bool:
         """Add or update a server in the client config
 
         Can accept either a ServerConfig object or a raw dictionary in client format.
@@ -239,21 +240,13 @@ class JSONClientManager(BaseClientManager):
 
         Args:
             server_config: ServerConfig object or dictionary in client format
-            name: Required server name when using dictionary format
 
         Returns:
             bool: Success or failure
         """
-        # Handle direct dictionary input
-        if isinstance(server_config, dict):
-            if name is None:
-                raise ValueError("Name must be provided when using dictionary format")
-            server_name = name
-            client_config = server_config  # Already in client format
         # Handle ServerConfig objects
-        else:
-            server_name = server_config.name
-            client_config = self.to_client_format(server_config)
+        server_name = server_config.name
+        client_config = self.to_client_format(server_config)
 
         # Update config directly
         config = self._load_config()
@@ -275,15 +268,18 @@ class JSONClientManager(BaseClientManager):
             Dict containing client-specific configuration with core fields
         """
         # Base result containing only essential execution information
-        result = {
-            "command": server_config.command,
-            "args": server_config.args,
-        }
+        if isinstance(server_config, STDIOServerConfig):
+            result = {
+                "command": server_config.command,
+                "args": server_config.args,
+            }
 
-        # Add filtered environment variables if present
-        non_empty_env = server_config.get_filtered_env_vars(os.environ)
-        if non_empty_env:
-            result["env"] = non_empty_env
+            # Add filtered environment variables if present
+            non_empty_env = server_config.get_filtered_env_vars(os.environ)
+            if non_empty_env:
+                result["env"] = non_empty_env
+        else:
+            result = server_config.to_dict()
 
         return result
 
@@ -300,18 +296,11 @@ class JSONClientManager(BaseClientManager):
         Returns:
             ServerConfig object
         """
-        # Create a dictionary that ServerConfig.from_dict can work with
         server_data = {
             "name": server_name,
-            "command": client_config.get("command", ""),
-            "args": client_config.get("args", []),
         }
-
-        # Add environment variables if present
-        if "env" in client_config:
-            server_data["env"] = client_config["env"]
-
-        return ServerConfig.from_dict(server_data)
+        server_data.update(client_config)
+        return TypeAdapter(ServerConfig).validate_python(server_data)
 
     def list_servers(self) -> List[str]:
         """List all MCP servers in client config
@@ -374,7 +363,6 @@ class YAMLClientManager(BaseClientManager):
     def __init__(self):
         """Initialize the YAML client manager"""
         super().__init__()
-        self.config_path = None  # To be set by subclasses
         self.yaml_handler: YAML = YAML()
 
     def _load_config(self) -> Dict[str, Any]:
@@ -454,7 +442,9 @@ class YAMLClientManager(BaseClientManager):
         pass
 
     @abc.abstractmethod
-    def _add_server_to_config(self, config: Dict[str, Any], server_name: str, server_config: Dict[str, Any]) -> Dict[str, Any]:
+    def _add_server_to_config(
+        self, config: Dict[str, Any], server_name: str, server_config: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """Add or update a server in the config
 
         Args:
@@ -589,11 +579,7 @@ class YAMLClientManager(BaseClientManager):
         Returns:
             Dict: Information about the client including display name, download URL, and config path
         """
-        return {
-            "name": self.display_name,
-            "download_url": self.download_url,
-            "config_file": self.config_path
-        }
+        return {"name": self.display_name, "download_url": self.download_url, "config_file": self.config_path}
 
     def is_client_installed(self) -> bool:
         """Check if this client is installed

@@ -12,20 +12,20 @@ from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.prompt import Confirm
 
 from mcpm.clients.client_registry import ClientRegistry
-from mcpm.profile.profile_manager import ProfileManager
+from mcpm.profile.profile_config import ProfileConfigManager
+from mcpm.schemas.full_server_config import FullServerConfig
 from mcpm.utils.repository import RepositoryManager
-from mcpm.utils.server_config import ServerConfig
 
 console = Console()
 repo_manager = RepositoryManager()
-profile_manager = ProfileManager()
+profile_config_manager = ProfileConfigManager()
 
 
 @click.command()
 @click.argument("server_name")
 @click.option("--force", is_flag=True, help="Force reinstall if server is already installed")
 @click.option("--alias", help="Alias for the server", required=False)
-@click.option("--profile", help="Profile to add server to", required=False)
+@click.option("--profile", "-p", help="Profile to add server to", required=False)
 def add(server_name, force=False, alias=None, profile=None):
     """Add an MCP server to a client configuration.
 
@@ -62,19 +62,19 @@ def add(server_name, force=False, alias=None, profile=None):
         target_display_name = client_manager.display_name
     else:
         # Get profile
-        profile_info = profile_manager.get_profile(profile)
+        profile_info = profile_config_manager.get_profile(profile)
         if profile_info is None:
             console.print(f"[yellow]Profile '{profile}' not found. Create new profile? [bold]y/n[/]", end=" ")
             if not Confirm.ask():
                 return
-            profile_manager.new_profile(profile)
+            profile_config_manager.new_profile(profile)
             console.print(f"[green]Profile '{profile}' added successfully.[/]\n")
             profile_info = []
 
         # Check if server already exists in client config
         for server in profile_info:
             if server.name == config_name and not force:
-                console.print(f"[yellow]Server '{config_name}' is already added to {client}.[/]")
+                console.print(f"[yellow]Server '{config_name}' is already added to {profile}.[/]")
                 console.print("Use '--force' to overwrite the existing configuration.")
                 return
 
@@ -343,8 +343,8 @@ def add(server_name, force=False, alias=None, profile=None):
         mcp_command = install_command
         mcp_args = processed_args
 
-    # Create server configuration using ServerConfig
-    server_config = ServerConfig(
+    # Create server configuration using FullServerConfig
+    full_server_config = FullServerConfig(
         name=config_name,
         display_name=display_name,
         description=description,
@@ -357,10 +357,10 @@ def add(server_name, force=False, alias=None, profile=None):
 
     if not profile:
         # Add the server to the client configuration
-        success = client_manager.add_server(server_config)
+        success = client_manager.add_server(full_server_config.to_server_config())
     else:
         # Add the server to the profile configuration
-        success = profile_manager.set_profile(profile, server_config)
+        success = profile_config_manager.set_profile(profile, full_server_config.to_server_config())
 
     if success:
         # Server has been successfully added to the client configuration

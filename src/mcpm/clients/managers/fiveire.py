@@ -4,13 +4,15 @@ import os
 import re
 from typing import Any, Dict, List, Optional, Union
 
+from pydantic import TypeAdapter
+
 from mcpm.clients.base import JSONClientManager
-from mcpm.utils.server_config import ServerConfig
+from mcpm.schemas.server_config import ServerConfig, STDIOServerConfig
 
 logger = logging.getLogger(__name__)
 
-class FiveireManager(JSONClientManager):
 
+class FiveireManager(JSONClientManager):
     # Client information
     client_key = "5ire"
     display_name = "5ire"
@@ -167,24 +169,32 @@ class FiveireManager(JSONClientManager):
         Returns:
             Dict containing client-specific configuration
         """
+
+        if isinstance(server_config, STDIOServerConfig):
+            result = {
+                "command": server_config.command,
+                "args": server_config.args,
+            }
+
+            # Add filtered environment variables if present
+            non_empty_env = server_config.get_filtered_env_vars(os.environ)
+            if non_empty_env:
+                result["env"] = non_empty_env
+        else:
+            result = server_config.to_dict()
+
         # Base result containing essential information
         key_slug = re.sub(r"[^a-zA-Z0-9]", "", server_config.name)
         # If the key starts with a number, prepend an key prefix
         if key_slug and key_slug[0].isdigit():
             key_slug = f"key{key_slug}"
 
-        result = {
-            "name": server_config.name,
-            "key": key_slug,
-            "command": server_config.command,
-            "args": server_config.args,
-            "isActive": True
-        }
-
-        # Add filtered environment variables if present
-        non_empty_env = server_config.get_filtered_env_vars(os.environ)
-        if non_empty_env:
-            result["env"] = non_empty_env
+        result.update(
+            {
+                "key": key_slug,
+                "isActive": True,
+            }
+        )
 
         return result
 
@@ -199,18 +209,11 @@ class FiveireManager(JSONClientManager):
         Returns:
             ServerConfig object
         """
-        # Create a dictionary that ServerConfig.from_dict can work with
         server_data = {
             "name": server_name,
-            "command": client_config.get("command", ""),
-            "args": client_config.get("args", []),
         }
-
-        # Add environment variables if present
-        if "env" in client_config:
-            server_data["env"] = client_config["env"]
-
-        return ServerConfig.from_dict(server_data)
+        server_data.update(client_config)
+        return TypeAdapter(ServerConfig).validate_python(server_data)
 
     def list_servers(self) -> List[str]:
         """List all MCP servers in client config
@@ -307,7 +310,4 @@ class FiveireManager(JSONClientManager):
         servers = self.get_servers()
 
         # Check if the server exists and is not active
-        return (
-            server_name in servers
-            and servers[server_name].get("isActive", True) is False
-        )
+        return server_name in servers and servers[server_name].get("isActive", True) is False

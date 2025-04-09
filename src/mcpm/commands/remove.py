@@ -12,15 +12,15 @@ from mcpm.clients.client_registry import ClientRegistry
 console = Console()
 
 
-@click.command()
+@click.command("rm")
 @click.argument("server_name")
 @click.option("--force", is_flag=True, help="Force removal without confirmation")
 def remove(server_name, force):
     """Remove an installed MCP server.
 
     Examples:
-        mcpm remove filesystem
-        mcpm remove filesystem --force
+        mcpm rm filesystem
+        mcpm rm filesystem --force
     """
     # Get the active client manager and related information
     client_manager = ClientRegistry.get_active_client_manager()

@@ -2,12 +2,14 @@ import json
 import os
 from typing import Dict, Optional
 
-from mcpm.utils.server_config import ServerConfig
+from pydantic import TypeAdapter
+
+from mcpm.schemas.server_config import ServerConfig
 
 DEFAULT_PROFILE_PATH = os.path.expanduser("~/.config/mcpm/profiles.json")
 
 
-class ProfileManager:
+class ProfileConfigManager:
     def __init__(self, profile_path: str = DEFAULT_PROFILE_PATH):
         self.profile_path = os.path.expanduser(profile_path)
         self._profiles = self._load_profiles()
@@ -17,7 +19,10 @@ class ProfileManager:
             return {}
         with open(self.profile_path, "r") as f:
             profiles = json.load(f) or {}
-        return {name: [ServerConfig.model_validate(config) for config in configs] for name, configs in profiles.items()}
+        return {
+            name: [TypeAdapter(ServerConfig).validate_python(config) for config in configs]
+            for name, configs in profiles.items()
+        }
 
     def _save_profiles(self) -> None:
         profile_info = {name: [config.model_dump() for config in configs] for name, configs in self._profiles.items()}
