@@ -1,7 +1,8 @@
 """
-DuckDB implementation of the access monitor
+Implementation of the access monitor using DuckDB
 """
 
+import asyncio
 import json
 import os
 from datetime import datetime
@@ -13,46 +14,65 @@ from mcpm.monitor.base import AccessEventType, AccessMonitor
 
 
 class DuckDBAccessMonitor(AccessMonitor):
-    """DuckDB implementation of MCP access monitoring"""
+    """
+    Implementation of the access monitor using DuckDB.
+    This uses a thread pool to execute DuckDB operations asynchronously.
+    """
 
-    def __init__(self, db_path: str = "~/.config/mcpm/monitor.duckdb"):
+    def __init__(self, db_path: str = "~/.mcpm/monitor.duckdb"):
         """
-        Initialize the DuckDB access monitor
+        Initialize the DuckDBAccessMonitor.
 
         Args:
             db_path: Path to the DuckDB database file
         """
         self.db_path = os.path.expanduser(db_path)
-        self.db_dir = os.path.dirname(self.db_path)
         self.connection = None
+        self._initialized = False
+        self._lock = asyncio.Lock()
 
-    def initialize_storage(self) -> bool:
-        """Initialize the DuckDB database and tables"""
+    async def initialize_storage(self) -> bool:
+        """
+        Initialize the storage for the access monitor asynchronously.
+
+        Returns:
+            bool: True if successful, False otherwise
+        """
+        async with self._lock:
+            if self._initialized:
+                return True
+
+            try:
+                # Run the initialization in a thread
+                return await asyncio.to_thread(self._initialize_storage_impl)
+            except Exception as e:
+                print(f"Error initializing storage asynchronously: {e}")
+                return False
+
+    def _initialize_storage_impl(self) -> bool:
+        """Internal implementation of storage initialization."""
         try:
-            # Create directory if it doesn't exist
-            os.makedirs(self.db_dir, exist_ok=True)
+            # Create the directory if it doesn't exist
+            os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
 
-            # Connect to database
+            # Connect to the database
             self.connection = duckdb.connect(self.db_path)
 
-            # Create a sequence for auto-incrementing IDs
+            # Create the events table if it doesn't exist using identity column for auto-incrementing
             self.connection.execute("""
-                CREATE SEQUENCE IF NOT EXISTS monitor_events_id_seq START 1;
-            """)
-
-            # Create monitor_events table if it doesn't exist
-            self.connection.execute("""
+                CREATE SEQUENCE IF NOT EXISTS event_id_seq;
+                
                 CREATE TABLE IF NOT EXISTS monitor_events (
-                    id INTEGER DEFAULT nextval('monitor_events_id_seq') PRIMARY KEY,
-                    event_type VARCHAR NOT NULL,
-                    server_id VARCHAR NOT NULL,
-                    resource_id VARCHAR NOT NULL,
+                    id INTEGER DEFAULT nextval('event_id_seq') PRIMARY KEY,
+                    event_type VARCHAR,
+                    server_id VARCHAR,
+                    resource_id VARCHAR,
                     client_id VARCHAR,
-                    timestamp TIMESTAMP NOT NULL,
+                    timestamp TIMESTAMP,
                     duration_ms INTEGER,
                     request_size INTEGER,
                     response_size INTEGER,
-                    success BOOLEAN NOT NULL,
+                    success BOOLEAN,
                     error_message VARCHAR,
                     metadata JSON,
                     raw_request JSON,
@@ -60,36 +80,19 @@ class DuckDBAccessMonitor(AccessMonitor):
                 )
             """)
 
-            # Create index on timestamp for efficient time-based queries
-            self.connection.execute("""
-                CREATE INDEX IF NOT EXISTS idx_monitor_events_timestamp 
-                ON monitor_events (timestamp)
-            """)
-
-            # Create index on server_id for filtering by server
-            self.connection.execute("""
-                CREATE INDEX IF NOT EXISTS idx_monitor_events_server 
-                ON monitor_events (server_id)
-            """)
-
-            # Create index on event_type for filtering by event type
-            self.connection.execute("""
-                CREATE INDEX IF NOT EXISTS idx_monitor_events_type 
-                ON monitor_events (event_type)
-            """)
-
-            # For backward compatibility, create a view that maps to the old table name
+            # Create a backward compatibility view
             self.connection.execute("""
                 CREATE VIEW IF NOT EXISTS access_events AS 
                 SELECT * FROM monitor_events
             """)
 
+            self._initialized = True
             return True
         except Exception as e:
-            print(f"Error initializing DuckDB storage: {e}")
+            print(f"Error initializing storage: {e}")
             return False
 
-    def track_event(
+    async def track_event(
         self,
         event_type: AccessEventType,
         server_id: str,
@@ -102,61 +105,108 @@ class DuckDBAccessMonitor(AccessMonitor):
         success: bool = True,
         error_message: Optional[str] = None,
         metadata: Optional[Dict[str, Any]] = None,
-        raw_request: Optional[Union[Dict[str, Any], str]] = None,
-        raw_response: Optional[Union[Dict[str, Any], str]] = None,
-    ) -> None:
-        """Track an MCP access event"""
-        # Initialize connection if needed
-        if self.connection is None:
-            self.initialize_storage()
+        raw_request: Optional[Union[str, Dict]] = None,
+        raw_response: Optional[Union[str, Dict]] = None,
+    ) -> bool:
+        """
+        Track an access event asynchronously.
 
-        # Use current time if no timestamp provided
-        if timestamp is None:
-            timestamp = datetime.now()
+        Args:
+            event_type: Type of the event
+            server_id: Identifier for the server handling the request
+            resource_id: Identifier for the accessed resource
+            client_id: Identifier for the client making the request
+            timestamp: When the event occurred
+            duration_ms: Duration of the event in milliseconds
+            request_size: Size of the request in bytes
+            response_size: Size of the response in bytes
+            success: Whether the access was successful
+            error_message: Error message if the access failed
+            metadata: Additional metadata for the event
+            raw_request: Raw request data (string or dict)
+            raw_response: Raw response data (string or dict)
 
-        # Convert metadata to JSON string if provided
-        metadata_json = json.dumps(metadata) if metadata else None
+        Returns:
+            bool: True if event was successfully tracked, False otherwise
+        """
+        if not self._initialized:
+            if not await self.initialize_storage():
+                return False
 
-        # Convert raw request and response to JSON strings
-        # If they're already dictionaries, convert them to JSON strings
-        # If they're strings, try to parse as JSON first, if that fails, store as JSON-encoded strings
-        request_json = None
-        if raw_request is not None:
-            if isinstance(raw_request, dict):
-                request_json = json.dumps(raw_request)
-            else:
-                try:
-                    # Try to parse as JSON first
-                    json.loads(raw_request)
-                    request_json = raw_request  # It's already a valid JSON string
-                except json.JSONDecodeError:
-                    # Not valid JSON, encode as a JSON string
-                    request_json = json.dumps(raw_request)
+        async with self._lock:
+            try:
+                # Use current time if timestamp is not provided
+                if timestamp is None:
+                    timestamp = datetime.now()
 
-        response_json = None
-        if raw_response is not None:
-            if isinstance(raw_response, dict):
-                response_json = json.dumps(raw_response)
-            else:
-                try:
-                    # Try to parse as JSON first
-                    json.loads(raw_response)
-                    response_json = raw_response  # It's already a valid JSON string
-                except json.JSONDecodeError:
-                    # Not valid JSON, encode as a JSON string
-                    response_json = json.dumps(raw_response)
+                # Run the tracking operation in a thread
+                return await asyncio.to_thread(
+                    self._track_event_impl,
+                    event_type,
+                    server_id,
+                    resource_id,
+                    client_id,
+                    timestamp,
+                    duration_ms,
+                    request_size,
+                    response_size,
+                    success,
+                    error_message,
+                    metadata,
+                    raw_request,
+                    raw_response,
+                )
+            except Exception as e:
+                print(f"Error tracking event asynchronously: {e}")
+                return False
 
-        # Insert event into database
+    def _track_event_impl(
+        self,
+        event_type: AccessEventType,
+        server_id: str,
+        resource_id: str,
+        client_id: Optional[str],
+        timestamp: datetime,
+        duration_ms: Optional[int],
+        request_size: Optional[int],
+        response_size: Optional[int],
+        success: bool,
+        error_message: Optional[str],
+        metadata: Optional[Dict[str, Any]],
+        raw_request: Optional[Union[str, Dict]],
+        raw_response: Optional[Union[str, Dict]],
+    ) -> bool:
+        """Internal implementation of track_event."""
         try:
+            # Convert metadata to JSON if provided
+            metadata_json = json.dumps(metadata) if metadata else None
+
+            # Process raw request data
+            request_json = None
+            if raw_request is not None:
+                if isinstance(raw_request, dict):
+                    request_json = json.dumps(raw_request)
+                else:
+                    request_json = raw_request
+
+            # Process raw response data
+            response_json = None
+            if raw_response is not None:
+                if isinstance(raw_response, dict):
+                    response_json = json.dumps(raw_response)
+                else:
+                    response_json = raw_response
+
+            # Insert the event into the database
             self.connection.execute(
                 """
                 INSERT INTO monitor_events (
                     event_type, server_id, resource_id, client_id, timestamp,
-                    duration_ms, request_size, response_size,
-                    success, error_message, metadata, raw_request, raw_response
+                    duration_ms, request_size, response_size, success, error_message,
+                    metadata, raw_request, raw_response
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
-                [
+                (
                     event_type.name,
                     server_id,
                     resource_id,
@@ -170,17 +220,22 @@ class DuckDBAccessMonitor(AccessMonitor):
                     metadata_json,
                     request_json,
                     response_json,
-                ],
+                ),
             )
+
+            return True
         except Exception as e:
             print(f"Error tracking event: {e}")
+            return False
 
-    def close(self) -> None:
-        """Close the database connection"""
+    async def close(self) -> None:
+        """Close the database connection asynchronously."""
+        async with self._lock:
+            if self.connection:
+                await asyncio.to_thread(self._close_impl)
+
+    def _close_impl(self) -> None:
+        """Internal implementation of close."""
         if self.connection:
             self.connection.close()
             self.connection = None
-
-    def __del__(self):
-        """Ensure connection is closed when object is deleted"""
-        self.close()

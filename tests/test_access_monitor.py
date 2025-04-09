@@ -8,45 +8,44 @@ from datetime import datetime, timedelta
 
 import pytest
 
-from mcpm.monitor import AccessEventType, DuckDBAccessMonitor, get_monitor
+from mcpm.monitor import (
+    AccessEventType,
+    DuckDBAccessMonitor,
+    get_monitor,
+)
 
 
 @pytest.fixture
 def temp_db_path():
     """Create a temporary database path for testing"""
-    temp_dir = tempfile.gettempdir()
-    db_path = os.path.join(temp_dir, "test_mcpm_monitor.duckdb")
-
-    # Ensure the file doesn't exist
-    if os.path.exists(db_path):
-        os.remove(db_path)
-
-    yield db_path
-
-    # Clean up
-    if os.path.exists(db_path):
-        os.remove(db_path)
+    with tempfile.TemporaryDirectory() as temp_dir:
+        db_path = os.path.join(temp_dir, "test_mcpm_monitor.duckdb")
+        yield db_path  # This will create a new database file for each test
 
 
-def test_initialize_storage(temp_db_path):
+@pytest.mark.asyncio
+async def test_initialize_storage(temp_db_path):
     """Test that the storage can be initialized"""
     monitor = DuckDBAccessMonitor(db_path=temp_db_path)
-    assert monitor.initialize_storage() is True
+    result = await monitor.initialize_storage()
+    assert result is True
 
     # Check that the database file was created
     assert os.path.exists(temp_db_path)
 
     # Close the connection
-    monitor.close()
+    await monitor.close()
 
 
-def test_track_event(temp_db_path):
+@pytest.mark.asyncio
+async def test_track_event(temp_db_path):
     """Test tracking an event"""
     monitor = DuckDBAccessMonitor(db_path=temp_db_path)
+    await monitor.initialize_storage()
 
     # Track a test event
     test_time = datetime.now()
-    monitor.track_event(
+    result = await monitor.track_event(
         event_type=AccessEventType.TOOL_INVOCATION,
         server_id="test-server",
         resource_id="test-tool",
@@ -58,6 +57,7 @@ def test_track_event(temp_db_path):
         success=True,
         metadata={"param1": "value1", "param2": 42},
     )
+    assert result is True
 
     # Query the database directly to check if the event was recorded
     result = monitor.connection.execute("""
@@ -87,18 +87,20 @@ def test_track_event(temp_db_path):
     assert "param2" in event[11]
 
     # Close the connection
-    monitor.close()
+    await monitor.close()
 
 
-def test_multiple_events(temp_db_path):
+@pytest.mark.asyncio
+async def test_multiple_events(temp_db_path):
     """Test tracking multiple events"""
     monitor = DuckDBAccessMonitor(db_path=temp_db_path)
+    await monitor.initialize_storage()
 
     # Track multiple events
     base_time = datetime.now()
 
     # Event 1: Tool invocation
-    monitor.track_event(
+    await monitor.track_event(
         event_type=AccessEventType.TOOL_INVOCATION,
         server_id="server1",
         resource_id="tool1",
@@ -107,7 +109,7 @@ def test_multiple_events(temp_db_path):
     )
 
     # Event 2: Resource access
-    monitor.track_event(
+    await monitor.track_event(
         event_type=AccessEventType.RESOURCE_ACCESS,
         server_id="server1",
         resource_id="resource1",
@@ -116,7 +118,7 @@ def test_multiple_events(temp_db_path):
     )
 
     # Event 3: Prompt execution
-    monitor.track_event(
+    await monitor.track_event(
         event_type=AccessEventType.PROMPT_EXECUTION,
         server_id="server2",
         resource_id="prompt1",
@@ -152,26 +154,29 @@ def test_multiple_events(temp_db_path):
     assert result[2][10] == "Test error"
 
     # Close the connection
-    monitor.close()
+    await monitor.close()
 
 
-def test_get_monitor_utility():
+@pytest.mark.asyncio
+async def test_get_monitor_utility():
     """Test the get_monitor utility function"""
     with tempfile.TemporaryDirectory() as temp_dir:
         # Create a monitor with a custom path
         db_path = os.path.join(temp_dir, "test.duckdb")
-        monitor = get_monitor(db_path)
+        monitor = await get_monitor(db_path)
 
         # Check that the monitor is initialized
         assert monitor.connection is not None
 
         # Close the connection
-        monitor.close()
+        await monitor.close()
 
 
-def test_raw_request_response(temp_db_path):
+@pytest.mark.asyncio
+async def test_raw_request_response(temp_db_path):
     """Test tracking events with raw request and response data"""
     monitor = DuckDBAccessMonitor(db_path=temp_db_path)
+    await monitor.initialize_storage()
 
     # Test with JSON dictionary
     json_dict = {"method": "test", "params": {"param1": "value1"}}
@@ -180,7 +185,7 @@ def test_raw_request_response(temp_db_path):
     json_str = '{"result": "success", "data": 42}'
 
     # Track event with raw request/response
-    monitor.track_event(
+    await monitor.track_event(
         event_type=AccessEventType.PROMPT_EXECUTION,
         server_id="test-server",
         resource_id="test-prompt",
@@ -191,27 +196,34 @@ def test_raw_request_response(temp_db_path):
 
     # Query the database
     result = monitor.connection.execute("""
-        SELECT raw_request, raw_response 
-        FROM monitor_events 
+        SELECT raw_request, raw_response
+        FROM monitor_events
         WHERE server_id = 'test-server'
     """).fetchone()
 
     # Check the raw data was stored correctly
+    assert result is not None
+    assert result[0] is not None
+    assert result[1] is not None
+
+    # Check content
     assert "method" in result[0]  # raw_request
     assert "params" in result[0]
     assert "result" in result[1]  # raw_response
     assert "data" in result[1]
 
     # Close the connection
-    monitor.close()
+    await monitor.close()
 
 
-def test_backward_compatibility(temp_db_path):
+@pytest.mark.asyncio
+async def test_backward_compatibility(temp_db_path):
     """Test that the backward compatibility view works"""
     monitor = DuckDBAccessMonitor(db_path=temp_db_path)
+    await monitor.initialize_storage()
 
     # Track an event
-    monitor.track_event(
+    await monitor.track_event(
         event_type=AccessEventType.TOOL_INVOCATION,
         server_id="test-server",
         resource_id="test-tool",
@@ -228,4 +240,4 @@ def test_backward_compatibility(temp_db_path):
     assert result[0][1] == "TOOL_INVOCATION"
 
     # Close the connection
-    monitor.close()
+    await monitor.close()

@@ -20,7 +20,7 @@ class AccessMonitor(ABC):
     """Abstract interface for monitoring MCP access events"""
 
     @abstractmethod
-    def track_event(
+    async def track_event(
         self,
         event_type: AccessEventType,
         server_id: str,
@@ -35,7 +35,7 @@ class AccessMonitor(ABC):
         metadata: Optional[Dict[str, Any]] = None,
         raw_request: Optional[Union[Dict[str, Any], str]] = None,
         raw_response: Optional[Union[Dict[str, Any], str]] = None,
-    ) -> None:
+    ) -> bool:
         """
         Track an MCP access event
 
@@ -53,11 +53,14 @@ class AccessMonitor(ABC):
             metadata: Additional metadata about the event
             raw_request: Raw request data as JSON object or string
             raw_response: Raw response data as JSON object or string
+
+        Returns:
+            bool: True if event was successfully tracked, False otherwise
         """
         pass
 
     @abstractmethod
-    def initialize_storage(self) -> bool:
+    async def initialize_storage(self) -> bool:
         """
         Initialize the storage backend for tracking events
 
@@ -67,7 +70,7 @@ class AccessMonitor(ABC):
         pass
 
     @abstractmethod
-    def close(self) -> None:
+    async def close(self) -> None:
         """
         Close any open connections to the storage backend
         """

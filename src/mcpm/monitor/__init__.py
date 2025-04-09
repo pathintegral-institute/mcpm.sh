@@ -11,19 +11,19 @@ from .base import AccessEventType, AccessMonitor
 from .duckdb import DuckDBAccessMonitor
 
 
-# Convenience function to get a monitor instance
-def get_monitor(db_path: Optional[str] = None) -> AccessMonitor:
+# Convenience function
+async def get_monitor(db_path: Optional[str] = None) -> AccessMonitor:
     """
     Get a configured access monitor instance
 
     Args:
-        db_path: Optional custom path to the database file
+        db_path: Optional custom path to the database file. Defaults to ~/.mcpm/monitor.duckdb
 
     Returns:
         Configured AccessMonitor instance
     """
     monitor = DuckDBAccessMonitor(db_path) if db_path else DuckDBAccessMonitor()
-    monitor.initialize_storage()
+    await monitor.initialize_storage()
     return monitor
 
 
