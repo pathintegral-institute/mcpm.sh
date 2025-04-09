@@ -93,50 +93,6 @@ jobs:
           git push origin "$BRANCH_NAME" --force  # Push to the new branch
           echo "branch_name=$BRANCH_NAME" >> $GITHUB_ENV
 
-      - name: Create Pull Request
-        if: steps.run_script.outputs.script_success == 'true'
-        uses: actions/github-script@v6
-        id: create_pr
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const { owner, repo } = context.repo;
-            const issue_number = context.issue.number;
-            const issue_body = context.payload.issue.body;
-            const branch_name = process.env.branch_name;
-            
-            // Check if PR already exists
-            const prs = await github.rest.pulls.list({
-              owner,
-              repo,
-              head: `${owner}:${branch_name}`,
-              state: 'open'
-            });
-            
-            let pr_number;
-            let pr_url;
-            
-            if (prs.data.length === 0) {
-              // Create new PR
-              const result = await github.rest.pulls.create({
-                owner,
-                repo,
-                title: `Add server from issue #${issue_number}`,
-                body: `Automated PR from issue #${issue_number}\n\nServer URL: ${issue_body}`,
-                head: branch_name,
-                base: 'main'
-              });
-              
-              pr_number = result.data.number;
-              pr_url = result.data.html_url;
-            } else {
-              // PR exists
-              pr_number = prs.data[0].number;
-              pr_url = prs.data[0].html_url;
-            }
-            
-            return { pr_number, pr_url };
-
       - name: Comment on issue with success
         if: steps.run_script.outputs.script_success == 'true'
         uses: actions/github-script@v6
@@ -145,21 +101,17 @@ jobs:
           script: |
             const issue_number = context.issue.number;
             const repo = context.repo;
-            const pr_result = ${{ steps.create_pr.outputs.result }};
-            const result = JSON.parse(pr_result);
+            const branch_name = process.env.branch_name;
             
-            let body = '';
-            if (result.pr_number) {
-              body = `✅ Processing complete!\n\nA pull request has been created with the server manifest: [PR #${result.pr_number}](${result.pr_url})`;
-            } else {
-              body = `⚠️ Processing completed, but no pull request was created. Please check the action logs for details.`;
-            }
+            // Generate direct PR creation URL
+            const pr_title = encodeURIComponent(`Add server from issue #${issue_number}`);
+            const pr_url = `https://github.com/${repo.owner}/${repo.repo}/compare/main...${branch_name}?quick_pull=1&title=${pr_title}`;
             
             await github.rest.issues.createComment({
               owner: repo.owner,
               repo: repo.repo,
               issue_number: issue_number,
-              body: body
+              body: `✅ Processing complete!\n\nClick here to create the pull request with one click: [Create PR](${pr_url})`
             });
             
       - name: Comment on issue with failure
