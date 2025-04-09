@@ -1,0 +1,80 @@
+{
+  "name": "txyz-search",
+  "description": "A Model Context Protocol (MCP) server for TXYZ Search API. Provides tools for academic and scholarly search, general web search, and smart search.",
+  "display_name": "TXYZ Search",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pathintegral-institute/mcp.science"
+  },
+  "homepage": "https://github.com/pathintegral-institute/mcp.science/tree/main/servers/txyz-search",
+  "author": {
+    "name": "pathintegral-institute"
+  },
+  "license": "MIT",
+  "tags": [
+    "search",
+    "academic",
+    "scholarly",
+    "web search"
+  ],
+  "arguments": {
+    "TXYZ_API_KEY": {
+      "description": "API key from [TXYZ Platform](https://platform.txyz.ai/console)",
+      "required": true,
+      "example": "your-txyz-api-key"
+    }
+  },
+  "tools": [
+    {
+      "name": "txyz_search_scholar",
+      "description": "Academic and scholarly search for papers, articles, and other academic materials",
+      "prompt": "Find recent research papers about quantum computing"
+    },
+    {
+      "name": "txyz_search_web",
+      "description": "General web search functionality for resources from web pages",
+      "prompt": "Find information about the latest smartphone releases"
+    },
+    {
+      "name": "txyz_search_smart",
+      "description": "Automatically selects the best search type based on the query (may include either scholarly materials or web pages)",
+      "prompt": "What are the latest developments in climate change research?"
+    }
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/pathintegral-institute/mcp.science#subdirectory=servers/txyz-search",
+        "mcp-txyz-search" 
+      ],
+      "env": {
+        "TXYZ_API_KEY": "${TXYZ_API_KEY}"
+      },
+      "description": "Run using uvx"
+    }
+  },
+  "examples": [
+    {
+      "title": "Academic Search",
+      "description": "Search for academic papers on a topic",
+      "prompt": "Find recent research papers about quantum computing"
+    },
+    {
+      "title": "Web Search",
+      "description": "Search the web for information",
+      "prompt": "Find information about the latest smartphone releases"
+    },
+    {
+      "title": "Smart Search",
+      "description": "Let the system choose the best search type",
+      "prompt": "What are the latest developments in climate change research?"
+    }
+  ],
+  "categories": [
+    "Web Services"
+  ],
+  "is_official": true
+}

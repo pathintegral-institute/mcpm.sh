@@ -1,0 +1,101 @@
+{
+  "name": "web-fetch",
+  "description": "A Model Context Protocol (MCP) server for fetching webpages including html/pdf/plain text type content.",
+  "display_name": "Web Fetch",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pathintegral-institute/mcp.science"
+  },
+  "homepage": "https://github.com/pathintegral-institute/mcp.science/tree/main/servers/web-fetch",
+  "author": {
+    "name": "pathintegral-institute"
+  },
+  "license": "MIT",
+  "tags": [
+    "web",
+    "fetch",
+    "html",
+    "pdf",
+    "text"
+  ],
+  "arguments": {
+    "user_agent": {
+      "description": "Custom user-agent for fetching web content",
+      "required": false,
+      "example": "Your User-Agent"
+    }
+  },
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/pathintegral-institute/mcp.science#subdirectory=servers/web-fetch",
+        "mcp-web-fetch" 
+      ],
+      "description": "Run using uv (recommended)"
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "ghcr.io/mcp-servers/fetch:latest"
+      ],
+      "description": "Run using Docker"
+    }
+  },
+  "examples": [
+    {
+      "title": "Fetch PDF content",
+      "description": "Fetch PDF content from a URL",
+      "prompt": "fetch web from url: https://proceedings.neurips.cc/paper_files/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf"
+    },
+    {
+      "title": "Fetch HTML content",
+      "description": "Fetch HTML content from a website",
+      "prompt": "fetch web from url: https://example.com"
+    },
+    {
+      "title": "Fetch raw content",
+      "description": "Fetch raw content from a URL",
+      "prompt": "fetch web from url: https://example.com/data.json with raw=true"
+    },
+    {
+      "title": "Fetch with custom user-agent",
+      "description": "Fetch content with a custom user-agent (requires server configuration)",
+      "prompt": "fetch web from url: https://example.com using a mobile browser user-agent"
+    }
+  ],
+  "categories": [
+    "Web Services"
+  ],
+  "tools": [
+    {
+      "name": "fetch-web",
+      "description": "Fetch URL and return content according to its content type. Returns parsed content by default or raw content if specified.",
+      "prompt": "Fetch web from url: https://example.com",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL to fetch",
+            "format": "uri",
+            "minLength": 1
+          },
+          "raw": {
+            "type": "boolean",
+            "description": "Whether to return raw content",
+            "default": false
+          }
+        }
+      },
+      "required": ["url"]
+    }
+  ],
+  "is_official": true
+}

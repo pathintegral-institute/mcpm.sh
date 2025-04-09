@@ -1,0 +1,65 @@
+{
+  "name": "python-code-execution",
+  "display_name": "Python Code Execution",
+  "description": "A secure sandboxed Python code execution environment for MCP (Model-Client-Program) architecture.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pathintegral-institute/mcp.science"
+  },
+  "homepage": "https://github.com/pathintegral-institute/mcp.science/tree/main/servers/python-code-execution",
+  "author": {
+    "name": "pathintegral-institute"
+  },
+  "license": "MIT",
+  "tags": [
+    "python",
+    "code-execution"
+  ],
+  "arguments": {},
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/pathintegral-institute/mcp.science@main#subdirectory=servers/python-code-execution",
+        "mcp-python-code-execution"
+      ],
+      "description": "Run using uv (recommended)"
+    }
+  },
+  "examples": [
+    {
+      "title": "Execute simple Python code",
+      "description": "Run a simple Python calculation",
+      "prompt": "Execute this Python code: `print(\"Hello World\")`"
+    }
+  ],
+  "categories": [
+    "Dev Tools"
+  ],
+  "tools": [
+    {
+      "name": "python_code_execution",
+      "description": "Execute Python code in a secure sandbox with restricted imports and resource limits. Supports visualization with matplotlib and numerical computation with numpy.",
+      "prompt": "Execute this Python code: print('Hello, world!')",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Python code to execute",
+            "minLength": 1
+          },
+          "show_output": {
+            "type": "boolean",
+            "description": "Whether to show the output of the code execution",
+            "default": true
+          }
+        }
+      },
+      "required": ["code"]
+    }
+  ],
+  "is_official": true
+}
