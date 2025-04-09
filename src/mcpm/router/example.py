@@ -7,20 +7,11 @@ import asyncio
 import logging
 from typing import List
 
-from pydantic import BaseModel
-
-from .connection_types import ConnectionDetails
 from .router import MCPRouter
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
-
-
-class ServersConfig(BaseModel):
-    """Configuration model for MCP servers."""
-
-    servers: list[ConnectionDetails]
 
 
 async def main(host: str, port: int, allow_origins: List[str] = None):
@@ -60,12 +51,5 @@ if __name__ == "__main__":
     allow_origins = None
     if args.cors:
         allow_origins = [origin.strip() for origin in args.cors.split(",")]
-
-    # Get the directory of this script
-    # script_dir = pathlib.Path(__file__).parent.absolute()
-
-    # # Set default config file path
-    # if args.config is None:
-    #     args.config = os.path.join(script_dir, "servers.json")
 
     asyncio.run(main(args.host, args.port, allow_origins))

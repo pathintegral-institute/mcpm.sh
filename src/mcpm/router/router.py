@@ -18,9 +18,10 @@ from starlette.requests import Request
 from starlette.routing import Mount, Route
 from starlette.types import AppType
 
+from mcpm.profile.profile_config import ProfileConfigManager
+from mcpm.schemas.server_config import ServerConfig
+
 from .client_connection import ServerConnection
-from .connection_types import ConnectionDetails
-from .profile import ProfileManager
 from .transport import RouterSseTransport
 
 logger = logging.getLogger(__name__)
@@ -47,49 +48,51 @@ class MCPRouter:
         self.resources_mapping: t.Dict[str, t.Dict[str, t.Any]] = {}
         self.resources_templates_mapping: t.Dict[str, t.Dict[str, t.Any]] = {}
         self.aggregated_server = self._create_aggregated_server()
-        self.profile_manager = ProfileManager(self)  # type: ignore
+        self.profile_manager = ProfileConfigManager()
 
-    async def update_servers(self, connections: list[ConnectionDetails]):
+    async def update_servers(self, server_configs: list[ServerConfig]):
         """
         Update the servers based on the configuration file.
 
         Args:
-            connections: List of connection details for the servers
+            server_configs: List of server configurations
         """
-        if not connections:
+        if not server_configs:
             return
 
         current_servers = list(self.server_sessions.keys())
-        new_servers = [connection.id for connection in connections]
+        new_servers = [server_config.name for server_config in server_configs]
 
-        connection_to_add = [connection for connection in connections if connection.id not in current_servers]
-        connection_id_to_remove = [server_id for server_id in current_servers if server_id not in new_servers]
+        server_configs_to_add = [
+            server_config for server_config in server_configs if server_config.name not in current_servers
+        ]
+        server_ids_to_remove = [server_id for server_id in current_servers if server_id not in new_servers]
 
-        if connection_to_add:
-            for connection in connection_to_add:
+        if server_configs_to_add:
+            for server_config in server_configs_to_add:
                 try:
-                    await self.add_server(connection.id, connection)
+                    await self.add_server(server_config.name, server_config)
                 except Exception as e:
                     # if went wrong, skip the update
-                    logger.error(f"Failed to add server {connection.id}: {e}")
+                    logger.error(f"Failed to add server {server_config.name}: {e}")
 
-        if connection_id_to_remove:
-            for server_id in connection_id_to_remove:
+        if server_ids_to_remove:
+            for server_id in server_ids_to_remove:
                 await self.remove_server(server_id)
 
-    async def add_server(self, server_id: str, connection: ConnectionDetails) -> None:
+    async def add_server(self, server_id: str, server_config: ServerConfig) -> None:
         """
         Add a server to the router.
 
         Args:
             server_id: A unique identifier for the server
-            connection: Connection details for the server
+            server_config: Server configuration for the server
         """
         if server_id in self.server_sessions:
             raise ValueError(f"Server with ID {server_id} already exists")
 
         # Create client based on connection type
-        client = ServerConnection(connection)
+        client = ServerConnection(server_config)
 
         # Connect to the server
         await client.wait_for_initialization()
@@ -172,7 +175,8 @@ class MCPRouter:
 
     def _patch_handler_func(self, app: server.Server) -> server.Server:
         def get_active_servers(profile: str) -> list[str]:
-            return self.profile_manager.get_profile_server_ids(profile)
+            servers = self.profile_manager.get_profile(profile) or []
+            return [server.name for server in servers]
 
         def parse_namespaced_id(id_value, splitor):
             """Parse namespaced ID, return server ID and original ID."""
@@ -326,9 +330,10 @@ class MCPRouter:
             allow_origins: List of allowed origins for CORS
         """
         # waiting all servers to be initialized
-        mcp_servers = self.profile_manager.initialize_servers()
-        for mcp_server in mcp_servers:
-            await self.add_server(mcp_server.id, mcp_server)
+        profiles = self.profile_manager.list_profiles()
+        for _, servers in profiles.items():
+            for server_config in servers:
+                await self.add_server(server_config.name, server_config)
 
         # Create notification options
         notification_options = NotificationOptions(
@@ -415,7 +420,7 @@ class MCPRouter:
 
         # Create Starlette app
         app = Starlette(
-            debug=True,  # TODO: debug
+            debug=False,
             middleware=middleware,
             routes=[
                 Route("/sse", endpoint=handle_sse),
