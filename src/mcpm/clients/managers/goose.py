@@ -6,8 +6,10 @@ import logging
 import os
 from typing import Any, Dict, Optional
 
+from pydantic import TypeAdapter
+
 from mcpm.clients.base import YAMLClientManager
-from mcpm.utils.server_config import ServerConfig
+from mcpm.schemas.server_config import ServerConfig, STDIOServerConfig
 
 logger = logging.getLogger(__name__)
 
@@ -59,9 +61,7 @@ class GooseClientManager(YAMLClientManager):
         Returns:
             Dict containing the empty configuration structure
         """
-        return {
-            "extensions": {}
-        }
+        return {"extensions": {}}
 
     def _get_servers_section(self, config: Dict[str, Any]) -> Dict[str, Any]:
         """Get the section of the config that contains server definitions
@@ -97,7 +97,9 @@ class GooseClientManager(YAMLClientManager):
         """
         return list(self._get_servers_section(config).keys())
 
-    def _add_server_to_config(self, config: Dict[str, Any], server_name: str, server_config: Dict[str, Any]) -> Dict[str, Any]:
+    def _add_server_to_config(
+        self, config: Dict[str, Any], server_name: str, server_config: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """Add or update a server in the config
 
         Args:
@@ -160,22 +162,29 @@ class GooseClientManager(YAMLClientManager):
         Returns:
             Dict containing client-specific configuration
         """
-        # Base result containing essential information
-        result = {
-            "cmd": server_config.command,
-            "args": server_config.args,
-            "name": server_config.display_name or server_config.name,
-            "enabled": True,
-            "description": server_config.description or None,
-            "type": "stdio"
-        }
+        # Base result containing only essential execution information
+        if isinstance(server_config, STDIOServerConfig):
+            result = {
+                "cmd": server_config.command,
+                "args": server_config.args,
+                "type": "stdio",
+            }
 
-        # Add filtered environment variables if present
-        non_empty_env = server_config.get_filtered_env_vars(os.environ)
-        if non_empty_env:
-            result["envs"] = non_empty_env
+            # Add filtered environment variables if present
+            non_empty_env = server_config.get_filtered_env_vars(os.environ)
+            if non_empty_env:
+                result["envs"] = non_empty_env
         else:
-            result["envs"] = {}
+            result = server_config.to_dict()
+            result["type"] = "sse"
+
+        result.update(
+            {
+                "name": server_config.name,
+                "enabled": True,
+                "description": server_config.name,
+            }
+        )
 
         return result
 
@@ -189,19 +198,8 @@ class GooseClientManager(YAMLClientManager):
         Returns:
             ServerConfig object
         """
-        # Create a dictionary that ServerConfig.from_dict can work with
         server_data = {
             "name": server_name,
-            "command": client_config.get("cmd", ""),
-            "args": client_config.get("args", [])
         }
-
-        # Add display name if present
-        if "name" in client_config:
-            server_data["display_name"] = client_config["name"]
-
-        # Add environment variables if present
-        if "envs" in client_config:
-            server_data["env"] = client_config["envs"]
-
-        return ServerConfig.from_dict(server_data)
+        server_data.update(client_config)
+        return TypeAdapter(ServerConfig).validate_python(server_data)
