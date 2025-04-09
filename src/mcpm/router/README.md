@@ -15,63 +15,38 @@ The MCPM Router is a module that allows you to aggregate multiple MCP servers (b
 
 ```python
 import asyncio
-from mcpm.router import MCPRouter, ConnectionDetails, ConnectionType
+from mcpm.router import MCPRouter
+from mcpm.schema.server_config import STDIOServerConfig, SSEServerConfig
 
 async def main():
     # Create a router
     router = MCPRouter()
-    
+
     # Add a STDIO server
     await router.add_server(
         "example1",
-        ConnectionDetails(
-            type=ConnectionType.STDIO,
+        STDIOServerConfig(
             command="python",
             args=["-m", "mcp.examples.simple_server"]
         )
     )
-    
+
     # Add an SSE server
     await router.add_server(
         "example2",
-        ConnectionDetails(
-            type=ConnectionType.SSE,
-            url="http://localhost:3000"
+        SSEServerConfig(
+            url="http://localhost:3000/sse"
         )
     )
-    
+
     # Start the SSE server
     await router.start_sse_server(host="localhost", port=8080)
 
 if __name__ == "__main__":
     asyncio.run(main())
 ```
-
-### Using Configuration File
-
-You can also use a configuration file to specify the servers:
-
-```json
-[
-    {
-        "id": "example1",
-        "type": "stdio",
-        "command": "python",
-        "args": ["-m", "mcp.examples.simple_server"]
-    },
-    {
-        "id": "example2",
-        "type": "sse",
-        "url": "http://localhost:3000"
-    }
-]
-```
-
-And then run the example script:
-
-```bash
-python -m mcpm.router.example --config servers.json --host localhost --port 8080
-```
+### Configuration File
+by default we use the configure from file `~/.config/mcpm/profile.json` to manage the servers.
 
 ## Implementation Details
 
@@ -87,8 +62,8 @@ The router works by:
 
 The router uses the following namespacing conventions:
 
-- Tools: `{server_id}.{tool_name}`
-- Prompts: `{server_id}.{prompt_name}`
-- Resources: `{server_id}:{resource_uri}`
+- Tools: `{server_name}_t_{tool_name}`
+- Prompts: `{server_name}_p_{prompt_name}`
+- Resources: `{server_name}:{resource_uri}`
 
-This allows the router to route requests to the appropriate server based on the namespaced identifier. 
+This allows the router to route requests to the appropriate server based on the namespaced identifier.
