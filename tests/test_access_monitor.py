@@ -8,14 +8,14 @@ from datetime import datetime, timedelta
 
 import pytest
 
-from mcpm.access.monitor import AccessEventType, DuckDBAccessMonitor, get_monitor
+from mcpm.monitor import AccessEventType, DuckDBAccessMonitor, get_monitor
 
 
 @pytest.fixture
 def temp_db_path():
     """Create a temporary database path for testing"""
     temp_dir = tempfile.gettempdir()
-    db_path = os.path.join(temp_dir, "test_mcpm_access.duckdb")
+    db_path = os.path.join(temp_dir, "test_mcpm_monitor.duckdb")
 
     # Ensure the file doesn't exist
     if os.path.exists(db_path):
@@ -61,7 +61,7 @@ def test_track_event(temp_db_path):
 
     # Query the database directly to check if the event was recorded
     result = monitor.connection.execute("""
-        SELECT * FROM access_events 
+        SELECT * FROM monitor_events 
         WHERE server_id = 'test-server' 
         AND resource_id = 'test-tool'
     """).fetchall()
@@ -127,7 +127,7 @@ def test_multiple_events(temp_db_path):
 
     # Query all events
     result = monitor.connection.execute("""
-        SELECT * FROM access_events
+        SELECT * FROM monitor_events
         ORDER BY timestamp
     """).fetchall()
 
@@ -192,7 +192,7 @@ def test_raw_request_response(temp_db_path):
     # Query the database
     result = monitor.connection.execute("""
         SELECT raw_request, raw_response 
-        FROM access_events 
+        FROM monitor_events 
         WHERE server_id = 'test-server'
     """).fetchone()
 
@@ -201,6 +201,31 @@ def test_raw_request_response(temp_db_path):
     assert "params" in result[0]
     assert "result" in result[1]  # raw_response
     assert "data" in result[1]
+
+    # Close the connection
+    monitor.close()
+
+
+def test_backward_compatibility(temp_db_path):
+    """Test that the backward compatibility view works"""
+    monitor = DuckDBAccessMonitor(db_path=temp_db_path)
+
+    # Track an event
+    monitor.track_event(
+        event_type=AccessEventType.TOOL_INVOCATION,
+        server_id="test-server",
+        resource_id="test-tool",
+        success=True,
+    )
+
+    # Query using the old table name via the view
+    result = monitor.connection.execute("""
+        SELECT * FROM access_events
+        WHERE server_id = 'test-server'
+    """).fetchall()
+
+    assert len(result) == 1
+    assert result[0][1] == "TOOL_INVOCATION"
 
     # Close the connection
     monitor.close()
