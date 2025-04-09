@@ -1,0 +1,69 @@
+{
+  "properties": {
+    "display_name": "Brave Search",
+    "repository": "https://github.com/modelcontextprotocol/servers/tree/main/src/brave-search",
+    "license": "MIT License",
+    "tags": [
+      "search",
+      "web",
+      "local"
+    ],
+    "arguments": {
+      "BRAVE_API_KEY": {
+        "description": "API key for accessing the Brave Search API",
+        "required": true,
+        "example": "<Get API key from https://api.search.brave.com/app/keys>"
+      }
+    },
+    "installations": {
+      "docker": {
+        "type": "docker",
+        "command": "docker run -i --rm -e BRAVE_API_KEY mcp/brave-search",
+        "args": [
+          "-e",
+          "BRAVE_API_KEY=${BRAVE_API_KEY}"
+        ],
+        "description": "Run the Brave Search server via Docker"
+      },
+      "npm": {
+        "type": "npm",
+        "command": "npx",
+        "args": [
+          "-y",
+          "@modelcontextprotocol/server-brave-search"
+        ],
+        "env": {
+          "BRAVE_API_KEY": "${BRAVE_API_KEY}"
+        },
+        "description": "Run the Brave Search server via NPX"
+      }
+    },
+    "examples": [
+      {
+        "title": "Web Search Example",
+        "description": "Search the web for 'machine learning'",
+        "prompt": "brave_web_search query='machine learning'"
+      },
+      {
+        "title": "Local Search Example",
+        "description": "Search for restaurants near you",
+        "prompt": "brave_local_search query='restaurants'"
+      }
+    ]
+  },
+  "name": "servers",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/modelcontextprotocol/servers/blob/main/src/brave-search"
+  },
+  "homepage": "https://github.com/modelcontextprotocol/servers/blob/main/src/brave-search",
+  "author": {
+    "name": "modelcontextprotocol"
+  },
+  "description": "An MCP server implementation that integrates the Brave Search API, providing both web and local search capabilities.",
+  "categories": [
+    "Web Services"
+  ],
+  "installations": {},
+  "is_official": true
+}
