@@ -1,9 +1,14 @@
 from dataclasses import dataclass
-from typing import List, Dict, Any, Optional, override
-from enum import Enum, auto
-import boto3
+from typing import List, Dict, Any, Optional
+from enum import Enum
+import os
+import json
 import asyncio
+from openai import OpenAI
 from loguru import logger
+
+import dotenv
+dotenv.load_dotenv()
 
 
 class MCPCategory(Enum):
@@ -22,12 +27,8 @@ class MCPCategory(Enum):
     MCP_TOOLS = "MCP Tools"
 
 
-class LLMProvider:
-    BEDROCK = "bedrock"
-
-
 class LLMModel:
-    CLAUDE_3_7_SONNET = "us.anthropic.claude-3-7-sonnet-20250219-v1:0"
+    CLAUDE_3_SONNET = "anthropic/claude-3-sonnet"
 
 
 @dataclass
@@ -44,43 +45,15 @@ class CategorizationAgentBuildPromptTemplateArgs:
     include_examples: bool = False
 
 
-# Tool configuration for categorization
-CATEGORIZATION_TOOL_CONFIG = {
-    "tools": [
-        {
-            "toolSpec": {
-                "name": "categorize_server",
-                "description": "Categorize an MCP server into exactly one category",
-                "inputSchema": {
-                    "json": {
-                        "type": "object",
-                        "properties": {
-                            "category": {
-                                "type": "string",
-                                "enum": [cat.value for cat in MCPCategory],
-                                "description": "Selected category for the server"
-                            },
-                            "explanation": {
-                                "type": "string",
-                                "description": "Brief explanation of why this category was chosen"
-                            }
-                        },
-                        "required": ["category", "explanation"]
-                    }
-                }
-            }
-        }
-    ],
-    "toolChoice": {"tool": {"name": "categorize_server"}}
-}
-
-
 class CategorizationAgent:
     """Agent that categorizes MCP servers into simplified categories"""
 
     def __init__(self):
-        """Initialize the agent with the Bedrock client"""
-        self.client = boto3.client("bedrock-runtime")
+        """Initialize the agent with the OpenAI client"""
+        self.client = OpenAI(
+            base_url="https://openrouter.ai/api/v1",
+            api_key=os.environ.get("OPENROUTER_API_KEY"),
+        )
 
     def build_system_prompt(self) -> str:
         """Build the system prompt for the categorization agent"""
@@ -112,9 +85,10 @@ Tools for transforming data into insights through analysis and visual presentati
 ## 12. Professional Apps
 Specialized tools addressing industry-specific needs or use cases with tailored functionality for sectors like healthcare, travel, and media, including healthcare applications (Dicom), travel & transport tools (Travel Planner, NS Travel Information), media & entertainment platforms (TMDB), web development solutions (Webflow, Ghost), and design tools (Figma).
 ## 13. MCP Tools
-Meta-tools for managing, discovering, and enhancing the MCP ecosystem itself, including server management platforms (MCP Create, MCP Installer), server discovery systems (MCP Compass), connection tools (mcp-proxy), unified interfaces (fastn.ai), and deployment solutions (ChatMCP).Please categorize the following MCP server:\n\n
+Meta-tools for managing, discovering, and enhancing the MCP ecosystem itself, including server management platforms (MCP Create, MCP Installer), server discovery systems (MCP Compass), connection tools (mcp-proxy), unified interfaces (fastn.ai), and deployment solutions (ChatMCP).
 
 Choose the MOST appropriate category based on the server's primary function.
+Not that the server itself is an MCP server, so only select MCP Tools when the server is a meta-tool that manages other MCP servers.
 Only select ONE category per server."""
         )
 
@@ -151,55 +125,68 @@ Only select ONE category per server."""
                 include_examples=include_examples
             )
 
-            # Create the messages for the Bedrock API
-            messages = [
-                {"role": "user", "content": [
-                    {"text": user_prompt},
-                    {"cachePoint": {"type": "default"}}  # Cache this prompt
-                ]}
-            ]
+            # Define the function schema
+            function_schema = {
+                "name": "categorize_server",
+                "description": "Categorize an MCP server into exactly one category",
+                "parameters": {
+                    "type": "object",
+                    "required": ["category", "explanation"],
+                    "properties": {
+                        "category": {
+                            "type": "string",
+                            "enum": [cat.value for cat in MCPCategory],
+                            "description": "Selected category for the server"
+                        },
+                        "explanation": {
+                            "type": "string",
+                            "description": "Brief explanation of why this category was chosen"
+                        }
+                    }
+                }
+            }
 
-            # Call Bedrock API with the categorization tool
+            # Call OpenAI API with the categorization tool
             logger.info(f"Categorizing server: {server_name}")
-            response = self.client.converse(
-                modelId=LLMModel.CLAUDE_3_7_SONNET,
-                system=[{"text": system_prompt}],
-                messages=messages,
-                toolConfig=CATEGORIZATION_TOOL_CONFIG,
-                inferenceConfig={"temperature": 0.0},
+            completion = self.client.chat.completions.create(
+                extra_headers={
+                    "HTTP-Referer": os.environ.get("SITE_URL", "https://mcpm.sh"),
+                    "X-Title": "MCPM",
+                },
+                model=LLMModel.CLAUDE_3_SONNET,
+                messages=[
+                    {
+                        "role": "system",
+                        "content": system_prompt
+                    },
+                    {
+                        "role": "user",
+                        "content": user_prompt
+                    }
+                ],
+                tools=[{"type": "function", "function": function_schema}],
+                tool_choice={"type": "function", "function": {
+                    "name": "categorize_server"}}
             )
 
             # Process the tool response
-            if response.get("stopReason") == "tool_use":
-                content_list = response["output"]["message"]["content"]
+            if completion.choices[0].message.tool_calls:
+                tool_call = completion.choices[0].message.tool_calls[0]
+                tool_args = json.loads(tool_call.function.arguments)
 
-                for content_item in content_list:
-                    if "toolUse" in content_item:
-                        tool_use = content_item["toolUse"]
-                        if tool_use["name"] == "categorize_server":
-                            # Extract the categorization data
-                            tool_input = tool_use.get("input", {})
-                            result = {
-                                "category": tool_input.get("category", "Unknown"),
-                                "explanation": tool_input.get("explanation", "No explanation provided.")
-                            }
-                            logger.info(
-                                f"Categorization result: {result['category']} - {result['explanation'][:30]}...")
-                            return result
-
-                logger.error(
-                    "No categorization tool use found in the response")
+                result = {
+                    "category": tool_args.get("category", "Unknown"),
+                    "explanation": tool_args.get("explanation", "No explanation provided.")
+                }
+                logger.info(
+                    f"Categorization result: {result['category']} - {result['explanation'][:30]}...")
+                return result
+            else:
+                logger.error("No tool calls found in the response")
                 return {
                     "server_name": server_name,
                     "category": "Unknown",
                     "explanation": "Failed to categorize: No tool use in response."
-                }
-            else:
-                logger.error(f"No tool use found in the response: {response}")
-                return {
-                    "server_name": server_name,
-                    "category": "Unknown",
-                    "explanation": "Failed to categorize: Model did not use the categorization tool."
                 }
 
         except Exception as e:

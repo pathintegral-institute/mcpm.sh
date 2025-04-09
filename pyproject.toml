@@ -29,6 +29,8 @@ dependencies = [
     "boto3>=1.37.25",
     "loguru>=0.7.3",
     "ruamel-yaml>=0.18.10",
+    "ipykernel>=6.29.5",
+    "openai>=1.72.0",
     "aiohttp>=3.11.16",
     "watchfiles>=1.0.4",
 ]
