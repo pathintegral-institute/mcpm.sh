@@ -1,0 +1,145 @@
+{
+  "name": "ssh-exec",
+  "description": "A Model Context Protocol (MCP) server for executing command-line operations on remote servers via SSH.",
+  "display_name": "SSH Execution",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pathintegral-institute/mcp.science"
+  },
+  "homepage": "https://github.com/pathintegral-institute/mcp.science/tree/main/servers/ssh-exec",
+  "author": {
+    "name": "pathintegral-institute"
+  },
+  "license": "MIT",
+  "tags": [
+    "ssh",
+    "command execution",
+    "remote systems"
+  ],
+  "arguments": {
+    "SSH_HOST": {
+      "description": "SSH host to connect to",
+      "required": true,
+      "example": "your-server.com"
+    },
+    "SSH_PORT": {
+      "description": "SSH port",
+      "required": false,
+      "example": "22"
+    },
+    "SSH_USERNAME": {
+      "description": "SSH username",
+      "required": true,
+      "example": "your_username"
+    },
+    "SSH_PRIVATE_KEY": {
+      "description": "SSH private key content (not path)",
+      "required": false,
+      "example": "$(cat ~/.ssh/id_rsa)"
+    },
+    "SSH_PASSWORD": {
+      "description": "SSH password",
+      "required": false,
+      "example": "[NOT GIVEN]"
+    },
+    "SSH_ALLOWED_COMMANDS": {
+      "description": "Comma-separated list of commands that are allowed to be executed",
+      "required": false,
+      "example": "ls,ps,cat"
+    },
+    "SSH_ALLOWED_PATHS": {
+      "description": "Comma-separated list of paths that are allowed for command execution",
+      "required": false,
+      "example": "/tmp,/home"
+    },
+    "SSH_COMMANDS_BLACKLIST": {
+      "description": "Comma-separated list of commands that are not allowed",
+      "required": false,
+      "example": "rm,mv,dd,mkfs,fdisk,format"
+    },
+    "SSH_ARGUMENTS_BLACKLIST": {
+      "description": "Comma-separated list of arguments that are not allowed",
+      "required": false,
+      "example": "-rf,-fr,--force"
+    }
+  },
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/pathintegral-institute/mcp.science#subdirectory=servers/ssh-exec",
+        "mcp-ssh-exec"
+      ],
+      "env": {
+        "SSH_HOST": "your-server.com",
+        "SSH_PORT": "22",
+        "SSH_USERNAME": "your_username",
+        "SSH_PRIVATE_KEY": "$(cat ~/.ssh/id_rsa)",
+        "SSH_ALLOWED_COMMANDS": "ls,ps,cat",
+        "SSH_ALLOWED_PATHS": "/tmp,/home",
+        "SSH_COMMANDS_BLACKLIST": "rm,mv,dd,mkfs,fdisk,format",
+        "SSH_ARGUMENTS_BLACKLIST": "-rf,-fr,--force"
+      },
+      "description": "Run server using uv"
+    }
+  },
+  "examples": [
+    {
+      "title": "Execute a command",
+      "description": "Execute a command on the remote system",
+      "prompt": "Execute 'ls -la /tmp' on the remote server"
+    }
+  ],
+  "categories": [
+    "System Tools"
+  ],
+  "tools": [
+    {
+      "name": "ssh_exec",
+      "description": "Execute a command on the remote system",
+      "inputSchema": {
+        "properties": {
+          "command": {
+            "description": "Command for SSH server to execute",
+            "title": "Command",
+            "type": "string"
+          },
+          "arguments": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Arguments to pass to the command",
+            "title": "Arguments"
+          },
+          "timeout": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Timeout in seconds for command execution",
+            "title": "Timeout"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "title": "ssh_execArguments",
+        "type": "object"
+      }
+    }
+  ],
+  "is_official": true
+}

@@ -6,8 +6,10 @@ import logging
 import os
 from typing import Any, Dict, List, Optional
 
+from pydantic import TypeAdapter
+
 from mcpm.clients.base import YAMLClientManager
-from mcpm.utils.server_config import ServerConfig
+from mcpm.schemas.server_config import ServerConfig, STDIOServerConfig
 
 logger = logging.getLogger(__name__)
 
@@ -69,7 +71,7 @@ class ContinueManager(YAMLClientManager):
             "prompts": [],
             "context": [],
             "mcpServers": [],
-            "data": []
+            "data": [],
         }
 
     def _get_servers_section(self, config: Dict[str, Any]) -> List[Dict[str, Any]]:
@@ -107,9 +109,11 @@ class ContinueManager(YAMLClientManager):
         Returns:
             List of server names
         """
-        return [server.get("name") for server in self._get_servers_section(config) if server.get("name") is not None] # type: ignore
+        return [server.get("name") for server in self._get_servers_section(config) if server.get("name") is not None]  # type: ignore
 
-    def _add_server_to_config(self, config: Dict[str, Any], server_name: str, server_config: Dict[str, Any]) -> Dict[str, Any]:
+    def _add_server_to_config(
+        self, config: Dict[str, Any], server_name: str, server_config: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """Add or update a server in the config
 
         Args:
@@ -168,17 +172,19 @@ class ContinueManager(YAMLClientManager):
         Returns:
             Dict containing client-specific configuration
         """
-        # Base result containing essential information
-        result = {
-            "name": server_config.name,
-            "command": server_config.command,
-            "args": server_config.args,
-        }
+        # Base result containing only essential execution information
+        if isinstance(server_config, STDIOServerConfig):
+            result = {
+                "command": server_config.command,
+                "args": server_config.args,
+            }
 
-        # Add filtered environment variables if present
-        non_empty_env = server_config.get_filtered_env_vars(os.environ)
-        if non_empty_env:
-            result["env"] = non_empty_env
+            # Add filtered environment variables if present
+            non_empty_env = server_config.get_filtered_env_vars(os.environ)
+            if non_empty_env:
+                result["env"] = non_empty_env
+        else:
+            result = server_config.to_dict()
 
         return result
 
@@ -192,15 +198,8 @@ class ContinueManager(YAMLClientManager):
         Returns:
             ServerConfig object
         """
-        # Create a dictionary that ServerConfig.from_dict can work with
         server_data = {
             "name": server_name,
-            "command": client_config.get("command", ""),
-            "args": client_config.get("args", []),
         }
-
-        # Add environment variables if present
-        if "env" in client_config:
-            server_data["env"] = client_config["env"]
-
-        return ServerConfig.from_dict(server_data)
+        server_data.update(client_config)
+        return TypeAdapter(ServerConfig).validate_python(server_data)

@@ -39,7 +39,7 @@ class ClientRegistry:
         "continue": ContinueManager(),
         "goose": GooseClientManager(),
         "5ire": FiveireManager(),
-        "roo-code": RooCodeManager()
+        "roo-code": RooCodeManager(),
     }
 
     @classmethod
@@ -139,7 +139,7 @@ class ClientRegistry:
         return cls.get_client_manager(active_client)
 
     @classmethod
-    def get_recommended_client(cls) -> str:
+    def get_recommended_client(cls) -> str | None:
         """
         Get the recommended client based on installation status
 

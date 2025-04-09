@@ -4,8 +4,10 @@ from typing import ClassVar, Dict, List, Optional
 
 from pydantic import BaseModel, Field, model_validator
 
+from mcpm.schemas.server_config import ServerConfig, STDIOServerConfig
 
-class ServerConfig(BaseModel):
+
+class FullServerConfig(BaseModel):
     """Standard server configuration object that is client-agnostic
 
     This class provides a common representation of server configurations
@@ -37,21 +39,21 @@ class ServerConfig(BaseModel):
     }
 
     @model_validator(mode="after")
-    def set_display_name_default(self) -> "ServerConfig":
+    def set_display_name_default(self) -> "FullServerConfig":
         """Set default display_name to name if not provided"""
         if self.display_name is None:
             self.display_name = self.name
         return self
 
     @classmethod
-    def from_dict(cls, data: Dict) -> "ServerConfig":
-        """Create a ServerConfig from a dictionary
+    def from_dict(cls, data: Dict) -> "FullServerConfig":
+        """Create a FullServerConfig from a dictionary
 
         Args:
             data: Dictionary containing server configuration
 
         Returns:
-            ServerConfig object
+            FullServerConfig object
         """
         # This is now a simple wrapper around the Pydantic model constructor
         # We keep it for backwards compatibility
@@ -67,40 +69,6 @@ class ServerConfig(BaseModel):
         # We keep it for backwards compatibility
         return self.model_dump(exclude_none=True)
 
-    def get_filtered_env_vars(self, env: Dict[str, str]) -> Dict[str, str]:
-        """Get filtered environment variables with empty values removed
-
-        This is a utility for clients to filter out empty environment
-        variables, regardless of client-specific formatting.
-
-        Args:
-            env: Dictionary of environment variables to use for resolving
-                 ${VAR_NAME} references.
-
-        Returns:
-            Dictionary of non-empty environment variables
-        """
-        if not self.env:
-            return {}
-
-        # Use provided environment without falling back to os.environ
-        environment = env
-
-        # Filter out empty environment variables
-        non_empty_env = {}
-        for key, value in self.env.items():
-            # For environment variable references like ${VAR_NAME}, check if the variable exists
-            # and has a non-empty value. If it doesn't exist or is empty, exclude it.
-            if value is not None and isinstance(value, str):
-                if value.startswith("${") and value.endswith("}"):
-                    # Extract the variable name from ${VAR_NAME}
-                    env_var_name = value[2:-1]
-                    env_value = environment.get(env_var_name, "")
-                    # Only include if the variable has a value in the environment
-                    if env_value.strip() != "":
-                        non_empty_env[key] = value
-                # For regular values, only include if they're not empty
-                elif value.strip() != "":
-                    non_empty_env[key] = value
-
-        return non_empty_env
+    def to_server_config(self) -> ServerConfig:
+        """Convert FullServerConfig to a common server configuration format"""
+        return STDIOServerConfig(name=self.name, command=self.command, args=self.args, env=self.env)

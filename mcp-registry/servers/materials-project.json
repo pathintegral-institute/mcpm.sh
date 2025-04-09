@@ -1,0 +1,228 @@
+{
+  "name": "materials-project",
+  "description": "A MCP (Model Context Protocol) server that interacts with the Materials Project database, allowing for material search, structure visualization, and manipulation.",
+  "display_name": "Materials Project",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pathintegral-institute/mcp.science"
+  },
+  "homepage": "https://github.com/pathintegral-institute/mcp.science/tree/main/servers/materials-project",
+  "author": {
+    "name": "pathintegral-institute"
+  },
+  "license": "MIT",
+  "tags": [
+    "materials",
+    "science"
+  ],
+  "arguments": {
+    "MP_API_KEY": {
+      "description": "API key from the Materials Project",
+      "required": true,
+      "example": "your_materials_project_api_key_here"
+    }
+  },
+  "tools": [
+    {
+      "name": "search_materials_by_formula",
+      "description": "Search for materials in the Materials Project database by chemical formula. Returns a list of text descriptions for structures matching the given formula.",
+      "prompt": "Find materials with the chemical formula Fe2O3",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chemical_formula": {
+            "type": "string",
+            "description": "The chemical formula of the material"
+          }
+        }
+      },
+      "required": ["chemical_formula"]
+    },
+    {
+      "name": "select_material_by_id",
+      "description": "Select a specific material by its material ID. Returns a list of TextContent objects containing the structure description and URI.",
+      "prompt": "Get details for material mp-149",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "material_id": {
+            "type": "string",
+            "description": "The ID of the material"
+          }
+        }
+      },
+      "required": ["material_id"]
+    },
+    {
+      "name": "get_structure_data",
+      "description": "Retrieve structure data in specified format (CIF or POSCAR). Returns the structure file content as a string.",
+      "prompt": "Get the CIF file for silicon",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "structure_uri": {
+            "type": "string",
+            "description": "The URI of the structure"
+          },
+          "format": {
+            "type": "string",
+            "description": "Output format, either 'cif' or 'poscar'",
+            "enum": ["cif", "poscar"],
+            "default": "poscar"
+          }
+        }
+      },
+      "required": ["structure_uri"]
+    },
+    {
+      "name": "create_structure_from_poscar",
+      "description": "Create a new structure from a POSCAR string. Returns information about the newly created structure, including its URI.",
+      "prompt": "Create a structure from this POSCAR data",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "poscar_str": {
+            "type": "string",
+            "description": "The POSCAR string of the structure"
+          }
+        }
+      },
+      "required": ["poscar_str"]
+    },
+    {
+      "name": "plot_structure",
+      "description": "Visualize the crystal structure. Returns a PNG image of the structure and a Plotly JSON representation.",
+      "prompt": "Show me the crystal structure of silicon",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "structure_uri": {
+            "type": "string",
+            "description": "The URI of the structure"
+          },
+          "duplication": {
+            "type": "array",
+            "description": "The duplication of the structure along a, b, c axes",
+            "items": {
+              "type": "integer"
+            },
+            "default": [1, 1, 1]
+          }
+        }
+      },
+      "required": ["structure_uri"]
+    },
+    {
+      "name": "build_supercell",
+      "description": "Create a supercell from a bulk structure. Returns information about the newly created supercell structure.",
+      "prompt": "Create a 2x2x2 supercell of graphite",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "bulk_structure_uri": {
+            "type": "string",
+            "description": "The URI of the bulk structure"
+          },
+          "supercell_parameters": {
+            "type": "object",
+            "description": "Parameters defining the supercell",
+            "properties": {
+              "scaling_matrix": {
+                "type": "array",
+                "description": "3x3 matrix or list of 3 integers for scaling",
+                "items": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      },
+      "required": ["bulk_structure_uri", "supercell_parameters"]
+    },
+    {
+      "name": "moire_homobilayer",
+      "description": "Generate a moiré superstructure of a 2D homobilayer. Returns information about the newly created moiré structure.",
+      "prompt": "Create a moiré structure of graphene with 5 degree twist",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "bulk_structure_uri": {
+            "type": "string",
+            "description": "The URI of the bulk structure"
+          },
+          "interlayer_spacing": {
+            "type": "number",
+            "description": "The interlayer spacing between the two layers in Ångström"
+          },
+          "max_num_atoms": {
+            "type": "integer",
+            "description": "Maximum number of atoms in the moiré superstructure",
+            "default": 10
+          },
+          "twist_angle": {
+            "type": "number",
+            "description": "Twist angle in degrees",
+            "default": 0.0
+          },
+          "vacuum_thickness": {
+            "type": "number",
+            "description": "Vacuum thickness in z-direction in Ångström",
+            "default": 15.0
+          }
+        }
+      },
+      "required": ["bulk_structure_uri", "interlayer_spacing"]
+    }
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uv",
+      "args": [
+        "--from",
+        "git+https://github.com/pathintegral-institute/mcp.science#subdirectory=servers/materials-project",
+        "mcp-materials-project"
+      ],
+      "env": {
+        "MP_API_KEY": "your_materials_project_api_key_here"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Search for materials",
+      "description": "Search for materials by chemical formula",
+      "prompt": "Find materials with the chemical formula Fe2O3"
+    },
+    {
+      "title": "Get material by ID",
+      "description": "Select a specific material by its ID",
+      "prompt": "Get details for material mp-149"
+    },
+    {
+      "title": "Download structure file",
+      "description": "Get structure data in CIF format",
+      "prompt": "Download the CIF file for mp-149"
+    },
+    {
+      "title": "Visualize crystal structure",
+      "description": "Plot the crystal structure of a material",
+      "prompt": "Show me the crystal structure of silicon"
+    },
+    {
+      "title": "Create a supercell",
+      "description": "Build a supercell from a bulk structure",
+      "prompt": "Create a 2x2x2 supercell of graphite"
+    },
+    {
+      "title": "Create moiré structure",
+      "description": "Generate a moiré superstructure",
+      "prompt": "Create a moiré structure of graphene with 3.4Å interlayer spacing and 5° twist angle"
+    }
+  ],
+  "categories": [
+    "MCP Tools"
+  ],
+  "is_official": true
+}
