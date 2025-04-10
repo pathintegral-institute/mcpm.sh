@@ -1,19 +1,21 @@
 """Generate MCP server manifests from GitHub repositories."""
 
+import asyncio
+import json
+import logging
 import os
 import sys
-from typing import Any, Dict, List, Optional
-
-import json
-import asyncio
-import requests
-from openai import OpenAI
-from loguru import logger
-from utils import McpClient
-from categorization import CategorizationAgent
+from typing import Any, Dict, Optional
 
 import dotenv
+import requests
+from categorization import CategorizationAgent
+from openai import OpenAI
+from utils import McpClient
+
 dotenv.load_dotenv()
+
+logger = logging.getLogger(__name__)
 
 
 class ManifestGenerator:
@@ -78,10 +80,7 @@ class ManifestGenerator:
                     continue
 
                 # Skip badges, links, and empty lines
-                if ("![" in line or
-                    line.strip().startswith("[") or
-                    line.strip() == "" or
-                        line.strip().startswith(">")):
+                if "![" in line or line.strip().startswith("[") or line.strip() == "" or line.strip().startswith(">"):
                     continue
 
                 # Found a potential description line
@@ -95,7 +94,7 @@ class ManifestGenerator:
                 for heading, content in title_content.items():
                     # Look for the repo name in the heading
                     if heading:
-                        repo_name = repo_url.strip('/').split('/')[-1].lower()
+                        repo_name = repo_url.strip("/").split("/")[-1].lower()
                         if repo_name.lower() in heading.lower():
                             for line in content:
                                 if len(line.strip()) > 20 and "![" not in line:
@@ -126,21 +125,18 @@ class ManifestGenerator:
                 },
                 model="anthropic/claude-3-sonnet",
                 messages=[
-                    {
-                        "role": "system",
-                        "content": "You are a helpful assistant that extracts concise descriptions."
-                    },
+                    {"role": "system", "content": "You are a helpful assistant that extracts concise descriptions."},
                     {
                         "role": "user",
                         "content": (
                             f"Extract a single concise description paragraph from this README "
                             f"content. Focus on what the project does, not how to use it. "
                             f"Keep it under 200 characters if possible:\n\n{readme_content}"
-                        )
-                    }
+                        ),
+                    },
                 ],
                 temperature=0.1,
-                max_tokens=200
+                max_tokens=200,
             )
             return completion.choices[0].message.content.strip()
         except Exception as e:
@@ -189,8 +185,7 @@ class ManifestGenerator:
         if "/tree/" in repo_url:
             # For URLs like github.com/user/repo/tree/branch/path/to/dir
             parts = repo_url.split("/tree/")
-            base_url = parts[0].replace(
-                "github.com", "raw.githubusercontent.com")
+            base_url = parts[0].replace("github.com", "raw.githubusercontent.com")
             path_parts = parts[1].split("/", 1)
 
             if len(path_parts) > 1:
@@ -226,11 +221,9 @@ class ManifestGenerator:
         """
         agent = CategorizationAgent()
 
-        result = await agent.execute(
-            server_name=name, server_description=description, include_examples=True
-        )
+        result = await agent.execute(server_name=name, server_description=description, include_examples=True)
 
-        return result['category']
+        return result["category"]
 
     @staticmethod
     def _create_prompt(repo_url: str, readme_content: str) -> tuple[str, str]:
@@ -338,8 +331,7 @@ class ManifestGenerator:
             Dictionary containing the extracted manifest information
         """
         try:
-            static_content, variable_content = self._create_prompt(
-                repo_url, readme_content)
+            static_content, variable_content = self._create_prompt(repo_url, readme_content)
 
             schema = {
                 "name": "create_mcp_server_manifest",
@@ -405,8 +397,8 @@ class ManifestGenerator:
                                 },
                             },
                         },
-                    }
-                }
+                    },
+                },
             }
 
             completion = self.client.chat.completions.create(
@@ -418,16 +410,15 @@ class ManifestGenerator:
                 messages=[
                     {
                         "role": "system",
-                        "content": "You are a helpful assistant that analyzes GitHub README.md files and extracts information for MCP server manifests."
+                        "content": "You are a helpful assistant that analyzes GitHub README.md files and extracts information for MCP server manifests.",
                     },
                     {
                         "role": "user",
-                        "content": f"GitHub URL: {repo_url}\n\nREADME Content:\n{readme_content}\n\nExtract the necessary information to create an MCP server manifest."
-                    }
+                        "content": f"GitHub URL: {repo_url}\n\nREADME Content:\n{readme_content}\n\nExtract the necessary information to create an MCP server manifest.",
+                    },
                 ],
                 tools=[{"type": "function", "function": schema}],
-                tool_choice={"type": "function", "function": {
-                    "name": "create_mcp_server_manifest"}}
+                tool_choice={"type": "function", "function": {"name": "create_mcp_server_manifest"}},
             )
 
             tool_call = completion.choices[0].message.tool_calls[0]
@@ -473,45 +464,37 @@ class ManifestGenerator:
             # Get prompt as tuple and extract manifest
             manifest = self.extract_with_llms(repo_url, readme_content)
             # Update manifest with repository information
-            manifest.update({
-                "name": name,
-                "repository": {"type": "git", "url": repo_url},
-                "homepage": repo_url,
-                "author": {"name": owner},
-            })
+            manifest.update(
+                {
+                    "name": name,
+                    "repository": {"type": "git", "url": repo_url},
+                    "homepage": repo_url,
+                    "author": {"name": owner},
+                }
+            )
 
             # Update manifest with description
-            description = self.extract_description_from_readme(
-                readme_content, repo_url)
+            description = self.extract_description_from_readme(readme_content, repo_url)
             if not description:
-                description = self.extract_description_from_readme_with_llms(
-                    readme_content)
+                description = self.extract_description_from_readme_with_llms(readme_content)
             manifest["description"] = description
 
             # Categorize the server
-            categorized_category = asyncio.run(
-                self.categorize_servers_with_llms(name, description))
+            categorized_category = asyncio.run(self.categorize_servers_with_llms(name, description))
             if categorized_category:
-                logger.info(
-                    f"Server categorized as: {categorized_category}")
+                logger.info(f"Server categorized as: {categorized_category}")
                 manifest["categories"] = [categorized_category]
             else:
-                logger.error(
-                    f"Server not categorized: {name} - {description}")
+                logger.error(f"Server not categorized: {name} - {description}")
 
             # Sort installations by priority
-            manifest["installations"] = self.filter_and_sort_installations(
-                manifest.get("installations", {})
-            )
+            manifest["installations"] = self.filter_and_sort_installations(manifest.get("installations", {}))
 
             # Extract capabilities if installations are available
             if manifest["installations"]:
-                logger.info(
-                    f"Server installations: {manifest['installations']}")
+                logger.info(f"Server installations: {manifest['installations']}")
                 try:
-                    capabilities = asyncio.run(
-                        self.run_server_and_extract_capabilities(manifest)
-                    )
+                    capabilities = asyncio.run(self.run_server_and_extract_capabilities(manifest))
                     if capabilities:
                         manifest.update(capabilities)
                 except Exception as e:
@@ -551,8 +534,7 @@ class ManifestGenerator:
 
         if envs:
             for k, v in envs.items():
-                env_vars[k] = manifest.get("arguments", {}).get(
-                    k, {}).get("example", v)
+                env_vars[k] = manifest.get("arguments", {}).get(k, {}).get("example", v)
 
         # Use the command and args from the installation directly
         command = installation["command"]
@@ -564,16 +546,13 @@ class ManifestGenerator:
         try:
             tools = await mcp_client.list_tools()
             # to avoid $schema field
-            result["tools"] = [json.loads(tool.model_dump_json())
-                               for tool in tools.tools]
+            result["tools"] = [json.loads(tool.model_dump_json()) for tool in tools.tools]
 
             prompts = await mcp_client.list_prompts()
-            result["prompts"] = [json.loads(
-                prompt.model_dump_json()) for prompt in prompts.prompts]
+            result["prompts"] = [json.loads(prompt.model_dump_json()) for prompt in prompts.prompts]
 
             resources = await mcp_client.list_resources()
-            result["resources"] = [json.loads(
-                resource.model_dump_json()) for resource in resources.resources]
+            result["resources"] = [json.loads(resource.model_dump_json()) for resource in resources.resources]
 
         except Exception as e:
             logger.error(f"Failed to list tools: {e}")
@@ -594,12 +573,9 @@ class ManifestGenerator:
         Returns:
             Sorted dictionary of installation methods
         """
-        priority = {"uvx": 0, "npm": 1, "python": 2,
-                    "docker": 3, "cli": 4, "custom": 5}
-        filtered_installations = {k: v for k,
-                                  v in installations.items() if k in priority}
-        sorted_installations = sorted(
-            filtered_installations.items(), key=lambda x: priority.get(x[0], 6))
+        priority = {"uvx": 0, "npm": 1, "python": 2, "docker": 3, "cli": 4, "custom": 5}
+        filtered_installations = {k: v for k, v in installations.items() if k in priority}
+        sorted_installations = sorted(filtered_installations.items(), key=lambda x: priority.get(x[0], 6))
         return dict(sorted_installations)
 
 
@@ -615,22 +591,18 @@ def main(repo_url: str, is_official: bool = False):
 
         # Ensure the manifest has a valid name
         if not manifest.get("name") or not manifest.get("author", {}).get("name"):
-            raise ValueError(
-                "Generated manifest is missing a name and/or author name")
+            raise ValueError("Generated manifest is missing a name and/or author name")
 
         # determine the filename
         filename = f"mcp-registry/servers/{manifest['name']}.json"
         if not is_official:
             name = f"@{manifest['author']['name']}/{manifest['name']}"
-            filename = (
-                f"mcp-registry/servers/{manifest['name']}@{manifest['author']['name']}.json"
-            )
+            filename = f"mcp-registry/servers/{manifest['name']}@{manifest['author']['name']}.json"
             manifest["name"] = name
 
         # save the manifest with the determined filename
         if os.path.exists(filename):
-            logger.warning(
-                f"Official manifest already exists: {filename}. Overwriting...")
+            logger.warning(f"Official manifest already exists: {filename}. Overwriting...")
         with open(filename, "w", encoding="utf-8") as file:
             json.dump(manifest, file, indent=2)
         logger.info(f"Manifest saved to {filename}")
