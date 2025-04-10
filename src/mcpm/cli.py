@@ -65,23 +65,24 @@ def main(ctx, help_flag):
 
         # Create bold ASCII art with thicker characters for a more striking appearance
         logo = [
-            " ███╗   ███╗ ██████╗██████╗ ███╗   ███╗             ",
-            " ████╗ ████║██╔════╝██╔══██╗████╗ ████║             ",
-            " ██╔████╔██║██║     ██████╔╝██╔████╔██║             ",
-            " ██║╚██╔╝██║██║     ██╔═══╝ ██║╚██╔╝██║             ",
-            " ██║ ╚═╝ ██║╚██████╗██║     ██║ ╚═╝ ██║             ",
-            " ╚═╝     ╚═╝ ╚═════╝╚═╝     ╚═╝     ╚═╝             ",
+            " ███╗   ███╗ ██████╗██████╗ ███╗   ███╗ ",
+            " ████╗ ████║██╔════╝██╔══██╗████╗ ████║ ",
+            " ██╔████╔██║██║     ██████╔╝██╔████╔██║ ",
+            " ██║╚██╔╝██║██║     ██╔═══╝ ██║╚██╔╝██║ ",
+            " ██║ ╚═╝ ██║╚██████╗██║     ██║ ╚═╝ ██║ ",
+            " ╚═╝     ╚═╝ ╚═════╝╚═╝     ╚═╝     ╚═╝ ",
             "",
             f"v{__version__}",
             "Model Context Protocol Manager",
-            "Supports Claude Desktop, Windsurf, Cursor, and more",
+            "Open Source. Forever Free.",
+            "Built with ❤️ by [bold cyan]Path Integral Institute[/]",
         ]
 
         # No need to convert to joined string since we're formatting directly in the panel
 
         # Create a panel with styled content
         panel = Panel(
-            f"[bold green]{logo[0]}\n{logo[1]}\n{logo[2]}\n{logo[3]}\n{logo[4]}\n{logo[5]}[/]\n\n[bold yellow]{logo[7]}[/]\n[italic blue]{logo[8]}[/]\n[bold magenta]{logo[9]}[/]",
+            f"[bold green]{logo[0]}\n{logo[1]}\n{logo[2]}\n{logo[3]}\n{logo[4]}\n{logo[5]}[/]\n\n[bold yellow]{logo[7]}[/] [italic blue]{logo[8]}[/]\n[bold magenta]{logo[9]}[/]\n[bold cyan]{logo[10]}[/]",
             border_style="bold cyan",
             expand=False,
             padding=(0, 2),
