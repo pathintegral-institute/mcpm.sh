@@ -5,7 +5,6 @@ from rich.table import Table
 from mcpm.clients.client_registry import ClientRegistry
 from mcpm.profile.profile_config import ProfileConfigManager
 from mcpm.schemas.server_config import STDIOServerConfig
-from mcpm.utils.display import print_server_config
 
 profile_config_manager = ProfileConfigManager()
 console = Console()
@@ -17,7 +16,52 @@ def profile():
     pass
 
 
-@profile.command()
+@click.command()
+@click.argument("profile_name")
+@click.option("--client", "-c", default="client", help="Client of the profile")
+def activate(profile_name, client):
+    """Activate a profile.
+
+    Sets the specified profile as the active profile.
+    """
+    # Activate the specified profile
+    if profile_config_manager.get_profile(profile_name) is None:
+        console.print(f"[bold red]Error:[/] Profile '{profile_name}' not found.")
+        return
+
+    # Set the active profile
+    client_registry = ClientRegistry()
+    if client_registry.set_active_profile(profile_name):
+        console.print(f"\n[green]Profile '{profile_name}' activated successfully.[/]\n")
+    else:
+        console.print(f"[bold red]Error:[/] Failed to activate profile '{profile_name}'.")
+
+    # TODO: add url to the client config
+
+
+@click.command()
+@click.option("--client", "-c", default="client", help="Client of the profile")
+def deactivate(client):
+    """Deactivate a profile.
+
+    Unsets the active profile.
+    """
+    # Set the active profile
+    active_profile = ClientRegistry.get_active_profile()
+    if active_profile is None:
+        console.print("[bold yellow]No active profile found.[/]\n")
+        return
+    console.print(f"\n[green]Deactivating profile '{active_profile}'...[/]")
+    client_registry = ClientRegistry()
+    if client_registry.set_active_profile(None):
+        console.print(f"\n[green]Profile '{active_profile}' deactivated successfully.[/]\n")
+    else:
+        console.print(f"[bold red]Error:[/] Failed to deactivate profile '{active_profile}'.")
+
+    # TODO: remove url from the client config
+
+
+@profile.command(name="ls")
 @click.option("--verbose", "-v", is_flag=True, help="Show detailed server information")
 def list(verbose=False):
     """List all MCPM profiles."""
@@ -72,6 +116,9 @@ def apply(profile, server):
     """Apply an existing MCPM config to a profile."""
     client_manager = ClientRegistry.get_active_client_manager()
     client = ClientRegistry.get_active_client()
+    if client is None:
+        console.print("[bold red]Error:[/] No active client found.")
+        return
     client_info = ClientRegistry.get_client_info(client)
     client_name = client_info.get("name", client)
 
@@ -100,7 +147,7 @@ def apply(profile, server):
 
 @profile.command()
 @click.argument("profile_name")
-def delete(profile_name):
+def remove(profile_name):
     """Delete an MCPM profile."""
     if not profile_config_manager.delete_profile(profile_name):
         console.print(f"[bold red]Error:[/] Profile '{profile_name}' not found.")
@@ -120,28 +167,3 @@ def rename(profile_name):
         console.print(f"[bold red]Error:[/] Profile '{profile_name}' not found.")
         return
     console.print(f"\n[green]Profile '{profile_name}' renamed to '{new_profile_name}' successfully.[/]\n")
-
-
-# @profile.command()
-# @click.argument("profile")
-# @click.option("--server", "-s", required=True, help="Server to remove from profile")
-# def remove_server(server, profile):
-#     """Remove a server from an MCPM profile."""
-#     if not profile_manager.remove_server(server, profile):
-#         console.print(f"[bold red]Error:[/] Server '{server}' not found in profile '{profile}'.")
-#         return
-#     console.print(f"\n[green]Server '{server}' removed from profile '{profile}' successfully.[/]\n")
-
-
-@profile.command()
-@click.argument("profile")
-def show(profile):
-    """Show the servers in an MCPM profile."""
-    profile_info = profile_config_manager.get_profile(profile)
-    if profile_info is None:
-        console.print(f"[bold red]Error:[/] Profile '{profile}' not found.")
-        return
-    console.print(f"\n[green]Profile '{profile}' contains the following servers:[/]\n")
-    for server in profile_info:
-        print_server_config(server.name, server.to_dict())
-    console.print("\n")

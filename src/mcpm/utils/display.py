@@ -6,35 +6,41 @@ from rich.console import Console
 from rich.markup import escape
 from rich.table import Table
 
+from mcpm.schemas.server_config import ServerConfig, SSEServerConfig
+from mcpm.utils.scope import CLIENT_PREFIX, PROFILE_PREFIX
+
 console = Console()
 
 
-def print_server_config(server_name, server_info, is_stashed=False):
+def print_server_config(server_config: ServerConfig, is_stashed=False):
     """Print detailed information about a server configuration.
 
     Args:
-        server_name: Name of the server
-        server_info: Server configuration information
+        server_config: Server configuration information
         is_stashed: Whether the server is stashed (affects display style)
     """
     # Server name and command
     if is_stashed:
-        console.print(f"[bold yellow]{server_name}[/] [dim](stashed)[/]")
+        console.print(f"[bold yellow]{server_config.name}[/] [dim](stashed)[/]")
     else:
-        console.print(f"[bold cyan]{server_name}[/]")
+        console.print(f"[bold cyan]{server_config.name}[/]")
 
-    command = server_info.get("command", "N/A")
+    if isinstance(server_config, SSEServerConfig):
+        console.print(f"  Url: [green]{server_config.url}[/]")
+        console.print("  " + "-" * 50)
+        return
+    command = server_config.command
     console.print(f"  Command: [green]{command}[/]")
 
     # Display arguments
-    args = server_info.get("args", [])
+    args = server_config.args
     if args:
         console.print("  Arguments:")
         for i, arg in enumerate(args):
             console.print(f"    {i}: [yellow]{escape(arg)}[/]")
 
     # Display environment variables
-    env_vars = server_info.get("env", {})
+    env_vars = server_config.env
     if env_vars:
         console.print("  Environment Variables:")
         for key, value in env_vars.items():
@@ -86,11 +92,24 @@ def print_error(message, details=None):
         console.print(f"[red]{details}[/]")
 
 
-def print_client_error(client_name):
-    """Print a standardized client-related error message.
-
-    Args:
-        client_name: Name of the client that caused the error
-    """
+def print_client_error():
+    """Print a standardized client-related error message."""
     console.print("[bold red]Error:[/] Unsupported active client")
     console.print("Please switch to a supported client using 'mcpm client <client-name>'")
+
+
+def print_active_scope(scope: str):
+    """Display the active client or profile."""
+    if scope.startswith(CLIENT_PREFIX):
+        console.print(f"[bold green]Working on Active Client:[/] {scope[1:]}\n")
+    elif scope.startswith(PROFILE_PREFIX):
+        console.print(f"[bold green]Working on Active Profile:[/] {scope[1:]}\n")
+    else:
+        console.print(f"[bold red]Error:[/] Invalid active scope: {scope}\n")
+
+
+def print_no_active_scope():
+    console.print("[bold red]Error:[/] No active client or profile found.\n")
+    console.print(
+        "Please set an active client with 'mcpm client set <client>' or a profile with 'mcpm activate <profile>'."
+    )
