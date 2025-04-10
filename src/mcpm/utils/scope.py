@@ -1,4 +1,16 @@
-from enum import StrEnum
+import sys
+
+if sys.version_info >= (3, 11):
+    from enum import StrEnum
+else:
+    from enum import Enum
+
+    class StrEnum(str, Enum):
+        """String enumeration for Python versions before 3.11."""
+
+        def __str__(self) -> str:
+            return self.value
+
 
 CLIENT_PREFIX = "@"
 PROFILE_PREFIX = "%"
