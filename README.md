@@ -43,22 +43,48 @@ mcpm --version                          # Display the current version of MCPM
 ### Available Commands
 
 ```
+# client
+mcpm client ls                       # List all supported MCP clients and their status
+mcpm client set CLIENT               # 
+mcpm client edit                     # open client mcp setting in external editor
+
+
+# editing ops, applying to the active scope
+# add @client or #profile to set explicit scope
+# for example: 
+#     mcpm rm #PROFILE/SERVER_NAME to remove server for a profile (even when it's not activated)
+#     mcpm cp @CLIENT/SERVER_NAME #PROFILE
+
 mpcm add SERVER_NAME                     # Add an MCP server to the active client
 mcpm add SERVER_NAME --alias ALIAS_NAME  # Add an MCP server to the active client with a custom alias
-
-mcpm client                              # Show the current active MCP client
-mcpm client CLIENT_NAME                  # Set a new active MCP client
-mcpm client --list                       # List all supported MCP clients and their status
-
-mcpm edit                                # View or edit the active MCP client's configuration file
-
-mcpm list                                # List all installed MCP servers
-
+mcpm cp
+mcpm mv
+mcpm rm
 mcpm remove SERVER_NAME                  # Remove an installed MCP server
+mcpm ls
+mcpm list                                # List all installed MCP servers
 
 mcpm stash SERVER_NAME                   # Temporarily disable an MCP server for a client
 mcpm pop SERVER_NAME                     # Re-enable an MCP server for a client
 
+
+
+# profile
+mcpm profile add PROFILE
+mcpm profile list
+mcpm profile rm PROFILE
+mcpm profile remove PROFILE
+
+mcpm activate PROFILE # activate a profile for a client
+mcpm deactivate PROFILE # deactivate a profile for a client
+
+# router
+mcpm router on -p port -h host           # start router daemon
+mcpm router off
+
+
+# util
+mcpm config clear-cache   
 mcpm inspect SERVER_NAME                 # Launch the MCPM Inspector UI to examine servers
 ```
 
