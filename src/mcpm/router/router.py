@@ -341,22 +341,18 @@ class MCPRouter:
             self.watcher.register_modification_callback(reload_servers)
             self.watcher.start()
 
-    async def start_sse_server(
-        self, host: str = "localhost", port: int = 8080, allow_origins: t.Optional[t.List[str]] = None
-    ) -> None:
-        """
-        Start an SSE server that exposes the aggregated MCP server.
-
-        Args:
-            host: The host to bind to
-            port: The port to bind to
-            allow_origins: List of allowed origins for CORS
-        """
-        # waiting all servers to be initialized
+    async def initialize_router(self):
+        """Initialize the router with aggregated servers capabilities."""
         servers_to_start = self.get_unique_servers()
+        # load mcp servers sessions
         await self.update_servers(servers_to_start)
+        # start a reload watcher job
         await self.start_watcher_job()
+        # initialize server capabilities with all servers loaded
+        await self._initialize_server_capabilities()
 
+    async def _initialize_server_capabilities(self):
+        """Initialize the server capabilities."""
         # Create notification options
         notification_options = NotificationOptions(
             prompts_changed=True,
@@ -403,6 +399,20 @@ class MCPRouter:
             server_version="1.0.0",
             capabilities=capabilities,
         )
+
+    async def start_sse_server(
+        self, host: str = "localhost", port: int = 8080, allow_origins: t.Optional[t.List[str]] = None
+    ) -> None:
+        """
+        Start an SSE server that exposes the aggregated MCP server.
+
+        Args:
+            host: The host to bind to
+            port: The port to bind to
+            allow_origins: List of allowed origins for CORS
+        """
+        # waiting all servers to be initialized
+        await self.initialize_router()
 
         # Create SSE transport
         sse = RouterSseTransport("/messages/")

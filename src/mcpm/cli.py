@@ -20,6 +20,7 @@ from mcpm.commands import (
     remove,
     search,
     stash,
+    router,
 )
 
 console = Console()
@@ -132,6 +133,7 @@ def main(ctx, help_flag):
         commands_table.add_row("  [cyan]stash[/]", "Temporarily store a server configuration aside.")
         commands_table.add_row("  [cyan]pop[/]", "Restore a previously stashed server configuration.")
         commands_table.add_row("  [cyan]profile[/]", "Manage MCPM profiles.")
+        commands_table.add_row("  [cyan]router[/]", "Manage MCP router service.")
         console.print(commands_table)
 
         # Additional helpful information
@@ -153,6 +155,7 @@ main.add_command(client.client)
 main.add_command(config.config)
 main.add_command(inspector.inspector, name="inspector")
 main.add_command(profile.profile, name="profile")
+main.add_command(router.router, name="router")
 
 if __name__ == "__main__":
     main()
