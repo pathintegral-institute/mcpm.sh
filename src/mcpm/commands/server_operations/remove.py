@@ -7,12 +7,19 @@ from rich.console import Console
 from rich.markup import escape
 from rich.prompt import Confirm
 
-from mcpm.clients.client_registry import ClientRegistry
+from mcpm.commands.server_operations.common import (
+    client_get_server,
+    client_remove_server,
+    determine_target,
+    profile_get_server,
+    profile_remove_server,
+)
+from mcpm.utils.scope import ScopeType
 
 console = Console()
 
 
-@click.command("rm")
+@click.command()
 @click.argument("server_name")
 @click.option("--force", is_flag=True, help="Force removal without confirmation")
 def remove(server_name, force):
@@ -20,25 +27,26 @@ def remove(server_name, force):
 
     Examples:
         mcpm rm filesystem
+        mcpm rm @cursor/filesystem
+        mcpm rm %profile/filesystem
         mcpm rm filesystem --force
     """
-    # Get the active client manager and related information
-    client_manager = ClientRegistry.get_active_client_manager()
-    client = ClientRegistry.get_active_client()
-    client_info = ClientRegistry.get_client_info(client)
-    client_name = client_info.get("name", client)
-
-    # Check if client is supported
-    if client_manager is None:
-        console.print("[bold red]Error:[/] Unsupported active client")
-        console.print("Please switch to a supported client using 'mcpm client <client-name>'")
+    scope_type, scope, server_name = determine_target(server_name)
+    if not scope_type or not scope or not server_name:
         return
 
-    # Check if the server exists in the active client
-    server_info = client_manager.get_server(server_name)
-    if not server_info:
-        console.print(f"[bold red]Error:[/] Server '{server_name}' not found in {client_name}.")
-        return
+    if scope_type == ScopeType.CLIENT:
+        # Get the active client manager and related information
+        server_info = client_get_server(scope, server_name)
+        if not server_info:
+            console.print(f"[bold red]Error:[/] Server '{server_name}' not found in {scope}.")
+            return
+    else:
+        # Get the active profile manager and information
+        server_info = profile_get_server(scope, server_name)
+        if not server_info:
+            console.print(f"[bold red]Error:[/] Server '{server_name}' not found in profile '{scope}'.")
+            return
 
     # Display server information before removal
     console.print(f"\n[bold cyan]Server information for:[/] {server_name}")
@@ -82,11 +90,14 @@ def remove(server_name, force):
     # Log the removal action
     console.print(f"[bold red]Removing MCP server:[/] {server_name}")
 
-    # Actually remove the server from the active client's config
-    success = client_manager.remove_server(server_name)
+    if scope_type == ScopeType.CLIENT:
+        # Actually remove the server from the active client's config
+        success = client_remove_server(scope, server_name)
+    else:
+        # Actually remove the server from the active profile's config
+        success = profile_remove_server(scope, server_name)
 
     if success:
         console.print(f"[green]Successfully removed server:[/] {server_name}")
-        console.print(f"[italic]Note: {client_name} must be restarted for changes to take effect.[/]")
     else:
         console.print(f"[bold red]Error:[/] Failed to remove server '{server_name}'.")

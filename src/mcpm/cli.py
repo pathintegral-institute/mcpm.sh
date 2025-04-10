@@ -19,6 +19,7 @@ from mcpm.commands import (
     remove,
     search,
     stash,
+    transfer,
 )
 
 console = Console()
@@ -121,12 +122,16 @@ def main(ctx, help_flag):
         commands_table.add_row("  [cyan]client[/]", "Manage the active MCPM client.")
         commands_table.add_row("  [cyan]config[/]", "Manage MCPM configuration.")
         commands_table.add_row("  [cyan]inspector[/]", "Launch the MCPM Inspector UI to examine servers.")
-        commands_table.add_row("  [cyan]list[/]", "List all installed MCP servers.")
-        commands_table.add_row("  [cyan]remove[/]", "Remove an installed MCP server.")
+        commands_table.add_row("  [cyan]list/ls[/]", "List all installed MCP servers.")
+        commands_table.add_row("  [cyan]remove/rm[/]", "Remove an installed MCP server.")
         commands_table.add_row("  [cyan]search[/]", "Search available MCP servers.")
         commands_table.add_row("  [cyan]stash[/]", "Temporarily store a server configuration aside.")
         commands_table.add_row("  [cyan]pop[/]", "Restore a previously stashed server configuration.")
         commands_table.add_row("  [cyan]profile[/]", "Manage MCPM profiles.")
+        commands_table.add_row("  [cyan]move/mv[/]", "Move a server from one client/profile to another.")
+        commands_table.add_row("  [cyan]copy/cp[/]", "Copy a server from one client/profile to another.")
+        commands_table.add_row("  [cyan]activate[/]", "Activate a profile.")
+        commands_table.add_row("  [cyan]deactivate[/]", "Deactivate a profile.")
         console.print(commands_table)
 
         # Additional helpful information
@@ -137,8 +142,10 @@ def main(ctx, help_flag):
 # Register commands
 main.add_command(search.search)
 main.add_command(remove.remove)
+main.add_command(remove.remove, name="rm")
 main.add_command(add.add)
 main.add_command(list.list)
+main.add_command(list.list, name="ls")
 
 main.add_command(stash.stash)
 main.add_command(pop.pop)
@@ -147,6 +154,12 @@ main.add_command(client.client)
 main.add_command(config.config)
 main.add_command(inspector.inspector, name="inspector")
 main.add_command(profile.profile, name="profile")
+main.add_command(transfer.move)
+main.add_command(transfer.move, name="mv")
+main.add_command(transfer.copy)
+main.add_command(transfer.copy, name="cp")
+main.add_command(profile.activate)
+main.add_command(profile.deactivate)
 
 if __name__ == "__main__":
     main()

@@ -3,8 +3,8 @@ from unittest.mock import Mock
 from click.testing import CliRunner
 
 from mcpm.clients.client_registry import ClientRegistry
-from mcpm.commands.pop import pop
-from mcpm.commands.stash import stash
+from mcpm.commands.server_operations.pop import pop
+from mcpm.commands.server_operations.stash import stash
 
 
 def test_stash_server_success(windsurf_manager, monkeypatch):
@@ -12,6 +12,7 @@ def test_stash_server_success(windsurf_manager, monkeypatch):
     # Setup mocks
     monkeypatch.setattr(ClientRegistry, "get_active_client", Mock(return_value="windsurf"))
     monkeypatch.setattr(ClientRegistry, "get_active_client_manager", Mock(return_value=windsurf_manager))
+    monkeypatch.setattr(ClientRegistry, "get_client_manager", Mock(return_value=windsurf_manager))
     monkeypatch.setattr(ClientRegistry, "get_client_info", Mock(return_value={"name": "windsurf"}))
 
     # Mock server info
@@ -51,6 +52,7 @@ def test_stash_server_already_stashed(windsurf_manager, monkeypatch):
     monkeypatch.setattr(ClientRegistry, "get_active_client", Mock(return_value="windsurf"))
     monkeypatch.setattr(ClientRegistry, "get_active_client_manager", Mock(return_value=windsurf_manager))
     monkeypatch.setattr(ClientRegistry, "get_client_info", Mock(return_value={"name": "windsurf"}))
+    monkeypatch.setattr(ClientRegistry, "get_client_manager", Mock(return_value=windsurf_manager))
 
     # Mock server info
     mock_server = Mock()
@@ -75,6 +77,7 @@ def test_stash_server_remove_failure(windsurf_manager, monkeypatch):
     monkeypatch.setattr(ClientRegistry, "get_active_client", Mock(return_value="windsurf"))
     monkeypatch.setattr(ClientRegistry, "get_active_client_manager", Mock(return_value=windsurf_manager))
     monkeypatch.setattr(ClientRegistry, "get_client_info", Mock(return_value={"name": "windsurf"}))
+    monkeypatch.setattr(ClientRegistry, "get_client_manager", Mock(return_value=windsurf_manager))
 
     # Mock server info
     mock_server = Mock()
@@ -103,6 +106,7 @@ def test_stash_server_not_found(windsurf_manager, monkeypatch):
     monkeypatch.setattr(ClientRegistry, "get_active_client", Mock(return_value="windsurf"))
     monkeypatch.setattr(ClientRegistry, "get_active_client_manager", Mock(return_value=windsurf_manager))
     monkeypatch.setattr(ClientRegistry, "get_client_info", Mock(return_value={"name": "windsurf"}))
+    monkeypatch.setattr(ClientRegistry, "get_client_manager", Mock(return_value=windsurf_manager))
 
     # Mock server not found
     windsurf_manager.get_server = Mock(return_value=None)
@@ -133,7 +137,7 @@ def test_stash_server_unsupported_client(monkeypatch):
     result = runner.invoke(stash, ["server-test"])
 
     assert result.exit_code == 0
-    assert "Unsupported active client" in result.output
+    assert "Client 'unsupported' not found." in result.output
     mock_config_manager.stash_server.assert_not_called()
 
 
@@ -142,6 +146,7 @@ def test_pop_server_success(windsurf_manager, monkeypatch):
     monkeypatch.setattr(ClientRegistry, "get_active_client", Mock(return_value="windsurf"))
     monkeypatch.setattr(ClientRegistry, "get_active_client_manager", Mock(return_value=windsurf_manager))
     monkeypatch.setattr(ClientRegistry, "get_client_info", Mock(return_value={"name": "windsurf"}))
+    monkeypatch.setattr(ClientRegistry, "get_client_manager", Mock(return_value=windsurf_manager))
 
     # Mock server data
     server_data = {
@@ -167,7 +172,7 @@ def test_pop_server_success(windsurf_manager, monkeypatch):
 
     assert result.exit_code == 0
     assert "Restored MCP server 'server-test' for windsurf" in result.output
-    mock_config_manager.pop_server.assert_called_once_with("windsurf", "server-test")
+    mock_config_manager.pop_server.assert_called_once_with("@windsurf", "server-test")
     windsurf_manager.add_server.assert_called_once_with(mock_server_config)
 
 
@@ -176,6 +181,7 @@ def test_pop_server_not_stashed(windsurf_manager, monkeypatch):
     monkeypatch.setattr(ClientRegistry, "get_active_client", Mock(return_value="windsurf"))
     monkeypatch.setattr(ClientRegistry, "get_active_client_manager", Mock(return_value=windsurf_manager))
     monkeypatch.setattr(ClientRegistry, "get_client_info", Mock(return_value={"name": "windsurf"}))
+    monkeypatch.setattr(ClientRegistry, "get_client_manager", Mock(return_value=windsurf_manager))
 
     # Mock client config manager
     mock_config_manager = Mock()
@@ -195,6 +201,7 @@ def test_pop_server_add_failure(windsurf_manager, monkeypatch):
     monkeypatch.setattr(ClientRegistry, "get_active_client", Mock(return_value="windsurf"))
     monkeypatch.setattr(ClientRegistry, "get_active_client_manager", Mock(return_value=windsurf_manager))
     monkeypatch.setattr(ClientRegistry, "get_client_info", Mock(return_value={"name": "windsurf"}))
+    monkeypatch.setattr(ClientRegistry, "get_client_manager", Mock(return_value=windsurf_manager))
 
     # Mock server data
     server_data = {
@@ -220,7 +227,7 @@ def test_pop_server_add_failure(windsurf_manager, monkeypatch):
 
     assert result.exit_code == 0
     assert "Failed to restore 'server-test' for windsurf" in result.output
-    mock_config_manager.stash_server.assert_called_once_with("windsurf", "server-test", server_data)
+    mock_config_manager.stash_server.assert_called_once_with("@windsurf", "server-test", server_data)
 
 
 def test_pop_server_unsupported_client(monkeypatch):
@@ -236,5 +243,8 @@ def test_pop_server_unsupported_client(monkeypatch):
     result = runner.invoke(pop, ["server-test"])
 
     assert result.exit_code == 0
+
     assert "Unsupported active client" in result.output
-    mock_config_manager.pop_server.assert_not_called()
+    # pop and revert
+    mock_config_manager.pop_server.assert_called_once()
+    mock_config_manager.stash_server.assert_not_called()
