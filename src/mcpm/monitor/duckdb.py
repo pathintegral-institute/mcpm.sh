@@ -11,6 +11,7 @@ from typing import Any, Dict, Optional, Union
 import duckdb
 
 from mcpm.monitor.base import AccessEventType, AccessMonitor
+from mcpm.utils.config import ConfigManager
 
 
 class DuckDBAccessMonitor(AccessMonitor):
@@ -19,13 +20,18 @@ class DuckDBAccessMonitor(AccessMonitor):
     This uses a thread pool to execute DuckDB operations asynchronously.
     """
 
-    def __init__(self, db_path: str = "~/.mcpm/monitor.duckdb"):
+    def __init__(self, db_path: Optional[str] = None):
         """
         Initialize the DuckDBAccessMonitor.
 
         Args:
-            db_path: Path to the DuckDB database file
+            db_path: Path to the DuckDB database file. If None, uses the default config directory.
         """
+        if db_path is None:
+            # Use ConfigManager to get the base config directory
+            config_manager = ConfigManager()
+            db_path = os.path.join(config_manager.config_dir, "monitor.duckdb")
+
         self.db_path = os.path.expanduser(db_path)
         self.connection = None
         self._initialized = False

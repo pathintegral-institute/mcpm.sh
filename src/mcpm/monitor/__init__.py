@@ -17,12 +17,13 @@ async def get_monitor(db_path: Optional[str] = None) -> AccessMonitor:
     Get a configured access monitor instance
 
     Args:
-        db_path: Optional custom path to the database file. Defaults to ~/.mcpm/monitor.duckdb
+        db_path: Optional custom path to the database file. If None, uses the default
+                config directory from ConfigManager.
 
     Returns:
         Configured AccessMonitor instance
     """
-    monitor = DuckDBAccessMonitor(db_path) if db_path else DuckDBAccessMonitor()
+    monitor = DuckDBAccessMonitor(db_path)
     await monitor.initialize_storage()
     return monitor
 
