@@ -39,6 +39,14 @@ class ProfileConfigManager:
     def get_profile(self, profile_name: str) -> Optional[list[ServerConfig]]:
         return self._profiles.get(profile_name)
 
+    def get_profile_server(self, profile_name: str, server_name: str) -> Optional[ServerConfig]:
+        if profile_name not in self._profiles:
+            return None
+        for server_config in self._profiles[profile_name]:
+            if server_config.name == server_name:
+                return server_config
+        return None
+
     def set_profile(self, profile_name: str, config: ServerConfig) -> bool:
         if profile_name not in self._profiles:
             self._profiles[profile_name] = []
@@ -70,12 +78,12 @@ class ProfileConfigManager:
         self._save_profiles()
         return True
 
-    def remove_server(self, server_name: str, profile_name: str) -> bool:
+    def remove_server(self, profile_name: str, server_name: str) -> bool:
         if profile_name not in self._profiles:
             return False
         for idx, server_config in enumerate(self._profiles[profile_name]):
             if server_config.name == server_name:
-                del self._profiles[profile_name][idx]
+                self._profiles[profile_name].pop(idx)
                 self._save_profiles()
                 return True
         return False

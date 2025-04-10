@@ -17,6 +17,7 @@ from mcpm.clients.managers.cursor import CursorManager
 from mcpm.clients.managers.fiveire import FiveireManager
 from mcpm.clients.managers.goose import GooseClientManager
 from mcpm.clients.managers.windsurf import WindsurfManager
+from mcpm.utils.scope import CLIENT_PREFIX, PROFILE_PREFIX
 
 logger = logging.getLogger(__name__)
 
@@ -102,12 +103,12 @@ class ClientRegistry:
         return {client_name: manager.get_client_info() for client_name, manager in cls._CLIENT_MANAGERS.items()}
 
     @classmethod
-    def get_active_client(cls) -> str:
+    def get_active_client(cls) -> str | None:
         """
         Get the active client name from the config manager
 
         Returns:
-            str: Name of the active client
+            str | None: Name of the active client or None if not set
         """
         return cls._client_config_manager.get_active_client()
 
@@ -165,3 +166,42 @@ class ClientRegistry:
             List[str]: List of supported client names
         """
         return list(cls._CLIENT_MANAGERS.keys())
+
+    @classmethod
+    def get_active_profile(cls) -> str | None:
+        """
+        Get the active profile name from the config manager
+
+        Returns:
+            str | None: Name of the active profile or None if not set
+        """
+        return cls._client_config_manager.get_active_profile()
+
+    @classmethod
+    def set_active_profile(cls, profile_name: str | None) -> bool:
+        """
+        Set the active profile in the config manager
+
+        Args:
+            profile_name: Name of the profile or None to unset
+
+        Returns:
+            bool: Success or failure
+        """
+        return cls._client_config_manager.set_active_profile(profile_name)
+
+    @classmethod
+    def determine_active_scope(cls) -> str | None:
+        """
+        Determine the active scope (client or profile) based on config
+
+        Returns:
+            str | None: Name of the active client or profile, or None if not set
+        """
+        profile = cls.get_active_profile()
+        if profile:
+            return f"{PROFILE_PREFIX}{profile}"
+        client = cls.get_active_client()
+        if client:
+            return f"{CLIENT_PREFIX}{client}"
+        return None

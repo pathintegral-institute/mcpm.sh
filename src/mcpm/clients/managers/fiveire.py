@@ -116,8 +116,7 @@ class FiveireManager(JSONClientManager):
             return None
 
         # Get the server config and convert to ServerConfig
-        client_config = servers[server_name]
-        return self.from_client_format(server_name, client_config)
+        return servers[server_name]
 
     def add_server(self, server_config: Union[ServerConfig, Dict[str, Any]], name: Optional[str] = None) -> bool:
         """Add or update a server in the client config

@@ -3,7 +3,7 @@ from unittest.mock import Mock
 from click.testing import CliRunner
 
 from mcpm.clients.client_registry import ClientRegistry
-from mcpm.commands.add import add
+from mcpm.commands.server_operations.add import add
 from mcpm.utils.repository import RepositoryManager
 
 
@@ -11,6 +11,7 @@ def test_add_server(windsurf_manager, monkeypatch):
     """Test add server"""
     monkeypatch.setattr(ClientRegistry, "get_active_client", Mock(return_value="windsurf"))
     monkeypatch.setattr(ClientRegistry, "get_active_client_manager", Mock(return_value=windsurf_manager))
+    monkeypatch.setattr(ClientRegistry, "get_client_manager", Mock(return_value=windsurf_manager))
     monkeypatch.setattr(
         RepositoryManager,
         "_fetch_servers",
@@ -37,7 +38,7 @@ def test_add_server(windsurf_manager, monkeypatch):
     result = runner.invoke(add, ["server-test", "--force", "--alias", "test"], input="\njson\n\ntest-api-key\n")
     assert result.exit_code == 0
 
-    # Check that the server was added
+    # Check that the server was added with alias
     server = windsurf_manager.get_server("test")
     assert server is not None
     assert server.command == "npx"
