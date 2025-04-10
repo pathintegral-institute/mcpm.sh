@@ -30,8 +30,7 @@ def patch_meta_data(body: bytes, profile: str) -> bytes:
     return json.dumps(data).encode("utf-8")
 
 
-def _get_query_key_from_scope(scope: Scope, key_name: str) -> str | None:
-    logger.info(f"Scope: {scope}")
+def get_key_from_scope(scope: Scope, key_name: str) -> str | None:
     query_string = scope.get("query_string", b"")
 
     query_str = query_string.decode("utf-8")
@@ -85,7 +84,7 @@ class RouterSseTransport(SseServerTransport):
         self._read_stream_writers[session_id] = read_stream_writer
         logger.debug(f"Created new session with ID: {session_id}")
         # maintain session_id to profile mapping
-        profile = _get_query_key_from_scope(scope, key_name="profile")
+        profile = get_key_from_scope(scope, key_name="profile")
         if profile is not None:
             self._session_id_to_profile[session_id] = profile
             logger.info(f"Session {session_id} mapped to profile {profile}")
@@ -127,7 +126,7 @@ class RouterSseTransport(SseServerTransport):
 
         try:
             session_id = UUID(hex=session_id_param)
-            logger.info(f"Parsed session ID: {session_id}")
+            logger.debug(f"Parsed session ID: {session_id}")
         except ValueError:
             logger.warning(f"Received invalid session ID: {session_id_param}")
             response = Response("Invalid session ID", status_code=400)
@@ -140,7 +139,7 @@ class RouterSseTransport(SseServerTransport):
             return await response(scope, receive, send)
 
         body = await request.body()
-        logger.info(f"Received JSON: {body}")
+        logger.debug(f"Received JSON: {body}")
 
         # find profile through session_id
         profile = self._session_id_to_profile.get(session_id)
@@ -154,7 +153,7 @@ class RouterSseTransport(SseServerTransport):
 
         try:
             message = types.JSONRPCMessage.model_validate_json(body)
-            logger.info(f"Validated client message: {message}")
+            logger.debug(f"Validated client message: {message}")
         except ValidationError as err:
             logger.error(f"Failed to parse message: {err}")
             response = Response("Could not parse message", status_code=400)
@@ -162,7 +161,7 @@ class RouterSseTransport(SseServerTransport):
             await writer.send(err)
             return
 
-        logger.info(f"Sending message to writer: {message}")
+        logger.debug(f"Sending message to writer: {message}")
         response = Response("Accepted", status_code=202)
         await response(scope, receive, send)
         await writer.send(message)

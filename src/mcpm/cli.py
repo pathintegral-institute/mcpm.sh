@@ -20,6 +20,7 @@ from mcpm.commands import (
     search,
     stash,
     transfer,
+    router,
 )
 
 console = Console()
@@ -133,6 +134,7 @@ def main(ctx, help_flag):
         commands_table.add_row("  [cyan]copy/cp[/]", "Copy a server from one client/profile to another.")
         commands_table.add_row("  [cyan]activate[/]", "Activate a profile.")
         commands_table.add_row("  [cyan]deactivate[/]", "Deactivate a profile.")
+        commands_table.add_row("  [cyan]router[/]", "Manage MCP router service.")
         console.print(commands_table)
 
         # Additional helpful information
@@ -161,6 +163,7 @@ main.add_command(transfer.copy)
 main.add_command(transfer.copy, name="cp")
 main.add_command(profile.activate)
 main.add_command(profile.deactivate)
+main.add_command(router.router, name="router")
 
 if __name__ == "__main__":
     main()

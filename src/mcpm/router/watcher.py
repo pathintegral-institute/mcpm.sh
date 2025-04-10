@@ -21,7 +21,7 @@ class ConfigWatcher:
         if not self.on_modification_callback:
             self.on_modification_callback = fn
 
-    async def start(self):
+    def start(self):
         self.running = True
         self.watch_task = asyncio.create_task(self._watch_config())
         return self.watch_task
@@ -47,6 +47,7 @@ class ConfigWatcher:
             updated = self._validate_config()
             if updated:
                 if self.on_modification_callback:
+                    logger.info("Config file has been modified, reloading...")
                     await self.on_modification_callback()
 
     def _validate_config(self):

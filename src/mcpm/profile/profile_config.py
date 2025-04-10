@@ -87,3 +87,6 @@ class ProfileConfigManager:
                 self._save_profiles()
                 return True
         return False
+
+    def reload(self):
+        self._profiles = self._load_profiles()
