@@ -19,7 +19,7 @@ from mcpm.utils.scope import ScopeType
 console = Console()
 
 
-@click.command("rm")
+@click.command()
 @click.argument("server_name")
 @click.option("--force", is_flag=True, help="Force removal without confirmation")
 def remove(server_name, force):

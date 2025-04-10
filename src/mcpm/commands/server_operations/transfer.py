@@ -49,7 +49,7 @@ def determine_source_and_destination(
     )
 
 
-@click.command("cp")
+@click.command()
 @click.argument("source")
 @click.argument("destination")
 @click.option("--force", is_flag=True, help="Force copy even if destination already exists")
@@ -104,7 +104,7 @@ def copy(source, destination, force=False):
         )
 
 
-@click.command("mv")
+@click.command()
 @click.argument("source")
 @click.argument("destination")
 @click.option("--force", is_flag=True, help="Force move even if destination already exists")
