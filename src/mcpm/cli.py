@@ -19,6 +19,7 @@ from mcpm.commands import (
     remove,
     search,
     stash,
+    transfer,
     router,
 )
 
@@ -65,23 +66,24 @@ def main(ctx, help_flag):
 
         # Create bold ASCII art with thicker characters for a more striking appearance
         logo = [
-            " ███╗   ███╗ ██████╗██████╗ ███╗   ███╗             ",
-            " ████╗ ████║██╔════╝██╔══██╗████╗ ████║             ",
-            " ██╔████╔██║██║     ██████╔╝██╔████╔██║             ",
-            " ██║╚██╔╝██║██║     ██╔═══╝ ██║╚██╔╝██║             ",
-            " ██║ ╚═╝ ██║╚██████╗██║     ██║ ╚═╝ ██║             ",
-            " ╚═╝     ╚═╝ ╚═════╝╚═╝     ╚═╝     ╚═╝             ",
+            " ███╗   ███╗ ██████╗██████╗ ███╗   ███╗ ",
+            " ████╗ ████║██╔════╝██╔══██╗████╗ ████║ ",
+            " ██╔████╔██║██║     ██████╔╝██╔████╔██║ ",
+            " ██║╚██╔╝██║██║     ██╔═══╝ ██║╚██╔╝██║ ",
+            " ██║ ╚═╝ ██║╚██████╗██║     ██║ ╚═╝ ██║ ",
+            " ╚═╝     ╚═╝ ╚═════╝╚═╝     ╚═╝     ╚═╝ ",
             "",
             f"v{__version__}",
             "Model Context Protocol Manager",
-            "Supports Claude Desktop, Windsurf, Cursor, and more",
+            "Open Source. Forever Free.",
+            "Built with ❤️ by [bold cyan]Path Integral Institute[/]",
         ]
 
         # No need to convert to joined string since we're formatting directly in the panel
 
         # Create a panel with styled content
         panel = Panel(
-            f"[bold green]{logo[0]}\n{logo[1]}\n{logo[2]}\n{logo[3]}\n{logo[4]}\n{logo[5]}[/]\n\n[bold yellow]{logo[7]}[/]\n[italic blue]{logo[8]}[/]\n[bold magenta]{logo[9]}[/]",
+            f"[bold green]{logo[0]}\n{logo[1]}\n{logo[2]}\n{logo[3]}\n{logo[4]}\n{logo[5]}[/]\n\n[bold yellow]{logo[7]}[/] [italic blue]{logo[8]}[/]\n[bold magenta]{logo[9]}[/]\n[bold cyan]{logo[10]}[/]",
             border_style="bold cyan",
             expand=False,
             padding=(0, 2),
@@ -122,12 +124,16 @@ def main(ctx, help_flag):
         commands_table.add_row("  [cyan]client[/]", "Manage the active MCPM client.")
         commands_table.add_row("  [cyan]config[/]", "Manage MCPM configuration.")
         commands_table.add_row("  [cyan]inspector[/]", "Launch the MCPM Inspector UI to examine servers.")
-        commands_table.add_row("  [cyan]list[/]", "List all installed MCP servers.")
-        commands_table.add_row("  [cyan]remove[/]", "Remove an installed MCP server.")
+        commands_table.add_row("  [cyan]list/ls[/]", "List all installed MCP servers.")
+        commands_table.add_row("  [cyan]remove/rm[/]", "Remove an installed MCP server.")
         commands_table.add_row("  [cyan]search[/]", "Search available MCP servers.")
         commands_table.add_row("  [cyan]stash[/]", "Temporarily store a server configuration aside.")
         commands_table.add_row("  [cyan]pop[/]", "Restore a previously stashed server configuration.")
         commands_table.add_row("  [cyan]profile[/]", "Manage MCPM profiles.")
+        commands_table.add_row("  [cyan]move/mv[/]", "Move a server from one client/profile to another.")
+        commands_table.add_row("  [cyan]copy/cp[/]", "Copy a server from one client/profile to another.")
+        commands_table.add_row("  [cyan]activate[/]", "Activate a profile.")
+        commands_table.add_row("  [cyan]deactivate[/]", "Deactivate a profile.")
         commands_table.add_row("  [cyan]router[/]", "Manage MCP router service.")
         console.print(commands_table)
 
@@ -139,8 +145,10 @@ def main(ctx, help_flag):
 # Register commands
 main.add_command(search.search)
 main.add_command(remove.remove)
+main.add_command(remove.remove, name="rm")
 main.add_command(add.add)
 main.add_command(list.list)
+main.add_command(list.list, name="ls")
 
 main.add_command(stash.stash)
 main.add_command(pop.pop)
@@ -149,6 +157,12 @@ main.add_command(client.client)
 main.add_command(config.config)
 main.add_command(inspector.inspector, name="inspector")
 main.add_command(profile.profile, name="profile")
+main.add_command(transfer.move)
+main.add_command(transfer.move, name="mv")
+main.add_command(transfer.copy)
+main.add_command(transfer.copy, name="cp")
+main.add_command(profile.activate)
+main.add_command(profile.deactivate)
 main.add_command(router.router, name="router")
 
 if __name__ == "__main__":

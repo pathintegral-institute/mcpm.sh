@@ -67,7 +67,7 @@ class DuckDBAccessMonitor(AccessMonitor):
             # Create the events table if it doesn't exist using identity column for auto-incrementing
             self.connection.execute("""
                 CREATE SEQUENCE IF NOT EXISTS event_id_seq;
-                
+
                 CREATE TABLE IF NOT EXISTS monitor_events (
                     id INTEGER DEFAULT nextval('event_id_seq') PRIMARY KEY,
                     event_type VARCHAR,
@@ -88,7 +88,7 @@ class DuckDBAccessMonitor(AccessMonitor):
 
             # Create a backward compatibility view
             self.connection.execute("""
-                CREATE VIEW IF NOT EXISTS access_events AS 
+                CREATE VIEW IF NOT EXISTS access_events AS
                 SELECT * FROM monitor_events
             """)
 

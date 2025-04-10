@@ -5,6 +5,7 @@ Client configuration management for MCPM
 import logging
 from typing import Any, Dict, List, Optional
 
+from mcpm.profile.profile_config import ProfileConfigManager
 from mcpm.utils.config import ConfigManager
 
 logger = logging.getLogger(__name__)
@@ -22,7 +23,7 @@ class ClientConfigManager:
         """Refresh the local config cache from the config manager"""
         self._config = self.config_manager.get_config()
 
-    def get_active_client(self) -> str:
+    def get_active_client(self) -> str | None:
         """Get the name of the currently active client or None if not set"""
         self._refresh_config()
         return self._config.get("active_client")
@@ -56,6 +57,37 @@ class ClientConfigManager:
         self._refresh_config()
         return result
 
+    def get_active_profile(self) -> str | None:
+        """Get the name of the currently active profile or None if not set"""
+        self._refresh_config()
+        return self._config.get("active_profile")
+
+    def set_active_profile(self, profile_name: Optional[str]) -> bool:
+        """Set the active profile
+
+        Args:
+            profile_name: Name of profile to set as active, or None to clear
+
+        Returns:
+            bool: Success or failure
+        """
+        # If None, remove the active profile
+        if profile_name is None:
+            result = self.config_manager.set_config("active_profile", None)
+            self._refresh_config()
+            return result
+
+        supported_profiles = ProfileConfigManager().list_profiles()
+
+        if profile_name not in supported_profiles:
+            logger.error(f"Unknown profile: {profile_name}")
+            return False
+
+        # Set the active profile
+        result = self.config_manager.set_config("active_profile", profile_name)
+        self._refresh_config()
+        return result
+
     def get_supported_clients(self) -> List[str]:
         """Get a list of supported client names"""
         # Import here to avoid circular imports
@@ -77,11 +109,11 @@ class ClientConfigManager:
 
         return ClientRegistry.get_client_manager(client_name)
 
-    def stash_server(self, client_name: str, server_name: str, server_config: Any) -> bool:
+    def stash_server(self, scope_name: str, server_name: str, server_config: Any) -> bool:
         """Store a disabled server configuration in the global config
 
         Args:
-            client_name: Name of the client the server belongs to
+            scope_name: Name of the scope the server belongs to
             server_name: Name of the server to stash
             server_config: Server configuration to stash (ServerConfig object or dict)
 
@@ -96,8 +128,8 @@ class ClientConfigManager:
             self._config["stashed_servers"] = {}
 
         # Ensure client section exists
-        if client_name not in self._config["stashed_servers"]:
-            self._config["stashed_servers"][client_name] = {}
+        if scope_name not in self._config["stashed_servers"]:
+            self._config["stashed_servers"][scope_name] = {}
 
         # Convert ServerConfig to dict if needed
         try:
@@ -110,9 +142,9 @@ class ClientConfigManager:
 
             # Add the server configuration
             stashed_servers = self._config.get("stashed_servers", {})
-            if client_name not in stashed_servers:
-                stashed_servers[client_name] = {}
-            stashed_servers[client_name][server_name] = server_dict
+            if scope_name not in stashed_servers:
+                stashed_servers[scope_name] = {}
+            stashed_servers[scope_name][server_name] = server_dict
 
             # Use set_config to save the updated stashed_servers
             result = self.config_manager.set_config("stashed_servers", stashed_servers)
@@ -122,11 +154,11 @@ class ClientConfigManager:
             logger.error(f"Failed to save stashed server: {e}")
             return False
 
-    def pop_server(self, client_name: str, server_name: str) -> Optional[Dict[str, Any]]:
+    def pop_server(self, scope_name: str, server_name: str) -> Optional[Dict[str, Any]]:
         """Retrieve a stashed server configuration from the global config
 
         Args:
-            client_name: Name of the client the server belongs to
+            scope_name: Name of the scope the server belongs to
             server_name: Name of the server to retrieve
 
         Returns:
@@ -140,23 +172,23 @@ class ClientConfigManager:
         if not stashed_servers:
             return None
 
-        # Check if client section exists
-        if client_name not in stashed_servers:
+        # Check if scope section exists
+        if scope_name not in stashed_servers:
             return None
 
         # Check if server exists
-        if server_name not in stashed_servers[client_name]:
+        if server_name not in stashed_servers[scope_name]:
             return None
 
         # Get the server configuration
-        server_config = stashed_servers[client_name][server_name]
+        server_config = stashed_servers[scope_name][server_name]
 
         # Remove the server from stashed servers
-        del stashed_servers[client_name][server_name]
+        del stashed_servers[scope_name][server_name]
 
-        # Clean up empty client section if needed
-        if not stashed_servers[client_name]:
-            del stashed_servers[client_name]
+        # Clean up empty scope section if needed
+        if not stashed_servers[scope_name]:
+            del stashed_servers[scope_name]
 
         # Clean up empty stashed_servers section if needed
         if not stashed_servers:
@@ -171,11 +203,11 @@ class ClientConfigManager:
 
         return server_config
 
-    def is_server_stashed(self, client_name: str, server_name: str) -> bool:
+    def is_server_stashed(self, scope_name: str, server_name: str) -> bool:
         """Check if a server is stashed in the global config
 
         Args:
-            client_name: Name of the client the server belongs to
+            scope_name: Name of the scope the server belongs to
             server_name: Name of the server to check
 
         Returns:
@@ -189,18 +221,18 @@ class ClientConfigManager:
         if not stashed_servers:
             return False
 
-        # Check if client section exists
-        if client_name not in stashed_servers:
+        # Check if scope section exists
+        if scope_name not in stashed_servers:
             return False
 
         # Check if server exists
-        return server_name in stashed_servers[client_name]
+        return server_name in stashed_servers[scope_name]
 
-    def get_stashed_servers(self, client_name: str) -> Dict[str, Dict[str, Any]]:
+    def get_stashed_servers(self, scope_name: str) -> Dict[str, Dict[str, Any]]:
         """Get all stashed servers for a client
 
         Args:
-            client_name: Name of the client to get stashed servers for
+            scope_name: Name of the scope to get stashed servers for
 
         Returns:
             Dict: Dictionary of server configurations by name
@@ -213,8 +245,8 @@ class ClientConfigManager:
         if not stashed_servers:
             return {}
 
-        # Check if client section exists
-        if client_name not in stashed_servers:
+        # Check if scope section exists
+        if scope_name not in stashed_servers:
             return {}
 
-        return stashed_servers[client_name]
+        return stashed_servers[scope_name]

@@ -2,11 +2,12 @@
 MCPM Inspector command for examining MCP servers through a user interface
 """
 
-import click
 import os
-import subprocess
 import shlex
+import subprocess
 import sys
+
+import click
 from rich.console import Console
 from rich.panel import Panel
 

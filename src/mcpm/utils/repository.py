@@ -6,8 +6,8 @@ import json
 import logging
 import os
 from datetime import datetime
-from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Any, Dict, List, Optional
+
 import requests
 
 # Import ConfigManager to get the config directory

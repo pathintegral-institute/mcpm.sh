@@ -33,7 +33,7 @@ Your server JSON file must include the following required fields:
       "required": false
     }
   },
-  "commands": {
+  "installations": {
     "npm": {
       "type": "npm",
       "command": "npx",
