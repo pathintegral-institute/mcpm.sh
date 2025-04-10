@@ -18,7 +18,8 @@ def profile():
 
 @click.command()
 @click.argument("profile_name")
-def activate(profile_name):
+@click.option("--client", "-c", default="client", help="Client of the profile")
+def activate(profile_name, client):
     """Activate a profile.
 
     Sets the specified profile as the active profile.
@@ -35,9 +36,12 @@ def activate(profile_name):
     else:
         console.print(f"[bold red]Error:[/] Failed to activate profile '{profile_name}'.")
 
+    # TODO: add url to the client config
+
 
 @click.command()
-def deactivate():
+@click.option("--client", "-c", default="client", help="Client of the profile")
+def deactivate(client):
     """Deactivate a profile.
 
     Unsets the active profile.
@@ -53,6 +57,8 @@ def deactivate():
         console.print(f"\n[green]Profile '{active_profile}' deactivated successfully.[/]\n")
     else:
         console.print(f"[bold red]Error:[/] Failed to deactivate profile '{active_profile}'.")
+
+    # TODO: remove url from the client config
 
 
 @profile.command(name="ls")

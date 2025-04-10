@@ -74,8 +74,8 @@ mcpm profile rm PROFILE                  # Remove an MCPM profile
 mcpm profile remove PROFILE              # Remove an MCPM profile
 mcpm profile rename PROFILE              # Rename an MCPM profile
 
-mcpm activate PROFILE                   # activate a profile for a client
-mcpm deactivate PROFILE                 # deactivate a profile for a client
+mcpm activate PROFILE                    # activate a profile for a client
+mcpm deactivate                          # deactivate a profile for a client
 
 # router
 mcpm router on -p port -h host           # start router daemon
