@@ -11,8 +11,9 @@ from starlette.routing import Mount, Route
 
 from mcpm.router.router import MCPRouter
 from mcpm.router.transport import RouterSseTransport
+from mcpm.utils.platform import get_log_directory
 
-LOG_DIR = Path.home() / "Library" / "Logs" / "mcpm"
+LOG_DIR = get_log_directory("mcpm")
 LOG_DIR.mkdir(parents=True, exist_ok=True)
 LOG_FILE = LOG_DIR / "router.log"
 CORS_ENABLED = os.environ.get("MCPM_ROUTER_CORS")

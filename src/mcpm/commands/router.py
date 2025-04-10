@@ -7,21 +7,22 @@ import os
 import signal
 import subprocess
 import sys
-from pathlib import Path
 
 import click
 import psutil
 from rich.console import Console
 
+from mcpm.utils.platform import get_log_directory, get_pid_directory
+
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 console = Console()
 
-APP_SUPPORT_DIR = Path.home() / "Library" / "Application Support" / "mcpm"
+APP_SUPPORT_DIR = get_pid_directory("mcpm")
 APP_SUPPORT_DIR.mkdir(parents=True, exist_ok=True)
 PID_FILE = APP_SUPPORT_DIR / "router.pid"
 
-LOG_DIR = Path.home() / "Library" / "Logs" / "mcpm"
+LOG_DIR = get_log_directory("mcpm")
 LOG_DIR.mkdir(parents=True, exist_ok=True)
 
 
@@ -101,6 +102,8 @@ def start_router(host, port, cors):
 
     # prepare uvicorn command
     uvicorn_cmd = [
+        sys.executable,
+        "-m",
         "uvicorn",
         "mcpm.router.app:app",
         "--host",
