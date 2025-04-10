@@ -1,14 +1,17 @@
-from dataclasses import dataclass
-from typing import List, Dict, Any, Optional
-from enum import Enum
-import os
-import json
 import asyncio
-from openai import OpenAI
-from loguru import logger
+import json
+import logging
+import os
+from dataclasses import dataclass
+from enum import Enum
+from typing import Any, Dict, List, Optional
 
 import dotenv
+from openai import OpenAI
+
 dotenv.load_dotenv()
+
+logger = logging.getLogger(__name__)
 
 
 class MCPCategory(Enum):
@@ -34,6 +37,7 @@ class LLMModel:
 @dataclass
 class CategorizationWorkflowState:
     """Holds the state for the categorization workflow"""
+
     server_name: str = ""
     server_description: str = ""
     selected_category: Optional[MCPCategory] = None
@@ -42,6 +46,7 @@ class CategorizationWorkflowState:
 @dataclass
 class CategorizationAgentBuildPromptTemplateArgs:
     """Arguments for building the prompt template"""
+
     include_examples: bool = False
 
 
@@ -57,8 +62,7 @@ class CategorizationAgent:
 
     def build_system_prompt(self) -> str:
         """Build the system prompt for the categorization agent"""
-        return (
-            """You are an expert at categorizing MCP (Model Context Protocol) servers.
+        return """You are an expert at categorizing MCP (Model Context Protocol) servers.
 Your task is to categorize each server into exactly one of the following categories:
 ## 1. Databases
 Systems that connect LLMs to structured data repositories, enabling querying, analysis, and management of various types of databases including relational databases (PostgreSQL, MySQL, MSSQL), NoSQL databases (MongoDB, Redis, ArangoDB), vector databases (Pinecone, Chroma), cloud data warehouses (Snowflake, BigQuery), and search engines (Elasticsearch, Typesense).
@@ -90,7 +94,6 @@ Meta-tools for managing, discovering, and enhancing the MCP ecosystem itself, in
 Choose the MOST appropriate category based on the server's primary function.
 Not that the server itself is an MCP server, so only select MCP Tools when the server is a meta-tool that manages other MCP servers.
 Only select ONE category per server."""
-        )
 
     def build_user_prompt(self, server_name: str, server_description: str, include_examples: bool = False) -> str:
         """Build the user prompt for categorization"""
@@ -114,15 +117,15 @@ Only select ONE category per server."""
 
         return base_prompt
 
-    async def execute(self, server_name: str, server_description: str, include_examples: bool = False) -> Dict[str, Any]:
+    async def execute(
+        self, server_name: str, server_description: str, include_examples: bool = False
+    ) -> Dict[str, Any]:
         """Execute the categorization workflow"""
         try:
             # Build system and user prompts
             system_prompt = self.build_system_prompt()
             user_prompt = self.build_user_prompt(
-                server_name=server_name,
-                server_description=server_description,
-                include_examples=include_examples
+                server_name=server_name, server_description=server_description, include_examples=include_examples
             )
 
             # Define the function schema
@@ -136,14 +139,14 @@ Only select ONE category per server."""
                         "category": {
                             "type": "string",
                             "enum": [cat.value for cat in MCPCategory],
-                            "description": "Selected category for the server"
+                            "description": "Selected category for the server",
                         },
                         "explanation": {
                             "type": "string",
-                            "description": "Brief explanation of why this category was chosen"
-                        }
-                    }
-                }
+                            "description": "Brief explanation of why this category was chosen",
+                        },
+                    },
+                },
             }
 
             # Call OpenAI API with the categorization tool
@@ -154,19 +157,9 @@ Only select ONE category per server."""
                     "X-Title": "MCPM",
                 },
                 model=LLMModel.CLAUDE_3_SONNET,
-                messages=[
-                    {
-                        "role": "system",
-                        "content": system_prompt
-                    },
-                    {
-                        "role": "user",
-                        "content": user_prompt
-                    }
-                ],
+                messages=[{"role": "system", "content": system_prompt}, {"role": "user", "content": user_prompt}],
                 tools=[{"type": "function", "function": function_schema}],
-                tool_choice={"type": "function", "function": {
-                    "name": "categorize_server"}}
+                tool_choice={"type": "function", "function": {"name": "categorize_server"}},
             )
 
             # Process the tool response
@@ -176,17 +169,16 @@ Only select ONE category per server."""
 
                 result = {
                     "category": tool_args.get("category", "Unknown"),
-                    "explanation": tool_args.get("explanation", "No explanation provided.")
+                    "explanation": tool_args.get("explanation", "No explanation provided."),
                 }
-                logger.info(
-                    f"Categorization result: {result['category']} - {result['explanation'][:30]}...")
+                logger.info(f"Categorization result: {result['category']} - {result['explanation'][:30]}...")
                 return result
             else:
                 logger.error("No tool calls found in the response")
                 return {
                     "server_name": server_name,
                     "category": "Unknown",
-                    "explanation": "Failed to categorize: No tool use in response."
+                    "explanation": "Failed to categorize: No tool use in response.",
                 }
 
         except Exception as e:
@@ -194,7 +186,7 @@ Only select ONE category per server."""
             return {
                 "server_name": server_name,
                 "category": "Error",
-                "explanation": f"Error during categorization: {str(e)}"
+                "explanation": f"Error during categorization: {str(e)}",
             }
 
 
@@ -206,9 +198,7 @@ async def categorize_servers(servers: List[Dict[str, str]]) -> List[Dict[str, An
 
     for server in servers:
         result = await agent.execute(
-            server_name=server["name"],
-            server_description=server["description"],
-            include_examples=True
+            server_name=server["name"], server_description=server["description"], include_examples=True
         )
         result["server_name"] = server["name"]
         results.append(result)
@@ -222,7 +212,7 @@ sample_servers = [
     {"name": "GitHub", "description": "Repository management and code hosting"},
     {"name": "Notion", "description": "Collaborative workspace and knowledge management"},
     {"name": "EverArt", "description": "AI image generation using various models"},
-    {"name": "MCP Installer", "description": "Installs other MCP servers automatically"}
+    {"name": "MCP Installer", "description": "Installs other MCP servers automatically"},
 ]
 
 # Run the categorization
@@ -231,8 +221,8 @@ sample_servers = [
 async def main():
     results = await categorize_servers(sample_servers)
     for result in results:
-        print(
-            f"{result['server_name']} → {result['category']} ({result['explanation'][:50]}...)")
+        print(f"{result['server_name']} → {result['category']} ({result['explanation'][:50]}...)")
+
 
 if __name__ == "__main__":
     asyncio.run(main())

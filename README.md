@@ -109,7 +109,7 @@ This repository contains the CLI and service components for MCP Manager, built w
 
 ### Development Requirements
 
-- Python 3.8+
+- Python 3.10+
 - uv (for virtual environment and dependency management)
 - Click framework for CLI
 - Rich for enhanced console output
