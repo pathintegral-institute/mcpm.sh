@@ -108,8 +108,8 @@ def test_client_set_command_unsupported(monkeypatch):
     assert "Error" in result.output
     assert "Unknown client: unsupported-client" in result.output
     # Verify supported clients are listed
-    for client in supported_clients:
-        assert client in result.output
+    for supported_client in supported_clients:
+        assert supported_client in result.output
 
 
 def test_client_set_command_failure(monkeypatch):

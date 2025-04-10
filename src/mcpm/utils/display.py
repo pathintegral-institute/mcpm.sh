@@ -92,5 +92,5 @@ def print_client_error(client_name):
     Args:
         client_name: Name of the client that caused the error
     """
-    console.print(f"[bold red]Error:[/] Unsupported active client")
-    console.print(f"Please switch to a supported client using 'mcpm client <client-name>'")
+    console.print("[bold red]Error:[/] Unsupported active client")
+    console.print("Please switch to a supported client using 'mcpm client <client-name>'")

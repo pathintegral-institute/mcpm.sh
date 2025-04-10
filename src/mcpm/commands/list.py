@@ -46,8 +46,8 @@ def list():
         return
 
     # Count the configured servers
-    server_count = len(servers)
-    stashed_count = len(stashed_servers)
+    len(servers)
+    len(stashed_servers)
 
     # Print active servers
     if servers:

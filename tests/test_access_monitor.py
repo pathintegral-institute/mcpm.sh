@@ -61,8 +61,8 @@ async def test_track_event(temp_db_path):
 
     # Query the database directly to check if the event was recorded
     result = monitor.connection.execute("""
-        SELECT * FROM monitor_events 
-        WHERE server_id = 'test-server' 
+        SELECT * FROM monitor_events
+        WHERE server_id = 'test-server'
         AND resource_id = 'test-tool'
     """).fetchall()
 

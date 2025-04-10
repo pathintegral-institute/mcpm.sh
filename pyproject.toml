@@ -31,6 +31,7 @@ dependencies = [
     "openai>=1.72.0",
     "aiohttp>=3.11.16",
     "watchfiles>=1.0.4",
+    "duckdb>=1.2.2",
 ]
 
 [project.urls]
@@ -52,8 +53,14 @@ line-length = 120
 fix = true
 
 [tool.ruff.lint]
-select = ["F", "E", "W", "I"]
-fixable = ["I", "F401"]
+select = ["E", "F", "W", "Q", "I"]
+fixable = ["ALL"]
+ignore = ["E501"]
 
 [dependency-groups]
-dev = ["ipython>=8.34.0", "pytest>=8.3.5"]
+dev = [
+    "ipython>=8.34.0",
+    "pytest>=8.3.5",
+    "pytest-asyncio>=0.26.0",
+    "ruff>=0.11.4",
+]
