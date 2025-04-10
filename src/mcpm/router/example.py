@@ -23,7 +23,7 @@ async def main(host: str, port: int, allow_origins: List[str] = None):
         port: Port to bind the SSE server to
         allow_origins: List of allowed origins for CORS
     """
-    router = MCPRouter()
+    router = MCPRouter(reload_server=True)
 
     logger.info(f"Starting MCPRouter - will expose SSE server on http://{host}:{port}")
 

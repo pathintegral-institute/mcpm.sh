@@ -6,6 +6,7 @@ import logging
 import typing as t
 from collections import defaultdict
 from contextlib import asynccontextmanager
+from typing import Optional
 
 import uvicorn
 from mcp import server, types
@@ -23,6 +24,7 @@ from mcpm.schemas.server_config import ServerConfig
 
 from .client_connection import ServerConnection
 from .transport import RouterSseTransport
+from .watcher import ConfigWatcher
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +41,7 @@ class MCPRouter:
     exposes them as a single SSE server.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, reload_server: bool = False) -> None:
         """Initialize the router."""
         self.server_sessions: t.Dict[str, ServerConnection] = {}
         self.capabilities_mapping: t.Dict[str, t.Dict[str, t.Any]] = defaultdict(dict)
@@ -49,6 +51,14 @@ class MCPRouter:
         self.resources_templates_mapping: t.Dict[str, t.Dict[str, t.Any]] = {}
         self.aggregated_server = self._create_aggregated_server()
         self.profile_manager = ProfileConfigManager()
+        self.watcher: Optional[ConfigWatcher] = None
+        if reload_server:
+            self.watcher = ConfigWatcher(self.profile_manager.profile_path)
+
+    def get_unique_servers(self) -> list[ServerConfig]:
+        profiles = self.profile_manager.list_profiles()
+        name_to_server = {server.name: server for server_list in profiles.values() for server in server_list}
+        return list(name_to_server.values())
 
     async def update_servers(self, server_configs: list[ServerConfig]):
         """
@@ -72,6 +82,7 @@ class MCPRouter:
             for server_config in server_configs_to_add:
                 try:
                     await self.add_server(server_config.name, server_config)
+                    logger.info(f"Server {server_config.name} added successfully")
                 except Exception as e:
                     # if went wrong, skip the update
                     logger.error(f"Failed to add server {server_config.name}: {e}")
@@ -79,6 +90,7 @@ class MCPRouter:
         if server_ids_to_remove:
             for server_id in server_ids_to_remove:
                 await self.remove_server(server_id)
+                logger.info(f"Server {server_id} removed successfully")
 
     async def add_server(self, server_id: str, server_config: ServerConfig) -> None:
         """
@@ -318,6 +330,17 @@ class MCPRouter:
         app: server.Server[object] = server.Server(name="mcpm-router")
         return self._patch_handler_func(app)
 
+    async def start_watcher_job(self):
+        async def reload_servers():
+            # reload profile once config file is modified
+            self.profile_manager.reload()
+            servers_wait_for_update = self.get_unique_servers()
+            await self.update_servers(servers_wait_for_update)
+
+        if self.watcher:
+            self.watcher.register_modification_callback(reload_servers)
+            self.watcher.start()
+
     async def start_sse_server(
         self, host: str = "localhost", port: int = 8080, allow_origins: t.Optional[t.List[str]] = None
     ) -> None:
@@ -330,10 +353,9 @@ class MCPRouter:
             allow_origins: List of allowed origins for CORS
         """
         # waiting all servers to be initialized
-        profiles = self.profile_manager.list_profiles()
-        for _, servers in profiles.items():
-            for server_config in servers:
-                await self.add_server(server_config.name, server_config)
+        servers_to_start = self.get_unique_servers()
+        await self.update_servers(servers_to_start)
+        await self.start_watcher_job()
 
         # Create notification options
         notification_options = NotificationOptions(
@@ -401,10 +423,7 @@ class MCPRouter:
         @asynccontextmanager
         async def lifespan(app: AppType):
             yield
-            for _, client in self.server_sessions.items():
-                if client.healthy():
-                    await client.request_for_shutdown()
-            logger.info("all alive client sessions have been shut down")
+            await self.shutdown()
 
         # Set up middleware for CORS if needed
         middleware: t.List[Middleware] = []
@@ -438,3 +457,14 @@ class MCPRouter:
         )
         server_instance = uvicorn.Server(config)
         await server_instance.serve()
+
+    async def shutdown(self):
+        if self.watcher:
+            await self.watcher.stop()
+
+        # close all client sessions
+        for _, client in self.server_sessions.items():
+            if client.healthy():
+                await client.request_for_shutdown()
+
+        logger.info("all alive client sessions have been shut down")
