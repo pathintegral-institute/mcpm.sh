@@ -61,9 +61,6 @@ def main(ctx, help_flag):
         # Get active client
         active_client = client_config_manager.get_active_client()
 
-        # Create a nice ASCII art banner with proper alignment using Rich
-        from rich.panel import Panel
-
         # Create bold ASCII art with thicker characters for a more striking appearance
         logo = [
             " ███╗   ███╗ ██████╗██████╗ ███╗   ███╗ ",
@@ -74,23 +71,41 @@ def main(ctx, help_flag):
             " ╚═╝     ╚═╝ ╚═════╝╚═╝     ╚═╝     ╚═╝ ",
             "",
             f"v{__version__}",
-            "Model Context Protocol Manager",
             "Open Source. Forever Free.",
-            "Built with ❤️ by [bold cyan]Path Integral Institute[/]",
+            "Built with ❤️ by Path Integral Institute",
         ]
 
-        # No need to convert to joined string since we're formatting directly in the panel
+        # Define terminal width for centering
+        terminal_width = 80  # Standard terminal width
 
-        # Create a panel with styled content
-        panel = Panel(
-            f"[bold green]{logo[0]}\n{logo[1]}\n{logo[2]}\n{logo[3]}\n{logo[4]}\n{logo[5]}[/]\n\n[bold yellow]{logo[7]}[/] [italic blue]{logo[8]}[/]\n[bold magenta]{logo[9]}[/]\n[bold cyan]{logo[10]}[/]",
-            border_style="bold cyan",
-            expand=False,
-            padding=(0, 2),
-        )
+        # Print separator line
+        console.print("[bold cyan]" + "=" * terminal_width + "[/]")
 
-        # Print the panel
-        console.print(panel)
+        # Calculate base padding for ASCII art
+        base_padding = " " * ((terminal_width - len(logo[0])) // 2)
+
+        # Center the ASCII art (except last line)
+        for i in range(5):  # First 5 lines of the ASCII art
+            console.print(f"{base_padding}[bold green]{logo[i]}[/]")
+
+        # Print last line with version, using the same base padding
+        version_text = f"v{__version__}"
+        console.print(f"{base_padding}[bold green]{logo[5]}[/] [bold yellow]{version_text}[/]")
+
+        # Center the taglines
+        tagline1 = logo[8]  # "Open Source. Forever Free."
+        tagline2 = logo[9]  # "Built with ❤️ by Path Integral Institute"
+
+        # Calculate center padding for each tagline
+        tagline1_padding = " " * ((terminal_width - len(tagline1)) // 2)
+        tagline2_padding = " " * ((terminal_width - len(tagline2)) // 2)
+
+        # Print centered taglines
+        console.print(tagline1_padding + "[bold magenta]" + tagline1 + "[/]")
+        console.print(tagline2_padding + "[bold cyan]" + tagline2 + "[/]")
+
+        # Print separator line
+        console.print("[bold cyan]" + "=" * terminal_width + "[/]")
 
         # Get information about installed clients
         from mcpm.clients.client_registry import ClientRegistry

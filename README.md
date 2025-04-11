@@ -1,8 +1,6 @@
 ![PyPI - Version](https://img.shields.io/pypi/v/mcpm)
 ![GitHub Release](https://img.shields.io/github/v/release/pathintegral-institute/mcpm.sh)
 
-<div align="center">
-
 ```
  ███╗   ███╗ ██████╗██████╗ ███╗   ███╗ 
  ████╗ ████║██╔════╝██╔══██╗████╗ ████║ 
@@ -15,8 +13,6 @@ Model Context Protocol Manager
 Open Source. Forever Free.
 Built with ❤️ by Path Integral Institute
 ```
-
-</div>
 
 # 🌟 MCPM - Model Context Protocol Manager
 
