@@ -7,6 +7,10 @@ import os
 import re
 
 import click
+from prompt_toolkit import PromptSession
+from prompt_toolkit.formatted_text import HTML
+from prompt_toolkit.key_binding import KeyBindings
+from prompt_toolkit.styles import Style
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.prompt import Confirm
@@ -22,6 +26,64 @@ from mcpm.utils.scope import ScopeType, extract_from_scope
 console = Console()
 repo_manager = RepositoryManager()
 profile_config_manager = ProfileConfigManager()
+
+# Create a prompt session with custom styling
+prompt_session = PromptSession()
+style = Style.from_dict(
+    {
+        "prompt": "ansicyan bold",
+        "default": "ansiyellow",
+        "description": "ansiwhite",
+        "required": "ansired",
+        "optional": "ansigreen",
+    }
+)
+
+# Create key bindings
+kb = KeyBindings()
+
+
+def prompt_with_default(prompt_text, default="", hide_input=False, required=False):
+    """Prompt the user with a default value that can be edited directly.
+
+    Args:
+        prompt_text: The prompt text to display
+        default: The default value to show in the prompt
+        hide_input: Whether to hide the input (for passwords)
+        required: Whether this is a required field
+
+    Returns:
+        The user's input or the default value if empty
+    """
+    # if default:
+    #     console.print(f"Default: [yellow]{default}[/]")
+
+    # Get user input
+    try:
+        result = prompt_session.prompt(
+            message=HTML(f"<prompt>{prompt_text}</prompt> > "),
+            style=style,
+            default=default,
+            is_password=hide_input,
+            key_bindings=kb,
+        )
+
+        # Empty result for non-required field means leave it empty
+        if not result.strip() and not required:
+            return ""
+
+        # Empty result for required field with default should use default
+        if not result.strip() and required and default:
+            return default
+
+        # Empty result for required field without default is not allowed
+        if not result.strip() and required and not default:
+            console.print("[yellow]Warning: Required value cannot be empty.[/]")
+            return prompt_with_default(prompt_text, default, hide_input, required)
+
+        return result
+    except KeyboardInterrupt:
+        raise click.Abort()
 
 
 @click.command()
@@ -222,33 +284,36 @@ def add(server_name, force=False, alias=None, target: str | None = None):
                 description = arg_info.get("description", "")
                 is_required = arg_info.get("required", False)
                 example = arg_info.get("example", "")
-                example_text = f" (example: {example})" if example else ""
-
-                # Build prompt text
-                prompt_text = f"Enter value for {arg_name}{example_text}"
-                if description:
-                    prompt_text += f"\n{description}"
 
                 # Add required indicator
                 if is_required:
                     required_args[arg_name] = arg_info
-                    prompt_text += " (required)"
+                    required_text = "(required)"
+                    required_html = "<ansired>(required)</ansired>"
                 else:
-                    prompt_text += " (optional, press Enter to skip)"
+                    required_text = "(optional)"
+                    required_html = "<ansigreen>(optional)</ansigreen>"
+
+                # Build clean prompt text for console display and prompt
+                console_prompt_text = f"{arg_name} {required_text}"
+                html_prompt_text = f"{arg_name} {required_html}"
 
                 # Check if the argument is already set in environment
                 env_value = os.environ.get(arg_name, "")
 
+                # Print description if available
+                if description:
+                    console.print(f"[dim]{description}[/]")
+
                 if env_value:
                     # Show the existing value as default
-                    console.print(f"[green]Found {arg_name} in environment: {env_value}[/]")
+                    console.print(f"[green]Found in environment: {env_value}[/]")
                     try:
-                        user_value = click.prompt(
-                            prompt_text,
+                        user_value = prompt_with_default(
+                            html_prompt_text,
                             default=env_value,
-                            hide_input="token" in arg_name.lower()
-                            or "key" in arg_name.lower()
-                            or "secret" in arg_name.lower(),
+                            hide_input=_should_hide_input(arg_name),
+                            required=is_required,
                         )
                         if user_value != env_value:
                             # User provided a different value
@@ -261,29 +326,17 @@ def add(server_name, force=False, alias=None, target: str | None = None):
                 else:
                     # No environment value
                     try:
-                        if is_required:
-                            # Required argument must have a value
-                            user_value = click.prompt(
-                                prompt_text,
-                                hide_input="token" in arg_name.lower()
-                                or "key" in arg_name.lower()
-                                or "secret" in arg_name.lower(),
-                            )
+                        user_value = prompt_with_default(
+                            html_prompt_text,
+                            default=example if example else "",
+                            hide_input=_should_hide_input(arg_name),
+                            required=is_required,
+                        )
+
+                        # Only add non-empty values to the environment
+                        if user_value and user_value.strip():
                             processed_variables[arg_name] = user_value
-                        else:
-                            # Optional argument can be skipped
-                            user_value = click.prompt(
-                                prompt_text,
-                                default="",
-                                show_default=False,
-                                hide_input="token" in arg_name.lower()
-                                or "key" in arg_name.lower()
-                                or "secret" in arg_name.lower(),
-                            )
-                            # Only add non-empty values to the environment
-                            if user_value and user_value.strip():
-                                processed_variables[arg_name] = user_value
-                            # Explicitly don't add anything if the user leaves it blank
+                        # Explicitly don't add anything if the user leaves it blank
                     except click.Abort:
                         if is_required:
                             console.print(f"[yellow]Warning: Required argument {arg_name} not provided.[/]")
@@ -309,9 +362,11 @@ def add(server_name, force=False, alias=None, target: str | None = None):
                     arg_info = required_args.get(key, {})
                     description = arg_info.get("description", "")
                     try:
-                        user_value = click.prompt(
+                        user_value = prompt_with_default(
                             f"Enter value for {key} ({description})",
-                            hide_input="token" in key.lower() or "key" in key.lower(),
+                            default="",
+                            hide_input=_should_hide_input(key),
+                            required=True,
                         )
                         processed_env[key] = user_value
                     except click.Abort:
@@ -333,11 +388,13 @@ def add(server_name, force=False, alias=None, target: str | None = None):
     # replace arguments with values
     processed_args = []
     for arg in install_args:
-        matched = re.match(r"\$\{(.*?)\}", arg)
+        # check if the argument contains a variable
+        matched = re.search(r"\$\{([^}]+)\}", arg)
         if matched:
             original, key = matched.group(0), matched.group(1)
             if key not in processed_variables:
-                # not required, remove the argument from args
+                # Keep the original argument if variable not found
+                processed_args.append(arg)
                 continue
             replaced_arg = arg.replace(original, processed_variables.get(key, arg))
             processed_args.append(replaced_arg)
@@ -391,3 +448,15 @@ def add(server_name, force=False, alias=None, target: str | None = None):
                     console.print(f'  Try: [italic]"{prompt}"[/]\n')
     else:
         console.print(f"[bold red]Failed to add {server_name} to {target_name}.[/]")
+
+
+def _should_hide_input(arg_name: str) -> bool:
+    """Determine if input should be hidden for a given argument name.
+
+    Args:
+        arg_name: The name of the argument to check
+
+    Returns:
+        bool: True if input should be hidden, False otherwise
+    """
+    return "token" in arg_name.lower() or "key" in arg_name.lower() or "secret" in arg_name.lower()

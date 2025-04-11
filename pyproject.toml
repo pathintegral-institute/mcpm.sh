@@ -29,6 +29,7 @@ dependencies = [
     "watchfiles>=1.0.4",
     "duckdb>=1.2.2",
     "psutil>=7.0.0",
+    "prompt-toolkit>=3.0.0",
 ]
 
 [project.urls]
