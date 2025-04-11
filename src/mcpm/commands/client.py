@@ -196,7 +196,7 @@ def edit_client():
                 if server_count > 0:
                     console.print("\n[bold]MCP Server Details:[/]")
                     for server_name, server_config in config_json.get("mcpServers", {}).items():
-                        print_server_config(server_name, server_config)
+                        print_server_config(client_manager.from_client_format(server_name, server_config))
 
             except json.JSONDecodeError:
                 console.print("[yellow]Warning: Config file contains invalid JSON[/]")

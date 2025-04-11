@@ -27,8 +27,8 @@ LOG_DIR = get_log_directory("mcpm")
 LOG_DIR.mkdir(parents=True, exist_ok=True)
 
 # default config
-DEFAULT_HOST = "0.0.0.0"
-DEFAULT_PORT = 6276
+DEFAULT_HOST = "localhost"
+DEFAULT_PORT = 6276  # 6276 represents MCPM on a T9 keypad (6=M, 2=C, 7=P, 6=M)
 
 
 def get_router_config():
@@ -188,13 +188,13 @@ def start_router():
 
 
 @router.command(name="set")
-@click.option("-h", "--host", type=str, help="Host to bind the SSE server to")
+@click.option("-H", "--host", type=str, help="Host to bind the SSE server to")
 @click.option("-p", "--port", type=int, help="Port to bind the SSE server to")
 def set_router_config(host, port):
     """Set MCPRouter global configuration.
 
     Example:
-        mcpm router set -h 0.0.0.0 -p 8888
+        mcpm router set -H localhost -p 8888
         mcpm router set --host 127.0.0.1 --port 9000
     """
     if not host and not port:
