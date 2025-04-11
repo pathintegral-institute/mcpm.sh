@@ -1,3 +1,3 @@
 """Single source of truth for MCPM version."""
 
-__version__ = "1.0.3"
+__version__ = "1.1.0"
