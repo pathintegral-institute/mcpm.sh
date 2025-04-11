@@ -5,6 +5,7 @@ from rich.table import Table
 from mcpm.clients.client_registry import ClientRegistry
 from mcpm.profile.profile_config import ProfileConfigManager
 from mcpm.schemas.server_config import STDIOServerConfig
+from mcpm.utils.config import ConfigManager
 
 profile_config_manager = ProfileConfigManager()
 console = Console()
@@ -19,9 +20,9 @@ def profile():
 
 @click.command()
 @click.argument("profile_name")
-@click.option("--client", "-c", default="client", help="Client of the profile")
+@click.option("--client", "-c", help="Client of the profile")
 @click.help_option("-h", "--help")
-def activate(profile_name, client):
+def activate(profile_name, client=None):
     """Activate a profile.
 
     Sets the specified profile as the active profile.
@@ -33,18 +34,37 @@ def activate(profile_name, client):
 
     # Set the active profile
     client_registry = ClientRegistry()
-    if client_registry.set_active_profile(profile_name):
+    config_manager = ConfigManager()
+
+    if client:
+        console.print(f"[bold cyan]Activating profile '{profile_name}' in client '{client}'...[/]")
+        client_manager = ClientRegistry.get_client_manager(client)
+        if client_manager is None:
+            console.print(f"[bold red]Error:[/] Client '{client}' not found.")
+            return
+        success = client_manager.activate_profile(profile_name, config_manager.get_router_config())
+    else:
+        client = ClientRegistry.get_active_client()
+        if client is None:
+            console.print("[bold yellow]No active client found.[/]\n")
+            return
+        console.print(f"[bold cyan]Activating profile '{profile_name}' in active client '{client}'...[/]")
+        client_manager = ClientRegistry.get_client_manager(client)
+        if client_manager is None:
+            console.print(f"[bold red]Error:[/] Client '{client}' not found.")
+            return
+        success = client_manager.activate_profile(profile_name, config_manager.get_router_config())
+    if success:
+        client_registry.set_active_profile(profile_name)
         console.print(f"\n[green]Profile '{profile_name}' activated successfully.[/]\n")
     else:
         console.print(f"[bold red]Error:[/] Failed to activate profile '{profile_name}'.")
 
-    # TODO: add url to the client config
-
 
 @click.command()
-@click.option("--client", "-c", default="client", help="Client of the profile")
+@click.option("--client", "-c", help="Client of the profile")
 @click.help_option("-h", "--help")
-def deactivate(client):
+def deactivate(client=None):
     """Deactivate a profile.
 
     Unsets the active profile.
@@ -56,12 +76,30 @@ def deactivate(client):
         return
     console.print(f"\n[green]Deactivating profile '{active_profile}'...[/]")
     client_registry = ClientRegistry()
-    if client_registry.set_active_profile(None):
-        console.print(f"\n[green]Profile '{active_profile}' deactivated successfully.[/]\n")
-    else:
-        console.print(f"[bold red]Error:[/] Failed to deactivate profile '{active_profile}'.")
 
-    # TODO: remove url from the client config
+    if client:
+        console.print(f"[bold cyan]Deactivating profile '{active_profile}' in client '{client}'...[/]")
+        client_manager = ClientRegistry.get_client_manager(client)
+        if client_manager is None:
+            console.print(f"[bold red]Error:[/] Client '{client}' not found.")
+            return
+        success = client_manager.deactivate_profile()
+    else:
+        client = ClientRegistry.get_active_client()
+        if client is None:
+            console.print("[bold yellow]No active client found.[/]\n")
+            return
+        console.print(f"[bold cyan]Deactivating profile '{active_profile}' in active client '{client}'...[/]")
+        client_manager = ClientRegistry.get_client_manager(client)
+        if client_manager is None:
+            console.print(f"[bold red]Error:[/] Client '{client}' not found.")
+            return
+        success = client_manager.deactivate_profile()
+    if success:
+        client_registry.set_active_profile(None)
+        console.print(f"\n[yellow]Profile '{active_profile}' deactivated successfully.[/]\n")
+    else:
+        console.print(f"[bold red]Error:[/] Failed to deactivate profile '{active_profile}' in client '{client}'.")
 
 
 @profile.command(name="ls")

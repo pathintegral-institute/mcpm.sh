@@ -17,6 +17,7 @@ from mcpm.clients.managers.cursor import CursorManager
 from mcpm.clients.managers.fiveire import FiveireManager
 from mcpm.clients.managers.goose import GooseClientManager
 from mcpm.clients.managers.windsurf import WindsurfManager
+from mcpm.utils.config import ConfigManager
 from mcpm.utils.scope import CLIENT_PREFIX, PROFILE_PREFIX
 
 logger = logging.getLogger(__name__)
@@ -205,3 +206,37 @@ class ClientRegistry:
         if client:
             return f"{CLIENT_PREFIX}{client}"
         return None
+
+    @classmethod
+    def activate_profile(cls, client_name: str, profile_name: str) -> bool:
+        """
+        Activate a profile in the client config
+
+        Args:
+            client_name: Name of the client
+            profile_name: Name of the profile
+
+        Returns:
+            bool: Success or failure
+        """
+        router_config = ConfigManager().get_router_config()
+        client = cls.get_client_manager(client_name)
+        if client is None:
+            return False
+        return client.activate_profile(profile_name, router_config)
+
+    @classmethod
+    def deactivate_profile(cls, client_name: str) -> bool:
+        """
+        Deactivate a profile in the client config
+
+        Args:
+            profile_name: Name of the profile
+
+        Returns:
+            bool: Success or failure
+        """
+        client = cls.get_client_manager(client_name)
+        if client is None:
+            return False
+        return client.deactivate_profile()

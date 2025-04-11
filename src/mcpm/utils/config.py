@@ -12,6 +12,10 @@ logger = logging.getLogger(__name__)
 # Default configuration paths
 DEFAULT_CONFIG_DIR = os.path.expanduser("~/.config/mcpm")
 DEFAULT_CONFIG_FILE = os.path.join(DEFAULT_CONFIG_DIR, "config.json")
+# default router config
+DEFAULT_HOST = "localhost"
+DEFAULT_PORT = 6276  # 6276 represents MCPM on a T9 keypad (6=M, 2=C, 7=P, 6=M)
+ROUTER_SERVER_NAME = "mcpm_router"
 
 
 class ConfigManager:
@@ -83,3 +87,44 @@ class ConfigManager:
         except Exception as e:
             logger.error(f"Error setting configuration {key}: {str(e)}")
             return False
+
+    def get_router_config(self):
+        """get router configuration from config file, if not exists, flush default config"""
+        config = self.get_config()
+
+        # check if router config exists
+        if "router" not in config:
+            # create default config and save
+            router_config = {"host": DEFAULT_HOST, "port": DEFAULT_PORT}
+            self.set_config("router", router_config)
+            return router_config
+
+        # get existing config
+        router_config = config.get("router", {})
+
+        # check if host and port exist, if not, set default values and update config
+        # user may only set a customized port while leave host undefined
+        updated = False
+        if "host" not in router_config:
+            router_config["host"] = DEFAULT_HOST
+            updated = True
+        if "port" not in router_config:
+            router_config["port"] = DEFAULT_PORT
+            updated = True
+
+        # save config if updated
+        if updated:
+            self.set_config("router", router_config)
+
+        return router_config
+
+    def save_router_config(self, host, port):
+        """save router configuration to config file"""
+        router_config = self.get_config().get("router", {})
+
+        # update config
+        router_config["host"] = host
+        router_config["port"] = port
+
+        # save config
+        return self.set_config("router", router_config)
