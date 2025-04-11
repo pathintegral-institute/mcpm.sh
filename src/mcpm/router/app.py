@@ -1,7 +1,6 @@
 import logging
 import os
 from contextlib import asynccontextmanager
-from pathlib import Path
 
 from starlette.applications import Starlette
 from starlette.middleware import Middleware
