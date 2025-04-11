@@ -12,6 +12,7 @@ repo_manager = RepositoryManager()
 
 
 @click.group()
+@click.help_option("-h", "--help")
 def config():
     """Manage MCPM configuration.
 
@@ -21,6 +22,7 @@ def config():
 
 
 @config.command()
+@click.help_option("-h", "--help")
 def clear_cache():
     """Clear the local repository cache.
 

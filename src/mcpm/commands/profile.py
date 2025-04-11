@@ -11,6 +11,7 @@ console = Console()
 
 
 @click.group()
+@click.help_option("-h", "--help")
 def profile():
     """Manage MCPM profiles."""
     pass
@@ -19,6 +20,7 @@ def profile():
 @click.command()
 @click.argument("profile_name")
 @click.option("--client", "-c", default="client", help="Client of the profile")
+@click.help_option("-h", "--help")
 def activate(profile_name, client):
     """Activate a profile.
 
@@ -41,6 +43,7 @@ def activate(profile_name, client):
 
 @click.command()
 @click.option("--client", "-c", default="client", help="Client of the profile")
+@click.help_option("-h", "--help")
 def deactivate(client):
     """Deactivate a profile.
 
@@ -63,6 +66,7 @@ def deactivate(client):
 
 @profile.command(name="ls")
 @click.option("--verbose", "-v", is_flag=True, help="Show detailed server information")
+@click.help_option("-h", "--help")
 def list(verbose=False):
     """List all MCPM profiles."""
     profiles = profile_config_manager.list_profiles()
@@ -93,6 +97,7 @@ def list(verbose=False):
 @profile.command()
 @click.argument("profile")
 @click.option("--force", is_flag=True, help="Force add even if profile already exists")
+@click.help_option("-h", "--help")
 def add(profile, force=False):
     """Add a new MCPM profile."""
     if profile_config_manager.get_profile(profile) is not None and not force:
@@ -112,6 +117,7 @@ def add(profile, force=False):
 @profile.command()
 @click.argument("profile")
 @click.option("--server", "-s", required=True, help="Server to apply config to")
+@click.help_option("-h", "--help")
 def apply(profile, server):
     """Apply an existing MCPM config to a profile."""
     client_manager = ClientRegistry.get_active_client_manager()
@@ -147,6 +153,7 @@ def apply(profile, server):
 
 @profile.command()
 @click.argument("profile_name")
+@click.help_option("-h", "--help")
 def remove(profile_name):
     """Delete an MCPM profile."""
     if not profile_config_manager.delete_profile(profile_name):
@@ -157,6 +164,7 @@ def remove(profile_name):
 
 @profile.command()
 @click.argument("profile_name")
+@click.help_option("-h", "--help")
 def rename(profile_name):
     """Rename an MCPM profile."""
     new_profile_name = click.prompt("Enter new profile name", type=str)

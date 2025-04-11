@@ -15,12 +15,15 @@ repo_manager = RepositoryManager()
 @click.command()
 @click.argument("query", required=False)
 @click.option("--detailed", is_flag=True, help="Show detailed server information")
+@click.help_option("-h", "--help")
 def search(query, detailed=False):
     """Search available MCP servers.
 
     Searches the MCP registry for available servers. Without arguments, lists all available servers.
 
     Examples:
+
+    \b
         mcpm search                  # List all available servers
         mcpm search github           # Search for github server
         mcpm search --detailed       # Show detailed information

@@ -121,16 +121,20 @@ def remove_pid_file():
 
 
 @click.group(name="router")
+@click.help_option("-h", "--help")
 def router():
     """Manage MCP router service."""
     pass
 
 
 @router.command(name="on")
+@click.help_option("-h", "--help")
 def start_router():
     """Start MCPRouter as a daemon process.
 
     Example:
+
+    \b
         mcpm router on
     """
     # check if there is a router already running
@@ -190,6 +194,7 @@ def start_router():
 @router.command(name="set")
 @click.option("-H", "--host", type=str, help="Host to bind the SSE server to")
 @click.option("-p", "--port", type=int, help="Port to bind the SSE server to")
+@click.help_option("-h", "--help")
 def set_router_config(host, port):
     """Set MCPRouter global configuration.
 
@@ -224,10 +229,13 @@ def set_router_config(host, port):
 
 
 @router.command(name="off")
+@click.help_option("-h", "--help")
 def stop_router():
     """Stop the running MCPRouter daemon process.
 
     Example:
+
+    \b
         mcpm router off
     """
     # check if there is a router already running
@@ -253,10 +261,13 @@ def stop_router():
 
 
 @router.command(name="status")
+@click.help_option("-h", "--help")
 def router_status():
     """Check the status of the MCPRouter daemon process.
 
     Example:
+
+    \b
         mcpm router status
     """
     # get router config
