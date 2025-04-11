@@ -288,14 +288,11 @@ def add(server_name, force=False, alias=None, target: str | None = None):
                 # Add required indicator
                 if is_required:
                     required_args[arg_name] = arg_info
-                    required_text = "(required)"
                     required_html = "<ansired>(required)</ansired>"
                 else:
-                    required_text = "(optional)"
                     required_html = "<ansigreen>(optional)</ansigreen>"
 
                 # Build clean prompt text for console display and prompt
-                console_prompt_text = f"{arg_name} {required_text}"
                 html_prompt_text = f"{arg_name} {required_html}"
 
                 # Check if the argument is already set in environment
