@@ -127,7 +127,7 @@ The currently *active* profile's servers are typically used by features like the
 
 ```bash
 # 🔄 Profile Lifecycle
-mcpm profile list              # List all available MCPM profiles
+mcpm profile ls              # List all available MCPM profiles
 mcpm profile add PROFILE_NAME  # Add a new, empty profile
 mcpm profile rm PROFILE_NAME   # Remove a profile (does not delete servers within it)
 mcpm profile rename OLD_NAME NEW_NAME # Rename a profile

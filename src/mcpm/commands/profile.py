@@ -189,7 +189,7 @@ def apply(profile, server):
     console.print(f"\n[green]Server '{server}' applied to profile '{profile}' successfully.[/]\n")
 
 
-@profile.command()
+@profile.command("rm")
 @click.argument("profile_name")
 @click.help_option("-h", "--help")
 def remove(profile_name):
