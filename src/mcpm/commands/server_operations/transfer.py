@@ -52,12 +52,15 @@ def determine_source_and_destination(
 @click.command()
 @click.argument("source")
 @click.argument("destination")
+@click.help_option("-h", "--help")
 @click.option("--force", is_flag=True, help="Force copy even if destination already exists")
 def copy(source, destination, force=False):
     """
     Copy a server configuration from one client/profile to another.
 
     Examples:
+
+    \b
         mcpm cp memory memory2
         mcpm cp @cursor/memory @windsurf/memory
     """
@@ -108,11 +111,14 @@ def copy(source, destination, force=False):
 @click.argument("source")
 @click.argument("destination")
 @click.option("--force", is_flag=True, help="Force move even if destination already exists")
+@click.help_option("-h", "--help")
 def move(source, destination, force=False):
     """
     Move a server configuration from one client/profile to another.
 
     Examples:
+
+    \b
         mcpm mv memory memory2
         mcpm mv @cursor/memory @windsurf/memory
     """

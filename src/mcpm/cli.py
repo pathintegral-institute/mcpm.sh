@@ -141,14 +141,10 @@ def main(ctx, help_flag):
         commands_table.add_row("[yellow]server[/]")
         commands_table.add_row("  [cyan]search[/]", "Search available MCP servers.")
         commands_table.add_row("  [cyan]add[/]", "Add an MCP server directly to a client.")
-        commands_table.add_row("  [cyan]cp[/]")
-        commands_table.add_row("  [cyan]copy[/]", "Copy a server from one client/profile to another.")
-        commands_table.add_row("  [cyan]mv[/]")
-        commands_table.add_row("  [cyan]move[/]", "Move a server from one client/profile to another.")
-        commands_table.add_row("  [cyan]rm[/]")
-        commands_table.add_row("  [cyan]remove[/]", "Remove an installed MCP server.")
-        commands_table.add_row("  [cyan]ls[/]")
-        commands_table.add_row("  [cyan]list[/]", "List all installed MCP servers.")
+        commands_table.add_row("  [cyan]cp[/]", "Copy a server from one client/profile to another.")
+        commands_table.add_row("  [cyan]mv[/]", "Move a server from one client/profile to another.")
+        commands_table.add_row("  [cyan]rm[/]", "Remove an installed MCP server.")
+        commands_table.add_row("  [cyan]ls[/]", "List all installed MCP servers.")
         commands_table.add_row("  [cyan]stash[/]", "Temporarily store a server configuration aside.")
         commands_table.add_row("  [cyan]pop[/]", "Restore a previously stashed server configuration.")
 
@@ -167,15 +163,13 @@ def main(ctx, help_flag):
 
         # Additional helpful information
         console.print("")
-        console.print("[italic]Run [bold]mcpm -h[/] for more information on a command.[/]")
+        console.print("[italic]Run [bold]mcpm COMMAND -h[/] for more information on a command.[/]")
 
 
 # Register commands
 main.add_command(search.search)
-main.add_command(remove.remove)
 main.add_command(remove.remove, name="rm")
 main.add_command(add.add)
-main.add_command(list.list)
 main.add_command(list.list, name="ls")
 
 main.add_command(stash.stash)
@@ -185,9 +179,7 @@ main.add_command(client.client)
 main.add_command(config.config)
 main.add_command(inspector.inspector, name="inspector")
 main.add_command(profile.profile, name="profile")
-main.add_command(transfer.move)
 main.add_command(transfer.move, name="mv")
-main.add_command(transfer.copy)
 main.add_command(transfer.copy, name="cp")
 main.add_command(profile.activate)
 main.add_command(profile.deactivate)

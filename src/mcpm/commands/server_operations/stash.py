@@ -22,6 +22,7 @@ client_config_manager = ClientConfigManager()
 
 @click.command()
 @click.argument("server_name")
+@click.help_option("-h", "--help")
 def stash(server_name):
     """Temporarily store a server configuration aside.
 
@@ -29,7 +30,11 @@ def stash(server_name):
     configuration for later use. You can restore it with the 'pop' command.
 
     Examples:
+
+    \b
         mcpm stash memory
+        mcpm stash @cursor/memory
+        mcpm stash %profile/memory
     """
     scope_type, scope, server_name = determine_target(server_name)
     if not scope_type or not scope or not server_name:

@@ -22,10 +22,13 @@ console = Console()
 @click.command()
 @click.argument("server_name")
 @click.option("--force", is_flag=True, help="Force removal without confirmation")
+@click.help_option("-h", "--help")
 def remove(server_name, force):
     """Remove an installed MCP server.
 
     Examples:
+
+    \b
         mcpm rm filesystem
         mcpm rm @cursor/filesystem
         mcpm rm %profile/filesystem

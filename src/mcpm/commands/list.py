@@ -19,12 +19,15 @@ client_config_manager = ClientConfigManager()
 
 @click.command(name="list")
 @click.option("--target", "-t", help="Target to list servers from")
+@click.help_option("-h", "--help")
 def list(target: str | None = None):
     """List all installed MCP servers.
 
     Examples:
+
+    \b
         mcpm list
-        mcpm list -t <scope>
+        mcpm list -t @cursor
     """
     if target is None:
         target = ClientRegistry.determine_active_scope()

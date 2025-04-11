@@ -20,6 +20,7 @@ client_config_manager = ClientConfigManager()
 
 @click.command()
 @click.argument("server_name")
+@click.help_option("-h", "--help")
 def pop(server_name):
     """Restore a previously stashed server configuration.
 
@@ -27,7 +28,10 @@ def pop(server_name):
     restoring it to active status.
 
     Examples:
+
+    \b
         mcpm pop memory
+        mcpm pop %profile/memory
     """
     scope_type, scope, server_name = determine_target(server_name)
     if not scope_type or not scope or not server_name:

@@ -11,8 +11,10 @@ import sys
 import click
 import psutil
 from rich.console import Console
+from rich.prompt import Confirm
 
-from mcpm.utils.config import ConfigManager
+from mcpm.clients.client_registry import ClientRegistry
+from mcpm.utils.config import ROUTER_SERVER_NAME, ConfigManager
 from mcpm.utils.platform import get_log_directory, get_pid_directory
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
@@ -25,55 +27,6 @@ PID_FILE = APP_SUPPORT_DIR / "router.pid"
 
 LOG_DIR = get_log_directory("mcpm")
 LOG_DIR.mkdir(parents=True, exist_ok=True)
-
-# default config
-DEFAULT_HOST = "localhost"
-DEFAULT_PORT = 6276  # 6276 represents MCPM on a T9 keypad (6=M, 2=C, 7=P, 6=M)
-
-
-def get_router_config():
-    """get router configuration from config file, if not exists, flush default config"""
-    config_manager = ConfigManager()
-    config = config_manager.get_config()
-
-    # check if router config exists
-    if "router" not in config:
-        # create default config and save
-        router_config = {"host": DEFAULT_HOST, "port": DEFAULT_PORT}
-        config_manager.set_config("router", router_config)
-        return router_config
-
-    # get existing config
-    router_config = config.get("router", {})
-
-    # check if host and port exist, if not, set default values and update config
-    # user may only set a customized port while leave host undefined
-    updated = False
-    if "host" not in router_config:
-        router_config["host"] = DEFAULT_HOST
-        updated = True
-    if "port" not in router_config:
-        router_config["port"] = DEFAULT_PORT
-        updated = True
-
-    # save config if updated
-    if updated:
-        config_manager.set_config("router", router_config)
-
-    return router_config
-
-
-def save_router_config(host, port):
-    """save router configuration to config file"""
-    config_manager = ConfigManager()
-    router_config = config_manager.get_config().get("router", {})
-
-    # update config
-    router_config["host"] = host
-    router_config["port"] = port
-
-    # save config
-    return config_manager.set_config("router", router_config)
 
 
 def is_process_running(pid):
@@ -121,16 +74,20 @@ def remove_pid_file():
 
 
 @click.group(name="router")
+@click.help_option("-h", "--help")
 def router():
     """Manage MCP router service."""
     pass
 
 
 @router.command(name="on")
+@click.help_option("-h", "--help")
 def start_router():
     """Start MCPRouter as a daemon process.
 
     Example:
+
+    \b
         mcpm router on
     """
     # check if there is a router already running
@@ -141,7 +98,7 @@ def start_router():
         return
 
     # get router config
-    config = get_router_config()
+    config = ConfigManager().get_router_config()
     host = config["host"]
     port = config["port"]
 
@@ -190,6 +147,7 @@ def start_router():
 @router.command(name="set")
 @click.option("-H", "--host", type=str, help="Host to bind the SSE server to")
 @click.option("-p", "--port", type=int, help="Port to bind the SSE server to")
+@click.help_option("-h", "--help")
 def set_router_config(host, port):
     """Set MCPRouter global configuration.
 
@@ -202,14 +160,15 @@ def set_router_config(host, port):
         return
 
     # get current config, make sure all field are filled by default value if not exists
-    current_config = get_router_config()
+    config_manager = ConfigManager()
+    current_config = config_manager.get_router_config()
 
     # if user does not specify a host, use current config
     host = host or current_config["host"]
     port = port or current_config["port"]
 
     # save config
-    if save_router_config(host, port):
+    if config_manager.save_router_config(host, port):
         console.print(f"[bold green]Router configuration updated:[/] host={host}, port={port}")
         console.print("The new configuration will be used next time you start the router.")
 
@@ -221,13 +180,39 @@ def set_router_config(host, port):
             console.print("    mcpm router on")
     else:
         console.print("[bold red]Error:[/] Failed to save router configuration.")
+        return
+
+    if Confirm.ask("Do you want to update router for all clients now?"):
+        active_profile = ClientRegistry.get_active_profile()
+        if not active_profile:
+            console.print("[yellow]No active profile found, skipped.[/]")
+            return
+        installed_clients = ClientRegistry.detect_installed_clients()
+        for client, installed in installed_clients.items():
+            if not installed:
+                continue
+            client_manager = ClientRegistry.get_client_manager(client)
+            if client_manager is None:
+                console.print(f"[yellow]Client '{client}' not found.[/] Skipping...")
+                continue
+            if client_manager.get_server(ROUTER_SERVER_NAME):
+                console.print(f"[cyan]Updating profile router for {client}...[/]")
+                client_manager.deactivate_profile()
+                client_manager.activate_profile(active_profile, config_manager.get_router_config())
+                console.print(f"[green]Profile router updated for {client}[/]")
+        console.print("[bold green]Success: Profile router updated for all clients[/]")
+        if pid:
+            console.print("[bold yellow]Restart MCPRouter to apply new settings.[/]\n")
 
 
 @router.command(name="off")
+@click.help_option("-h", "--help")
 def stop_router():
     """Stop the running MCPRouter daemon process.
 
     Example:
+
+    \b
         mcpm router off
     """
     # check if there is a router already running
@@ -253,14 +238,17 @@ def stop_router():
 
 
 @router.command(name="status")
+@click.help_option("-h", "--help")
 def router_status():
     """Check the status of the MCPRouter daemon process.
 
     Example:
+
+    \b
         mcpm router status
     """
     # get router config
-    config = get_router_config()
+    config = ConfigManager().get_router_config()
     host = config["host"]
     port = config["port"]
 

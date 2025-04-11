@@ -29,10 +29,13 @@ profile_config_manager = ProfileConfigManager()
 @click.option("--force", is_flag=True, help="Force reinstall if server is already installed")
 @click.option("--alias", help="Alias for the server", required=False)
 @click.option("--target", "-t", help="Target to add server to", required=False)
+@click.help_option("-h", "--help")
 def add(server_name, force=False, alias=None, target: str | None = None):
     """Add an MCP server to a client configuration.
 
     Examples:
+
+    \b
         mcpm add time
         mcpm add everything --force
         mcpm add youtube --alias yt
