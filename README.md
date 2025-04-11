@@ -108,15 +108,11 @@ mcpm add SERVER_URL --alias ALIAS # Add with a custom alias
 
 # 📋 List and Remove
 mcpm ls                   # List server configurations for the active client/profile
-mcpm list                 # Alias for 'ls'
 mcpm rm SERVER_NAME       # Remove a server configuration
-mcpm remove SERVER_NAME   # Alias for 'rm'
 
 # 🔄 Modify and Organize
 mcpm cp SOURCE TARGET     # Copy a server config (e.g., @client1/serverA #profileB)
-mcpm copy SOURCE TARGET   # Alias for 'cp'
 mcpm mv SOURCE TARGET     # Move a server config (e.g., #profileA/serverX @client2)
-mcpm move SOURCE TARGET   # Alias for 'mv'
 
 # 📦 Stashing (Temporarily disable/enable)
 mcpm stash SERVER_NAME    # Temporarily disable/store a server configuration aside
@@ -134,7 +130,6 @@ The currently *active* profile's servers are typically used by features like the
 mcpm profile list              # List all available MCPM profiles
 mcpm profile add PROFILE_NAME  # Add a new, empty profile
 mcpm profile rm PROFILE_NAME   # Remove a profile (does not delete servers within it)
-mcpm profile remove PROFILE_NAME # Alias for 'rm'
 mcpm profile rename OLD_NAME NEW_NAME # Rename a profile
 
 # ✅ Activating Profiles
