@@ -180,6 +180,7 @@ def set_router_config(host, port):
             console.print("    mcpm router on")
     else:
         console.print("[bold red]Error:[/] Failed to save router configuration.")
+        return
 
     if Confirm.ask("Do you want to update router for all clients now?"):
         active_profile = ClientRegistry.get_active_profile()
@@ -200,7 +201,8 @@ def set_router_config(host, port):
                 client_manager.activate_profile(active_profile, config_manager.get_router_config())
                 console.print(f"[green]Profile router updated for {client}[/]")
         console.print("[bold green]Success: Profile router updated for all clients[/]")
-        console.print("[bold yellow]Restart MCPRouter to apply new settings.[/]\n")
+        if pid:
+            console.print("[bold yellow]Restart MCPRouter to apply new settings.[/]\n")
 
 
 @router.command(name="off")
