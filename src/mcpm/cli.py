@@ -17,10 +17,10 @@ from mcpm.commands import (
     pop,
     profile,
     remove,
+    router,
     search,
     stash,
     transfer,
-    router,
 )
 
 console = Console()
@@ -120,26 +120,39 @@ def main(ctx, help_flag):
         # Display available commands in a table
         console.print("[bold]Commands:[/]")
         commands_table = Table(show_header=False, box=None, padding=(0, 2, 0, 0))
-        commands_table.add_row("  [cyan]add[/]", "Add an MCP server directly to a client.")
+        commands_table.add_row("[yellow]client[/]")
         commands_table.add_row("  [cyan]client[/]", "Manage the active MCPM client.")
-        commands_table.add_row("  [cyan]config[/]", "Manage MCPM configuration.")
-        commands_table.add_row("  [cyan]inspector[/]", "Launch the MCPM Inspector UI to examine servers.")
-        commands_table.add_row("  [cyan]list/ls[/]", "List all installed MCP servers.")
-        commands_table.add_row("  [cyan]remove/rm[/]", "Remove an installed MCP server.")
+
+        commands_table.add_row("[yellow]server[/]")
         commands_table.add_row("  [cyan]search[/]", "Search available MCP servers.")
+        commands_table.add_row("  [cyan]add[/]", "Add an MCP server directly to a client.")
+        commands_table.add_row("  [cyan]cp[/]")
+        commands_table.add_row("  [cyan]copy[/]", "Copy a server from one client/profile to another.")
+        commands_table.add_row("  [cyan]mv[/]")
+        commands_table.add_row("  [cyan]move[/]", "Move a server from one client/profile to another.")
+        commands_table.add_row("  [cyan]rm[/]")
+        commands_table.add_row("  [cyan]remove[/]", "Remove an installed MCP server.")
+        commands_table.add_row("  [cyan]ls[/]")
+        commands_table.add_row("  [cyan]list[/]", "List all installed MCP servers.")
         commands_table.add_row("  [cyan]stash[/]", "Temporarily store a server configuration aside.")
         commands_table.add_row("  [cyan]pop[/]", "Restore a previously stashed server configuration.")
+
+        commands_table.add_row("[yellow]profile[/]")
         commands_table.add_row("  [cyan]profile[/]", "Manage MCPM profiles.")
-        commands_table.add_row("  [cyan]move/mv[/]", "Move a server from one client/profile to another.")
-        commands_table.add_row("  [cyan]copy/cp[/]", "Copy a server from one client/profile to another.")
         commands_table.add_row("  [cyan]activate[/]", "Activate a profile.")
         commands_table.add_row("  [cyan]deactivate[/]", "Deactivate a profile.")
+
+        commands_table.add_row("[yellow]router[/]")
         commands_table.add_row("  [cyan]router[/]", "Manage MCP router service.")
+
+        commands_table.add_row("[yellow]util[/]")
+        commands_table.add_row("  [cyan]config[/]", "Manage MCPM configuration.")
+        commands_table.add_row("  [cyan]inspector[/]", "Launch the MCPM Inspector UI to examine servers.")
         console.print(commands_table)
 
         # Additional helpful information
         console.print("")
-        console.print("[italic]Run [bold]mcpm CLIENT -h[/] for more information on a command.[/]")
+        console.print("[italic]Run [bold]mcpm -h[/] for more information on a command.[/]")
 
 
 # Register commands
