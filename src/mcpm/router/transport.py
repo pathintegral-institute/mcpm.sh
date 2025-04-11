@@ -177,3 +177,5 @@ class RouterSseTransport(SseServerTransport):
                 logger.warning(f"EPIPE error when sending message to session {session_id}, connection may be closing")
             else:
                 logger.warning(f"Connection error when sending message to session {session_id}: {e}")
+                self._read_stream_writers.pop(session_id, None)
+                self._session_id_to_profile.pop(session_id, None)
