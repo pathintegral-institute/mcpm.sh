@@ -12,6 +12,7 @@ import click
 import psutil
 from rich.console import Console
 
+from mcpm.utils.config import ConfigManager
 from mcpm.utils.platform import get_log_directory, get_pid_directory
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
@@ -24,6 +25,55 @@ PID_FILE = APP_SUPPORT_DIR / "router.pid"
 
 LOG_DIR = get_log_directory("mcpm")
 LOG_DIR.mkdir(parents=True, exist_ok=True)
+
+# default config
+DEFAULT_HOST = "localhost"
+DEFAULT_PORT = 6276  # 6276 represents MCPM on a T9 keypad (6=M, 2=C, 7=P, 6=M)
+
+
+def get_router_config():
+    """get router configuration from config file, if not exists, flush default config"""
+    config_manager = ConfigManager()
+    config = config_manager.get_config()
+
+    # check if router config exists
+    if "router" not in config:
+        # create default config and save
+        router_config = {"host": DEFAULT_HOST, "port": DEFAULT_PORT}
+        config_manager.set_config("router", router_config)
+        return router_config
+
+    # get existing config
+    router_config = config.get("router", {})
+
+    # check if host and port exist, if not, set default values and update config
+    # user may only set a customized port while leave host undefined
+    updated = False
+    if "host" not in router_config:
+        router_config["host"] = DEFAULT_HOST
+        updated = True
+    if "port" not in router_config:
+        router_config["port"] = DEFAULT_PORT
+        updated = True
+
+    # save config if updated
+    if updated:
+        config_manager.set_config("router", router_config)
+
+    return router_config
+
+
+def save_router_config(host, port):
+    """save router configuration to config file"""
+    config_manager = ConfigManager()
+    router_config = config_manager.get_config().get("router", {})
+
+    # update config
+    router_config["host"] = host
+    router_config["port"] = port
+
+    # save config
+    return config_manager.set_config("router", router_config)
 
 
 def is_process_running(pid):
@@ -56,7 +106,7 @@ def write_pid_file(pid):
     """write the process id to the pid file"""
     try:
         PID_FILE.write_text(str(pid))
-        logger.info(f"PID {pid} written to {PID_FILE}")
+        logger.debug(f"PID {pid} written to {PID_FILE}")
     except IOError as e:
         logger.error(f"Error writing PID file: {e}")
         sys.exit(1)
@@ -77,16 +127,11 @@ def router():
 
 
 @router.command(name="on")
-@click.option("--host", type=str, default="0.0.0.0", help="Host to bind the SSE server to")
-@click.option("--port", type=int, default=8080, help="Port to bind the SSE server to")
-@click.option("--cors", type=str, help="Comma-separated list of allowed origins for CORS")
-def start_router(host, port, cors):
+def start_router():
     """Start MCPRouter as a daemon process.
 
     Example:
         mcpm router on
-        mcpm router on --port 8888
-        mcpm router on --host 0.0.0.0 --port 9000
     """
     # check if there is a router already running
     existing_pid = read_pid_file()
@@ -95,10 +140,10 @@ def start_router(host, port, cors):
         console.print("Use 'mcpm router off' to stop the running instance.")
         return
 
-    # prepare environment variables
-    env = os.environ.copy()
-    if cors:
-        env["MCPM_ROUTER_CORS"] = cors
+    # get router config
+    config = get_router_config()
+    host = config["host"]
+    port = config["port"]
 
     # prepare uvicorn command
     uvicorn_cmd = [
@@ -126,7 +171,7 @@ def start_router(host, port, cors):
                 uvicorn_cmd,
                 stdout=log,
                 stderr=log,
-                env=env,
+                env=os.environ.copy(),
                 start_new_session=True,  # create new session, so the process won't be affected by terminal closing
             )
 
@@ -140,6 +185,42 @@ def start_router(host, port, cors):
 
     except Exception as e:
         console.print(f"[bold red]Error:[/] Failed to start MCPRouter: {e}")
+
+
+@router.command(name="set")
+@click.option("-H", "--host", type=str, help="Host to bind the SSE server to")
+@click.option("-p", "--port", type=int, help="Port to bind the SSE server to")
+def set_router_config(host, port):
+    """Set MCPRouter global configuration.
+
+    Example:
+        mcpm router set -H localhost -p 8888
+        mcpm router set --host 127.0.0.1 --port 9000
+    """
+    if not host and not port:
+        console.print("[yellow]No changes were made. Please specify at least one option (--host or --port)[/]")
+        return
+
+    # get current config, make sure all field are filled by default value if not exists
+    current_config = get_router_config()
+
+    # if user does not specify a host, use current config
+    host = host or current_config["host"]
+    port = port or current_config["port"]
+
+    # save config
+    if save_router_config(host, port):
+        console.print(f"[bold green]Router configuration updated:[/] host={host}, port={port}")
+        console.print("The new configuration will be used next time you start the router.")
+
+        # if router is running, prompt user to restart
+        pid = read_pid_file()
+        if pid:
+            console.print("[yellow]Note: Router is currently running. Restart it to apply new settings:[/]")
+            console.print("    mcpm router off")
+            console.print("    mcpm router on")
+    else:
+        console.print("[bold red]Error:[/] Failed to save router configuration.")
 
 
 @router.command(name="off")
@@ -178,8 +259,14 @@ def router_status():
     Example:
         mcpm router status
     """
+    # get router config
+    config = get_router_config()
+    host = config["host"]
+    port = config["port"]
+
+    # check process status
     pid = read_pid_file()
     if pid:
-        console.print(f"[bold green]MCPRouter is running[/] (PID: {pid})")
+        console.print(f"[bold green]MCPRouter is running[/] at http://{host}:{port} (PID: {pid})")
     else:
         console.print("[yellow]MCPRouter is not running.[/]")

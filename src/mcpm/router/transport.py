@@ -158,10 +158,24 @@ class RouterSseTransport(SseServerTransport):
             logger.error(f"Failed to parse message: {err}")
             response = Response("Could not parse message", status_code=400)
             await response(scope, receive, send)
-            await writer.send(err)
+            try:
+                await writer.send(err)
+            except (BrokenPipeError, ConnectionError, OSError) as pipe_err:
+                logger.warning(f"Failed to send error due to pipe issue: {pipe_err}")
             return
 
         logger.debug(f"Sending message to writer: {message}")
         response = Response("Accepted", status_code=202)
         await response(scope, receive, send)
-        await writer.send(message)
+
+        # add error handling, catch possible pipe errors
+        try:
+            await writer.send(message)
+        except (BrokenPipeError, ConnectionError, OSError) as e:
+            # if it's EPIPE error or other connection error, log it but don't throw an exception
+            if isinstance(e, OSError) and e.errno == 32:  # EPIPE
+                logger.warning(f"EPIPE error when sending message to session {session_id}, connection may be closing")
+            else:
+                logger.warning(f"Connection error when sending message to session {session_id}: {e}")
+                self._read_stream_writers.pop(session_id, None)
+                self._session_id_to_profile.pop(session_id, None)
