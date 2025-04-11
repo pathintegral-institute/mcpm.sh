@@ -1,26 +1,55 @@
-# MCP Server Registry
+# 📚 MCP Server Registry
 
 The MCP Server Registry is a central repository of [Model Context Protocol](https://modelcontextprotocol.github.io/) servers. This registry enables easy discovery and installation of MCP servers for clients like Claude Desktop, Cursor, and Windsurf.
 
-## What is MCP?
+<div align="center">
+<img src="https://img.shields.io/badge/Status-Active-brightgreen" alt="Status: Active">
+<img src="https://img.shields.io/badge/Contributions-Welcome-blue" alt="Contributions: Welcome">
+</div>
+
+## 🤔 What is MCP?
 
 Model Context Protocol (MCP) is a standard for building LLM-powered tools. It enables language models to use external tools, resources, and capabilities in a standardized way.
 
-## How to Use This Registry
+- 🔄 **Standard Interface**: Common protocol for LLMs to interact with tools
+- 🧩 **Composable**: Mix and match tools from different providers
+- 🚀 **Portable**: Works across different clients and environments
 
-### Browsing Servers
+## 🧰 How to Use This Registry
 
-Browse the `servers` directory to find MCP servers that match your needs. Each server has its own directory with a `manifest.json` file containing configuration details and a `README.md` with documentation.
+### 🔍 Browsing Servers
 
-### Installing Servers
+Browse the `servers` directory to find MCP servers that match your needs. Each server has its own directory with:
 
-Various MCP management tools can use this registry to install and configure servers. One such tool is [getmcp.sh](https://mcpm.sh), a Homebrew-like package manager for MCP servers.
+- 📄 `manifest.json` - Configuration details including endpoint, capabilities, and version
+- 📝 `README.md` - Documentation with usage examples and requirements
+- 🧪 Examples folder (optional)
 
-## Adding Your Server
+### ⬇️ Installing Servers
 
-To add your server to the registry, see the [Contributing Guidelines](CONTRIBUTING.md).
+You can install servers from this registry using:
 
-## Registry Structure
+1. **[MCPM](https://github.com/pathintegral-institute/mcpm.sh)**: Our recommended tool
+   ```bash
+   # Install a server by name
+   mcpm add server-name
+   ```
+
+2. **Manual Configuration**: Add the server URL directly to your MCP client's configuration
+
+## 🤝 Contributing Your Server
+
+We welcome contributions! To add your server to the registry:
+
+1. Fork this repository
+2. Create a new directory in `servers/` with your server name
+3. Add your `manifest.json` following our [schema](schema/manifest-schema.json)
+4. Write a helpful `README.md` with usage instructions
+5. Submit a pull request
+
+For detailed instructions, see the [Contributing Guidelines](CONTRIBUTING.md).
+
+## 📂 Registry Structure
 
 ```
 mcp-registry/
@@ -29,13 +58,11 @@ mcp-registry/
 ├── servers/                # Directory containing all registered servers
 │   ├── [server-name]/      # Directory for each server
 │   │   ├── manifest.json   # Server metadata and configuration
-│   │   ├── README.md       # Detailed server documentation
-│   │   └── examples/       # Optional usage examples
-├── schema/                 # Schema definitions
-│   └── manifest-schema.json  # JSON Schema for manifest validation
-└── tools/                  # Helper scripts for validation, etc.
+│   │   └── README.md       # Detailed server documentation
+└── schema/                 # Schema definitions
+    └── manifest-schema.json  # JSON Schema for manifest validation
 ```
 
-## License
+## 📜 License
 
 This registry is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
