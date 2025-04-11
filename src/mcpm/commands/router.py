@@ -181,7 +181,7 @@ def set_router_config(host, port):
     else:
         console.print("[bold red]Error:[/] Failed to save router configuration.")
 
-    if Confirm.ask("Do you want to update router for all clients?"):
+    if Confirm.ask("Do you want to update router for all clients now?"):
         active_profile = ClientRegistry.get_active_profile()
         if not active_profile:
             console.print("[yellow]No active profile found, skipped.[/]")
@@ -195,12 +195,12 @@ def set_router_config(host, port):
                 console.print(f"[yellow]Client '{client}' not found.[/] Skipping...")
                 continue
             if client_manager.get_server(ROUTER_SERVER_NAME):
-                console.print(f"[cyan]Updating profile for {client}...[/]")
+                console.print(f"[cyan]Updating profile router for {client}...[/]")
                 client_manager.deactivate_profile()
                 client_manager.activate_profile(active_profile, config_manager.get_router_config())
-                console.print(f"[green]Profile updated for {client}[/]")
-        console.print("[bold green]Success: Router updated for all clients[/]")
-        console.print("[bold yellow]Restart MCPRouter to apply changes.[/]\n")
+                console.print(f"[green]Profile router updated for {client}[/]")
+        console.print("[bold green]Success: Profile router updated for all clients[/]")
+        console.print("[bold yellow]Restart MCPRouter to apply new settings.[/]\n")
 
 
 @router.command(name="off")
