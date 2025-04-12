@@ -16,7 +16,7 @@ Built with ❤️ by Path Integral Institute
 
 # 🌟 MCPM - Model Context Protocol Manager
 
-MCPM is a Homebrew-like service and command-line interface for managing Model Context Protocol (MCP) servers. It simplifies managing server configurations across various supported clients, allows grouping servers into profiles, and helps discover new servers via a registry.
+MCPM is a Homebrew-like service and command-line interface for managing Model Context Protocol (MCP) servers. It simplifies managing server configurations across various supported clients, allows grouping servers into profiles, helps discover new servers via a registry, and includes a powerful router that aggregates multiple MCP servers behind a single endpoint with shared sessions.
 
 ## 🤝 Community Contributions
 
@@ -57,9 +57,10 @@ MCPM simplifies the installation, configuration, and management of Model Context
 - ✨ Easy addition and removal of MCP server configurations for supported clients.
 - 📋 Centralized management using profiles: group server configurations together and activate/deactivate them easily.
 - 🔍 Discovery of available MCP servers through a central registry.
-- 🖥️ Detection of installed MCP clients on your system.
+- 🔌 MCPM Router for aggregating multiple MCP servers behind a single endpoint with shared sessions.
 - 💻 A command-line interface (CLI) for all management tasks.
-- 🔧 Utilities like a configuration inspector.
+
+See [Advanced Features](docs/advanced_features.md) for more capabilities like shared server sessions and the MCPM Router.
 
 ## 🖥️ Supported MCP Clients
 
@@ -143,7 +144,9 @@ The MCPM Router runs as a background daemon process, acting as a stable endpoint
 
 This allows you to change the underlying servers (by switching profiles with `mcpm activate`) without reconfiguring your client applications. They can always point to the MCPM Router's address.
 
-For more technical details on the router's implementation and namespacing, see [`src/mcpm/router/README.md`](src/mcpm/router/README.md).
+The Router also maintains persistent connections to MCP servers, enabling multiple clients to share these server sessions. This eliminates the need to start separate server instances for each client, significantly reducing resource usage and startup time. Learn more about these advanced capabilities in [Advanced Features](docs/advanced_features.md).
+
+For more technical details on the router's implementation and namespacing, see [`docs/router_tech_design.md`](docs/router_tech_design.md).
 
 ```bash
 mcpm router status                # Check if the router daemon is running

@@ -21,7 +21,7 @@ Model Context Protocol (MCP) is a standard for building LLM-powered tools. It en
 
 Browse the `servers` directory to find MCP servers that match your needs. Each server has its own directory with:
 
-- 📄 `manifest.json` - Configuration details including endpoint, capabilities, and version
+- 📄 `[server-name].json` - Configuration details including endpoint, capabilities, and version
 - 📝 `README.md` - Documentation with usage examples and requirements
 - 🧪 Examples folder (optional)
 
@@ -39,13 +39,24 @@ You can install servers from this registry using:
 
 ## 🤝 Contributing Your Server
 
-We welcome contributions! To add your server to the registry:
+We welcome contributions! There are two ways to add your server to the registry:
+
+### 1. Create a GitHub Issue (Easiest)
+
+Simply create a [new GitHub issue](https://github.com/pathintegral-institute/mcp-registry/issues/new) with:
+
+- Title: "Add server: [your-server-name]"
+- Body: URL to your server details or API documentation
+- We'll automatically generate the necessary files and create a PR for you
+
+### 2. Submit a Pull Request
+
+For more control over your submission:
 
 1. Fork this repository
 2. Create a new directory in `servers/` with your server name
 3. Add your `manifest.json` following our [schema](schema/manifest-schema.json)
-4. Write a helpful `README.md` with usage instructions
-5. Submit a pull request
+4. Submit a pull request
 
 For detailed instructions, see the [Contributing Guidelines](CONTRIBUTING.md).
 
