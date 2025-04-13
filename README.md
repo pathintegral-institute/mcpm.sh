@@ -1,6 +1,8 @@
 ![PyPI - Version](https://img.shields.io/pypi/v/mcpm)
 ![GitHub Release](https://img.shields.io/github/v/release/pathintegral-institute/mcpm.sh)
 
+English | [简体中文](README.zh-CN.md)
+
 ```
  ███╗   ███╗ ██████╗██████╗ ███╗   ███╗ 
  ████╗ ████║██╔════╝██╔══██╗████╗ ████║ 
@@ -16,7 +18,7 @@ Built with ❤️ by Path Integral Institute
 
 # 🌟 MCPM - Model Context Protocol Manager
 
-MCPM is a Homebrew-like service and command-line interface for managing Model Context Protocol (MCP) servers. It simplifies managing server configurations across various supported clients, allows grouping servers into profiles, helps discover new servers via a registry, and includes a powerful router that aggregates multiple MCP servers behind a single endpoint with shared sessions.
+MCPM is an open source service and a CLI package management tool for MCP servers. It simplifies managing server configurations across various supported clients, allows grouping servers into profiles, helps discover new servers via a registry, and includes a powerful router that aggregates multiple MCP servers behind a single endpoint with shared sessions.
 
 ## 🤝 Community Contributions
 
