@@ -30,15 +30,67 @@ client_config_manager = ClientConfigManager()
 CONTEXT_SETTINGS = dict(help_option_names=[])
 
 
+def print_logo():
+    # Create bold ASCII art with thicker characters for a more striking appearance
+    logo = [
+        " ███╗   ███╗ ██████╗██████╗ ███╗   ███╗ ",
+        " ████╗ ████║██╔════╝██╔══██╗████╗ ████║ ",
+        " ██╔████╔██║██║     ██████╔╝██╔████╔██║ ",
+        " ██║╚██╔╝██║██║     ██╔═══╝ ██║╚██╔╝██║ ",
+        " ██║ ╚═╝ ██║╚██████╗██║     ██║ ╚═╝ ██║ ",
+        " ╚═╝     ╚═╝ ╚═════╝╚═╝     ╚═╝     ╚═╝ ",
+        "",
+        f"v{__version__}",
+        "Open Source. Forever Free.",
+        "Built with ❤️ by Path Integral Institute",
+    ]
+
+    # Define terminal width for centering
+    terminal_width = 80  # Standard terminal width
+
+    # Print separator line
+    console.print("[bold cyan]" + "=" * terminal_width + "[/]")
+
+    # Calculate base padding for ASCII art
+    base_padding = " " * ((terminal_width - len(logo[0])) // 2)
+
+    # Center the ASCII art (except last line)
+    for i in range(5):  # First 5 lines of the ASCII art
+        console.print(f"{base_padding}[bold green]{logo[i]}[/]")
+
+    # Print last line with version, using the same base padding
+    version_text = f"v{__version__}"
+    console.print(f"{base_padding}[bold green]{logo[5]}[/] [bold yellow]{version_text}[/]")
+
+    # Center the taglines
+    tagline1 = logo[8]  # "Open Source. Forever Free."
+    tagline2 = logo[9]  # "Built with ❤️ by Path Integral Institute"
+
+    # Calculate center padding for each tagline
+    tagline1_padding = " " * ((terminal_width - len(tagline1)) // 2)
+    tagline2_padding = " " * ((terminal_width - len(tagline2)) // 2)
+
+    # Print centered taglines
+    console.print(tagline1_padding + "[bold magenta]" + tagline1 + "[/]")
+    console.print(tagline2_padding + "[bold cyan]" + tagline2 + "[/]")
+
+    # Print separator line
+    console.print("[bold cyan]" + "=" * terminal_width + "[/]")
+
+
 @click.group(context_settings=CONTEXT_SETTINGS, invoke_without_command=True)
 @click.option("-h", "--help", "help_flag", is_flag=True, help="Show this message and exit.")
-@click.version_option(version=__version__)
+@click.option("-v", "--version", is_flag=True, help="Show version and exit.")
 @click.pass_context
-def main(ctx, help_flag):
+def main(ctx, help_flag, version):
     """MCPM - Model Context Protocol Manager.
 
     A tool for managing MCP servers across various clients.
     """
+    if version:
+        print_logo()
+        return
+
     # Check if a command is being executed (and it's not help, no command, or the client command)
     if ctx.invoked_subcommand and ctx.invoked_subcommand != "client" and not help_flag:
         # Check if active client is set
@@ -61,52 +113,7 @@ def main(ctx, help_flag):
         # Get active client
         active_client = client_config_manager.get_active_client()
 
-        # Create bold ASCII art with thicker characters for a more striking appearance
-        logo = [
-            " ███╗   ███╗ ██████╗██████╗ ███╗   ███╗ ",
-            " ████╗ ████║██╔════╝██╔══██╗████╗ ████║ ",
-            " ██╔████╔██║██║     ██████╔╝██╔████╔██║ ",
-            " ██║╚██╔╝██║██║     ██╔═══╝ ██║╚██╔╝██║ ",
-            " ██║ ╚═╝ ██║╚██████╗██║     ██║ ╚═╝ ██║ ",
-            " ╚═╝     ╚═╝ ╚═════╝╚═╝     ╚═╝     ╚═╝ ",
-            "",
-            f"v{__version__}",
-            "Open Source. Forever Free.",
-            "Built with ❤️ by Path Integral Institute",
-        ]
-
-        # Define terminal width for centering
-        terminal_width = 80  # Standard terminal width
-
-        # Print separator line
-        console.print("[bold cyan]" + "=" * terminal_width + "[/]")
-
-        # Calculate base padding for ASCII art
-        base_padding = " " * ((terminal_width - len(logo[0])) // 2)
-
-        # Center the ASCII art (except last line)
-        for i in range(5):  # First 5 lines of the ASCII art
-            console.print(f"{base_padding}[bold green]{logo[i]}[/]")
-
-        # Print last line with version, using the same base padding
-        version_text = f"v{__version__}"
-        console.print(f"{base_padding}[bold green]{logo[5]}[/] [bold yellow]{version_text}[/]")
-
-        # Center the taglines
-        tagline1 = logo[8]  # "Open Source. Forever Free."
-        tagline2 = logo[9]  # "Built with ❤️ by Path Integral Institute"
-
-        # Calculate center padding for each tagline
-        tagline1_padding = " " * ((terminal_width - len(tagline1)) // 2)
-        tagline2_padding = " " * ((terminal_width - len(tagline2)) // 2)
-
-        # Print centered taglines
-        console.print(tagline1_padding + "[bold magenta]" + tagline1 + "[/]")
-        console.print(tagline2_padding + "[bold cyan]" + tagline2 + "[/]")
-
-        # Print separator line
-        console.print("[bold cyan]" + "=" * terminal_width + "[/]")
-
+        print_logo()
         # Get information about installed clients
         from mcpm.clients.client_registry import ClientRegistry
 
