@@ -20,6 +20,8 @@ Built with ❤️ by Path Integral Institute
 
 MCPM is an open source service and a CLI package management tool for MCP servers. It simplifies managing server configurations across various supported clients, allows grouping servers into profiles, helps discover new servers via a registry, and includes a powerful router that aggregates multiple MCP servers behind a single endpoint with shared sessions.
 
+![Demo of MCPM in action](.github/readme/demo.gif)
+
 ## 🤝 Community Contributions
 
 > 💡 **Grow the MCP ecosystem!** We welcome contributions to our [MCP Registry](mcp-registry/README.md). Add your own servers, improve documentation, or suggest features. Open source thrives with community participation!
