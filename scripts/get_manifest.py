@@ -159,7 +159,7 @@ class ManifestGenerator:
                     retry_count += 1
                     continue
 
-                if len(description) < 20:
+                if len(description) < 10:
                     logger.warning(
                         f"Retry {retry_count+1}/{max_retries}: Description too short: {description}")
                     retry_count += 1
