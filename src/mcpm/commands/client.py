@@ -83,6 +83,16 @@ def set_client(client_name):
 
     CLIENT is the name of the client to set as active.
     """
+    # block the user to change client with a specific profile activated, or user will fail to deactivate a profile
+    # cause mcpm router is not attached to the client switched
+    active_profile = ClientRegistry.get_active_profile()
+    if active_profile:
+        console.print(
+            f"[bold blue]Note:[/] Profile '{active_profile}' needs to be deactivated before switching clients."
+        )
+        console.print("Please run [bold cyan]mcpm deactivate[/] to release the current profile.")
+        return
+
     # Get the list of supported clients
     supported_clients = ClientRegistry.get_supported_clients()
 

@@ -54,9 +54,11 @@ def client_get_server(client: str, server: str) -> ServerConfig | None:
 
 def profile_add_server(profile: str, server_config: ServerConfig, force: bool = False) -> bool:
     profile_manager = ProfileConfigManager()
-    if not profile_manager.get_profile(profile):
+    profile_info = profile_manager.get_profile(profile)
+    if profile_info is None:
         console.print(f"[bold red]Error:[/] Profile '{profile}' not found.")
         return False
+
     if profile_manager.get_profile_server(profile, server_config.name) and not force:
         console.print(f"[bold red]Error:[/] Server '{server_config.name}' already exists in {profile}.")
         console.print("Use --force to override.")

@@ -32,14 +32,12 @@ class WindsurfManager(JSONClientManager):
             self.config_path = config_path
         else:
             # Set config path based on detected platform
-            if self._system == "Darwin":  # macOS
-                self.config_path = os.path.expanduser("~/.codeium/windsurf/mcp_config.json")
-            elif self._system == "Windows":
+            if self._system == "Windows":
                 self.config_path = os.path.join(
-                    os.environ.get("LOCALAPPDATA", ""), "Codeium", "windsurf", "mcp_config.json"
+                    os.environ.get("USERPROFILE", ""), ".codeium", "windsurf", "mcp_config.json"
                 )
             else:
-                # Linux
+                # MacOS or Linux
                 self.config_path = os.path.expanduser("~/.codeium/windsurf/mcp_config.json")
 
     def to_client_format(self, server_config: ServerConfig) -> Dict[str, Any]:
