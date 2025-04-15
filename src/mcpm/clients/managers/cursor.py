@@ -31,13 +31,11 @@ class CursorManager(JSONClientManager):
             self.config_path = config_path
         else:
             # Set config path based on detected platform
-            if self._system == "Darwin":  # macOS
-                self.config_path = os.path.expanduser("~/Library/Application Support/Cursor/User/mcp_config.json")
-            elif self._system == "Windows":
-                self.config_path = os.path.join(os.environ.get("APPDATA", ""), "Cursor", "User", "mcp_config.json")
+            if self._system == "Windows":
+                self.config_path = os.path.join(os.environ.get("USERPROFILE", ""), ".cursor", "mcp.json")
             else:
-                # Linux
-                self.config_path = os.path.expanduser("~/.config/Cursor/User/mcp_config.json")
+                # MacOS or Linux
+                self.config_path = os.path.expanduser("~/.cursor/mcp.json")
 
     def _get_empty_config(self) -> Dict[str, Any]:
         """Get empty config structure for Cursor"""

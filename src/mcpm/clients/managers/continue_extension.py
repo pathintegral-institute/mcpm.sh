@@ -43,12 +43,10 @@ class ContinueManager(YAMLClientManager):
             self.config_path = config_path
         else:
             # Set config path based on detected platform
-            if os.name == "Darwin":  # macOS
-                self.config_path = os.path.expanduser("~/.continue/config.yaml")
-            elif os.name == "Windows":
+            if self._system == "Windows":
                 self.config_path = os.path.join(os.environ.get("USERPROFILE", ""), ".continue", "config.yaml")
             else:
-                # Linux
+                # MacOS or Linux
                 self.config_path = os.path.expanduser("~/.continue/config.yaml")
 
             # Also check for workspace config

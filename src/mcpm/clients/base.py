@@ -7,6 +7,7 @@ import json
 import logging
 import os
 import platform
+import re
 from typing import Any, Dict, List, Optional, Union
 
 from pydantic import TypeAdapter
@@ -157,6 +158,35 @@ class BaseClientManager(abc.ABC):
             bool: Success or failure
         """
         pass
+
+    def get_associated_profile(self) -> Optional[str]:
+        """
+        Get the associated profile for this client
+
+        Returns:
+            Optional[str]: Name of the associated profile, or None if no profile is associated
+        """
+        router_service = self.get_server(ROUTER_SERVER_NAME)
+        if not router_service:
+            # No associated profile
+            return None
+
+        # Extract profile name from router service
+        if isinstance(router_service, STDIOServerConfig):
+            if hasattr(router_service, "args") and "--headers" in router_service.args:
+                try:
+                    idx = router_service.args.index("profile")
+                    if idx < len(router_service.args) - 1:
+                        return router_service.args[idx + 1]
+                except ValueError:
+                    pass
+        else:
+            if hasattr(router_service, "url") and "profile=" in router_service.url:
+                matched = re.search(r"profile=([^&]+)", router_service.url)
+                if matched:
+                    return matched.group(1)
+
+        return None
 
 
 class JSONClientManager(BaseClientManager):

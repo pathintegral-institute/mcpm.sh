@@ -46,6 +46,7 @@ def list_clients():
     table.add_column("Client Name", style="cyan")
     table.add_column("Installation", style="yellow")
     table.add_column("Status", style="green")
+    table.add_column("Profile", style="magenta")
 
     active_client = ClientRegistry.get_active_client()
     installed_clients = ClientRegistry.detect_installed_clients()
@@ -61,8 +62,12 @@ def list_clients():
         # Get client info for more details
         client_info = ClientRegistry.get_client_info(client)
         display_name = client_info.get("name", client)
+        # Get Profile activated
+        client_manager = ClientRegistry.get_client_manager(client)
+        profile = client_manager.get_associated_profile() if client_manager else None
+        active_profile = f"[bold magenta]{profile}[/]" if profile else ""
 
-        table.add_row(f"{display_name} ({client})", install_status, active_status)
+        table.add_row(f"{display_name} ({client})", install_status, active_status, active_profile)
 
     console.print(table)
 
@@ -83,6 +88,7 @@ def set_client(client_name):
 
     CLIENT is the name of the client to set as active.
     """
+
     # Get the list of supported clients
     supported_clients = ClientRegistry.get_supported_clients()
 
@@ -97,10 +103,13 @@ def set_client(client_name):
         console.print(f"[bold yellow]Note:[/] {client_name} is already the active client")
         return
 
-    # Attempt to set the active client
+    # Attempt to set the active client with active profile inner switched
     success = ClientRegistry.set_active_client(client_name)
     if success:
         console.print(f"[bold green]Success:[/] Active client set to {client_name}")
+        active_profile = ClientRegistry.get_active_profile()
+        if active_profile:
+            console.print(f"[bold green]Success:[/] Active profile set to {active_profile}")
 
         # Provide information about what this means
         panel = Panel(

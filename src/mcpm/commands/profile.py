@@ -36,7 +36,12 @@ def activate(profile_name, client=None):
     client_registry = ClientRegistry()
     config_manager = ConfigManager()
 
+    activate_this_client: bool = client is None
+
     if client:
+        if client == ClientRegistry.get_active_client():
+            activate_this_client = True
+
         console.print(f"[bold cyan]Activating profile '{profile_name}' in client '{client}'...[/]")
         client_manager = ClientRegistry.get_client_manager(client)
         if client_manager is None:
@@ -54,9 +59,11 @@ def activate(profile_name, client=None):
             console.print(f"[bold red]Error:[/] Client '{client}' not found.")
             return
         success = client_manager.activate_profile(profile_name, config_manager.get_router_config())
-    if success:
+    if success and activate_this_client:
         client_registry.set_active_profile(profile_name)
         console.print(f"\n[green]Profile '{profile_name}' activated successfully.[/]\n")
+    elif success:
+        console.print(f"\n[green]Profile '{profile_name}' activated successfully for client '{client}'.[/]\n")
     else:
         console.print(f"[bold red]Error:[/] Failed to activate profile '{profile_name}'.")
 
@@ -69,15 +76,20 @@ def deactivate(client=None):
 
     Unsets the active profile.
     """
+    deactivate_this_client: bool = client is None
+
     # Set the active profile
     active_profile = ClientRegistry.get_active_profile()
-    if active_profile is None:
+    if deactivate_this_client and active_profile is None:
         console.print("[bold yellow]No active profile found.[/]\n")
         return
     console.print(f"\n[green]Deactivating profile '{active_profile}'...[/]")
     client_registry = ClientRegistry()
 
     if client:
+        if client == ClientRegistry.get_active_client():
+            deactivate_this_client = True
+
         console.print(f"[bold cyan]Deactivating profile '{active_profile}' in client '{client}'...[/]")
         client_manager = ClientRegistry.get_client_manager(client)
         if client_manager is None:
@@ -95,9 +107,11 @@ def deactivate(client=None):
             console.print(f"[bold red]Error:[/] Client '{client}' not found.")
             return
         success = client_manager.deactivate_profile()
-    if success:
+    if success and deactivate_this_client:
         client_registry.set_active_profile(None)
         console.print(f"\n[yellow]Profile '{active_profile}' deactivated successfully.[/]\n")
+    elif success:
+        console.print(f"\n[yellow]Profile '{active_profile}' deactivated successfully for client '{client}'.[/]\n")
     else:
         console.print(f"[bold red]Error:[/] Failed to deactivate profile '{active_profile}' in client '{client}'.")
 
@@ -197,6 +211,22 @@ def remove(profile_name):
     if not profile_config_manager.delete_profile(profile_name):
         console.print(f"[bold red]Error:[/] Profile '{profile_name}' not found.")
         return
+    # Check whether any client is associated with the deleted profile
+    clients = ClientRegistry.get_supported_clients()
+    for client in clients:
+        client_manager = ClientRegistry.get_client_manager(client)
+        if client_manager:
+            profile_this_client_associated = client_manager.get_associated_profile()
+            if profile_this_client_associated == profile_name:
+                # Deactivate the profile in this client
+                client_manager.deactivate_profile()
+                console.print(f"\n[green]Profile '{profile_name}' deactivated successfully for client '{client}'.[/]\n")
+
+    # fresh the active_profile
+    activated_profile = ClientRegistry.get_active_profile()
+    if activated_profile == profile_name:
+        ClientRegistry.set_active_profile(None)
+
     console.print(f"\n[green]Profile '{profile_name}' deleted successfully.[/]\n")
 
 
@@ -212,4 +242,22 @@ def rename(profile_name):
     if not profile_config_manager.rename_profile(profile_name, new_profile_name):
         console.print(f"[bold red]Error:[/] Profile '{profile_name}' not found.")
         return
+    # Check whether any client is associated with the profile to be renamed
+    clients = ClientRegistry.get_supported_clients()
+    config_manager = ConfigManager()
+    for client in clients:
+        client_manager = ClientRegistry.get_client_manager(client)
+        if client_manager:
+            profile_this_client_associated = client_manager.get_associated_profile()
+            if profile_this_client_associated == profile_name:
+                # fresh the config
+                client_manager.deactivate_profile()
+                client_manager.activate_profile(new_profile_name, config_manager.get_router_config())
+                console.print(f"\n[green]Profile '{profile_name}' deactivated successfully for client '{client}'.[/]\n")
+
+    # fresh the active_profile
+    activated_profile = ClientRegistry.get_active_profile()
+    if activated_profile == profile_name:
+        ClientRegistry.set_active_profile(new_profile_name)
+
     console.print(f"\n[green]Profile '{profile_name}' renamed to '{new_profile_name}' successfully.[/]\n")
