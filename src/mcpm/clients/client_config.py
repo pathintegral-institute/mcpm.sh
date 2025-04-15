@@ -54,6 +54,9 @@ class ClientConfigManager:
 
         # Set the active client
         result = self.config_manager.set_config("active_client", client_name)
+        # refresh the active profile
+        client = ClientRegistry.get_client_manager(client_name)
+        self.set_active_profile(client.get_associated_profile())  # type: ignore
         self._refresh_config()
         return result
 

@@ -8,7 +8,7 @@ from typing import Any, Dict
 
 from mcpm.clients.base import JSONClientManager
 from mcpm.schemas.server_config import ServerConfig
-from mcpm.utils.router_server import format_server_url_with_proxy_param
+from mcpm.utils.router_server import format_server_url_with_proxy_headers
 
 logger = logging.getLogger(__name__)
 
@@ -114,7 +114,7 @@ class ClaudeDesktopManager(JSONClientManager):
         return "disabledServers" in config and server_name in config["disabledServers"]
 
     def _format_router_server(self, profile_name, base_url) -> ServerConfig:
-        return format_server_url_with_proxy_param(self.client_key, profile_name, base_url)
+        return format_server_url_with_proxy_headers(self.client_key, profile_name, base_url)
 
     # Uses base class implementation of remove_server
 
