@@ -586,7 +586,7 @@ class YAMLClientManager(BaseClientManager):
             logger.debug(f"Server {server_name} not found in {self.display_name} config")
             return None
 
-        return self.from_client_format(server_name, server_config)
+        return self.from_client_format(server_name, self._normalize_server_config(server_config))
 
     def add_server(self, server_config: Union[ServerConfig, Dict[str, Any]], name: Optional[str] = None) -> bool:
         """Add or update a server in the client config
