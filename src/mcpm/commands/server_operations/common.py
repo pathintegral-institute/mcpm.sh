@@ -54,7 +54,7 @@ def client_get_server(client: str, server: str) -> ServerConfig | None:
 
 def profile_add_server(profile: str, server_config: ServerConfig, force: bool = False) -> bool:
     profile_manager = ProfileConfigManager()
-    if not profile_manager.get_profile(profile):
+    if profile_manager.get_profile(profile) is None:
         console.print(f"[bold red]Error:[/] Profile '{profile}' not found.")
         return False
     if profile_manager.get_profile_server(profile, server_config.name) and not force:
@@ -67,7 +67,7 @@ def profile_add_server(profile: str, server_config: ServerConfig, force: bool = 
 
 def profile_remove_server(profile: str, server: str) -> bool:
     profile_manager = ProfileConfigManager()
-    if not profile_manager.get_profile(profile):
+    if profile_manager.get_profile(profile) is None:
         console.print(f"[bold red]Error:[/] Profile '{profile}' not found.")
         return False
     success = profile_manager.remove_server(profile, server)
@@ -76,7 +76,7 @@ def profile_remove_server(profile: str, server: str) -> bool:
 
 def profile_get_server(profile: str, server: str) -> ServerConfig | None:
     profile_manager = ProfileConfigManager()
-    if not profile_manager.get_profile(profile):
+    if profile_manager.get_profile(profile) is None:
         console.print(f"[bold red]Error:[/] Profile '{profile}' not found.")
         return None
     return profile_manager.get_profile_server(profile, server)
