@@ -48,20 +48,17 @@ jobs:
         env:
           ISSUE_BODY: ${{ github.event.issue.body }}
         run: |
-          # Extract the repository URL from the issue body
-          # The format will match our template structure
-          REPO_URL=$(echo "$ISSUE_BODY" | grep -A 1 "GitHub Repository URL" | tail -n 1 | xargs)
+          # Extract the repository URL from the structured template format
+          # Look for the URL between "GitHub Repository URL" and "Description" sections
+          REPO_URL=$(echo "$ISSUE_BODY" | sed -n '/GitHub Repository URL/,/Description/p' | grep "https://" | head -n 1 | xargs)
           
-          # If that fails, try alternative format
+          # If that doesn't work, try a simpler approach as fallback
           if [ -z "$REPO_URL" ]; then
-            REPO_URL=$(echo "$ISSUE_BODY" | grep -o "https://github.com[^ ]*" | head -n 1)
+            REPO_URL=$(echo "$ISSUE_BODY" | grep -o "https://github.com[^ ]*" | head -n 1 | xargs)
           fi
           
-          # Clean up the URL (remove any trailing characters)
-          REPO_URL=$(echo "$REPO_URL" | sed -E 's/[^[:alnum:]\/\.\:\-\_].*//g')
-          
-          # Output the extracted values for debugging
-          echo "Repository URL: $REPO_URL"
+          # Make sure we have the full URL (no truncation)
+          echo "Raw Repository URL: $REPO_URL"
           
           # Set outputs for use in later steps
           echo "repo_url=$REPO_URL" >> $GITHUB_OUTPUT
