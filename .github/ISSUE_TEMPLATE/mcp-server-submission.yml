@@ -1,0 +1,26 @@
+name: MCP Server Submission
+description: Submit your MCP server to the Marketplace
+title: "[Server Submission]: "
+labels: ["server submission"]
+body:
+  - type: markdown
+    attributes:
+      value: "Thanks for submitting your MCP server to the Marketplace! Please fill out the information below."
+  
+  - type: input
+    id: repository
+    attributes:
+      label: GitHub Repository URL
+      description: Direct link to your MCP server's repository
+      placeholder: https://github.com/username/repo
+    validations:
+      required: true
+      
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Provide a brief description of your MCP server
+      placeholder: Describe what your server does, its features, etc.
+    validations:
+      required: true

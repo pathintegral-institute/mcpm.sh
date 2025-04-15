@@ -43,17 +43,32 @@ jobs:
       - name: Create local directory
         run: mkdir -p local
 
-      - name: Run Script with Issue Body
-        id: run_script
+      - name: Extract repository URL from issue body
+        id: extract_url
         env:
           ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          # Extract the repository URL from the issue body
+          # The format will match our template structure
+          REPO_URL=$(echo "$ISSUE_BODY" | grep -o "### GitHub Repository URL.*" | sed -E 's/### GitHub Repository URL\s*//g' | tr -d '\r' | xargs)
+          
+          # Output the extracted values for debugging
+          echo "Repository URL: $REPO_URL"
+          
+          # Set outputs for use in later steps
+          echo "repo_url=$REPO_URL" >> $GITHUB_OUTPUT
+
+      - name: Run Script with Extracted URL
+        id: run_script
+        env:
+          REPO_URL: ${{ steps.extract_url.outputs.repo_url }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         shell: /usr/bin/bash -e {0}
         continue-on-error: true
         run: |
-          echo "Running get_manifest.py with issue body"
+          echo "Running get_manifest.py with repository URL: $REPO_URL"
           mkdir -p local
-          if python scripts/get_manifest.py "$ISSUE_BODY"; then
+          if python scripts/get_manifest.py "$REPO_URL"; then
             echo "script_success=true" >> $GITHUB_OUTPUT
           else
             echo "script_success=false" >> $GITHUB_OUTPUT
@@ -80,7 +95,6 @@ jobs:
         if: steps.run_script.outputs.script_success == 'true'
         env:
           ISSUE_NUMBER: ${{ github.event.issue.number }}
-          ISSUE_BODY: ${{ github.event.issue.body }}
         shell: /usr/bin/bash -e {0}
         run: |
           # Create a unique branch name with issue number
