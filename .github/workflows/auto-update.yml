@@ -50,7 +50,15 @@ jobs:
         run: |
           # Extract the repository URL from the issue body
           # The format will match our template structure
-          REPO_URL=$(echo "$ISSUE_BODY" | grep -o "### GitHub Repository URL.*" | sed -E 's/### GitHub Repository URL\s*//g' | tr -d '\r' | xargs)
+          REPO_URL=$(echo "$ISSUE_BODY" | grep -A 1 "GitHub Repository URL" | tail -n 1 | xargs)
+          
+          # If that fails, try alternative format
+          if [ -z "$REPO_URL" ]; then
+            REPO_URL=$(echo "$ISSUE_BODY" | grep -o "https://github.com[^ ]*" | head -n 1)
+          fi
+          
+          # Clean up the URL (remove any trailing characters)
+          REPO_URL=$(echo "$REPO_URL" | sed -E 's/[^[:alnum:]\/\.\:\-\_].*//g')
           
           # Output the extracted values for debugging
           echo "Repository URL: $REPO_URL"
