@@ -57,6 +57,7 @@ def profile_add_server(profile: str, server_config: ServerConfig, force: bool = 
     if profile_manager.get_profile(profile) is None:
         console.print(f"[bold red]Error:[/] Profile '{profile}' not found.")
         return False
+
     if profile_manager.get_profile_server(profile, server_config.name) and not force:
         console.print(f"[bold red]Error:[/] Server '{server_config.name}' already exists in {profile}.")
         console.print("Use --force to override.")
