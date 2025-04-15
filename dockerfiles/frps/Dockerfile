@@ -12,4 +12,6 @@ RUN apk add curl
 
 HEALTHCHECK --interval=1m --timeout=30s --retries=3 CMD curl --fail http://localhost:7001/healthz || exit 1
 
-ENTRYPOINT ["/usr/bin/frps"]
+COPY frps.ini /etc/frp/frps.ini
+
+ENTRYPOINT ["/usr/bin/frps", "-c", "/etc/frp/frps.ini"]

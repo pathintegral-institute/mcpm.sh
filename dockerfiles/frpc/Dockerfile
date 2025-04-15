@@ -10,4 +10,6 @@ FROM alpine:3
 
 COPY --from=building /frp/bin/frpc /usr/bin/frpc
 
-ENTRYPOINT ["/usr/bin/frpc"]
+COPY frpc.ini /etc/frp/frpc.ini
+
+ENTRYPOINT ["/usr/bin/frpc", "-c", "/etc/frp/frpc.ini"]
