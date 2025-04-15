@@ -1,6 +1,6 @@
 name: General Issue
 description: Report a bug, suggest an improvement, or ask a question
-title: ""
+title: "[General]: "
 labels: ["triage"]
 body:
   - type: markdown
