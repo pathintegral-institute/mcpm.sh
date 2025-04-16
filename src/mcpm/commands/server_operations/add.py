@@ -273,7 +273,6 @@ def add(server_name, force=False, alias=None, target: str | None = None):
         required_args = {}
         # Process variables to store in config
         processed_variables = {}
-        processed_env = {}
 
         # First, prompt for all defined arguments even if they're not in env_vars
         progress.stop()
@@ -343,28 +342,15 @@ def add(server_name, force=False, alias=None, target: str | None = None):
             progress.start()
             progress.add_task(f"Configuring {server_name}...", total=None)
 
-        # Now process the replacement of environment variables
-        for key, value in env_vars.items():
-            if isinstance(value, str) and value.startswith("${") and value.endswith("}"):
-                # Extract the variable name from ${VAR_NAME}
-                env_var_name = value[2:-1]
-                # Use empty string as default when key not found
-                processed_env[key] = processed_variables.get(env_var_name, "")
-            else:
-                processed_env[key] = value
-
     # replace arguments with values
     processed_args = []
     for arg in install_args:
-        # check if the argument contains a variable
-        matched = re.search(r"\$\{([^}]+)\}", arg)
-        if matched:
-            original, key = matched.group(0), matched.group(1)
-            # Use empty string as default when key not found
-            replaced_arg = arg.replace(original, processed_variables.get(key, ""))
-            processed_args.append(replaced_arg)
-        else:
-            processed_args.append(arg)
+        processed_args.append(_replace_variables(arg, processed_variables))
+
+    # process environment variables
+    processed_env = {}
+    for key, value in env_vars.items():
+        processed_env[key] = _replace_variables(value, processed_variables)
 
     # Get actual MCP execution command, args, and env from the selected installation method
     # This ensures we use the actual server command information instead of placeholders
@@ -425,3 +411,25 @@ def _should_hide_input(arg_name: str) -> bool:
         bool: True if input should be hidden, False otherwise
     """
     return "token" in arg_name.lower() or "key" in arg_name.lower() or "secret" in arg_name.lower()
+
+
+def _replace_variables(value: str, variables: dict) -> str:
+    """Replace ${VAR} patterns in a string with values from variables dict.
+
+    Args:
+        value: String that may contain ${VAR} patterns
+        variables: Dictionary of variable names to values
+
+    Returns:
+        String with all variables replaced (empty string for missing variables)
+    """
+    if not isinstance(value, str):
+        return value
+
+    # check if the value contains a variable
+    matched = re.search(r"\$\{([^}]+)\}", value)
+    if matched:
+        original, var_name = matched.group(0), matched.group(1)
+        # Use empty string as default when key not found
+        return value.replace(original, variables.get(var_name, ""))
+    return value
