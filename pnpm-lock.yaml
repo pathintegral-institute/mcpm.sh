@@ -1,0 +1,28 @@
+lockfileVersion: "6.0"
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+devDependencies:
+  "@semantic-release/changelog":
+    specifier: ^6.0.0
+    version: 6.0.3
+  "@semantic-release/commit-analyzer":
+    specifier: ^11.0.0
+    version: 11.1.0
+  "@semantic-release/exec":
+    specifier: ^6.0.0
+    version: 6.0.3
+  "@semantic-release/git":
+    specifier: ^10.0.0
+    version: 10.0.1
+  "@semantic-release/github":
+    specifier: ^9.0.0
+    version: 9.2.6
+  "@semantic-release/release-notes-generator":
+    specifier: ^12.0.0
+    version: 12.1.0
+  semantic-release:
+    specifier: ^22.0.0
+    version: 22.0.12

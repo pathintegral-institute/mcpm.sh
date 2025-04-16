@@ -19,14 +19,19 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 'lts/*'
+          cache: 'pnpm'
 
-      - name: Install dependencies
-        run: |
-          npm install -g semantic-release @semantic-release/git @semantic-release/github @semantic-release/changelog @semantic-release/commit-analyzer @semantic-release/release-notes-generator @semantic-release/exec
+      - name: Install semantic-release dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Check Release
         uses: cycjimmy/semantic-release-action@v4
