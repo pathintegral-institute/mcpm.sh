@@ -17,7 +17,7 @@ console = Console()
 client_config_manager = ClientConfigManager()
 
 
-@click.command(name="list")
+@click.command()
 @click.option("--target", "-t", help="Target to list servers from")
 @click.help_option("-h", "--help")
 def list(target: str | None = None):
@@ -26,8 +26,8 @@ def list(target: str | None = None):
     Examples:
 
     \b
-        mcpm list
-        mcpm list -t @cursor
+        mcpm ls
+        mcpm ls -t @cursor
     """
     if target is None:
         target = ClientRegistry.determine_active_scope()

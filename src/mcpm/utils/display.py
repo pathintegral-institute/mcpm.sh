@@ -95,7 +95,7 @@ def print_error(message, details=None):
 def print_client_error():
     """Print a standardized client-related error message."""
     console.print("[bold red]Error:[/] Unsupported active client")
-    console.print("Please switch to a supported client using 'mcpm client <client-name>'")
+    console.print("Please switch to a supported client using 'mcpm client set <client-name>'")
 
 
 def print_active_scope(scope: str):

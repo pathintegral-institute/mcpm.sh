@@ -141,7 +141,7 @@ verify_installation() {
         echo
         echo -e "${DARK_GREEN}To get started with MCPM, try:${NC}"
         echo -e "  ${LIGHT_GREEN}mcpm --help${NC}         # Show available commands"
-        echo -e "  ${LIGHT_GREEN}mcpm list${NC} # List local MCP servers"
+        echo -e "  ${LIGHT_GREEN}mcpm ls${NC} # List local MCP servers"
         echo -e "  ${LIGHT_GREEN}mcpm add <server>${NC} # Install an MCP server"
         echo
         echo -e "For more information, visit ${DARK_GREEN}https://mcpm.sh${NC}"

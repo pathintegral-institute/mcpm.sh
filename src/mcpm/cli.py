@@ -97,7 +97,7 @@ def main(ctx, help_flag, version):
         active_client = client_config_manager.get_active_client()
         if not active_client:
             console.print("[bold red]Error:[/] No active client set.")
-            console.print("Please run 'mcpm client <client-name>' to set an active client.")
+            console.print("Please run 'mcpm client set <client-name>' to set an active client.")
             console.print("Available clients:")
 
             # Show available clients
@@ -124,7 +124,7 @@ def main(ctx, help_flag, version):
             client_status = "[green]✓[/]" if installed_clients.get(active_client, False) else "[yellow]⚠[/]"
             console.print(f"[bold magenta]Active client:[/] [yellow]{active_client}[/] {client_status}")
         else:
-            console.print("[bold red]No active client set![/] Please run 'mcpm client <client-name>' to set one.")
+            console.print("[bold red]No active client set![/] Please run 'mcpm client set <client-name>' to set one.")
         console.print("")
 
         # Display usage info
