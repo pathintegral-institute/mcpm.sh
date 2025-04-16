@@ -74,3 +74,6 @@ _dev/
 
 # folder
 local/
+
+# node
+node_modules/
