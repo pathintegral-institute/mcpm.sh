@@ -183,7 +183,7 @@ def apply(profile, server):
     # Check if client is supported
     if client_manager is None:
         console.print("[bold red]Error:[/] Unsupported active client")
-        console.print("Please switch to a supported client using 'mcpm client <client-name>'")
+        console.print("Please switch to a supported client using 'mcpm client set <client-name>'")
         return
 
     # Check if the server exists in the active client

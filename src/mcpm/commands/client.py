@@ -114,7 +114,7 @@ def set_client(client_name):
         # Provide information about what this means
         panel = Panel(
             f"The active client ({client_name}) will be used for all MCP operations.\n"
-            f"Commands like 'mcpm list', 'mcpm status', and 'mcpm install' will now operate on {client_name}.",
+            f"Commands like 'mcpm ls', 'mcpm add', 'mcpm rm', 'mcpm stash', and 'mcpm pop' will now operate on {client_name}.",
             title="Active Client Changed",
             border_style="green",
         )
