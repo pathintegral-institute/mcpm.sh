@@ -23,6 +23,7 @@ jobs:
         uses: pnpm/action-setup@v4
         with:
           version: 8
+          run_install: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -30,8 +31,8 @@ jobs:
           node-version: 'lts/*'
           cache: 'pnpm'
 
-      - name: Install semantic-release dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Install dependencies
+        run: pnpm install
 
       - name: Check Release
         uses: cycjimmy/semantic-release-action@v4
