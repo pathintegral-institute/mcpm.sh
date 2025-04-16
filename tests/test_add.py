@@ -50,7 +50,7 @@ def test_add_server(windsurf_manager, monkeypatch):
 
 
 def test_add_server_with_missing_arg(windsurf_manager, monkeypatch):
-    """Test add server with a missing argument that should remain in the args"""
+    """Test add server with a missing argument that should be replaced with empty string"""
     monkeypatch.setattr(ClientRegistry, "get_active_client", Mock(return_value="windsurf"))
     monkeypatch.setattr(ClientRegistry, "get_active_client_manager", Mock(return_value=windsurf_manager))
     monkeypatch.setattr(ClientRegistry, "get_client_manager", Mock(return_value=windsurf_manager))
@@ -78,7 +78,7 @@ def test_add_server_with_missing_arg(windsurf_manager, monkeypatch):
                     "arguments": {
                         "fmt": {"type": "string", "description": "Output format", "required": True},
                         "API_KEY": {"type": "string", "description": "API key", "required": True},
-                        # Deliberately not including TZ to test the bug fix
+                        # Deliberately not including TZ to test empty string replacement
                     },
                 }
             }
@@ -104,10 +104,84 @@ def test_add_server_with_missing_arg(windsurf_manager, monkeypatch):
 
         assert result.exit_code == 0
 
-    # Check that the server was added with alias and the missing argument is preserved
+    # Check that the server was added with alias and the missing argument is replaced with empty string
     server = windsurf_manager.get_server("test-missing-arg")
     assert server is not None
     assert server.command == "npx"
-    # The ${TZ} argument should remain intact since it's not in the processed variables
-    assert server.args == ["-y", "@modelcontextprotocol/server-test", "--fmt", "json", "--timezone", "${TZ}"]
+    # The ${TZ} argument should be replaced with empty string since it's not in processed variables
+    assert server.args == ["-y", "@modelcontextprotocol/server-test", "--fmt", "json", "--timezone", ""]
     assert server.env["API_KEY"] == "test-api-key"
+
+
+def test_add_server_with_empty_args(windsurf_manager, monkeypatch):
+    """Test add server with missing arguments that should be replaced with empty strings"""
+    monkeypatch.setattr(ClientRegistry, "get_active_client", Mock(return_value="windsurf"))
+    monkeypatch.setattr(ClientRegistry, "get_active_client_manager", Mock(return_value=windsurf_manager))
+    monkeypatch.setattr(ClientRegistry, "get_client_manager", Mock(return_value=windsurf_manager))
+    monkeypatch.setattr(
+        RepositoryManager,
+        "_fetch_servers",
+        Mock(
+            return_value={
+                "server-test": {
+                    "installations": {
+                        "npm": {
+                            "type": "npm",
+                            "command": "npx",
+                            "args": [
+                                "-y",
+                                "@modelcontextprotocol/server-test",
+                                "--fmt",
+                                "${fmt}",
+                                "--optional",
+                                "${OPTIONAL}",  # Optional arg not in arguments list
+                                "--api-key",
+                                "${API_KEY}",
+                            ],
+                            "env": {
+                                "API_KEY": "${API_KEY}",
+                                "OPTIONAL_ENV": "${OPTIONAL}",  # Optional env var
+                            },
+                        }
+                    },
+                    "arguments": {
+                        "fmt": {"type": "string", "description": "Output format", "required": True},
+                        "API_KEY": {"type": "string", "description": "API key", "required": True},
+                        # OPTIONAL is not listed in arguments
+                    },
+                }
+            }
+        ),
+    )
+
+    # Mock prompt responses for required arguments only
+    with (
+        patch("prompt_toolkit.PromptSession.prompt", side_effect=["json", "test-api-key"]),
+        patch("rich.progress.Progress.start"),
+        patch("rich.progress.Progress.stop"),
+        patch("rich.progress.Progress.add_task"),
+    ):
+        runner = CliRunner(mix_stderr=False)
+        result = runner.invoke(add, ["server-test", "--force", "--alias", "test-empty-args"])
+
+        assert result.exit_code == 0
+
+    # Check that the server was added and optional arguments are empty
+    server = windsurf_manager.get_server("test-empty-args")
+    assert server is not None
+    assert server.command == "npx"
+    # Optional arguments should be replaced with empty strings
+    assert server.args == [
+        "-y",
+        "@modelcontextprotocol/server-test",
+        "--fmt",
+        "json",
+        "--optional",
+        "",  # ${OPTIONAL} replaced with empty string
+        "--api-key",
+        "test-api-key",
+    ]
+    assert server.env == {
+        "API_KEY": "test-api-key",
+        "OPTIONAL_ENV": "",  # Optional env var should be empty string
+    }

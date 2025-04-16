@@ -34,8 +34,8 @@ class STDIOServerConfig(BaseServerConfig):
         # Use provided environment without falling back to os.environ
         environment = env
 
-        # Filter out empty environment variables
-        non_empty_env = {}
+        # Keep all environment variables, including empty strings
+        filtered_env = {}
         for key, value in self.env.items():
             # For environment variable references like ${VAR_NAME}, check if the variable exists
             # and has a non-empty value. If it doesn't exist or is empty, exclude it.
@@ -44,14 +44,13 @@ class STDIOServerConfig(BaseServerConfig):
                     # Extract the variable name from ${VAR_NAME}
                     env_var_name = value[2:-1]
                     env_value = environment.get(env_var_name, "")
-                    # Only include if the variable has a value in the environment
-                    if env_value.strip() != "":
-                        non_empty_env[key] = value
-                # For regular values, only include if they're not empty
-                elif value.strip() != "":
-                    non_empty_env[key] = value
+                    # Include all values, even empty ones
+                    filtered_env[key] = env_value
+                else:
+                    # Include all values, even empty ones
+                    filtered_env[key] = value
 
-        return non_empty_env
+        return filtered_env
 
 
 class SSEServerConfig(BaseServerConfig):
