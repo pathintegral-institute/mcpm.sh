@@ -21,7 +21,7 @@ jobs:
           file: 'mcp-registry/servers/*.json'
           schema: 'mcp-registry/schema/server-schema.json'
           mode: 'default'
-          fixSchemas: 'false'
+          fixSchemas: false
 
   test:
     runs-on: ubuntu-latest
