@@ -94,11 +94,13 @@ class RouterSseTransport(SseServerTransport):
         # maintain session_id to identifier mapping
         profile = get_key_from_scope(scope, key_name="profile")
         client_id = get_key_from_scope(scope, key_name="client")
-        if profile is not None:
-            self._session_id_to_identifier[session_id] = ClientIdentifier(
-                client_id=client_id or "anonymous", profile=profile
-            )
-            logger.debug(f"Session {session_id} mapped to identifier {self._session_id_to_identifier[session_id]}")
+        logger.debug(f"Profile: {profile}, Client ID: {client_id}")
+        client_id = client_id or "anonymous"
+        profile = profile or "unknown"
+        self._session_id_to_identifier[session_id] = ClientIdentifier(
+            client_id=client_id, profile=profile
+        )
+        logger.debug(f"Session {session_id} mapped to identifier {self._session_id_to_identifier[session_id]}")
 
         sse_stream_writer, sse_stream_reader = anyio.create_memory_object_stream[dict[str, Any]](0)
 
