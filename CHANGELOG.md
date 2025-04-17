@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.1.2...v1.2.0) (2025-04-17)
+
+
+### Features
+
+* **command:** Add info command and simplify search output ([#73](https://github.com/pathintegral-institute/mcpm.sh/issues/73)) ([27a4443](https://github.com/pathintegral-institute/mcpm.sh/commit/27a44434c5afe72ee1ceec1b2ef2b6b6a1698f5f))
+
 ## [1.1.2](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.1.1...v1.1.2) (2025-04-17)
 
 
