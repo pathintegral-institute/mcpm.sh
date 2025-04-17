@@ -18,6 +18,7 @@ from starlette.middleware.cors import CORSMiddleware
 from starlette.requests import Request
 from starlette.routing import Mount, Route
 from starlette.types import AppType
+from starlette.lifespan import Lifespan
 
 from mcpm.monitor.base import AccessEventType
 from mcpm.monitor.event import trace_event
@@ -403,23 +404,25 @@ class MCPRouter:
             capabilities=capabilities,
         )
 
-    async def get_sse_server_app(self, allow_origins: t.Optional[t.List[str]] = None) -> AppType:
+    async def get_sse_server_app(
+        self,
+        allow_origins: t.Optional[t.List[str]] = None,
+        include_lifespan: bool = True
+    ) -> AppType:
         """
         Get the SSE server app.
 
         Args:
             allow_origins: List of allowed origins for CORS
+            include_lifespan: Whether to include the router's lifespan manager in the app.
 
         Returns:
             An SSE server app
         """
-        # waiting all servers to be initialized
         await self.initialize_router()
 
-        # Create SSE transport
         sse = RouterSseTransport("/messages/")
 
-        # Handle SSE connections
         async def handle_sse(request: Request) -> None:
             async with sse.connect_sse(
                 request.scope,
@@ -432,12 +435,14 @@ class MCPRouter:
                     self.aggregated_server.initialization_options,
                 )
 
-        @asynccontextmanager
-        async def lifespan(app: AppType):
-            yield
-            await self.shutdown()
+        lifespan_handler: t.Optional[Lifespan[AppType]] = None
+        if include_lifespan:
+            @asynccontextmanager
+            async def lifespan(app: AppType):
+                yield
+                await self.shutdown()
+            lifespan_handler = lifespan
 
-        # Set up middleware for CORS if needed
         middleware: t.List[Middleware] = []
         if allow_origins is not None:
             middleware.append(
@@ -449,7 +454,6 @@ class MCPRouter:
                 ),
             )
 
-        # Create Starlette app
         app = Starlette(
             debug=False,
             middleware=middleware,
@@ -457,7 +461,7 @@ class MCPRouter:
                 Route("/sse", endpoint=handle_sse),
                 Mount("/messages/", app=sse.handle_post_message),
             ],
-            lifespan=lifespan,
+            lifespan=lifespan_handler,
         )
         return app
 
