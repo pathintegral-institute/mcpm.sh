@@ -19,20 +19,17 @@ from starlette.requests import Request
 from starlette.routing import Mount, Route
 from starlette.types import AppType
 
+from mcpm.monitor.base import AccessEventType
+from mcpm.monitor.event import trace_event
 from mcpm.profile.profile_config import ProfileConfigManager
 from mcpm.schemas.server_config import ServerConfig
+from mcpm.utils.config import PROMPT_SPLITOR, RESOURCE_SPLITOR, RESOURCE_TEMPLATE_SPLITOR, TOOL_SPLITOR
 
 from .client_connection import ServerConnection
 from .transport import RouterSseTransport
 from .watcher import ConfigWatcher
 
 logger = logging.getLogger(__name__)
-
-
-TOOL_SPLITOR = "_t_"
-RESOURCE_SPLITOR = ":"
-RESOURCE_TEMPLATE_SPLITOR = ":"
-PROMPT_SPLITOR = "_p_"
 
 
 class MCPRouter:
@@ -209,6 +206,7 @@ class MCPRouter:
                     prompts.append(types.Prompt(**prompt))
             return types.ServerResult(types.ListPromptsResult(prompts=prompts))
 
+        @trace_event(AccessEventType.PROMPT_EXECUTION)
         async def get_prompt(req: types.GetPromptRequest) -> types.ServerResult:
             active_servers = get_active_servers(req.params.meta.profile)  # type: ignore
 
@@ -242,6 +240,7 @@ class MCPRouter:
                     resource_templates.append(types.ResourceTemplate(**resource_template))
             return types.ServerResult(types.ListResourceTemplatesResult(resourceTemplates=resource_templates))
 
+        @trace_event(AccessEventType.RESOURCE_ACCESS)
         async def read_resource(req: types.ReadResourceRequest) -> types.ServerResult:
             active_servers = get_active_servers(req.params.meta.profile)  # type: ignore
 
@@ -268,6 +267,7 @@ class MCPRouter:
 
             return types.ServerResult(types.ListToolsResult(tools=tools))
 
+        @trace_event(AccessEventType.TOOL_INVOCATION)
         async def call_tool(req: types.CallToolRequest) -> types.ServerResult:
             active_servers = get_active_servers(req.params.meta.profile)  # type: ignore
             logger.info(f"call_tool: {req} with active servers: {active_servers}")

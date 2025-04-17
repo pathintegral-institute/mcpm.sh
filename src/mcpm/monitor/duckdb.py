@@ -10,7 +10,7 @@ from typing import Any, Dict, Optional, Union
 
 import duckdb
 
-from mcpm.monitor.base import AccessEventType, AccessMonitor
+from mcpm.monitor.base import AccessEventType, AccessMonitor, MCPEvent, Pagination, QueryEventResponse
 from mcpm.utils.config import ConfigManager
 
 
@@ -233,6 +233,133 @@ class DuckDBAccessMonitor(AccessMonitor):
         except Exception as e:
             print(f"Error tracking event: {e}")
             return False
+
+    async def query_events(
+        self, offset: str, page: int, limit: int, event_type: Optional[str] = None
+    ) -> QueryEventResponse:
+        """
+        Query events from the database with pagination.
+
+        Args:
+            offset: Time offset pattern like "3h" for past 3 hours, "1d" for past day, etc.
+            page: Page number (1-based)
+            limit: Number of events per page
+            event_type: Type of events to filter by
+
+        Returns:
+            Dict containing events, total count, page, and limit
+        """
+        if not self._initialized:
+            if not await self.initialize_storage():
+                return QueryEventResponse(pagination=Pagination(total=0, page=0, limit=0, total_pages=0), events=[])
+
+        async with self._lock:
+            response = await asyncio.to_thread(
+                self._query_events_impl,
+                offset,
+                page,
+                limit,
+                event_type,
+            )
+            return response
+
+    def _query_events_impl(
+        self,
+        offset: str,
+        page: int,
+        limit: int,
+        event_type: Optional[str],
+    ) -> QueryEventResponse:
+        """
+        Query events from the storage backend
+
+        Args:
+            offset: Time offset for the query
+            page: Page number
+            limit: Number of events per page
+            event_type: Type of events to query (optional)
+
+        Returns:
+            QueryEventResponse: List of events matching the query
+        """
+        try:
+            # Build the base query and conditions
+            conditions = []
+            parameters = []
+
+            # handle time offset
+            time_value = 0
+            time_unit = ""
+
+            # Parse offset pattern like "3h", "1d", etc.
+            for i, char in enumerate(offset):
+                if char.isdigit():
+                    time_value = time_value * 10 + int(char)
+                else:
+                    time_unit = offset[i:]
+                    break
+
+            if time_unit and time_value > 0:
+                # Convert to SQL interval format
+                interval_map = {"h": "HOUR", "d": "DAY", "w": "WEEK", "m": "MONTH"}
+
+                if time_unit.lower() in interval_map:
+                    conditions.append(
+                        f"timestamp >= TIMESTAMP '{datetime.now()}' - INTERVAL {time_value} {interval_map.get(time_unit.lower())}"
+                    )
+            else:
+                return QueryEventResponse(pagination=Pagination(total=0, page=0, limit=0, total_pages=0), events=[])
+
+            if event_type:
+                conditions.append("event_type = ?")
+                parameters.append(event_type)
+
+            # Build the final query
+            where_clause = " AND ".join(conditions)
+            if where_clause:
+                where_clause = f"WHERE {where_clause}"
+
+            sql_offset = (page - 1) * limit
+            # Get total count
+            count_query = f"SELECT COUNT(*) FROM monitor_events {where_clause}"
+            total_result = self.connection.execute(count_query, parameters).fetchone()
+            total = total_result[0] if total_result else 0
+
+            # Get paginated results
+            query = f"""
+                SELECT * FROM monitor_events
+                {where_clause}
+                ORDER BY timestamp DESC
+                LIMIT ? OFFSET ?
+            """
+            cursor = self.connection.execute(query, parameters + [limit, sql_offset])
+
+            # Convert result to dictionary
+            column_names = [desc[0] for desc in cursor.description]
+            events = []
+
+            for row in cursor.fetchall():
+                event_dict = dict(zip(column_names, row))
+
+                for field in ["metadata", "raw_request", "raw_response"]:
+                    if event_dict[field] and isinstance(event_dict[field], str):
+                        try:
+                            event_dict[field] = json.loads(event_dict[field])
+                        except Exception:
+                            pass
+
+                event_dict["timestamp"] = datetime.strftime(event_dict["timestamp"], "%Y-%m-%d %H:%M:%S")
+                events.append(MCPEvent.model_validate(event_dict))
+
+            return QueryEventResponse(
+                pagination=Pagination(
+                    total=total, page=page, limit=limit, total_pages=1 if limit == 0 else (total + limit - 1) // limit
+                ),
+                events=events,
+            )
+        except Exception as e:
+            print(f"Error querying events: {e}")
+            return QueryEventResponse(pagination=Pagination(total=0, page=0, limit=0, total_pages=0), events=[])
 
     async def close(self) -> None:
         """Close the database connection asynchronously."""
