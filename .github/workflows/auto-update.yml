@@ -123,7 +123,7 @@ jobs:
             const branch_name = process.env.branch_name;
             
             // Generate direct PR creation URL
-            const pr_title = encodeURIComponent(`Add server from issue #${issue_number}`);
+            const pr_title = encodeURIComponent(`chore: Add server from issue #${issue_number}`);
             const pr_url = `https://github.com/${repo.owner}/${repo.repo}/compare/main...${branch_name}?quick_pull=1&title=${pr_title}`;
             
             await github.rest.issues.createComment({
