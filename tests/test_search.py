@@ -35,8 +35,8 @@ def test_search_all_servers(monkeypatch):
 
     assert result.exit_code == 0
     assert "Listing all available MCP servers" in result.output
-    assert "Server One" in result.output
-    assert "Server Two" in result.output
+    assert "server1" in result.output
+    assert "server2" in result.output
     assert "Found 2 server(s) matching search criteria" in result.output
     mock_repo_manager.search_servers.assert_called_once_with(None)
 
@@ -64,7 +64,7 @@ def test_search_with_query(monkeypatch):
 
     assert result.exit_code == 0
     assert "Searching for MCP servers matching 'github'" in result.output
-    assert "GitHub Server" in result.output
+    assert "github-server" in result.output
     assert "Found 1 server(s) matching search criteria" in result.output
     mock_repo_manager.search_servers.assert_called_once_with("github")
 
@@ -86,8 +86,8 @@ def test_search_no_results(monkeypatch):
     mock_repo_manager.search_servers.assert_called_once_with("nonexistent")
 
 
-def test_search_detailed_view(monkeypatch):
-    """Test searching with detailed view"""
+def test_search_table_view(monkeypatch):
+    """Test searching with table view"""
     # Mock repository manager
     mock_repo_manager = Mock()
     mock_repo_manager.search_servers = Mock(
@@ -118,16 +118,17 @@ def test_search_detailed_view(monkeypatch):
     )
     monkeypatch.setattr("mcpm.commands.search.repo_manager", mock_repo_manager)
 
-    # Run the command with detailed flag
+    # Run the command with table flag
     runner = CliRunner()
-    result = runner.invoke(search, ["--detailed"])
+    result = runner.invoke(search, ["--table"])
 
     assert result.exit_code == 0
     assert "Test Server" in result.output
     assert "A test server" in result.output
-    assert "Server Information:" in result.output
-    assert "Installation Details:" in result.output
-    assert "Example:" in result.output
+    # Table output won't have these detailed sections that were in the detailed view
+    # assert "Server Information:" in result.output
+    # assert "Installation Details:" in result.output
+    # assert "Example:" in result.output
     assert "Found 1 server(s) matching search criteria" in result.output
     mock_repo_manager.search_servers.assert_called_once_with(None)
 
@@ -149,8 +150,8 @@ def test_search_error_handling(monkeypatch):
     mock_repo_manager.search_servers.assert_called_once_with(None)
 
 
-def test_search_with_query_and_detailed(monkeypatch):
-    """Test searching with both a query and detailed view"""
+def test_search_with_query_and_table(monkeypatch):
+    """Test searching with both a query and table view"""
     # Mock repository manager
     mock_repo_manager = Mock()
     mock_repo_manager.search_servers = Mock(
@@ -181,15 +182,13 @@ def test_search_with_query_and_detailed(monkeypatch):
     )
     monkeypatch.setattr("mcpm.commands.search.repo_manager", mock_repo_manager)
 
-    # Run the command with both query and detailed flag
+    # Run the command with both query and table flag
     runner = CliRunner()
-    result = runner.invoke(search, ["test", "--detailed"])
+    result = runner.invoke(search, ["test", "--table"])
 
     assert result.exit_code == 0
     assert "Searching for MCP servers matching 'test'" in result.output
     assert "Test Server" in result.output
-    assert "Server Information:" in result.output
-    assert "Installation Details:" in result.output
-    assert "Example:" in result.output
+    assert "A test server" in result.output
     assert "Found 1 server(s) matching search criteria" in result.output
     mock_repo_manager.search_servers.assert_called_once_with("test")

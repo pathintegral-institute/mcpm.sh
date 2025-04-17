@@ -29,7 +29,7 @@ def status_message(message: str) -> None:
 def load_schema() -> Dict[str, Any]:
     """Load the JSON schema for validation"""
     try:
-        with open(SCHEMA_PATH, 'r') as f:
+        with open(SCHEMA_PATH, "r") as f:
             return json.load(f)
     except json.JSONDecodeError as e:
         error_exit(f"Invalid JSON in schema file: {e}")
@@ -42,7 +42,7 @@ def load_schema() -> Dict[str, Any]:
 def load_manifest(manifest_path: Path) -> Dict[str, Any]:
     """Load and parse a manifest file with schema validation"""
     try:
-        with open(manifest_path, 'r') as f:
+        with open(manifest_path, "r") as f:
             manifest = json.load(f)
 
         # Get the schema
@@ -70,7 +70,7 @@ def find_server_manifests(servers_dir: Path) -> List[Path]:
         error_exit(f"Servers directory not found: {servers_dir}")
 
     server_files = []
-    for file_path in servers_dir.glob('*.json'):
+    for file_path in servers_dir.glob("*.json"):
         if file_path.is_file():
             server_files.append(file_path)
 
@@ -86,16 +86,16 @@ def extract_github_repos(server_manifests: List[Path]) -> Dict[str, str]:
         manifest = load_manifest(manifest_path)
 
         # Check if manifest has GitHub repository URL
-        if 'repository' in manifest:
-            repo_url = manifest['repository']
+        if "repository" in manifest:
+            repo_url = manifest["repository"]
 
             # Handle both string and dictionary repository formats
-            if isinstance(repo_url, str) and repo_url.startswith('https://github.com/'):
+            if isinstance(repo_url, str) and repo_url.startswith("https://github.com/"):
                 github_repos[server_name] = repo_url
-            elif (isinstance(repo_url, dict) and 'url' in repo_url and
-                  isinstance(repo_url['url'], str) and
-                  repo_url['url'].startswith('https://github.com/')):
-                github_repos[server_name] = repo_url['url']
+            elif (isinstance(repo_url, dict) and "url" in repo_url and
+                  isinstance(repo_url["url"], str) and
+                  repo_url["url"].startswith("https://github.com/")):
+                github_repos[server_name] = repo_url["url"]
 
     return github_repos
 
@@ -103,22 +103,22 @@ def extract_github_repos(server_manifests: List[Path]) -> Dict[str, str]:
 def fetch_github_stars_batch(repo_urls: List[str]) -> Dict[str, int]:
     """Fetch GitHub stars for multiple repositories using GraphQL API"""
     # Get GitHub token from environment variable
-    github_token = os.environ.get('GITHUB_TOKEN')
+    github_token = os.environ.get("GITHUB_TOKEN")
 
     # Prepare headers
     headers = {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
     }
 
     # Add authorization if token is provided
     if github_token:
-        headers['Authorization'] = f"Bearer {github_token}"
+        headers["Authorization"] = f"Bearer {github_token}"
 
     # Extract owner and repo from URLs
     repos = []
     for url in repo_urls:
-        if url.startswith('https://github.com/'):
-            parts = url.replace('https://github.com/', '').split('/')
+        if url.startswith("https://github.com/"):
+            parts = url.replace("https://github.com/", "").split("/")
             if len(parts) >= 2:
                 owner, repo = parts[0], parts[1]
                 repos.append((owner, repo))
@@ -147,9 +147,9 @@ def fetch_github_stars_batch(repo_urls: List[str]) -> Dict[str, int]:
             variables[f"repo{i}"] = repo
 
         # Join the query parts with proper line length
-        variable_defs = ', '.join(f'$owner{i}: String!, $repo{i}: String!'
+        variable_defs = ", ".join(f"$owner{i}: String!, $repo{i}: String!"
                                   for i in range(len(batch)))
-        query_body = ' '.join(query_parts)
+        query_body = " ".join(query_parts)
 
         query = f"""query ({variable_defs}) {{
             {query_body}
@@ -160,7 +160,7 @@ def fetch_github_stars_batch(repo_urls: List[str]) -> Dict[str, int]:
             response = requests.post(
                 GITHUB_API_URL,
                 headers=headers,
-                json={'query': query, 'variables': variables}
+                json={"query": query, "variables": variables}
             )
 
             # Check for errors
@@ -179,20 +179,20 @@ def fetch_github_stars_batch(repo_urls: List[str]) -> Dict[str, int]:
             data = response.json()
 
             # Check for GraphQL errors
-            if 'errors' in data:
+            if "errors" in data:
                 print(f"⚠️ GraphQL errors: {data['errors']}")
                 continue
 
             # Extract star counts
             for i, (owner, repo) in enumerate(batch):
                 repo_key = f"repo{i}"
-                if repo_key in data['data'] and data['data'][repo_key]:
-                    url = data['data'][repo_key]['url']
-                    star_count = data['data'][repo_key]['stargazerCount']
+                if repo_key in data["data"] and data["data"][repo_key]:
+                    url = data["data"][repo_key]["url"]
+                    star_count = data["data"][repo_key]["stargazerCount"]
                     stars[url] = star_count
-                    if url.startswith('https://github.com/'):
+                    if url.startswith("https://github.com/"):
                         returned_parts = url.replace(
-                            'https://github.com/', '').split('/')
+                            "https://github.com/", "").split("/")
                         if len(returned_parts) >= 2:
                             returned_owner, returned_repo = returned_parts[0], returned_parts[1]
                             if owner != returned_owner:
@@ -243,13 +243,13 @@ def generate_servers_json(server_manifests: List[Path], output_path: Path) -> Di
 
         # Use the entire manifest as is, preserving all fields
         # Ensure the name field at minimum is present
-        if 'name' not in manifest:
-            manifest['name'] = server_name
+        if "name" not in manifest:
+            manifest["name"] = server_name
 
         servers_data[server_name] = manifest
 
     # Write servers.json
-    with open(output_path, 'w') as f:
+    with open(output_path, "w") as f:
         json.dump(servers_data, f, indent=2)
 
     return servers_data
@@ -260,7 +260,7 @@ def generate_stars_json(stars: Dict[str, int], output_path: Path) -> None:
     status_message("Generating stars.json...")
 
     # Write stars.json
-    with open(output_path, 'w') as f:
+    with open(output_path, "w") as f:
         json.dump(stars, f, indent=2)
 
 

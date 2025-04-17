@@ -12,6 +12,7 @@ from mcpm.commands import (
     add,
     client,
     config,
+    info,
     inspector,
     list,
     pop,
@@ -147,6 +148,7 @@ def main(ctx, help_flag, version):
 
         commands_table.add_row("[yellow]server[/]")
         commands_table.add_row("  [cyan]search[/]", "Search available MCP servers.")
+        commands_table.add_row("  [cyan]info[/]", "Show detailed information about a specific MCP server.")
         commands_table.add_row("  [cyan]add[/]", "Add an MCP server directly to a client.")
         commands_table.add_row("  [cyan]cp[/]", "Copy a server from one client/profile to another.")
         commands_table.add_row("  [cyan]mv[/]", "Move a server from one client/profile to another.")
@@ -175,6 +177,7 @@ def main(ctx, help_flag, version):
 
 # Register commands
 main.add_command(search.search)
+main.add_command(info.info)
 main.add_command(remove.remove, name="rm")
 main.add_command(add.add)
 main.add_command(list.list, name="ls")
