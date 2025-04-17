@@ -4,9 +4,11 @@ Router command for managing the MCPRouter daemon process
 
 import logging
 import os
+import secrets
 import signal
 import subprocess
 import sys
+import uuid
 
 import click
 import psutil
@@ -14,6 +16,7 @@ from rich.console import Console
 from rich.prompt import Confirm
 
 from mcpm.clients.client_registry import ClientRegistry
+from mcpm.router.share import Tunnel
 from mcpm.utils.config import ROUTER_SERVER_NAME, ConfigManager
 from mcpm.utils.platform import get_log_directory, get_pid_directory
 
@@ -24,6 +27,7 @@ console = Console()
 APP_SUPPORT_DIR = get_pid_directory("mcpm")
 APP_SUPPORT_DIR.mkdir(parents=True, exist_ok=True)
 PID_FILE = APP_SUPPORT_DIR / "router.pid"
+SHARE_CONFIG = APP_SUPPORT_DIR / "share.json"
 
 LOG_DIR = get_log_directory("mcpm")
 LOG_DIR.mkdir(parents=True, exist_ok=True)
@@ -147,16 +151,19 @@ def start_router():
 @router.command(name="set")
 @click.option("-H", "--host", type=str, help="Host to bind the SSE server to")
 @click.option("-p", "--port", type=int, help="Port to bind the SSE server to")
+@click.option("-a", "--address", type=str, help="Remote address to share the router")
 @click.help_option("-h", "--help")
-def set_router_config(host, port):
+def set_router_config(host, port, address):
     """Set MCPRouter global configuration.
 
     Example:
         mcpm router set -H localhost -p 8888
         mcpm router set --host 127.0.0.1 --port 9000
     """
-    if not host and not port:
-        console.print("[yellow]No changes were made. Please specify at least one option (--host or --port)[/]")
+    if not host and not port and not address:
+        console.print(
+            "[yellow]No changes were made. Please specify at least one option (--host, --port, or --address)[/]"
+        )
         return
 
     # get current config, make sure all field are filled by default value if not exists
@@ -166,10 +173,13 @@ def set_router_config(host, port):
     # if user does not specify a host, use current config
     host = host or current_config["host"]
     port = port or current_config["port"]
+    share_address = address or current_config["share_address"]
 
     # save config
-    if config_manager.save_router_config(host, port):
-        console.print(f"[bold green]Router configuration updated:[/] host={host}, port={port}")
+    if config_manager.save_router_config(host, port, share_address):
+        console.print(
+            f"[bold green]Router configuration updated:[/] host={host}, port={port}, share_address={share_address}"
+        )
         console.print("The new configuration will be used next time you start the router.")
 
         # if router is running, prompt user to restart
@@ -223,6 +233,14 @@ def stop_router():
 
     # send termination signal
     try:
+        config_manager = ConfigManager()
+        share_config = config_manager.read_share_config()
+        if share_config.get("pid"):
+            console.print("[green]Disabling share link...[/]")
+            os.kill(share_config["pid"], signal.SIGTERM)
+            config_manager.save_share_config(share_url=None, share_pid=None, api_key=None)
+            console.print("[bold green]Share link disabled[/]")
+
         os.kill(pid, signal.SIGTERM)
         console.print(f"[bold green]MCPRouter stopped (PID: {pid})[/]")
 
@@ -256,5 +274,109 @@ def router_status():
     pid = read_pid_file()
     if pid:
         console.print(f"[bold green]MCPRouter is running[/] at http://{host}:{port} (PID: {pid})")
+        share_config = ConfigManager().read_share_config()
+        if share_config.get("pid"):
+            console.print(f"[bold green]MCPRouter is sharing[/] at {share_config['url']} (PID: {share_config['pid']})")
     else:
         console.print("[yellow]MCPRouter is not running.[/]")
+
+
+@router.command()
+@click.help_option("-h", "--help")
+@click.option("-a", "--address", type=str, required=False, help="Remote address to bind the tunnel to")
+@click.option("-p", "--profile", type=str, required=False, help="Profile to share")
+def share(address, profile):
+    """Create a share link for the MCPRouter daemon process.
+
+    Example:
+
+    \b
+        mcpm router share --address example.com:8877
+    """
+
+    # check if there is a router already running
+    pid = read_pid_file()
+    config_manager = ConfigManager()
+    if not pid:
+        console.print("[yellow]MCPRouter is not running.[/]")
+        return
+
+    if not profile:
+        active_profile = ClientRegistry.get_active_profile()
+        if not active_profile:
+            console.print("[yellow]No active profile found. You need to specify a profile to share.[/]")
+
+        console.print(f"[cyan]Sharing with active profile {active_profile}...[/]")
+        profile = active_profile
+    else:
+        console.print(f"[cyan]Sharing with profile {profile}...[/]")
+
+    # check if share link is already active
+    share_config = config_manager.read_share_config()
+    if share_config.get("pid"):
+        console.print(f"[yellow]Share link is already active at {share_config['url']}.[/]")
+        return
+
+    # get share address
+    if not address:
+        console.print("[cyan]Using share address from config...[/]")
+        config = config_manager.get_router_config()
+        address = config["share_address"]
+
+    # create share link
+    remote_host, remote_port = address.split(":")
+
+    # start tunnel
+    # TODO: tls certificate if necessary
+    tunnel = Tunnel(remote_host, remote_port, config["host"], config["port"], secrets.token_urlsafe(32), None)
+    share_url = tunnel.start_tunnel()
+    share_pid = tunnel.proc.pid if tunnel.proc else None
+    # generate random api key
+    api_key = str(uuid.uuid4())
+    console.print(f"[bold green]Generated secret for share link: {api_key}[/]")
+    # TODO: https is not supported yet
+    share_url = share_url.replace("https://", "http://") + "/sse"
+    # save share pid and link to config
+    config_manager.save_share_config(share_url, share_pid, api_key)
+    profile = profile or "<your_profile>"
+
+    # print share link
+    console.print(f"[bold green]Router is sharing at {share_url}[/]")
+    console.print(f"[green]Your profile can be accessed with the url {share_url}?s={api_key}&profile={profile}[/]\n")
+    console.print(
+        "[bold yellow]Be careful about the share link, it will be exposed to the public. Make sure to share to trusted users only.[/]"
+    )
+
+
+@router.command("unshare")
+@click.help_option("-h", "--help")
+def stop_share():
+    """Stop the share link for the MCPRouter daemon process."""
+    # check if there is a share link already running
+    config_manager = ConfigManager()
+    share_config = config_manager.read_share_config()
+    if not share_config["url"]:
+        console.print("[yellow]No share link is active.[/]")
+        return
+
+    pid = share_config["pid"]
+    if not pid:
+        console.print("[yellow]No share link is active.[/]")
+        return
+
+    # send termination signal
+    try:
+        console.print(f"[bold yellow]Stopping share link at {share_config['url']} (PID: {pid})...[/]")
+        os.kill(pid, signal.SIGTERM)
+        console.print(f"[bold green]Share process stopped (PID: {pid})[/]")
+
+        # delete share config
+        config_manager.save_share_config(share_url=None, share_pid=None, api_key=None)
+    except OSError as e:
+        console.print(f"[bold red]Error:[/] Failed to stop share link: {e}")
+
+        # if process does not exist, clean up share config
+        if e.errno == 3:  # "No such process"
+            console.print("[yellow]Share process does not exist, cleaning up share config...[/]")
+            config_manager.save_share_config(share_url=None, share_pid=None, api_key=None)
+    console.print("[bold green]Share link disabled[/]")
