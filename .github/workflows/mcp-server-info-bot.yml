@@ -1,4 +1,4 @@
-name: Scrape and Update Repo
+name: MCP Server Info Bot
 
 permissions:
   contents: write
@@ -12,20 +12,44 @@ on:
 jobs:
   scrape-and-update:
     runs-on: ubuntu-latest
-    if: github.event.label.name == 'new-server'  # Trigger only on 'new-server' label
+    if: github.event.label.name == 'mcp-server-info-bot'  # Trigger only on 'mcp-server-info-bot' label
     steps:
-      - name: Check if user is authorized
-        env:
-          SENDER: ${{ github.event.sender.login }}
+      - name: Check if user is a maintainer
+        uses: actions/github-script@v6
+        id: check-maintainer
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const sender = context.payload.sender.login;
+            const { owner, repo } = context.repo;
+            
+            try {
+              // Check if user has write access (maintainer or higher)
+              const { data: permission } = await github.rest.repos.getCollaboratorPermissionLevel({
+                owner: owner,
+                repo: repo,
+                username: sender
+              });
+              
+              const hasWriteAccess = ['admin', 'maintain', 'write'].includes(permission.permission);
+              
+              if (hasWriteAccess) {
+                console.log(`✅ User ${sender} is a maintainer with ${permission.permission} permissions`);
+                return true;
+              } else {
+                console.log(`❌ User ${sender} does not have sufficient permissions (${permission.permission})`);
+                return false;
+              }
+            } catch (error) {
+              console.log(`Error checking permissions: ${error.message}`);
+              return false;
+            }
+        
+      - name: Fail if not maintainer
+        if: steps.check-maintainer.outputs.result != 'true'
         run: |
-          # Custom list of authorized users (GitHub usernames)
-          AUTHORIZED_USERS="jeremy-dai-txyz JoJoJoJoJoJoJo niechen"
-          if echo "$AUTHORIZED_USERS" | grep -q -w "$SENDER"; then
-            echo "User $SENDER is authorized"
-          else
-            echo "User $SENDER is not authorized"
-            exit 1
-          fi
+          echo "User ${{ github.event.sender.login }} does not have maintainer permissions"
+          exit 1
 
       - name: Checkout repository
         uses: actions/checkout@v4

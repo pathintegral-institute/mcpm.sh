@@ -36,10 +36,10 @@ jobs:
 
       - name: Check Release
         uses: cycjimmy/semantic-release-action@v4
+        id: semantic
         with:
           dry_run: true
           ci: false
-          unset_gha_env: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -48,15 +48,11 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const semanticResult = process.env.SEMANTIC_OUTPUT;
             let comment = '## Semantic Version Check\n\n';
             
-            if (semanticResult && semanticResult.includes('The next release version is')) {
-              const versionMatch = semanticResult.match(/The next release version is (.*)/);
-              if (versionMatch) {
-                comment += `✅ Valid semantic version changes detected!\n\n`;
-                comment += `Next version will be: **${versionMatch[1]}**\n`;
-              }
+            if ('${{ steps.semantic.outputs.new_release_version }}') {
+              comment += `✅ Valid semantic version changes detected!\n\n`;
+              comment += `Next version will be: **${{ steps.semantic.outputs.new_release_version }}**\n`;
             } else {
               comment += `⚠️ No semantic version changes detected.\n\n`;
               comment += 'Please ensure your commits follow the [Conventional Commits](https://www.conventionalcommits.org/) format:\n\n';
