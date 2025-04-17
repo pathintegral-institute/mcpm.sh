@@ -35,8 +35,8 @@ def test_search_all_servers(monkeypatch):
 
     assert result.exit_code == 0
     assert "Listing all available MCP servers" in result.output
-    assert "Server One" in result.output
-    assert "Server Two" in result.output
+    assert "server1" in result.output
+    assert "server2" in result.output
     assert "Found 2 server(s) matching search criteria" in result.output
     mock_repo_manager.search_servers.assert_called_once_with(None)
 
@@ -64,7 +64,7 @@ def test_search_with_query(monkeypatch):
 
     assert result.exit_code == 0
     assert "Searching for MCP servers matching 'github'" in result.output
-    assert "GitHub Server" in result.output
+    assert "github-server" in result.output
     assert "Found 1 server(s) matching search criteria" in result.output
     mock_repo_manager.search_servers.assert_called_once_with("github")
 

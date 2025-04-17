@@ -5,7 +5,7 @@ Search command for MCPM - Search and display available MCP servers from the regi
 import click
 from rich.console import Console
 
-from mcpm.utils.display import print_error, print_servers_table
+from mcpm.utils.display import print_error, print_servers_table, print_simple_servers_list
 from mcpm.utils.repository import RepositoryManager
 
 console = Console()
@@ -15,17 +15,20 @@ repo_manager = RepositoryManager()
 @click.command()
 @click.argument("query", required=False)
 @click.option("--detailed", is_flag=True, help="Show detailed server information")
+@click.option("--table", is_flag=True, help="Display results in table format with descriptions")
 @click.help_option("-h", "--help")
-def search(query, detailed=False):
+def search(query, detailed=False, table=False):
     """Search available MCP servers.
 
     Searches the MCP registry for available servers. Without arguments, lists all available servers.
+    By default, only shows server names. Use --table for more details or --detailed for full information.
 
     Examples:
 
     \b
-        mcpm search                  # List all available servers
+        mcpm search                  # List all available servers (names only)
         mcpm search github           # Search for github server
+        mcpm search --table          # Show results in a table with descriptions
         mcpm search --detailed       # Show detailed information
     """
     # Show appropriate search message
@@ -52,8 +55,10 @@ def search(query, detailed=False):
         # Show different views based on detail level
         if detailed:
             _display_detailed_results(servers)
-        else:
+        elif table:
             print_servers_table(servers)
+        else:
+            print_simple_servers_list(servers)
 
         # Show summary count
         console.print(f"\n[green]Found {len(servers)} server(s) matching search criteria[/]")

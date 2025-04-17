@@ -80,6 +80,25 @@ def print_servers_table(servers):
     console.print(table)
 
 
+def print_simple_servers_list(servers):
+    """Display a simple list of server names.
+    
+    Args:
+        servers: List of server dictionaries containing server information
+    """
+    # Sort servers by name for consistent display
+    sorted_servers = sorted(servers, key=lambda s: s["name"])
+    
+    # Calculate the number of servers to display in each column
+    total_servers = len(sorted_servers)
+    
+    # Format and print each server name
+    for server in sorted_servers:
+        name = server["name"]
+        display_name = server.get("display_name", name)
+        console.print(f"[cyan]{name}[/]")
+
+
 def print_error(message, details=None):
     """Print a standardized error message.
 
