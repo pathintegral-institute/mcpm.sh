@@ -22,7 +22,7 @@
     "user_agent": {
       "description": "Custom user-agent for fetching web content",
       "required": false,
-      "example": "Your User-Agent"
+      "example": "ModelContextProtocol/1.0 (User-Specified; +https://github.com/modelcontextprotocol/servers)"
     }
   },
   "installations": {
@@ -32,7 +32,7 @@
       "args": [
         "--from",
         "git+https://github.com/pathintegral-institute/mcp.science#subdirectory=servers/web-fetch",
-        "mcp-web-fetch" 
+        "mcp-web-fetch"
       ],
       "description": "Run using uv (recommended)"
     },
@@ -94,7 +94,9 @@
           }
         }
       },
-      "required": ["url"]
+      "required": [
+        "url"
+      ]
     }
   ],
   "is_official": true

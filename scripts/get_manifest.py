@@ -14,7 +14,8 @@ from openai import OpenAI
 from utils import McpClient
 
 dotenv.load_dotenv()
-
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 
@@ -270,117 +271,76 @@ class ManifestGenerator:
         Returns:
             Dictionary containing the extracted manifest information
         """
+        # Initialize the complete manifest dictionary
+        complete_manifest = {}
+
+        # Step 1: Extract basic information (display_name, license, tags)
+        basic_info = self._extract_basic_info(repo_url, readme_content)
+        complete_manifest.update(basic_info)
+
+        # Step 2: Extract arguments
+        arguments = self._extract_arguments(repo_url, readme_content)
+        if arguments:
+            complete_manifest["arguments"] = arguments
+
+        # Step 3: Extract installations
+        installations = self._extract_installations(repo_url, readme_content)
+        if installations:
+            complete_manifest["installations"] = installations
+
+        # Step 4: Extract examples
+        examples = self._extract_examples(repo_url, readme_content)
+        if examples:
+            complete_manifest["examples"] = examples
+
+        return complete_manifest
+
+    def _call_llm(self,
+                  repo_url: str,
+                  readme_content: str,
+                  schema: Dict,
+                  prompt: str) -> Dict:
+        """Generic helper method to call LLM with common retry pattern.
+
+        Args:
+            repo_url: GitHub repository URL
+            readme_content: README content
+            schema: JSON schema for the function call
+            prompt: User prompt for extraction
+            system_prompt: System prompt for extraction
+
+        Returns:
+            Extracted information or default value if failed
+        """
+        system_prompt = "You are a helpful assistant that extracts information from a GitHub repository about a server."
+
         max_retries = 3
         retry_count = 0
 
+        # Extract required fields from schema if available
+        required_fields = schema.get("parameters", {}).get("required", [])
+
         while retry_count < max_retries:
             try:
-                schema = {
-                    "name": "create_mcp_server_manifest",
-                    "description": "Create a manifest file for an MCP server",
-                    "parameters": {
-                        "type": "object",
-                        "required": ["display_name", "license", "installations"],
-                        "properties": {
-                            "display_name": {
-                                "type": "string",
-                                "description": "Human-readable server name"
-                            },
-                            "license": {"type": "string"},
-                            "tags": {
-                                "type": "array",
-                                "items": {"type": "string"}
-                            },
-                            "arguments": {
-                                "type": "object",
-                                "description": "Configuration arguments required by the server",
-                                "additionalProperties": {
-                                    "type": "object",
-                                    "required": ["description", "required"],
-                                    "properties": {
-                                        "description": {
-                                            "type": "string",
-                                            "description": "Description of the argument"
-                                        },
-                                        "required": {
-                                            "type": "boolean",
-                                            "description": "Whether this argument is required"
-                                        },
-                                        "example": {
-                                            "type": "string",
-                                            "description": "Example value"
-                                        }
-                                    }
-                                }
-                            },
-                            "installations": {
-                                "type": "object",
-                                "description": "Methods to install and run this server",
-                                "additionalProperties": {
-                                    "type": "object",
-                                    "required": ["type", "command", "args"],
-                                    "properties": {
-                                        "type": {
-                                            "type": "string",
-                                            "enum": ["npm", "python", "docker", "cli", "uvx", "custom"]
-                                        },
-                                        "command": {
-                                            "type": "string",
-                                            "description": "Command to run the server"
-                                        },
-                                        "args": {
-                                            "type": "array",
-                                            "description": "Arguments for the command",
-                                            "items": {"type": "string"}
-                                        },
-                                        "env": {
-                                            "type": "object",
-                                            "description": "Environment variables",
-                                            "additionalProperties": {"type": "string"}
-                                        },
-                                        "description": {
-                                            "type": "string",
-                                            "description": "Human-readable description"
-                                        }
-                                    }
-                                }
-                            },
-                            "examples": {
-                                "type": "array",
-                                "items": {
-                                    "type": "object",
-                                    "required": ["title", "description", "prompt"],
-                                    "properties": {
-                                        "title": {"type": "string"},
-                                        "description": {"type": "string"},
-                                        "prompt": {"type": "string"}
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
                 completion = self.client.chat.completions.create(
                     extra_headers={
                         "HTTP-Referer": os.environ.get("SITE_URL", "https://mcpm.sh"),
                         "X-Title": "MCPM"
                     },
-                    model="anthropic/claude-3-sonnet",
+                    model="anthropic/claude-3.7-sonnet",
                     messages=[
                         {
                             "role": "system",
-                            "content": "Analyze GitHub README files to extract MCP server manifest information."
+                            "content": system_prompt
                         },
                         {
                             "role": "user",
-                            "content": f"GitHub URL: {repo_url}\n\nREADME Content:\n{readme_content}\n\nExtract the necessary information to create an MCP server manifest."
+                            "content": f"GitHub URL: {repo_url}\n\nREADME Content:\n{readme_content}\n\n{prompt}"
                         }
                     ],
                     tools=[{"type": "function", "function": schema}],
                     temperature=0,
-                    tool_choice={"type": "function", "function": {
-                        "name": "create_mcp_server_manifest"}}
+                    tool_choice="required"
                 )
 
                 if not completion.choices or not completion.choices[0].message.tool_calls:
@@ -392,38 +352,340 @@ class ManifestGenerator:
                 tool_call = completion.choices[0].message.tool_calls[0]
                 result = json.loads(tool_call.function.arguments)
 
-                # Check if result contains 'properties' field (schema structure)
-                if 'properties' in result:
-                    result = result['properties']
-
-                # Check if the result contains required fields
-                required_fields = ["display_name", "license", "installations"]
-                missing_fields = [
-                    field for field in required_fields if field not in result]
-
-                if missing_fields:
-                    logger.warning(
-                        f"Retry {retry_count+1}/{max_retries}: Missing fields: {missing_fields}")
-                    retry_count += 1
-                    continue
-
-                # Check if installations has at least one valid entry
-                if not result.get("installations"):
-                    logger.warning(
-                        f"Retry {retry_count+1}/{max_retries}: No installations found")
-                    retry_count += 1
-                    continue
+                # Validate required fields if specified
+                if required_fields:
+                    missing_fields = [
+                        field for field in required_fields if field not in result]
+                    if missing_fields:
+                        logger.warning(
+                            f"Retry {retry_count+1}/{max_retries}: Missing fields: {missing_fields}")
+                        retry_count += 1
+                        continue
 
                 return result
 
             except Exception as e:
                 logger.error(
-                    f"Error extracting manifest with LLM (try {retry_count+1}/{max_retries}): {e}")
+                    f"Error extracting data with LLM (try {retry_count+1}/{max_retries}): {e}")
                 retry_count += 1
 
-        # If all retries failed, return empty dict
-        logger.error(f"All {max_retries} attempts to extract manifest failed")
-        return {}
+        logger.error(f"All {max_retries} attempts to extract data failed")
+
+        return {field: None for field in required_fields}
+
+    def _extract_basic_info(self, repo_url: str, readme_content: str) -> Dict:
+        """Extract basic information (display_name, license, tags) using LLM."""
+        schema = {
+            "name": "extract_basic_info",
+            "description": "Extract basic manifest information",
+            "parameters": {
+                "type": "object",
+                "required": ["display_name", "tags"],
+                "properties": {
+                    "display_name": {
+                        "type": "string",
+                        "description": "Human-readable server name"
+                    },
+                    "license": {"type": "string"},
+                    "tags": {
+                        "type": "array",
+                        "items": {"type": "string"}
+                    }
+                },
+                "additionalProperties": False
+            },
+        }
+
+        return self._call_llm(
+            repo_url=repo_url,
+            readme_content=readme_content,
+            schema=schema,
+            prompt=("Extract the display_name, license, and tags from the README file. "
+                    "The display_name should be a human-readable server name close to the name of the repository. "
+                    "The tags should be a list of tags that describe the server.")
+        )
+
+    def _extract_arguments(self, repo_url: str, readme_content: str) -> Dict:
+        """Extract arguments information using LLM."""
+        schema = {
+            "name": "extract_arguments",
+            "description": "Extract arguments information",
+            "required": ["arguments"],
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "arguments": {
+                        "type": "array",
+                        "description": "An array of configuration arguments required by the server",
+                        "items": {
+                            "type": "object",
+                            "required": ["key", "description"],
+                            "properties": {
+                                "key": {
+                                    "type": "string",
+                                    "description": "The name of the argument"
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "description": "Description of the argument"
+                                },
+                                "required": {
+                                    "type": "boolean",
+                                    "description": "Whether this argument is required"
+                                },
+                                "example": {
+                                    "type": "string",
+                                    "description": "Example value"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        result = self._call_llm(
+            repo_url=repo_url,
+            readme_content=readme_content,
+            schema=schema,
+            prompt=("""Extract the configuration arguments required by this server from the README file.
+The arguments should be a list of arguments that are required when running the server.
+It can often be found in the usage section of the README file.
+<Example>
+<README> Docker
+{
+  "mcpServers": {
+    "brave-search": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "BRAVE_API_KEY",
+        "mcp/brave-search"
+      ],
+      "env": {
+        "BRAVE_API_KEY": "YOUR_API_KEY_HERE"
+      }
+    }
+  }
+}
+NPX
+{
+  "mcpServers": {
+    "brave-search": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-brave-search"
+      ],
+      "env": {
+        "BRAVE_API_KEY": "YOUR_API_KEY_HERE"
+      }
+    }
+  }
+}
+<README/>
+From the example README, you should get:
+{
+  "arguments": [
+    {
+      "key": "BRAVE_API_KEY",
+      "description": "The API key for the Brave Search server",
+      "required": true,
+      "example": "YOUR_API_KEY_HERE"
+    }
+  ]
+}
+<Example/>
+if no arguments are required, return an empty array. """)
+        )
+
+        results = result.get("arguments", [])
+        arguments = {}
+        for result in results:
+            arguments[result["key"]] = {
+                "description": result.get("description", ""),
+                "required": result.get("required", ""),
+                "example": result.get("example", "")
+            }
+
+        return result.get("arguments", {})
+
+    def _extract_installations(self, repo_url: str, readme_content: str) -> Dict:
+        """Extract installations information using LLM."""
+        schema = {
+            "name": "extract_installations",
+            "description": "Extract installations information",
+            "required": ["installations"],
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "installations": {
+                        "type": "array",
+                        "description": "An array of methods to install and run this server",
+                        "items": {
+                            "type": "object",
+                            "required": ["type", "command", "args"],
+                            "properties": {
+                                "type": {
+                                    "type": "string",
+                                    "enum": ["npm", "python", "docker", "cli", "uvx", "custom"]
+                                },
+                                "command": {
+                                    "type": "string",
+                                    "description": "Command to run the server"
+                                },
+                                "args": {
+                                    "type": "array",
+                                    "description": "Arguments for the command",
+                                    "items": {"type": "string"}
+                                },
+                                "env": {
+                                    "type": "object",
+                                    "description": "Environment variables",
+                                    "additionalProperties": {"type": "string"}
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "description": "Human-readable description"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        result = self._call_llm(
+            repo_url=repo_url,
+            readme_content=readme_content,
+            schema=schema,
+            prompt=("""Extract the installation methods for this server.
+The installation methods should be a list of methods to install and run this server.
+It can often be found in the usage section of the README file.
+<Example>
+<README> Docker
+{
+  "mcpServers": {
+    "brave-search": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "BRAVE_API_KEY",
+        "mcp/brave-search"
+      ],
+      "env": {
+        "BRAVE_API_KEY": "YOUR_API_KEY_HERE"
+      }
+    }
+  }
+}
+NPX
+{
+  "mcpServers": {
+    "brave-search": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-brave-search"
+      ],
+      "env": {
+        "BRAVE_API_KEY": "YOUR_API_KEY_HERE"
+      }
+    }
+  }
+}
+<README/>
+From the example README, you should get:
+{
+  "installations": [
+    {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "BRAVE_API_KEY",
+        "mcp/brave-search"
+      ],
+      "env": {
+        "BRAVE_API_KEY": "${{YOUR_API_KEY_HERE}}"
+      }
+    },
+    {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-brave-search"
+      ],
+      "env": {
+        "BRAVE_API_KEY": "${{YOUR_API_KEY_HERE}}"
+      }
+    }
+  ]
+}
+<README/>
+Note that installation type should be one of the following: npm, python, docker, cli, uvx, custom.
+For placeholder variables, use ${...} to indicate the variable.
+If no installations are provided, return an empty array. """)
+
+        )
+
+        results = result.get("installations", [])
+        installations = {}
+        for result in results:
+            installations[result["type"]] = result
+
+        return installations
+
+    def _extract_examples(self, repo_url: str, readme_content: str) -> list:
+        """Extract examples information using LLM."""
+        schema = {
+            "name": "extract_examples",
+            "description": "Extract examples prompts that can be used to test the server",
+            "required": ["example_prompts"],
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "example_prompts": {
+                        "type": "array",
+                        "description": "An array of examples prompts that can be used to test the server",
+                        "items": {
+                            "type": "string",
+                            "description": "A prompt that can be used to test the server"
+                        }
+                    }
+                }
+            }
+        }
+
+        result = self._call_llm(
+            repo_url=repo_url,
+            readme_content=readme_content,
+            schema=schema,
+            prompt=("""Extract usage examples for this server.
+The examples should be a short list of examples prompts that can be used to test the server.
+If no examples are provided, return an empty array.
+""")
+        )
+
+        result = result.get("example_prompts", [])
+        examples = []
+        for prompt in result:
+            examples.append({
+                "title": "",
+                "description": "",
+                "prompt": prompt
+            })
+        return examples
 
     def generate_manifest(self, repo_url: str, server_name: Optional[str] = None) -> Dict:
         """Generate MCP server manifest from GitHub repository.
@@ -431,8 +693,8 @@ class ManifestGenerator:
         Extracts information directly from the GitHub URL and README content.
 
         Args:
-            repo_url: GitHub repository URL (uses default if None)
-            server_name: Optional server name (derived from URL if None)
+            repo_url: GitHub repository URL(uses default if None)
+            server_name: Optional server name(derived from URL if None)
 
         Returns:
             MCP server manifest dictionary
@@ -580,6 +842,12 @@ class ManifestGenerator:
         Returns:
             Sorted dictionary of installation methods
         """
+        # Check if installations is a dictionary
+        if not isinstance(installations, dict):
+            logger.error(
+                f"Expected dictionary for installations, got {type(installations)}: {installations}")
+            return {}
+
         priority = {"uvx": 0, "npm": 1, "python": 2,
                     "docker": 3, "cli": 4, "custom": 5}
         filtered_installations = {k: v for k,
@@ -605,7 +873,8 @@ def main(repo_url: str, is_official: bool = False):
                 "Generated manifest is missing a name and/or author name")
 
         # determine the filename
-        filename = f"mcp-registry/servers/{manifest['name']}.json"
+        os.makedirs("local/servers", exist_ok=True)
+        filename = f"local/servers/{manifest['name']}_new.json"
         if not is_official:
             name = f"@{manifest['author']['name']}/{manifest['name']}"
             filename = f"mcp-registry/servers/{manifest['name']}@{manifest['author']['name']}.json"
@@ -627,32 +896,46 @@ def main(repo_url: str, is_official: bool = False):
 if __name__ == "__main__":
     """Process command-line arguments and generate manifest."""
     if len(sys.argv) < 2:
-        logger.info("Usage: python script.py <github-url>")
+        logger.error(
+            "Usage: python script.py <github-url> or python script.py test")
         sys.exit(1)
 
     repo_url = sys.argv[1].strip()
-    # Check if the URL is a simple URL without protocol
-    if not repo_url.startswith(("http://", "https://")):
-        # Add https:// if it's a github.com URL without protocol
-        if repo_url.startswith("github.com"):
-            repo_url = "https://" + repo_url
-        # Check if it's a full URL without protocol
-        else:
-            logger.error("Error: URL must be a GitHub URL")
+    if repo_url == "test":
+        # run through all the test cases
+        repo_urls = [
+            # "https://github.com/modelcontextprotocol/servers/tree/main/src/time",
+            "https://github.com/modelcontextprotocol/servers/tree/main/src/sqlite",
+            # "https://github.com/modelcontextprotocol/servers/tree/main/src/slack",
+            # "https://github.com/modelcontextprotocol/servers/tree/main/src/sequentialthinking",
+            # "https://github.com/modelcontextprotocol/servers/tree/main/src/sentry"
+        ]
+        for repo_url in repo_urls:
+            logger.info(f"Processing GitHub URL: {repo_url}")
+            main(repo_url, is_official=True)
+    else:
+        # Check if the URL is a simple URL without protocol
+        if not repo_url.startswith(("http://", "https://")):
+            # Add https:// if it's a github.com URL without protocol
+            if repo_url.startswith("github.com"):
+                repo_url = "https://" + repo_url
+            # Check if it's a full URL without protocol
+            else:
+                logger.error("Error: URL must be a GitHub URL")
+                sys.exit(1)
+
+        parts = repo_url.strip("/").split("/")
+
+        if len(parts) < 5 or parts[2] != "github.com":
+            logger.error(f"Not a valid GitHub URL: {repo_url}")
             sys.exit(1)
 
-    parts = repo_url.strip("/").split("/")
+        if parts[3] == "modelcontextprotocol":
+            is_official = True
+        else:
+            is_official = False
 
-    if len(parts) < 5 or parts[2] != "github.com":
-        logger.error(f"Not a valid GitHub URL: {repo_url}")
-        sys.exit(1)
+        # Initialize logger only once to avoid duplicate logs
+        logger.info(f"Processing GitHub URL: {repo_url}")
 
-    if parts[3] == "modelcontextprotocol":
-        is_official = True
-    else:
-        is_official = False
-
-    # Initialize logger only once to avoid duplicate logs
-    logger.info(f"Processing GitHub URL: {repo_url}")
-
-    main(repo_url, is_official)
+        main(repo_url, is_official)
