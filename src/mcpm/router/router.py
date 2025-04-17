@@ -403,16 +403,15 @@ class MCPRouter:
             capabilities=capabilities,
         )
 
-    async def start_sse_server(
-        self, host: str = "localhost", port: int = 8080, allow_origins: t.Optional[t.List[str]] = None
-    ) -> None:
+    async def get_sse_server_app(self, allow_origins: t.Optional[t.List[str]] = None) -> AppType:
         """
-        Start an SSE server that exposes the aggregated MCP server.
+        Get the SSE server app.
 
         Args:
-            host: The host to bind to
-            port: The port to bind to
             allow_origins: List of allowed origins for CORS
+
+        Returns:
+            An SSE server app
         """
         # waiting all servers to be initialized
         await self.initialize_router()
@@ -460,6 +459,20 @@ class MCPRouter:
             ],
             lifespan=lifespan,
         )
+        return app
+
+    async def start_sse_server(
+        self, host: str = "localhost", port: int = 8080, allow_origins: t.Optional[t.List[str]] = None
+    ) -> None:
+        """
+        Start an SSE server that exposes the aggregated MCP server.
+
+        Args:
+            host: The host to bind to
+            port: The port to bind to
+            allow_origins: List of allowed origins for CORS
+        """
+        app = await self.get_sse_server_app(allow_origins)
 
         # Configure and start the server
         config = uvicorn.Config(
