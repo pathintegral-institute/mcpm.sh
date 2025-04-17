@@ -96,7 +96,7 @@ class RouterSseTransport(SseServerTransport):
         client_id = get_key_from_scope(scope, key_name="client")
         logger.debug(f"Profile: {profile}, Client ID: {client_id}")
         client_id = client_id or "anonymous"
-        profile = profile or "unknown"
+        profile = profile or "default"
         self._session_id_to_identifier[session_id] = ClientIdentifier(
             client_id=client_id, profile=profile
         )

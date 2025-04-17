@@ -21,7 +21,7 @@ from starlette.types import AppType
 
 from mcpm.monitor.base import AccessEventType
 from mcpm.monitor.event import trace_event
-from mcpm.profile.profile_config import ProfileConfigManager
+from mcpm.profile.profile_config import ProfileConfigManager, DEFAULT_PROFILE_PATH
 from mcpm.schemas.server_config import ServerConfig
 from mcpm.utils.config import PROMPT_SPLITOR, RESOURCE_SPLITOR, RESOURCE_TEMPLATE_SPLITOR, TOOL_SPLITOR
 
@@ -38,7 +38,7 @@ class MCPRouter:
     exposes them as a single SSE server.
     """
 
-    def __init__(self, reload_server: bool = False) -> None:
+    def __init__(self, reload_server: bool = False, profile_path: str | None = DEFAULT_PROFILE_PATH) -> None:
         """Initialize the router."""
         self.server_sessions: t.Dict[str, ServerConnection] = {}
         self.capabilities_mapping: t.Dict[str, t.Dict[str, t.Any]] = defaultdict(dict)
@@ -47,7 +47,7 @@ class MCPRouter:
         self.resources_mapping: t.Dict[str, t.Dict[str, t.Any]] = {}
         self.resources_templates_mapping: t.Dict[str, t.Dict[str, t.Any]] = {}
         self.aggregated_server = self._create_aggregated_server()
-        self.profile_manager = ProfileConfigManager()
+        self.profile_manager = ProfileConfigManager(profile_path=profile_path)
         self.watcher: Optional[ConfigWatcher] = None
         if reload_server:
             self.watcher = ConfigWatcher(self.profile_manager.profile_path)
