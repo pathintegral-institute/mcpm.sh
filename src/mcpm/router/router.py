@@ -17,8 +17,7 @@ from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
 from starlette.requests import Request
 from starlette.routing import Mount, Route
-from starlette.types import AppType
-from starlette.lifespan import Lifespan
+from starlette.types import AppType, Lifespan
 
 from mcpm.monitor.base import AccessEventType
 from mcpm.monitor.event import trace_event
