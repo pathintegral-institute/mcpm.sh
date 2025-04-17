@@ -1,0 +1,58 @@
+name: Test & Validate
+
+on:
+  pull_request:
+  workflow_call:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-manifests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate Server JSON Files
+        uses: cardinalby/schema-validator-action@v3
+        with:
+          file: 'mcp-registry/servers/*.json'
+          schema: 'mcp-registry/schema/server-schema.json'
+          mode: 'default'
+          fixSchemas: false
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Run tests
+        run: |
+          uv sync --group dev
+          uv run pytest
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Check code style with ruff
+        run: |
+          uv sync --group dev
+          uv run ruff check src/ tests/ 
