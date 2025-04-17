@@ -124,7 +124,7 @@ class MCPRouter:
             for tool in tools.tools:
                 # To make sure tool name is unique across all servers
                 if tool.name in self.tool_names:
-                    raise ValueError(f"Tool {tool.name} already exists in {server_id}")
+                    raise ValueError(f"Tool {tool.name} already exists. Please use unique tool names across all servers.")
                 self.tool_names.add(tool.name)
                 self.tools_mapping[f"{server_id}{TOOL_SPLITOR}{tool.name}"] = tool.model_dump()
 
