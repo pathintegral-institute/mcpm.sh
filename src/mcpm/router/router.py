@@ -42,6 +42,7 @@ class MCPRouter:
         """Initialize the router."""
         self.server_sessions: t.Dict[str, ServerConnection] = {}
         self.capabilities_mapping: t.Dict[str, t.Dict[str, t.Any]] = defaultdict(dict)
+        self.tool_names: t.Set[str] = set()
         self.tools_mapping: t.Dict[str, t.Dict[str, t.Any]] = {}
         self.prompts_mapping: t.Dict[str, t.Dict[str, t.Any]] = {}
         self.resources_mapping: t.Dict[str, t.Dict[str, t.Any]] = {}
@@ -120,10 +121,12 @@ class MCPRouter:
         # Collect server tools, prompts, and resources
         if response.capabilities.tools:
             tools = await client.session.list_tools()  # type: ignore
-            # Add tools with namespaced names, preserving existing tools
-            self.tools_mapping.update(
-                {f"{server_id}{TOOL_SPLITOR}{tool.name}": tool.model_dump() for tool in tools.tools}
-            )
+            for tool in tools.tools:
+                # To make sure tool name is unique across all servers
+                if tool.name in self.tool_names:
+                    raise ValueError(f"Tool {tool.name} already exists in {server_id}")
+                self.tool_names.add(tool.name)
+                self.tools_mapping[f"{server_id}{TOOL_SPLITOR}{tool.name}"] = tool.model_dump()
 
         if response.capabilities.prompts:
             prompts = await client.session.list_prompts()  # type: ignore
@@ -259,7 +262,7 @@ class MCPRouter:
             for server_tool_id, tool in self.tools_mapping.items():
                 server_id, _ = parse_namespaced_id(server_tool_id, TOOL_SPLITOR)
                 if server_id in active_servers:
-                    tool.update({"name": server_tool_id})
+                    # Do not modify the tool name, since it's unique across all servers
                     tools.append(types.Tool(**tool))
 
             if not tools:
