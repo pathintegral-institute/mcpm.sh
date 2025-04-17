@@ -42,7 +42,7 @@ class MCPRouter:
         """Initialize the router."""
         self.server_sessions: t.Dict[str, ServerConnection] = {}
         self.capabilities_mapping: t.Dict[str, t.Dict[str, t.Any]] = defaultdict(dict)
-        self.tool_names: t.Set[str] = set()
+        self.tool_name_to_server_id: t.Dict[str, str] = {}
         self.tools_mapping: t.Dict[str, t.Dict[str, t.Any]] = {}
         self.prompts_mapping: t.Dict[str, t.Dict[str, t.Any]] = {}
         self.resources_mapping: t.Dict[str, t.Dict[str, t.Any]] = {}
@@ -123,9 +123,9 @@ class MCPRouter:
             tools = await client.session.list_tools()  # type: ignore
             for tool in tools.tools:
                 # To make sure tool name is unique across all servers
-                if tool.name in self.tool_names:
+                if tool.name in self.tool_name_to_server_id:
                     raise ValueError(f"Tool {tool.name} already exists. Please use unique tool names across all servers.")
-                self.tool_names.add(tool.name)
+                self.tool_name_to_server_id[tool.name] = server_id
                 self.tools_mapping[f"{server_id}{TOOL_SPLITOR}{tool.name}"] = tool.model_dump()
 
         if response.capabilities.prompts:
@@ -274,17 +274,21 @@ class MCPRouter:
         async def call_tool(req: types.CallToolRequest) -> types.ServerResult:
             active_servers = get_active_servers(req.params.meta.profile)  # type: ignore
             logger.info(f"call_tool: {req} with active servers: {active_servers}")
-
-            server_id, tool_name = parse_namespaced_id(req.params.name, TOOL_SPLITOR)
-            if server_id is None or tool_name is None:
+            
+            tool_name = req.params.name
+            server_id = self.tool_name_to_server_id.get(tool_name)
+            if server_id is None:
+                logger.debug(f"call_tool: {req} with tool_name: {tool_name}. Server ID {server_id} is not found")
                 return empty_result()
             if server_id not in active_servers:
+                logger.debug(f"call_tool: {req} with tool_name: {tool_name}. Server ID {server_id} is not in active servers")
                 return empty_result()
 
             try:
                 result = await self.server_sessions[server_id].session.call_tool(tool_name, req.params.arguments or {})
                 return types.ServerResult(result)
             except Exception as e:
+                logger.error(f"Error calling tool {tool_name} on server {server_id}: {e}")
                 return types.ServerResult(
                     types.CallToolResult(
                         content=[types.TextContent(type="text", text=str(e))],
