@@ -141,14 +141,14 @@ def test_info_comprehensive(monkeypatch):
     assert result.exit_code == 0
     assert "Comprehensive Server" in result.output
     assert "A server with comprehensive details" in result.output
-    
+
     # Check URLs section
     assert "URLs:" in result.output
     assert "Repository: https://github.com/example/comprehensive-server" in result.output
     assert "Homepage: https://example.com/comprehensive-server" in result.output
     assert "Documentation: https://docs.example.com/comprehensive-server" in result.output
     assert "Author URL: https://author.example.com" in result.output
-    
+
     # Check Installation Details
     assert "Installation Details:" in result.output
     assert "npm: NPM installation" in result.output
@@ -156,7 +156,7 @@ def test_info_comprehensive(monkeypatch):
     assert "Command: npx -y comprehensive-package" in result.output
     assert "Dependencies: dep1, dep2" in result.output
     assert "API_KEY" in result.output
-    
+
     # Check Examples
     assert "Examples:" in result.output
     assert "Example 1" in result.output
@@ -164,5 +164,5 @@ def test_info_comprehensive(monkeypatch):
     assert "Use the comprehensive server" in result.output
     assert "Example 2" in result.output
     assert "server.connect()" in result.output
-    
+
     mock_repo_manager.get_server_metadata.assert_called_once_with("comprehensive-server")

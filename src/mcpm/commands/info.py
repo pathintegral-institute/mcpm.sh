@@ -32,7 +32,7 @@ def info(server_name):
     try:
         # Get the server information
         server = repo_manager.get_server_metadata(server_name)
-        
+
         if not server:
             console.print(f"[yellow]Server '[bold]{server_name}[/]' not found.[/]")
             return
@@ -85,26 +85,26 @@ def _display_server_info(server):
 
     # URLs section
     console.print("[bold yellow]URLs:[/]")
-    
+
     # Repository URL
     if "repository" in server and "url" in server["repository"]:
         repo_url = server["repository"]["url"]
         console.print(f"Repository: [blue underline]{repo_url}[/]")
-    
+
     # Homepage URL
     if "homepage" in server:
         homepage_url = server["homepage"]
         console.print(f"Homepage: [blue underline]{homepage_url}[/]")
-    
+
     # Documentation URL
     if "documentation" in server:
         doc_url = server["documentation"]
         console.print(f"Documentation: [blue underline]{doc_url}[/]")
-    
+
     # Author URL
     if author_url:
         console.print(f"Author URL: [blue underline]{author_url}[/]")
-    
+
     console.print("")
 
     # Installation details section
