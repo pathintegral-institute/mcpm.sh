@@ -1,0 +1,150 @@
+{
+  "display_name": "Brave Search MCP Server",
+  "license": "MIT License",
+  "tags": [
+    "search",
+    "web search",
+    "local search",
+    "brave",
+    "api",
+    "mcp",
+    "server"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-brave-search"
+      ],
+      "env": {
+        "BRAVE_API_KEY": "${YOUR_API_KEY_HERE}"
+      },
+      "description": "Run the Brave Search MCP server using NPX"
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "BRAVE_API_KEY",
+        "mcp/brave-search"
+      ],
+      "env": {
+        "BRAVE_API_KEY": "${YOUR_API_KEY_HERE}"
+      },
+      "description": "Run the Brave Search MCP server using Docker"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Search the web for the latest news about artificial intelligence"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Find Italian restaurants near downtown Seattle"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Search for information about climate change with 15 results"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Look up local coffee shops in Portland"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Search for recent scientific papers about quantum computing"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Find hardware stores within 5 miles of my location"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Search for the history of the internet with pagination offset 5"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Look for local dentists in Chicago"
+    }
+  ],
+  "name": "brave-search",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/modelcontextprotocol/servers/blob/main/src/brave-search"
+  },
+  "homepage": "https://github.com/modelcontextprotocol/servers/blob/main/src/brave-search",
+  "author": {
+    "name": "modelcontextprotocol"
+  },
+  "description": "An MCP server implementation that integrates the Brave Search API, providing both web and local search capabilities.",
+  "categories": [
+    "Web Services"
+  ],
+  "tools": [
+    {
+      "name": "brave_web_search",
+      "description": "Performs a web search using the Brave Search API, ideal for general queries, news, articles, and online content. Use this for broad information gathering, recent events, or when you need diverse web sources. Supports pagination, content filtering, and freshness controls. Maximum 20 results per request, with offset for pagination. ",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query (max 400 chars, 50 words)"
+          },
+          "count": {
+            "type": "number",
+            "description": "Number of results (1-20, default 10)",
+            "default": 10
+          },
+          "offset": {
+            "type": "number",
+            "description": "Pagination offset (max 9, default 0)",
+            "default": 0
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "brave_local_search",
+      "description": "Searches for local businesses and places using Brave's Local Search API. Best for queries related to physical locations, businesses, restaurants, services, etc. Returns detailed information including:\n- Business names and addresses\n- Ratings and review counts\n- Phone numbers and opening hours\nUse this when the query implies 'near me' or mentions specific locations. Automatically falls back to web search if no local results are found.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Local search query (e.g. 'pizza near Central Park')"
+          },
+          "count": {
+            "type": "number",
+            "description": "Number of results (1-20, default 5)",
+            "default": 5
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": true
+}
