@@ -16,6 +16,11 @@ DEFAULT_CONFIG_FILE = os.path.join(DEFAULT_CONFIG_DIR, "config.json")
 DEFAULT_HOST = "localhost"
 DEFAULT_PORT = 6276  # 6276 represents MCPM on a T9 keypad (6=M, 2=C, 7=P, 6=M)
 ROUTER_SERVER_NAME = "mcpm_router"
+# default splitor pattern
+TOOL_SPLITOR = "_t_"
+RESOURCE_SPLITOR = ":"
+RESOURCE_TEMPLATE_SPLITOR = ":"
+PROMPT_SPLITOR = "_p_"
 
 
 class ConfigManager:

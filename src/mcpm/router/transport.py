@@ -1,7 +1,8 @@
+import asyncio
 import json
 import logging
 from contextlib import asynccontextmanager
-from typing import Any
+from typing import Any, TypedDict
 from urllib.parse import quote
 from uuid import UUID, uuid4
 
@@ -11,6 +12,7 @@ from mcp import types
 from mcp.server.sse import SseServerTransport
 from pydantic import ValidationError
 from sse_starlette import EventSourceResponse
+from starlette.background import BackgroundTask
 from starlette.requests import Request
 from starlette.responses import Response
 from starlette.types import Receive, Scope, Send
@@ -18,7 +20,12 @@ from starlette.types import Receive, Scope, Send
 logger = logging.getLogger(__name__)
 
 
-def patch_meta_data(body: bytes, profile: str) -> bytes:
+class ClientIdentifier(TypedDict):
+    client_id: str
+    profile: str
+
+
+def patch_meta_data(body: bytes, **kwargs) -> bytes:
     data = json.loads(body.decode("utf-8"))
     if "params" not in data:
         data["params"] = {}
@@ -26,7 +33,8 @@ def patch_meta_data(body: bytes, profile: str) -> bytes:
     if "_meta" not in data["params"]:
         data["params"]["_meta"] = {}
 
-    data["params"]["_meta"]["profile"] = profile
+    for key, value in kwargs.items():
+        data["params"]["_meta"][key] = value
     return json.dumps(data).encode("utf-8")
 
 
@@ -59,7 +67,7 @@ class RouterSseTransport(SseServerTransport):
     """A SSE server transport that is used by the router to handle client connections."""
 
     def __init__(self, *args, **kwargs):
-        self._session_id_to_profile: dict[UUID, str] = {}
+        self._session_id_to_identifier: dict[UUID, ClientIdentifier] = {}
         super().__init__(*args, **kwargs)
 
     @asynccontextmanager
@@ -83,11 +91,14 @@ class RouterSseTransport(SseServerTransport):
         session_uri = f"{quote(self._endpoint)}?session_id={session_id.hex}"
         self._read_stream_writers[session_id] = read_stream_writer
         logger.debug(f"Created new session with ID: {session_id}")
-        # maintain session_id to profile mapping
+        # maintain session_id to identifier mapping
         profile = get_key_from_scope(scope, key_name="profile")
+        client_id = get_key_from_scope(scope, key_name="client")
         if profile is not None:
-            self._session_id_to_profile[session_id] = profile
-            logger.info(f"Session {session_id} mapped to profile {profile}")
+            self._session_id_to_identifier[session_id] = ClientIdentifier(
+                client_id=client_id or "anonymous", profile=profile
+            )
+            logger.debug(f"Session {session_id} mapped to identifier {self._session_id_to_identifier[session_id]}")
 
         sse_stream_writer, sse_stream_reader = anyio.create_memory_object_stream[dict[str, Any]](0)
 
@@ -106,13 +117,43 @@ class RouterSseTransport(SseServerTransport):
                         }
                     )
 
-        async with anyio.create_task_group() as tg:
-            response = EventSourceResponse(content=sse_stream_reader, data_sender_callable=sse_writer)
-            logger.debug("Starting SSE response task")
-            tg.start_soon(response, scope, receive, send)
+        async def cleanup_resources(session_id: UUID):
+            if session_id in self._read_stream_writers:
+                self._read_stream_writers.pop(session_id, None)
+                self._session_id_to_identifier.pop(session_id, None)
+                logger.debug(f"Session {session_id} cleaned")
 
-            logger.debug("Yielding read and write streams")
-            yield (read_stream, write_stream)
+        async with anyio.create_task_group() as tg:
+
+            async def on_client_disconnect():
+                # for client disconnection, but still we can't close transport cause there's no
+                # method to interrupt mcp server run operation
+                logger.debug(f"Client disconnected from session {session_id}")
+                await cleanup_resources(session_id)
+                await read_stream_writer.aclose()
+                await write_stream.aclose()
+
+            try:
+                response = EventSourceResponse(
+                    content=sse_stream_reader,
+                    data_sender_callable=sse_writer,
+                    background=BackgroundTask(on_client_disconnect),
+                )
+                logger.debug("Starting SSE response task")
+                tg.start_soon(response, scope, receive, send)
+
+                logger.debug("Yielding read and write streams")
+                # Due to limitations with interrupting the MCP server run operation,
+                # this will always block here regardless of client disconnection status
+                yield (read_stream, write_stream)
+            except asyncio.CancelledError as exc:
+                logger.warning(f"SSE connection for session {session_id} was cancelled")
+                tg.cancel_scope.cancel()
+                # raise the exception again so that to interrupt mcp server run operation
+                raise exc
+            finally:
+                # for server shutdown
+                await cleanup_resources(session_id)
 
     async def handle_post_message(self, scope: Scope, receive: Receive, send: Send):
         logger.debug("Handling POST message")
@@ -142,14 +183,14 @@ class RouterSseTransport(SseServerTransport):
         logger.debug(f"Received JSON: {body}")
 
         # find profile through session_id
-        profile = self._session_id_to_profile.get(session_id)
-        if not profile:
-            logger.warning(f"Could not find profile for session ID: {session_id}")
-            response = Response("Could not find profile", status_code=404)
+        identifier = self._session_id_to_identifier.get(session_id)
+        if not identifier:
+            logger.warning(f"Could not find identifier for session ID: {session_id}")
+            response = Response("Could not find identifier", status_code=404)
             return await response(scope, receive, send)
 
         # append profile to params metadata so that the downstream mcp server could attach
-        body = patch_meta_data(body, profile)
+        body = patch_meta_data(body, profile=identifier["profile"], client_id=identifier["client_id"])
 
         try:
             message = types.JSONRPCMessage.model_validate_json(body)
@@ -178,4 +219,4 @@ class RouterSseTransport(SseServerTransport):
             else:
                 logger.warning(f"Connection error when sending message to session {session_id}: {e}")
                 self._read_stream_writers.pop(session_id, None)
-                self._session_id_to_profile.pop(session_id, None)
+                self._session_id_to_identifier.pop(session_id, None)
