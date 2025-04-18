@@ -152,11 +152,15 @@ The Router also maintains persistent connections to MCP servers, enabling multip
 
 For more technical details on the router's implementation and namespacing, see [`docs/router_tech_design.md`](docs/router_tech_design.md).
 
+The Router can be shared in public network by `mcpm router share`. Be aware that the share link will be exposed to the public, make sure the generated secret is secure and only share to trusted users. See [MCPM Router Share](docs/router_share.md) for more details about how it works.
+
 ```bash
 mcpm router status                # Check if the router daemon is running
 mcpm router on                    # Start the MCP router daemon
 mcpm router off                   # Stop the MCP router daemon
-mcpm set --host HOST --port PORT  # Set the MCP router daemon's host and port
+mcpm router set --host HOST --port PORT --address ADDRESS  # Set the MCP router daemon's host port and the remote share address
+mcpm router share                 # Share the router to public
+mcpm router unshare               # Unshare the router
 ```
 
 ### 🛠️ Utilities (`util`)

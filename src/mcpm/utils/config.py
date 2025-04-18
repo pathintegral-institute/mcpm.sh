@@ -21,6 +21,7 @@ TOOL_SPLITOR = "_t_"
 RESOURCE_SPLITOR = ":"
 RESOURCE_TEMPLATE_SPLITOR = ":"
 PROMPT_SPLITOR = "_p_"
+DEFAULT_SHARE_ADDRESS = f"share.mcpm.sh:{DEFAULT_PORT}"
 
 
 class ConfigManager:
@@ -100,7 +101,7 @@ class ConfigManager:
         # check if router config exists
         if "router" not in config:
             # create default config and save
-            router_config = {"host": DEFAULT_HOST, "port": DEFAULT_PORT}
+            router_config = {"host": DEFAULT_HOST, "port": DEFAULT_PORT, "share_address": DEFAULT_SHARE_ADDRESS}
             self.set_config("router", router_config)
             return router_config
 
@@ -116,6 +117,9 @@ class ConfigManager:
         if "port" not in router_config:
             router_config["port"] = DEFAULT_PORT
             updated = True
+        if "share_address" not in router_config:
+            router_config["share_address"] = DEFAULT_SHARE_ADDRESS
+            updated = True
 
         # save config if updated
         if updated:
@@ -123,13 +127,20 @@ class ConfigManager:
 
         return router_config
 
-    def save_router_config(self, host, port):
+    def save_router_config(self, host, port, share_address):
         """save router configuration to config file"""
         router_config = self.get_config().get("router", {})
 
         # update config
         router_config["host"] = host
         router_config["port"] = port
+        router_config["share_address"] = share_address
 
         # save config
         return self.set_config("router", router_config)
+
+    def save_share_config(self, share_url: str | None = None, share_pid: int | None = None, api_key: str | None = None):
+        return self.set_config("share", {"url": share_url, "pid": share_pid, "api_key": api_key})
+
+    def read_share_config(self) -> Dict[str, Any]:
+        return self.get_config().get("share", {})
