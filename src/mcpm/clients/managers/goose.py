@@ -22,12 +22,12 @@ class GooseClientManager(YAMLClientManager):
     """
 
     # Client information
-    client_key = "goose"
-    display_name = "Goose"
+    client_key = "goose-cli"
+    display_name = "Goose CLI"
     download_url = "https://github.com/block/goose/releases/download/stable/download_cli.sh"
 
     def __init__(self, config_path=None):
-        """Initialize the Goose client manager
+        """Initialize the Goose CLI client manager
 
         Args:
             config_path: Optional path to the config file. If not provided, uses default path.

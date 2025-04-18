@@ -160,7 +160,7 @@ def add(profile, force=False):
     profile_config_manager.new_profile(profile)
 
     console.print(f"\n[green]Profile '{profile}' added successfully.[/]\n")
-    console.print(f"You can now add servers to this profile with 'mcpm add --profile {profile} <server_name>'\n")
+    console.print(f"You can now add servers to this profile with 'mcpm add --target #{profile} <server_name>'\n")
     console.print(
         f"Or apply existing config to this profile with 'mcpm profile apply {profile} --server <server_name>'\n"
     )
