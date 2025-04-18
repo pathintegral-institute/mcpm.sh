@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.4.0...v1.4.1) (2025-04-18)
+
+
+### Bug Fixes
+
+* update goose cli client name ([#77](https://github.com/pathintegral-institute/mcpm.sh/issues/77)) ([6b17d94](https://github.com/pathintegral-institute/mcpm.sh/commit/6b17d94f97cf0b4d01ad1f11e8b1abb169afc509))
+
 # [1.4.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.3.0...v1.4.0) (2025-04-18)
 
 
