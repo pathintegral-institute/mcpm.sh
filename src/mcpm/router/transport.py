@@ -3,7 +3,7 @@ import json
 import logging
 from contextlib import asynccontextmanager
 from typing import Any, TypedDict
-from urllib.parse import quote
+from urllib.parse import quote, urlsplit
 from uuid import UUID, uuid4
 
 import anyio
@@ -17,21 +17,19 @@ from starlette.requests import Request
 from starlette.responses import Response
 from starlette.types import Receive, Scope, Send
 
+from mcpm.utils.config import ConfigManager
+
 logger = logging.getLogger(__name__)
 
 
 class ClientIdentifier(TypedDict):
     client_id: str
     profile: str
+    api_key: str | None
 
 
 def patch_meta_data(body: bytes, **kwargs) -> bytes:
     data = json.loads(body.decode("utf-8"))
-    if "params" not in data:
-        data["params"] = {}
-
-    if "_meta" not in data["params"]:
-        data["params"]["_meta"] = {}
 
     for key, value in kwargs.items():
         data["params"]["_meta"][key] = value
@@ -77,6 +75,13 @@ class RouterSseTransport(SseServerTransport):
             logger.error("connect_sse received non-HTTP request")
             raise ValueError("connect_sse can only handle HTTP requests")
 
+        # check api key
+        api_key = get_key_from_scope(scope, key_name="s")
+        if not self._validate_api_key(scope, api_key):
+            response = Response("Unauthorized API key", status_code=401)
+            await response(scope, receive, send)
+            return
+
         logger.debug("Setting up SSE connection")
         read_stream: MemoryObjectReceiveStream[types.JSONRPCMessage | Exception]
         read_stream_writer: MemoryObjectSendStream[types.JSONRPCMessage | Exception]
@@ -96,7 +101,7 @@ class RouterSseTransport(SseServerTransport):
         client_id = get_key_from_scope(scope, key_name="client")
         if profile is not None:
             self._session_id_to_identifier[session_id] = ClientIdentifier(
-                client_id=client_id or "anonymous", profile=profile
+                client_id=client_id or "anonymous", profile=profile, api_key=api_key
             )
             logger.debug(f"Session {session_id} mapped to identifier {self._session_id_to_identifier[session_id]}")
 
@@ -189,8 +194,15 @@ class RouterSseTransport(SseServerTransport):
             response = Response("Could not find identifier", status_code=404)
             return await response(scope, receive, send)
 
+        # check api key
+        api_key = identifier["api_key"]
+        if not self._validate_api_key(scope, api_key):
+            response = Response("Unauthorized API key", status_code=401)
+            await response(scope, receive, send)
+            return
+
         # append profile to params metadata so that the downstream mcp server could attach
-        body = patch_meta_data(body, profile=identifier["profile"], client_id=identifier["client_id"])
+        body = patch_meta_data(body, profile=identifier["profile"], client_id=identifier["client_id"], api_key=api_key)
 
         try:
             message = types.JSONRPCMessage.model_validate_json(body)
@@ -220,3 +232,23 @@ class RouterSseTransport(SseServerTransport):
                 logger.warning(f"Connection error when sending message to session {session_id}: {e}")
                 self._read_stream_writers.pop(session_id, None)
                 self._session_id_to_identifier.pop(session_id, None)
+
+    def _validate_api_key(self, scope: Scope, api_key: str | None) -> bool:
+        try:
+            config_manager = ConfigManager()
+            host = get_key_from_scope(scope, key_name="host") or ""
+            if not host.startswith("http"):
+                host = f"http://{host}"
+            share_config = config_manager.read_share_config()
+            router_config = config_manager.get_router_config()
+            host_name = urlsplit(host).hostname
+            share_host_name = urlsplit(share_config["url"]).hostname
+            if share_config["url"] and (host_name == share_host_name or host_name != router_config["host"]):
+                share_api_key = share_config["api_key"]
+                if api_key != share_api_key:
+                    logger.warning("Unauthorized API key")
+                    return False
+        except Exception as e:
+            logger.error(f"Failed to validate API key: {e}")
+            return False
+        return True

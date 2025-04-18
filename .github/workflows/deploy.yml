@@ -19,7 +19,7 @@ concurrency:
 
 jobs:
   validate:
-    uses: ./.github/workflows/validate-manifests.yml
+    uses: ./.github/workflows/test.yml
 
   build:
     runs-on: ubuntu-latest
