@@ -427,10 +427,7 @@
     {
       "uri": "browser://console",
       "name": "Page console",
-      "description": null,
-      "mimeType": "text/plain",
-      "size": null,
-      "annotations": null
+      "mimeType": "text/plain"
     }
   ],
   "is_official": true
