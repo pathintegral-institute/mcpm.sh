@@ -41,30 +41,33 @@ jobs:
         with:
           dry_run: true
           ci: true
+          extra_plugins: |
+            @semantic-release/commit-analyzer
+            @semantic-release/release-notes-generator
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Create comment content
+        id: create-comment
+        run: |
+          if [ "${{ steps.semantic.outputs.new_release_version }}" != "" ]; then
+            echo "comment_body=## Semantic Version Check\n\n✅ Valid semantic version changes detected!\n\nNext version will be: **${{ steps.semantic.outputs.new_release_version }}**" >> $GITHUB_OUTPUT
+          else
+            echo "comment_body=## Semantic Version Check\n\n⚠️ No semantic version changes detected.\n\nPlease ensure your commits follow the [Conventional Commits](https://www.conventionalcommits.org/) format:\n\n- \`feat: new feature\` (triggers MINOR version bump)\n- \`fix: bug fix\` (triggers PATCH version bump)\n- \`BREAKING CHANGE: description\` (triggers MAJOR version bump)" >> $GITHUB_OUTPUT
+          fi
 
-      - name: Comment PR
-        if: always()
-        uses: actions/github-script@v7
+      - name: Find Comment
+        uses: peter-evans/find-comment@v3
+        id: fc
         with:
-          script: |
-            let comment = '## Semantic Version Check\n\n';
-            
-            if ('${{ steps.semantic.outputs.new_release_version }}') {
-              comment += `✅ Valid semantic version changes detected!\n\n`;
-              comment += `Next version will be: **${{ steps.semantic.outputs.new_release_version }}**\n`;
-            } else {
-              comment += `⚠️ No semantic version changes detected.\n\n`;
-              comment += 'Please ensure your commits follow the [Conventional Commits](https://www.conventionalcommits.org/) format:\n\n';
-              comment += '- `feat: new feature` (triggers MINOR version bump)\n';
-              comment += '- `fix: bug fix` (triggers PATCH version bump)\n';
-              comment += '- `BREAKING CHANGE: description` (triggers MAJOR version bump)\n';
-            }
-            
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: comment
-            }); 
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: 'Semantic Version Check'
+
+      - name: Create or update comment
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: ${{ steps.create-comment.outputs.comment_body }}
+          edit-mode: replace 
