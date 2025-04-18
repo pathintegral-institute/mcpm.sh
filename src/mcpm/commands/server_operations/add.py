@@ -344,13 +344,16 @@ def add(server_name, force=False, alias=None, target: str | None = None):
 
     # replace arguments with values
     processed_args = []
-    for arg in install_args:
-        processed_args.append(_replace_variables(arg, processed_variables))
+    for i, arg in enumerate(install_args):
+        prev_arg = install_args[i - 1] if i > 0 else ""
+        # handles arguments with pattern var=${var} | --var=var | --var var
+        processed_args.append(_replace_argument_variables(arg, prev_arg, processed_variables))
 
     # process environment variables
     processed_env = {}
     for key, value in env_vars.items():
-        processed_env[key] = _replace_variables(value, processed_variables)
+        # just replace the env value regardless of the variable pattern, ${VAR}/YOUR_VAR/VAR
+        processed_env[key] = processed_variables.get(key, value)
 
     # Get actual MCP execution command, args, and env from the selected installation method
     # This ensures we use the actual server command information instead of placeholders
@@ -432,4 +435,54 @@ def _replace_variables(value: str, variables: dict) -> str:
         original, var_name = matched.group(0), matched.group(1)
         # Use empty string as default when key not found
         return value.replace(original, variables.get(var_name, ""))
+    return value
+
+
+def _replace_argument_variables(value: str, prev_value: str, variables: dict) -> str:
+    """Replace variables in command-line arguments with values from variables dictionary.
+
+    Handles four argument formats:
+    1. Variable substitution: argument=${VAR_NAME}
+    2. Key-value pair: --argument=value
+    3. Space-separated pair: --argument value (where prev_value represents --argument)
+
+    Args:
+        value: The current argument string that may contain variables
+        prev_value: The previous argument string (for space-separated pairs)
+        variables: Dictionary mapping variable names to their values
+
+    Returns:
+        String with all variables replaced with their values from the variables dict
+    """
+    if not isinstance(value, str):
+        return value
+
+    # arg: VAR=${VAR}
+    # check if the value contains a variable
+    matched = re.search(r"\$\{([^}]+)\}", value)
+    if matched:
+        original, var_name = matched.group(0), matched.group(1)
+        # Use empty string as default when key not found
+        return value.replace(original, variables.get(var_name, ""))
+
+    # arg: --VAR=your var value
+    key_value_match = re.match(r"^([A-Z_]+)=(.+)$", value)
+    if key_value_match:
+        arg_key = key_value_match.group(1)
+        if arg_key in variables:
+            # replace the arg_value with variables[arg_key]
+            return f"{arg_key}={variables[arg_key]}"
+        # if not contains the arg_key then just return the original value
+        return value
+
+    # arg: --VAR your_var_value
+    if prev_value.startswith("--") or prev_value.startswith("-"):
+        arg_key = prev_value.lstrip("-")
+        if arg_key in variables:
+            # replace the value with variables[arg_key]
+            return variables[arg_key]
+        # if not contains the arg_key then just return the original value
+        return value
+
+    # nothing to replace
     return value
