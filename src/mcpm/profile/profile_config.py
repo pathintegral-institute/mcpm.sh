@@ -10,7 +10,9 @@ DEFAULT_PROFILE_PATH = os.path.expanduser("~/.config/mcpm/profiles.json")
 
 
 class ProfileConfigManager:
-    def __init__(self, profile_path: str = DEFAULT_PROFILE_PATH):
+    def __init__(self, profile_path: str | None = DEFAULT_PROFILE_PATH):
+        if profile_path is None:
+            profile_path = DEFAULT_PROFILE_PATH
         self.profile_path = os.path.expanduser(profile_path)
         self._profiles = self._load_profiles()
 
