@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.3.0...v1.4.0) (2025-04-18)
+
+
+### Features
+
+* **router:** Improve function naming in router ([654872d](https://github.com/pathintegral-institute/mcpm.sh/commit/654872dec5d7588f115bab67a08ac2779e9383f3))
+
 # [1.3.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.2.0...v1.3.0) (2025-04-18)
 
 
