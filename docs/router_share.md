@@ -22,7 +22,7 @@ To be noted that if your router is not on or your system sleeps, the shared link
 
 We use a fork version of frp from [huggingface/frp](https://github.com/huggingface/frp) to create a tunnel to your local MCPM Router. You can also check the [original frp](https://github.com/fatedier/frp) for more details about frp.
 
-If you want to set up your own frp tunnel, we have build a docker image for frps(server) and frpc(client).
+If you want to set up your own frp tunnel, you can either build our docker image from scratch or use our published docker images for frps(server) and frpc(client) by following the instructions below.
 
 In your public server, you can create a frps config following the guide [here](https://github.com/huggingface/frp?tab=readme-ov-file#setting-up-a-share-server). Then start the frps container by:
 ```bash
