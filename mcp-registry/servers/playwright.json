@@ -1,643 +1,434 @@
 {
-  "name": "playwright",
-  "display_name": "Playwright",
-  "description": "This MCP Server will help you run browser automation and webscraping using Playwright",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/executeautomation/mcp-playwright"
-  },
-  "homepage": "https://github.com/executeautomation/mcp-playwright",
-  "author": {
-    "name": "executeautomation"
-  },
+  "display_name": "Playwright MCP",
   "license": "MIT",
-  "categories": [
-    "Web Services"
-  ],
   "tags": [
-    "Playwright",
-    "Browser Automation"
+    "browser automation",
+    "web",
+    "playwright",
+    "accessibility",
+    "LLM",
+    "MCP",
+    "Model Context Protocol",
+    "web navigation",
+    "form-filling",
+    "data extraction"
   ],
   "installations": {
     "npm": {
       "type": "npm",
       "command": "npx",
       "args": [
-        "-y",
-        "@executeautomation/playwright-mcp-server"
-      ]
+        "@playwright/mcp@latest"
+      ],
+      "description": "Using Vision Mode with screenshots for visual-based interactions"
     }
   },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Navigate to google.com and search for 'playwright automation'"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Fill out a login form with username 'test@example.com' and password 'password123'"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Take a snapshot of the current page and click on the first search result"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Open a new tab, navigate to github.com, and then switch back to the first tab"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Navigate to a shopping website, add an item to cart, and proceed to checkout"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Fill out a form with multiple fields and submit it"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Take a screenshot of the current page"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Navigate to a website with a dropdown menu and select an option"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Upload a file to a website"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Extract data from a table on a webpage"
+    }
+  ],
+  "name": "playwright",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/microsoft/playwright-mcp"
+  },
+  "homepage": "https://github.com/microsoft/playwright-mcp",
+  "author": {
+    "name": "microsoft"
+  },
+  "description": "A Model Context Protocol (MCP) server that provides browser automation capabilities using [Playwright](https://playwright.dev). This server enables LLMs to interact with web pages through structured accessibility snapshots, bypassing the need for screenshots or visually-tuned models.",
+  "categories": [
+    "Web Services"
+  ],
   "tools": [
     {
-      "name": "start_codegen_session",
-      "description": "Start a new code generation session to record Playwright actions",
+      "name": "browser_close",
+      "description": "Close the page",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "browser_wait",
+      "description": "Wait for a specified time in seconds",
       "inputSchema": {
         "type": "object",
         "properties": {
-          "options": {
-            "type": "object",
-            "description": "Code generation options",
-            "properties": {
-              "outputPath": {
-                "type": "string",
-                "description": "Directory path where generated tests will be saved (use absolute path)"
-              },
-              "testNamePrefix": {
-                "type": "string",
-                "description": "Prefix to use for generated test names (default: 'GeneratedTest')"
-              },
-              "includeComments": {
-                "type": "boolean",
-                "description": "Whether to include descriptive comments in generated tests"
-              }
+          "time": {
+            "type": "number",
+            "description": "The time to wait in seconds"
+          }
+        },
+        "required": [
+          "time"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "browser_resize",
+      "description": "Resize the browser window",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "width": {
+            "type": "number",
+            "description": "Width of the browser window"
+          },
+          "height": {
+            "type": "number",
+            "description": "Height of the browser window"
+          }
+        },
+        "required": [
+          "width",
+          "height"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "browser_file_upload",
+      "description": "Upload one or multiple files",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "paths": {
+            "type": "array",
+            "items": {
+              "type": "string"
             },
-            "required": [
-              "outputPath"
-            ]
+            "description": "The absolute paths to the files to upload. Can be a single file or multiple files."
           }
         },
         "required": [
-          "options"
-        ]
+          "paths"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
       }
     },
     {
-      "name": "end_codegen_session",
-      "description": "End a code generation session and generate the test file",
+      "name": "browser_install",
+      "description": "Install the browser specified in the config. Call this if you get an error about the browser not being installed.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "browser_press_key",
+      "description": "Press a key on the keyboard",
       "inputSchema": {
         "type": "object",
         "properties": {
-          "sessionId": {
+          "key": {
             "type": "string",
-            "description": "ID of the session to end"
+            "description": "Name of the key to press or a character to generate, such as `ArrowLeft` or `a`"
           }
         },
         "required": [
-          "sessionId"
-        ]
+          "key"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
       }
     },
     {
-      "name": "get_codegen_session",
-      "description": "Get information about a code generation session",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "sessionId": {
-            "type": "string",
-            "description": "ID of the session to retrieve"
-          }
-        },
-        "required": [
-          "sessionId"
-        ]
-      }
-    },
-    {
-      "name": "clear_codegen_session",
-      "description": "Clear a code generation session without generating a test",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "sessionId": {
-            "type": "string",
-            "description": "ID of the session to clear"
-          }
-        },
-        "required": [
-          "sessionId"
-        ]
-      }
-    },
-    {
-      "name": "playwright_navigate",
+      "name": "browser_navigate",
       "description": "Navigate to a URL",
       "inputSchema": {
         "type": "object",
         "properties": {
           "url": {
             "type": "string",
-            "description": "URL to navigate to the website specified"
-          },
-          "browserType": {
-            "type": "string",
-            "description": "Browser type to use (chromium, firefox, webkit). Defaults to chromium",
-            "enum": [
-              "chromium",
-              "firefox",
-              "webkit"
-            ]
-          },
-          "width": {
-            "type": "number",
-            "description": "Viewport width in pixels (default: 1280)"
-          },
-          "height": {
-            "type": "number",
-            "description": "Viewport height in pixels (default: 720)"
-          },
-          "timeout": {
-            "type": "number",
-            "description": "Navigation timeout in milliseconds"
-          },
-          "waitUntil": {
-            "type": "string",
-            "description": "Navigation wait condition"
-          },
-          "headless": {
-            "type": "boolean",
-            "description": "Run browser in headless mode (default: false)"
+            "description": "The URL to navigate to"
           }
         },
         "required": [
           "url"
-        ]
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
       }
     },
     {
-      "name": "playwright_screenshot",
-      "description": "Take a screenshot of the current page or a specific element",
+      "name": "browser_navigate_back",
+      "description": "Go back to the previous page",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "browser_navigate_forward",
+      "description": "Go forward to the next page",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "browser_pdf_save",
+      "description": "Save page as PDF",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "browser_screen_capture",
+      "description": "Take a screenshot of the current page",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "browser_screen_move_mouse",
+      "description": "Move mouse to a given position",
       "inputSchema": {
         "type": "object",
         "properties": {
-          "name": {
+          "element": {
             "type": "string",
-            "description": "Name for the screenshot"
+            "description": "Human-readable element description used to obtain permission to interact with the element"
           },
-          "selector": {
-            "type": "string",
-            "description": "CSS selector for element to screenshot"
-          },
-          "width": {
+          "x": {
             "type": "number",
-            "description": "Width in pixels (default: 800)"
+            "description": "X coordinate"
           },
-          "height": {
+          "y": {
             "type": "number",
-            "description": "Height in pixels (default: 600)"
-          },
-          "storeBase64": {
-            "type": "boolean",
-            "description": "Store screenshot in base64 format (default: true)"
-          },
-          "fullPage": {
-            "type": "boolean",
-            "description": "Store screenshot of the entire page (default: false)"
-          },
-          "savePng": {
-            "type": "boolean",
-            "description": "Save screenshot as PNG file (default: false)"
-          },
-          "downloadsDir": {
-            "type": "string",
-            "description": "Custom downloads directory path (default: user's Downloads folder)"
+            "description": "Y coordinate"
           }
         },
         "required": [
-          "name"
-        ]
+          "element",
+          "x",
+          "y"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
       }
     },
     {
-      "name": "playwright_click",
-      "description": "Click an element on the page",
+      "name": "browser_screen_click",
+      "description": "Click left mouse button",
       "inputSchema": {
         "type": "object",
         "properties": {
-          "selector": {
+          "element": {
             "type": "string",
-            "description": "CSS selector for the element to click"
-          }
-        },
-        "required": [
-          "selector"
-        ]
-      }
-    },
-    {
-      "name": "playwright_iframe_click",
-      "description": "Click an element in an iframe on the page",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "iframeSelector": {
-            "type": "string",
-            "description": "CSS selector for the iframe containing the element to click"
+            "description": "Human-readable element description used to obtain permission to interact with the element"
           },
-          "selector": {
-            "type": "string",
-            "description": "CSS selector for the element to click"
-          }
-        },
-        "required": [
-          "iframeSelector",
-          "selector"
-        ]
-      }
-    },
-    {
-      "name": "playwright_fill",
-      "description": "fill out an input field",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "selector": {
-            "type": "string",
-            "description": "CSS selector for input field"
-          },
-          "value": {
-            "type": "string",
-            "description": "Value to fill"
-          }
-        },
-        "required": [
-          "selector",
-          "value"
-        ]
-      }
-    },
-    {
-      "name": "playwright_select",
-      "description": "Select an element on the page with Select tag",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "selector": {
-            "type": "string",
-            "description": "CSS selector for element to select"
-          },
-          "value": {
-            "type": "string",
-            "description": "Value to select"
-          }
-        },
-        "required": [
-          "selector",
-          "value"
-        ]
-      }
-    },
-    {
-      "name": "playwright_hover",
-      "description": "Hover an element on the page",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "selector": {
-            "type": "string",
-            "description": "CSS selector for element to hover"
-          }
-        },
-        "required": [
-          "selector"
-        ]
-      }
-    },
-    {
-      "name": "playwright_evaluate",
-      "description": "Execute JavaScript in the browser console",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "script": {
-            "type": "string",
-            "description": "JavaScript code to execute"
-          }
-        },
-        "required": [
-          "script"
-        ]
-      }
-    },
-    {
-      "name": "playwright_console_logs",
-      "description": "Retrieve console logs from the browser with filtering options",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "description": "Type of logs to retrieve (all, error, warning, log, info, debug)",
-            "enum": [
-              "all",
-              "error",
-              "warning",
-              "log",
-              "info",
-              "debug"
-            ]
-          },
-          "search": {
-            "type": "string",
-            "description": "Text to search for in logs (handles text with square brackets)"
-          },
-          "limit": {
+          "x": {
             "type": "number",
-            "description": "Maximum number of logs to return"
+            "description": "X coordinate"
           },
-          "clear": {
+          "y": {
+            "type": "number",
+            "description": "Y coordinate"
+          }
+        },
+        "required": [
+          "element",
+          "x",
+          "y"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "browser_screen_drag",
+      "description": "Drag left mouse button",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "element": {
+            "type": "string",
+            "description": "Human-readable element description used to obtain permission to interact with the element"
+          },
+          "startX": {
+            "type": "number",
+            "description": "Start X coordinate"
+          },
+          "startY": {
+            "type": "number",
+            "description": "Start Y coordinate"
+          },
+          "endX": {
+            "type": "number",
+            "description": "End X coordinate"
+          },
+          "endY": {
+            "type": "number",
+            "description": "End Y coordinate"
+          }
+        },
+        "required": [
+          "element",
+          "startX",
+          "startY",
+          "endX",
+          "endY"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "browser_screen_type",
+      "description": "Type text",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "Text to type into the element"
+          },
+          "submit": {
             "type": "boolean",
-            "description": "Whether to clear logs after retrieval (default: false)"
+            "description": "Whether to submit entered text (press Enter after)"
           }
         },
-        "required": []
+        "required": [
+          "text"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
       }
     },
     {
-      "name": "playwright_close",
-      "description": "Close the browser and release all resources",
+      "name": "browser_tab_list",
+      "description": "List browser tabs",
       "inputSchema": {
         "type": "object",
         "properties": {},
-        "required": []
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
       }
     },
     {
-      "name": "playwright_get",
-      "description": "Perform an HTTP GET request",
+      "name": "browser_tab_new",
+      "description": "Open a new tab",
       "inputSchema": {
         "type": "object",
         "properties": {
           "url": {
             "type": "string",
-            "description": "URL to perform GET operation"
+            "description": "The URL to navigate to in the new tab. If not provided, the new tab will be blank."
           }
         },
-        "required": [
-          "url"
-        ]
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
       }
     },
     {
-      "name": "playwright_post",
-      "description": "Perform an HTTP POST request",
+      "name": "browser_tab_select",
+      "description": "Select a tab by index",
       "inputSchema": {
         "type": "object",
         "properties": {
-          "url": {
-            "type": "string",
-            "description": "URL to perform POST operation"
-          },
-          "value": {
-            "type": "string",
-            "description": "Data to post in the body"
-          },
-          "token": {
-            "type": "string",
-            "description": "Bearer token for authorization"
-          },
-          "headers": {
-            "type": "object",
-            "description": "Additional headers to include in the request",
-            "additionalProperties": {
-              "type": "string"
-            }
+          "index": {
+            "type": "number",
+            "description": "The index of the tab to select"
           }
         },
         "required": [
-          "url",
-          "value"
-        ]
+          "index"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
       }
     },
     {
-      "name": "playwright_put",
-      "description": "Perform an HTTP PUT request",
+      "name": "browser_tab_close",
+      "description": "Close a tab",
       "inputSchema": {
         "type": "object",
         "properties": {
-          "url": {
-            "type": "string",
-            "description": "URL to perform PUT operation"
-          },
-          "value": {
-            "type": "string",
-            "description": "Data to PUT in the body"
+          "index": {
+            "type": "number",
+            "description": "The index of the tab to close. Closes current tab if not provided."
           }
         },
-        "required": [
-          "url",
-          "value"
-        ]
-      }
-    },
-    {
-      "name": "playwright_patch",
-      "description": "Perform an HTTP PATCH request",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "url": {
-            "type": "string",
-            "description": "URL to perform PUT operation"
-          },
-          "value": {
-            "type": "string",
-            "description": "Data to PATCH in the body"
-          }
-        },
-        "required": [
-          "url",
-          "value"
-        ]
-      }
-    },
-    {
-      "name": "playwright_delete",
-      "description": "Perform an HTTP DELETE request",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "url": {
-            "type": "string",
-            "description": "URL to perform DELETE operation"
-          }
-        },
-        "required": [
-          "url"
-        ]
-      }
-    },
-    {
-      "name": "playwright_expect_response",
-      "description": "Ask Playwright to start waiting for a HTTP response. This tool initiates the wait operation but does not wait for its completion.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "Unique & arbitrary identifier to be used for retrieving this response later with `Playwright_assert_response`."
-          },
-          "url": {
-            "type": "string",
-            "description": "URL pattern to match in the response."
-          }
-        },
-        "required": [
-          "id",
-          "url"
-        ]
-      }
-    },
-    {
-      "name": "playwright_assert_response",
-      "description": "Wait for and validate a previously initiated HTTP response wait operation.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "Identifier of the HTTP response initially expected using `Playwright_expect_response`."
-          },
-          "value": {
-            "type": "string",
-            "description": "Data to expect in the body of the HTTP response. If provided, the assertion will fail if this value is not found in the response body."
-          }
-        },
-        "required": [
-          "id"
-        ]
-      }
-    },
-    {
-      "name": "playwright_custom_user_agent",
-      "description": "Set a custom User Agent for the browser",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "userAgent": {
-            "type": "string",
-            "description": "Custom User Agent for the Playwright browser instance"
-          }
-        },
-        "required": [
-          "userAgent"
-        ]
-      }
-    },
-    {
-      "name": "playwright_get_visible_text",
-      "description": "Get the visible text content of the current page",
-      "inputSchema": {
-        "type": "object",
-        "properties": {},
-        "required": []
-      }
-    },
-    {
-      "name": "playwright_get_visible_html",
-      "description": "Get the HTML content of the current page",
-      "inputSchema": {
-        "type": "object",
-        "properties": {},
-        "required": []
-      }
-    },
-    {
-      "name": "playwright_go_back",
-      "description": "Navigate back in browser history",
-      "inputSchema": {
-        "type": "object",
-        "properties": {},
-        "required": []
-      }
-    },
-    {
-      "name": "playwright_go_forward",
-      "description": "Navigate forward in browser history",
-      "inputSchema": {
-        "type": "object",
-        "properties": {},
-        "required": []
-      }
-    },
-    {
-      "name": "playwright_drag",
-      "description": "Drag an element to a target location",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "sourceSelector": {
-            "type": "string",
-            "description": "CSS selector for the element to drag"
-          },
-          "targetSelector": {
-            "type": "string",
-            "description": "CSS selector for the target location"
-          }
-        },
-        "required": [
-          "sourceSelector",
-          "targetSelector"
-        ]
-      }
-    },
-    {
-      "name": "playwright_press_key",
-      "description": "Press a keyboard key",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "key": {
-            "type": "string",
-            "description": "Key to press (e.g. 'Enter', 'ArrowDown', 'a')"
-          },
-          "selector": {
-            "type": "string",
-            "description": "Optional CSS selector to focus before pressing key"
-          }
-        },
-        "required": [
-          "key"
-        ]
-      }
-    },
-    {
-      "name": "playwright_save_as_pdf",
-      "description": "Save the current page as a PDF file",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "outputPath": {
-            "type": "string",
-            "description": "Directory path where PDF will be saved"
-          },
-          "filename": {
-            "type": "string",
-            "description": "Name of the PDF file (default: page.pdf)"
-          },
-          "format": {
-            "type": "string",
-            "description": "Page format (e.g. 'A4', 'Letter')"
-          },
-          "printBackground": {
-            "type": "boolean",
-            "description": "Whether to print background graphics"
-          },
-          "margin": {
-            "type": "object",
-            "description": "Page margins",
-            "properties": {
-              "top": {
-                "type": "string"
-              },
-              "right": {
-                "type": "string"
-              },
-              "bottom": {
-                "type": "string"
-              },
-              "left": {
-                "type": "string"
-              }
-            }
-          }
-        },
-        "required": [
-          "outputPath"
-        ]
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
       }
     }
-  ]
+  ],
+  "prompts": [],
+  "resources": [
+    {
+      "uri": "browser://console",
+      "name": "Page console",
+      "mimeType": "text/plain"
+    }
+  ],
+  "is_official": true
 }
