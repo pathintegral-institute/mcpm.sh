@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.2.0...v1.3.0) (2025-04-18)
+
+
+### Features
+
+* add share for router ([#74](https://github.com/pathintegral-institute/mcpm.sh/issues/74)) ([e81a852](https://github.com/pathintegral-institute/mcpm.sh/commit/e81a85214f2287acea2b6b667a47a0e7d6f5e462))
+
 # [1.2.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.1.2...v1.2.0) (2025-04-17)
 
 
