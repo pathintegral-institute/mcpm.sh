@@ -1,23 +1,23 @@
 name: Semantic Version Check
 
 on:
-  pull_request:
+  pull_request_target:
     types: [opened, synchronize, reopened]
-
-permissions:
-  contents: read
-  pull-requests: write
-  issues: write
 
 jobs:
   semver-check:
     name: Validate Semantic Version
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
     
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
           persist-credentials: false
 
@@ -41,38 +41,24 @@ jobs:
         id: semantic
         with:
           dry_run: true
-          ci: false
+          ci: true
           extra_plugins: |
             @semantic-release/commit-analyzer
             @semantic-release/release-notes-generator
-          branches: |
-            [
-              "${GITHUB_HEAD_REF}"
-            ]
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Comment PR
-        if: always()
-        uses: actions/github-script@v7
+        uses: thollander/actions-comment-pull-request@v2
         with:
-          script: |
-            let comment = '## Semantic Version Check\n\n';
+          message: |
+            ## Semantic Version Check
             
-            if ('${{ steps.semantic.outputs.new_release_version }}') {
-              comment += `✅ Valid semantic version changes detected!\n\n`;
-              comment += `Next version will be: **${{ steps.semantic.outputs.new_release_version }}**\n`;
-            } else {
-              comment += `⚠️ No semantic version changes detected.\n\n`;
-              comment += 'Please ensure your commits follow the [Conventional Commits](https://www.conventionalcommits.org/) format:\n\n';
-              comment += '- `feat: new feature` (triggers MINOR version bump)\n';
-              comment += '- `fix: bug fix` (triggers PATCH version bump)\n';
-              comment += '- `BREAKING CHANGE: description` (triggers MAJOR version bump)\n';
-            }
+            ${{ steps.semantic.outputs.new_release_version && '✅ Valid semantic version changes detected!' || '⚠️ No semantic version changes detected.' }}
             
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: comment
-            }); 
+            ${{ steps.semantic.outputs.new_release_version && format('Next version will be: **{0}**', steps.semantic.outputs.new_release_version) || 'Please ensure your commits follow the [Conventional Commits](https://www.conventionalcommits.org/) format:
+
+            - `feat: new feature` (triggers MINOR version bump)
+            - `fix: bug fix` (triggers PATCH version bump)
+            - `BREAKING CHANGE: description` (triggers MAJOR version bump)' }}
+          comment_tag: semantic-version-check 
