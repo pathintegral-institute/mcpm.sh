@@ -55,7 +55,7 @@ class MCPRouter:
         self.resources_mapping: t.Dict[str, types.Resource] = {}
         self.resources_templates_mapping: t.Dict[str, types.ResourceTemplate] = {}
         self.aggregated_server = self._create_aggregated_server()
-        self.profile_manager = ProfileConfigManager(profile_path=profile_path)
+        self.profile_manager = ProfileConfigManager() if profile_path is None else ProfileConfigManager(profile_path)
         self.watcher: Optional[ConfigWatcher] = None
         if reload_server:
             self.watcher = ConfigWatcher(self.profile_manager.profile_path)
