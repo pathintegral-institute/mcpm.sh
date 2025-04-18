@@ -40,12 +40,7 @@ jobs:
         id: semantic
         with:
           dry_run: true
-          ci: false
-          extra_plugins: |
-            @semantic-release/commit-analyzer
-            @semantic-release/release-notes-generator
-          branches: |
-            ['${{ github.head_ref || github.ref_name }}', 'main']
+          ci: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
