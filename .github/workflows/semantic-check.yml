@@ -4,13 +4,15 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
 jobs:
   semver-check:
     name: Validate Semantic Version
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
     
     steps:
       - name: Checkout
@@ -40,6 +42,13 @@ jobs:
         with:
           dry_run: true
           ci: false
+          extra_plugins: |
+            @semantic-release/commit-analyzer
+            @semantic-release/release-notes-generator
+          branches: |
+            [
+              "${GITHUB_HEAD_REF}"
+            ]
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
