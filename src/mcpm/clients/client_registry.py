@@ -39,7 +39,7 @@ class ClientRegistry:
         "cursor": CursorManager(),
         "cline": ClineManager(),
         "continue": ContinueManager(),
-        "goose": GooseClientManager(),
+        "goose-cli": GooseClientManager(),
         "5ire": FiveireManager(),
         "roo-code": RooCodeManager(),
     }
