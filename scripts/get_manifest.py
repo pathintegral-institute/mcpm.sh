@@ -18,6 +18,8 @@ logging.basicConfig(level=logging.INFO,
                     format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
+_OUTPUT_DIR = "mcp-registry/servers/"
+
 
 class ManifestGenerator:
     """Generate and manage MCP server manifests from GitHub repositories."""
@@ -857,11 +859,8 @@ If no examples are provided, return an empty array.
         return dict(sorted_installations)
 
 
-def main(repo_url: str, is_official: bool = False):
+def main(repo_url: str, is_official: bool = False, output_dir: str = _OUTPUT_DIR):
     try:
-        # Ensure the target directory exists
-        os.makedirs("mcp-registry/servers", exist_ok=True)
-
         # Generate the manifest
         generator = ManifestGenerator()
         manifest = generator.generate_manifest(repo_url)
@@ -873,11 +872,10 @@ def main(repo_url: str, is_official: bool = False):
                 "Generated manifest is missing a name and/or author name")
 
         # determine the filename
-        os.makedirs("local/servers", exist_ok=True)
-        filename = f"local/servers/{manifest['name']}_new.json"
+        filename = os.path.join(output_dir, f"{manifest['name']}_new.json")
         if not is_official:
             name = f"@{manifest['author']['name']}/{manifest['name']}"
-            filename = f"mcp-registry/servers/{manifest['name']}@{manifest['author']['name']}.json"
+            filename = os.path.join(output_dir, f"{manifest['name']}@{manifest['author']['name']}.json")
             manifest["name"] = name
 
         # save the manifest with the determined filename
@@ -901,18 +899,27 @@ if __name__ == "__main__":
         sys.exit(1)
 
     repo_url = sys.argv[1].strip()
+
+    output_dir = _OUTPUT_DIR
+    if repo_url == "test":
+        # overwrite global output directory
+        output_dir = "local/servers/"
+
+    os.makedirs(output_dir, exist_ok=True)
+
     if repo_url == "test":
         # run through all the test cases
         repo_urls = [
-            # "https://github.com/modelcontextprotocol/servers/tree/main/src/time",
+            "https://github.com/modelcontextprotocol/servers/tree/main/src/time",
             "https://github.com/modelcontextprotocol/servers/tree/main/src/sqlite",
-            # "https://github.com/modelcontextprotocol/servers/tree/main/src/slack",
-            # "https://github.com/modelcontextprotocol/servers/tree/main/src/sequentialthinking",
-            # "https://github.com/modelcontextprotocol/servers/tree/main/src/sentry"
+            "https://github.com/modelcontextprotocol/servers/tree/main/src/slack",
+            "https://github.com/modelcontextprotocol/servers/tree/main/src/sequentialthinking",
+            "https://github.com/modelcontextprotocol/servers/tree/main/src/sentry"
         ]
+
         for repo_url in repo_urls:
             logger.info(f"Processing GitHub URL: {repo_url}")
-            main(repo_url, is_official=True)
+            main(repo_url, is_official=True, output_dir=output_dir)
     else:
         # Check if the URL is a simple URL without protocol
         if not repo_url.startswith(("http://", "https://")):
@@ -938,4 +945,4 @@ if __name__ == "__main__":
         # Initialize logger only once to avoid duplicate logs
         logger.info(f"Processing GitHub URL: {repo_url}")
 
-        main(repo_url, is_official)
+        main(repo_url, is_official, output_dir)
