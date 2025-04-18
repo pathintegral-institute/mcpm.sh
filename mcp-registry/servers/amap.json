@@ -1,0 +1,295 @@
+{
+  "name": "amap",
+  "display_name": "Amap / \u9ad8\u5fb7\u5730\u56fe",
+  "description": "MCP Server for the AMap Map API.",
+  "repository": {
+    "type": "npm",
+    "url": "https://www.npmjs.com/package/@amap/amap-maps-mcp-server"
+  },
+  "homepage": "https://lbs.amap.com/api/mcp-server/summary",
+  "author": {
+    "name": "amap"
+  },
+  "license": "MIT",
+  "categories": [
+    "Web Services"
+  ],
+  "tags": [
+    "amap",
+    "map"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@amap/amap-maps-mcp-server"
+      ],
+      "env": {
+        "AMAP_MAPS_API_KEY": "${AMAP_MAPS_API_KEY}"
+      }
+    }
+  },
+  "arguments": {
+    "AMAP_MAPS_API_KEY": {
+      "description": "The API key to access the AMap service.",
+      "required": true,
+      "example": "YOUR_API_KEY_HERE"
+    }
+  },
+  "is_official": true,
+  "tools": [
+    {
+      "name": "maps_regeocode",
+      "description": "将经纬度坐标转换为商圈区域信息",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "description": "经纬度坐标"
+          }
+        },
+        "required": [
+          "location"
+        ]
+      }
+    },
+    {
+      "name": "maps_geo",
+      "description": "将地址转换为经纬度坐标",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "地址"
+          },
+          "city": {
+            "type": "string",
+            "description": "指定查询的城市"
+          }
+        },
+        "required": [
+          "address"
+        ]
+      }
+    },
+    {
+      "name": "maps_ip_location",
+      "description": "根据用户输入的 IP 地址确定 IP 的位置",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ip": {
+            "type": "string",
+            "description": "IP地址"
+          }
+        },
+        "required": [
+          "ip"
+        ]
+      }
+    },
+    {
+      "name": "maps_weather",
+      "description": "根据城市名称或 adcode 查询指定城市的天气",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "description": "城市名称或 adcode"
+          }
+        },
+        "required": [
+          "city"
+        ]
+      }
+    },
+    {
+      "name": "maps_search_detail",
+      "description": "根据关键词搜索或周边搜索获取的POI ID的详细信息",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "POI ID"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "maps_bicycling",
+      "description": "根据起点和终点的经纬度坐标规划自行车路线，规划时会考虑交通、单行线、封闭路段等情况，最多支持500公里的自行车路线规划",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "origin": {
+            "type": "string",
+            "description": "起点经纬度坐标，坐标格式为：经度,纬度"
+          },
+          "destination": {
+            "type": "string",
+            "description": "终点经纬度坐标，坐标格式为：经度,纬度"
+          }
+        },
+        "required": [
+          "origin",
+          "destination"
+        ]
+      }
+    },
+    {
+      "name": "maps_direction_walking",
+      "description": "根据起点和终点的经纬度坐标规划步行路线，最多支持100公里的步行路线规划",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "origin": {
+            "type": "string",
+            "description": "起点经纬度坐标，坐标格式为：经度,纬度"
+          },
+          "destination": {
+            "type": "string",
+            "description": "终点经纬度坐标，坐标格式为：经度,纬度"
+          }
+        },
+        "required": [
+          "origin",
+          "destination"
+        ]
+      }
+    },
+    {
+      "name": "maps_direction_driving",
+      "description": "根据起点和终点的经纬度坐标规划汽车路线，最多支持500公里的汽车路线规划",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "origin": {
+            "type": "string",
+            "description": "起点经纬度坐标，坐标格式为：经度,纬度"
+          },
+          "destination": {
+            "type": "string",
+            "description": "终点经纬度坐标，坐标格式为：经度,纬度"
+          }
+        },
+        "required": [
+          "origin",
+          "destination"
+        ]
+      }
+    },
+    {
+      "name": "maps_direction_transit_integrated",
+      "description": "根据起点和终点的经纬度坐标规划公共交通路线，最多支持500公里的公共交通路线规划",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "origin": {
+            "type": "string",
+            "description": "起点经纬度坐标，坐标格式为：经度,纬度"
+          },
+          "destination": {
+            "type": "string",
+            "description": "终点经纬度坐标，坐标格式为：经度,纬度"
+          },
+          "city": {
+            "type": "string",
+            "description": "起点所在城市"
+          },
+          "cityd": {
+            "type": "string",
+            "description": "终点所在城市"
+          }
+        },
+        "required": [
+          "origin",
+          "destination",
+          "city",
+          "cityd"
+        ]
+      }
+    },
+    {
+      "name": "maps_distance",
+      "description": "根据两个经纬度坐标计算距离，支持公交、步行、地铁距离计算",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "origins": {
+            "type": "string",
+            "description": "起点经纬度坐标，坐标格式为：经度,纬度，可以输入多个坐标，用分号分隔，例如120,30;120,31"
+          },
+          "destination": {
+            "type": "string",
+            "description": "终点经纬度坐标，坐标格式为：经度,纬度"
+          },
+          "type": {
+            "type": "string",
+            "description": "距离类型，1表示公交距离计算，0表示直线距离计算，3表示步行距离计算"
+          }
+        },
+        "required": [
+          "origins",
+          "destination"
+        ]
+      }
+    },
+    {
+      "name": "maps_text_search",
+      "description": "关键词搜索，根据用户输入的关键词搜索相关的POI",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keywords": {
+            "type": "string",
+            "description": "关键词"
+          },
+          "city": {
+            "type": "string",
+            "description": "查询城市"
+          },
+          "types": {
+            "type": "string",
+            "description": "POI类型，例如公交站"
+          }
+        },
+        "required": [
+          "keywords"
+        ]
+      }
+    },
+    {
+      "name": "maps_around_search",
+      "description": "周边搜索，根据用户输入的关键词和中心点经纬度坐标搜索周围的POI",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keywords": {
+            "type": "string",
+            "description": "关键词"
+          },
+          "location": {
+            "type": "string",
+            "description": "中心点经纬度坐标，坐标格式为：经度,纬度"
+          },
+          "radius": {
+            "type": "string",
+            "description": "搜索半径"
+          }
+        },
+        "required": [
+          "location"
+        ]
+      }
+    }
+  ]
+}
