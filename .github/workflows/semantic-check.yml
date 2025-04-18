@@ -45,9 +45,7 @@ jobs:
             @semantic-release/commit-analyzer
             @semantic-release/release-notes-generator
           branches: |
-            [
-              "${GITHUB_HEAD_REF}"
-            ]
+            ['${{ github.head_ref || github.ref_name }}', 'main']
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
