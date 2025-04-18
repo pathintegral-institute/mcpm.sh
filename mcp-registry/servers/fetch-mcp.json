@@ -1,0 +1,152 @@
+{
+  "name": "fetch-mcp",
+  "display_name": "Fetch",
+  "description": "A server that flexibly fetches HTML, JSON, Markdown, or plaintext.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zcaceres/fetch-mcp"
+  },
+  "homepage": "https://github.com/zcaceres/fetch-mcp",
+  "author": {
+    "name": "zcaceres"
+  },
+  "license": "MIT",
+  "categories": [
+    "Web Services"
+  ],
+  "tags": [
+    "fetch",
+    "web",
+    "api",
+    "html",
+    "json",
+    "markdown",
+    "plain text"
+  ],
+  "examples": [
+    {
+      "title": "Fetch HTML",
+      "description": "Fetch a website and return the content as HTML",
+      "prompt": "fetch_html(url: string, headers?: object) -> string"
+    },
+    {
+      "title": "Fetch JSON",
+      "description": "Fetch a JSON file from a URL",
+      "prompt": "fetch_json(url: string, headers?: object) -> object"
+    },
+    {
+      "title": "Fetch Plain Text",
+      "description": "Fetch a website and return the content as plain text",
+      "prompt": "fetch_txt(url: string, headers?: object) -> string"
+    },
+    {
+      "title": "Fetch Markdown",
+      "description": "Fetch a website and return the content as Markdown",
+      "prompt": "fetch_markdown(url: string, headers?: object) -> string"
+    }
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "https://github.com/zcaceres/fetch-mcp"
+      ]
+    }
+  },
+  "arguments": {
+    "url": {
+      "description": "URL of the website to fetch",
+      "required": true,
+      "example": "https://example.com"
+    },
+    "headers": {
+      "description": "Custom headers to include in the request",
+      "required": false,
+      "example": "{\"Authorization\": \"Bearer token\"}"
+    }
+  },
+  "tools": [
+    {
+      "name": "fetch_html",
+      "description": "Fetch a website and return the content as HTML",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL of the website to fetch"
+          },
+          "headers": {
+            "type": "object",
+            "description": "Optional headers to include in the request"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    },
+    {
+      "name": "fetch_markdown",
+      "description": "Fetch a website and return the content as Markdown",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL of the website to fetch"
+          },
+          "headers": {
+            "type": "object",
+            "description": "Optional headers to include in the request"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    },
+    {
+      "name": "fetch_txt",
+      "description": "Fetch a website, return the content as plain text (no HTML)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL of the website to fetch"
+          },
+          "headers": {
+            "type": "object",
+            "description": "Optional headers to include in the request"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    },
+    {
+      "name": "fetch_json",
+      "description": "Fetch a JSON file from a URL",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL of the JSON to fetch"
+          },
+          "headers": {
+            "type": "object",
+            "description": "Optional headers to include in the request"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    }
+  ]
+}
