@@ -9,9 +9,9 @@ from mcpm.utils.repository import RepositoryManager
 
 def test_add_server(windsurf_manager, monkeypatch):
     """Test add server"""
-    monkeypatch.setattr(ClientRegistry, "get_active_client", Mock(return_value="windsurf"))
     monkeypatch.setattr(ClientRegistry, "get_active_client_manager", Mock(return_value=windsurf_manager))
     monkeypatch.setattr(ClientRegistry, "get_client_manager", Mock(return_value=windsurf_manager))
+    monkeypatch.setattr(ClientRegistry, "determine_active_scope", Mock(return_value="@windsurf"))
     monkeypatch.setattr(
         RepositoryManager,
         "_fetch_servers",
@@ -51,9 +51,9 @@ def test_add_server(windsurf_manager, monkeypatch):
 
 def test_add_server_with_missing_arg(windsurf_manager, monkeypatch):
     """Test add server with a missing argument that should be replaced with empty string"""
-    monkeypatch.setattr(ClientRegistry, "get_active_client", Mock(return_value="windsurf"))
     monkeypatch.setattr(ClientRegistry, "get_active_client_manager", Mock(return_value=windsurf_manager))
     monkeypatch.setattr(ClientRegistry, "get_client_manager", Mock(return_value=windsurf_manager))
+    monkeypatch.setattr(ClientRegistry, "determine_active_scope", Mock(return_value="@windsurf"))
     monkeypatch.setattr(
         RepositoryManager,
         "_fetch_servers",
@@ -118,6 +118,7 @@ def test_add_server_with_empty_args(windsurf_manager, monkeypatch):
     monkeypatch.setattr(ClientRegistry, "get_active_client", Mock(return_value="windsurf"))
     monkeypatch.setattr(ClientRegistry, "get_active_client_manager", Mock(return_value=windsurf_manager))
     monkeypatch.setattr(ClientRegistry, "get_client_manager", Mock(return_value=windsurf_manager))
+    monkeypatch.setattr(ClientRegistry, "determine_active_scope", Mock(return_value="@windsurf"))
     monkeypatch.setattr(
         RepositoryManager,
         "_fetch_servers",
