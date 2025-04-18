@@ -16,7 +16,7 @@ If address is not specified, the share link will be proxied by our server `share
 
 If profile is not specified, the share link will use the current active profile. If no active profile found, the user need to specify the profile manually.
 
-To be noted that if your router is not running or your system sleeps, the share link will not be available.
+To be noted that if your router is not on or your system sleeps, the shared link will not be accessible.
 
 ## How it works
 
