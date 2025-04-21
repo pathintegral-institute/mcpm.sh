@@ -1,6 +1,6 @@
 {
   "display_name": "Apple MCP Tools",
-  "license": "<UNKNOWN>",
+  "license": "MIT",
   "tags": [
     "apple",
     "mcp",
@@ -21,15 +21,6 @@
         "@dhravya/apple-mcp@latest"
       ],
       "description": "Manual installation using bun"
-    },
-    "custom": {
-      "type": "custom",
-      "command": "bun",
-      "args": [
-        "run",
-        "index.ts"
-      ],
-      "description": "Local development installation"
     }
   },
   "examples": [
@@ -54,7 +45,7 @@
       "prompt": "can you please read the note about people i met in the conference, find their contacts and emails, and send them a message saying thank you for the time."
     }
   ],
-  "name": "@Dhravya/apple-mcp",
+  "name": "apple-mcp",
   "repository": {
     "type": "git",
     "url": "https://github.com/Dhravya/apple-mcp"
