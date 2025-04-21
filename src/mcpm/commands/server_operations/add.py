@@ -5,6 +5,7 @@ Add command for adding MCP servers directly to client configurations
 import json
 import os
 import re
+from enum import Enum
 
 import click
 from prompt_toolkit import PromptSession
@@ -344,13 +345,31 @@ def add(server_name, force=False, alias=None, target: str | None = None):
 
     # replace arguments with values
     processed_args = []
-    for arg in install_args:
-        processed_args.append(_replace_variables(arg, processed_variables))
+    has_non_standard_argument_define = False
+    for i, arg in enumerate(install_args):
+        prev_arg = install_args[i - 1] if i > 0 else ""
+        # handles arguments with pattern var=${var} | --var=var | --var var
+        arg_replaced, replacement_status = _replace_argument_variables(arg, prev_arg, processed_variables)
+        processed_args.append(arg_replaced)
+        if replacement_status == ReplacementStatus.NON_STANDARD_REPLACE:
+            has_non_standard_argument_define = True
 
     # process environment variables
     processed_env = {}
     for key, value in env_vars.items():
-        processed_env[key] = _replace_variables(value, processed_variables)
+        # just replace the env value regardless of the variable pattern, ${VAR}/YOUR_VAR/VAR
+        env_replaced, replacement_status = _replace_variables(value, processed_variables)
+        processed_env[key] = env_replaced if env_replaced else processed_variables.get(key, value)
+        if key in processed_variables and replacement_status == ReplacementStatus.NON_STANDARD_REPLACE:
+            has_non_standard_argument_define = True
+
+    if has_non_standard_argument_define:
+        # no matter in argument / env
+        console.print(
+            "[bold yellow]WARNING:[/] [bold]Non-standard argument format detected in server configuration.[/]\n"
+            "[bold cyan]Future versions of MCPM will standardize all arguments in server configuration to use ${VARIABLE_NAME} format.[/]\n"
+            "[bold]Please verify that your input arguments are correctly recognized.[/]\n"
+        )
 
     # Get actual MCP execution command, args, and env from the selected installation method
     # This ensures we use the actual server command information instead of placeholders
@@ -413,7 +432,13 @@ def _should_hide_input(arg_name: str) -> bool:
     return "token" in arg_name.lower() or "key" in arg_name.lower() or "secret" in arg_name.lower()
 
 
-def _replace_variables(value: str, variables: dict) -> str:
+class ReplacementStatus(str, Enum):
+    NOT_REPLACED = "not_replaced"
+    STANDARD_REPLACE = "standard_replace"
+    NON_STANDARD_REPLACE = "non_standard_replace"
+
+
+def _replace_variables(value: str, variables: dict) -> tuple[str, ReplacementStatus]:
     """Replace ${VAR} patterns in a string with values from variables dict.
 
     Args:
@@ -424,12 +449,66 @@ def _replace_variables(value: str, variables: dict) -> str:
         String with all variables replaced (empty string for missing variables)
     """
     if not isinstance(value, str):
-        return value
+        return value, ReplacementStatus.NOT_REPLACED
 
     # check if the value contains a variable
     matched = re.search(r"\$\{([^}]+)\}", value)
     if matched:
         original, var_name = matched.group(0), matched.group(1)
+        if var_name in variables:
+            return value.replace(original, variables[var_name]), ReplacementStatus.STANDARD_REPLACE
+
+    return "", ReplacementStatus.NON_STANDARD_REPLACE
+
+
+def _replace_argument_variables(value: str, prev_value: str, variables: dict) -> tuple[str, ReplacementStatus]:
+    """Replace variables in command-line arguments with values from variables dictionary.
+
+    Handles four argument formats:
+    1. Variable substitution: argument=${VAR_NAME}
+    2. Key-value pair: --argument=value
+    3. Space-separated pair: --argument value (where prev_value represents --argument)
+
+    Args:
+        value: The current argument string that may contain variables
+        prev_value: The previous argument string (for space-separated pairs)
+        variables: Dictionary mapping variable names to their values
+
+    Returns:
+        Tuple[str, bool]:
+            String with all variables replaced with their values from the variables dict
+            bool: whether the argument formatted as standard format in the ${} pattern
+
+    """
+    if not isinstance(value, str):
+        return value, ReplacementStatus.NOT_REPLACED
+
+    # arg: VAR=${VAR}
+    # check if the value contains a variable
+    matched = re.search(r"\$\{([^}]+)\}", value)
+    if matched:
+        original, var_name = matched.group(0), matched.group(1)
         # Use empty string as default when key not found
-        return value.replace(original, variables.get(var_name, ""))
-    return value
+        return value.replace(original, variables.get(var_name, "")), ReplacementStatus.STANDARD_REPLACE
+
+    # arg: --VAR=your var value
+    key_value_match = re.match(r"^([A-Z_]+)=(.+)$", value)
+    if key_value_match:
+        arg_key = key_value_match.group(1)
+        if arg_key in variables:
+            # replace the arg_value with variables[arg_key]
+            return f"{arg_key}={variables[arg_key]}", ReplacementStatus.NON_STANDARD_REPLACE
+        # if not contains the arg_key then just return the original value
+        return value, ReplacementStatus.NOT_REPLACED
+
+    # arg: --VAR your_var_value
+    if prev_value.startswith("--") or prev_value.startswith("-"):
+        arg_key = prev_value.lstrip("-")
+        if arg_key in variables:
+            # replace the value with variables[arg_key]
+            return variables[arg_key], ReplacementStatus.NON_STANDARD_REPLACE
+        # if not contains the arg_key then just return the original value
+        return value, ReplacementStatus.NOT_REPLACED
+
+    # nothing to replace
+    return value, ReplacementStatus.NOT_REPLACED
