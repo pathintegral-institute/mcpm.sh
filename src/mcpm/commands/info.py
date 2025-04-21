@@ -51,6 +51,7 @@ def _display_server_info(server):
     display_name = server.get("display_name", name)
     description = server.get("description", "No description")
     license_info = server.get("license", "Unknown")
+    is_official = server.get("is_official", False)
 
     # Get author info
     author_info = server.get("author", {})
@@ -81,6 +82,7 @@ def _display_server_info(server):
         console.print(f"Package: {package}")
     console.print(f"Author: {author_name}" + (f" ({author_email})" if author_email else ""))
     console.print(f"License: {license_info}")
+    console.print(f"Official: {is_official}")
     console.print("")
 
     # URLs section
@@ -143,7 +145,7 @@ def _display_server_info(server):
         console.print("[bold yellow]Examples:[/]")
         for i, example in enumerate(examples):
             if "title" in example:
-                console.print(f"[bold]{i+1}. {example['title']}[/]")
+                console.print(f"[bold]{i + 1}. {example['title']}[/]")
             if "description" in example:
                 console.print(f"   {example['description']}")
             if "code" in example:
