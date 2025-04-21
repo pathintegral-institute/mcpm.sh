@@ -1,3 +1,10 @@
+## [1.4.3](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.4.2...v1.4.3) (2025-04-21)
+
+
+### Bug Fixes
+
+* sse url to claude desktop is not converted ([#90](https://github.com/pathintegral-institute/mcpm.sh/issues/90)) ([5f2fc99](https://github.com/pathintegral-institute/mcpm.sh/commit/5f2fc9954bed98c18f3e33859bfa570ff88e1157))
+
 ## [1.4.2](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.4.1...v1.4.2) (2025-04-21)
 
 
