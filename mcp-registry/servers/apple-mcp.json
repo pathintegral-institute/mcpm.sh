@@ -1,0 +1,62 @@
+{
+  "display_name": "Apple MCP Tools",
+  "license": "MIT",
+  "tags": [
+    "apple",
+    "mcp",
+    "messages",
+    "notes",
+    "contacts",
+    "emails",
+    "reminders",
+    "calendar",
+    "web search",
+    "maps"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "bunx",
+      "args": [
+        "@dhravya/apple-mcp@latest"
+      ],
+      "description": "Manual installation using bun"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Can you send a message to John Doe?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "find all the notes related to AI and send it to my girlfriend"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "create a reminder to \"Buy groceries\" for tomorrow at 5pm"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "can you please read the note about people i met in the conference, find their contacts and emails, and send them a message saying thank you for the time."
+    }
+  ],
+  "name": "apple-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Dhravya/apple-mcp"
+  },
+  "homepage": "https://github.com/Dhravya/apple-mcp",
+  "author": {
+    "name": "Dhravya"
+  },
+  "description": "This is a collection of apple-native tools for the [MCP protocol](https://modelcontextprotocol.com/docs/mcp-protocol).",
+  "categories": [
+    "System Tools"
+  ],
+  "is_official": false
+}
