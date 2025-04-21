@@ -30,6 +30,8 @@ class ClientIdentifier(TypedDict):
 
 def patch_meta_data(body: bytes, **kwargs) -> bytes:
     data = json.loads(body.decode("utf-8"))
+    if "params" not in data:
+        data["params"] = {}
 
     for key, value in kwargs.items():
         data["params"].setdefault("_meta", {})[key] = value
