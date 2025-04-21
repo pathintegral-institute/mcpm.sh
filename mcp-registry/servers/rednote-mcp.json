@@ -1,0 +1,142 @@
+{
+  "display_name": "RedNote MCP",
+  "license": "MIT License",
+  "tags": [
+    "xiaohongshu",
+    "social media",
+    "content access",
+    "MCP",
+    "Chinese",
+    "Cursor",
+    "Node.js"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "rednote-mcp",
+        "--stdio"
+      ],
+      "description": "Using npx without global installation"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Search for notes about 'travel photography' on Xiaohongshu"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Find popular makeup tutorials on Xiaohongshu"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Get the content of this Xiaohongshu note: https://www.xiaohongshu.com/explore/example-note-id"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Search for food recommendations in Shanghai on Xiaohongshu"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Find fashion trends for summer 2023 on Xiaohongshu"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Get the latest skincare product reviews on Xiaohongshu"
+    }
+  ],
+  "name": "rednote-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iFurySt/RedNote-MCP"
+  },
+  "homepage": "https://github.com/iFurySt/RedNote-MCP",
+  "author": {
+    "name": "iFurySt"
+  },
+  "description": "https://github.com/user-attachments/assets/06b2c67f-d9ed-4a30-8f1d-9743f3edaa3a",
+  "categories": [
+    "Productivity"
+  ],
+  "tools": [
+    {
+      "name": "search_notes",
+      "description": "根据关键词搜索笔记",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keywords": {
+            "type": "string",
+            "description": "搜索关键词"
+          },
+          "limit": {
+            "type": "number",
+            "description": "返回结果数量限制"
+          }
+        },
+        "required": [
+          "keywords"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "get_note_content",
+      "description": "获取笔记内容",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "笔记 URL"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "get_note_comments",
+      "description": "获取笔记评论",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "笔记 URL"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "login",
+      "description": "登录小红书账号",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": false
+}
