@@ -1,17 +1,16 @@
-![PyPI - Version](https://img.shields.io/pypi/v/mcpm)
-![GitHub Release](https://img.shields.io/github/v/release/pathintegral-institute/mcpm.sh)
+![Homebrew Formula Version](https://img.shields.io/homebrew/v/mcpm?style=flat-square&color=green)
+![PyPI - Version](https://img.shields.io/pypi/v/mcpm?style=flat-square&color=green)
+![GitHub Release](https://img.shields.io/github/v/release/pathintegral-institute/mcpm.sh?style=flat-square&color=green)
+![GitHub License](https://img.shields.io/github/license/pathintegral-institute/mcpm.sh?style=flat-square&color=orange)
+![GitHub contributors](https://img.shields.io/github/contributors/pathintegral-institute/mcpm.sh?style=flat-square&color=blue)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/mcpm?style=flat-square&color=yellow)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/pathintegral-institute/mcpm.sh?style=flat-square&color=red)
 
 [English](README.md) | 简体中文
 
-```
- ███╗   ███╗ ██████╗██████╗ ███╗   ███╗ 
- ████╗ ████║██╔════╝██╔══██╗████╗ ████║ 
- ██╔████╔██║██║     ██████╔╝██╔████╔██║ 
- ██║╚██╔╝██║██║     ██╔═══╝ ██║╚██╔╝██║ 
- ██║ ╚═╝ ██║╚██████╗██║     ██║ ╚═╝ ██║ 
- ╚═╝     ╚═╝ ╚═════╝╚═╝     ╚═╝     ╚═╝ 
+![mcpm.sh](https://socialify.git.ci/pathintegral-institute/mcpm.sh/image?custom_description=MCP%E5%91%BD%E4%BB%A4%E8%A1%8C%E7%AE%A1%E5%AE%B6%E3%80%82%E4%B8%80%E7%AB%99%E5%BC%8F%E8%A7%A3%E5%86%B3MCP%E6%9C%8D%E5%8A%A1%E7%9A%84%E6%90%9C%E7%B4%A2%EF%BC%8C%E5%AE%89%E8%A3%85%EF%BC%8C%E7%AE%A1%E7%90%86%E3%80%82%E6%9B%B4%E6%9C%89%E8%B7%AF%E7%94%B1%EF%BC%8C%E5%B7%A5%E5%85%B7%E9%9B%86%EF%BC%8C%E8%BF%9C%E7%A8%8B%E5%88%86%E4%BA%AB%EF%BC%8C%E8%B0%83%E7%94%A8%E5%8E%86%E5%8F%B2%E8%B7%9F%E8%B8%AA%E7%AD%89%E9%AB%98%E9%98%B6%E5%8A%9F%E8%83%BD%E3%80%82&description=1&font=Inter&forks=1&issues=1&name=1&pattern=Floating+Cogs&pulls=1&stargazers=1&theme=Auto)
 
-MCP Manager
+```
 Open Source. Forever Free.
 Built with ❤️ by Path Integral Institute
 ```
@@ -185,10 +184,10 @@ MCP 注册表是可使用 MCPM 安装的可用 MCP 服务器的中央存储库�
 - [x] MCP 配置文件 (`mcpm profile`, `mcpm activate/deactivate`)
 - [x] 服务器复制/移动 (`mcpm cp`, `mcpm mv`)
 - [x] 服务器暂存 (`mcpm stash`, `mcpm pop`)
-- [ ] MCPM 路由器的 MCP 服务器访问监控（仅限本地，绝对不会有数据离开本地机器）
+- [x] 路由器远程分享 (`mcpm router share`) 远程访问本地路由器和 MCP 服务器
+- [x] MCPM 路由器的 MCP 服务器访问监控（仅限本地，绝对不会有数据离开本地机器）
 - [ ] 通过 STDIO 的 MCPM 路由器（相同的强大功能集，具有配置文件和监控，但单客户端/租户）
 - [ ] MCPM 路由器的 MCP 服务器（实验性，允许 MCP 客户端动态切换配置文件，从注册表建议新的 MCP 服务器等）
-- [ ] 服务器端管理功能（超出配置管理）
 - [ ] 附加客户端支持（扩展注册表）
 
 ## 👨‍💻 开发
