@@ -13,6 +13,7 @@ import pytest
 # Add the src directory to the path for all tests
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+from mcpm.clients.managers.claude_desktop import ClaudeDesktopManager
 from mcpm.clients.managers.windsurf import WindsurfManager
 from mcpm.utils.config import ConfigManager
 
@@ -67,3 +68,9 @@ def windsurf_manager(temp_config_file):
 def empty_windsurf_manager(empty_config_file):
     """Create a WindsurfManager instance with an empty config"""
     return WindsurfManager(config_path=empty_config_file)
+
+
+@pytest.fixture
+def claude_desktop_manager(temp_config_file):
+    """Create a ClaudeDesktopManager instance with the temp config"""
+    return ClaudeDesktopManager(config_path=temp_config_file)
