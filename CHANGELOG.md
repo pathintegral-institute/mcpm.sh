@@ -1,3 +1,10 @@
+## [1.4.2](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.4.1...v1.4.2) (2025-04-21)
+
+
+### Bug Fixes
+
+* handle argument value replacement with more patterns ([#75](https://github.com/pathintegral-institute/mcpm.sh/issues/75)) ([f20e469](https://github.com/pathintegral-institute/mcpm.sh/commit/f20e46966fa77dc459e81de08e5c98f05cf3116e))
+
 ## [1.4.1](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.4.0...v1.4.1) (2025-04-18)
 
 
