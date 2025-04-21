@@ -32,7 +32,7 @@ def patch_meta_data(body: bytes, **kwargs) -> bytes:
     data = json.loads(body.decode("utf-8"))
 
     for key, value in kwargs.items():
-        data["params"]["_meta"][key] = value
+        data["params"].setdefault("_meta", {})[key] = value
     return json.dumps(data).encode("utf-8")
 
 

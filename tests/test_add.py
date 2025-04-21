@@ -4,6 +4,7 @@ from click.testing import CliRunner
 
 from mcpm.clients.client_registry import ClientRegistry
 from mcpm.commands.server_operations.add import add
+from mcpm.schemas.server_config import SSEServerConfig
 from mcpm.utils.repository import RepositoryManager
 
 
@@ -186,3 +187,22 @@ def test_add_server_with_empty_args(windsurf_manager, monkeypatch):
         "API_KEY": "test-api-key",
         "OPTIONAL_ENV": "",  # Optional env var should be empty string
     }
+
+
+def test_add_sse_server_to_claude_desktop(claude_desktop_manager, monkeypatch):
+    """Test add sse server to claude desktop"""
+    server_config = SSEServerConfig(
+        name="test-sse-server", url="http://localhost:8080", headers={"Authorization": "Bearer test-api-key"}
+    )
+    claude_desktop_manager.add_server(server_config)
+    stored_config = claude_desktop_manager.get_server("test-sse-server")
+    assert stored_config is not None
+    assert stored_config.name == "test-sse-server"
+    assert stored_config.command == "uvx"
+    assert stored_config.args == [
+        "mcp-proxy",
+        "http://localhost:8080",
+        "--headers",
+        "Authorization",
+        "Bearer test-api-key",
+    ]

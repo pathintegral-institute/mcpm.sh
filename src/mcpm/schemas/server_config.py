@@ -57,5 +57,22 @@ class SSEServerConfig(BaseServerConfig):
     url: str
     headers: Dict[str, Any] = {}
 
+    def to_mcp_proxy_stdio(self) -> STDIOServerConfig:
+        proxy_args = [
+            "mcp-proxy",
+            self.url,
+        ]
+        if self.headers:
+            proxy_args.append("--headers")
+            for key, value in self.headers.items():
+                proxy_args.append(f"{key}")
+                proxy_args.append(f"{value}")
+
+        return STDIOServerConfig(
+            name=self.name,
+            command="uvx",
+            args=proxy_args,
+        )
+
 
 ServerConfig = Union[STDIOServerConfig, SSEServerConfig]
