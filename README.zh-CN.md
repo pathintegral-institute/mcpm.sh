@@ -302,3 +302,7 @@ MIT
 扫描以下二维码加入 MCPM 开源社区微信群：
 
 <img src=".github/readme/mcpm_wechat.png" alt="MCPM 开源社区微信群" width="300px" />
+
+## 🌟 星标历史
+
+[![Star History Chart](https://api.star-history.com/svg?repos=pathintegral-institute/mcpm.sh&type=Date)](https://www.star-history.com/#pathintegral-institute/mcpm.sh&Date)

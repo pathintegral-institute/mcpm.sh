@@ -295,3 +295,8 @@ PyPI release is handled by the CI/CD pipeline and will be triggered automaticall
 ## 📜 License
 
 MIT
+
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=pathintegral-institute/mcpm.sh&type=Date)](https://www.star-history.com/#pathintegral-institute/mcpm.sh&Date)
