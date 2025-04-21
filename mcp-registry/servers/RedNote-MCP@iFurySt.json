@@ -1,0 +1,153 @@
+{
+  "display_name": "RedNote MCP",
+  "license": "MIT License",
+  "tags": [
+    "xiaohongshu",
+    "social media",
+    "content access",
+    "MCP",
+    "Chinese",
+    "Cursor",
+    "Node.js"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "rednote-mcp",
+        "--stdio"
+      ],
+      "description": "Using npx without global installation"
+    },
+    "custom": {
+      "type": "custom",
+      "command": "npm",
+      "args": [
+        "run",
+        "dev",
+        "--",
+        "init"
+      ],
+      "description": "Running from source code for initialization"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Search for notes about 'travel photography' on Xiaohongshu"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Find popular makeup tutorials on Xiaohongshu"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Get the content of this Xiaohongshu note: https://www.xiaohongshu.com/explore/example-note-id"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Search for food recommendations in Shanghai on Xiaohongshu"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Find fashion trends for summer 2023 on Xiaohongshu"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Get the latest skincare product reviews on Xiaohongshu"
+    }
+  ],
+  "name": "@iFurySt/RedNote-MCP",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iFurySt/RedNote-MCP"
+  },
+  "homepage": "https://github.com/iFurySt/RedNote-MCP",
+  "author": {
+    "name": "iFurySt"
+  },
+  "description": "https://github.com/user-attachments/assets/06b2c67f-d9ed-4a30-8f1d-9743f3edaa3a",
+  "categories": [
+    "Productivity"
+  ],
+  "tools": [
+    {
+      "name": "search_notes",
+      "description": "\u6839\u636e\u5173\u952e\u8bcd\u641c\u7d22\u7b14\u8bb0",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keywords": {
+            "type": "string",
+            "description": "\u641c\u7d22\u5173\u952e\u8bcd"
+          },
+          "limit": {
+            "type": "number",
+            "description": "\u8fd4\u56de\u7ed3\u679c\u6570\u91cf\u9650\u5236"
+          }
+        },
+        "required": [
+          "keywords"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "get_note_content",
+      "description": "\u83b7\u53d6\u7b14\u8bb0\u5185\u5bb9",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "\u7b14\u8bb0 URL"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "get_note_comments",
+      "description": "\u83b7\u53d6\u7b14\u8bb0\u8bc4\u8bba",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "\u7b14\u8bb0 URL"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "login",
+      "description": "\u767b\u5f55\u5c0f\u7ea2\u4e66\u8d26\u53f7",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": false
+}
