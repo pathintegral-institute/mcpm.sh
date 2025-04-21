@@ -185,11 +185,11 @@ The MCP Registry is a central repository of available MCP servers that can be in
 - [x] MCP Profiles (`mcpm profile`, `mcpm activate/deactivate`)
 - [x] Server copying/moving (`mcpm cp`, `mcpm mv`)
 - [x] Server stashing (`mcpm stash`, `mcpm pop`)
+- [x] Router remote share (`mcpm router share`) remotely access local router and mcp servers
 - [ ] MCP Server Access Monitoring for MCPM Router (local only, absolutely no data leaving local machine)
 - [ ] MCPM Router over STDIO (same powerful feature set with profile and monitoring, but single client/tenant)
 - [ ] MCP Server for MCPM Router (experimental, allow MCP clients to dynamically switch between profiles, suggest new MCP servers from registry, etc.)
-- [ ] Server-side management capabilities (Beyond config management)
-- [ ] Additional client support (Expand registry)
+- [ ] Additional client support
 
 ## 👨‍💻 Development
 
