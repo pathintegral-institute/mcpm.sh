@@ -302,4 +302,4 @@ MIT
 欢迎反馈问题，贡献代码，讨论新功能。
 扫描以下二维码加入 MCPM 开源社区微信群：
 
-![MCPM 开源社区微信群](.github/readme/mcpm_wechat.png)
+<img src=".github/readme/mcpm_wechat.png" alt="MCPM 开源社区微信群" width="300px" />
