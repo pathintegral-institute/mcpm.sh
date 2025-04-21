@@ -82,7 +82,7 @@ MCPM 将支持为以下客户端管理 MCP 服务器：
 
 ## 🔥 命令行界面 (CLI)
 
-MCPM 提供了一个使用 Python 的 Click 框架构建的全面 CLI。命令通常在当前**活动客户端**上操作。您可以使用 `mcpm client` 查看/设置活动客户端。许多命令还支持作用域修饰符，如 `@CLIENT_NAME/SERVER_NAME` 或 `#PROFILE_NAME/SERVER_NAME`，以直接针对特定客户端或配置文件。
+MCPM 提供了一个使用 Python 的 Click 框架构建的全面 CLI。命令通常在当前**活动客户端**上操作。您可以使用 `mcpm client` 查看/设置活动客户端。许多命令还支持作用域修饰符，如 `@CLIENT_NAME/SERVER_NAME` 或 `%PROFILE_NAME/SERVER_NAME`，以直接针对特定客户端或配置文件。
 
 以下是按功能分组的可用命令：
 
@@ -103,7 +103,7 @@ mcpm client edit      # 在外部编辑器中打开活动客户端的 MCP 配置
 
 ### 🌐 服务器管理 (`server`)
 
-这些命令在活动客户端上操作，除非提供了特定作用域（`@CLIENT` 或 `#PROFILE`）。
+这些命令在活动客户端上操作，除非提供了特定作用域（`@CLIENT` 或 `%PROFILE`）。
 
 ```bash
 # 🔍 搜索和添加
@@ -116,8 +116,8 @@ mcpm ls                   # 列出活动客户端/配置文件的服务器配置
 mcpm rm SERVER_NAME       # 删除服务器配置
 
 # 🔄 修改和组织
-mcpm cp SOURCE TARGET     # 复制服务器配置（例如，@client1/serverA #profileB）
-mcpm mv SOURCE TARGET     # 移动服务器配置（例如，#profileA/serverX @client2）
+mcpm cp SOURCE TARGET     # 复制服务器配置（例如，@client1/serverA %profileB）
+mcpm mv SOURCE TARGET     # 移动服务器配置（例如，%profileA/serverX @client2）
 
 # 📦 暂存（临时禁用/启用）
 mcpm stash SERVER_NAME    # 临时禁用/存储服务器配置

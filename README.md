@@ -82,7 +82,7 @@ MCPM will support managing MCP servers for the following clients:
 
 ## 🔥 Command Line Interface (CLI)
 
-MCPM provides a comprehensive CLI built with Python's Click framework. Commands generally operate on the currently **active client**. You can view/set the active client using `mcpm client`. Many commands also support scope modifiers like `@CLIENT_NAME/SERVER_NAME` or `#PROFILE_NAME/SERVER_NAME` to target specific clients or profiles directly.
+MCPM provides a comprehensive CLI built with Python's Click framework. Commands generally operate on the currently **active client**. You can view/set the active client using `mcpm client`. Many commands also support scope modifiers like `@CLIENT_NAME/SERVER_NAME` or `%PROFILE_NAME/SERVER_NAME` to target specific clients or profiles directly.
 
 Below are the available commands, grouped by functionality:
 
@@ -103,7 +103,7 @@ mcpm client edit      # Open the active client's MCP configuration file in an ex
 
 ### 🌐 Server Management (`server`)
 
-These commands operate on the active client unless a specific scope (`@CLIENT` or `#PROFILE`) is provided.
+These commands operate on the active client unless a specific scope (`@CLIENT` or `%PROFILE`) is provided.
 
 ```bash
 # 🔍 Search and Add
@@ -116,8 +116,8 @@ mcpm ls                   # List server configurations for the active client/pro
 mcpm rm SERVER_NAME       # Remove a server configuration
 
 # 🔄 Modify and Organize
-mcpm cp SOURCE TARGET     # Copy a server config (e.g., @client1/serverA #profileB)
-mcpm mv SOURCE TARGET     # Move a server config (e.g., #profileA/serverX @client2)
+mcpm cp SOURCE TARGET     # Copy a server config (e.g., @client1/serverA %profileB)
+mcpm mv SOURCE TARGET     # Move a server config (e.g., %profileA/serverX @client2)
 
 # 📦 Stashing (Temporarily disable/enable)
 mcpm stash SERVER_NAME    # Temporarily disable/store a server configuration aside
