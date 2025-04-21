@@ -1,0 +1,82 @@
+{
+  "display_name": "MarkItDown MCP Server",
+  "license": "Microsoft",
+  "tags": [
+    "markdown",
+    "conversion",
+    "MCP",
+    "STDIO",
+    "SSE",
+    "server",
+    "AutoGen",
+    "document conversion"
+  ],
+  "installations": {
+    "python": {
+      "type": "python",
+      "command": "markitdown-mcp",
+      "args": [
+        "--sse",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "3001"
+      ],
+      "description": "Run the MCP server using SSE"
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-it",
+        "--rm",
+        "-v",
+        "/home/user/data:/workdir",
+        "markitdown-mcp:latest"
+      ],
+      "description": "Run the Docker container with local file access"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Convert this webpage to markdown: https://github.com/microsoft/markitdown"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Please convert the following URL to markdown: https://example.com"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Convert this local file to markdown: file:///workdir/example.txt"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Can you convert this data URI to markdown? data:text/html,<h1>Hello World</h1>"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Convert https://microsoft.github.io/autogen/ to markdown format"
+    }
+  ],
+  "name": "@microsoft/markitdown-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/microsoft/markitdown/tree/main/packages/markitdown-mcp"
+  },
+  "homepage": "https://github.com/microsoft/markitdown/tree/main/packages/markitdown-mcp",
+  "author": {
+    "name": "microsoft"
+  },
+  "description": "The `markitdown-mcp` package provides a lightweight STDIO and SSE MCP server for calling MarkItDown.",
+  "categories": [
+    "Media Creation"
+  ],
+  "is_official": false
+}
