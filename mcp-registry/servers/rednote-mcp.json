@@ -19,17 +19,6 @@
         "--stdio"
       ],
       "description": "Using npx without global installation"
-    },
-    "custom": {
-      "type": "custom",
-      "command": "npm",
-      "args": [
-        "run",
-        "dev",
-        "--",
-        "init"
-      ],
-      "description": "Running from source code for initialization"
     }
   },
   "examples": [
@@ -64,7 +53,7 @@
       "prompt": "Get the latest skincare product reviews on Xiaohongshu"
     }
   ],
-  "name": "@iFurySt/RedNote-MCP",
+  "name": "rednote-mcp",
   "repository": {
     "type": "git",
     "url": "https://github.com/iFurySt/RedNote-MCP"
@@ -80,17 +69,17 @@
   "tools": [
     {
       "name": "search_notes",
-      "description": "\u6839\u636e\u5173\u952e\u8bcd\u641c\u7d22\u7b14\u8bb0",
+      "description": "根据关键词搜索笔记",
       "inputSchema": {
         "type": "object",
         "properties": {
           "keywords": {
             "type": "string",
-            "description": "\u641c\u7d22\u5173\u952e\u8bcd"
+            "description": "搜索关键词"
           },
           "limit": {
             "type": "number",
-            "description": "\u8fd4\u56de\u7ed3\u679c\u6570\u91cf\u9650\u5236"
+            "description": "返回结果数量限制"
           }
         },
         "required": [
@@ -102,13 +91,13 @@
     },
     {
       "name": "get_note_content",
-      "description": "\u83b7\u53d6\u7b14\u8bb0\u5185\u5bb9",
+      "description": "获取笔记内容",
       "inputSchema": {
         "type": "object",
         "properties": {
           "url": {
             "type": "string",
-            "description": "\u7b14\u8bb0 URL"
+            "description": "笔记 URL"
           }
         },
         "required": [
@@ -120,13 +109,13 @@
     },
     {
       "name": "get_note_comments",
-      "description": "\u83b7\u53d6\u7b14\u8bb0\u8bc4\u8bba",
+      "description": "获取笔记评论",
       "inputSchema": {
         "type": "object",
         "properties": {
           "url": {
             "type": "string",
-            "description": "\u7b14\u8bb0 URL"
+            "description": "笔记 URL"
           }
         },
         "required": [
@@ -138,7 +127,7 @@
     },
     {
       "name": "login",
-      "description": "\u767b\u5f55\u5c0f\u7ea2\u4e66\u8d26\u53f7",
+      "description": "登录小红书账号",
       "inputSchema": {
         "type": "object",
         "properties": {},
