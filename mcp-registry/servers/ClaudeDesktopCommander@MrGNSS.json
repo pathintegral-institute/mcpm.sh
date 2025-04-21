@@ -1,0 +1,91 @@
+{
+  "display_name": "Desktop Commander MCP",
+  "license": "MIT",
+  "tags": [
+    "terminal",
+    "command execution",
+    "file editing",
+    "process management",
+    "Claude",
+    "MCP",
+    "filesystem",
+    "code editing",
+    "desktop"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "@wonderwhy-er/desktop-commander",
+        "setup"
+      ],
+      "description": "Install through npx"
+    },
+    "custom": {
+      "type": "custom",
+      "command": "git",
+      "args": [
+        "clone",
+        "https://github.com/wonderwhy-er/ClaudeComputerCommander.git"
+      ],
+      "description": "Checkout locally"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Can you help me execute a terminal command to list files in my current directory?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "I need to edit a file. Can you help me make a small change to my code?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Can you search through my project files for a specific function?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "I need to create a new directory and write a file to it. Can you help?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Can you show me what processes are currently running on my system?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "I have a long-running command. Can you help me execute it and monitor its output?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Can you help me find and replace a specific pattern across multiple files in my project?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "I need to move a file from one directory to another. Can you assist with that?"
+    }
+  ],
+  "name": "@MrGNSS/ClaudeDesktopCommander",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MrGNSS/ClaudeDesktopCommander"
+  },
+  "homepage": "https://github.com/MrGNSS/ClaudeDesktopCommander",
+  "author": {
+    "name": "MrGNSS"
+  },
+  "description": "Short version. Two key things. Terminal commands and diff based file editing.",
+  "categories": [
+    "System Tools"
+  ],
+  "is_official": false
+}
