@@ -4,10 +4,10 @@ Claude Desktop integration utilities for MCP
 
 import logging
 import os
-from typing import Any, Dict
+from typing import Any, Dict, override
 
 from mcpm.clients.base import JSONClientManager
-from mcpm.schemas.server_config import ServerConfig
+from mcpm.schemas.server_config import ServerConfig, SSEServerConfig, STDIOServerConfig
 from mcpm.utils.router_server import format_server_url_with_proxy_headers
 
 logger = logging.getLogger(__name__)
@@ -116,8 +116,18 @@ class ClaudeDesktopManager(JSONClientManager):
     def _format_router_server(self, profile_name, base_url) -> ServerConfig:
         return format_server_url_with_proxy_headers(self.client_key, profile_name, base_url)
 
-    # Uses base class implementation of remove_server
-
-    # Uses base class implementation of get_server
-
-    # Uses base class implementation of list_servers
+    @override
+    def to_client_format(self, server_config: ServerConfig) -> Dict[str, Any]:
+        if isinstance(server_config, SSEServerConfig):
+            # use mcp proxy to convert to stdio as sse is not supported for claude desktop yet
+            return self.to_client_format(
+                STDIOServerConfig(
+                    name=server_config.name,
+                    command="uvx",
+                    args=[
+                        "mcp-proxy",
+                        server_config.url,
+                    ],
+                )
+            )
+        return super().to_client_format(server_config)
