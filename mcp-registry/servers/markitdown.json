@@ -1,0 +1,93 @@
+{
+  "display_name": "MarkItDown MCP Server",
+  "license": "MIT",
+  "tags": [
+    "markdown",
+    "conversion",
+    "server",
+    "AutoGen",
+    "document conversion"
+  ],
+  "installations": {
+    "python": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "markitdown-mcp"
+      ],
+      "description": "Run the MCP server using SSE"
+    }
+  },
+  "arguments": {
+    "HOST": {
+      "description": "Host to bind to, default to 127.0.0.1",
+      "required": false,
+      "example": "127.0.0.1"
+    },
+    "PORT": {
+      "description": "Port to bind to, default to 3001",
+      "required": false,
+      "example": "3001"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Convert this webpage to markdown: https://github.com/microsoft/markitdown"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Please convert the following URL to markdown: https://example.com"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Convert this local file to markdown: file:///workdir/example.txt"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Can you convert this data URI to markdown? data:text/html,<h1>Hello World</h1>"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Convert https://microsoft.github.io/autogen/ to markdown format"
+    }
+  ],
+  "name": "markitdown",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/microsoft/markitdown/tree/main/packages/markitdown-mcp"
+  },
+  "homepage": "https://github.com/microsoft/markitdown/tree/main/packages/markitdown-mcp",
+  "author": {
+    "name": "microsoft"
+  },
+  "description": "The `markitdown-mcp` package provides a lightweight STDIO and SSE MCP server for calling MarkItDown.",
+  "categories": [
+    "Media Creation"
+  ],
+  "is_official": true,
+  "tools": [
+    {
+      "name": "convert_to_markdown",
+      "description": "Convert a resource described by an http:, https:, file: or data: URI to markdown",
+      "inputSchema": {
+        "properties": {
+          "uri": {
+            "title": "Uri",
+            "type": "string"
+          }
+        },
+        "required": [
+          "uri"
+        ],
+        "title": "convert_to_markdownArguments",
+        "type": "object"
+      }
+    }
+  ]
+}
