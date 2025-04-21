@@ -1,3 +1,10 @@
+## [1.4.4](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.4.3...v1.4.4) (2025-04-21)
+
+
+### Bug Fixes
+
+* add params field when missing ([#94](https://github.com/pathintegral-institute/mcpm.sh/issues/94)) ([893ebb9](https://github.com/pathintegral-institute/mcpm.sh/commit/893ebb9b2cc6102e9d0128805bad7a105a2a36a1))
+
 ## [1.4.3](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.4.2...v1.4.3) (2025-04-21)
 
 
