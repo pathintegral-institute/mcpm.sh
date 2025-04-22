@@ -1,17 +1,16 @@
-![PyPI - Version](https://img.shields.io/pypi/v/mcpm)
-![GitHub Release](https://img.shields.io/github/v/release/pathintegral-institute/mcpm.sh)
+![Homebrew Formula Version](https://img.shields.io/homebrew/v/mcpm?style=flat-square&color=green)
+![PyPI - Version](https://img.shields.io/pypi/v/mcpm?style=flat-square&color=green)
+![GitHub Release](https://img.shields.io/github/v/release/pathintegral-institute/mcpm.sh?style=flat-square&color=green)
+![GitHub License](https://img.shields.io/github/license/pathintegral-institute/mcpm.sh?style=flat-square&color=orange)
+![GitHub contributors](https://img.shields.io/github/contributors/pathintegral-institute/mcpm.sh?style=flat-square&color=blue)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/mcpm?style=flat-square&color=yellow)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/pathintegral-institute/mcpm.sh?style=flat-square&color=red)
 
 English | [简体中文](README.zh-CN.md)
 
-```
- ███╗   ███╗ ██████╗██████╗ ███╗   ███╗ 
- ████╗ ████║██╔════╝██╔══██╗████╗ ████║ 
- ██╔████╔██║██║     ██████╔╝██╔████╔██║ 
- ██║╚██╔╝██║██║     ██╔═══╝ ██║╚██╔╝██║ 
- ██║ ╚═╝ ██║╚██████╗██║     ██║ ╚═╝ ██║ 
- ╚═╝     ╚═╝ ╚═════╝╚═╝     ╚═╝     ╚═╝ 
+![mcpm.sh](https://socialify.git.ci/pathintegral-institute/mcpm.sh/image?custom_description=One+CLI+tool+for+all+your+local+MCP+Needs.+Search%2C+add%2C+configure+MCP+servers.+Router%2C+profile%2C+remote+sharing%2C+access+monitoring+etc.&description=1&font=Inter&forks=1&issues=1&name=1&pattern=Floating+Cogs&pulls=1&stargazers=1&theme=Auto)
 
-Model Context Protocol Manager
+```
 Open Source. Forever Free.
 Built with ❤️ by Path Integral Institute
 ```
@@ -296,3 +295,8 @@ PyPI release is handled by the CI/CD pipeline and will be triggered automaticall
 ## 📜 License
 
 MIT
+
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=pathintegral-institute/mcpm.sh&type=Date)](https://www.star-history.com/#pathintegral-institute/mcpm.sh&Date)
