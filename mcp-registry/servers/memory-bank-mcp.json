@@ -20,20 +20,9 @@
         "@allpepper/memory-bank-mcp"
       ],
       "env": {
-        "MEMORY_BANK_ROOT": "${path-to-bank}"
+        "MEMORY_BANK_ROOT": "${MEMORY_BANK_ROOT}"
       },
       "description": "Run directly with npx for general use"
-    },
-    "custom": {
-      "type": "custom",
-      "command": "env",
-      "args": [
-        "MEMORY_BANK_ROOT=${path-to-bank}",
-        "npx",
-        "-y",
-        "@allpepper/memory-bank-mcp@latest"
-      ],
-      "description": "For Cursor users"
     }
   },
   "examples": [
@@ -68,7 +57,7 @@
       "prompt": "Check if the 'project1' exists in my memory bank."
     }
   ],
-  "name": "@alioshr/memory-bank-mcp",
+  "name": "memory-bank-mcp",
   "repository": {
     "type": "git",
     "url": "https://github.com/alioshr/memory-bank-mcp"
