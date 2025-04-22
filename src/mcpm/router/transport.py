@@ -239,6 +239,11 @@ class RouterSseTransport(SseServerTransport):
                 self._session_id_to_identifier.pop(session_id, None)
 
     def _validate_api_key(self, scope: Scope, api_key: str | None) -> bool:
+        # If api_key is explicitly set to None, disable API key validation
+        if self.api_key is None:
+            logger.debug("API key validation disabled")
+            return True
+            
         # If we have a directly provided API key and it matches the request's API key, return True
         if self.api_key is not None and api_key == self.api_key:
             return True

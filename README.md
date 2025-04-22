@@ -180,6 +180,9 @@ router_config = {
 }
 router = MCPRouter(api_key="your-custom-api-key", router_config=router_config)
 
+# Disable API key validation by setting api_key to None
+router = MCPRouter(api_key=None)
+
 # Optionally, create a global config from the router's configuration
 router.create_global_config()
 ```
