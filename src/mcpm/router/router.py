@@ -24,8 +24,14 @@ from mcpm.monitor.event import trace_event
 from mcpm.profile.profile_config import ProfileConfigManager
 from mcpm.schemas.server_config import ServerConfig
 from mcpm.utils.config import (
-    PROMPT_SPLITOR, RESOURCE_SPLITOR, RESOURCE_TEMPLATE_SPLITOR, TOOL_SPLITOR,
-    ConfigManager, DEFAULT_HOST, DEFAULT_PORT, DEFAULT_SHARE_ADDRESS
+    DEFAULT_HOST,
+    DEFAULT_PORT,
+    DEFAULT_SHARE_ADDRESS,
+    PROMPT_SPLITOR,
+    RESOURCE_SPLITOR,
+    RESOURCE_TEMPLATE_SPLITOR,
+    TOOL_SPLITOR,
+    ConfigManager,
 )
 
 from .client_connection import ServerConnection
@@ -39,12 +45,12 @@ class MCPRouter:
     """
     A router that aggregates multiple MCP servers (SSE/STDIO) and
     exposes them as a single SSE server.
-    
+
     Example:
         ```python
         # Initialize with a custom API key
         router = MCPRouter(api_key="your-api-key")
-        
+
         # Initialize with custom router configuration
         router_config = {
             "host": "localhost",
@@ -52,16 +58,16 @@ class MCPRouter:
             "share_address": "custom.share.address:8080"
         }
         router = MCPRouter(api_key="your-api-key", router_config=router_config)
-        
+
         # Create a global config from the router's configuration
         router.create_global_config()
         ```
     """
 
     def __init__(
-        self, 
-        reload_server: bool = False, 
-        profile_path: str | None = None, 
+        self,
+        reload_server: bool = False,
+        profile_path: str | None = None,
         strict: bool = False,
         api_key: str | None = None,
         router_config: dict | None = None
@@ -91,7 +97,7 @@ class MCPRouter:
         self.strict: bool = strict
         self.api_key = api_key
         self.router_config = router_config
-        
+
     def create_global_config(self) -> None:
         """
         Create a global configuration from the router's configuration.
@@ -102,7 +108,7 @@ class MCPRouter:
             config_manager = ConfigManager()
             # Save the API key to the global config
             config_manager.save_share_config(api_key=self.api_key)
-            
+
             # If router_config is provided, save it to the global config
             if self.router_config is not None:
                 host = self.router_config.get("host", DEFAULT_HOST)
