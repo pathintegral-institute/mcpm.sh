@@ -66,8 +66,9 @@ def get_key_from_scope(scope: Scope, key_name: str) -> str | None:
 class RouterSseTransport(SseServerTransport):
     """A SSE server transport that is used by the router to handle client connections."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, api_key: str | None = None, **kwargs):
         self._session_id_to_identifier: dict[UUID, ClientIdentifier] = {}
+        self.api_key = api_key
         super().__init__(*args, **kwargs)
 
     @asynccontextmanager
@@ -238,6 +239,11 @@ class RouterSseTransport(SseServerTransport):
                 self._session_id_to_identifier.pop(session_id, None)
 
     def _validate_api_key(self, scope: Scope, api_key: str | None) -> bool:
+        # If we have a directly provided API key and it matches the request's API key, return True
+        if self.api_key is not None and api_key == self.api_key:
+            return True
+            
+        # Otherwise, fall back to the original validation logic
         try:
             config_manager = ConfigManager()
             host = get_key_from_scope(scope, key_name="host") or ""

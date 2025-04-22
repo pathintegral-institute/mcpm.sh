@@ -23,7 +23,10 @@ from mcpm.monitor.base import AccessEventType
 from mcpm.monitor.event import trace_event
 from mcpm.profile.profile_config import ProfileConfigManager
 from mcpm.schemas.server_config import ServerConfig
-from mcpm.utils.config import PROMPT_SPLITOR, RESOURCE_SPLITOR, RESOURCE_TEMPLATE_SPLITOR, TOOL_SPLITOR
+from mcpm.utils.config import (
+    PROMPT_SPLITOR, RESOURCE_SPLITOR, RESOURCE_TEMPLATE_SPLITOR, TOOL_SPLITOR,
+    ConfigManager, DEFAULT_HOST, DEFAULT_PORT, DEFAULT_SHARE_ADDRESS
+)
 
 from .client_connection import ServerConnection
 from .transport import RouterSseTransport
@@ -36,9 +39,33 @@ class MCPRouter:
     """
     A router that aggregates multiple MCP servers (SSE/STDIO) and
     exposes them as a single SSE server.
+    
+    Example:
+        ```python
+        # Initialize with a custom API key
+        router = MCPRouter(api_key="your-api-key")
+        
+        # Initialize with custom router configuration
+        router_config = {
+            "host": "localhost",
+            "port": 8080,
+            "share_address": "custom.share.address:8080"
+        }
+        router = MCPRouter(api_key="your-api-key", router_config=router_config)
+        
+        # Create a global config from the router's configuration
+        router.create_global_config()
+        ```
     """
 
-    def __init__(self, reload_server: bool = False, profile_path: str | None = None, strict: bool = False) -> None:
+    def __init__(
+        self, 
+        reload_server: bool = False, 
+        profile_path: str | None = None, 
+        strict: bool = False,
+        api_key: str | None = None,
+        router_config: dict | None = None
+    ) -> None:
         """
         Initialize the router.
 
@@ -46,6 +73,8 @@ class MCPRouter:
         :param profile_path: Path to the profile file
         :param strict: Whether to use strict mode for duplicated tool name.
                        If True, raise error when duplicated tool name is found else auto resolve by adding server name prefix
+        :param api_key: Optional API key to use for authentication
+        :param router_config: Optional router configuration to use instead of the global config
         """
         self.server_sessions: t.Dict[str, ServerConnection] = {}
         self.capabilities_mapping: t.Dict[str, t.Dict[str, t.Any]] = defaultdict(dict)
@@ -60,6 +89,26 @@ class MCPRouter:
         if reload_server:
             self.watcher = ConfigWatcher(self.profile_manager.profile_path)
         self.strict: bool = strict
+        self.api_key = api_key
+        self.router_config = router_config
+        
+    def create_global_config(self) -> None:
+        """
+        Create a global configuration from the router's configuration.
+        This is useful if you want to initialize the router with a config
+        but also want that config to be available globally.
+        """
+        if self.api_key is not None:
+            config_manager = ConfigManager()
+            # Save the API key to the global config
+            config_manager.save_share_config(api_key=self.api_key)
+            
+            # If router_config is provided, save it to the global config
+            if self.router_config is not None:
+                host = self.router_config.get("host", DEFAULT_HOST)
+                port = self.router_config.get("port", DEFAULT_PORT)
+                share_address = self.router_config.get("share_address", DEFAULT_SHARE_ADDRESS)
+                config_manager.save_router_config(host, port, share_address)
 
     def get_unique_servers(self) -> list[ServerConfig]:
         profiles = self.profile_manager.list_profiles()
@@ -496,7 +545,8 @@ class MCPRouter:
         """
         await self.initialize_router()
 
-        sse = RouterSseTransport("/messages/")
+        # Pass the API key to the RouterSseTransport
+        sse = RouterSseTransport("/messages/", api_key=self.api_key)
 
         async def handle_sse(request: Request) -> None:
             async with sse.connect_sse(
