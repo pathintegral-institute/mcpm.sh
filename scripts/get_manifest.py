@@ -519,7 +519,7 @@ if no arguments are required, return an empty array. """)
         """Extract installations information using LLM."""
         schema = {
             "name": "extract_installations",
-            "description": "Extract installations information",
+            "description": "Extract installation information for different clients(Claude Desktop/Cursor/Windsurf/VSCode and so on) from content inside of <README> tag and strictly follow the rules",
             "required": ["installations"],
             "parameters": {
                 "type": "object",
@@ -547,7 +547,7 @@ if no arguments are required, return an empty array. """)
                                 "env": {
                                     "type": "object",
                                     "description": "Environment variables",
-                                    "additionalProperties": {"type": "string"}
+                                    "additionalProperties": {"type": "string"},
                                 },
                                 "description": {
                                     "type": "string",
@@ -564,9 +564,16 @@ if no arguments are required, return an empty array. """)
             repo_url=repo_url,
             readme_content=readme_content,
             schema=schema,
-            prompt=("""Extract the installation methods for this server.
-The installation methods should be a list of methods to install and run this server.
-It can often be found in the usage section of the README file.
+            prompt=(
+                """Extract the installation information of different clients for this server.
+The installations should be a list of methods to install and run this server.
+It can often be found in the usage section with **valid json format** of the README file.
+<RULES>
+1. Skip any method using '@smithery/cli' or similar Smithery CLI tools.
+2. Only focus on json block and exclude other blocks like bash/sh/code
+3. The command should be one of the following: npx, uvx, node, docker, python, bunx, deno. Don't include other commands
+4. If multiple installations exist, exclude local/deployment/debug configuration, only keep uvx, npx, docker
+</RULES>
 <Example>
 <README> Docker
 {
@@ -602,7 +609,7 @@ NPX
     }
   }
 }
-<README/>
+</README>
 From the example README, you should get:
 {
   "installations": [
@@ -634,7 +641,7 @@ From the example README, you should get:
     }
   ]
 }
-<README/>
+</Example>
 Note that installation type should be one of the following: npm, python, docker, cli, uvx, custom.
 For placeholder variables, use ${...} to indicate the variable.
 If no installations are provided, return an empty array. """)
