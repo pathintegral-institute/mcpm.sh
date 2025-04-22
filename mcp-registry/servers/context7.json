@@ -1,0 +1,104 @@
+{
+  "display_name": "Context7 MCP",
+  "license": "MIT",
+  "tags": [
+    "documentation",
+    "LLM",
+    "MCP",
+    "prompt context",
+    "up-to-date docs",
+    "code examples",
+    "Cursor",
+    "Claude",
+    "VSCode",
+    "Windsurf"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp@latest"
+      ],
+      "description": "Install with npx"
+    }
+  },
+  "tools": [
+    {
+      "name": "resolve-library-id",
+      "description": "Required first step: Resolves a general package name into a Context7-compatible library ID. Must be called before using 'get-library-docs' to retrieve a valid Context7-compatible library ID.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "libraryName": {
+            "type": "string",
+            "description": "Library name to search for and retrieve a Context7-compatible library ID."
+          }
+        },
+        "required": [
+          "libraryName"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "get-library-docs",
+      "description": "Fetches up-to-date documentation for a library. You must call 'resolve-library-id' first to obtain the exact Context7-compatible library ID required to use this tool.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "context7CompatibleLibraryID": {
+            "type": "string",
+            "description": "Exact Context7-compatible library ID (e.g., 'mongodb/docs', 'vercel/nextjs') retrieved from 'resolve-library-id'."
+          },
+          "topic": {
+            "type": "string",
+            "description": "Topic to focus documentation on (e.g., 'hooks', 'routing')."
+          },
+          "tokens": {
+            "type": "number",
+            "description": "Maximum number of tokens of documentation to retrieve (default: 5000). Higher values provide more context but consume more tokens."
+          }
+        },
+        "required": [
+          "context7CompatibleLibraryID"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    }
+  ],
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "How do I use the new Next.js `after` function? use context7"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "How do I invalidate a query in React Query? use context7"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "How do I protect a route with NextAuth? use context7"
+    }
+  ],
+  "name": "context7",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/upstash/context7"
+  },
+  "homepage": "https://github.com/upstash/context7",
+  "author": {
+    "name": "upstash"
+  },
+  "description": "LLMs rely on outdated or generic information about the libraries you use. You get:",
+  "categories": [
+    "Knowledge Base"
+  ],
+  "is_official": false
+}
