@@ -59,7 +59,7 @@
       "prompt": "Show me how to filter Posts that contain a specific keyword"
     }
   ],
-  "name": "@prisma/prisma",
+  "name": "prisma",
   "repository": {
     "type": "git",
     "url": "https://github.com/prisma/prisma"
