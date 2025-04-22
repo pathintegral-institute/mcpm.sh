@@ -53,9 +53,6 @@ class MCPRouter:
         }
         router = MCPRouter(api_key="your-api-key", router_config=router_config)
         
-        # Disable API key validation by setting api_key to None
-        router = MCPRouter(api_key=None)
-        
         # Create a global config from the router's configuration
         router.create_global_config()
         ```
@@ -76,7 +73,7 @@ class MCPRouter:
         :param profile_path: Path to the profile file
         :param strict: Whether to use strict mode for duplicated tool name.
                        If True, raise error when duplicated tool name is found else auto resolve by adding server name prefix
-        :param api_key: Optional API key to use for authentication. Set to None to disable API key validation.
+        :param api_key: Optional API key to use for authentication.
         :param router_config: Optional router configuration to use instead of the global config
         """
         self.server_sessions: t.Dict[str, ServerConnection] = {}
