@@ -184,8 +184,6 @@ router = MCPRouter(api_key="your-custom-api-key", router_config=router_config)
 router.create_global_config()
 ```
 
-See the [examples directory](examples/) for more detailed examples of programmatic usage.
-
 ### 🛠️ Utilities (`util`)
 
 ```bash
