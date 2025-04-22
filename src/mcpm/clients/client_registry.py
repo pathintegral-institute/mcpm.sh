@@ -16,6 +16,7 @@ from mcpm.clients.managers.continue_extension import ContinueManager
 from mcpm.clients.managers.cursor import CursorManager
 from mcpm.clients.managers.fiveire import FiveireManager
 from mcpm.clients.managers.goose import GooseClientManager
+from mcpm.clients.managers.trae import TraeManager
 from mcpm.clients.managers.windsurf import WindsurfManager
 from mcpm.utils.config import ConfigManager
 from mcpm.utils.scope import CLIENT_PREFIX, PROFILE_PREFIX
@@ -42,6 +43,7 @@ class ClientRegistry:
         "goose-cli": GooseClientManager(),
         "5ire": FiveireManager(),
         "roo-code": RooCodeManager(),
+        "trae": TraeManager(),
     }
 
     @classmethod
