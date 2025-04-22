@@ -162,31 +162,6 @@ mcpm router share                 # Share the router to public
 mcpm router unshare               # Unshare the router
 ```
 
-#### Programmatic Usage of MCPRouter
-
-You can also use the `MCPRouter` class programmatically in your Python applications. This is especially useful if you want to integrate MCPM into your own applications or scripts without relying on the global configuration.
-
-```python
-from mcpm.router.router import MCPRouter
-
-# Initialize with a custom API key
-router = MCPRouter(api_key="your-custom-api-key")
-
-# Initialize with custom router configuration
-router_config = {
-    "host": "localhost",
-    "port": 8080,
-    "share_address": "custom.share.address:8080"
-}
-router = MCPRouter(api_key="your-custom-api-key", router_config=router_config)
-
-# Disable API key validation by setting api_key to None
-router = MCPRouter(api_key=None)
-
-# Optionally, create a global config from the router's configuration
-router.create_global_config()
-```
-
 ### 🛠️ Utilities (`util`)
 
 ```bash
