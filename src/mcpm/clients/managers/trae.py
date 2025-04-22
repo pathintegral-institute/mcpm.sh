@@ -36,7 +36,8 @@ class TraeManager(JSONClientManager):
                 self.config_path = os.path.join(os.environ.get("APPDATA", ""), "Trae", "User", "mcp.json")
             else:
                 # Linux
-                raise NotImplementedError("Trae on Linux is not supported yet")
+                self.config_path = os.path.expanduser("~/.config/trae/mcp.json")
+                logger.warning("Trae is not supported on Linux yet.")
 
     def _get_empty_config(self) -> Dict[str, Any]:
         """Get empty config structure for Trae"""
