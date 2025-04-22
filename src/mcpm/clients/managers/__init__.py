@@ -10,6 +10,7 @@ from mcpm.clients.managers.continue_extension import ContinueManager
 from mcpm.clients.managers.cursor import CursorManager
 from mcpm.clients.managers.fiveire import FiveireManager
 from mcpm.clients.managers.goose import GooseClientManager
+from mcpm.clients.managers.trae import TraeManager
 from mcpm.clients.managers.windsurf import WindsurfManager
 
 __all__ = [
@@ -20,4 +21,5 @@ __all__ = [
     "ContinueManager",
     "FiveireManager",
     "GooseClientManager",
+    "TraeManager",
 ]
