@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.4.4...v1.5.0) (2025-04-22)
+
+
+### Features
+
+* **client:** Add Trae client support ([#101](https://github.com/pathintegral-institute/mcpm.sh/issues/101)) ([23abe67](https://github.com/pathintegral-institute/mcpm.sh/commit/23abe6705543b65560e7a9e48e664f8490428f1b)), closes [#92](https://github.com/pathintegral-institute/mcpm.sh/issues/92)
+
 ## [1.4.4](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.4.3...v1.4.4) (2025-04-21)
 
 
