@@ -1,0 +1,176 @@
+{
+  "display_name": "Memory Bank MCP Server",
+  "license": "MIT",
+  "tags": [
+    "memory bank",
+    "MCP",
+    "Model Context Protocol",
+    "remote memory",
+    "multi-project",
+    "Claude",
+    "Cline",
+    "Cursor"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@allpepper/memory-bank-mcp"
+      ],
+      "env": {
+        "MEMORY_BANK_ROOT": "${MEMORY_BANK_ROOT}"
+      },
+      "description": "Run directly with npx for general use"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Create a new memory bank file for my project called 'project1' with the name 'important_notes.txt' and add some initial content to it."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Read the contents of the 'important_notes.txt' file from my 'project1' memory bank."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Update the 'important_notes.txt' file in my 'project1' memory bank with additional information."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "List all the projects available in my memory bank."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "List all the files in my 'project1' memory bank."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Check if the 'project1' exists in my memory bank."
+    }
+  ],
+  "name": "memory-bank-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alioshr/memory-bank-mcp"
+  },
+  "homepage": "https://github.com/alioshr/memory-bank-mcp",
+  "author": {
+    "name": "alioshr"
+  },
+  "description": "The Memory Bank MCP Server is a Model Context Protocol (MCP) server implementation that provides remote access and management capabilities for memory bank files, enabling multi-project support, consistent file structure, and isolation between projects.",
+  "categories": [
+    "Knowledge Base"
+  ],
+  "tools": [
+    {
+      "name": "list_projects",
+      "description": "List all projects in the memory bank",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "list_project_files",
+      "description": "List all files within a specific project",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectName": {
+            "type": "string",
+            "description": "The name of the project"
+          }
+        },
+        "required": [
+          "projectName"
+        ]
+      }
+    },
+    {
+      "name": "memory_bank_read",
+      "description": "Read a memory bank file for a specific project",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectName": {
+            "type": "string",
+            "description": "The name of the project"
+          },
+          "fileName": {
+            "type": "string",
+            "description": "The name of the file"
+          }
+        },
+        "required": [
+          "projectName",
+          "fileName"
+        ]
+      }
+    },
+    {
+      "name": "memory_bank_write",
+      "description": "Create a new memory bank file for a specific project",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectName": {
+            "type": "string",
+            "description": "The name of the project"
+          },
+          "fileName": {
+            "type": "string",
+            "description": "The name of the file"
+          },
+          "content": {
+            "type": "string",
+            "description": "The content of the file"
+          }
+        },
+        "required": [
+          "projectName",
+          "fileName",
+          "content"
+        ]
+      }
+    },
+    {
+      "name": "memory_bank_update",
+      "description": "Update an existing memory bank file for a specific project",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectName": {
+            "type": "string",
+            "description": "The name of the project"
+          },
+          "fileName": {
+            "type": "string",
+            "description": "The name of the file"
+          },
+          "content": {
+            "type": "string",
+            "description": "The content of the file"
+          }
+        },
+        "required": [
+          "projectName",
+          "fileName",
+          "content"
+        ]
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": false
+}

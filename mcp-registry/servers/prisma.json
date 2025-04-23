@@ -1,0 +1,211 @@
+{
+  "display_name": "Prisma MCP Server",
+  "license": "Apache 2.0",
+  "tags": [
+    "database",
+    "ORM",
+    "TypeScript",
+    "Node.js",
+    "PostgreSQL",
+    "Prisma",
+    "MCP"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "prisma",
+        "mcp"
+      ],
+      "description": "Start the Prisma MCP server"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Create a new Prisma Postgres database instance"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Generate a Prisma schema for a blog application with User and Post models"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Run a schema migration on my Prisma Postgres database"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Help me set up Prisma Client in my Node.js application"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "How do I query all users with their related posts using Prisma Client?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Update my database schema to add a Comment model related to Posts"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Show me how to filter Posts that contain a specific keyword"
+    }
+  ],
+  "name": "prisma",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/prisma/prisma"
+  },
+  "homepage": "https://github.com/prisma/prisma",
+  "author": {
+    "name": "prisma"
+  },
+  "description": "Prisma ORM is a **next-generation ORM** that consists of these tools:",
+  "categories": [
+    "Dev Tools"
+  ],
+  "tools": [
+    {
+      "name": "migrate-status",
+      "description": "The prisma migrate status command looks up the migrations in ./prisma/migrations/* folder and the entries in the _prisma_migrations table and compiles information about the state of the migrations in your database.\n            Example output:\n\n            Status\n            3 migrations found in prisma/migrations\n\n            Your local migration history and the migrations table from your database are different:\n\n            The last common migration is: 20201127134938_new_migration\n\n            The migration have not yet been applied:\n            20201208100950_test_migration\n\n            The migrations from the database are not found locally in prisma/migrations:\n            20201208100950_new_migration",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectCWD": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectCWD"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "migrate-dev",
+      "description": "Prisma Migrate Dev is used to update Prisma whenever the schema.prisma file has been modified. Always provide a descriptive name argument describing the change that was made to the Prisma Schema.\n\n            The migrate dev command performs these steps:\n\n            1. Reruns the existing migration history in the shadow database in order to detect schema drift (edited or deleted migration file, or a manual changes to the database schema)\n            2. Applies pending migrations to the shadow database (for example, new migrations created by colleagues)\n            3. Generates a new migration from any changes you made to the Prisma schema before running migrate dev\n            4. Applies all unapplied migrations to the development database and updates the _prisma_migrations table\n            5. Triggers the generation of artifacts (for example, Prisma Client)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "projectCWD": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "projectCWD"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "migrate-reset",
+      "description": "Prisma Migrate Reset --force is used to reset the database and migration history if drift is detected. Only run this command on a development database - never on production databases! If in doubt, ask the user to confirm.\n\n                The migrate reset command performs these steps:\n\n                1. Drops the database/schema if possible, or performs a soft reset if the environment does not allow deleting databases/schemas\n                2. Creates a new database/schema with the same name if the database/schema was dropped\n                3. Applies all migrations\n                4. Runs seed scripts",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectCWD": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectCWD"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "Prisma-Postgres-account-status",
+      "description": "Prisma Platform Auth Show provides information about the currently logged in user. If the user is not logged in, you should instruct them to do so by running `npx prisma platform auth login --early-access` and then re-running this command to verify.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectCWD": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectCWD"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "Create-Prisma-Postgres-Database",
+      "description": "Create a new online Prisma Postgres database.\n      Specify a name that makes sense to the user - maybe the name of the project they are working on.\n      Specify a region that makes sense for the user. Pick between these three options: us-east-1, eu-west-3, ap-northeast-1. If you are unsure, pick us-east-1.\n      Provide the current working directory of the users project. This should be the top level directory of the project.\n      If the response idicates that you have reached the workspace plan limit, you should instruct the user to do one of these things:\n      - If they want to connect to an existing database, they should go to console.prisma.io and copy the connection string\n      - If they want to upgrade their plan, they should go to console.prisma.io and upgrade their plan in order to be able to create more databases\n      - If they want to delete a database they no longer need, they should go to console.prisma.io and delete the database project",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "region": {
+            "type": "string"
+          },
+          "projectCWD": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "region",
+          "projectCWD"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "Prisma-Login",
+      "description": "Login or create an account in order to be able to use Prisma Postgres.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectCWD": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectCWD"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "Prisma-Studio",
+      "description": "Open Prisma Studio to view data in your database in a pleasing visual ui.\n      Provide the current working directory of the users project. This should be the top level directory of the project.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectCWD": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectCWD"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": false
+}

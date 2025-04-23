@@ -1,3 +1,10 @@
+## [1.5.1](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.5.0...v1.5.1) (2025-04-22)
+
+
+### Bug Fixes
+
+* update installation prompt for manifest generation ([#102](https://github.com/pathintegral-institute/mcpm.sh/issues/102)) ([96d86ee](https://github.com/pathintegral-institute/mcpm.sh/commit/96d86ee8a58fd6703992260230ed8c0f52b045eb))
+
 # [1.5.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.4.4...v1.5.0) (2025-04-22)
 
 
