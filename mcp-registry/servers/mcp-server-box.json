@@ -40,8 +40,8 @@
       ],
       "package": "[NOT GIVEN]",
       "env": {
-        "BOX_CLIENT_ID": "your_client_id",
-        "BOX_CLIENT_SECRET": "your_client_secret"
+        "BOX_CLIENT_ID": "${BOX_CLIENT_ID}",
+        "BOX_CLIENT_SECRET": "${BOX_CLIENT_SECRET}"
       },
       "description": "Run using uv package manager",
       "recommended": true

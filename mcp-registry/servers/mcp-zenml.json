@@ -42,12 +42,12 @@
         "path/to/zenml_server.py"
       ],
       "env": {
-        "LOGLEVEL": "INFO",
+        "LOGLEVEL": "${LOGLEVEL}",
         "NO_COLOR": "1",
         "PYTHONUNBUFFERED": "1",
         "PYTHONIOENCODING": "UTF-8",
-        "ZENML_STORE_URL": "https://your-zenml-server-goes-here.com",
-        "ZENML_STORE_API_KEY": "your-api-key-here"
+        "ZENML_STORE_URL": "${ZENML_STORE_URL}",
+        "ZENML_STORE_API_KEY": "${ZENML_STORE_API_KEY}"
       }
     }
   },

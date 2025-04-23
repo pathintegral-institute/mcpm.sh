@@ -51,7 +51,7 @@
         "thirdweb-mcp"
       ],
       "env": {
-        "THIRDWEB_SECRET_KEY": "your-secret-key"
+        "THIRDWEB_SECRET_KEY": "${THIRDWEB_SECRET_KEY}"
       },
       "description": "Run with uvx package manager",
       "recommended": true

@@ -41,9 +41,9 @@
         "/ABSOLUTE/PATH/TO/YOUR/build/index.js"
       ],
       "env": {
-        "AUDIENSE_CLIENT_ID": "your_client_id_here",
-        "AUDIENSE_CLIENT_SECRET": "your_client_secret_here",
-        "TWITTER_BEARER_TOKEN": "your_token_here"
+        "AUDIENSE_CLIENT_ID": "${AUDIENSE_CLIENT_ID}",
+        "AUDIENSE_CLIENT_SECRET": "${AUDIENSE_CLIENT_SECRET}",
+        "TWITTER_BEARER_TOKEN": "${TWITTER_BEARER_TOKEN}"
       },
       "description": "Manual installation by configuring Claude Desktop"
     }

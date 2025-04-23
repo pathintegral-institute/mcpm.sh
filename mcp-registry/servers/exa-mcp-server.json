@@ -32,7 +32,7 @@
         "exa-mcp-server"
       ],
       "env": {
-        "EXA_API_KEY": "your-api-key-here"
+        "EXA_API_KEY": "${EXA_API_KEY}"
       },
       "description": "Run with NPX",
       "recommended": true

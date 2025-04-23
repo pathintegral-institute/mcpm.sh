@@ -29,7 +29,7 @@
         "path/to/mailgun-mcp-server/src/mailgun-mcp.js"
       ],
       "env": {
-        "MAILGUN_API_KEY": "YOUR-mailgun-api-key"
+        "MAILGUN_API_KEY": "${MAILGUN_API_KEY}"
       },
       "description": "Run the server using Node.js",
       "recommended": true

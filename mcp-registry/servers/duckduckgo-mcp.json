@@ -1,0 +1,116 @@
+{
+  "display_name": "DuckDuckGo Search MCP Server",
+  "license": "MIT License",
+  "tags": [
+    "web search",
+    "duckduckgo",
+    "content fetching",
+    "rate limiting",
+    "mcp",
+    "text extraction"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "duckduckgo-mcp-server"
+      ],
+      "description": "Run with Claude Desktop"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Search for the latest news about artificial intelligence"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Find information about climate change solutions"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Search for recipes for vegetarian pasta dishes"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Fetch the content from https://example.com"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Search for Python programming tutorials and return 5 results"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Find recent research papers on quantum computing"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Get information about the history of the internet"
+    }
+  ],
+  "name": "duckduckgo-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nickclyde/duckduckgo-mcp-server"
+  },
+  "homepage": "https://github.com/nickclyde/duckduckgo-mcp-server",
+  "author": {
+    "name": "nickclyde"
+  },
+  "description": "A Model Context Protocol (MCP) server that provides web search capabilities through DuckDuckGo, with additional features for content fetching and parsing.",
+  "categories": [
+    "Web Services"
+  ],
+  "tools": [
+    {
+      "name": "search",
+      "description": "\n    Search DuckDuckGo and return formatted results.\n\n    Args:\n        query: The search query string\n        max_results: Maximum number of results to return (default: 10)\n        ctx: MCP context for logging\n    ",
+      "inputSchema": {
+        "properties": {
+          "query": {
+            "title": "Query",
+            "type": "string"
+          },
+          "max_results": {
+            "default": 10,
+            "title": "Max Results",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "title": "searchArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "fetch_content",
+      "description": "\n    Fetch and parse content from a webpage URL.\n\n    Args:\n        url: The webpage URL to fetch content from\n        ctx: MCP context for logging\n    ",
+      "inputSchema": {
+        "properties": {
+          "url": {
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "title": "fetch_contentArguments",
+        "type": "object"
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": false
+}

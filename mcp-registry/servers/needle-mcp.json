@@ -31,7 +31,7 @@
         "needle-mcp"
       ],
       "env": {
-        "NEEDLE_API_KEY": "your_needle_api_key"
+        "NEEDLE_API_KEY": "${NEEDLE_API_KEY}"
       },
       "description": "Run using UV package manager",
       "recommended": true

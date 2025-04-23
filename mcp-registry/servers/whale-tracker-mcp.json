@@ -29,7 +29,7 @@
         "whale-tracker-mcp"
       ],
       "env": {
-        "WHALE_TRACKER_API_KEY": "your_api_key_here"
+        "WHALE_TRACKER_API_KEY": "${WHALE_TRACKER_API_KEY}"
       }
     }
   },

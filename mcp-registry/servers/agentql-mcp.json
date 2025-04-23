@@ -30,20 +30,10 @@
       ],
       "package": "agentql-mcp",
       "env": {
-        "AGENTQL_API_KEY": "YOUR_API_KEY"
+        "AGENTQL_API_KEY": "${AGENTQL_API_KEY}"
       },
       "description": "Install via npm and run with npx",
       "recommended": true
-    },
-    "development": {
-      "type": "custom",
-      "command": "/path/to/agentql-mcp/dist/index.js",
-      "args": [],
-      "env": {
-        "AGENTQL_API_KEY": "YOUR_API_KEY"
-      },
-      "description": "Run development version from local build",
-      "recommended": false
     }
   },
   "examples": [

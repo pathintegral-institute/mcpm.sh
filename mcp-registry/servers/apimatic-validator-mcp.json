@@ -30,7 +30,7 @@
       ],
       "package": "[NOT GIVEN]",
       "env": {
-        "APIMATIC_API_KEY": "<Add your APIMatic token here>"
+        "APIMATIC_API_KEY": "${APIMATIC_API_KEY}"
       },
       "description": "Run the APIMatic Validator MCP Server using Node.js",
       "recommended": true

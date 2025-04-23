@@ -32,7 +32,7 @@
       ],
       "package": "server-perplexity-ask",
       "env": {
-        "PERPLEXITY_API_KEY": "YOUR_API_KEY_HERE"
+        "PERPLEXITY_API_KEY": "${PERPLEXITY_API_KEY}"
       },
       "description": "Run using NPX"
     },
@@ -48,7 +48,7 @@
         "mcp/perplexity-ask"
       ],
       "env": {
-        "PERPLEXITY_API_KEY": "YOUR_API_KEY_HERE"
+        "PERPLEXITY_API_KEY": "${PERPLEXITY_API_KEY}"
       },
       "description": "Run using Docker"
     }

@@ -30,7 +30,7 @@
         "build/index.js"
       ],
       "env": {
-        "API_KEY": ""
+        "API_KEY": "${API_KEY}"
       },
       "description": "Run the MCP server using Node.js"
     }

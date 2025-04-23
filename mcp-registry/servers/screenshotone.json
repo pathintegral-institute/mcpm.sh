@@ -29,7 +29,7 @@
         "build/index.js"
       ],
       "env": {
-        "SCREENSHOTONE_API_KEY": "your_api_key"
+        "SCREENSHOTONE_API_KEY": "${SCREENSHOTONE_API_KEY}"
       },
       "description": "Run as standalone server",
       "recommended": true

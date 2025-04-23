@@ -15,8 +15,8 @@
       ],
       "package": "@integration-app/mcp-server",
       "env": {
-        "INTEGRATION_APP_TOKEN": "<your-integration-app-token>",
-        "INTEGRATION_KEY": "<integration-key>"
+        "INTEGRATION_APP_TOKEN": "${INTEGRATION_APP_TOKEN}",
+        "INTEGRATION_KEY": "${INTEGRATION_KEY}"
       }
     }
   },

@@ -73,14 +73,14 @@
         "mcp-ssh-exec"
       ],
       "env": {
-        "SSH_HOST": "your-server.com",
-        "SSH_PORT": "22",
-        "SSH_USERNAME": "your_username",
-        "SSH_PRIVATE_KEY": "$(cat ~/.ssh/id_rsa)",
-        "SSH_ALLOWED_COMMANDS": "ls,ps,cat",
-        "SSH_ALLOWED_PATHS": "/tmp,/home",
-        "SSH_COMMANDS_BLACKLIST": "rm,mv,dd,mkfs,fdisk,format",
-        "SSH_ARGUMENTS_BLACKLIST": "-rf,-fr,--force"
+        "SSH_HOST": "${SSH_HOST}",
+        "SSH_PORT": "${SSH_PORT}",
+        "SSH_USERNAME": "${SSH_USERNAME}",
+        "SSH_PRIVATE_KEY": "${SSH_PRIVATE_KEY}",
+        "SSH_ALLOWED_COMMANDS": "${SSH_ALLOWED_COMMANDS}",
+        "SSH_ALLOWED_PATHS": "${SSH_ALLOWED_PATHS}",
+        "SSH_COMMANDS_BLACKLIST": "${SSH_COMMANDS_BLACKLIST}",
+        "SSH_ARGUMENTS_BLACKLIST": "${SSH_ARGUMENTS_BLACKLIST}"
       },
       "description": "Run server using uv"
     }

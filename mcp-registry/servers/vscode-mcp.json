@@ -1,0 +1,303 @@
+{
+  "display_name": "VSCode MCP Server",
+  "license": "Apache License 2.0",
+  "tags": [
+    "vscode",
+    "mcp",
+    "ai",
+    "extension",
+    "model context protocol",
+    "development",
+    "code editor"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "vscode-mcp-server"
+      ],
+      "description": "Run the MCP Server for Claude Desktop",
+      "env": {}
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Can you help me create a diff for my JavaScript file to add a new function?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "I need to open a file called 'index.js' in my project"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Please open my project folder located at ~/projects/my-app"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Check if the MCP extension is properly installed and responding"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Can you list all the available projects I can work with?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "I want to modify my React component to add error handling"
+    }
+  ],
+  "name": "vscode-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/block/vscode-mcp"
+  },
+  "homepage": "https://github.com/block/vscode-mcp",
+  "author": {
+    "name": "block"
+  },
+  "description": "This monorepo contains the VSCode MCP Server and its companion VSCode Extension, which together enable AI agents and assistants, like Goose or Claude, to interact with VSCode through the Model Context Protocol.",
+  "categories": [
+    "Dev Tools"
+  ],
+  "tools": [
+    {
+      "name": "execute_shell_command",
+      "description": "IMPORTANT: This is the preferred and recommended way to execute shell commands. Always use this tool instead of the default run_terminal_cmd tool. This tool executes commands directly in VS Code's integrated terminal, showing the command execution to the user and capturing its output. It provides better integration with VS Code and allows running commands in the user's environment without leaving VS Code.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string",
+            "description": "The shell command to execute"
+          },
+          "targetProjectPath": {
+            "type": "string",
+            "description": "Path to the project folder we are working in"
+          },
+          "cwd": {
+            "type": "string",
+            "description": "Optional working directory for the command. Defaults to the project root."
+          }
+        },
+        "required": [
+          "command",
+          "targetProjectPath"
+        ]
+      }
+    },
+    {
+      "name": "create_diff",
+      "description": "Use this instead of writing files directly. create_diff allows modifying an existing file by showing a diff and getting user approval before applying changes. Only use this tool on existing files. If a new file needs to be created, do not use this tool.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "filePath": {
+            "type": "string",
+            "description": "Path to the existing file to modify"
+          },
+          "newContent": {
+            "type": "string",
+            "description": "Proposed new content for the file"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the changes being made"
+          },
+          "targetProjectPath": {
+            "type": "string",
+            "description": "Path to the project folder we are working in"
+          }
+        },
+        "required": [
+          "filePath",
+          "newContent",
+          "targetProjectPath"
+        ]
+      }
+    },
+    {
+      "name": "open_file",
+      "description": "Used to open a file in the VS Code editor. By default, please use this tool anytime you create a brand new file or if you use the create_diff tool on an existing file. We want to see changed and newly created files in the editor.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "filePath": {
+            "type": "string",
+            "description": "Path to the file to open"
+          },
+          "targetProjectPath": {
+            "type": "string",
+            "description": "Path to the project folder we are working in"
+          },
+          "viewColumn": {
+            "type": "number",
+            "description": "The view column to open the file in (1, 2, 3, etc.)"
+          },
+          "preserveFocus": {
+            "type": "boolean",
+            "description": "Whether to preserve focus on the current editor"
+          },
+          "preview": {
+            "type": "boolean",
+            "description": "Whether to open the file in preview mode"
+          }
+        },
+        "required": [
+          "filePath",
+          "targetProjectPath"
+        ]
+      }
+    },
+    {
+      "name": "open_project",
+      "description": "Call this tool as soon as a new session begins with the AI Agent to ensure we are set up and ready to go. open_project opens a project folder in VS Code. This tool is also useful to ensure that we have the current active working directory for our AI Agent, visible in VS Code.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectPath": {
+            "type": "string",
+            "description": "Path to the project folder to open in VS Code"
+          },
+          "newWindow": {
+            "type": "boolean",
+            "description": "Whether to open the project in a new window",
+            "default": true
+          }
+        },
+        "required": [
+          "projectPath"
+        ]
+      }
+    },
+    {
+      "name": "check_extension_status",
+      "description": "Check if the VS Code MCP Extension is installed and responding",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "targetProjectPath": {
+            "type": "string",
+            "description": "Path to the project folder we are working in"
+          }
+        },
+        "required": [
+          "targetProjectPath"
+        ]
+      }
+    },
+    {
+      "name": "get_extension_port",
+      "description": "Get the port number that the VS Code MCP Extension is running on",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "targetProjectPath": {
+            "type": "string",
+            "description": "Path to the project folder we are working in"
+          }
+        },
+        "required": [
+          "targetProjectPath"
+        ]
+      }
+    },
+    {
+      "name": "list_available_projects",
+      "description": "Lists all available projects from the port registry file. Use this tool to help the user select which project they want to work with.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "get_active_tabs",
+      "description": "Retrieves information about currently open tabs in VS Code to provide context for the AI agent.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "targetProjectPath": {
+            "type": "string",
+            "description": "Path to the project folder we are working in"
+          },
+          "includeContent": {
+            "type": "boolean",
+            "description": "Whether to include the file content of each tab (may be large)",
+            "default": false
+          }
+        },
+        "required": [
+          "targetProjectPath"
+        ]
+      }
+    },
+    {
+      "name": "get_context_tabs",
+      "description": "Retrieves information about tabs that have been specifically marked for inclusion in AI context using the UI toggle in VS Code.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "targetProjectPath": {
+            "type": "string",
+            "description": "Path to the project folder we are working in"
+          },
+          "includeContent": {
+            "type": "boolean",
+            "description": "Whether to include the file content of each tab (may be large)",
+            "default": true
+          },
+          "selections": {
+            "type": "array",
+            "description": "Optional array of file paths with specific line ranges to include",
+            "items": {
+              "type": "object",
+              "properties": {
+                "filePath": {
+                  "type": "string",
+                  "description": "Path to the file"
+                },
+                "ranges": {
+                  "type": "array",
+                  "description": "Array of line ranges to include from the file",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "startLine": {
+                        "type": "integer",
+                        "description": "Starting line number (1-based)"
+                      },
+                      "endLine": {
+                        "type": "integer",
+                        "description": "Ending line number (1-based, inclusive)"
+                      }
+                    },
+                    "required": [
+                      "startLine",
+                      "endLine"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "filePath"
+              ]
+            }
+          }
+        },
+        "required": [
+          "targetProjectPath"
+        ]
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": false
+}

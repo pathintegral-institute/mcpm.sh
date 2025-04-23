@@ -30,11 +30,11 @@
       "args": [
         "-y",
         "@21st-dev/magic@latest",
-        "API_KEY=\"your-api-key\""
+        "API_KEY=${API_KEY}"
       ],
       "package": "@21st-dev/magic",
       "env": {
-        "API_KEY": "your-api-key"
+        "API_KEY": "${API_KEY}"
       },
       "description": "Install via npm package",
       "recommended": true
