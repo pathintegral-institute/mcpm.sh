@@ -28,8 +28,8 @@
         "@adenot/mcp-google-search"
       ],
       "env": {
-        "GOOGLE_API_KEY": "your-api-key-here",
-        "GOOGLE_SEARCH_ENGINE_ID": "your-search-engine-id-here"
+        "GOOGLE_API_KEY": "${GOOGLE_API_KEY}",
+        "GOOGLE_SEARCH_ENGINE_ID": "${GOOGLE_SEARCH_ENGINE_ID}"
       }
     }
   },

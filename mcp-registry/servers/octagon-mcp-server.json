@@ -37,7 +37,7 @@
         "octagon-mcp"
       ],
       "env": {
-        "OCTAGON_API_KEY": "your_octagon_api_key"
+        "OCTAGON_API_KEY": "${OCTAGON_API_KEY}"
       },
       "description": "Run directly with npx",
       "recommended": true

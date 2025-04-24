@@ -35,8 +35,8 @@
         "build/index.js"
       ],
       "env": {
-        "WXFLOWS_APIKEY": "YOUR_WXFLOWS_APIKEY",
-        "WXFLOWS_ENDPOINT": "YOUR_WXFLOWS_ENDPOINT"
+        "WXFLOWS_APIKEY": "${WXFLOWS_APIKEY}",
+        "WXFLOWS_ENDPOINT": "${WXFLOWS_ENDPOINT}"
       },
       "description": "Run the MCP server using Node.js",
       "recommended": true

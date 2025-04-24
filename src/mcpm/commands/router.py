@@ -229,18 +229,15 @@ def stop_router():
     pid = read_pid_file()
     if not pid:
         console.print("[yellow]MCPRouter is not running.[/]")
+        try_clear_share()
         return
 
     # send termination signal
     try:
-        config_manager = ConfigManager()
-        share_config = config_manager.read_share_config()
-        if share_config.get("pid"):
-            console.print("[green]Disabling share link...[/]")
-            os.kill(share_config["pid"], signal.SIGTERM)
-            config_manager.save_share_config(share_url=None, share_pid=None, api_key=None)
-            console.print("[bold green]Share link disabled[/]")
+        # stop share link first
+        try_clear_share()
 
+        # kill process
         os.kill(pid, signal.SIGTERM)
         console.print(f"[bold green]MCPRouter stopped (PID: {pid})[/]")
 
@@ -276,7 +273,14 @@ def router_status():
         console.print(f"[bold green]MCPRouter is running[/] at http://{host}:{port} (PID: {pid})")
         share_config = ConfigManager().read_share_config()
         if share_config.get("pid"):
-            console.print(f"[bold green]MCPRouter is sharing[/] at {share_config['url']} (PID: {share_config['pid']})")
+            if not is_process_running(share_config["pid"]):
+                console.print("[yellow]Share link is not active, cleaning.[/]")
+                ConfigManager().save_share_config(share_url=None, share_pid=None, api_key=None)
+                console.print("[green]Share link cleaned[/]")
+            else:
+                console.print(
+                    f"[bold green]MCPRouter is sharing[/] at {share_config['url']} (PID: {share_config['pid']})"
+                )
     else:
         console.print("[yellow]MCPRouter is not running.[/]")
 
@@ -348,6 +352,25 @@ def share(address, profile):
     )
 
 
+def try_clear_share():
+    console.print("[bold yellow]Clearing share config...[/]")
+    config_manager = ConfigManager()
+    share_config = config_manager.read_share_config()
+    if share_config["url"]:
+        try:
+            console.print("[bold yellow]Disabling share link...[/]")
+            config_manager.save_share_config(share_url=None, share_pid=None, api_key=None)
+            console.print("[bold green]Share link disabled[/]")
+            if share_config["pid"]:
+                os.kill(share_config["pid"], signal.SIGTERM)
+        except OSError as e:
+            if e.errno == 3:  # "No such process"
+                console.print("[yellow]Share process does not exist, cleaning up share config...[/]")
+                config_manager.save_share_config(share_url=None, share_pid=None, api_key=None)
+            else:
+                console.print(f"[bold red]Error:[/] Failed to stop share link: {e}")
+
+
 @router.command("unshare")
 @click.help_option("-h", "--help")
 def stop_share():
@@ -365,18 +388,4 @@ def stop_share():
         return
 
     # send termination signal
-    try:
-        console.print(f"[bold yellow]Stopping share link at {share_config['url']} (PID: {pid})...[/]")
-        os.kill(pid, signal.SIGTERM)
-        console.print(f"[bold green]Share process stopped (PID: {pid})[/]")
-
-        # delete share config
-        config_manager.save_share_config(share_url=None, share_pid=None, api_key=None)
-    except OSError as e:
-        console.print(f"[bold red]Error:[/] Failed to stop share link: {e}")
-
-        # if process does not exist, clean up share config
-        if e.errno == 3:  # "No such process"
-            console.print("[yellow]Share process does not exist, cleaning up share config...[/]")
-            config_manager.save_share_config(share_url=None, share_pid=None, api_key=None)
-    console.print("[bold green]Share link disabled[/]")
+    try_clear_share()

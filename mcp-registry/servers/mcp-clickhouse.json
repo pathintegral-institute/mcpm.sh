@@ -75,28 +75,17 @@
       ],
       "package": "mcp-clickhouse",
       "env": {
-        "CLICKHOUSE_HOST": "<clickhouse-host>",
-        "CLICKHOUSE_PORT": "<clickhouse-port>",
-        "CLICKHOUSE_USER": "<clickhouse-user>",
-        "CLICKHOUSE_PASSWORD": "<clickhouse-password>",
-        "CLICKHOUSE_SECURE": "true",
-        "CLICKHOUSE_VERIFY": "true",
-        "CLICKHOUSE_CONNECT_TIMEOUT": "30",
-        "CLICKHOUSE_SEND_RECEIVE_TIMEOUT": "30"
+        "CLICKHOUSE_HOST": "${CLICKHOUSE_HOST}",
+        "CLICKHOUSE_PORT": "${CLICKHOUSE_PORT}",
+        "CLICKHOUSE_USER": "${CLICKHOUSE_USER}",
+        "CLICKHOUSE_PASSWORD": "${CLICKHOUSE_PASSWORD}",
+        "CLICKHOUSE_SECURE": "${CLICKHOUSE_SECURE}",
+        "CLICKHOUSE_VERIFY": "${CLICKHOUSE_VERIFY}",
+        "CLICKHOUSE_CONNECT_TIMEOUT": "${CLICKHOUSE_CONNECT_TIMEOUT}",
+        "CLICKHOUSE_SEND_RECEIVE_TIMEOUT": "${CLICKHOUSE_SEND_RECEIVE_TIMEOUT}"
       },
       "description": "Install and run using uv package manager",
       "recommended": true
-    },
-    "python": {
-      "type": "python",
-      "command": "pip",
-      "args": [
-        "install",
-        "mcp-clickhouse"
-      ],
-      "package": "mcp-clickhouse",
-      "description": "Install using pip",
-      "recommended": false
     }
   },
   "examples": [

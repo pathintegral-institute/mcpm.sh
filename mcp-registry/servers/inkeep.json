@@ -53,11 +53,11 @@
         "inkeep_mcp_server"
       ],
       "env": {
-        "INKEEP_API_BASE_URL": "https://api.inkeep.com/v1",
-        "INKEEP_API_KEY": "<YOUR_INKEEP_API_KEY>",
-        "INKEEP_API_MODEL": "inkeep-rag",
-        "INKEEP_MCP_TOOL_NAME": "search-product-content",
-        "INKEEP_MCP_TOOL_DESCRIPTION": "Retrieves product documentation about Inkeep. The query should be framed as a conversational question about Inkeep."
+        "INKEEP_API_BASE_URL": "${INKEEP_API_BASE_URL}",
+        "INKEEP_API_KEY": "${INKEEP_API_KEY}",
+        "INKEEP_API_MODEL": "${INKEEP_API_MODEL}",
+        "INKEEP_MCP_TOOL_NAME": "${INKEEP_MCP_TOOL_NAME}",
+        "INKEEP_MCP_TOOL_DESCRIPTION": "${INKEEP_MCP_TOOL_DESCRIPTION}"
       },
       "description": "Run using uv Python project manager",
       "recommended": true

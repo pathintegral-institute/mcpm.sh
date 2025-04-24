@@ -16,8 +16,8 @@
         "main_adfin_mcp.py"
       ],
       "env": {
-        "ADFIN_EMAIL": "<email>",
-        "ADFIN_PASSWORD": "<password>"
+        "ADFIN_EMAIL": "${ADFIN_EMAIL}",
+        "ADFIN_PASSWORD": "${ADFIN_PASSWORD}"
       },
       "description": "Run Adfin MCP server using uv"
     },

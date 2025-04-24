@@ -35,8 +35,8 @@
         "voska/hass-mcp"
       ],
       "env": {
-        "HA_URL": "http://homeassistant.local:8123",
-        "HA_TOKEN": "YOUR_LONG_LIVED_TOKEN"
+        "HA_URL": "${HA_URL}",
+        "HA_TOKEN": "${HA_TOKEN}"
       }
     }
   },

@@ -38,8 +38,8 @@
         "mcp-aiven"
       ],
       "env": {
-        "AIVEN_BASE_URL": "https://api.aiven.io",
-        "AIVEN_TOKEN": "$AIVEN_TOKEN"
+        "AIVEN_BASE_URL": "${AIVEN_BASE_URL}",
+        "AIVEN_TOKEN": "${AIVEN_TOKEN}"
       },
       "description": "Run using uv package manager",
       "recommended": true

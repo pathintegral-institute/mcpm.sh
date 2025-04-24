@@ -35,7 +35,7 @@
         "https://github.com/raoulbia-ai/mcp-server-for-intercom"
       ],
       "env": {
-        "INTERCOM_ACCESS_TOKEN": "your-intercom-access-token"
+        "INTERCOM_ACCESS_TOKEN": "${INTERCOM_ACCESS_TOKEN}"
       }
     }
   },

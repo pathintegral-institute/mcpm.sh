@@ -39,9 +39,9 @@
         "./build/index.js"
       ],
       "env": {
-        "LANGFUSE_PUBLIC_KEY": "your-public-key",
-        "LANGFUSE_SECRET_KEY": "your-secret-key",
-        "LANGFUSE_BASEURL": "https://cloud.langfuse.com"
+        "LANGFUSE_PUBLIC_KEY": "${LANGFUSE_PUBLIC_KEY}",
+        "LANGFUSE_SECRET_KEY": "${LANGFUSE_SECRET_KEY}",
+        "LANGFUSE_BASEURL": "${LANGFUSE_BASEURL}"
       },
       "description": "Run the server using Node.js",
       "recommended": true

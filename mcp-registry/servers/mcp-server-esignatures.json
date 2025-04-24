@@ -30,7 +30,7 @@
         "mcp-server-esignatures"
       ],
       "env": {
-        "ESIGNATURES_SECRET_TOKEN": "your-esignatures-api-secret-token"
+        "ESIGNATURES_SECRET_TOKEN": "${ESIGNATURES_SECRET_TOKEN}"
       },
       "description": "Published server installation",
       "recommended": true

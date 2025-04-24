@@ -50,11 +50,11 @@
         "greptimedb-mcp-server"
       ],
       "env": {
-        "GREPTIMEDB_HOST": "localhost",
-        "GREPTIMEDB_PORT": "4002",
-        "GREPTIMEDB_USER": "root",
-        "GREPTIMEDB_PASSWORD": "",
-        "GREPTIMEDB_DATABASE": "public"
+        "GREPTIMEDB_HOST": "${GREPTIMEDB_HOST}",
+        "GREPTIMEDB_PORT": "${GREPTIMEDB_PORT}",
+        "GREPTIMEDB_USER": "${GREPTIMEDB_USER}",
+        "GREPTIMEDB_PASSWORD": "${GREPTIMEDB_PASSWORD}",
+        "GREPTIMEDB_DATABASE": "${GREPTIMEDB_DATABASE}"
       }
     }
   },

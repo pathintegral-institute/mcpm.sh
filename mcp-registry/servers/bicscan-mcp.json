@@ -32,7 +32,7 @@
         "bicscan-mcp"
       ],
       "env": {
-        "BICSCAN_API_KEY": "{BICSCAN_API_KEY}"
+        "BICSCAN_API_KEY": "${BICSCAN_API_KEY}"
       },
       "description": "Run directly using uvx"
     },
@@ -44,7 +44,7 @@
         "--rm",
         "--interactive",
         "--env",
-        "BICSCAN_API_KEY={BICSCAN_API_KEY}",
+        "BICSCAN_API_KEY=${BICSCAN_API_KEY}",
         "bicscan-mcp"
       ],
       "description": "Run using Docker"

@@ -30,7 +30,7 @@
         "server.py"
       ],
       "env": {
-        "FINANCIAL_DATASETS_API_KEY": "your-financial-datasets-api-key"
+        "FINANCIAL_DATASETS_API_KEY": "${FINANCIAL_DATASETS_API_KEY}"
       },
       "description": "Run using uv package manager",
       "recommended": true

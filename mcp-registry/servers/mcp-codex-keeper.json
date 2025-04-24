@@ -1,0 +1,84 @@
+{
+  "display_name": "Aindreyway MCP Codex Keeper",
+  "license": "MIT",
+  "tags": [
+    "MCP",
+    "Server",
+    "documentation",
+    "knowledge base",
+    "AI",
+    "development",
+    "best practices"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@aindreyway/mcp-codex-keeper@latest"
+      ],
+      "env": {
+        "npm_config_cache_max": "1024000000",
+        "NODE_OPTIONS": "--max-old-space-size=256"
+      },
+      "description": "Cline/Sonnet configuration for MCP Codex Keeper"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Show me the latest React documentation"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Find best practices for TypeScript development"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Update documentation for Node.js"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Search for information about async/await"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "List all available documentation sources"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "List documentation in the Frontend category"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Add new documentation about React hooks"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Update the TypeScript documentation"
+    }
+  ],
+  "name": "mcp-codex-keeper",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aindreyway/mcp-codex-keeper"
+  },
+  "homepage": "https://github.com/aindreyway/mcp-codex-keeper",
+  "author": {
+    "name": "aindreyway"
+  },
+  "description": "An intelligent MCP server that serves as a guardian of development knowledge, providing AI assistants with curated access to latest documentation and best practices.",
+  "categories": [
+    "Knowledge Base"
+  ],
+  "is_official": false
+}

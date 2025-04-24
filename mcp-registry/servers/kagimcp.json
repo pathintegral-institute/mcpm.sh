@@ -38,8 +38,8 @@
         "kagimcp"
       ],
       "env": {
-        "KAGI_API_KEY": "YOUR_API_KEY_HERE",
-        "KAGI_SUMMARIZER_ENGINE": "YOUR_ENGINE_CHOICE_HERE"
+        "KAGI_API_KEY": "${KAGI_API_KEY}",
+        "KAGI_SUMMARIZER_ENGINE": "${KAGI_SUMMARIZER_ENGINE}"
       },
       "recommended": true
     }
