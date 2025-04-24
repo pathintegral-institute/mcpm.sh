@@ -48,23 +48,10 @@
   "installations": {
     "npm": {
       "type": "npm",
-      "command": "npx",
+      "command": "node",
       "args": [
-        "-y",
-        "https://github.com/zcaceres/fetch-mcp"
+        "{ABSOLUTE PATH TO FILE HERE}/dist/index.js"
       ]
-    }
-  },
-  "arguments": {
-    "url": {
-      "description": "URL of the website to fetch",
-      "required": true,
-      "example": "https://example.com"
-    },
-    "headers": {
-      "description": "Custom headers to include in the request",
-      "required": false,
-      "example": "{\"Authorization\": \"Bearer token\"}"
     }
   },
   "tools": [
