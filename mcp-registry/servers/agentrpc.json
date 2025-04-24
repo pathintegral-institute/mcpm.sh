@@ -34,7 +34,7 @@
       ],
       "package": "agentrpc",
       "env": {
-        "AGENTRPC_API_SECRET": "<YOUR_API_SECRET>"
+        "AGENTRPC_API_SECRET": "${AGENTRPC_API_SECRET}"
       },
       "description": "Run the MCP server using npm",
       "recommended": true

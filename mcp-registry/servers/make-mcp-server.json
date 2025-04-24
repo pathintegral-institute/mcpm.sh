@@ -42,9 +42,9 @@
         "@makehq/mcp-server"
       ],
       "env": {
-        "MAKE_API_KEY": "<your-api-key>",
-        "MAKE_ZONE": "<your-zone>",
-        "MAKE_TEAM": "<your-team-id>"
+        "MAKE_API_KEY": "${MAKE_API_KEY}",
+        "MAKE_ZONE": "${MAKE_ZONE}",
+        "MAKE_TEAM": "${MAKE_TEAM}"
       },
       "description": "Install and run using npm",
       "recommended": true

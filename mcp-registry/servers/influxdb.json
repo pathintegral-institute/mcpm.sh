@@ -25,14 +25,12 @@
       "type": "npm",
       "command": "npx",
       "args": [
-        "${INFLUXDB_TOKEN}",
-        "${INFLUXDB_URL}",
-        "${INFLUXDB_ORG}"
+        "influxdb-mcp-server"
       ],
       "env": {
-        "INFLUXDB_TOKEN": "your_token",
-        "INFLUXDB_URL": "http://localhost:8086",
-        "INFLUXDB_ORG": "your_org"
+        "INFLUXDB_TOKEN": "${INFLUXDB_TOKEN}",
+        "INFLUXDB_URL": "${INFLUXDB_URL}",
+        "INFLUXDB_ORG": "${INFLUXDB_ORG}"
       }
     }
   },

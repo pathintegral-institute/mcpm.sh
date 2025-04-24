@@ -1,0 +1,134 @@
+{
+  "display_name": "WCGW Shell and Coding Agent",
+  "license": "MIT",
+  "tags": [
+    "shell",
+    "coding",
+    "AI",
+    "Claude",
+    "ChatGPT",
+    "MCP",
+    "file operations",
+    "terminal",
+    "development",
+    "automation"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "wcgw@latest",
+        "--python",
+        "3.12",
+        "wcgw_mcp"
+      ],
+      "description": "Local shell access with Anthropic API key"
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "--mount",
+        "type=bind,src=/Users/username/Desktop,dst=/workspace/Desktop",
+        "wcgw"
+      ],
+      "description": "Docker installation"
+    },
+    "custom": {
+      "type": "custom",
+      "command": "wsl.exe",
+      "args": [
+        "uv",
+        "tool",
+        "run",
+        "--from",
+        "wcgw@latest",
+        "--python",
+        "3.12",
+        "wcgw_mcp"
+      ],
+      "description": "Windows on WSL installation"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Create a simple Python script that prints 'Hello World' and run it"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Clone the repository https://github.com/rusiaaman/wcgw and analyze its structure"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Create a temporary directory and build a simple web server in Go"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Find all Python files in the current directory that contain the word 'error'"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Edit the file main.py and fix any syntax errors"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Run in 'architect' mode and help me understand the structure of my project"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Run in 'code-writer' mode and only allow editing files in the 'src' directory"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Create a knowledge transfer checkpoint of my current project"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Resume task 'project-refactor-20240615'"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Create a new branch, make some changes, and create a PR using GitHub CLI"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Fix all mypy issues in my repository"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Create unit tests for my Python project and run them to verify they pass"
+    }
+  ],
+  "name": "wcgw",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rusiaaman/wcgw"
+  },
+  "homepage": "https://github.com/rusiaaman/wcgw",
+  "author": {
+    "name": "rusiaaman"
+  },
+  "description": "Empowering chat applications to code, build and run on your local machine.",
+  "categories": [
+    "Dev Tools"
+  ],
+  "is_official": false
+}

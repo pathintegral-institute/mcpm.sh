@@ -37,9 +37,9 @@
       "args": [
         "mcp-server-motherduck",
         "--db-path",
-        "md:",
+        "${db-path}",
         "--motherduck-token",
-        "${input:motherduck_token}"
+        "${motherduck-token}"
       ],
       "recommended": true
     }

@@ -65,10 +65,10 @@
         "mcp-server-qdrant"
       ],
       "env": {
-        "QDRANT_URL": "http://localhost:6333",
-        "QDRANT_API_KEY": "your_api_key",
-        "COLLECTION_NAME": "my-collection",
-        "EMBEDDING_MODEL": "sentence-transformers/all-MiniLM-L6-v2"
+        "QDRANT_URL": "${QDRANT_URL}",
+        "QDRANT_API_KEY": "${QDRANT_API_KEY}",
+        "COLLECTION_NAME": "${COLLECTION_NAME}",
+        "EMBEDDING_MODEL": "${EMBEDDING_MODEL}"
       },
       "description": "Run using uvx without specific installation",
       "recommended": true

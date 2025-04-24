@@ -24,11 +24,6 @@
       "description": "Tinybird Admin Token for authentication",
       "required": true,
       "example": "<TINYBIRD_ADMIN_TOKEN>"
-    },
-    "topic": {
-      "description": "Topic of the data you want to explore",
-      "required": true,
-      "example": "Bluesky data"
     }
   },
   "installations": {
@@ -41,8 +36,8 @@
       ],
       "description": "Run with uvx in stdio mode",
       "env": {
-        "TB_API_URL": "<TINYBIRD_API_URL>",
-        "TB_ADMIN_TOKEN": "<TINYBIRD_ADMIN_TOKEN>"
+        "TB_API_URL": "${TB_API_URL}",
+        "TB_ADMIN_TOKEN": "${TB_ADMIN_TOKEN}"
       }
     }
   },

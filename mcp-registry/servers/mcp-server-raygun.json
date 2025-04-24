@@ -37,7 +37,7 @@
       ],
       "package": "@raygun.io/mcp-server-raygun",
       "env": {
-        "RAYGUN_PAT_TOKEN": "your-pat-token-here"
+        "RAYGUN_PAT_TOKEN": "${RAYGUN_PAT_TOKEN}"
       },
       "description": "Install and run using npm",
       "recommended": true
@@ -47,7 +47,7 @@
       "command": "/path/to/server-raygun/build/index.js",
       "args": [],
       "env": {
-        "RAYGUN_PAT_TOKEN": "your-pat-token-ken"
+        "RAYGUN_PAT_TOKEN": "${RAYGUN_PAT_TOKEN}"
       },
       "description": "Run from a local build",
       "recommended": false

@@ -29,7 +29,7 @@
         "@riza-io/riza-mcp"
       ],
       "env": {
-        "RIZA_API_KEY": "your-api-key"
+        "RIZA_API_KEY": "${RIZA_API_KEY}"
       },
       "recommended": true
     }

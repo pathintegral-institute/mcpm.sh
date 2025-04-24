@@ -16,7 +16,7 @@
     "snowflake"
   ],
   "arguments": {
-    "api-url": {
+    "API_URL": {
       "description": "Keboola Connection API URL",
       "required": true,
       "example": "https://connection.YOUR_REGION.keboola.com"
@@ -41,11 +41,11 @@
         "git+https://github.com/keboola/keboola-mcp-server.git",
         "keboola-mcp",
         "--api-url",
-        "${api-url}"
+        "${API_URL}"
       ],
       "env": {
-        "KBC_STORAGE_TOKEN": "your-keboola-storage-token",
-        "KBC_WORKSPACE_USER": "your-workspace-user"
+        "KBC_STORAGE_TOKEN": "${KBC_STORAGE_TOKEN}",
+        "KBC_WORKSPACE_USER": "${KBC_WORKSPACE_USER}"
       },
       "description": "Run the server using Python",
       "recommended": true

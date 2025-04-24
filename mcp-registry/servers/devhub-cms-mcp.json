@@ -39,9 +39,9 @@
         "devhub-cms-mcp"
       ],
       "env": {
-        "DEVHUB_API_KEY": "YOUR_KEY_HERE",
-        "DEVHUB_API_SECRET": "YOUR_SECRET_HERE",
-        "DEVHUB_BASE_URL": "https://yourbrand.cloudfrontend.net"
+        "DEVHUB_API_KEY": "${DEVHUB_API_KEY}",
+        "DEVHUB_API_SECRET": "${DEVHUB_API_SECRET}",
+        "DEVHUB_BASE_URL": "${DEVHUB_BASE_URL}"
       },
       "recommended": true
     }

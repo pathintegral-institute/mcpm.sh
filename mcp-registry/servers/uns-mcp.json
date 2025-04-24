@@ -31,7 +31,7 @@
         "uns_mcp"
       ],
       "env": {
-        "UNSTRUCTURED_API_KEY": "YOUR_KEY"
+        "UNSTRUCTURED_API_KEY": "${UNSTRUCTURED_API_KEY}"
       },
       "description": "Run using Python with uv",
       "recommended": true

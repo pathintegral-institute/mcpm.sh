@@ -32,7 +32,7 @@
       ],
       "package": "@bankless/onchain-mcp",
       "env": {
-        "BANKLESS_API_TOKEN": "your_api_token_here"
+        "BANKLESS_API_TOKEN": "${BANKLESS_API_TOKEN}"
       },
       "description": "Run directly using npx",
       "recommended": true

@@ -32,7 +32,7 @@
         "@apify/actors-mcp-server"
       ],
       "env": {
-        "APIFY_TOKEN": "your-apify-token"
+        "APIFY_TOKEN": "${APIFY_TOKEN}"
       },
       "description": "Install and run using NPM"
     }

@@ -31,16 +31,8 @@
       "description": "Run using uv (recommended)",
       "recommended": true,
       "env": {
-        "FEWSATS_API_KEY": "YOUR_FEWSATS_API_KEY"
+        "FEWSATS_API_KEY": "${FEWSATS_API_KEY}"
       }
-    },
-    "pip": {
-      "type": "python",
-      "command": "fewsats-mcp",
-      "args": [],
-      "package": "fewsats-mcp",
-      "description": "Install via pip and run as a script",
-      "recommended": false
     }
   },
   "examples": [

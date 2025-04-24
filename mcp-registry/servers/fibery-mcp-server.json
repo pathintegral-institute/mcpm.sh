@@ -15,12 +15,12 @@
     "llm"
   ],
   "arguments": {
-    "fibery-host": {
+    "FIBERY_HOST": {
       "description": "Your Fibery domain (e.g., your-domain.fibery.io)",
       "required": true,
       "example": "your-domain.fibery.io"
     },
-    "fibery-api-token": {
+    "FIBERY_API_TOKEN": {
       "description": "Your Fibery API token",
       "required": true,
       "example": "your-api-token"
@@ -35,9 +35,9 @@
         "run",
         "fibery-mcp-server",
         "--fibery-host",
-        "your-domain.fibery.io",
+        "${FIBERY_HOST}",
         "--fibery-api-token",
-        "your-api-token"
+        "${FIBERY_API_TOKEN}"
       ],
       "package": "fibery-mcp-server",
       "recommended": true

@@ -44,9 +44,9 @@
         "graphlit-mcp-server"
       ],
       "env": {
-        "GRAPHLIT_ORGANIZATION_ID": "${input:organization_id}",
-        "GRAPHLIT_ENVIRONMENT_ID": "${input:environment_id}",
-        "GRAPHLIT_JWT_SECRET": "${input:jwt_secret}"
+        "GRAPHLIT_ORGANIZATION_ID": "${GRAPHLIT_ORGANIZATION_ID}",
+        "GRAPHLIT_ENVIRONMENT_ID": "${GRAPHLIT_ENVIRONMENT_ID}",
+        "GRAPHLIT_JWT_SECRET": "${GRAPHLIT_JWT_SECRET}"
       },
       "description": "Run using NPX",
       "recommended": true

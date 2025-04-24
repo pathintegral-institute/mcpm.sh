@@ -185,7 +185,7 @@
         "mcp-materials-project"
       ],
       "env": {
-        "MP_API_KEY": "your_materials_project_api_key_here"
+        "MP_API_KEY": "${MP_API_KEY}"
       }
     }
   },

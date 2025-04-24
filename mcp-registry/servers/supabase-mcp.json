@@ -1,0 +1,128 @@
+{
+  "display_name": "Query MCP Server for Supabase",
+  "license": "Apache 2.0",
+  "tags": [
+    "supabase",
+    "mcp",
+    "database",
+    "sql",
+    "postgresql",
+    "auth",
+    "management-api",
+    "python"
+  ],
+  "installations": {
+    "cli": {
+      "type": "cli",
+      "command": "supabase-mcp-server",
+      "args": [],
+      "env": {
+        "QUERY_API_KEY": "${QUERY_API_KEY}",
+        "SUPABASE_PROJECT_REF": "${SUPABASE_PROJECT_REF}",
+        "SUPABASE_DB_PASSWORD": "${SUPABASE_DB_PASSWORD}",
+        "SUPABASE_REGION": "us-east-1",
+        "SUPABASE_ACCESS_TOKEN": "${SUPABASE_ACCESS_TOKEN}",
+        "SUPABASE_SERVICE_ROLE_KEY": "${SUPABASE_SERVICE_ROLE_KEY}"
+      },
+      "description": "Using full path to executable (recommended for some clients)"
+    }
+  },
+  "arguments": {
+    "QUERY_API_KEY": {
+      "description": "Get your API key at thequery.dev",
+      "required": true,
+      "example": "your_api_key_here"
+    },
+    "SUPABASE_PROJECT_REF": {
+      "description": "The project reference for your Supabase project.",
+      "required": true,
+      "example": "your-project-ref"
+    },
+    "SUPABASE_DB_PASSWORD": {
+      "description": "The database password for your Supabase project.",
+      "required": true,
+      "example": "your_db_password_here"
+    },
+    "SUPABASE_REGION": {
+      "description": "The region for your Supabase project.",
+      "required": false,
+      "example": "us-east-1"
+    },
+    "SUPABASE_ACCESS_TOKEN": {
+      "description": "The access token for your Supabase project.",
+      "required": true,
+      "example": "your_access_token_here"
+    },
+    "SUPABASE_SERVICE_ROLE_KEY": {
+      "description": "The service role key for your Supabase project.",
+      "required": true,
+      "example": "your_service_role_key_here"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Can you execute a simple SELECT query to show me all tables in my Supabase database?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "I need to create a new user in my Supabase auth system. Can you help me with that?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Show me the schema of my 'users' table in the database."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "I want to create a new table called 'products' with columns for id, name, price, and description."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Can you help me retrieve the last 10 authentication logs from my Supabase project?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "List all the available Management API endpoints I can use with this server."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Toggle the safety mode to allow write operations on my database."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Generate an invite link for a new user with email example@example.com."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Show me all the migrations that have been applied to my database."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Execute this query but make sure it's safe: DELETE FROM users WHERE id = 'some-id';"
+    }
+  ],
+  "name": "supabase-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alexander-zuev/supabase-mcp-server"
+  },
+  "homepage": "https://github.com/alexander-zuev/supabase-mcp-server",
+  "author": {
+    "name": "alexander-zuev"
+  },
+  "description": "Query MCP is an open-source MCP server that allows your IDE to safely run SQL queries, manage schema changes, call the Supabase Management API, and use the Auth Admin SDK, all with built-in safety controls.",
+  "categories": [
+    "Dev Tools"
+  ],
+  "is_official": false
+}

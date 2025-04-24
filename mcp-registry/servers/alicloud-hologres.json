@@ -49,11 +49,11 @@
         "hologres-mcp-server"
       ],
       "env": {
-        "HOLOGRES_HOST": "host",
-        "HOLOGRES_PORT": "port",
-        "HOLOGRES_USER": "access_id",
-        "HOLOGRES_PASSWORD": "access_key",
-        "HOLOGRES_DATABASE": "database"
+        "HOLOGRES_HOST": "${HOLOGRES_HOST}",
+        "HOLOGRES_PORT": "${HOLOGRES_PORT}",
+        "HOLOGRES_USER": "${HOLOGRES_USER}",
+        "HOLOGRES_PASSWORD": "${HOLOGRES_PASSWORD}",
+        "HOLOGRES_DATABASE": "${HOLOGRES_DATABASE}"
       },
       "description": "Run using local file"
     }

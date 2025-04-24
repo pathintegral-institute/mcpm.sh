@@ -11,7 +11,7 @@ import dotenv
 import requests
 from categorization import CategorizationAgent
 from openai import OpenAI
-from utils import McpClient
+from utils import McpClient, validate_arguments_in_installation
 
 dotenv.load_dotenv()
 logging.basicConfig(level=logging.INFO,
@@ -288,6 +288,13 @@ class ManifestGenerator:
         # Step 3: Extract installations
         installations = self._extract_installations(repo_url, readme_content)
         if installations:
+            # post process
+            arguments = complete_manifest.get("arguments", {})
+            if arguments:
+                for install_type, installation in installations.items():
+                    new_installation, replacement = validate_arguments_in_installation(installation, arguments)
+                    if replacement:
+                        installations[install_type] = new_installation
             complete_manifest["installations"] = installations
 
         # Step 4: Extract examples

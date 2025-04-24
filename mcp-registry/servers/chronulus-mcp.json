@@ -29,7 +29,7 @@
         "chronulus-mcp"
       ],
       "env": {
-        "CHRONULUS_API_KEY": "<YOUR_CHRONULUS_API_KEY>"
+        "CHRONULUS_API_KEY": "${CHRONULUS_API_KEY}"
       },
       "description": "Install and run using uvx"
     },
@@ -42,7 +42,7 @@
       ],
       "package": "chronulus-mcp",
       "env": {
-        "CHRONULUS_API_KEY": "<YOUR_CHRONULUS_API_KEY>"
+        "CHRONULUS_API_KEY": "${CHRONULUS_API_KEY}"
       },
       "description": "Install using pip from PyPI"
     },
@@ -58,7 +58,7 @@
         "chronulus-mcp"
       ],
       "env": {
-        "CHRONULUS_API_KEY": "<YOUR_CHRONULUS_API_KEY>"
+        "CHRONULUS_API_KEY": "${CHRONULUS_API_KEY}"
       },
       "description": "Run using Docker"
     }

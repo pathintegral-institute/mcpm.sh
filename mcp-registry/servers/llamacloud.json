@@ -35,8 +35,8 @@
         "10k SEC documents from 2023 for Apple"
       ],
       "env": {
-        "LLAMA_CLOUD_PROJECT_NAME": "<YOUR_PROJECT_NAME>",
-        "LLAMA_CLOUD_API_KEY": "<YOUR_API_KEY>"
+        "LLAMA_CLOUD_PROJECT_NAME": "${LLAMA_CLOUD_PROJECT_NAME}",
+        "LLAMA_CLOUD_API_KEY": "${LLAMA_CLOUD_API_KEY}"
       }
     }
   },

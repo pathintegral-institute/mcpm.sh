@@ -26,7 +26,7 @@
         "productboard-mcp"
       ],
       "env": {
-        "PRODUCTBOARD_ACCESS_TOKEN": "<YOUR_TOKEN>"
+        "PRODUCTBOARD_ACCESS_TOKEN": "${PRODUCTBOARD_ACCESS_TOKEN}"
       }
     }
   },

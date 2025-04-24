@@ -44,10 +44,10 @@
         "mcp-server-starrocks"
       ],
       "env": {
-        "STARROCKS_HOST": "localhost",
-        "STARROCKS_PORT": "9030",
-        "STARROCKS_USER": "root",
-        "STARROCKS_PASSWORD": ""
+        "STARROCKS_HOST": "${STARROCKS_HOST}",
+        "STARROCKS_PORT": "${STARROCKS_PORT}",
+        "STARROCKS_USER": "${STARROCKS_USER}",
+        "STARROCKS_PASSWORD": "${STARROCKS_PASSWORD}"
       },
       "description": "Run using Python with uv package manager",
       "recommended": true

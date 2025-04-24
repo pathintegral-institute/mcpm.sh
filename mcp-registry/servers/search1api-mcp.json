@@ -34,7 +34,7 @@
         "search1api-mcp"
       ],
       "env": {
-        "SEARCH1API_KEY": "YOUR_SEARCH1API_KEY"
+        "SEARCH1API_KEY": "${SEARCH1API_KEY}"
       },
       "description": "Run directly using npx",
       "recommended": true

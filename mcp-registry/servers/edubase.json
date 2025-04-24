@@ -50,9 +50,9 @@
         "edubase/mcp"
       ],
       "env": {
-        "EDUBASE_API_URL": "https://domain.edubase.net/api",
-        "EDUBASE_API_APP": "your_integration_app_id",
-        "EDUBASE_API_KEY": "your_integration_secret_key"
+        "EDUBASE_API_URL": "${EDUBASE_API_URL}",
+        "EDUBASE_API_APP": "${EDUBASE_API_APP}",
+        "EDUBASE_API_KEY": "${EDUBASE_API_KEY}"
       },
       "description": "Run using Docker",
       "recommended": false
@@ -64,9 +64,9 @@
         "/path/to/dist/index.js"
       ],
       "env": {
-        "EDUBASE_API_URL": "https://domain.edubase.net/api",
-        "EDUBASE_API_APP": "your_integration_app_id",
-        "EDUBASE_API_KEY": "your_integration_secret_key"
+        "EDUBASE_API_URL": "${EDUBASE_API_URL}",
+        "EDUBASE_API_APP": "${EDUBASE_API_APP}",
+        "EDUBASE_API_KEY": "${EDUBASE_API_KEY}"
       },
       "description": "Run using Node.js",
       "recommended": true
