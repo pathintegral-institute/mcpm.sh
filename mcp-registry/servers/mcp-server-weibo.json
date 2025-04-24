@@ -48,7 +48,7 @@
       "prompt": "Search for Weibo content containing the keyword 'climate change'"
     }
   ],
-  "name": "@Selenium39/mcp-server-weibo",
+  "name": "mcp-server-weibo",
   "repository": {
     "type": "git",
     "url": "https://github.com/Selenium39/mcp-server-weibo"
@@ -64,17 +64,17 @@
   "tools": [
     {
       "name": "search_users",
-      "description": null,
+      "description": "Search for Weibo users by keyword",
       "inputSchema": {
         "type": "object",
         "properties": {
           "keyword": {
             "type": "string",
-            "description": "\u67e5\u627e\u7528\u6237\u7684\u641c\u7d22\u8bcd"
+            "description": "查找用户的搜索词"
           },
           "limit": {
             "type": "number",
-            "description": "\u8fd4\u56de\u7684\u6700\u5927\u7528\u6237\u6570\u91cf"
+            "description": "返回的最大用户数量"
           }
         },
         "required": [
@@ -87,13 +87,13 @@
     },
     {
       "name": "get_profile",
-      "description": null,
+      "description": "Get Weibo user profile by UID",
       "inputSchema": {
         "type": "object",
         "properties": {
           "uid": {
             "type": "number",
-            "description": "\u5fae\u535a\u7528\u6237\u7684\u552f\u4e00\u6807\u8bc6\u7b26"
+            "description": "微博用户的唯一标识符"
           }
         },
         "required": [
@@ -105,17 +105,17 @@
     },
     {
       "name": "get_feeds",
-      "description": null,
+      "description": "Get Weibo user feeds by UID",
       "inputSchema": {
         "type": "object",
         "properties": {
           "uid": {
             "type": "number",
-            "description": "\u5fae\u535a\u7528\u6237\u7684\u552f\u4e00\u6807\u8bc6\u7b26"
+            "description": "微博用户的唯一标识符"
           },
           "limit": {
             "type": "number",
-            "description": "\u8fd4\u56de\u7684\u6700\u5927\u52a8\u6001\u6570\u91cf"
+            "description": "返回的最大动态数量"
           }
         },
         "required": [
@@ -128,13 +128,13 @@
     },
     {
       "name": "get_hot_search",
-      "description": null,
+      "description": "Get current Weibo hot search rankings",
       "inputSchema": {
         "type": "object",
         "properties": {
           "limit": {
             "type": "number",
-            "description": "\u8fd4\u56de\u7684\u6700\u5927\u70ed\u641c\u6761\u76ee\u6570\u91cf"
+            "description": "返回的最大热搜数量"
           }
         },
         "required": [
@@ -146,21 +146,21 @@
     },
     {
       "name": "search_content",
-      "description": null,
+      "description": "Search for Weibo content by keyword",
       "inputSchema": {
         "type": "object",
         "properties": {
           "keyword": {
             "type": "string",
-            "description": "\u641c\u7d22\u5fae\u535a\u5185\u5bb9\u7684\u5173\u952e\u8bcd"
+            "description": "要搜索的微博内容关键词"
           },
           "limit": {
             "type": "number",
-            "description": "\u8fd4\u56de\u7684\u6700\u5927\u5fae\u535a\u6761\u76ee\u6570\u91cf"
+            "description": "返回的最大微博数量"
           },
           "page": {
             "type": "number",
-            "description": "\u8d77\u59cb\u9875\u7801\uff0c\u9ed8\u8ba4\u4e3a1"
+            "description": "起始页码, 默认为1"
           }
         },
         "required": [
