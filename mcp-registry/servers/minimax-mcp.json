@@ -20,12 +20,34 @@
         "minimax-mcp"
       ],
       "env": {
-        "MINIMAX_API_KEY": "insert-your-api-key-here",
-        "MINIMAX_MCP_BASE_PATH": "local-output-dir-path, such as /User/xxx/Desktop",
-        "MINIMAX_API_HOST": "api host, \u200bhttps://api.minimaxi.chat|https://api.minimax.chat",
-        "MINIMAX_API_RESOURCE_MODE": "optional, [url|local], url is default, audio/image/video are downloaded locally or provided in URL format"
+        "MINIMAX_API_KEY": "${MINIMAX_API_KEY}",
+        "MINIMAX_MCP_BASE_PATH": "${MINIMAX_MCP_BASE_PATH}",
+        "MINIMAX_API_HOST": "${MINIMAX_API_HOST}",
+        "MINIMAX_API_RESOURCE_MODE": "${MINIMAX_API_RESOURCE_MODE}"
       },
       "description": "MiniMax MCP server for Claude Desktop"
+    }
+  },
+  "arguments": {
+    "MINIMAX_API_KEY": {
+      "description": "MiniMax API key",
+      "required": true,
+      "examples": "insert-your-api-key-here"
+    },
+    "MINIMAX_MCP_BASE_PATH": {
+      "description": "Local output directory path",
+      "required": true,
+      "examples": "/User/xxx/Desktop"
+    },
+    "MINIMAX_API_HOST": {
+      "description": "API host",
+      "required": true,
+      "examples": "https://api.minimaxi.chat|https://api.minimax.chat"
+    },
+    "MINIMAX_API_RESOURCE_MODE": {
+      "description": "Resource mode",
+      "required": true,
+      "examples": "[url|local]"
     }
   },
   "examples": [
@@ -65,7 +87,7 @@
       "prompt": "Generate a video of a serene mountain landscape with a flowing river and birds flying overhead."
     }
   ],
-  "name": "@MiniMax-AI/MiniMax-MCP",
+  "name": "minimax-mcp",
   "repository": {
     "type": "git",
     "url": "https://github.com/MiniMax-AI/MiniMax-MCP"
