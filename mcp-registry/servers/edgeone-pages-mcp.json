@@ -49,7 +49,7 @@
       "prompt": "Create a product showcase page with images and descriptions"
     }
   ],
-  "name": "@TencentEdgeOne/edgeone-pages-mcp",
+  "name": "edgeone-pages-mcp",
   "repository": {
     "type": "git",
     "url": "https://github.com/TencentEdgeOne/edgeone-pages-mcp"
