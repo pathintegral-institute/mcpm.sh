@@ -1,0 +1,88 @@
+{
+  "display_name": "EdgeOne Pages MCP",
+  "license": "MIT",
+  "tags": [
+    "html",
+    "deployment",
+    "edge functions",
+    "kv store",
+    "static content",
+    "serverless",
+    "mcp",
+    "tencent",
+    "edgeone"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "edgeone-pages-mcp"
+      ],
+      "description": "Run EdgeOne Pages MCP server using npx"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Deploy a simple HTML page with a hello world message"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Create a landing page with a contact form"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Generate and deploy a portfolio website"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Deploy an HTML page with CSS animations"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Create a product showcase page with images and descriptions"
+    }
+  ],
+  "name": "edgeone-pages-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TencentEdgeOne/edgeone-pages-mcp"
+  },
+  "homepage": "https://github.com/TencentEdgeOne/edgeone-pages-mcp",
+  "author": {
+    "name": "TencentEdgeOne"
+  },
+  "description": "An MCP service for deploying HTML content to EdgeOne Pages and obtaining a publicly accessible URL.",
+  "categories": [
+    "Web Services"
+  ],
+  "tools": [
+    {
+      "name": "deploy-html",
+      "description": "Deploy HTML content to EdgeOne Pages, return the public URL",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "description": "HTML or text content to deploy. Provide complete HTML or text content you want to publish, and the system will return a public URL where your content can be accessed."
+          }
+        },
+        "required": [
+          "value"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": false
+}
