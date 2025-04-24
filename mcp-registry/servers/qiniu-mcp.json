@@ -1,0 +1,90 @@
+{
+  "display_name": "Qiniu MCP Server",
+  "license": "<UNKNOWN>",
+  "tags": [
+    "qiniu",
+    "cloud storage",
+    "file upload",
+    "MCP",
+    "python"
+  ],
+  "installations": {
+    "python": {
+      "type": "python",
+      "command": "python",
+      "args": [
+        "/path/to/qiniu_mcp_server/server.py"
+      ],
+      "description": "Run the qiniu MCP server directly with Python",
+      "env": {
+        "QINIU_ACCESS_KEY": "${QINIU_ACCESS_KEY}",
+        "QINIU_SECRET_KEY": "${QINIU_SECRET_KEY}",
+        "QINIU_BUCKET_NAME": "${QINIU_BUCKET_NAME}",
+        "QINIU_DOMAIN": "${QINIU_DOMAIN}"
+      }
+    }
+  },
+  "arguments": {
+    "QINIU_ACCESS_KEY": {
+      "description": "Qiniu Access Key",
+      "required": true,
+      "example": "your_access_key"
+    },
+    "QINIU_SECRET_KEY": {
+      "description": "Qiniu Secret Key",
+      "required": true,
+      "example": "your_secret_key"
+    },
+    "QINIU_BUCKET_NAME": {
+      "description": "Qiniu Bucket Name",
+      "required": true,
+      "example": "your_bucket_name"
+    },
+    "QINIU_DOMAIN": {
+      "description": "Qiniu Domain",
+      "required": true,
+      "example": "your_domain_name"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Upload an image to Qiniu"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "How to upload a file to Qiniu storage?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "How to use MCP server to upload files?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Upload file and get public URL"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "How to deploy Qiniu MCP server in Traefik?"
+    }
+  ],
+  "name": "qiniu-mcp-joe",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joeseesun/qiniu-mcp-joe"
+  },
+  "homepage": "https://github.com/joeseesun/qiniu-mcp-joe",
+  "author": {
+    "name": "joeseesun"
+  },
+  "description": "Edit `.env` file and fill in your Qiniu credentials",
+  "categories": [
+    "Dev Tools"
+  ],
+  "is_official": false
+}
