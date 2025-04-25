@@ -70,7 +70,7 @@ class MCPRouter:
         profile_path: str | None = None,
         strict: bool = False,
         api_key: str | None = None,
-        router_config: dict | None = None
+        router_config: dict | None = None,
     ) -> None:
         """
         Initialize the router.
@@ -184,77 +184,89 @@ class MCPRouter:
         # Collect server tools, prompts, and resources
         if response.capabilities.tools:
             tools = await client.session.list_tools()  # type: ignore
-            for tool in tools.tools:
-                # To make sure tool name is unique across all servers
-                tool_name = tool.name
-                if tool_name in self.capabilities_to_server_id["tools"]:
-                    if self.strict:
-                        raise ValueError(
-                            f"Tool {tool_name} already exists. Please use unique tool names across all servers."
-                        )
-                    else:
-                        # Auto resolve by adding server name prefix
-                        tool_name = f"{server_id}{TOOL_SPLITOR}{tool_name}"
-                self.capabilities_to_server_id["tools"][tool_name] = server_id
-                self.tools_mapping[tool_name] = tool
+            # Extract ListToolsResult from ServerResult
+            tools_result = tools.root
+            if isinstance(tools_result, types.ListToolsResult):
+                for tool in tools_result.tools:
+                    # To make sure tool name is unique across all servers
+                    tool_name = tool.name
+                    if tool_name in self.capabilities_to_server_id["tools"]:
+                        if self.strict:
+                            raise ValueError(
+                                f"Tool {tool_name} already exists. Please use unique tool names across all servers."
+                            )
+                        else:
+                            # Auto resolve by adding server name prefix
+                            tool_name = f"{server_id}{TOOL_SPLITOR}{tool_name}"
+                    self.capabilities_to_server_id["tools"][tool_name] = server_id
+                    self.tools_mapping[tool_name] = tool
 
         if response.capabilities.prompts:
             prompts = await client.session.list_prompts()  # type: ignore
-            for prompt in prompts.prompts:
-                # To make sure prompt name is unique across all servers
-                prompt_name = prompt.name
-                if prompt_name in self.capabilities_to_server_id["prompts"]:
-                    if self.strict:
-                        raise ValueError(
-                            f"Prompt {prompt_name} already exists. Please use unique prompt names across all servers."
-                        )
-                    else:
-                        # Auto resolve by adding server name prefix
-                        prompt_name = f"{server_id}{PROMPT_SPLITOR}{prompt_name}"
-                self.prompts_mapping[prompt_name] = prompt
-                self.capabilities_to_server_id["prompts"][prompt_name] = server_id
+            # Extract ListPromptsResult from ServerResult
+            prompts_result = prompts.root
+            if isinstance(prompts_result, types.ListPromptsResult):
+                for prompt in prompts_result.prompts:
+                    # To make sure prompt name is unique across all servers
+                    prompt_name = prompt.name
+                    if prompt_name in self.capabilities_to_server_id["prompts"]:
+                        if self.strict:
+                            raise ValueError(
+                                f"Prompt {prompt_name} already exists. Please use unique prompt names across all servers."
+                            )
+                        else:
+                            # Auto resolve by adding server name prefix
+                            prompt_name = f"{server_id}{PROMPT_SPLITOR}{prompt_name}"
+                    self.prompts_mapping[prompt_name] = prompt
+                    self.capabilities_to_server_id["prompts"][prompt_name] = server_id
 
         if response.capabilities.resources:
             resources = await client.session.list_resources()  # type: ignore
-            for resource in resources.resources:
-                # To make sure resource URI is unique across all servers
-                resource_uri = resource.uri
-                if str(resource_uri) in self.capabilities_to_server_id["resources"]:
-                    if self.strict:
-                        raise ValueError(
-                            f"Resource {resource_uri} already exists. Please use unique resource URIs across all servers."
-                        )
-                    else:
-                        # Auto resolve by adding server name prefix
-                        host = resource_uri.host
-                        resource_uri = AnyUrl.build(
-                            host=f"{server_id}{RESOURCE_SPLITOR}{host}",
-                            scheme=resource_uri.scheme,
-                            path=resource_uri.path,
-                            username=resource_uri.username,
-                            password=resource_uri.password,
-                            port=resource_uri.port,
-                            query=resource_uri.query,
-                            fragment=resource_uri.fragment,
-                        )
-                self.resources_mapping[str(resource_uri)] = resource
-                self.capabilities_to_server_id["resources"][str(resource_uri)] = server_id
+            # Extract ListResourcesResult from ServerResult
+            resources_result = resources.root
+            if isinstance(resources_result, types.ListResourcesResult):
+                for resource in resources_result.resources:
+                    # To make sure resource URI is unique across all servers
+                    resource_uri = resource.uri
+                    if str(resource_uri) in self.capabilities_to_server_id["resources"]:
+                        if self.strict:
+                            raise ValueError(
+                                f"Resource {resource_uri} already exists. Please use unique resource URIs across all servers."
+                            )
+                        else:
+                            # Auto resolve by adding server name prefix
+                            host = resource_uri.host
+                            resource_uri = AnyUrl.build(
+                                host=f"{server_id}{RESOURCE_SPLITOR}{host}",
+                                scheme=resource_uri.scheme,
+                                path=resource_uri.path,
+                                username=resource_uri.username,
+                                password=resource_uri.password,
+                                port=resource_uri.port,
+                                query=resource_uri.query,
+                                fragment=resource_uri.fragment,
+                            )
+                    self.resources_mapping[str(resource_uri)] = resource
+                    self.capabilities_to_server_id["resources"][str(resource_uri)] = server_id
             resources_templates = await client.session.list_resource_templates()  # type: ignore
-            for resource_template in resources_templates.resourceTemplates:
-                # To make sure resource template URI is unique across all servers
-                resource_template_uri_template = resource_template.uriTemplate
-                if resource_template_uri_template in self.capabilities_to_server_id["resource_templates"]:
-                    if self.strict:
-                        raise ValueError(
-                            f"Resource template {resource_template_uri_template} already exists. Please use unique resource template URIs across all servers."
-                        )
-                    else:
-                        # Auto resolve by adding server name prefix
-                        resource_template_uri_template = (
-                            f"{server_id}{RESOURCE_TEMPLATE_SPLITOR}{resource_template.uriTemplate}"
-                        )
-                self.resources_templates_mapping[resource_template_uri_template] = resource_template
-                self.capabilities_to_server_id["resource_templates"][resource_template_uri_template] = server_id
+            # Extract ListResourceTemplatesResult from ServerResult
+            templates_result = resources_templates.root
+            if isinstance(templates_result, types.ListResourceTemplatesResult):
+                for resource_template in templates_result.resourceTemplates:
+                    # To make sure resource template URI is unique across all servers
+                    resource_template_uri_template = resource_template.uriTemplate
+                    if resource_template_uri_template in self.capabilities_to_server_id["resource_templates"]:
+                        if self.strict:
+                            raise ValueError(
+                                f"Resource template {resource_template_uri_template} already exists. Please use unique resource template URIs across all servers."
+                            )
+                        else:
+                            # Auto resolve by adding server name prefix
+                            resource_template_uri_template = (
+                                f"{server_id}{RESOURCE_TEMPLATE_SPLITOR}{resource_template.uriTemplate}"
+                            )
+                    self.resources_templates_mapping[resource_template_uri_template] = resource_template
+                    self.capabilities_to_server_id["resource_templates"][resource_template_uri_template] = server_id
 
     async def remove_server(self, server_id: str) -> None:
         """

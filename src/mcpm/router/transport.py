@@ -243,11 +243,15 @@ class RouterSseTransport(SseServerTransport):
         if self.api_key is None:
             logger.debug("API key validation disabled")
             return True
-            
-        # If we have a directly provided API key and it matches the request's API key, return True
-        if self.api_key is not None and api_key == self.api_key:
+
+        # If we have a directly provided API key, verify it matches
+        if self.api_key is not None:
+            # If API key doesn't match, return False
+            if api_key != self.api_key:
+                logger.warning("Unauthorized API key")
+                return False
             return True
-            
+
         # Otherwise, fall back to the original validation logic
         try:
             config_manager = ConfigManager()
