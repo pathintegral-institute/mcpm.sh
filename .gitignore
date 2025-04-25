@@ -59,6 +59,7 @@ logs/
 .env.test
 .env.production
 .envrc
+*.ini
 
 # MCP specific
 .mcp/

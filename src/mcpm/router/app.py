@@ -24,7 +24,7 @@ LOG_FILE = LOG_DIR / "router.log"
 CORS_ENABLED = os.environ.get("MCPM_ROUTER_CORS")
 
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.INFO if not os.environ.get("MCPM_DEBUG") else logging.DEBUG,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[logging.FileHandler(LOG_FILE), logging.StreamHandler()],
 )
@@ -137,7 +137,7 @@ if CORS_ENABLED:
     )
 
 app = Starlette(
-    debug=False,
+    debug=os.environ.get("MCPM_DEBUG") == "true",
     middleware=middlewares,
     routes=[
         Route("/sse", endpoint=handle_sse),

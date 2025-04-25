@@ -51,3 +51,12 @@ docker run --rm -it -v "$PWD:/srv/jekyll" jekyll/jekyll:4.2.0 jekyll build
 ```
 
 The built site will be in `pages/_site/`.
+
+
+## Debug mode for mcpm router
+Set environment variable `MCPM_DEBUG` to `true` to enable debug mode.
+
+```bash
+export MCPM_DEBUG=true
+```
+

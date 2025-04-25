@@ -64,6 +64,7 @@ class Tunnel:
         local_host: str,
         local_port: int,
         share_token: str,
+        http: bool,
         share_server_tls_certificate: str | None,
     ):
         self.proc = None
@@ -73,6 +74,7 @@ class Tunnel:
         self.local_host = local_host
         self.local_port = local_port
         self.share_token = share_token
+        self.http = http
         self.share_server_tls_certificate = share_server_tls_certificate
 
     @staticmethod
@@ -142,6 +144,8 @@ class Tunnel:
                     self.share_server_tls_certificate,
                 ]
             )
+        if not self.http:
+            command.append("--tls_enable")
         self.proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, start_new_session=True)
         return self._read_url_from_tunnel_stream()
 
@@ -182,4 +186,6 @@ class Tunnel:
             elif "login to server failed" in line:
                 _raise_tunnel_error()
 
+        if self.http:
+            url = url.replace("https://", "http://")
         return url
