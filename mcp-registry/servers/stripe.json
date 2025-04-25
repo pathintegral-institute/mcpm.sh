@@ -30,6 +30,22 @@
         "--tools=all",
         "--api-key=${STRIPE_SECRET_KEY}"
       ]
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "STRIPE_SECRET_KEY",
+        "mcp/stripe",
+        "--tools=all"
+      ],
+      "env": {
+        "STRIPE_SECRET_KEY": "${STRIPE_SECRET_KEY}"
+      }
     }
   },
   "examples": [
@@ -343,5 +359,6 @@
       }
     }
   ],
-  "is_official": true
+  "is_official": true,
+  "docker_url": "https://hub.docker.com/r/mcp/stripe"
 }

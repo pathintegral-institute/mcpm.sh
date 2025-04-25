@@ -32,6 +32,17 @@
       "env": {},
       "description": "Install and run using NPX",
       "recommended": true
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "mcp/everything"
+      ],
+      "description": "Run using Docker"
     }
   },
   "examples": [
@@ -167,5 +178,6 @@
       }
     }
   ],
-  "is_official": true
+  "is_official": true,
+  "docker_url": "https://hub.docker.com/r/mcp/everything"
 }

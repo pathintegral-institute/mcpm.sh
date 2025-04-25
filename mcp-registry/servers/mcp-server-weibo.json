@@ -1,0 +1,178 @@
+{
+  "display_name": "Weibo MCP Server",
+  "license": "MIT License",
+  "tags": [
+    "weibo",
+    "social media",
+    "scraping",
+    "user information",
+    "search",
+    "TypeScript",
+    "MCP",
+    "Model Context Protocol"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "mcp-server-weibo"
+      ],
+      "description": "Install from package manager"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Search for users with the keyword 'technology'"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Get the profile information for user with UID 1234567890"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Fetch the latest 10 feeds from user with UID 1234567890"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Show me the current Weibo hot search rankings"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Search for Weibo content containing the keyword 'climate change'"
+    }
+  ],
+  "name": "mcp-server-weibo",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Selenium39/mcp-server-weibo"
+  },
+  "homepage": "https://github.com/Selenium39/mcp-server-weibo",
+  "author": {
+    "name": "Selenium39"
+  },
+  "description": "This is a server based on the [Model Context Protocol](https://modelcontextprotocol.io) for scraping Weibo user information, feeds, and search functionality. This server can help retrieve detailed information about Weibo users, feed content, and perform user searches.",
+  "categories": [
+    "Web Services"
+  ],
+  "tools": [
+    {
+      "name": "search_users",
+      "description": "Search for Weibo users by keyword",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keyword": {
+            "type": "string",
+            "description": "查找用户的搜索词"
+          },
+          "limit": {
+            "type": "number",
+            "description": "返回的最大用户数量"
+          }
+        },
+        "required": [
+          "keyword",
+          "limit"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "get_profile",
+      "description": "Get Weibo user profile by UID",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "uid": {
+            "type": "number",
+            "description": "微博用户的唯一标识符"
+          }
+        },
+        "required": [
+          "uid"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "get_feeds",
+      "description": "Get Weibo user feeds by UID",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "uid": {
+            "type": "number",
+            "description": "微博用户的唯一标识符"
+          },
+          "limit": {
+            "type": "number",
+            "description": "返回的最大动态数量"
+          }
+        },
+        "required": [
+          "uid",
+          "limit"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "get_hot_search",
+      "description": "Get current Weibo hot search rankings",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "number",
+            "description": "返回的最大热搜数量"
+          }
+        },
+        "required": [
+          "limit"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "search_content",
+      "description": "Search for Weibo content by keyword",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keyword": {
+            "type": "string",
+            "description": "要搜索的微博内容关键词"
+          },
+          "limit": {
+            "type": "number",
+            "description": "返回的最大微博数量"
+          },
+          "page": {
+            "type": "number",
+            "description": "起始页码, 默认为1"
+          }
+        },
+        "required": [
+          "keyword",
+          "limit"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": false
+}

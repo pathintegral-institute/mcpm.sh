@@ -6,6 +6,7 @@ import logging
 import os
 import secrets
 import signal
+import socket
 import subprocess
 import sys
 import uuid
@@ -39,6 +40,35 @@ def is_process_running(pid):
         return psutil.pid_exists(pid)
     except Exception:
         return False
+
+def is_port_listening(host, port) -> bool:
+    """
+    Check if the specified (host, port) is being listened on.
+
+    Args:
+        host: The host to check
+        port: The port to check
+
+    Returns:
+        True if the (host, port) is being listened on
+    """
+    sock = None
+    try:
+        # Try to connect to the port
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(1)
+        connected_host = "127.0.0.1" if host == "0.0.0.0" else host
+        result = sock.connect_ex((connected_host, port))
+        # result == 0 means connection successful, which means port is in use
+        # result != 0 means connection failed, which means port is not in use
+        # result == 61 means ECONNREFUSED
+        return result == 0
+    except Exception as e:
+        logger.error(f"Error checking host {host} and port {port}: {e}")
+        return False
+    finally:
+        if sock:
+            sock.close()
 
 
 def read_pid_file():
@@ -86,7 +116,8 @@ def router():
 
 @router.command(name="on")
 @click.help_option("-h", "--help")
-def start_router():
+@click.option("--verbose", "-v", is_flag=True, help="Enable verbose output")
+def start_router(verbose):
     """Start MCPRouter as a daemon process.
 
     Example:
@@ -128,6 +159,7 @@ def start_router():
         # open log file, prepare to redirect stdout and stderr
         with open(log_file, "a") as log:
             # use subprocess.Popen to start uvicorn
+            start = log.tell()
             process = subprocess.Popen(
                 uvicorn_cmd,
                 stdout=log,
@@ -135,6 +167,19 @@ def start_router():
                 env=os.environ.copy(),
                 start_new_session=True,  # create new session, so the process won't be affected by terminal closing
             )
+        if verbose:
+            console.rule("verbose log start")
+            with open(log_file, "r") as log:
+                # print log before startup complete
+                log.seek(start)
+                while True:
+                    line = log.readline()
+                    if not line:
+                        continue
+                    console.print(line.strip())
+                    if "Application startup complete." in line:
+                        break
+            console.rule("verbose log end")
 
         # record PID
         pid = process.pid
@@ -270,6 +315,15 @@ def router_status():
     # check process status
     pid = read_pid_file()
     if pid:
+        if not is_port_listening(host, port):
+            console.print(
+                f"[bold yellow]Notice:[/] [bold cyan]{host}:{port}[/] is not yet accepting connections. The service may still be starting up. Please wait a few seconds and try again."
+            )
+            console.print(
+                f"[yellow]If this message persists after waiting, please check the log for more details.[/] (Log file: {LOG_DIR / 'router_access.log'})"
+            )
+            return
+
         console.print(f"[bold green]MCPRouter is running[/] at http://{host}:{port} (PID: {pid})")
         share_config = ConfigManager().read_share_config()
         if share_config.get("pid"):
@@ -289,7 +343,8 @@ def router_status():
 @click.help_option("-h", "--help")
 @click.option("-a", "--address", type=str, required=False, help="Remote address to bind the tunnel to")
 @click.option("-p", "--profile", type=str, required=False, help="Profile to share")
-def share(address, profile):
+@click.option("--http", type=bool, flag_value=True, required=False, help="Use HTTP instead of HTTPS")
+def share(address, profile, http):
     """Create a share link for the MCPRouter daemon process.
 
     Example:
@@ -301,6 +356,7 @@ def share(address, profile):
     # check if there is a router already running
     pid = read_pid_file()
     config_manager = ConfigManager()
+    config = config_manager.get_router_config()
     if not pid:
         console.print("[yellow]MCPRouter is not running.[/]")
         return
@@ -324,22 +380,19 @@ def share(address, profile):
     # get share address
     if not address:
         console.print("[cyan]Using share address from config...[/]")
-        config = config_manager.get_router_config()
         address = config["share_address"]
 
     # create share link
     remote_host, remote_port = address.split(":")
 
     # start tunnel
-    # TODO: tls certificate if necessary
-    tunnel = Tunnel(remote_host, remote_port, config["host"], config["port"], secrets.token_urlsafe(32), None)
+    tunnel = Tunnel(remote_host, remote_port, config["host"], config["port"], secrets.token_urlsafe(32), http, None)
     share_url = tunnel.start_tunnel()
     share_pid = tunnel.proc.pid if tunnel.proc else None
     # generate random api key
     api_key = str(uuid.uuid4())
     console.print(f"[bold green]Generated secret for share link: {api_key}[/]")
-    # TODO: https is not supported yet
-    share_url = share_url.replace("https://", "http://") + "/sse"
+    share_url = share_url + "/sse"
     # save share pid and link to config
     config_manager.save_share_config(share_url, share_pid, api_key)
     profile = profile or "<your_profile>"

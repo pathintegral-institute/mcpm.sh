@@ -1,0 +1,113 @@
+{
+  "display_name": "DoiT MCP Server",
+  "license": "MIT",
+  "tags": [
+    "DoiT",
+    "API",
+    "MCP",
+    "cloud",
+    "cost analysis",
+    "analytics",
+    "anomaly detection",
+    "Claude",
+    "LLM"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@doitintl/doit-mcp-server@latest"
+      ],
+      "env": {
+        "DOIT_API_KEY": "${DOIT_API_KEY}"
+      },
+      "description": "Cursor IDE manual installation"
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "DOIT_API_KEY",
+        "mcp/doit"
+      ],
+      "env": {
+        "DOIT_API_KEY": "${DOIT_API_KEY}"
+      }
+    }
+  },
+  "arguments": {
+    "DOIT_API_KEY": {
+      "description": "Your DoiT API key with appropriate permissions.",
+      "required": true,
+      "example": "<YOUR-DOIT-API-KEY>"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "What are my Flexsave savings?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "What are my top 3 AWS services by cost?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "List all my available reports"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Show me the results of my 'Monthly Cost Overview' report"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "What are my recent GCP anomalies?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Show me details about anomaly ABC123"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Are there any current cloud incidents affecting my services?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Get details about cloud incident XYZ789"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "What dimensions are available for my cloud analytics?"
+    }
+  ],
+  "name": "doit",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/doitintl/doit-mcp-server"
+  },
+  "homepage": "https://github.com/doitintl/doit-mcp-server",
+  "author": {
+    "name": "doitintl"
+  },
+  "description": "DoiT MCP Server provides access to the DoiT API. This server enables LLMs like Claude to access DoiT platform data for troubleshooting and analysis.",
+  "categories": [
+    "Web Services"
+  ],
+  "is_official": false,
+  "docker_url": "https://hub.docker.com/r/mcp/doit"
+}
