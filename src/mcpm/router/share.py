@@ -186,4 +186,6 @@ class Tunnel:
             elif "login to server failed" in line:
                 _raise_tunnel_error()
 
+        if self.http:
+            url = url.replace("https://", "http://")
         return url

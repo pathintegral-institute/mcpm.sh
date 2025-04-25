@@ -289,7 +289,7 @@ def router_status():
 @click.help_option("-h", "--help")
 @click.option("-a", "--address", type=str, required=False, help="Remote address to bind the tunnel to")
 @click.option("-p", "--profile", type=str, required=False, help="Profile to share")
-@click.option("-http", type=bool, flag_value=True, required=False, help="Use HTTP instead of HTTPS")
+@click.option("--http", type=bool, flag_value=True, required=False, help="Use HTTP instead of HTTPS")
 def share(address, profile, http):
     """Create a share link for the MCPRouter daemon process.
 
@@ -332,15 +332,12 @@ def share(address, profile, http):
     remote_host, remote_port = address.split(":")
 
     # start tunnel
-    # TODO: tls certificate if necessary
     tunnel = Tunnel(remote_host, remote_port, config["host"], config["port"], secrets.token_urlsafe(32), http, None)
     share_url = tunnel.start_tunnel()
     share_pid = tunnel.proc.pid if tunnel.proc else None
     # generate random api key
     api_key = str(uuid.uuid4())
     console.print(f"[bold green]Generated secret for share link: {api_key}[/]")
-    if http:
-        share_url = share_url.replace("https://", "http://")
     share_url = share_url + "/sse"
     # save share pid and link to config
     config_manager.save_share_config(share_url, share_pid, api_key)
