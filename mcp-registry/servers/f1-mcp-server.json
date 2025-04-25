@@ -12,8 +12,9 @@
     },
     "license": "MIT",
     "categories": [
-        "Data Services",
-        "Sports"
+        "Productivity",
+        "Knowledge Base",
+        "MCP Tools"
     ],
     "tags": [
         "f1",
@@ -32,17 +33,6 @@
             ],
             "description": "Run the F1 MCP server globally using uvx (requires uv installed)",
             "recommended": true
-        },
-        "pip": {
-            "type": "pip",
-            "command": "pip",
-            "args": [
-                "install",
-                "f1-mcp-server"
-            ],
-            "run_command": "f1-mcp-server",
-            "run_args": [],
-            "description": "Install with pip and run the server directly (requires Python environment)"
         }
     },
     "arguments": {},
