@@ -1,0 +1,117 @@
+{
+  "display_name": "MCP-Discord",
+  "license": "MIT License",
+  "tags": [
+    "discord",
+    "mcp",
+    "model context protocol",
+    "bot",
+    "messaging",
+    "webhook",
+    "channel management",
+    "forum"
+  ],
+  "installations": {
+    "custom": {
+      "type": "custom",
+      "command": "node",
+      "args": [
+        "path/to/mcp-discord/build/index.js"
+      ],
+      "env": {
+        "DISCORD_TOKEN": "${DISCORD_TOKEN}"
+      },
+      "description": "Manual installation with node"
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "DISCORD_TOKEN",
+        "mcp/mcp-discord"
+      ],
+      "env": {
+        "DISCORD_TOKEN": "${DISCORD_TOKEN}"
+      },
+      "description": "Run the MCP-Discord server using Docker"
+    }
+  },
+  "arguments": {
+    "DISCORD_TOKEN": {
+      "description": "Your Discord bot token.",
+      "required": true,
+      "example": "<YOUR_DISCORD_BOT_TOKEN>"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Can you help me login to Discord?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Please send a message to the general channel saying 'Hello everyone!'"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Get information about my Discord server"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Create a new text channel called 'announcements'"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Read the last 10 messages from the general channel"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Add a \ud83d\udc4d reaction to the last message in the channel"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Create a new forum post in the help channel with the title 'Need assistance' and content 'Can someone help me with this issue?'"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Delete the message with ID 123456789 from the general channel"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Create a webhook for the announcements channel"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Send a message using the webhook with the name 'News Bot'"
+    }
+  ],
+  "name": "mcp-discord",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/barryyip0625/mcp-discord"
+  },
+  "homepage": "https://github.com/barryyip0625/mcp-discord",
+  "author": {
+    "name": "barryyip0625"
+  },
+  "description": "A Discord MCP (Model Context Protocol) server that enables AI assistants to interact with the Discord platform.",
+  "categories": [
+    "Messaging"
+  ],
+  "is_official": true,
+  "docker_url": "https://hub.docker.com/r/mcp/mcp-discord"
+}

@@ -1,0 +1,443 @@
+{
+  "display_name": "Lara Translate MCP Server",
+  "license": "MIT",
+  "tags": [
+    "translation",
+    "MCP",
+    "Model Context Protocol",
+    "language detection",
+    "translation memories",
+    "multilingual",
+    "API"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@translated/lara-mcp@latest"
+      ],
+      "env": {
+        "LARA_ACCESS_KEY_ID": "${LARA_ACCESS_KEY_ID}",
+        "LARA_ACCESS_KEY_SECRET": "${LARA_ACCESS_KEY_SECRET}"
+      },
+      "description": "Using NPX to run the Lara Translate MCP server"
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "LARA_ACCESS_KEY_ID",
+        "-e",
+        "LARA_ACCESS_KEY_SECRET",
+        "mcp/lara"
+      ],
+      "env": {
+        "LARA_ACCESS_KEY_ID": "${LARA_ACCESS_KEY_ID}",
+        "LARA_ACCESS_KEY_SECRET": "${LARA_ACCESS_KEY_SECRET}"
+      }
+    }
+  },
+  "arguments": {
+    "LARA_ACCESS_KEY_ID": {
+      "description": "Lara Translate Access Key ID",
+      "required": true,
+      "examples": "YOUR_ACCESS_KEY_ID"
+    },
+    "LARA_ACCESS_KEY_SECRET": {
+      "description": "Lara Translate Access Key Secret",
+      "required": true,
+      "examples": "YOUR_ACCESS_KEY_SECRET"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Translate with Lara \"Hello world\" to Spanish"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Translate with Lara \"I need this document translated\" from English to French"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Use Lara to translate \"Welcome to our website\" to Italian with context \"This is for a corporate website header\""
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "List all my translation memories using Lara"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Create a new translation memory in Lara called \"Marketing Content\""
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Add a translation to my memory: source \"Hello\" in English, translation \"Hola\" in Spanish"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Translate this paragraph with Lara to German: \"Artificial intelligence is transforming how we work and live. New tools emerge every day that help us be more productive.\""
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Translate with Lara from Italian to English: \"Buongiorno, come stai oggi?\""
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Use Lara to translate this text with instructions to maintain formal tone: \"Thank you for your purchase\" to Japanese"
+    }
+  ],
+  "name": "lara-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/translated/lara-mcp"
+  },
+  "homepage": "https://github.com/translated/lara-mcp",
+  "author": {
+    "name": "translated"
+  },
+  "description": "A Model Context Protocol (MCP) Server for [Lara Translate](https://laratranslate.com/translate) API, enabling powerful translation capabilities with support for language detection, context-aware translations and translation memories.",
+  "categories": [
+    "Productivity"
+  ],
+  "tools": [
+    {
+      "name": "translate",
+      "description": "Translate text between languages with support for language detection, context-aware translations and translation memories using Lara Translate.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "type": "string"
+                },
+                "translatable": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "text",
+                "translatable"
+              ],
+              "additionalProperties": false
+            },
+            "description": "An array of text blocks to translate. Each block contains a text string and a boolean indicating whether it should be translated. This allows for selective translation where some text blocks can be preserved in their original form while others are translated."
+          },
+          "source": {
+            "type": "string",
+            "description": "The source language code (e.g., 'en-EN' for English). If not specified, the system will attempt to detect it automatically. If you have a hint about the source language, you should specify it in the source_hint field."
+          },
+          "target": {
+            "type": "string",
+            "description": "The target language code (e.g., 'it-IT' for Italian). This specifies the language you want the text translated into."
+          },
+          "context": {
+            "type": "string",
+            "description": "Additional context string to improve translation quality (e.g., 'This is a legal document' or 'Im talking with a doctor'). This helps the translation system better understand the domain."
+          },
+          "instructions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "A list of instructions to adjust the network\u2019s behavior regarding the output (e.g., 'Use a formal tone')."
+          },
+          "source_hint": {
+            "type": "string",
+            "description": "Used to guide language detection. Specify this when the source language is uncertain to improve detection accuracy."
+          },
+          "adapt_to": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "A list of translation memory IDs for adapting the translation."
+          }
+        },
+        "required": [
+          "text",
+          "target"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "create_memory",
+      "description": "Create a translation memory with a custom name in your Lara Translate account. Translation memories store pairs of source and target text segments (translation units) for reuse in future translations.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the new memory, it should be short and generic, like 'catch_phrases' or 'brand_names'"
+          },
+          "external_id": {
+            "type": "string",
+            "description": "The ID of the memory to be imported from MyMemory. Use this to initialize the memory with external content. Format: ext_my_[MyMemory ID]"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "delete_memory",
+      "description": "Deletes a translation memory from your Lara Translate account.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier of the memory to update. Format: mem_xyz123"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "update_memory",
+      "description": "Updates a translation memory in your Lara Translate account.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier of the memory to update. Format: mem_xyz123"
+          },
+          "name": {
+            "type": "string",
+            "description": "The new name for the memory"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "add_translation",
+      "description": "Adds a translation to a translation memory in your Lara Translate account.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The ID or list of IDs where to save the translation unit. Format: mem_xyz123"
+          },
+          "source": {
+            "type": "string",
+            "description": "The source language code of the sentence, it MUST be a language supported by the system, use the list_languages tool to get a list of all the supported languages"
+          },
+          "target": {
+            "type": "string",
+            "description": "The target language code of the translation, it MUST be a language supported by the system, use the list_languages tool to get a list of all the supported languages"
+          },
+          "sentence": {
+            "type": "string",
+            "description": "The source sentence"
+          },
+          "translation": {
+            "type": "string",
+            "description": "The translated sentence"
+          },
+          "tuid": {
+            "type": "string",
+            "description": "Translation Unit unique identifier"
+          },
+          "sentence_before": {
+            "type": "string",
+            "description": "The sentence before the source sentence to specify the context of the translation unit"
+          },
+          "sentence_after": {
+            "type": "string",
+            "description": "The sentence after the source sentence to specify the context of the translation unit"
+          }
+        },
+        "required": [
+          "id",
+          "source",
+          "target",
+          "sentence",
+          "translation"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "delete_translation",
+      "description": "Deletes a translation from a translation memory from your Lara Translate account.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The ID or list of IDs where to delete the translation unit from. Format: mem_xyz123"
+          },
+          "source": {
+            "type": "string",
+            "description": "The source language code of the sentence"
+          },
+          "target": {
+            "type": "string",
+            "description": "The target language code of the translation"
+          },
+          "sentence": {
+            "type": "string",
+            "description": "The source sentence"
+          },
+          "translation": {
+            "type": "string",
+            "description": "The translated sentence"
+          },
+          "tuid": {
+            "type": "string",
+            "description": "Translation Unit unique identifier"
+          },
+          "sentence_before": {
+            "type": "string",
+            "description": "The sentence before the source sentence to specify the context of the translation unit"
+          },
+          "sentence_after": {
+            "type": "string",
+            "description": "The sentence after the source sentence to specify the context of the translation unit"
+          }
+        },
+        "required": [
+          "id",
+          "source",
+          "target",
+          "sentence",
+          "translation"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "import_tmx",
+      "description": "Imports a TMX file into a translation memory in your Lara Translate account.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The ID of the memory to update. Format: mem_xyz123."
+          },
+          "tmx_content": {
+            "type": "string",
+            "description": "The content of the tmx file to upload. Don't provide this if you choose to use tmx_url."
+          },
+          "tmx_url": {
+            "type": "string",
+            "description": "A URL to the tmx file to upload. Don't provide this if you choose to use tmx_content."
+          },
+          "gzip": {
+            "type": "boolean",
+            "description": "Indicates if the file is a compressed .gz file"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "check_import_status",
+      "description": "Checks the status of a TMX file import job in your Lara Translate account.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The ID of the import job"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "list_memories",
+      "description": "Lists all translation memories in your Lara Translate account.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "list_languages",
+      "description": "Lists all supported languages in your Lara Translate account.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [
+    {
+      "uri": "memories://list",
+      "name": "Translation Memories",
+      "description": "List of translation memories in your Lara Translate account.",
+      "mimeType": "",
+      "size": 0,
+      "annotations": ""
+    },
+    {
+      "uri": "languages://list",
+      "name": "Supported Languages",
+      "description": "List of Lara Translate supported languages.",
+      "mimeType": "",
+      "size": 0,
+      "annotations": ""
+    }
+  ],
+  "is_official": false,
+  "docker_url": "https://hub.docker.com/r/mcp/lara"
+}

@@ -291,6 +291,10 @@
     },
     "is_official": {
       "type": "boolean"
+    },
+    "docker_url": {
+      "type": "string",
+      "description": "URL to the Docker Hub page for this server, empty if not available"
     }
   }
 }

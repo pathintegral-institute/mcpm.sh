@@ -27,6 +27,16 @@
         "mcp-openapi-schema",
         "${ABSOLUTE_PATH_TO_OPENAPI_YAML}"
       ]
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "mcp/openapi-schema"
+      ]
     }
   },
   "arguments": {
@@ -215,5 +225,6 @@
         ]
       }
     }
-  ]
+  ],
+  "docker_url": "https://hub.docker.com/r/mcp/openapi-schema"
 }

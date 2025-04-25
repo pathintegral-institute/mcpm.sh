@@ -1,0 +1,108 @@
+{
+  "display_name": "Email Sending MCP",
+  "license": "",
+  "tags": [
+    "email",
+    "resend",
+    "mcp",
+    "anthropic",
+    "cursor",
+    "claude"
+  ],
+  "installations": {
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "REPLY_TO_EMAIL_ADDRESSES",
+        "-e",
+        "SENDER_EMAIL_ADDRESS",
+        "-e",
+        "RESEND_API_KEY",
+        "mcp/resend"
+      ],
+      "env": {
+        "REPLY_TO_EMAIL_ADDRESSES": "${REPLY_TO_EMAIL_ADDRESSES}",
+        "SENDER_EMAIL_ADDRESS": "${SENDER_EMAIL_ADDRESS}",
+        "RESEND_API_KEY": "${RESEND_API_KEY}"
+      },
+      "description": "Published server configuration using docker"
+    },
+    "cli": {
+      "type": "cli",
+      "command": "node",
+      "args": [
+        "ABSOLUTE_PATH_TO_MCP_SERVER/build/index.js"
+      ],
+      "env": {
+        "RESEND_API_KEY": "${RESEND_API_KEY}",
+        "SENDER_EMAIL_ADDRESS": "${SENDER_EMAIL_ADDRESS}",
+        "REPLY_TO_EMAIL_ADDRESSES": "${REPLY_TO_EMAIL_ADDRESSES}"
+      },
+      "description": "Local Deployment"
+    }
+  },
+  "arguments": {
+    "RESEND_API_KEY": {
+      "description": "Resend API key",
+      "required": true,
+      "example": "your-resend-api-key"
+    },
+    "SENDER_EMAIL_ADDRESS": {
+      "description": "Sender email address",
+      "required": true,
+      "example": "sender@example.com"
+    },
+    "REPLY_TO_EMAIL_ADDRESSES": {
+      "description": "Reply-to email addresses (comma-delimited)",
+      "required": true,
+      "example": "reply1@example.com,reply2@example.com"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Send an email to john@example.com with the subject 'Meeting tomorrow' and body 'Hi John, just confirming our meeting tomorrow at 2pm.'"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Draft an HTML email to team@company.com about the new product launch"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Schedule an email to client@business.com for next Monday with the quarterly report"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Send an email to sarah@example.com with CC to manager@example.com"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Compose and send a follow-up email to candidates@hiring.com with BCC to hr@company.com"
+    }
+  ],
+  "name": "mcp-send-email",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/resend/mcp-send-email"
+  },
+  "homepage": "https://github.com/resend/mcp-send-email",
+  "author": {
+    "name": "resend"
+  },
+  "description": "This is a simple MCP server that sends emails using Resend's API. Why? Now you can let Cursor or Claude Desktop compose emails for you and send it right away without having to copy and paste the email content.",
+  "categories": [
+    "Messaging"
+  ],
+  "is_official": false,
+  "docker_url": "https://hub.docker.com/r/mcp/resend"
+}

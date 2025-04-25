@@ -16,6 +16,21 @@
       "package": "@jetbrains/mcp-proxy",
       "description": "Install via npm package",
       "recommended": true
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "IDE_PORT",
+        "mcp/jetbrains"
+      ],
+      "env": {
+        "IDE_PORT": "${IDE_PORT}"
+      }
     }
   },
   "homepage": "https://github.com/JetBrains/mcp-jetbrains",
@@ -52,5 +67,6 @@
   "tools": [],
   "prompts": [],
   "resources": [],
-  "is_official": true
+  "is_official": true,
+  "docker_url": "https://hub.docker.com/r/mcp/jetbrains"
 }

@@ -1038,5 +1038,6 @@
       }
     }
   ],
-  "is_official": true
+  "is_official": true,
+  "docker_url": "https://hub.docker.com/r/mcp/github"
 }

@@ -22,6 +22,16 @@
         "basic-memory",
         "mcp"
       ]
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "mcp/basic-memory"
+      ]
     }
   },
   "tags": [
@@ -445,5 +455,6 @@
         "type": "object"
       }
     }
-  ]
+  ],
+  "docker_url": "https://hub.docker.com/r/mcp/basic-memory"
 }

@@ -36,6 +36,22 @@
       },
       "description": "Run with NPX",
       "recommended": true
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "EXA_API_KEY",
+        "mcp/exa"
+      ],
+      "env": {
+        "EXA_API_KEY": "${EXA_API_KEY}"
+      },
+      "description": "Run using Docker"
     }
   },
   "examples": [
@@ -89,5 +105,6 @@
   ],
   "prompts": [],
   "resources": [],
-  "is_official": true
+  "is_official": true,
+  "docker_url": "https://hub.docker.com/r/mcp/exa"
 }

@@ -44,6 +44,42 @@
       "env": {
         "FIRECRAWL_API_KEY": "${FIRECRAWL_API_KEY}"
       }
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "FIRECRAWL_API_URL",
+        "-e",
+        "FIRECRAWL_RETRY_MAX_ATTEMPTS",
+        "-e",
+        "FIRECRAWL_RETRY_INITIAL_DELAY",
+        "-e",
+        "FIRECRAWL_RETRY_MAX_DELAY",
+        "-e",
+        "FIRECRAWL_RETRY_BACKOFF_FACTOR",
+        "-e",
+        "FIRECRAWL_CREDIT_WARNING_THRESHOLD",
+        "-e",
+        "FIRECRAWL_CREDIT_CRITICAL_THRESHOLD",
+        "-e",
+        "FIRECRAWL_API_KEY",
+        "mcp/firecrawl"
+      ],
+      "env": {
+        "FIRECRAWL_API_URL": "https://api.firecrawl.dev/v1",
+        "FIRECRAWL_RETRY_MAX_ATTEMPTS": "5",
+        "FIRECRAWL_RETRY_INITIAL_DELAY": "2000",
+        "FIRECRAWL_RETRY_MAX_DELAY": "30000",
+        "FIRECRAWL_RETRY_BACKOFF_FACTOR": "3",
+        "FIRECRAWL_CREDIT_WARNING_THRESHOLD": "2000",
+        "FIRECRAWL_CREDIT_CRITICAL_THRESHOLD": "500",
+        "FIRECRAWL_API_KEY": "${FIRECRAWL_API_KEY}"
+      }
     }
   },
   "arguments": {
@@ -638,5 +674,6 @@
       }
     }
   ],
-  "is_official": true
+  "is_official": true,
+  "docker_url": "https://hub.docker.com/r/mcp/firecrawl"
 }

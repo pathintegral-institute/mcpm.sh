@@ -1,0 +1,188 @@
+{
+  "display_name": "Atlas Docs MCP Server",
+  "license": "MIT",
+  "tags": [
+    "documentation",
+    "MCP",
+    "Model Context Protocol",
+    "libraries",
+    "frameworks",
+    "AI assistants",
+    "LLM",
+    "developer tools"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@cartographai/atlas-docs-mcp"
+      ],
+      "description": "Atlas Docs MCP server installation for MCP clients"
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "ATLAS_API_URL",
+        "mcp/atlas-docs"
+      ],
+      "env": {
+        "ATLAS_API_URL": "https://atlas.cartograph.app/api"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Use the tools to check the documentation for Astro to ensure that you use the library correctly."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Can you search the ElevenLabs documentation for information about text-to-speech?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Show me the full documentation for Svelte."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "List all the documentation sets available through Atlas Docs."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Get the documentation index for Prisma."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "I need to implement authentication with Stripe, can you check the docs for me?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Find information about routing in TanStack-Router documentation."
+    }
+  ],
+  "name": "atlas-docs-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CartographAI/atlas-docs-mcp"
+  },
+  "homepage": "https://github.com/CartographAI/atlas-docs-mcp",
+  "author": {
+    "name": "CartographAI"
+  },
+  "description": "A [Model Context Protocol (MCP)](https://modelcontextprotocol.io/introduction) server that provides AI assistants with documentation for libraries and frameworks.",
+  "categories": [
+    "Knowledge Base"
+  ],
+  "tools": [
+    {
+      "name": "list_docs",
+      "description": "Lists all available documentation libraries and frameworks. Use this as your first step to discover available documentation sets. Returns name, description and source url for each documentation set. Required before using other documentation tools since you need the docName.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "search_docs",
+      "description": "Searches a documentation set for specific content. Use this to find pages containing particular keywords, concepts, or topics. Returns matching pages ranked by relevance with their paths and descriptions. Follow up with get_docs_page to get full content.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "docName": {
+            "type": "string",
+            "description": "Name of the documentation set"
+          },
+          "query": {
+            "type": "string",
+            "description": "Search query to find relevant pages within the documentation set"
+          }
+        },
+        "required": [
+          "docName",
+          "query"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "get_docs_index",
+      "description": "Retrieves a condensed, LLM-friendly index of the pages in a documentation set. Use this for initial exploration to understand what's covered and identify relevant pages. Returns a markdown page with a list of available pages. Follow up with get_docs_page to get full content.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "docName": {
+            "type": "string",
+            "description": "Name of the documentation set"
+          }
+        },
+        "required": [
+          "docName"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "get_docs_page",
+      "description": "Retrieves a specific documentation page's content using its relative path. Use this to get detailed information about a known topic, after identifying the relevant page through get_docs_index or search_docs. Returns the complete content of a single documentation page.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "docName": {
+            "type": "string",
+            "description": "Name of the documentation set"
+          },
+          "pagePath": {
+            "type": "string",
+            "description": "The root-relative path of the specific documentation page (e.g., '/guides/getting-started', '/api/authentication')"
+          }
+        },
+        "required": [
+          "docName",
+          "pagePath"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "get_docs_full",
+      "description": "Retrieves the complete documentation content in a single consolidated file. Use this when you need comprehensive knowledge or need to analyze the full documentation context. Returns a large volume of text - consider using get_docs_page or search_docs for targeted information.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "docName": {
+            "type": "string",
+            "description": "Name of the documentation set"
+          }
+        },
+        "required": [
+          "docName"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": false,
+  "docker_url": "https://hub.docker.com/r/mcp/atlas-docs"
+}

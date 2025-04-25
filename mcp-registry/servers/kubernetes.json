@@ -27,6 +27,16 @@
         "-y",
         "mcp-server-kubernetes"
       ]
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "mcp/kubernetes"
+      ]
     }
   },
   "tools": [
@@ -862,5 +872,6 @@
         ]
       }
     }
-  ]
+  ],
+  "docker_url": "https://hub.docker.com/r/mcp/kubernetes"
 }

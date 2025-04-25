@@ -1,0 +1,198 @@
+{
+  "display_name": "Dappier MCP Server",
+  "license": "MIT",
+  "tags": [
+    "MCP",
+    "Model Context Protocol",
+    "real-time data",
+    "web search",
+    "financial data",
+    "stock market",
+    "news",
+    "AI recommendations",
+    "content discovery"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "dappier-mcp"
+      ],
+      "env": {
+        "DAPPIER_API_KEY": "${DAPPIER_API_KEY}"
+      },
+      "description": "Run with uvx after installing dappier-mcp"
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "DAPPIER_API_KEY",
+        "mcp/dappier"
+      ],
+      "env": {
+        "DAPPIER_API_KEY": "${DAPPIER_API_KEY}"
+      }
+    }
+  },
+  "arguments": {
+    "DAPPIER_API_KEY": {
+      "description": "Dappier API key",
+      "required": true,
+      "example": "<YOUR-DAPPIER-API-KEY>"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "How is the weather today in Austin, TX?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "What is the latest news for Meta?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "What is the stock price for AAPL?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Show me the latest sports news."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Find trending articles on sustainable living."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Get pet care recommendations from IHeartDogs AI."
+    }
+  ],
+  "name": "dappier",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dappierai/dappier-mcp"
+  },
+  "homepage": "https://github.com/dappierai/dappier-mcp",
+  "author": {
+    "name": "dappierai"
+  },
+  "description": "Dappier MCP Server connects any LLM or AI to real-time, proprietary data from trusted sources, enabling AI to become an expert by accessing specialized models like web search, news, sports, finance, crypto, and premium publisher content.",
+  "categories": [
+    "Knowledge Base"
+  ],
+  "tools": [
+    {
+      "name": "dappier_real_time_search",
+      "description": "\n    Retrieve real-time search data from Dappier by processing an AI model that supports two key capabilities:\n\n    - Real-Time Web Search:  \n    Access the latest news, stock market data, weather, travel information, deals, and more using model `am_01j06ytn18ejftedz6dyhz2b15`.  \n    Use this model when no stock ticker symbol is provided.\n\n    - Stock Market Data:  \n    Retrieve real-time financial news, stock prices, and trade updates using model `am_01j749h8pbf7ns8r1bq9s2evrh`.  \n    Use this model only when a stock ticker symbol is provided.\n\n    Based on the provided `ai_model_id`, the tool selects the appropriate model and returns search results.\n    ",
+      "inputSchema": {
+        "properties": {
+          "query": {
+            "description": "The search query to retrieve real-time information.",
+            "title": "Query",
+            "type": "string"
+          },
+          "ai_model_id": {
+            "description": "The AI model ID to use for the query.\n\nAvailable AI Models:\n- am_01j06ytn18ejftedz6dyhz2b15: (Real-Time Data) Access real-time Google web search results, including the latest news, stock market data, news, weather, travel, deals, and more. Use this model when no stock ticker symbol is provided.\n- am_01j749h8pbf7ns8r1bq9s2evrh: (Stock Market Data) Access real-time financial news, stock prices, and trades from Polygon.io, with AI-powered insights and up-to-the-minute updates. Use this model only when a stock ticker symbol is provided.\n\n",
+            "enum": [
+              "am_01j06ytn18ejftedz6dyhz2b15",
+              "am_01j749h8pbf7ns8r1bq9s2evrh"
+            ],
+            "title": "Ai Model Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "query",
+          "ai_model_id"
+        ],
+        "title": "dappier_real_time_searchArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "dappier_ai_recommendations",
+      "description": "\n    Fetch AI-powered recommendations from Dappier by processing the provided query with a selected data model that tailors results to specific interests.\n\n    - **Sports News (dm_01j0pb465keqmatq9k83dthx34):**  \n    Get real-time news, updates, and personalized content from top sports sources.\n\n    - **Lifestyle News (dm_01j0q82s4bfjmsqkhs3ywm3x6y):**  \n    Access current lifestyle updates, analysis, and insights from leading lifestyle publications.\n\n    - **iHeartDogs AI (dm_01j1sz8t3qe6v9g8ad102kvmqn):**  \n    Tap into a dog care expert with access to thousands of articles covering pet health, behavior, grooming, and ownership.\n\n    - **iHeartCats AI (dm_01j1sza0h7ekhaecys2p3y0vmj):**  \n    Utilize a cat care specialist that provides comprehensive content on cat health, behavior, and lifestyle.\n\n    - **GreenMonster (dm_01j5xy9w5sf49bm6b1prm80m27):**  \n    Receive guidance for making conscious and compassionate choices benefiting people, animals, and the planet.\n\n    - **WISH-TV AI (dm_01jagy9nqaeer9hxx8z1sk1jx6):**  \n    Get recommendations covering sports, breaking news, politics, multicultural updates, and more.\n\n    Based on the chosen `data_model_id`, the tool processes the input query and returns a formatted summary including article titles, summaries, images, source URLs, publication dates, and relevance scores.\n    ",
+      "inputSchema": {
+        "properties": {
+          "query": {
+            "description": "The input string for AI-powered content recommendations.",
+            "title": "Query",
+            "type": "string"
+          },
+          "data_model_id": {
+            "description": "The data model ID to use for recommendations.\n\nAvailable Data Models:\n- dm_01j0pb465keqmatq9k83dthx34: (Sports News) Real-time news, updates, and personalized content from top sports sources like Sportsnaut, Forever Blueshirts, Minnesota Sports Fan, LAFB Network, Bounding Into Sports and Ringside Intel.\n- dm_01j0q82s4bfjmsqkhs3ywm3x6y: (Lifestyle News) Real-time updates, analysis, and personalized content from top sources like The Mix, Snipdaily, Nerdable and Familyproof.\n- dm_01j1sz8t3qe6v9g8ad102kvmqn: (iHeartDogs AI) A dog care expert with access to thousands of articles on health, behavior, lifestyle, grooming, ownership, and more from the industry-leading pet community iHeartDogs.com.\n- dm_01j1sza0h7ekhaecys2p3y0vmj: (iHeartCats AI) A cat care expert with access to thousands of articles on health, behavior, lifestyle, grooming, ownership, and more from the industry-leading pet community iHeartCats.com.\n- dm_01j5xy9w5sf49bm6b1prm80m27: (GreenMonster) A helpful guide to making conscious and compassionate choices that benefit people, animals, and the planet.\n- dm_01jagy9nqaeer9hxx8z1sk1jx6: (WISH-TV AI) Covers sports, politics, breaking news, multicultural news, Hispanic language content, entertainment, health, and education.\n\n",
+            "enum": [
+              "dm_01j0pb465keqmatq9k83dthx34",
+              "dm_01j0q82s4bfjmsqkhs3ywm3x6y",
+              "dm_01j1sz8t3qe6v9g8ad102kvmqn",
+              "dm_01j1sza0h7ekhaecys2p3y0vmj",
+              "dm_01j5xy9w5sf49bm6b1prm80m27",
+              "dm_01jagy9nqaeer9hxx8z1sk1jx6"
+            ],
+            "title": "Data Model Id",
+            "type": "string"
+          },
+          "similarity_top_k": {
+            "default": 9,
+            "description": "Number of top similar articles to retrieve based on semantic similarity.",
+            "title": "Similarity Top K",
+            "type": "integer"
+          },
+          "ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "The site domain where recommendations should be prioritized.",
+            "title": "Ref"
+          },
+          "num_articles_ref": {
+            "default": 0,
+            "description": "Minimum number of articles to return from the reference domain.",
+            "title": "Num Articles Ref",
+            "type": "integer"
+          },
+          "search_algorithm": {
+            "default": "most_recent",
+            "description": "The search algorithm to use for retrieving articles.",
+            "enum": [
+              "most_recent",
+              "semantic",
+              "most_recent_semantic",
+              "trending"
+            ],
+            "title": "Search Algorithm",
+            "type": "string"
+          }
+        },
+        "required": [
+          "query",
+          "data_model_id"
+        ],
+        "title": "dappier_ai_recommendationsArguments",
+        "type": "object"
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": true,
+  "docker_url": "https://hub.docker.com/r/mcp/dappier"
+}

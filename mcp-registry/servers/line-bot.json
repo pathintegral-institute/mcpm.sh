@@ -1,0 +1,100 @@
+{
+  "display_name": "LINE Bot MCP Server",
+  "license": "Apache-2.0",
+  "tags": [
+    "LINE",
+    "bot",
+    "messaging",
+    "MCP",
+    "Model Context Protocol",
+    "AI Agent",
+    "LINE Messaging API"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "node",
+      "args": [
+        "PATH/TO/line-bot-mcp-server/dist/index.js"
+      ],
+      "env": {
+        "CHANNEL_ACCESS_TOKEN": "${CHANNEL_ACCESS_TOKEN}",
+        "DESTINATION_USER_ID": "${DESTINATION_USER_ID}"
+      },
+      "description": "Run the LINE Bot MCP Server using Node.js"
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "CHANNEL_ACCESS_TOKEN",
+        "-e",
+        "DESTINATION_USER_ID",
+        "mcp/line"
+      ],
+      "env": {
+        "CHANNEL_ACCESS_TOKEN": "${CHANNEL_ACCESS_TOKEN}",
+        "DESTINATION_USER_ID": "${DESTINATION_USER_ID}"
+      },
+      "description": "Run the LINE Bot MCP Server using Docker"
+    }
+  },
+  "arguments": {
+    "CHANNEL_ACCESS_TOKEN": {
+      "description": "Your LINE channel access token.",
+      "required": true,
+      "example": "<YOUR_LINE_CHANNEL_ACCESS_TOKEN>"
+    },
+    "DESTINATION_USER_ID": {
+      "description": "The user ID of the destination user.",
+      "required": true,
+      "example": "<DESTINATION_USER_ID>"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Send a text message to a LINE user saying 'Hello, how are you today?'"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Create a flex message with a carousel layout showing product options"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Broadcast a text announcement to all followers of my LINE Official Account"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Get the profile information of a specific LINE user"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Send a flex message with a bubble container that includes an image and text"
+    }
+  ],
+  "name": "line-bot",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/line/line-bot-mcp-server"
+  },
+  "homepage": "https://github.com/line/line-bot-mcp-server",
+  "author": {
+    "name": "line"
+  },
+  "description": "1. **push_text_message**",
+  "categories": [
+    "Messaging"
+  ],
+  "is_official": false,
+  "docker_url": "https://hub.docker.com/r/mcp/line"
+}

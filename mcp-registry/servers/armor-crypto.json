@@ -1,0 +1,2142 @@
+{
+  "display_name": "Armor Crypto MCP",
+  "license": "MIT",
+  "tags": [
+    "crypto",
+    "wallet",
+    "blockchain",
+    "AI",
+    "Solana",
+    "DCA",
+    "swaps",
+    "staking",
+    "multi-chain",
+    "agent integration"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "armor-crypto-mcp@latest",
+        "--version"
+      ],
+      "env": {
+        "ARMOR_API_KEY": "${ARMOR_API_KEY}"
+      },
+      "description": "Installation for Armor Crypto MCP using uvx"
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "ARMOR_API_URL",
+        "-e",
+        "ARMOR_API_KEY",
+        "mcp/armor-crypto"
+      ],
+      "env": {
+        "ARMOR_API_URL": "https://app.armorwallet.ai/api/v1",
+        "ARMOR_API_KEY": "${ARMOR_API_KEY}"
+      }
+    }
+  },
+  "arguments": {
+    "ARMOR_API_KEY": {
+      "description": "Your Armor API key required for authenticating requests to the Armor API.",
+      "required": true,
+      "example": "<YOUR-ARMOR-API-KEY>"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Create a new wallet for me on Solana"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Show me trending tokens on Solana"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "I want to swap 0.1 SOL for USDC"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Set up a DCA strategy to buy SOL weekly"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Create a limit order to buy SOL when it drops to $100"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Show me my wallet balances"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Stake 1 SOL in a validator"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Calculate the potential return if I invest 5 SOL today"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Cancel my pending limit orders"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Archive my old wallet"
+    }
+  ],
+  "name": "armor-crypto",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/armorwallet/armor-crypto-mcp"
+  },
+  "homepage": "https://github.com/armorwallet/armor-crypto-mcp",
+  "author": {
+    "name": "armorwallet"
+  },
+  "description": "*Alpha Test version 0.1*",
+  "categories": [
+    "Finance"
+  ],
+  "tools": [
+    {
+      "name": "get_armor_mcp_version",
+      "description": "Get the current Armor Wallet version",
+      "inputSchema": {
+        "properties": {},
+        "title": "get_armor_mcp_versionArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "wait_a_moment",
+      "description": "Wait for some short amount of time, no more than 10 seconds",
+      "inputSchema": {
+        "properties": {
+          "seconds": {
+            "title": "Seconds",
+            "type": "number"
+          }
+        },
+        "required": [
+          "seconds"
+        ],
+        "title": "wait_a_momentArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_current_time",
+      "description": "Gets the current time and date",
+      "inputSchema": {
+        "properties": {},
+        "title": "get_current_timeArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "calculator",
+      "description": "\n    Safely evaluates a mathematical or statistical expression string using Python syntax.\n\n    Supports arithmetic operations (+, -, *, /, **, %, //), list expressions, and a range of math and statistics functions: \n    abs, round, min, max, len, sum, mean, median, stdev, variance, sin, cos, tan, sqrt, log, exp, floor, ceil, etc.\n\n    Custom variables can be passed via the 'variables' dict, including lists for time series data.\n    ",
+      "inputSchema": {
+        "properties": {
+          "expression": {
+            "title": "Expression",
+            "type": "string"
+          },
+          "variables": {
+            "additionalProperties": true,
+            "title": "Variables",
+            "type": "object"
+          }
+        },
+        "required": [
+          "expression",
+          "variables"
+        ],
+        "title": "calculatorArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_wallet_token_balance",
+      "description": "\n    Get the balance for a list of wallet/token pairs.\n    \n    Expects a WalletTokenPairsContainer, returns a list of WalletTokenBalance.\n    ",
+      "inputSchema": {
+        "$defs": {
+          "WalletTokenPairs": {
+            "properties": {
+              "wallet": {
+                "description": "The name of wallet. To get wallet names use `get_user_wallets_and_groups_list`",
+                "title": "Wallet",
+                "type": "string"
+              },
+              "token": {
+                "description": "public address of token. To get the address from a token symbol use `get_token_details`",
+                "title": "Token",
+                "type": "string"
+              }
+            },
+            "required": [
+              "wallet",
+              "token"
+            ],
+            "title": "WalletTokenPairs",
+            "type": "object"
+          },
+          "WalletTokenPairsContainer": {
+            "properties": {
+              "wallet_token_pairs": {
+                "items": {
+                  "$ref": "#/$defs/WalletTokenPairs"
+                },
+                "title": "Wallet Token Pairs",
+                "type": "array"
+              }
+            },
+            "required": [
+              "wallet_token_pairs"
+            ],
+            "title": "WalletTokenPairsContainer",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "wallet_token_pairs": {
+            "$ref": "#/$defs/WalletTokenPairsContainer"
+          }
+        },
+        "required": [
+          "wallet_token_pairs"
+        ],
+        "title": "get_wallet_token_balanceArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "calculate_token_conversion",
+      "description": "\n    Perform token conversion quote between two tokens. Good for quickly calculating market prices.\n    \n    Expects a ConversionRequestContainer, returns a list of ConversionResponse.\n    ",
+      "inputSchema": {
+        "$defs": {
+          "ConversionRequest": {
+            "properties": {
+              "input_amount": {
+                "description": "input amount to convert",
+                "title": "Input Amount",
+                "type": "number"
+              },
+              "input_token": {
+                "description": "public address of input token",
+                "title": "Input Token",
+                "type": "string"
+              },
+              "output_token": {
+                "description": "public address of output token",
+                "title": "Output Token",
+                "type": "string"
+              }
+            },
+            "required": [
+              "input_amount",
+              "input_token",
+              "output_token"
+            ],
+            "title": "ConversionRequest",
+            "type": "object"
+          },
+          "ConversionRequestContainer": {
+            "properties": {
+              "conversion_requests": {
+                "items": {
+                  "$ref": "#/$defs/ConversionRequest"
+                },
+                "title": "Conversion Requests",
+                "type": "array"
+              }
+            },
+            "required": [
+              "conversion_requests"
+            ],
+            "title": "ConversionRequestContainer",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "conversion_requests": {
+            "$ref": "#/$defs/ConversionRequestContainer"
+          }
+        },
+        "required": [
+          "conversion_requests"
+        ],
+        "title": "calculate_token_conversionArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "swap_quote",
+      "description": "\n    Retrieve a swap quote.\n    \n    Expects a SwapQuoteRequestContainer, returns a list of SwapQuoteResponse.\n    ",
+      "inputSchema": {
+        "$defs": {
+          "SwapQuoteRequest": {
+            "properties": {
+              "from_wallet": {
+                "description": "The name of the wallet that input_token is in.",
+                "title": "From Wallet",
+                "type": "string"
+              },
+              "input_token": {
+                "description": "public mint address of input token. To get the address from a token symbol use `get_token_details`",
+                "title": "Input Token",
+                "type": "string"
+              },
+              "output_token": {
+                "description": "public mint address of output token. To get the address from a token symbol use `get_token_details`",
+                "title": "Output Token",
+                "type": "string"
+              },
+              "input_amount": {
+                "description": "input amount to swap",
+                "title": "Input Amount",
+                "type": "number"
+              },
+              "slippage": {
+                "default": "slippage percentage. To estimate slippage based on liquidity see `get_token_details` for the input_token_symbol. 1.0 for high liquidity and near 20.0 for lower liquidity.",
+                "title": "Slippage",
+                "type": "number"
+              }
+            },
+            "required": [
+              "from_wallet",
+              "input_token",
+              "output_token",
+              "input_amount"
+            ],
+            "title": "SwapQuoteRequest",
+            "type": "object"
+          },
+          "SwapQuoteRequestContainer": {
+            "properties": {
+              "swap_quote_requests": {
+                "items": {
+                  "$ref": "#/$defs/SwapQuoteRequest"
+                },
+                "title": "Swap Quote Requests",
+                "type": "array"
+              }
+            },
+            "required": [
+              "swap_quote_requests"
+            ],
+            "title": "SwapQuoteRequestContainer",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "swap_quote_requests": {
+            "$ref": "#/$defs/SwapQuoteRequestContainer"
+          }
+        },
+        "required": [
+          "swap_quote_requests"
+        ],
+        "title": "swap_quoteArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "swap_transaction",
+      "description": "\n    Execute a swap transaction.\n    \n    Expects a SwapTransactionRequestContainer, returns a list of SwapTransactionResponse.\n    ",
+      "inputSchema": {
+        "$defs": {
+          "SwapTransactionRequest": {
+            "properties": {
+              "transaction_id": {
+                "description": "unique id of the generated swap quote",
+                "title": "Transaction Id",
+                "type": "string"
+              }
+            },
+            "required": [
+              "transaction_id"
+            ],
+            "title": "SwapTransactionRequest",
+            "type": "object"
+          },
+          "SwapTransactionRequestContainer": {
+            "properties": {
+              "swap_transaction_requests": {
+                "items": {
+                  "$ref": "#/$defs/SwapTransactionRequest"
+                },
+                "title": "Swap Transaction Requests",
+                "type": "array"
+              }
+            },
+            "required": [
+              "swap_transaction_requests"
+            ],
+            "title": "SwapTransactionRequestContainer",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "swap_transaction_requests": {
+            "$ref": "#/$defs/SwapTransactionRequestContainer"
+          }
+        },
+        "required": [
+          "swap_transaction_requests"
+        ],
+        "title": "swap_transactionArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_all_wallets",
+      "description": "\n    Retrieve all wallets with balances.\n    \n    Returns a list of Wallets and asssets\n    ",
+      "inputSchema": {
+        "$defs": {
+          "ListWalletsRequest": {
+            "properties": {
+              "is_archived": {
+                "default": false,
+                "description": "whether to include archived wallets",
+                "title": "Is Archived",
+                "type": "boolean"
+              }
+            },
+            "title": "ListWalletsRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "get_all_wallets_requests": {
+            "$ref": "#/$defs/ListWalletsRequest"
+          }
+        },
+        "required": [
+          "get_all_wallets_requests"
+        ],
+        "title": "get_all_walletsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_all_orders",
+      "description": "\n    Retrieve all limit and stop loss orders.\n    \n    Returns a list of orders.\n    ",
+      "inputSchema": {
+        "$defs": {
+          "ListOrderRequest": {
+            "properties": {
+              "status": {
+                "anyOf": [
+                  {
+                    "enum": [
+                      "OPEN",
+                      "CANCELLED",
+                      "EXPIRED",
+                      "COMPLETED",
+                      "FAILED",
+                      "IN_PROCESS"
+                    ],
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "status of the orders, if specified filters results.",
+                "title": "Status"
+              },
+              "limit": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": 30,
+                "description": "number of most recent results to return",
+                "title": "Limit"
+              }
+            },
+            "required": [
+              "status"
+            ],
+            "title": "ListOrderRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "get_all_orders_requests": {
+            "$ref": "#/$defs/ListOrderRequest"
+          }
+        },
+        "required": [
+          "get_all_orders_requests"
+        ],
+        "title": "get_all_ordersArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_token_address",
+      "description": "\n    Get the token address for a token symbol or name.\n    ",
+      "inputSchema": {
+        "$defs": {
+          "TokenSearchRequest": {
+            "properties": {
+              "query": {
+                "description": "token symbol or address",
+                "title": "Query",
+                "type": "string"
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "title": "TokenSearchRequest",
+            "type": "object"
+          },
+          "TokenSearchRequestContainer": {
+            "properties": {
+              "token_search_requests": {
+                "items": {
+                  "$ref": "#/$defs/TokenSearchRequest"
+                },
+                "title": "Token Search Requests",
+                "type": "array"
+              }
+            },
+            "required": [
+              "token_search_requests"
+            ],
+            "title": "TokenSearchRequestContainer",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "token_address_requests": {
+            "$ref": "#/$defs/TokenSearchRequestContainer"
+          }
+        },
+        "required": [
+          "token_address_requests"
+        ],
+        "title": "get_token_addressArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_token_details",
+      "description": "\n    Retrieve token details.\n    \n    Expects a TokenDetailsRequestContainer, returns a list of TokenDetailsResponse.\n    ",
+      "inputSchema": {
+        "$defs": {
+          "TokenDetailsRequest": {
+            "properties": {
+              "query": {
+                "description": "token symbol or address",
+                "title": "Query",
+                "type": "string"
+              },
+              "sort_by": {
+                "anyOf": [
+                  {
+                    "enum": [
+                      "decimals",
+                      "holders",
+                      "jupiter",
+                      "verified",
+                      "liquidityUsd",
+                      "marketCapUsd",
+                      "priceUsd",
+                      "totalBuys",
+                      "totalSells",
+                      "totalTransactions",
+                      "volume_5m",
+                      "volume",
+                      "volume_15m",
+                      "volume_30m",
+                      "volume_1h",
+                      "volume_6h",
+                      "volume_12h",
+                      "volume_24h"
+                    ],
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Sort token data results by this field",
+                "title": "Sort By"
+              },
+              "sort_order": {
+                "anyOf": [
+                  {
+                    "enum": [
+                      "asc",
+                      "desc"
+                    ],
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": "desc",
+                "description": "The order of the sorted results",
+                "title": "Sort Order"
+              },
+              "limit": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": 1,
+                "description": "The number of results to return from the search. Use default unless specified. Should not be over 30 if looking up multiple tokens.",
+                "title": "Limit"
+              }
+            },
+            "required": [
+              "query",
+              "sort_by"
+            ],
+            "title": "TokenDetailsRequest",
+            "type": "object"
+          },
+          "TokenDetailsRequestContainer": {
+            "properties": {
+              "token_details_requests": {
+                "items": {
+                  "$ref": "#/$defs/TokenDetailsRequest"
+                },
+                "title": "Token Details Requests",
+                "type": "array"
+              }
+            },
+            "required": [
+              "token_details_requests"
+            ],
+            "title": "TokenDetailsRequestContainer",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "token_details_requests": {
+            "$ref": "#/$defs/TokenDetailsRequestContainer"
+          }
+        },
+        "required": [
+          "token_details_requests"
+        ],
+        "title": "get_token_detailsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_groups",
+      "description": "\n    List all wallet groups.\n    \n    Returns a list of GroupInfo.\n    ",
+      "inputSchema": {
+        "properties": {},
+        "title": "list_groupsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_single_group",
+      "description": "\n    Retrieve details for a single wallet group.\n    \n    Expects the group name as a parameter, returns SingleGroupInfo.\n    ",
+      "inputSchema": {
+        "$defs": {
+          "ListSingleGroupRequest": {
+            "properties": {
+              "group_name": {
+                "description": "Name of the group to retrieve details for",
+                "title": "Group Name",
+                "type": "string"
+              }
+            },
+            "required": [
+              "group_name"
+            ],
+            "title": "ListSingleGroupRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "list_single_group_requests": {
+            "$ref": "#/$defs/ListSingleGroupRequest"
+          }
+        },
+        "required": [
+          "list_single_group_requests"
+        ],
+        "title": "list_single_groupArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_wallet",
+      "description": "\n    Create new wallets.\n    \n    Expects a list of wallet names, returns a list of WalletInfo.\n    ",
+      "inputSchema": {
+        "$defs": {
+          "CreateWalletRequest": {
+            "properties": {
+              "name": {
+                "description": "Name of the wallet to create",
+                "title": "Name",
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "title": "CreateWalletRequest",
+            "type": "object"
+          },
+          "CreateWalletRequestContainer": {
+            "properties": {
+              "create_wallet_requests": {
+                "items": {
+                  "$ref": "#/$defs/CreateWalletRequest"
+                },
+                "title": "Create Wallet Requests",
+                "type": "array"
+              }
+            },
+            "required": [
+              "create_wallet_requests"
+            ],
+            "title": "CreateWalletRequestContainer",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "create_wallet_requests": {
+            "$ref": "#/$defs/CreateWalletRequestContainer"
+          }
+        },
+        "required": [
+          "create_wallet_requests"
+        ],
+        "title": "create_walletArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "archive_wallets",
+      "description": "\n    Archive wallets.\n    \n    Expects a list of wallet names, returns a list of WalletArchiveOrUnarchiveResponse.\n    ",
+      "inputSchema": {
+        "$defs": {
+          "ArchiveWalletsRequest": {
+            "properties": {
+              "wallet": {
+                "description": "Name of the wallet to archive",
+                "title": "Wallet",
+                "type": "string"
+              }
+            },
+            "required": [
+              "wallet"
+            ],
+            "title": "ArchiveWalletsRequest",
+            "type": "object"
+          },
+          "ArchiveWalletsRequestContainer": {
+            "properties": {
+              "archive_wallet_requests": {
+                "items": {
+                  "$ref": "#/$defs/ArchiveWalletsRequest"
+                },
+                "title": "Archive Wallet Requests",
+                "type": "array"
+              }
+            },
+            "required": [
+              "archive_wallet_requests"
+            ],
+            "title": "ArchiveWalletsRequestContainer",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "archive_wallet_requests": {
+            "$ref": "#/$defs/ArchiveWalletsRequestContainer"
+          }
+        },
+        "required": [
+          "archive_wallet_requests"
+        ],
+        "title": "archive_walletsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "unarchive_wallets",
+      "description": "\n    Unarchive wallets.\n    \n    Expects a list of wallet names, returns a list of WalletArchiveOrUnarchiveResponse.\n    ",
+      "inputSchema": {
+        "$defs": {
+          "UnarchiveWalletRequestContainer": {
+            "properties": {
+              "unarchive_wallet_requests": {
+                "items": {
+                  "$ref": "#/$defs/UnarchiveWalletsRequest"
+                },
+                "title": "Unarchive Wallet Requests",
+                "type": "array"
+              }
+            },
+            "required": [
+              "unarchive_wallet_requests"
+            ],
+            "title": "UnarchiveWalletRequestContainer",
+            "type": "object"
+          },
+          "UnarchiveWalletsRequest": {
+            "properties": {
+              "wallet": {
+                "description": "Name of the wallet to unarchive",
+                "title": "Wallet",
+                "type": "string"
+              }
+            },
+            "required": [
+              "wallet"
+            ],
+            "title": "UnarchiveWalletsRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "unarchive_wallet_requests": {
+            "$ref": "#/$defs/UnarchiveWalletRequestContainer"
+          }
+        },
+        "required": [
+          "unarchive_wallet_requests"
+        ],
+        "title": "unarchive_walletsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_groups",
+      "description": "\n    Create new wallet groups.\n    \n    Expects a list of group names, returns a list of CreateGroupResponse.\n    ",
+      "inputSchema": {
+        "$defs": {
+          "CreateGroupsRequest": {
+            "properties": {
+              "name": {
+                "description": "Name of the group to create",
+                "title": "Name",
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "title": "CreateGroupsRequest",
+            "type": "object"
+          },
+          "CreateGroupsRequestContainer": {
+            "properties": {
+              "create_groups_requests": {
+                "items": {
+                  "$ref": "#/$defs/CreateGroupsRequest"
+                },
+                "title": "Create Groups Requests",
+                "type": "array"
+              }
+            },
+            "required": [
+              "create_groups_requests"
+            ],
+            "title": "CreateGroupsRequestContainer",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "create_groups_requests": {
+            "$ref": "#/$defs/CreateGroupsRequestContainer"
+          }
+        },
+        "required": [
+          "create_groups_requests"
+        ],
+        "title": "create_groupsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "add_wallets_to_group",
+      "description": "\n    Add wallets to a specified group.\n    \n    Expects the group name and a list of wallet names, returns a list of AddWalletToGroupResponse.\n    ",
+      "inputSchema": {
+        "$defs": {
+          "AddWalletToGroupRequest": {
+            "properties": {
+              "group": {
+                "description": "Name of the group to add wallets to",
+                "title": "Group",
+                "type": "string"
+              },
+              "wallet": {
+                "description": "Name of the wallet to add to the group",
+                "title": "Wallet",
+                "type": "string"
+              }
+            },
+            "required": [
+              "group",
+              "wallet"
+            ],
+            "title": "AddWalletToGroupRequest",
+            "type": "object"
+          },
+          "AddWalletToGroupRequestContainer": {
+            "properties": {
+              "add_wallet_to_group_requests": {
+                "items": {
+                  "$ref": "#/$defs/AddWalletToGroupRequest"
+                },
+                "title": "Add Wallet To Group Requests",
+                "type": "array"
+              }
+            },
+            "required": [
+              "add_wallet_to_group_requests"
+            ],
+            "title": "AddWalletToGroupRequestContainer",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "add_wallet_to_group_requests": {
+            "$ref": "#/$defs/AddWalletToGroupRequestContainer"
+          }
+        },
+        "required": [
+          "add_wallet_to_group_requests"
+        ],
+        "title": "add_wallets_to_groupArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "archive_wallet_group",
+      "description": "\n    Archive wallet groups.\n    \n    Expects a list of group names, returns a list of GroupArchiveOrUnarchiveResponse.\n    ",
+      "inputSchema": {
+        "$defs": {
+          "ArchiveWalletGroupRequest": {
+            "properties": {
+              "group_name": {
+                "description": "Name of the group to archive",
+                "title": "Group Name",
+                "type": "string"
+              }
+            },
+            "required": [
+              "group_name"
+            ],
+            "title": "ArchiveWalletGroupRequest",
+            "type": "object"
+          },
+          "ArchiveWalletGroupRequestContainer": {
+            "properties": {
+              "archive_wallet_group_requests": {
+                "items": {
+                  "$ref": "#/$defs/ArchiveWalletGroupRequest"
+                },
+                "title": "Archive Wallet Group Requests",
+                "type": "array"
+              }
+            },
+            "required": [
+              "archive_wallet_group_requests"
+            ],
+            "title": "ArchiveWalletGroupRequestContainer",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "archive_wallet_group_requests": {
+            "$ref": "#/$defs/ArchiveWalletGroupRequestContainer"
+          }
+        },
+        "required": [
+          "archive_wallet_group_requests"
+        ],
+        "title": "archive_wallet_groupArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "unarchive_wallet_group",
+      "description": "\n    Unarchive wallet groups.\n    \n    Expects a list of group names, returns a list of GroupArchiveOrUnarchiveResponse.\n    ",
+      "inputSchema": {
+        "$defs": {
+          "UnarchiveWalletGroupRequest": {
+            "properties": {
+              "group_name": {
+                "description": "Name of the group to unarchive",
+                "title": "Group Name",
+                "type": "string"
+              }
+            },
+            "required": [
+              "group_name"
+            ],
+            "title": "UnarchiveWalletGroupRequest",
+            "type": "object"
+          },
+          "UnarchiveWalletGroupRequestContainer": {
+            "properties": {
+              "unarchive_wallet_group_requests": {
+                "items": {
+                  "$ref": "#/$defs/UnarchiveWalletGroupRequest"
+                },
+                "title": "Unarchive Wallet Group Requests",
+                "type": "array"
+              }
+            },
+            "required": [
+              "unarchive_wallet_group_requests"
+            ],
+            "title": "UnarchiveWalletGroupRequestContainer",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "unarchive_wallet_group_requests": {
+            "$ref": "#/$defs/UnarchiveWalletGroupRequestContainer"
+          }
+        },
+        "required": [
+          "unarchive_wallet_group_requests"
+        ],
+        "title": "unarchive_wallet_groupArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "remove_wallets_from_group",
+      "description": "\n    Remove wallets from a specified group.\n    \n    Expects the group name and a list of wallet names, returns a list of RemoveWalletFromGroupResponse.\n    ",
+      "inputSchema": {
+        "$defs": {
+          "RemoveWalletsFromGroupRequest": {
+            "properties": {
+              "group": {
+                "description": "Name of the group to remove wallets from",
+                "title": "Group",
+                "type": "string"
+              },
+              "wallet": {
+                "description": "List of wallet names to remove from the group",
+                "title": "Wallet",
+                "type": "string"
+              }
+            },
+            "required": [
+              "group",
+              "wallet"
+            ],
+            "title": "RemoveWalletsFromGroupRequest",
+            "type": "object"
+          },
+          "RemoveWalletsFromGroupRequestContainer": {
+            "properties": {
+              "remove_wallets_from_group_requests": {
+                "items": {
+                  "$ref": "#/$defs/RemoveWalletsFromGroupRequest"
+                },
+                "title": "Remove Wallets From Group Requests",
+                "type": "array"
+              }
+            },
+            "required": [
+              "remove_wallets_from_group_requests"
+            ],
+            "title": "RemoveWalletsFromGroupRequestContainer",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "remove_wallets_from_group_requests": {
+            "$ref": "#/$defs/RemoveWalletsFromGroupRequestContainer"
+          }
+        },
+        "required": [
+          "remove_wallets_from_group_requests"
+        ],
+        "title": "remove_wallets_from_groupArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "transfer_tokens",
+      "description": "\n    Transfer tokens from one wallet to another.\n    \n    Expects a TransferTokensRequestContainer, returns a list of TransferTokenResponse.\n    ",
+      "inputSchema": {
+        "$defs": {
+          "TransferTokensRequest": {
+            "properties": {
+              "from_wallet": {
+                "description": "name of the wallet to transfer tokens from",
+                "title": "From Wallet",
+                "type": "string"
+              },
+              "to_wallet_address": {
+                "description": "public address of the wallet to transfer tokens to. Use `get_user_wallets_and_group_list` if you only have a wallet name",
+                "title": "To Wallet Address",
+                "type": "string"
+              },
+              "token": {
+                "description": "public contract address of the token to transfer. To get the address from a token symbol use `get_token_details`",
+                "title": "Token",
+                "type": "string"
+              },
+              "amount": {
+                "description": "amount of tokens to transfer",
+                "title": "Amount",
+                "type": "number"
+              }
+            },
+            "required": [
+              "from_wallet",
+              "to_wallet_address",
+              "token",
+              "amount"
+            ],
+            "title": "TransferTokensRequest",
+            "type": "object"
+          },
+          "TransferTokensRequestContainer": {
+            "properties": {
+              "transfer_tokens_requests": {
+                "items": {
+                  "$ref": "#/$defs/TransferTokensRequest"
+                },
+                "title": "Transfer Tokens Requests",
+                "type": "array"
+              }
+            },
+            "required": [
+              "transfer_tokens_requests"
+            ],
+            "title": "TransferTokensRequestContainer",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "transfer_tokens_requests": {
+            "$ref": "#/$defs/TransferTokensRequestContainer"
+          }
+        },
+        "required": [
+          "transfer_tokens_requests"
+        ],
+        "title": "transfer_tokensArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_dca_order",
+      "description": "\n    Create a DCA order.\n    \n    Expects a DCAOrderRequestContainer, returns a list of DCAOrderResponse.\n    ",
+      "inputSchema": {
+        "$defs": {
+          "DCAOrderRequest": {
+            "properties": {
+              "wallet": {
+                "description": "name of the wallet",
+                "title": "Wallet",
+                "type": "string"
+              },
+              "input_token": {
+                "description": "public address of the input token. To get the address from a token symbol use `get_token_details`",
+                "title": "Input Token",
+                "type": "string"
+              },
+              "output_token": {
+                "description": "public address of the output token. To get the address from a token symbol use `get_token_details`",
+                "title": "Output Token",
+                "type": "string"
+              },
+              "amount": {
+                "description": "total amount of input token to invest",
+                "title": "Amount",
+                "type": "number"
+              },
+              "cron_expression": {
+                "description": "cron expression for the DCA worker execution frequency",
+                "title": "Cron Expression",
+                "type": "string"
+              },
+              "strategy_duration_unit": {
+                "description": "unit of the duration of the DCA order",
+                "enum": [
+                  "MINUTE",
+                  "HOUR",
+                  "DAY",
+                  "WEEK",
+                  "MONTH",
+                  "YEAR"
+                ],
+                "title": "Strategy Duration Unit",
+                "type": "string"
+              },
+              "strategy_duration": {
+                "description": "Total running time of the DCA order given in strategy duration units, should be more than 0",
+                "title": "Strategy Duration",
+                "type": "integer"
+              },
+              "execution_type": {
+                "description": "set to SINGLE only if the user is asking for a single scheduled order, MULTIPLE if it is a true DCA",
+                "enum": [
+                  "MULTIPLE",
+                  "SINGLE"
+                ],
+                "title": "Execution Type",
+                "type": "string"
+              },
+              "token_address_watcher": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "If the DCA is conditional, public address of the token to watch.",
+                "title": "Token Address Watcher"
+              },
+              "watch_field": {
+                "anyOf": [
+                  {
+                    "enum": [
+                      "liquidity",
+                      "marketCap",
+                      "price"
+                    ],
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "If the DCA is conditional, field to watch for the condition",
+                "title": "Watch Field"
+              },
+              "delta_type": {
+                "anyOf": [
+                  {
+                    "enum": [
+                      "INCREASE",
+                      "DECREASE",
+                      "MOVE",
+                      "MOVE_DAILY",
+                      "AVERAGE_MOVE"
+                    ],
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "If the DCA is conditional, the operator of the watch field in the conditional statement",
+                "title": "Delta Type"
+              },
+              "delta_percentage": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "If the DCA is conditional, percentage of the change to watch for given the delta_type",
+                "title": "Delta Percentage"
+              },
+              "time_zone": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "user's time zone. Defaults to UTC",
+                "title": "Time Zone"
+              }
+            },
+            "required": [
+              "wallet",
+              "input_token",
+              "output_token",
+              "amount",
+              "cron_expression",
+              "strategy_duration_unit",
+              "strategy_duration",
+              "execution_type",
+              "token_address_watcher",
+              "watch_field",
+              "delta_type",
+              "delta_percentage",
+              "time_zone"
+            ],
+            "title": "DCAOrderRequest",
+            "type": "object"
+          },
+          "DCAOrderRequestContainer": {
+            "properties": {
+              "dca_order_requests": {
+                "items": {
+                  "$ref": "#/$defs/DCAOrderRequest"
+                },
+                "title": "Dca Order Requests",
+                "type": "array"
+              }
+            },
+            "required": [
+              "dca_order_requests"
+            ],
+            "title": "DCAOrderRequestContainer",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "dca_order_requests": {
+            "$ref": "#/$defs/DCAOrderRequestContainer"
+          }
+        },
+        "required": [
+          "dca_order_requests"
+        ],
+        "title": "create_dca_orderArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_dca_orders",
+      "description": "\n    List all DCA orders.\n    \n    Returns a list of DCAOrderResponse.\n    ",
+      "inputSchema": {
+        "$defs": {
+          "ListDCAOrderRequest": {
+            "properties": {
+              "status": {
+                "anyOf": [
+                  {
+                    "enum": [
+                      "COMPLETED",
+                      "OPEN",
+                      "CANCELLED"
+                    ],
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "status of the DCA orders, if specified filters the results.",
+                "title": "Status"
+              },
+              "limit": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": 30,
+                "description": "number of mostrecent results to return",
+                "title": "Limit"
+              }
+            },
+            "required": [
+              "status"
+            ],
+            "title": "ListDCAOrderRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "list_dca_order_requests": {
+            "$ref": "#/$defs/ListDCAOrderRequest"
+          }
+        },
+        "required": [
+          "list_dca_order_requests"
+        ],
+        "title": "list_dca_ordersArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "cancel_dca_order",
+      "description": "\n    Create a DCA order.\n\n    Note: Make a single or multiple dca_order_requests \n    ",
+      "inputSchema": {
+        "$defs": {
+          "CancelDCAOrderRequest": {
+            "properties": {
+              "dca_order_id": {
+                "description": "id of the DCA order",
+                "title": "Dca Order Id",
+                "type": "string"
+              }
+            },
+            "required": [
+              "dca_order_id"
+            ],
+            "title": "CancelDCAOrderRequest",
+            "type": "object"
+          },
+          "CancelDCAOrderRequestContainer": {
+            "properties": {
+              "cancel_dca_order_requests": {
+                "items": {
+                  "$ref": "#/$defs/CancelDCAOrderRequest"
+                },
+                "title": "Cancel Dca Order Requests",
+                "type": "array"
+              }
+            },
+            "required": [
+              "cancel_dca_order_requests"
+            ],
+            "title": "CancelDCAOrderRequestContainer",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "cancel_dca_order_requests": {
+            "$ref": "#/$defs/CancelDCAOrderRequestContainer"
+          }
+        },
+        "required": [
+          "cancel_dca_order_requests"
+        ],
+        "title": "cancel_dca_orderArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_order",
+      "description": "\n    Create a order. Can be a limit or stop loss order\n    \n    Expects a CreateOrderRequestContainer, returns a CreateOrderResponseContainer.\n    ",
+      "inputSchema": {
+        "$defs": {
+          "CreateOrderRequest": {
+            "properties": {
+              "wallet": {
+                "description": "name of the wallet",
+                "title": "Wallet",
+                "type": "string"
+              },
+              "input_token": {
+                "description": "public address of the input token",
+                "title": "Input Token",
+                "type": "string"
+              },
+              "output_token": {
+                "description": "public address of the output token",
+                "title": "Output Token",
+                "type": "string"
+              },
+              "amount": {
+                "description": "amount of input token to invest",
+                "title": "Amount",
+                "type": "number"
+              },
+              "strategy_duration": {
+                "description": "duration of the order",
+                "title": "Strategy Duration",
+                "type": "integer"
+              },
+              "strategy_duration_unit": {
+                "description": "unit of the duration of the order",
+                "enum": [
+                  "MINUTE",
+                  "HOUR",
+                  "DAY",
+                  "WEEK",
+                  "MONTH",
+                  "YEAR"
+                ],
+                "title": "Strategy Duration Unit",
+                "type": "string"
+              },
+              "stop_loss_watch_field": {
+                "anyOf": [
+                  {
+                    "enum": [
+                      "liquidity",
+                      "marketCap",
+                      "price"
+                    ],
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "only needed when order_type field is STOP_LOSS or STOP_LIMIT",
+                "title": "Stop Loss Watch Field"
+              },
+              "limit_watch_field": {
+                "anyOf": [
+                  {
+                    "enum": [
+                      "liquidity",
+                      "marketCap",
+                      "price"
+                    ],
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "only needed when order_type field is LIMIT or STOP_LIMIT",
+                "title": "Limit Watch Field"
+              },
+              "token_address_watcher": {
+                "description": "public address of the token to watch",
+                "title": "Token Address Watcher",
+                "type": "string"
+              },
+              "stop_loss_delta_percentage": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "percentage for stop loss delta. only needed when order_type field is STOP_LOSS or STOP_LIMIT",
+                "title": "Stop Loss Delta Percentage"
+              },
+              "limit_delta_percentage": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "percentage for limit delta. only needed when order_type field is LIMIT or STOP_LIMIT",
+                "title": "Limit Delta Percentage"
+              },
+              "order_type": {
+                "description": "type of the order. Wether it is a limit order, stop loss order or stop limit order",
+                "enum": [
+                  "LIMIT",
+                  "STOP_LOSS",
+                  "STOP_LIMIT"
+                ],
+                "title": "Order Type",
+                "type": "string"
+              }
+            },
+            "required": [
+              "wallet",
+              "input_token",
+              "output_token",
+              "amount",
+              "strategy_duration",
+              "strategy_duration_unit",
+              "stop_loss_watch_field",
+              "limit_watch_field",
+              "token_address_watcher",
+              "stop_loss_delta_percentage",
+              "limit_delta_percentage",
+              "order_type"
+            ],
+            "title": "CreateOrderRequest",
+            "type": "object"
+          },
+          "CreateOrderRequestContainer": {
+            "properties": {
+              "create_order_requests": {
+                "items": {
+                  "$ref": "#/$defs/CreateOrderRequest"
+                },
+                "title": "Create Order Requests",
+                "type": "array"
+              }
+            },
+            "required": [
+              "create_order_requests"
+            ],
+            "title": "CreateOrderRequestContainer",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "create_order_requests": {
+            "$ref": "#/$defs/CreateOrderRequestContainer"
+          }
+        },
+        "required": [
+          "create_order_requests"
+        ],
+        "title": "create_orderArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "cancel_order",
+      "description": "\n    Cancel a limit or stop loss order.\n    \n    Expects a CancelOrderRequestContainer, returns a CancelOrderResponseContainer.\n    ",
+      "inputSchema": {
+        "$defs": {
+          "CancelOrderRequest": {
+            "properties": {
+              "order_id": {
+                "description": "id of the limit order",
+                "title": "Order Id",
+                "type": "string"
+              }
+            },
+            "required": [
+              "order_id"
+            ],
+            "title": "CancelOrderRequest",
+            "type": "object"
+          },
+          "CancelOrderRequestContainer": {
+            "properties": {
+              "cancel_order_requests": {
+                "items": {
+                  "$ref": "#/$defs/CancelOrderRequest"
+                },
+                "title": "Cancel Order Requests",
+                "type": "array"
+              }
+            },
+            "required": [
+              "cancel_order_requests"
+            ],
+            "title": "CancelOrderRequestContainer",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "cancel_order_requests": {
+            "$ref": "#/$defs/CancelOrderRequestContainer"
+          }
+        },
+        "required": [
+          "cancel_order_requests"
+        ],
+        "title": "cancel_orderArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "stake_quote",
+      "description": "\n    Retrieve a stake quote.\n    \n    Expects a StakeQuoteRequestContainer, returns a SwapQuoteRequestContainer.\n    ",
+      "inputSchema": {
+        "$defs": {
+          "StakeQuoteRequest": {
+            "properties": {
+              "from_wallet": {
+                "description": "The name of the wallet that input_token is in.",
+                "title": "From Wallet",
+                "type": "string"
+              },
+              "input_token": {
+                "default": "So11111111111111111111111111111111111111112",
+                "title": "Input Token",
+                "type": "string"
+              },
+              "output_token": {
+                "description": "the public mint address of the output liquid staking derivative token to stake.",
+                "title": "Output Token",
+                "type": "string"
+              },
+              "input_amount": {
+                "description": "input amount to swap",
+                "title": "Input Amount",
+                "type": "number"
+              }
+            },
+            "required": [
+              "from_wallet",
+              "output_token",
+              "input_amount"
+            ],
+            "title": "StakeQuoteRequest",
+            "type": "object"
+          },
+          "StakeQuoteRequestContainer": {
+            "properties": {
+              "stake_quote_requests": {
+                "items": {
+                  "$ref": "#/$defs/StakeQuoteRequest"
+                },
+                "title": "Stake Quote Requests",
+                "type": "array"
+              }
+            },
+            "required": [
+              "stake_quote_requests"
+            ],
+            "title": "StakeQuoteRequestContainer",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "stake_quote_requests": {
+            "$ref": "#/$defs/StakeQuoteRequestContainer"
+          }
+        },
+        "required": [
+          "stake_quote_requests"
+        ],
+        "title": "stake_quoteArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "unstake_quote",
+      "description": "\n    Retrieve an unstake quote.\n\n    Expects a UnstakeQuoteRequestContainer, returns a SwapQuoteRequestContainer.\n    ",
+      "inputSchema": {
+        "$defs": {
+          "UnstakeQuoteRequest": {
+            "properties": {
+              "from_wallet": {
+                "description": "The name of the wallet that input_token is in.",
+                "title": "From Wallet",
+                "type": "string"
+              },
+              "input_token": {
+                "description": "the public mint address of the input liquid staking derivative token to unstake.",
+                "title": "Input Token",
+                "type": "string"
+              },
+              "output_token": {
+                "default": "So11111111111111111111111111111111111111112",
+                "title": "Output Token",
+                "type": "string"
+              },
+              "input_amount": {
+                "description": "input amount to swap",
+                "title": "Input Amount",
+                "type": "number"
+              }
+            },
+            "required": [
+              "from_wallet",
+              "input_token",
+              "input_amount"
+            ],
+            "title": "UnstakeQuoteRequest",
+            "type": "object"
+          },
+          "UnstakeQuoteRequestContainer": {
+            "properties": {
+              "unstake_quote_requests": {
+                "items": {
+                  "$ref": "#/$defs/UnstakeQuoteRequest"
+                },
+                "title": "Unstake Quote Requests",
+                "type": "array"
+              }
+            },
+            "required": [
+              "unstake_quote_requests"
+            ],
+            "title": "UnstakeQuoteRequestContainer",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "unstake_quote_requests": {
+            "$ref": "#/$defs/UnstakeQuoteRequestContainer"
+          }
+        },
+        "required": [
+          "unstake_quote_requests"
+        ],
+        "title": "unstake_quoteArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "stake_transaction",
+      "description": "\n    Execute a stake transaction.\n    \n    Expects a StakeTransactionRequestContainer, returns a SwapTransactionRequestContainer.\n    ",
+      "inputSchema": {
+        "$defs": {
+          "StakeTransactionRequest": {
+            "properties": {
+              "transaction_id": {
+                "description": "unique id of the generated stake quote",
+                "title": "Transaction Id",
+                "type": "string"
+              }
+            },
+            "required": [
+              "transaction_id"
+            ],
+            "title": "StakeTransactionRequest",
+            "type": "object"
+          },
+          "StakeTransactionRequestContainer": {
+            "properties": {
+              "stake_transaction_requests": {
+                "items": {
+                  "$ref": "#/$defs/StakeTransactionRequest"
+                },
+                "title": "Stake Transaction Requests",
+                "type": "array"
+              }
+            },
+            "required": [
+              "stake_transaction_requests"
+            ],
+            "title": "StakeTransactionRequestContainer",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "stake_transaction_requests": {
+            "$ref": "#/$defs/StakeTransactionRequestContainer"
+          }
+        },
+        "required": [
+          "stake_transaction_requests"
+        ],
+        "title": "stake_transactionArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "unstake_transaction",
+      "description": "\n    Execute an unstake transaction.\n    \n    Expects a UnstakeTransactionRequestContainer, returns a SwapTransactionRequestContainer.\n    ",
+      "inputSchema": {
+        "$defs": {
+          "UnstakeTransactionRequest": {
+            "properties": {
+              "transaction_id": {
+                "description": "unique id of the generated unstake quote",
+                "title": "Transaction Id",
+                "type": "string"
+              }
+            },
+            "required": [
+              "transaction_id"
+            ],
+            "title": "UnstakeTransactionRequest",
+            "type": "object"
+          },
+          "UnstakeTransactionRequestContainer": {
+            "properties": {
+              "unstake_transaction_requests": {
+                "items": {
+                  "$ref": "#/$defs/UnstakeTransactionRequest"
+                },
+                "title": "Unstake Transaction Requests",
+                "type": "array"
+              }
+            },
+            "required": [
+              "unstake_transaction_requests"
+            ],
+            "title": "UnstakeTransactionRequestContainer",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "unstake_transaction_requests": {
+            "$ref": "#/$defs/UnstakeTransactionRequestContainer"
+          }
+        },
+        "required": [
+          "unstake_transaction_requests"
+        ],
+        "title": "unstake_transactionArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_top_trending_tokens",
+      "description": "\n    Get the top trending tokens in a particular time frame. Great for comparing market cap or volume.\n    \n    Expects a TopTrendingTokensRequest, returns a list of tokens with their details.\n    ",
+      "inputSchema": {
+        "$defs": {
+          "TopTrendingTokensRequest": {
+            "properties": {
+              "time_frame": {
+                "default": "24h",
+                "description": "Time frame to get the top trending tokens",
+                "enum": [
+                  "5m",
+                  "15m",
+                  "30m",
+                  "1h",
+                  "2h",
+                  "3h",
+                  "4h",
+                  "5h",
+                  "6h",
+                  "12h",
+                  "24h"
+                ],
+                "title": "Time Frame",
+                "type": "string"
+              }
+            },
+            "title": "TopTrendingTokensRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "top_trending_tokens_requests": {
+            "$ref": "#/$defs/TopTrendingTokensRequest"
+          }
+        },
+        "required": [
+          "top_trending_tokens_requests"
+        ],
+        "title": "get_top_trending_tokensArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_stake_balances",
+      "description": "\n    Get the balance of staked SOL (jupSOL).\n    \n    Returns a StakeBalanceResponse.\n    ",
+      "inputSchema": {
+        "properties": {},
+        "title": "get_stake_balancesArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "rename_wallets",
+      "description": "\n    Rename wallets.\n    \n    Expects a RenameWalletRequestContainer, returns a list.\n    ",
+      "inputSchema": {
+        "$defs": {
+          "RenameWalletRequest": {
+            "properties": {
+              "wallet": {
+                "description": "Name of the wallet to rename",
+                "title": "Wallet",
+                "type": "string"
+              },
+              "new_name": {
+                "description": "New name of the wallet",
+                "title": "New Name",
+                "type": "string"
+              }
+            },
+            "required": [
+              "wallet",
+              "new_name"
+            ],
+            "title": "RenameWalletRequest",
+            "type": "object"
+          },
+          "RenameWalletRequestContainer": {
+            "properties": {
+              "rename_wallet_requests": {
+                "items": {
+                  "$ref": "#/$defs/RenameWalletRequest"
+                },
+                "title": "Rename Wallet Requests",
+                "type": "array"
+              }
+            },
+            "required": [
+              "rename_wallet_requests"
+            ],
+            "title": "RenameWalletRequestContainer",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "rename_wallet_requests": {
+            "$ref": "#/$defs/RenameWalletRequestContainer"
+          }
+        },
+        "required": [
+          "rename_wallet_requests"
+        ],
+        "title": "rename_walletsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_token_candle_data",
+      "description": "\n    Get candle data about any token for analysis.\n\n    Expects a CandleStickRequest, returns a list of candle sticks.\n    ",
+      "inputSchema": {
+        "$defs": {
+          "CandleStickRequest": {
+            "properties": {
+              "token_address": {
+                "description": "Public mint address of the token. To get the address from a token symbol use `get_token_details`",
+                "title": "Token Address",
+                "type": "string"
+              },
+              "time_interval": {
+                "default": "1h",
+                "description": "Time frame to get the candle sticks. Use larger candle time frames over larger time windows to keep returned candles minimal",
+                "enum": [
+                  "1s",
+                  "5s",
+                  "15s",
+                  "1m",
+                  "3m",
+                  "5m",
+                  "15m",
+                  "30m",
+                  "1h",
+                  "2h",
+                  "4h",
+                  "6h",
+                  "8h",
+                  "12h",
+                  "1d",
+                  "3d",
+                  "1w",
+                  "1mn"
+                ],
+                "title": "Time Interval",
+                "type": "string"
+              },
+              "time_from": {
+                "description": "The time from which to start the candle data in ISO 8601 format. Attempt to change this to keep number of candles returned under 64.",
+                "title": "Time From",
+                "type": "string"
+              },
+              "time_to": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "The time to end the candle data in ISO 8601 format. Use only for historic analysis.",
+                "title": "Time To"
+              },
+              "market_cap": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": false,
+                "description": "Whether to return the marketcap of the token instead of the price",
+                "title": "Market Cap"
+              }
+            },
+            "required": [
+              "token_address",
+              "time_from"
+            ],
+            "title": "CandleStickRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "candle_stick_requests": {
+            "$ref": "#/$defs/CandleStickRequest"
+          }
+        },
+        "required": [
+          "candle_stick_requests"
+        ],
+        "title": "get_token_candle_dataArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "send_key_to_telegram",
+      "description": "\n    Send the mnemonic or private key to telegram.\n    ",
+      "inputSchema": {
+        "$defs": {
+          "PrivateKeyRequest": {
+            "properties": {
+              "wallet": {
+                "description": "Name of the wallet to get the mnemonic or private key for",
+                "title": "Wallet",
+                "type": "string"
+              },
+              "key_type": {
+                "description": "Whether to return the private or mnemonic key",
+                "enum": [
+                  "PRIVATE_KEY",
+                  "MNEMONIC"
+                ],
+                "title": "Key Type",
+                "type": "string"
+              }
+            },
+            "required": [
+              "wallet",
+              "key_type"
+            ],
+            "title": "PrivateKeyRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "private_key_request": {
+            "$ref": "#/$defs/PrivateKeyRequest"
+          }
+        },
+        "required": [
+          "private_key_request"
+        ],
+        "title": "send_key_to_telegramArguments",
+        "type": "object"
+      }
+    }
+  ],
+  "prompts": [
+    {
+      "name": "login_prompt",
+      "description": "\n    A sample prompt to ask the user for their access token after providing an email.\n    ",
+      "arguments": [
+        {
+          "name": "email",
+          "description": "email address of the user",
+          "required": true
+        }
+      ]
+    }
+  ],
+  "resources": [],
+  "is_official": false,
+  "docker_url": "https://hub.docker.com/r/mcp/armor-crypto"
+}
