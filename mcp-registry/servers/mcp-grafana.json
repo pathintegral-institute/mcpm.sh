@@ -27,18 +27,37 @@
     }
   },
   "installations": {
-    "custom": {
-      "type": "custom",
-      "command": "go",
+    "cli": {
+      "type": "cli",
+      "command": "mcp-grafana",
+      "args": [],
+      "env": {
+        "GRAFANA_URL": "${GRAFANA_URL}",
+        "GRAFANA_API_KEY": "${GRAFANA_API_KEY}"
+      },
+      "description": "Install from source using mcp-grafana cli",
+      "recommended": false
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
       "args": [
-        "install",
-        "github.com/grafana/mcp-grafana/cmd/mcp-grafana@latest"
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "GRAFANA_URL",
+        "-e",
+        "GRAFANA_API_KEY",
+        "mcp/grafana",
+        "--transport=stdio"
       ],
       "env": {
-        "GOBIN": "$HOME/go/bin"
+        "GRAFANA_URL": "${GRAFANA_URL}",
+        "GRAFANA_API_KEY": "${GRAFANA_API_KEY}"
       },
-      "description": "Install from source using Go",
-      "recommended": false
+      "description": "Install from source using docker",
+      "recommended": true
     }
   },
   "examples": [
@@ -63,5 +82,6 @@
   "categories": [
     "Analytics"
   ],
-  "is_official": true
+  "is_official": true,
+  "docker_url": "https://hub.docker.com/r/mcp/grafana"
 }

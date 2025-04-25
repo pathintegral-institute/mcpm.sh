@@ -14,23 +14,6 @@
     "data extraction",
     "web unblocker"
   ],
-  "arguments": {
-    "url": {
-      "description": "The URL to scrape",
-      "required": true,
-      "example": "https://www.google.com/search?q=ai"
-    },
-    "parse": {
-      "description": "Enable structured data extraction",
-      "required": false,
-      "example": "True"
-    },
-    "render": {
-      "description": "Use headless browser rendering",
-      "required": false,
-      "example": "html"
-    }
-  },
   "installations": {
     "uvx": {
       "type": "uvx",
@@ -39,10 +22,41 @@
         "oxylabs-mcp"
       ],
       "env": {
-        "OXYLABS_USERNAME": "YOUR_USERNAME_HERE",
-        "OXYLABS_PASSWORD": "YOUR_PASSWORD_HERE"
+        "OXYLABS_USERNAME": "${OXYLABS_USERNAME}",
+        "OXYLABS_PASSWORD": "${OXYLABS_PASSWORD}"
       },
       "description": "Install using uv in Claude Desktop"
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "OXYLABS_USERNAME",
+        "-e",
+        "OXYLABS_PASSWORD",
+        "mcp/oxylabs"
+      ],
+      "env": {
+        "OXYLABS_USERNAME": "${OXYLABS_USERNAME}",
+        "OXYLABS_PASSWORD": "${OXYLABS_PASSWORD}"
+      },
+      "description": "Install using Docker"
+    }
+  },
+  "arguments": {
+    "OXYLABS_USERNAME": {
+      "description": "Oxylabs username",
+      "required": true,
+      "example": "YOUR_USERNAME_HERE"
+    },
+    "OXYLABS_PASSWORD": {
+      "description": "Oxylabs password",
+      "required": true,
+      "example": "YOUR_PASSWORD_HERE"
     }
   },
   "examples": [
@@ -157,5 +171,6 @@
         "type": "object"
       }
     }
-  ]
+  ],
+  "docker_url": "https://hub.docker.com/r/mcp/oxylabs"
 }

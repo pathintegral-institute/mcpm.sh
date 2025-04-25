@@ -1,0 +1,208 @@
+{
+  "display_name": "Gyazo MCP Server",
+  "license": "MIT",
+  "tags": [
+    "gyazo",
+    "images",
+    "mcp",
+    "model context protocol",
+    "typescript",
+    "api",
+    "search",
+    "upload",
+    "ocr"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "@notainc/gyazo-mcp-server"
+      ],
+      "env": {
+        "GYAZO_ACCESS_TOKEN": "${GYAZO_ACCESS_TOKEN}"
+      },
+      "description": "Using NPM package (recommended)"
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "GYAZO_ACCESS_TOKEN",
+        "mcp/gyazo"
+      ],
+      "env": {
+        "GYAZO_ACCESS_TOKEN": "${GYAZO_ACCESS_TOKEN}"
+      },
+      "description": "Using Docker (optional)"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Search for screenshots related to 'dashboard' in my Gyazo account"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Show me my latest Gyazo screenshot"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Find Gyazo images containing text about 'meeting notes'"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Upload this image to my Gyazo account"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Fetch the details of this Gyazo image"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Search for Gyazo screenshots I took last week"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Show me Gyazo images from the Chrome app"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Find Gyazo screenshots containing charts or graphs"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Get the OCR text from my recent Gyazo screenshot"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Upload this diagram to Gyazo with the title 'Project Architecture'"
+    }
+  ],
+  "name": "gyazo",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nota/gyazo-mcp-server"
+  },
+  "homepage": "https://github.com/nota/gyazo-mcp-server",
+  "author": {
+    "name": "nota"
+  },
+  "description": "A Model Context Protocol server for Gyazo image integration",
+  "categories": [
+    "Media Creation"
+  ],
+  "tools": [
+    {
+      "name": "gyazo_search",
+      "description": "Full-text search for captures uploaded by users on Gyazo",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search keyword (max length: 200 characters). example: 'cat', 'title:cat', 'app:\"Google Chrome\"', 'url:google.com', 'cat since:2024-01-01 until:2024-12-31' NOTE: If you cannot find an appropriate capture, try rephrasing the search query to capture the user's intent and repeat the search several times"
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page number for pagination",
+            "minimum": 1,
+            "default": 1
+          },
+          "per": {
+            "type": "integer",
+            "description": "Number of results per page (max: 100)",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 20
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "gyazo_image",
+      "description": "Fetch image content and metadata from Gyazo",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id_or_url": {
+            "type": "string",
+            "description": "ID or URL of the image on Gyazo"
+          }
+        },
+        "required": [
+          "id_or_url"
+        ]
+      }
+    },
+    {
+      "name": "gyazo_latest_image",
+      "description": "Fetch latest uploaded image content and metadata from Gyazo",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "const": "gyazo_latest_image"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    {
+      "name": "gyazo_upload",
+      "description": "Upload an image to Gyazo",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "imageData": {
+            "type": "string",
+            "description": "Base64 encoded image data"
+          },
+          "title": {
+            "type": "string",
+            "description": "Title for the image (optional)"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description for the image (optional)"
+          },
+          "refererUrl": {
+            "type": "string",
+            "description": "Source URL for the image (optional)."
+          },
+          "app": {
+            "type": "string",
+            "description": "Application name for the image (optional)."
+          }
+        },
+        "required": [
+          "imageData"
+        ]
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": false,
+  "docker_url": "https://hub.docker.com/r/mcp/gyazo"
+}

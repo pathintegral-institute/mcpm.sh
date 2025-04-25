@@ -22,6 +22,16 @@
         "@wonderwhy-er/desktop-commander"
       ],
       "description": "Add to claude_desktop_config by hand"
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "mcp/desktop-commander"
+      ]
     }
   },
   "examples": [
@@ -429,5 +439,6 @@
   ],
   "prompts": [],
   "resources": [],
-  "is_official": false
+  "is_official": false,
+  "docker_url": "https://hub.docker.com/r/mcp/desktop-commander"
 }

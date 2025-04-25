@@ -1,0 +1,143 @@
+{
+  "display_name": "Shopify Dev MCP Server",
+  "license": "ISC",
+  "tags": [
+    "shopify",
+    "mcp",
+    "model context protocol",
+    "graphql",
+    "admin api",
+    "documentation"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@shopify/dev-mcp@latest"
+      ],
+      "description": "Configuration for Cursor or Claude Desktop"
+    },
+    "docker":{
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "mcp/shopify"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "How do I query products using the Shopify Admin GraphQL API?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Search the Shopify dev docs for information about webhooks"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Help me write a GraphQL query to get all orders from the Shopify Admin API"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "What fields are available on the Product type in the Admin API?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Show me how to create a new product using the Admin GraphQL API"
+    }
+  ],
+  "name": "shopify-dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Shopify/dev-mcp"
+  },
+  "homepage": "https://github.com/Shopify/dev-mcp",
+  "author": {
+    "name": "Shopify"
+  },
+  "description": "This project implements a Model Context Protocol (MCP) server that interacts with Shopify Dev. This protocol supports various tools to interact with different Shopify APIs.",
+  "categories": [
+    "Dev Tools"
+  ],
+  "tools": [
+    {
+      "name": "introspect_admin_schema",
+      "description": "This tool introspects and returns the portion of the Shopify Admin API GraphQL schema relevant to the user prompt. Only use this for the Shopify Admin API, and not any other APIs like the Shopify Storefront API or the Shopify Functions API.\n\n    It takes two arguments: query and filter. The query argument is the string search term to filter schema elements by name. The filter argument is an array of strings to filter results to show specific sections.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search term to filter schema elements by name. Only pass simple terms like 'product', 'discountProduct', etc."
+          },
+          "filter": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "all",
+                "types",
+                "queries",
+                "mutations"
+              ]
+            },
+            "default": [
+              "all"
+            ],
+            "description": "Filter results to show specific sections. Can include 'types', 'queries', 'mutations', or 'all' (default)"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "search_dev_docs",
+      "description": "This tool will take in the user prompt, search shopify.dev, and return relevant documentation that will help answer the user's question.\n\n    It takes one argument: prompt, which is the search query for Shopify documentation.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "The search query for Shopify documentation"
+          }
+        },
+        "required": [
+          "prompt"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    }
+  ],
+  "prompts": [
+    {
+      "name": "shopify_admin_graphql",
+      "description": "Query the Shopify Admin API",
+      "arguments": [
+        {
+          "name": "query",
+          "description": "The specific Shopify Admin API question or request",
+          "required": true
+        }
+      ]
+    }
+  ],
+  "resources": [],
+  "is_official": false,
+  "docker_url": "https://hub.docker.com/r/mcp/shopify"
+}

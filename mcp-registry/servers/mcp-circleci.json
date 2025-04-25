@@ -1,0 +1,200 @@
+{
+  "display_name": "CircleCI MCP Server",
+  "license": "Apache-2.0",
+  "tags": [
+    "circleci",
+    "mcp",
+    "model context protocol",
+    "llm",
+    "ci/cd",
+    "build logs",
+    "flaky tests",
+    "config validation"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@circleci/mcp-server-circleci"
+      ],
+      "env": {
+        "CIRCLECI_TOKEN": "${CIRCLECI_TOKEN}",
+        "CIRCLECI_BASE_URL": "${CIRCLECI_BASE_URL}"
+      },
+      "description": "Installation for Windsurf"
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "CIRCLECI_BASE_URL",
+        "-e",
+        "CIRCLECI_TOKEN",
+        "mcp/circleci"
+      ],
+      "env": {
+        "CIRCLECI_BASE_URL": "${CIRCLECI_BASE_URL}",
+        "CIRCLECI_TOKEN": "${CIRCLECI_TOKEN}"
+      }
+    }
+  },
+  "arguments": {
+    "CIRCLECI_TOKEN": {
+      "description": "CircleCI token",
+      "required": true,
+      "example": "your-circleci-token"
+    },
+    "CIRCLECI_BASE_URL": {
+      "description": "CircleCI base URL",
+      "required": true,
+      "example": "https://circleci.com"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Find the latest failed pipeline on my branch and get logs"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Get logs from https://app.circleci.com/pipelines/github/org/repo/123"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Find flaky tests in https://app.circleci.com/pipelines/github/org/repo"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Find flaky tests in my current project"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Validate my CircleCI config"
+    }
+  ],
+  "name": "mcp-circleci",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CircleCI-Public/mcp-server-circleci"
+  },
+  "homepage": "https://github.com/CircleCI-Public/mcp-server-circleci",
+  "author": {
+    "name": "CircleCI-Public"
+  },
+  "description": "Model Context Protocol (MCP) is a [new, standardized protocol](https://modelcontextprotocol.io/introduction) for managing context between large language models (LLMs) and external systems. In this repository, we provide an MCP Server for [CircleCI](https://circleci.com).",
+  "categories": [
+    "Dev Tools"
+  ],
+  "tools": [
+    {
+      "name": "get_build_failure_logs",
+      "description": "\n    This tool helps debug CircleCI build failures by retrieving failure logs.\n\n    CRITICAL REQUIREMENTS:\n    1. Truncation Handling (HIGHEST PRIORITY):\n       - ALWAYS check for <MCPTruncationWarning> in the output\n       - When present, you MUST start your response with:\n         \"WARNING: The logs have been truncated. Only showing the most recent entries. Earlier build failures may not be visible.\"\n       - Only proceed with log analysis after acknowledging the truncation\n\n    Input options (EXACTLY ONE of these two options must be used):\n\n    Option 1 - Direct URL (provide ONE of these):\n    - projectURL: The URL of the CircleCI project in any of these formats:\n      * Project URL: https://app.circleci.com/pipelines/gh/organization/project\n      * Pipeline URL: https://app.circleci.com/pipelines/gh/organization/project/123\n      * Workflow URL: https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc-def\n      * Job URL: https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc-def/jobs/xyz\n\n    Option 2 - Project Detection (ALL of these must be provided together):\n    - workspaceRoot: The absolute path to the workspace root\n    - gitRemoteURL: The URL of the git remote repository\n    - branch: The name of the current branch\n\n    Additional Requirements:\n    - Never call this tool with incomplete parameters\n    - If using Option 1, the URLs MUST be provided by the user - do not attempt to construct or guess URLs\n    - If using Option 2, ALL THREE parameters (workspaceRoot, gitRemoteURL, branch) must be provided\n    - If neither option can be fully satisfied, ask the user for the missing information before making the tool call\n    ",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "params": {
+            "type": "object",
+            "properties": {
+              "workspaceRoot": {
+                "type": "string",
+                "description": "The absolute path to the root directory of your project workspace. This should be the top-level folder containing your source code, configuration files, and dependencies. For example: \"/home/user/my-project\" or \"C:\\Users\\user\\my-project\""
+              },
+              "gitRemoteURL": {
+                "type": "string",
+                "description": "The URL of the remote git repository. This should be the URL of the repository that you cloned to your local workspace. For example: \"https://github.com/user/my-project.git\""
+              },
+              "branch": {
+                "type": "string",
+                "description": "The name of the branch currently checked out in local workspace. This should match local git branch. For example: \"feature/my-branch\", \"bugfix/123\", \"main\", \"master\" etc."
+              },
+              "projectURL": {
+                "type": "string",
+                "description": "The URL of the CircleCI project. Can be any of these formats:\n- Project URL with branch: https://app.circleci.com/pipelines/gh/organization/project?branch=feature-branch\n- Pipeline URL: https://app.circleci.com/pipelines/gh/organization/project/123\n- Workflow URL: https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc-def\n- Job URL: https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc-def/jobs/xyz"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "find_flaky_tests",
+      "description": "\n    This tool retrieves information about flaky tests in a CircleCI project. \n    \n    The agent receiving this output MUST analyze the flaky test data and implement appropriate fixes based on the specific issues identified.\n\n    CRITICAL REQUIREMENTS:\n    1. Truncation Handling (HIGHEST PRIORITY):\n       - ALWAYS check for <MCPTruncationWarning> in the output\n       - When present, you MUST start your response with:\n         \"WARNING: The logs have been truncated. Only showing the most recent entries. Earlier build failures may not be visible.\"\n       - Only proceed with log analysis after acknowledging the truncation\n\n    Input options (EXACTLY ONE of these two options must be used):\n\n    Option 1 - Direct URL (provide ONE of these):\n    - projectURL: The URL of the CircleCI project in any of these formats:\n      * Project URL: https://app.circleci.com/pipelines/gh/organization/project\n      * Pipeline URL: https://app.circleci.com/pipelines/gh/organization/project/123\n      * Workflow URL: https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc-def\n      * Job URL: https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc-def/jobs/xyz\n\n    Option 2 - Project Detection (ALL of these must be provided together):\n    - workspaceRoot: The absolute path to the workspace root\n    - gitRemoteURL: The URL of the git remote repository\n\n    Additional Requirements:\n    - Never call this tool with incomplete parameters\n    - If using Option 1, the URLs MUST be provided by the user - do not attempt to construct or guess URLs\n    - If using Option 2, BOTH parameters (workspaceRoot, gitRemoteURL) must be provided\n    - If neither option can be fully satisfied, ask the user for the missing information before making the tool call\n    ",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "params": {
+            "type": "object",
+            "properties": {
+              "workspaceRoot": {
+                "type": "string",
+                "description": "The absolute path to the root directory of your project workspace. This should be the top-level folder containing your source code, configuration files, and dependencies. For example: \"/home/user/my-project\" or \"C:\\Users\\user\\my-project\""
+              },
+              "gitRemoteURL": {
+                "type": "string",
+                "description": "The URL of the remote git repository. This should be the URL of the repository that you cloned to your local workspace. For example: \"https://github.com/user/my-project.git\""
+              },
+              "projectURL": {
+                "type": "string",
+                "description": "The URL of the CircleCI project. Can be any of these formats:\n- Project URL: https://app.circleci.com/pipelines/gh/organization/project\n- Project URL with branch: https://app.circleci.com/pipelines/gh/organization/project?branch=feature-branch\n- Pipeline URL: https://app.circleci.com/pipelines/gh/organization/project/123\n- Workflow URL: https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc-def\n- Job URL: https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc-def/jobs/xyz"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "config_helper",
+      "description": "\n  This tool helps analyze and validate and fix CircleCI configuration files.\n\n  Parameters:\n  - params: An object containing:\n    - configFile: string - The full contents of the CircleCI config file as a string. This should be the raw YAML content, not a file path.\n\n  Example usage:\n  {\n    \"params\": {\n      \"configFile\": \"version: 2.1\norbs:\n  node: circleci/node@7\n...\"\n    }\n  }\n\n  Note: The configFile content should be provided as a properly escaped string with newlines represented as \n.\n\n  Tool output instructions:\n    - If the config is invalid, the tool will return the errors and the original config. Use the errors to fix the config.\n    - If the config is valid, do nothing.\n  ",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "params": {
+            "type": "object",
+            "properties": {
+              "configFile": {
+                "type": "string",
+                "description": "The contents of the circleci config file. This should be the contents of the circleci config file, not the path to the file. Typically located at .circleci/config.yml"
+              }
+            },
+            "required": [
+              "configFile"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "params"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": false,
+  "docker_url": "https://hub.docker.com/r/mcp/circleci"
+}

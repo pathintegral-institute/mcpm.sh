@@ -1,0 +1,161 @@
+{
+  "display_name": "Redis MCP Server",
+  "license": "MIT License",
+  "tags": [
+    "redis",
+    "database",
+    "natural language interface",
+    "MCP",
+    "Model Content Protocol",
+    "data management",
+    "search",
+    "vector search",
+    "caching",
+    "streams",
+    "JSON"
+  ],
+  "installations": {
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "REDIS_HOST",
+        "-e",
+        "REDIS_PORT",
+        "-e",
+        "REDIS_USERNAME",
+        "-e",
+        "REDIS_SSL",
+        "-e",
+        "REDIS_PWD",
+        "mcp/redis"
+      ],
+      "env": {
+        "REDIS_HOST": "${REDIS_HOST}",
+        "REDIS_PORT": "${REDIS_PORT}",
+        "REDIS_USERNAME": "${REDIS_USERNAME}",
+        "REDIS_SSL": "${REDIS_SSL}",
+        "REDIS_PWD": "${REDIS_PWD}"
+      },
+      "description": "Run the Redis MCP Server using Docker"
+    }
+  },
+  "arguments": {
+    "REDIS_HOST": {
+      "description": "Redis host address.",
+      "required": true,
+      "example": "127.0.0.1"
+    },
+    "REDIS_PORT": {
+      "description": "Redis port number.",
+      "required": true,
+      "example": "6379"
+    },
+    "REDIS_USERNAME": {
+      "description": "Redis username.",
+      "required": true,
+      "example": "default"
+    },
+    "REDIS_SSL": {
+      "description": "Enable SSL connection.",
+      "required": true,
+      "example": "False"
+    },
+    "REDIS_PWD": {
+      "description": "Redis password.",
+      "required": true,
+      "example": "your password"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Store the entire conversation in a stream"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Cache this item"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Store the session with an expiration time"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Index and search this vector"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Set a string value with expiration"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Store user profile data in a hash"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Add items to a queue using a list"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Track unique user IDs in a set"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Create a leaderboard using a sorted set"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Publish a message to a channel"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Add event data to a stream"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Store and retrieve a JSON document"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Perform vector search on indexed data"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Get information about the Redis database"
+    }
+  ],
+  "name": "mcp-redis",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/redis/mcp-redis"
+  },
+  "homepage": "https://github.com/redis/mcp-redis",
+  "author": {
+    "name": "redis"
+  },
+  "description": "The Redis MCP Server is a natural language interface designed for AI applications to efficiently manage and search data in Redis, enabling AI-driven workflows to interact with structured and unstructured data using natural language queries.",
+  "categories": [
+    "Databases"
+  ],
+  "is_official": true,
+  "docker_url": "https://hub.docker.com/r/mcp/redis"
+}
