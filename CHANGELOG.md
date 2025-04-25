@@ -1,3 +1,10 @@
+## [1.6.1](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.6.0...v1.6.1) (2025-04-25)
+
+
+### Bug Fixes
+
+* add port availability check and improve status message for MCPRouter ([#124](https://github.com/pathintegral-institute/mcpm.sh/issues/124)) ([89bf558](https://github.com/pathintegral-institute/mcpm.sh/commit/89bf5583ce19e6542a5bad4ff58a0dd1ad4198bc))
+
 # [1.6.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.5.1...v1.6.0) (2025-04-25)
 
 
