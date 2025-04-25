@@ -81,5 +81,6 @@
         "type": "object"
       }
     }
-  ]
+  ],
+  "docker_url": "https://hub.docker.com/r/mcp/fetch"
 }

@@ -1,0 +1,104 @@
+{
+  "display_name": "MiniMax Model Context Protocol Server",
+  "license": "MIT",
+  "tags": [
+    "text-to-speech",
+    "voice-clone",
+    "video-generation",
+    "image-generation",
+    "MCP",
+    "API",
+    "Claude",
+    "Cursor",
+    "Windsurf"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "minimax-mcp"
+      ],
+      "env": {
+        "MINIMAX_API_KEY": "${MINIMAX_API_KEY}",
+        "MINIMAX_MCP_BASE_PATH": "${MINIMAX_MCP_BASE_PATH}",
+        "MINIMAX_API_HOST": "${MINIMAX_API_HOST}",
+        "MINIMAX_API_RESOURCE_MODE": "${MINIMAX_API_RESOURCE_MODE}"
+      },
+      "description": "MiniMax MCP server for Claude Desktop"
+    }
+  },
+  "arguments": {
+    "MINIMAX_API_KEY": {
+      "description": "MiniMax API key",
+      "required": true,
+      "examples": "insert-your-api-key-here"
+    },
+    "MINIMAX_MCP_BASE_PATH": {
+      "description": "Local output directory path",
+      "required": true,
+      "examples": "/User/xxx/Desktop"
+    },
+    "MINIMAX_API_HOST": {
+      "description": "API host",
+      "required": true,
+      "examples": "https://api.minimaxi.chat|https://api.minimax.chat"
+    },
+    "MINIMAX_API_RESOURCE_MODE": {
+      "description": "Resource mode",
+      "required": true,
+      "examples": "[url|local]"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Can you convert this text to speech? 'Welcome to the MiniMax Model Context Protocol server. This is a test of the text to speech functionality.'"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Please list all available voices that I can use for text to speech."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "I'd like to clone a voice using these audio files: [URL to audio file 1, URL to audio file 2]"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Generate a video of a cat playing piano in a jazz club."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Create an image of a futuristic cityscape with flying cars and neon lights."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Can you broadcast this as a news segment? 'Breaking news: Scientists have discovered a new species of deep-sea creature that glows in the dark.'"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Generate a video of a serene mountain landscape with a flowing river and birds flying overhead."
+    }
+  ],
+  "name": "minimax-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MiniMax-AI/MiniMax-MCP"
+  },
+  "homepage": "https://github.com/MiniMax-AI/MiniMax-MCP",
+  "author": {
+    "name": "MiniMax-AI"
+  },
+  "description": "Here is a concise description paragraph focused on what the MiniMax project does:\n\nMiniMax is an official server that enables interaction with powerful text-to-speech, voice cloning, video generation, and image generation APIs through the MiniMax Model Context Protocol (MCP). It allows MCP clients like Claude Desktop, Cursor, Windsurf, and OpenAI Agents to generate speech, clone voices, create videos and images, and more.",
+  "categories": [
+    "Media Creation"
+  ],
+  "is_official": false
+}

@@ -23,18 +23,35 @@
     }
   },
   "installations": {
-    "cli": {
-      "type": "cli",
+    "npm": {
+      "type": "npm",
       "command": "npx",
       "args": [
+        "-y",
         "@neondatabase/mcp-server-neon",
-        "init",
-        "$NEON_API_KEY"
+        "start",
+        "${NEON_API_KEY}"
       ],
       "package": "@neondatabase/mcp-server-neon",
       "env": {},
       "description": "Install via npm",
       "recommended": true
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "NEON_API_KEY",
+        "mcp/neon"
+      ],
+      "env": {
+        "NEON_API_KEY": "${NEON_API_KEY}"
+      },
+      "description": "Install via docker"
     }
   },
   "examples": [
@@ -64,5 +81,6 @@
   "categories": [
     "Databases"
   ],
-  "is_official": true
+  "is_official": true,
+  "docker_url": "https://hub.docker.com/r/mcp/neon"
 }

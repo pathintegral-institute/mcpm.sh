@@ -28,6 +28,16 @@
         "git+https://github.com/open-strategy-partners/osp_marketing_tools@main",
         "osp_marketing_tools"
       ]
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "mcp/osp_marketing_tools"
+      ]
     }
   },
   "examples": [
@@ -107,5 +117,6 @@
         "type": "object"
       }
     }
-  ]
+  ],
+  "docker_url": "https://hub.docker.com/r/mcp/osp_marketing_tools"
 }
