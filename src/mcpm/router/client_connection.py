@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from typing import Optional, cast
+from typing import Optional, TextIO, cast
 
 from mcp import ClientSession, InitializeResult, StdioServerParameters, stdio_client
 from mcp.client.sse import sse_client
@@ -10,10 +10,10 @@ from mcpm.schemas.server_config import ServerConfig, SSEServerConfig, STDIOServe
 logger = logging.getLogger(__name__)
 
 
-def _stdio_transport_context(server_config: ServerConfig):
+def _stdio_transport_context(server_config: ServerConfig, errlog: TextIO):
     server_config = cast(STDIOServerConfig, server_config)
     server_params = StdioServerParameters(command=server_config.command, args=server_config.args, env=server_config.env)
-    return stdio_client(server_params)
+    return stdio_client(server_params, errlog=errlog)
 
 
 def _sse_transport_context(server_config: ServerConfig):
@@ -22,16 +22,19 @@ def _sse_transport_context(server_config: ServerConfig):
 
 
 class ServerConnection:
-    def __init__(self, server_config: ServerConfig) -> None:
+    def __init__(self, server_config: ServerConfig, errlog: TextIO) -> None:
         self.session: Optional[ClientSession] = None
         self.session_initialized_response: Optional[InitializeResult] = None
         self._initialized = False
         self.server_config = server_config
         self._initialized_event = asyncio.Event()
         self._shutdown_event = asyncio.Event()
+        self._errlog = errlog
 
         self._transport_context_factory = (
-            _stdio_transport_context if isinstance(server_config, STDIOServerConfig) else _sse_transport_context
+            lambda config: _stdio_transport_context(config, errlog=self._errlog)
+            if isinstance(config, STDIOServerConfig)
+            else _sse_transport_context(config)
         )
 
         self._server_task = asyncio.create_task(self._server_lifespan_cycle())
