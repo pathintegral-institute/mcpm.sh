@@ -86,7 +86,8 @@ def router():
 
 @router.command(name="on")
 @click.help_option("-h", "--help")
-def start_router():
+@click.option("--verbose", "-v", is_flag=True, help="Enable verbose output")
+def start_router(verbose):
     """Start MCPRouter as a daemon process.
 
     Example:
@@ -128,6 +129,7 @@ def start_router():
         # open log file, prepare to redirect stdout and stderr
         with open(log_file, "a") as log:
             # use subprocess.Popen to start uvicorn
+            start = log.tell()
             process = subprocess.Popen(
                 uvicorn_cmd,
                 stdout=log,
@@ -135,6 +137,19 @@ def start_router():
                 env=os.environ.copy(),
                 start_new_session=True,  # create new session, so the process won't be affected by terminal closing
             )
+        if verbose:
+            console.rule("verbose log start")
+            with open(log_file, "r") as log:
+                # print log before startup complete
+                log.seek(start)
+                while True:
+                    line = log.readline()
+                    if not line:
+                        continue
+                    console.print(line.strip())
+                    if "Application startup complete." in line:
+                        break
+            console.rule("verbose log end")
 
         # record PID
         pid = process.pid
