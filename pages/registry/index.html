@@ -8,26 +8,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>mcpm.sh - Server Registry</title>
     {% include favicon.html %}
-    
+
     <!-- Primary Meta Tags -->
     <meta name="title" content="mcpm.sh - Server Registry">
     <meta name="description" content="The single open source MCP registry we all need. Discover and explore MCP servers for your projects.">
     <meta name="keywords" content="MCP, server registry, AI, machine learning, open source">
-    
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://mcpm.sh/registry/">
     <meta property="og:title" content="mcpm.sh - Server Registry">
     <meta property="og:description" content="The single open source MCP registry we all need. Discover and explore MCP servers for your projects.">
     <meta property="og:image" content="https://mcpm.sh/assets/images/mcpm-social.png">
-    
+
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://mcpm.sh/registry/">
     <meta property="twitter:title" content="mcpm.sh - Server Registry">
     <meta property="twitter:description" content="The single open source MCP registry we all need. Discover and explore MCP servers for your projects.">
     <meta property="twitter:image" content="https://mcpm.sh/assets/images/mcpm-social.png">
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -41,7 +41,7 @@
     <style>
         {% include colors.css %}
         {% include common.css %}
-        
+
         /* Override colors with blue and pink theme */
         :root {
             --accent-color: #3b82f6;
@@ -372,7 +372,7 @@
             align-items: center;
             margin: 0;
         }
-        
+
         .server-card .category:hover {
             background-color: var(--accent-color);
             color: white;
@@ -1216,12 +1216,13 @@
         }
 
         .server-card .meta .category {
-            background-color: var(--accent-light);
-            color: var(--accent-color);
+            background-color: var(--accent-color);
+            color: white;
             padding: 0.1rem 0.5rem;
             border-radius: 3px;
             font-size: 0.7rem;
             margin-left: 0.5rem;
+            font-weight: 600;
         }
 
         .official-badge {
@@ -1236,6 +1237,21 @@
             vertical-align: middle;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+        }
+
+        .docker-icon {
+            display: inline-block;
+            margin-left: 8px;
+            vertical-align: middle;
+            color: #2496ed;
+        }
+
+        .docker-icon svg {
+            vertical-align: middle;
+        }
+
+        .docker-icon:hover {
+            opacity: 0.8;
         }
     </style>
 </head>
@@ -1635,7 +1651,7 @@
                     const summary = document.createElement('summary');
                     summary.textContent = key;
                     details.appendChild(summary);
-                    
+
                     const subUl = document.createElement('ul');
                     Object.entries(value).forEach(([subKey, subValue]) => {
                         const subLi = document.createElement('li');
@@ -1660,7 +1676,7 @@
                     const summary = document.createElement('summary');
                     summary.textContent = tool.name || `Tool ${index + 1}`;
                     details.appendChild(summary);
-                    
+
                     const subUl = document.createElement('ul');
                     Object.entries(tool).forEach(([key, value]) => {
                         const subLi = document.createElement('li');
@@ -1685,7 +1701,7 @@
                     const summary = document.createElement('summary');
                     summary.textContent = resource.name || `Resource ${index + 1}`;
                     details.appendChild(summary);
-                    
+
                     const subUl = document.createElement('ul');
                     Object.entries(resource).forEach(([key, value]) => {
                         const subLi = document.createElement('li');
@@ -1710,7 +1726,7 @@
                     const summary = document.createElement('summary');
                     summary.textContent = prompt.name || `Prompt ${index + 1}`;
                     details.appendChild(summary);
-                    
+
                     const subUl = document.createElement('ul');
                     Object.entries(prompt).forEach(([key, value]) => {
                         const subLi = document.createElement('li');
@@ -1863,7 +1879,24 @@
 
                 const heading = document.createElement('h3');
                 heading.textContent = server.display_name || server.name;
-                
+
+                if (server.docker_url) {
+                    const dockerIcon = document.createElement('span');
+                    dockerIcon.className = 'docker-icon';
+                    dockerIcon.innerHTML = '<img src="/assets/images/docker-mark-blue.svg" alt="Docker" width="16" height="16">';
+                    dockerIcon.style.cursor = 'pointer';
+                    dockerIcon.title = 'Docker';
+
+                    // Open Docker Hub link in new tab
+                    dockerIcon.addEventListener('click', (event) => {
+                        event.stopPropagation();
+                        window.open(server.docker_url, '_blank');
+                    });
+
+                    // Add Docker icon to heading
+                    heading.appendChild(dockerIcon);
+                }
+
                 // Add official badge if the server is marked as official
                 if (server.is_official) {
                     const officialBadge = document.createElement('span');
@@ -1871,7 +1904,7 @@
                     officialBadge.textContent = 'Official';
                     heading.appendChild(officialBadge);
                 }
-                
+
                 serverHeader.appendChild(heading);
 
                 // Add placeholder for GitHub stars in the header
@@ -1887,11 +1920,11 @@
                 description.className = 'description';
                 description.textContent = server.description;
                 serverContent.appendChild(description);
-                
+
                 // Create tags container
                 const tagsContainer = document.createElement('div');
                 tagsContainer.className = 'tags';
-                
+
                 // Add regular tags (if any)
                 if (server.tags && server.tags.length > 0) {
                     server.tags.slice(0, 4).forEach(tag => {
@@ -1901,20 +1934,20 @@
                         tagsContainer.appendChild(tagSpan);
                     });
                 }
-                
+
                 // Append tags container to server content
                 serverContent.appendChild(tagsContainer);
-                
+
                 const meta = document.createElement('div');
                 meta.className = 'meta';
-                
+
                 // Add placeholder for author that will be populated later
                 const authorMeta = document.createElement('span');
                 authorMeta.className = 'author author-placeholder';
                 authorMeta.textContent = 'Loading author...';
                 authorMeta.style.opacity = '0';
                 meta.appendChild(authorMeta);
-                
+
                 // Add categories if they exist
                 if (server.categories && server.categories.length > 0) {
                     const categorySpan = document.createElement('span');
@@ -1922,7 +1955,7 @@
                     categorySpan.textContent = server.categories[0]; // Display first category
                     meta.appendChild(categorySpan);
                 }
-                
+
                 // Update author information directly from server data (no need to fetch)
                 if (server.author && server.author.name) {
                     // Add user icon before author name

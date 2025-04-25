@@ -1,13 +1,15 @@
 import re
 from contextlib import AsyncExitStack
 from datetime import timedelta
-from typing import Any
+from typing import Any, Optional
 
+import requests
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 from mcp.shared.exceptions import McpError
 from mcp.types import ListPromptsResult, ListResourcesResult, ListToolsResult
 
+DOCKER_HUB_REPO_URL = "https://hub.docker.com/v2/repositories/"
 
 class McpClient:
     session: ClientSession
@@ -148,3 +150,32 @@ def validate_arguments_in_installation(
         installation["env"] = env
 
     return installation, replacement
+
+
+def validate_docker_url(docker_url: str) -> bool:
+    try:
+        response = requests.get(docker_url)
+        # if success with status code 200, the repo should be a valid and registered one
+        return response.status_code == 200
+    except Exception:
+        return False
+
+
+def inspect_docker_repo(installation: dict[str, Any]) -> Optional[str]:
+    """ inspect the docker url from docker installation args, the args should pattern as {namespace}/{repo_name} where namespace=mcp
+    Example
+        if args = ["run", "-i", "--rm", "-e", "PERPLEXITY_API_KEY", "mcp/perplexity-ask"]
+        return "mcp/perplexity-ask"
+    """
+    repo_name = None
+    if "args" in installation and installation["args"]:
+        args = installation["args"]
+        for arg in args:
+            # namespace/repo(:tag)
+            repo_match = re.match(r"^(mcp/[\w-]+)(?::[\w.\-]+)?$", arg)
+            if repo_match:
+                repo_name = repo_match.group(1)
+                if validate_docker_url(DOCKER_HUB_REPO_URL + repo_name):
+                    return repo_name # namespace/repo without tag
+
+    return None

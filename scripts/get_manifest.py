@@ -11,7 +11,7 @@ import dotenv
 import requests
 from categorization import CategorizationAgent
 from openai import OpenAI
-from utils import McpClient, validate_arguments_in_installation
+from utils import McpClient, inspect_docker_repo, validate_arguments_in_installation
 
 dotenv.load_dotenv()
 logging.basicConfig(level=logging.INFO,
@@ -19,6 +19,7 @@ logging.basicConfig(level=logging.INFO,
 logger = logging.getLogger(__name__)
 
 _OUTPUT_DIR = "mcp-registry/servers/"
+DOCKER_MCP_REPO_URL = "https://hub.docker.com/r"
 
 
 class ManifestGenerator:
@@ -780,6 +781,13 @@ If no examples are provided, return an empty array.
                         manifest.update(capabilities)
                 except Exception as e:
                     logger.error(f"Failed to extract capabilities: {e}")
+
+            # docker url if docker command in installation
+            installations = manifest.get("installations", {})
+            if "docker" in installations:
+                docker_repo_name = inspect_docker_repo(installations["docker"])
+                if docker_repo_name:
+                    manifest["docker_url"] = f"{DOCKER_MCP_REPO_URL}/{docker_repo_name}"
 
             return manifest
 
