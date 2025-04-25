@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.5.1...v1.6.0) (2025-04-25)
+
+
+### Features
+
+* router share with https by default ([#119](https://github.com/pathintegral-institute/mcpm.sh/issues/119)) ([a0e8b67](https://github.com/pathintegral-institute/mcpm.sh/commit/a0e8b673d3895d89e54f2be266ce3193f53d4c6d))
+
 ## [1.5.1](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.5.0...v1.5.1) (2025-04-22)
 
 
