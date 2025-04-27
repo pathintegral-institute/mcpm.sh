@@ -47,6 +47,14 @@ pipx install mcpm
 pip install mcpm
 ```
 
+### 🧰 X-CMD
+
+如果你是 [x-cmd](https://x-cmd.com) 用户，可以运行以下命令安装：
+
+```sh
+x install mcpm.sh
+```
+
 ### 🔄 Shell 脚本（一行命令）
 
 ```bash
