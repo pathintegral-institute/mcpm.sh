@@ -41,6 +41,7 @@ def is_process_running(pid):
     except Exception:
         return False
 
+
 def is_port_listening(host, port) -> bool:
     """
     Check if the specified (host, port) is being listened on.
@@ -133,9 +134,17 @@ def start_router(verbose):
         return
 
     # get router config
-    config = ConfigManager().get_router_config()
+    config_manager = ConfigManager()
+    config = config_manager.get_router_config()
     host = config["host"]
     port = config["port"]
+
+    # Check if we have an API key, if not, create one
+    share_config = config_manager.read_share_config()
+    if share_config.get("api_key") is None:
+        api_key = secrets.token_urlsafe(32)
+        config_manager.save_share_config(api_key=api_key)
+        console.print("[bold green]Created API key for router authentication[/]")
 
     # prepare uvicorn command
     uvicorn_cmd = [
@@ -185,9 +194,29 @@ def start_router(verbose):
         pid = process.pid
         write_pid_file(pid)
 
+        # Display router started information
         console.print(f"[bold green]MCPRouter started[/] at http://{host}:{port} (PID: {pid})")
         console.print(f"Log file: {log_file}")
-        console.print("Use 'mcpm router off' to stop the router.")
+
+        # Display connection instructions
+        console.print("\n[bold cyan]Connection Information:[/]")
+
+        # Get API key if available
+        api_key = config_manager.read_share_config().get("api_key")
+
+        # Show URL with or without authentication based on API key availability
+        if api_key:
+            # Show authenticated URL
+            console.print(f"SSE Server URL: [green]http://{host}:{port}/sse?s={api_key}[/]")
+            console.print("\n[bold cyan]To use a specific profile with authentication:[/]")
+            console.print(f"[green]http://{host}:{port}/sse?s={api_key}&profile=<profile_name>[/]")
+        else:
+            # Show URL without authentication
+            console.print(f"SSE Server URL: [green]http://{host}:{port}/sse[/]")
+            console.print("\n[bold cyan]To use a specific profile:[/]")
+            console.print(f"[green]http://{host}:{port}/sse?profile=<profile_name>[/]")
+
+        console.print("\n[yellow]Use 'mcpm router off' to stop the router.[/]")
 
     except Exception as e:
         console.print(f"[bold red]Error:[/] Failed to start MCPRouter: {e}")
@@ -197,17 +226,22 @@ def start_router(verbose):
 @click.option("-H", "--host", type=str, help="Host to bind the SSE server to")
 @click.option("-p", "--port", type=int, help="Port to bind the SSE server to")
 @click.option("-a", "--address", type=str, help="Remote address to share the router")
+@click.option(
+    "--auth/--no-auth", default=True, is_flag=True, help="Enable/disable API key authentication (default: enabled)"
+)
 @click.help_option("-h", "--help")
-def set_router_config(host, port, address):
+def set_router_config(host, port, address, auth):
     """Set MCPRouter global configuration.
 
     Example:
         mcpm router set -H localhost -p 8888
         mcpm router set --host 127.0.0.1 --port 9000
+        mcpm router set --no-auth  # disable authentication
+        mcpm router set --auth  # enable authentication
     """
-    if not host and not port and not address:
+    if not host and not port and not address and auth is None:
         console.print(
-            "[yellow]No changes were made. Please specify at least one option (--host, --port, or --address)[/]"
+            "[yellow]No changes were made. Please specify at least one option (--host, --port, --address, --auth/--no-auth)[/]"
         )
         return
 
@@ -220,7 +254,32 @@ def set_router_config(host, port, address):
     port = port or current_config["port"]
     share_address = address or current_config["share_address"]
 
-    # save config
+    # Handle authentication setting
+    share_config = config_manager.read_share_config()
+    current_api_key = share_config.get("api_key")
+
+    if auth:
+        # Enable authentication
+        if current_api_key is None:
+            # Generate a new API key if authentication is enabled but no key exists
+            api_key = secrets.token_urlsafe(32)
+            config_manager.save_share_config(
+                share_url=share_config.get("url"), share_pid=share_config.get("pid"), api_key=api_key
+            )
+            console.print("[bold green]API key authentication enabled.[/] Generated new API key.")
+        else:
+            console.print("[bold green]API key authentication enabled.[/] Using existing API key.")
+    else:
+        # Disable authentication by clearing the API key
+        if current_api_key is not None:
+            config_manager.save_share_config(
+                share_url=share_config.get("url"), share_pid=share_config.get("pid"), api_key=None
+            )
+            console.print("[bold yellow]API key authentication disabled.[/]")
+        else:
+            console.print("[bold yellow]API key authentication was already disabled.[/]")
+
+    # save router config
     if config_manager.save_router_config(host, port, share_address):
         console.print(
             f"[bold green]Router configuration updated:[/] host={host}, port={port}, share_address={share_address}"
