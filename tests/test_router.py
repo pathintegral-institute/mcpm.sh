@@ -10,6 +10,7 @@ from mcp.types import ListToolsResult, ServerCapabilities, ServerResult, Tool, T
 
 from mcpm.router.client_connection import ServerConnection
 from mcpm.router.router import MCPRouter
+from mcpm.router.router_config import RouterConfig
 from mcpm.schemas.server_config import SSEServerConfig
 from mcpm.utils.config import TOOL_SPLITOR
 
@@ -53,41 +54,40 @@ async def test_router_init():
     router = MCPRouter()
     assert router.profile_manager is not None
     assert router.watcher is None
-    assert router.strict is False
-    assert router.api_key is None
-    assert router.router_config is None
+    assert router.router_config is not None
+    assert router.router_config.strict is False
 
     # Test with custom values
-    router_config = {"host": "custom-host", "port": 9000}
+    config = RouterConfig(
+        host="custom-host", port=9000, share_address="custom-share-address", api_key="test-api-key", strict=True
+    )
     router = MCPRouter(
         reload_server=True,
-        strict=True,
-        api_key="test-api-key",
-        router_config=router_config,
+        router_config=config,
     )
 
     assert router.watcher is not None
-    assert router.strict is True
-    assert router.api_key == "test-api-key"
-    assert router.router_config == router_config
+    assert router.router_config == config
+    assert router.router_config.api_key == "test-api-key"
+    assert router.router_config.strict is True
 
 
 def test_create_global_config():
     """Test creating a global config from router config"""
-    router_config = {"host": "custom-host", "port": 9000, "share_address": "custom-share-address"}
+    config = RouterConfig(host="custom-host", port=9000, share_address="custom-share-address", api_key="test-api-key")
 
     with patch("mcpm.router.router.ConfigManager") as mock_config_manager:
         mock_instance = Mock()
         mock_config_manager.return_value = mock_instance
 
-        # Test without API key
-        router = MCPRouter(router_config=router_config)
+        # Test without router_config
+        router = MCPRouter()
         router.create_global_config()
         mock_instance.save_share_config.assert_not_called()
         mock_instance.save_router_config.assert_not_called()
 
-        # Test with API key
-        router = MCPRouter(api_key="test-api-key", router_config=router_config)
+        # Test with router_config
+        router = MCPRouter(router_config=config)
         router.create_global_config()
         mock_instance.save_share_config.assert_called_once_with(api_key="test-api-key")
         mock_instance.save_router_config.assert_called_once_with("custom-host", 9000, "custom-share-address")
@@ -144,7 +144,7 @@ async def test_add_server_unhealthy():
 @pytest.mark.asyncio
 async def test_add_server_duplicate_tool_strict():
     """Test adding a server with duplicate tool name in strict mode"""
-    router = MCPRouter(strict=True)
+    router = MCPRouter(router_config=RouterConfig(strict=True))
 
     # Mock get_active_servers to return all server IDs
     def mock_get_active_servers(_profile):
@@ -207,7 +207,7 @@ async def test_add_server_duplicate_tool_strict():
 @pytest.mark.asyncio
 async def test_add_server_duplicate_tool_non_strict():
     """Test adding a server with duplicate tool name in non-strict mode"""
-    router = MCPRouter(strict=False)
+    router = MCPRouter(router_config=RouterConfig(strict=False))
 
     # Mock get_active_servers to return all server IDs
     def mock_get_active_servers(_profile):
@@ -430,7 +430,7 @@ async def test_router_sse_transport_with_api_key():
 @pytest.mark.asyncio
 async def test_get_sse_server_app_with_api_key():
     """Test that the API key is passed to RouterSseTransport when creating the server app"""
-    router = MCPRouter(api_key="test-api-key")
+    router = MCPRouter(router_config=RouterConfig(api_key="test-api-key"))
 
     # Patch the RouterSseTransport constructor and get_active_servers method
     with (
@@ -455,7 +455,7 @@ async def test_get_sse_server_app_with_api_key():
 @pytest.mark.asyncio
 async def test_get_sse_server_app_without_api_key():
     """Test that None is passed to RouterSseTransport when no API key is provided"""
-    router = MCPRouter()  # No API key
+    router = MCPRouter()  # No API key or router_config
 
     # Patch the RouterSseTransport constructor and get_active_servers method
     with (

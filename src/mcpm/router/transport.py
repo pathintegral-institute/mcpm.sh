@@ -245,14 +245,11 @@ class RouterSseTransport(SseServerTransport):
             return True
 
         # If we have a directly provided API key, verify it matches
-        if self.api_key is not None:
-            # If API key doesn't match, return False
-            if api_key != self.api_key:
-                logger.warning("Unauthorized API key")
-                return False
+        if api_key == self.api_key:
             return True
 
-        # Otherwise, fall back to the original validation logic
+        # At this point, self.api_key is not None but doesn't match the provided api_key
+        # Let's check if this is a share URL that needs special validation
         try:
             config_manager = ConfigManager()
             host = get_key_from_scope(scope, key_name="host") or ""
@@ -264,10 +261,11 @@ class RouterSseTransport(SseServerTransport):
             share_host_name = urlsplit(share_config["url"]).hostname
             if share_config["url"] and (host_name == share_host_name or host_name != router_config["host"]):
                 share_api_key = share_config["api_key"]
-                if api_key != share_api_key:
-                    logger.warning("Unauthorized API key")
-                    return False
+                if api_key == share_api_key:
+                    return True
         except Exception as e:
             logger.error(f"Failed to validate API key: {e}")
-            return False
-        return True
+
+        # If we reach here, the API key is invalid
+        logger.warning("Unauthorized API key")
+        return False
