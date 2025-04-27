@@ -34,7 +34,7 @@
         }
     },
     "arguments": {},
-    "is_official": true,
+    "is_official": false,
     "examples": [
         {
             "title": "Get 2024 Season Schedule",
