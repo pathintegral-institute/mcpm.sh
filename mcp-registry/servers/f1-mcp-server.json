@@ -1,0 +1,281 @@
+{
+    "name": "f1-mcp-server",
+    "display_name": "Formula One MCP Server",
+    "description": "A Model Context Protocol (MCP) server that provides Formula One racing data.",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Machine-To-Machine/f1-mcp-server.git"
+    },
+    "homepage": "https://github.com/Machine-To-Machine/f1-mcp-server",
+    "author": {
+        "name": "Machine To Machine"
+    },
+    "license": "MIT",
+    "categories": [
+        "Web Services"
+    ],
+    "tags": [
+        "f1",
+        "formula one",
+        "racing",
+        "sports",
+        "data",
+        "mcp"
+    ],
+    "installations": {
+        "uvx": {
+            "type": "uvx",
+            "command": "uvx",
+            "args": [
+                "f1-mcp-server"
+            ],
+            "description": "Run the F1 MCP server globally using uvx (requires uv installed)",
+            "recommended": true
+        }
+    },
+    "arguments": {},
+    "is_official": false,
+    "examples": [
+        {
+            "title": "Get 2024 Season Schedule",
+            "description": "Retrieve the race calendar for the 2024 F1 season.",
+            "prompt": "get_event_schedule(season=2024)"
+        },
+        {
+            "title": "Get Monaco GP Race Results",
+            "description": "Fetch the race results for the 2024 Monaco Grand Prix.",
+            "prompt": "get_session_results(season=2024, event='Monaco Grand Prix', session='R')"
+        },
+        {
+            "title": "Compare Verstappen and Hamilton",
+            "description": "Compare the qualifying performance of Verstappen and Hamilton at the 2023 British GP.",
+            "prompt": "compare_drivers(season=2023, event='British Grand Prix', session='Q', drivers=['VER', 'HAM'])"
+        },
+        {
+            "title": "Get Driver Championship Standings",
+            "description": "Retrieve the driver championship standings for the 2023 season.",
+            "prompt": "get_championship_standings(season=2023, type='driver')"
+        }
+    ],
+    "tools": [
+        {
+            "name": "get_event_schedule",
+            "description": "Get Formula One race calendar for a specific season",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "season": {
+                        "type": "integer",
+                        "description": "The year of the season (e.g., 2024)"
+                    }
+                },
+                "required": [
+                    "season"
+                ]
+            }
+        },
+        {
+            "name": "get_event_info",
+            "description": "Get detailed information about a specific Formula One Grand Prix",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "season": {
+                        "type": "integer",
+                        "description": "The year of the season (e.g., 2024)"
+                    },
+                    "event": {
+                        "type": "string",
+                        "description": "The name or round number of the event (e.g., 'Monaco Grand Prix' or 5)"
+                    }
+                },
+                "required": [
+                    "season",
+                    "event"
+                ]
+            }
+        },
+        {
+            "name": "get_session_results",
+            "description": "Get results for a specific Formula One session",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "season": {
+                        "type": "integer",
+                        "description": "The year of the season (e.g., 2024)"
+                    },
+                    "event": {
+                        "type": "string",
+                        "description": "The name or round number of the event (e.g., 'Monaco Grand Prix' or 5)"
+                    },
+                    "session": {
+                        "type": "string",
+                        "description": "The session identifier (e.g., 'R' for Race, 'Q' for Qualifying, 'FP1' for Free Practice 1)"
+                    }
+                },
+                "required": [
+                    "season",
+                    "event",
+                    "session"
+                ]
+            }
+        },
+        {
+            "name": "get_driver_info",
+            "description": "Get information about a specific Formula One driver for a specific session",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "season": {
+                        "type": "integer",
+                        "description": "The year of the season (e.g., 2024)"
+                    },
+                    "event": {
+                        "type": "string",
+                        "description": "The name or round number of the event (e.g., 'Monaco Grand Prix' or 5)"
+                    },
+                    "session": {
+                        "type": "string",
+                        "description": "The session identifier (e.g., 'R', 'Q', 'FP1')"
+                    },
+                    "driver": {
+                        "type": "string",
+                        "description": "The driver identifier (e.g., 'VER' for Verstappen)"
+                    }
+                },
+                "required": [
+                    "season",
+                    "event",
+                    "session",
+                    "driver"
+                ]
+            }
+        },
+        {
+            "name": "analyze_driver_performance",
+            "description": "Analyze a driver's performance in a Formula One session",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "season": {
+                        "type": "integer",
+                        "description": "The year of the season (e.g., 2024)"
+                    },
+                    "event": {
+                        "type": "string",
+                        "description": "The name or round number of the event (e.g., 'Monaco Grand Prix' or 5)"
+                    },
+                    "session": {
+                        "type": "string",
+                        "description": "The session identifier (e.g., 'R', 'Q', 'FP1')"
+                    },
+                    "driver": {
+                        "type": "string",
+                        "description": "The driver identifier (e.g., 'VER')"
+                    }
+                },
+                "required": [
+                    "season",
+                    "event",
+                    "session",
+                    "driver"
+                ]
+            }
+        },
+        {
+            "name": "compare_drivers",
+            "description": "Compare performance between multiple Formula One drivers in the same session",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "season": {
+                        "type": "integer",
+                        "description": "The year of the season (e.g., 2024)"
+                    },
+                    "event": {
+                        "type": "string",
+                        "description": "The name or round number of the event (e.g., 'Monaco Grand Prix' or 5)"
+                    },
+                    "session": {
+                        "type": "string",
+                        "description": "The session identifier (e.g., 'R', 'Q', 'FP1')"
+                    },
+                    "drivers": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "A list of driver identifiers to compare (e.g., ['VER', 'HAM'])"
+                    }
+                },
+                "required": [
+                    "season",
+                    "event",
+                    "session",
+                    "drivers"
+                ]
+            }
+        },
+        {
+            "name": "get_telemetry",
+            "description": "Get telemetry data for a specific Formula One lap",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "season": {
+                        "type": "integer",
+                        "description": "The year of the season (e.g., 2024)"
+                    },
+                    "event": {
+                        "type": "string",
+                        "description": "The name or round number of the event (e.g., 'Monaco Grand Prix' or 5)"
+                    },
+                    "session": {
+                        "type": "string",
+                        "description": "The session identifier (e.g., 'R', 'Q', 'FP1')"
+                    },
+                    "driver": {
+                        "type": "string",
+                        "description": "The driver identifier (e.g., 'VER')"
+                    },
+                    "lap": {
+                        "type": "integer",
+                        "description": "The lap number"
+                    }
+                },
+                "required": [
+                    "season",
+                    "event",
+                    "session",
+                    "driver",
+                    "lap"
+                ]
+            }
+        },
+        {
+            "name": "get_championship_standings",
+            "description": "Get Formula One championship standings for a specific season",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "season": {
+                        "type": "integer",
+                        "description": "The year of the season (e.g., 2024)"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "driver",
+                            "constructor"
+                        ],
+                        "description": "Type of standings to retrieve ('driver' or 'constructor'). Optional."
+                    }
+                },
+                "required": [
+                    "season"
+                ]
+            }
+        }
+    ]
+}
