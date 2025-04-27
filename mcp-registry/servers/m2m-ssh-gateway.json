@@ -82,7 +82,7 @@
             "example": "DEBUG"
         }
     },
-    "is_official": true,
+    "is_official": false,
     "examples": [
         {
             "title": "Connect to M2M Demo Server",
