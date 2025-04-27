@@ -52,7 +52,7 @@ class ConfigWatcher:
 
     def _validate_config(self):
         try:
-            with open(self.config_path, "r") as f:
+            with open(self.config_path, "r", encoding="utf-8") as f:
                 _ = json.load(f)
         except json.JSONDecodeError:
             logger.error(f"Error parsing config file: {self.config_path}")

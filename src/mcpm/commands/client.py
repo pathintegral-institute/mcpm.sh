@@ -176,7 +176,7 @@ def edit_client():
 
         # Write the template to file
         try:
-            with open(config_path, "w") as f:
+            with open(config_path, "w", encoding="utf-8") as f:
                 json.dump(basic_config, f, indent=2)
             console.print("[green]Successfully created config file![/]\n")
             config_exists = True
@@ -187,7 +187,7 @@ def edit_client():
     # Show the current configuration if it exists
     if config_exists:
         try:
-            with open(config_path, "r") as f:
+            with open(config_path, "r", encoding="utf-8") as f:
                 config_content = f.read()
 
             # Display the content

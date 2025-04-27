@@ -27,7 +27,13 @@ MCPM 是一个开源的服务和命令行界面(CLI)，用于管理模型上下�
 
 ## 🚀 快速安装
 
-选择您喜欢的安装方式：
+### 🔄 Shell 脚本（一行命令）
+
+```bash
+curl -sSL https://mcpm.sh/install | bash
+```
+
+或选择您喜欢的安装方式：
 
 ### 🍺 Homebrew
 
@@ -41,6 +47,14 @@ brew install mcpm
 pipx install mcpm
 ```
 
+### 🪄 uv tool
+
+```bash
+uv tool install mcpm
+```
+
+## 其他安装方式
+
 ### 🐍 pip
 
 ```bash
@@ -53,12 +67,6 @@ pip install mcpm
 
 ```sh
 x install mcpm.sh
-```
-
-### 🔄 Shell 脚本（一行命令）
-
-```bash
-curl -sSL https://mcpm.sh/install | bash
 ```
 
 ## 🔎 概述

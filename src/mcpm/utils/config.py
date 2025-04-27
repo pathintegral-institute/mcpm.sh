@@ -46,7 +46,7 @@ class ConfigManager:
         """Load configuration from file or create default"""
         if os.path.exists(self.config_path):
             try:
-                with open(self.config_path, "r") as f:
+                with open(self.config_path, "r", encoding="utf-8") as f:
                     self._config = json.load(f)
             except json.JSONDecodeError:
                 logger.error(f"Error parsing config file: {self.config_path}")
@@ -62,7 +62,7 @@ class ConfigManager:
 
     def _save_config(self) -> None:
         """Save current configuration to file"""
-        with open(self.config_path, "w") as f:
+        with open(self.config_path, "w", encoding="utf-8") as f:
             json.dump(self._config, f, indent=2)
 
     def get_config(self) -> Dict[str, Any]:

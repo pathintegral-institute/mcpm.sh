@@ -262,7 +262,7 @@ def add(server_name, force=False, alias=None, target: str | None = None):
         # Save metadata to server directory
         progress.add_task("Saving server metadata...", total=None)
         metadata_path = os.path.join(server_dir, "metadata.json")
-        with open(metadata_path, "w") as f:
+        with open(metadata_path, "w", encoding="utf-8") as f:
             json.dump(server_metadata, f, indent=2)
 
         # Configure the server

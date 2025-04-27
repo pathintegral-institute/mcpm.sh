@@ -43,7 +43,7 @@ class RepositoryManager:
         """
         if os.path.exists(self.cache_file):
             try:
-                with open(self.cache_file, "r") as f:
+                with open(self.cache_file, "r", encoding="utf-8") as f:
                     cache_data = json.load(f)
                     self.servers_cache = cache_data.get("servers")
 
@@ -66,7 +66,7 @@ class RepositoryManager:
             try:
                 cache_data = {"servers": self.servers_cache, "last_refresh": self.last_refresh.isoformat()}
 
-                with open(self.cache_file, "w") as f:
+                with open(self.cache_file, "w", encoding="utf-8") as f:
                     json.dump(cache_data, f, indent=2)
 
                 logger.debug(f"Saved servers cache to {self.cache_file}")

@@ -8,7 +8,18 @@ import os
 from datetime import datetime
 from typing import Any, Dict, Optional, Union
 
-import duckdb
+try:
+    import duckdb
+except ImportError as e:
+    duckdb = None
+    if "DLL load failed while importing duckdb" in str(e):
+        print("The DuckDB Python package requires the Microsoft Visual C++ Redistributable. ")
+        print(
+            "Please install it from: https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170"
+        )
+        print("See https://duckdb.org/docs/installation/?version=stable&environment=python for more information.")
+    else:
+        raise
 
 from mcpm.monitor.base import AccessEventType, AccessMonitor, MCPEvent, Pagination, QueryEventResponse
 from mcpm.utils.config import ConfigManager
@@ -57,6 +68,9 @@ class DuckDBAccessMonitor(AccessMonitor):
 
     def _initialize_storage_impl(self) -> bool:
         """Internal implementation of storage initialization."""
+        if duckdb is None:
+            print("DuckDB is not available.")
+            return False
         try:
             # Create the directory if it doesn't exist
             os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
