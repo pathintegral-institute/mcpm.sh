@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.6.2...v1.7.0) (2025-04-28)
+
+
+### Features
+
+* support custom add server ([#125](https://github.com/pathintegral-institute/mcpm.sh/issues/125)) ([80bd9c0](https://github.com/pathintegral-institute/mcpm.sh/commit/80bd9c03120a0b2d9d99173754243eff3feb5811))
+
 ## [1.6.2](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.6.1...v1.6.2) (2025-04-27)
 
 
