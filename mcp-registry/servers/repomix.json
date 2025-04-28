@@ -1,0 +1,232 @@
+{
+  "display_name": "Repomix",
+  "license": "MIT",
+  "tags": [
+    "code",
+    "AI",
+    "repository",
+    "packaging",
+    "LLM",
+    "token counting",
+    "code analysis",
+    "CLI tool"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "repomix",
+        "--mcp"
+      ],
+      "description": "Run as a Model Context Protocol (MCP) server"
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-v",
+        ".:/app",
+        "-it",
+        "--rm",
+        "ghcr.io/yamadashy/repomix"
+      ],
+      "description": "Run Repomix using Docker (current directory)"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "This file contains all the files in the repository combined into one. I want to refactor the code, so please review it first."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Based on the codebase in this file, please generate a detailed README.md that includes an overview of the project, its main features, setup instructions, and usage examples."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Analyze the code in this file and suggest a comprehensive set of unit tests for the main functions and classes. Include edge cases and potential error scenarios."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Review the codebase for adherence to coding best practices and industry standards. Identify areas where the code could be improved in terms of readability, maintainability, and efficiency."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "This file contains the entire codebase of library. Please provide a comprehensive overview of the library, including its main purpose, key features, and overall architecture."
+    }
+  ],
+  "name": "repomix",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yamadashy/repomix"
+  },
+  "homepage": "https://github.com/yamadashy/repomix",
+  "author": {
+    "name": "yamadashy"
+  },
+  "description": "- Try Repomix in your browser at [repomix.com](https://repomix.com/)",
+  "categories": [
+    "Dev Tools"
+  ],
+  "tools": [
+    {
+      "name": "pack_codebase",
+      "description": "Package local code directory into a consolidated file for AI analysis",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "directory": {
+            "type": "string",
+            "description": "Directory to pack (Absolute path)"
+          },
+          "compress": {
+            "type": "boolean",
+            "default": true,
+            "description": "Utilize Tree-sitter to intelligently extract essential code signatures and structure while removing implementation details, significantly reducing token usage (default: true)"
+          },
+          "includePatterns": {
+            "type": "string",
+            "description": "Specify which files to include using fast-glob compatible patterns (e.g., \"**/*.js,src/**\"). Only files matching these patterns will be processed. It is recommended to pack only necessary files."
+          },
+          "ignorePatterns": {
+            "type": "string",
+            "description": "Specify additional files to exclude using fast-glob compatible patterns (e.g., \"test/**,*.spec.js\"). These patterns complement .gitignore and default ignores. It is recommended to pack only necessary files."
+          },
+          "topFilesLength": {
+            "type": "number",
+            "default": 10,
+            "description": "Number of top files to display in the metrics (default: 10)"
+          }
+        },
+        "required": [
+          "directory"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "pack_remote_repository",
+      "description": "Fetch, clone and package a GitHub repository into a consolidated file for AI analysis",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "remote": {
+            "type": "string",
+            "description": "GitHub repository URL or user/repo (e.g., yamadashy/repomix)"
+          },
+          "compress": {
+            "type": "boolean",
+            "default": true,
+            "description": "Utilize Tree-sitter to intelligently extract essential code signatures and structure while removing implementation details, significantly reducing token usage (default: true)"
+          },
+          "includePatterns": {
+            "type": "string",
+            "description": "Specify which files to include using fast-glob compatible patterns (e.g., \"**/*.js,src/**\"). Only files matching these patterns will be processed. It is recommended to pack only necessary files."
+          },
+          "ignorePatterns": {
+            "type": "string",
+            "description": "Specify additional files to exclude using fast-glob compatible patterns (e.g., \"test/**,*.spec.js\"). These patterns complement .gitignore and default ignores. It is recommended to pack only necessary files."
+          },
+          "topFilesLength": {
+            "type": "number",
+            "default": 10,
+            "description": "Number of top files to display in the metrics (default: 10)"
+          }
+        },
+        "required": [
+          "remote"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "read_repomix_output",
+      "description": "Read the contents of a Repomix output file in environments where direct file access is not possible. This tool is specifically intended for cases where the client cannot access the file system directly, such as in web-based environments or sandboxed applications. For systems with direct file access, use standard file operations instead.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "outputId": {
+            "type": "string",
+            "description": "ID of the Repomix output file to read"
+          }
+        },
+        "required": [
+          "outputId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "file_system_read_file",
+      "description": "Read a file using an absolute path with security validation.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Absolute path to the file to read"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "file_system_read_directory",
+      "description": "List contents of a directory using an absolute path.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Absolute path to the directory to list"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    }
+  ],
+  "prompts": [
+    {
+      "name": "pack_remote_repository",
+      "description": "Pack a remote GitHub repository for analysis",
+      "arguments": [
+        {
+          "name": "repository",
+          "description": "GitHub repository URL or owner/repo format (e.g., \"yamadashy/repomix\")",
+          "required": true
+        },
+        {
+          "name": "includePatterns",
+          "description": "Comma-separated list of glob patterns to include (e.g., \"src/**,lib/**\"). It is recommended to pack only necessary files.",
+          "required": false
+        },
+        {
+          "name": "ignorePatterns",
+          "description": "Comma-separated list of glob patterns to ignore (e.g., \"**/*.test.js,**/*.spec.js\"). It is recommended to pack only necessary files.",
+          "required": false
+        }
+      ]
+    }
+  ],
+  "resources": [],
+  "is_official": false
+}

@@ -1,0 +1,91 @@
+{
+  "display_name": "GhidraMCP",
+  "license": "Apache-2.0",
+  "tags": [
+    "reverse engineering",
+    "Ghidra",
+    "MCP",
+    "binary analysis",
+    "decompiler",
+    "LLM",
+    "Model Context Protocol"
+  ],
+  "installations": {
+    "python": {
+      "type": "python",
+      "command": "python",
+      "args": [
+        "/ABSOLUTE_PATH_TO/bridge_mcp_ghidra.py",
+        "--ghidra-server",
+        "http://127.0.0.1:8080/"
+      ],
+      "description": "Configure in Claude Desktop"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Can you decompile the main function in the current binary?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "List all methods in the current program"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Analyze the binary and identify potential vulnerabilities"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Rename the function at address 0x4000 to 'initialize_connection'"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Show me all imports in this binary"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "List all classes in this program"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Decompile the function at address 0x8040"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "What are the exports in this binary?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Analyze the control flow of function at 0x5000"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Can you automatically rename methods based on their functionality?"
+    }
+  ],
+  "name": "ghidra-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LaurieWired/GhidraMCP"
+  },
+  "homepage": "https://github.com/LaurieWired/GhidraMCP",
+  "author": {
+    "name": "LaurieWired"
+  },
+  "description": "GhidraMCP is an Model Context Protocol server for allowing LLMs to autonomously reverse engineer applications. It exposes numerous tools from core Ghidra functionality to MCP clients.",
+  "categories": [
+    "Dev Tools"
+  ],
+  "is_official": false
+}

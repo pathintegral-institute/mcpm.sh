@@ -1,0 +1,94 @@
+{
+  "display_name": "Browser Tools MCP Server",
+  "license": "MIT",
+  "tags": [
+    "MCP",
+    "browser tools",
+    "AI",
+    "debugging",
+    "console logs",
+    "network analysis",
+    "screenshot capture",
+    "element inspection",
+    "accessibility audit",
+    "performance audit",
+    "SEO audit",
+    "best practices audit"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "@agentdeskai/browser-tools-mcp"
+      ],
+      "description": "Run browser tools mcp server with npx"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Show me the console logs from the browser"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "What errors are showing in the console?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Check for network errors on the current page"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Show me successful network requests"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Get all network logs"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "What element is currently selected?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Run an accessibility audit on this page"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Analyze the performance of this website"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Check this page for SEO issues"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Run a best practices audit on this site"
+    }
+  ],
+  "name": "browser-tools-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AgentDeskAI/browser-tools-mcp/tree/main/browser-tools-mcp"
+  },
+  "homepage": "https://github.com/AgentDeskAI/browser-tools-mcp/tree/main/browser-tools-mcp",
+  "author": {
+    "name": "AgentDeskAI"
+  },
+  "description": "A Model Context Protocol (MCP) server that provides AI-powered browser tools integration. This server works in conjunction with the Browser Tools Server to provide AI capabilities for browser debugging and analysis.",
+  "categories": [
+    "Dev Tools"
+  ],
+  "is_official": false
+}

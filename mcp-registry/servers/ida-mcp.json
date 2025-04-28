@@ -1,0 +1,482 @@
+{
+  "display_name": "IDA MCP Server",
+  "license": "MIT",
+  "tags": [
+    "IDA",
+    "reverse engineering",
+    "MCP",
+    "Model Context Protocol",
+    "automation",
+    "LLM",
+    "IDA Pro"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "mcp-server-ida"
+      ],
+      "description": "Using uvx (recommended)"
+    },
+    "python": {
+      "type": "python",
+      "command": "python",
+      "args": [
+        "-m",
+        "mcp_server_ida"
+      ],
+      "description": "Using pip installation"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Analyze the function at address 0x1000"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "What are the cross-references to this function?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Explain the purpose of this code segment"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Show me the disassembly of the current function"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Find all strings referenced in this binary"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "What are the imports used by this program?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Identify potential vulnerabilities in this function"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "How does this function handle error conditions?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Explain the control flow of this function"
+    }
+  ],
+  "name": "ida-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MxIris-Reverse-Engineering/ida-mcp-server"
+  },
+  "homepage": "https://github.com/MxIris-Reverse-Engineering/ida-mcp-server",
+  "author": {
+    "name": "MxIris-Reverse-Engineering"
+  },
+  "description": "A Model Context Protocol server for IDA interaction and automation. This server provides tools to read IDA database via Large Language Models.",
+  "categories": [
+    "Dev Tools"
+  ],
+  "tools": [
+    {
+      "name": "ida_get_function_assembly_by_name",
+      "description": "Get assembly code for a function by name",
+      "inputSchema": {
+        "properties": {
+          "function_name": {
+            "title": "Function Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "function_name"
+        ],
+        "title": "GetFunctionAssemblyByName",
+        "type": "object"
+      }
+    },
+    {
+      "name": "ida_get_function_assembly_by_address",
+      "description": "Get assembly code for a function by address",
+      "inputSchema": {
+        "properties": {
+          "address": {
+            "title": "Address",
+            "type": "string"
+          }
+        },
+        "required": [
+          "address"
+        ],
+        "title": "GetFunctionAssemblyByAddress",
+        "type": "object"
+      }
+    },
+    {
+      "name": "ida_get_function_decompiled_by_name",
+      "description": "Get decompiled pseudocode for a function by name",
+      "inputSchema": {
+        "properties": {
+          "function_name": {
+            "title": "Function Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "function_name"
+        ],
+        "title": "GetFunctionDecompiledByName",
+        "type": "object"
+      }
+    },
+    {
+      "name": "ida_get_function_decompiled_by_address",
+      "description": "Get decompiled pseudocode for a function by address",
+      "inputSchema": {
+        "properties": {
+          "address": {
+            "title": "Address",
+            "type": "string"
+          }
+        },
+        "required": [
+          "address"
+        ],
+        "title": "GetFunctionDecompiledByAddress",
+        "type": "object"
+      }
+    },
+    {
+      "name": "ida_get_global_variable_by_name",
+      "description": "Get information about a global variable by name",
+      "inputSchema": {
+        "properties": {
+          "variable_name": {
+            "title": "Variable Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "variable_name"
+        ],
+        "title": "GetGlobalVariableByName",
+        "type": "object"
+      }
+    },
+    {
+      "name": "ida_get_global_variable_by_address",
+      "description": "Get information about a global variable by address",
+      "inputSchema": {
+        "properties": {
+          "address": {
+            "title": "Address",
+            "type": "string"
+          }
+        },
+        "required": [
+          "address"
+        ],
+        "title": "GetGlobalVariableByAddress",
+        "type": "object"
+      }
+    },
+    {
+      "name": "ida_get_current_function_assembly",
+      "description": "Get assembly code for the function at the current cursor position",
+      "inputSchema": {
+        "properties": {},
+        "title": "GetCurrentFunctionAssembly",
+        "type": "object"
+      }
+    },
+    {
+      "name": "ida_get_current_function_decompiled",
+      "description": "Get decompiled pseudocode for the function at the current cursor position",
+      "inputSchema": {
+        "properties": {},
+        "title": "GetCurrentFunctionDecompiled",
+        "type": "object"
+      }
+    },
+    {
+      "name": "ida_rename_local_variable",
+      "description": "Rename a local variable within a function in the IDA database",
+      "inputSchema": {
+        "properties": {
+          "function_name": {
+            "title": "Function Name",
+            "type": "string"
+          },
+          "old_name": {
+            "title": "Old Name",
+            "type": "string"
+          },
+          "new_name": {
+            "title": "New Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "function_name",
+          "old_name",
+          "new_name"
+        ],
+        "title": "RenameLocalVariable",
+        "type": "object"
+      }
+    },
+    {
+      "name": "ida_rename_global_variable",
+      "description": "Rename a global variable in the IDA database",
+      "inputSchema": {
+        "properties": {
+          "old_name": {
+            "title": "Old Name",
+            "type": "string"
+          },
+          "new_name": {
+            "title": "New Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "old_name",
+          "new_name"
+        ],
+        "title": "RenameGlobalVariable",
+        "type": "object"
+      }
+    },
+    {
+      "name": "ida_rename_function",
+      "description": "Rename a function in the IDA database",
+      "inputSchema": {
+        "properties": {
+          "old_name": {
+            "title": "Old Name",
+            "type": "string"
+          },
+          "new_name": {
+            "title": "New Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "old_name",
+          "new_name"
+        ],
+        "title": "RenameFunction",
+        "type": "object"
+      }
+    },
+    {
+      "name": "ida_rename_multi_local_variables",
+      "description": "Rename multiple local variables within a function at once in the IDA database",
+      "inputSchema": {
+        "properties": {
+          "function_name": {
+            "title": "Function Name",
+            "type": "string"
+          },
+          "rename_pairs_old2new": {
+            "items": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            "title": "Rename Pairs Old2New",
+            "type": "array"
+          }
+        },
+        "required": [
+          "function_name",
+          "rename_pairs_old2new"
+        ],
+        "title": "RenameMultiLocalVariables",
+        "type": "object"
+      }
+    },
+    {
+      "name": "ida_rename_multi_global_variables",
+      "description": "Rename multiple global variables at once in the IDA database",
+      "inputSchema": {
+        "properties": {
+          "rename_pairs_old2new": {
+            "items": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            "title": "Rename Pairs Old2New",
+            "type": "array"
+          }
+        },
+        "required": [
+          "rename_pairs_old2new"
+        ],
+        "title": "RenameMultiGlobalVariables",
+        "type": "object"
+      }
+    },
+    {
+      "name": "ida_rename_multi_functions",
+      "description": "Rename multiple functions at once in the IDA database",
+      "inputSchema": {
+        "properties": {
+          "rename_pairs_old2new": {
+            "items": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            "title": "Rename Pairs Old2New",
+            "type": "array"
+          }
+        },
+        "required": [
+          "rename_pairs_old2new"
+        ],
+        "title": "RenameMultiFunctions",
+        "type": "object"
+      }
+    },
+    {
+      "name": "ida_add_assembly_comment",
+      "description": "Add a comment at a specific address in the assembly view of the IDA database",
+      "inputSchema": {
+        "properties": {
+          "address": {
+            "title": "Address",
+            "type": "string"
+          },
+          "comment": {
+            "title": "Comment",
+            "type": "string"
+          },
+          "is_repeatable": {
+            "default": false,
+            "title": "Is Repeatable",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "address",
+          "comment"
+        ],
+        "title": "AddAssemblyComment",
+        "type": "object"
+      }
+    },
+    {
+      "name": "ida_add_function_comment",
+      "description": "Add a comment to a function in the IDA database",
+      "inputSchema": {
+        "properties": {
+          "function_name": {
+            "title": "Function Name",
+            "type": "string"
+          },
+          "comment": {
+            "title": "Comment",
+            "type": "string"
+          },
+          "is_repeatable": {
+            "default": false,
+            "title": "Is Repeatable",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "function_name",
+          "comment"
+        ],
+        "title": "AddFunctionComment",
+        "type": "object"
+      }
+    },
+    {
+      "name": "ida_add_pseudocode_comment",
+      "description": "Add a comment to a specific address in the function's decompiled pseudocode",
+      "inputSchema": {
+        "properties": {
+          "function_name": {
+            "title": "Function Name",
+            "type": "string"
+          },
+          "address": {
+            "title": "Address",
+            "type": "string"
+          },
+          "comment": {
+            "title": "Comment",
+            "type": "string"
+          },
+          "is_repeatable": {
+            "default": false,
+            "title": "Is Repeatable",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "function_name",
+          "address",
+          "comment"
+        ],
+        "title": "AddPseudocodeComment",
+        "type": "object"
+      }
+    },
+    {
+      "name": "ida_execute_script",
+      "description": "Execute a Python script in IDA Pro and return its output. The script runs in IDA's context with access to all IDA API modules.",
+      "inputSchema": {
+        "properties": {
+          "script": {
+            "title": "Script",
+            "type": "string"
+          }
+        },
+        "required": [
+          "script"
+        ],
+        "title": "ExecuteScript",
+        "type": "object"
+      }
+    },
+    {
+      "name": "ida_execute_script_from_file",
+      "description": "Execute a Python script from a file path in IDA Pro and return its output. The file should be accessible from IDA's process.",
+      "inputSchema": {
+        "properties": {
+          "file_path": {
+            "title": "File Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "file_path"
+        ],
+        "title": "ExecuteScriptFromFile",
+        "type": "object"
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": false
+}

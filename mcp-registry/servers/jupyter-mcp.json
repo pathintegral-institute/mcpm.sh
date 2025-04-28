@@ -1,0 +1,110 @@
+{
+  "display_name": "Jupyter MCP Server",
+  "license": "BSD 3-Clause License",
+  "tags": [
+    "jupyter",
+    "mcp",
+    "model context protocol",
+    "notebook",
+    "jupyterlab",
+    "claude"
+  ],
+  "installations": {
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "SERVER_URL",
+        "-e",
+        "TOKEN",
+        "-e",
+        "NOTEBOOK_PATH",
+        "--network=host",
+        "datalayer/jupyter-mcp-server:latest"
+      ],
+      "env": {
+        "SERVER_URL": "${SERVER_URL}",
+        "TOKEN": "${TOKEN}",
+        "NOTEBOOK_PATH": "${NOTEBOOK_PATH}"
+      },
+      "description": "Docker installation for Claude Desktop on Linux"
+    }
+  },
+  "arguments": {
+    "SERVER_URL": {
+      "description": "The URL of the server",
+      "required": true,
+      "example": "http://localhost:8888"
+    },
+    "TOKEN": {
+      "description": "The token for authentication",
+      "required": true,
+      "example": "MY_TOKEN"
+    },
+    "NOTEBOOK_PATH": {
+      "description": "The path to the notebook",
+      "required": true,
+      "example": "notebook.ipynb"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Can you help me analyze this dataset? I have a Jupyter notebook open and want to load some data."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Write a function to calculate the Fibonacci sequence and show me the first 10 numbers."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Create a visualization of my data using matplotlib."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Explain this code to me and add documentation as markdown cells."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Help me debug this error in my Python code."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Can you create a pandas DataFrame with sample data and perform some basic analysis?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Write a machine learning model to classify this dataset."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Add a markdown cell explaining how neural networks work."
+    }
+  ],
+  "name": "jupyter-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/datalayer/jupyter-mcp-server"
+  },
+  "homepage": "https://github.com/datalayer/jupyter-mcp-server",
+  "author": {
+    "name": "datalayer"
+  },
+  "description": "Jupyter MCP Server is a [Model Context Protocol](https://modelcontextprotocol.io) (MCP) server implementation that provides interaction with \ud83d\udcd3 Jupyter notebooks running in any JupyterLab (works also with your \ud83d\udcbb local JupyterLab).",
+  "categories": [
+    "Dev Tools"
+  ],
+  "is_official": false
+}

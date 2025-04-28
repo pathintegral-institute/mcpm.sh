@@ -1,0 +1,149 @@
+{
+  "display_name": "Nx MCP Server",
+  "license": "MIT",
+  "tags": [
+    "nx",
+    "monorepo",
+    "MCP",
+    "Model Context Protocol",
+    "AI",
+    "LLM",
+    "code generation"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "nx-mcp@latest",
+        "/path/to/your/workspace"
+      ],
+      "description": "Run it via the nx-mcp package using npx"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Show me the structure of my Nx workspace"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "What are the details of project X in my Nx workspace?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Find Nx documentation about dependency management"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "List all available generators in my workspace"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Show me the schema for the @nrwl/angular:component generator"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "What Nx plugins are available to install?"
+    }
+  ],
+  "name": "nx-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nrwl/nx-console/tree/master/apps/nx-mcp"
+  },
+  "homepage": "https://github.com/nrwl/nx-console/tree/master/apps/nx-mcp",
+  "author": {
+    "name": "nrwl"
+  },
+  "description": "A [Model Context Protocol](https://modelcontextprotocol.io/introduction) server implementation for [Nx](https://nx.dev).",
+  "categories": [
+    "Dev Tools"
+  ],
+  "tools": [
+    {
+      "name": "nx_docs",
+      "description": "Returns a list of documentation sections that could be relevant to the user query. IMPORTANT: ALWAYS USE THIS IF YOU ARE ANSWERING QUESTIONS ABOUT NX. NEVER ASSUME KNOWLEDGE ABOUT NX BECAUSE IT WILL PROBABLY BE OUTDATED. Use it to learn about nx, its configuration and options instead of assuming knowledge about it.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "userQuery": {
+            "type": "string",
+            "description": "The user query to get docs for. You can pass the original user query verbatim or summarize it."
+          }
+        },
+        "required": [
+          "userQuery"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "nx_available_plugins",
+      "description": "Returns a list of available Nx plugins from the core team as well as local workspace Nx plugins.",
+      "inputSchema": {
+        "type": "object"
+      }
+    },
+    {
+      "name": "nx_workspace",
+      "description": "Returns a readable representation of the nx project graph and the nx.json that configures nx. If there are project graph errors, it also returns them. Use it to answer questions about the nx workspace and architecture",
+      "inputSchema": {
+        "type": "object"
+      }
+    },
+    {
+      "name": "nx_project_details",
+      "description": "Returns the complete project configuration in JSON format for a given nx project.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "projectName": {
+            "type": "string",
+            "description": "The name of the project to get details for"
+          }
+        },
+        "required": [
+          "projectName"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "nx_generators",
+      "description": "Returns a list of generators that could be relevant to the user query.",
+      "inputSchema": {
+        "type": "object"
+      }
+    },
+    {
+      "name": "nx_generator_schema",
+      "description": "Returns the detailed JSON schema for an nx generator",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "generatorName": {
+            "type": "string",
+            "description": "The name of the generator to get schema for. Use the generator name from the nx_generators tool."
+          }
+        },
+        "required": [
+          "generatorName"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": false
+}

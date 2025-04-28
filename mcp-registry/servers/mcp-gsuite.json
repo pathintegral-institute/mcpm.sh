@@ -1,0 +1,100 @@
+{
+  "display_name": "MCP Google Workspace Integration",
+  "license": "MIT",
+  "tags": [
+    "gmail",
+    "google",
+    "calendar",
+    "gsuite",
+    "google workspace",
+    "email",
+    "productivity"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "mcp-gsuite",
+        "--accounts-file",
+        "${ACCOUNTS_FILE_PATH}",
+        "--credentials-dir",
+        "${CREDENTIALS_DIR}"
+      ],
+      "description": "Run the published mcp-gsuite server with custom account and credentials paths"
+    }
+  },
+  "arguments": {
+    "ACCOUNTS_FILE_PATH": {
+      "description": "Path to the accounts file.",
+      "required": true,
+      "example": "/path/to/custom/.accounts.json"
+    },
+    "CREDENTIALS_DIR": {
+      "description": "Path to the credentials directory.",
+      "required": true,
+      "example": "/path/to/custom/credentials"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Retrieve my latest unread messages"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Search my emails from the Scrum Master"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Retrieve all emails from accounting"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Take the email about ABC and summarize it"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Write a nice response to Alice's last email and upload a draft."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Reply to Bob's email with a Thank you note. Store it as draft"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "What do I have on my agenda tomorrow?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Check my private account's Family agenda for next week"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "I need to plan an event with Tim for 2hrs next week. Suggest some time slots."
+    }
+  ],
+  "name": "mcp-gsuite",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MarkusPfundstein/mcp-gsuite"
+  },
+  "homepage": "https://github.com/MarkusPfundstein/mcp-gsuite",
+  "author": {
+    "name": "MarkusPfundstein"
+  },
+  "description": "MCP server to interact with Google products.",
+  "categories": [
+    "Productivity"
+  ],
+  "is_official": false
+}
