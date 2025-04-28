@@ -1,8 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel
-
-from mcpm.utils.config import DEFAULT_HOST, DEFAULT_PORT, DEFAULT_SHARE_ADDRESS
+from pydantic import BaseModel, field_validator
 
 
 class RouterConfig(BaseModel):
@@ -10,8 +8,13 @@ class RouterConfig(BaseModel):
     Router configuration model for MCPRouter
     """
 
-    host: str = DEFAULT_HOST
-    port: int = DEFAULT_PORT
-    share_address: str = DEFAULT_SHARE_ADDRESS
-    api_key: Optional[str] = None
     strict: bool = False
+    api_key: Optional[str] = None
+    auth_enabled: bool = False
+
+    @field_validator("api_key", mode="after")
+    def check_api_key(cls, v, info):
+        # info is ValidationInfo in pydantic v2; info.data is the dict of parsed values
+        if info.data.get("auth_enabled") and v is None:
+            raise ValueError("api_key must be provided when auth_enabled is True")
+        return v

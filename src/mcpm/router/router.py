@@ -17,7 +17,7 @@ from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
 from starlette.requests import Request
 from starlette.routing import Mount, Route
-from starlette.types import AppType, Lifespan
+from starlette.types import Lifespan
 
 from mcpm.monitor.base import AccessEventType
 from mcpm.monitor.event import trace_event
@@ -51,15 +51,10 @@ class MCPRouter:
 
         # Initialize with custom router configuration
         router_config = RouterConfig(
-            host="localhost",
-            port=8080,
-            share_address="custom.share.address:8080",
-            api_key="your-api-key"
+            api_key="your-api-key",
+            auth_enabled=True
         )
         router = MCPRouter(router_config=router_config)
-
-        # Create a global config from the router's configuration
-        router.create_global_config()
         ```
     """
 
@@ -88,27 +83,10 @@ class MCPRouter:
         self.watcher: Optional[ConfigWatcher] = None
         if reload_server:
             self.watcher = ConfigWatcher(self.profile_manager.profile_path)
+        if router_config is None:
+            config = ConfigManager().get_router_config()
+            router_config = RouterConfig(api_key=config.get("api_key"), auth_enabled=config.get("auth_enabled", False))
         self.router_config = router_config if router_config is not None else RouterConfig()
-
-    def create_global_config(self) -> None:
-        """
-        Create a global configuration from the router's configuration.
-        This is useful if you want to initialize the router with a config
-        but also want that config to be available globally.
-        """
-        # Skip if router_config is None or there's no explicit api_key set
-        if self.router_config is None or self.router_config.api_key is None:
-            return
-
-        config_manager = ConfigManager()
-
-        # Save the API key to the global config
-        config_manager.save_share_config(api_key=self.router_config.api_key)
-
-        # Save router configuration to the global config
-        config_manager.save_router_config(
-            self.router_config.host, self.router_config.port, self.router_config.share_address
-        )
 
     def get_unique_servers(self) -> list[ServerConfig]:
         profiles = self.profile_manager.list_profiles()
@@ -178,87 +156,75 @@ class MCPRouter:
         # Collect server tools, prompts, and resources
         if response.capabilities.tools:
             tools = await client.session.list_tools()  # type: ignore
-            # Extract ListToolsResult from ServerResult
-            tools_result = tools.root
-            if isinstance(tools_result, types.ListToolsResult):
-                for tool in tools_result.tools:
-                    # To make sure tool name is unique across all servers
-                    tool_name = tool.name
-                    if tool_name in self.capabilities_to_server_id["tools"]:
-                        if self.router_config.strict:
-                            raise ValueError(
-                                f"Tool {tool_name} already exists. Please use unique tool names across all servers."
-                            )
-                        else:
-                            # Auto resolve by adding server name prefix
-                            tool_name = f"{server_id}{TOOL_SPLITOR}{tool_name}"
-                    self.capabilities_to_server_id["tools"][tool_name] = server_id
-                    self.tools_mapping[tool_name] = tool
+            for tool in tools.tools:
+                # To make sure tool name is unique across all servers
+                tool_name = tool.name
+                if tool_name in self.capabilities_to_server_id["tools"]:
+                    if self.router_config.strict:
+                        raise ValueError(
+                            f"Tool {tool_name} already exists. Please use unique tool names across all servers."
+                        )
+                    else:
+                        # Auto resolve by adding server name prefix
+                        tool_name = f"{server_id}{TOOL_SPLITOR}{tool_name}"
+                self.capabilities_to_server_id["tools"][tool_name] = server_id
+                self.tools_mapping[tool_name] = tool
 
         if response.capabilities.prompts:
             prompts = await client.session.list_prompts()  # type: ignore
-            # Extract ListPromptsResult from ServerResult
-            prompts_result = prompts.root
-            if isinstance(prompts_result, types.ListPromptsResult):
-                for prompt in prompts_result.prompts:
-                    # To make sure prompt name is unique across all servers
-                    prompt_name = prompt.name
-                    if prompt_name in self.capabilities_to_server_id["prompts"]:
-                        if self.router_config.strict:
-                            raise ValueError(
-                                f"Prompt {prompt_name} already exists. Please use unique prompt names across all servers."
-                            )
-                        else:
-                            # Auto resolve by adding server name prefix
-                            prompt_name = f"{server_id}{PROMPT_SPLITOR}{prompt_name}"
-                    self.prompts_mapping[prompt_name] = prompt
-                    self.capabilities_to_server_id["prompts"][prompt_name] = server_id
+            for prompt in prompts.prompts:
+                # To make sure prompt name is unique across all servers
+                prompt_name = prompt.name
+                if prompt_name in self.capabilities_to_server_id["prompts"]:
+                    if self.router_config.strict:
+                        raise ValueError(
+                            f"Prompt {prompt_name} already exists. Please use unique prompt names across all servers."
+                        )
+                    else:
+                        # Auto resolve by adding server name prefix
+                        prompt_name = f"{server_id}{PROMPT_SPLITOR}{prompt_name}"
+                self.prompts_mapping[prompt_name] = prompt
+                self.capabilities_to_server_id["prompts"][prompt_name] = server_id
 
         if response.capabilities.resources:
             resources = await client.session.list_resources()  # type: ignore
-            # Extract ListResourcesResult from ServerResult
-            resources_result = resources.root
-            if isinstance(resources_result, types.ListResourcesResult):
-                for resource in resources_result.resources:
-                    # To make sure resource URI is unique across all servers
-                    resource_uri = resource.uri
-                    if str(resource_uri) in self.capabilities_to_server_id["resources"]:
-                        if self.router_config.strict:
-                            raise ValueError(
-                                f"Resource {resource_uri} already exists. Please use unique resource URIs across all servers."
-                            )
-                        else:
-                            # Auto resolve by adding server name prefix
-                            host = resource_uri.host
-                            resource_uri = AnyUrl.build(
-                                host=f"{server_id}{RESOURCE_SPLITOR}{host}",
-                                scheme=resource_uri.scheme,
-                                path=resource_uri.path,
-                                username=resource_uri.username,
-                                password=resource_uri.password,
-                                port=resource_uri.port,
-                                query=resource_uri.query,
-                                fragment=resource_uri.fragment,
-                            )
+            for resource in resources.resources:
+                # To make sure resource URI is unique across all servers
+                resource_uri = resource.uri
+                if str(resource_uri) in self.capabilities_to_server_id["resources"]:
+                    if self.router_config.strict:
+                        raise ValueError(
+                            f"Resource {resource_uri} already exists. Please use unique resource URIs across all servers."
+                        )
+                    else:
+                        # Auto resolve by adding server name prefix
+                        host = resource_uri.host
+                        resource_uri = AnyUrl.build(
+                            host=f"{server_id}{RESOURCE_SPLITOR}{host}",
+                            scheme=resource_uri.scheme,
+                            path=resource_uri.path,
+                            username=resource_uri.username,
+                            password=resource_uri.password,
+                            port=resource_uri.port,
+                            query=resource_uri.query,
+                            fragment=resource_uri.fragment,
+                        )
                     self.resources_mapping[str(resource_uri)] = resource
                     self.capabilities_to_server_id["resources"][str(resource_uri)] = server_id
             resources_templates = await client.session.list_resource_templates()  # type: ignore
-            # Extract ListResourceTemplatesResult from ServerResult
-            templates_result = resources_templates.root
-            if isinstance(templates_result, types.ListResourceTemplatesResult):
-                for resource_template in templates_result.resourceTemplates:
-                    # To make sure resource template URI is unique across all servers
-                    resource_template_uri_template = resource_template.uriTemplate
-                    if resource_template_uri_template in self.capabilities_to_server_id["resource_templates"]:
-                        if self.router_config.strict:
-                            raise ValueError(
-                                f"Resource template {resource_template_uri_template} already exists. Please use unique resource template URIs across all servers."
-                            )
-                        else:
-                            # Auto resolve by adding server name prefix
-                            resource_template_uri_template = (
-                                f"{server_id}{RESOURCE_TEMPLATE_SPLITOR}{resource_template.uriTemplate}"
-                            )
+            for resource_template in resources_templates.resourceTemplates:
+                # To make sure resource template URI is unique across all servers
+                resource_template_uri_template = resource_template.uriTemplate
+                if resource_template_uri_template in self.capabilities_to_server_id["resource_templates"]:
+                    if self.router_config.strict:
+                        raise ValueError(
+                            f"Resource template {resource_template_uri_template} already exists. Please use unique resource template URIs across all servers."
+                        )
+                    else:
+                        # Auto resolve by adding server name prefix
+                        resource_template_uri_template = (
+                            f"{server_id}{RESOURCE_TEMPLATE_SPLITOR}{resource_template.uriTemplate}"
+                        )
                     self.resources_templates_mapping[resource_template_uri_template] = resource_template
                     self.capabilities_to_server_id["resource_templates"][resource_template_uri_template] = server_id
 
@@ -544,7 +510,7 @@ class MCPRouter:
 
     async def get_sse_server_app(
         self, allow_origins: t.Optional[t.List[str]] = None, include_lifespan: bool = True
-    ) -> AppType:
+    ) -> Starlette:
         """
         Get the SSE server app.
 
@@ -558,7 +524,7 @@ class MCPRouter:
         await self.initialize_router()
 
         # Pass the API key to the RouterSseTransport
-        api_key = None if self.router_config is None else self.router_config.api_key
+        api_key = None if not self.router_config.auth_enabled else self.router_config.api_key
         sse = RouterSseTransport("/messages/", api_key=api_key)
 
         async def handle_sse(request: Request) -> None:
@@ -573,11 +539,11 @@ class MCPRouter:
                     self.aggregated_server.initialization_options,
                 )
 
-        lifespan_handler: t.Optional[Lifespan[AppType]] = None
+        lifespan_handler: t.Optional[Lifespan[Starlette]] = None
         if include_lifespan:
 
             @asynccontextmanager
-            async def lifespan(app: AppType):
+            async def lifespan(app: Starlette):
                 yield
                 await self.shutdown()
 

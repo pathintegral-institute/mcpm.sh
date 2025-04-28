@@ -9,7 +9,6 @@ import signal
 import socket
 import subprocess
 import sys
-import uuid
 
 import click
 import psutil
@@ -138,13 +137,8 @@ def start_router(verbose):
     config = config_manager.get_router_config()
     host = config["host"]
     port = config["port"]
-
-    # Check if we have an API key, if not, create one
-    share_config = config_manager.read_share_config()
-    if share_config.get("api_key") is None:
-        api_key = secrets.token_urlsafe(32)
-        config_manager.save_share_config(api_key=api_key)
-        console.print("[bold green]Created API key for router authentication[/]")
+    auth_enabled = config.get("auth_enabled", False)
+    api_key = config.get("api_key")
 
     # prepare uvicorn command
     uvicorn_cmd = [
@@ -201,8 +195,7 @@ def start_router(verbose):
         # Display connection instructions
         console.print("\n[bold cyan]Connection Information:[/]")
 
-        # Get API key if available
-        api_key = config_manager.read_share_config().get("api_key")
+        api_key = api_key if auth_enabled else None
 
         # Show URL with or without authentication based on API key availability
         if api_key:
@@ -229,8 +222,9 @@ def start_router(verbose):
 @click.option(
     "--auth/--no-auth", default=True, is_flag=True, help="Enable/disable API key authentication (default: enabled)"
 )
+@click.option("-s", "--secret", type=str, help="Secret key for authentication")
 @click.help_option("-h", "--help")
-def set_router_config(host, port, address, auth):
+def set_router_config(host, port, address, auth, secret: str | None = None):
     """Set MCPRouter global configuration.
 
     Example:
@@ -253,34 +247,23 @@ def set_router_config(host, port, address, auth):
     host = host or current_config["host"]
     port = port or current_config["port"]
     share_address = address or current_config["share_address"]
-
-    # Handle authentication setting
-    share_config = config_manager.read_share_config()
-    current_api_key = share_config.get("api_key")
+    api_key = secret
 
     if auth:
         # Enable authentication
-        if current_api_key is None:
+        if api_key is None:
             # Generate a new API key if authentication is enabled but no key exists
             api_key = secrets.token_urlsafe(32)
-            config_manager.save_share_config(
-                share_url=share_config.get("url"), share_pid=share_config.get("pid"), api_key=api_key
-            )
             console.print("[bold green]API key authentication enabled.[/] Generated new API key.")
         else:
-            console.print("[bold green]API key authentication enabled.[/] Using existing API key.")
+            console.print("[bold green]API key authentication enabled.[/] Using provided API key.")
     else:
         # Disable authentication by clearing the API key
-        if current_api_key is not None:
-            config_manager.save_share_config(
-                share_url=share_config.get("url"), share_pid=share_config.get("pid"), api_key=None
-            )
-            console.print("[bold yellow]API key authentication disabled.[/]")
-        else:
-            console.print("[bold yellow]API key authentication was already disabled.[/]")
+        api_key = None
+        console.print("[bold yellow]API key authentication disabled.[/]")
 
     # save router config
-    if config_manager.save_router_config(host, port, share_address):
+    if config_manager.save_router_config(host, port, share_address, api_key=api_key, auth_enabled=auth):
         console.print(
             f"[bold green]Router configuration updated:[/] host={host}, port={port}, share_address={share_address}"
         )
@@ -388,7 +371,7 @@ def router_status():
         if share_config.get("pid"):
             if not is_process_running(share_config["pid"]):
                 console.print("[yellow]Share link is not active, cleaning.[/]")
-                ConfigManager().save_share_config(share_url=None, share_pid=None, api_key=None)
+                ConfigManager().save_share_config(share_url=None, share_pid=None)
                 console.print("[green]Share link cleaned[/]")
             else:
                 console.print(
@@ -448,17 +431,17 @@ def share(address, profile, http):
     tunnel = Tunnel(remote_host, remote_port, config["host"], config["port"], secrets.token_urlsafe(32), http, None)
     share_url = tunnel.start_tunnel()
     share_pid = tunnel.proc.pid if tunnel.proc else None
-    # generate random api key
-    api_key = str(uuid.uuid4())
-    console.print(f"[bold green]Generated secret for share link: {api_key}[/]")
+    api_key = config.get("api_key") if config.get("auth_enabled") else None
     share_url = share_url + "/sse"
     # save share pid and link to config
-    config_manager.save_share_config(share_url, share_pid, api_key)
+    config_manager.save_share_config(share_url, share_pid)
     profile = profile or "<your_profile>"
 
     # print share link
     console.print(f"[bold green]Router is sharing at {share_url}[/]")
-    console.print(f"[green]Your profile can be accessed with the url {share_url}?s={api_key}&profile={profile}[/]\n")
+    console.print(
+        f"[green]Your profile can be accessed with the url {share_url}?profile={profile}{f'&s={api_key}' if api_key else ''}[/]\n"
+    )
     console.print(
         "[bold yellow]Be careful about the share link, it will be exposed to the public. Make sure to share to trusted users only.[/]"
     )
@@ -471,14 +454,14 @@ def try_clear_share():
     if share_config["url"]:
         try:
             console.print("[bold yellow]Disabling share link...[/]")
-            config_manager.save_share_config(share_url=None, share_pid=None, api_key=None)
+            config_manager.save_share_config(share_url=None, share_pid=None)
             console.print("[bold green]Share link disabled[/]")
             if share_config["pid"]:
                 os.kill(share_config["pid"], signal.SIGTERM)
         except OSError as e:
             if e.errno == 3:  # "No such process"
                 console.print("[yellow]Share process does not exist, cleaning up share config...[/]")
-                config_manager.save_share_config(share_url=None, share_pid=None, api_key=None)
+                config_manager.save_share_config(share_url=None, share_pid=None)
             else:
                 console.print(f"[bold red]Error:[/] Failed to stop share link: {e}")
 

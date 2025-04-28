@@ -16,6 +16,7 @@ from mcpm.monitor.base import AccessEventType
 from mcpm.monitor.event import monitor
 from mcpm.router.router import MCPRouter
 from mcpm.router.transport import RouterSseTransport
+from mcpm.utils.config import ConfigManager
 from mcpm.utils.platform import get_log_directory
 
 LOG_DIR = get_log_directory("mcpm")
@@ -30,8 +31,12 @@ logging.basicConfig(
 )
 logger = logging.getLogger("mcpm.router.daemon")
 
+config = ConfigManager().get_router_config()
+api_key = config.get("api_key")
+auth_enabled = config.get("auth_enabled", False)
+
 router = MCPRouter(reload_server=True)
-sse = RouterSseTransport("/messages/")
+sse = RouterSseTransport("/messages/", api_key=api_key if auth_enabled else None)
 
 
 class NoOpsResponse(Response):

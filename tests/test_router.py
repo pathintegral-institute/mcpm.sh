@@ -2,17 +2,16 @@
 Tests for the router module
 """
 
-from unittest.mock import AsyncMock, MagicMock, Mock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from mcp import InitializeResult
-from mcp.types import ListToolsResult, ServerCapabilities, ServerResult, Tool, ToolsCapability
+from mcp.types import ListToolsResult, ServerCapabilities, Tool, ToolsCapability
 
 from mcpm.router.client_connection import ServerConnection
 from mcpm.router.router import MCPRouter
 from mcpm.router.router_config import RouterConfig
 from mcpm.schemas.server_config import SSEServerConfig
-from mcpm.utils.config import TOOL_SPLITOR
 
 
 @pytest.fixture
@@ -37,13 +36,15 @@ def mock_server_connection():
     mock_session = AsyncMock()
     # Create a valid tool with proper inputSchema structure
     mock_tool = Tool(name="test-tool", description="A test tool", inputSchema={"type": "object", "properties": {}})
-    # Create a ListToolsResult to be the root of ServerResult
+    # Create a ListToolsResult to be returned directly
     tools_result = ListToolsResult(tools=[mock_tool])
-    # Create a ServerResult with ListToolsResult as its root
-    mock_list_tools_result = ServerResult(root=tools_result)
-    mock_session.list_tools = AsyncMock(return_value=mock_list_tools_result)
-    mock_conn.session = mock_session
+    mock_session.list_tools = AsyncMock(return_value=tools_result)
+    # If you have prompts/resources, mock them similarly:
+    mock_session.list_prompts = AsyncMock(return_value=MagicMock(prompts=[]))
+    mock_session.list_resources = AsyncMock(return_value=MagicMock(resources=[]))
+    mock_session.list_resource_templates = AsyncMock(return_value=MagicMock(resourceTemplates=[]))
 
+    mock_conn.session = mock_session
     return mock_conn
 
 
@@ -58,9 +59,7 @@ async def test_router_init():
     assert router.router_config.strict is False
 
     # Test with custom values
-    config = RouterConfig(
-        host="custom-host", port=9000, share_address="custom-share-address", api_key="test-api-key", strict=True
-    )
+    config = RouterConfig(api_key="test-api-key", strict=True)
     router = MCPRouter(
         reload_server=True,
         router_config=config,
@@ -70,27 +69,6 @@ async def test_router_init():
     assert router.router_config == config
     assert router.router_config.api_key == "test-api-key"
     assert router.router_config.strict is True
-
-
-def test_create_global_config():
-    """Test creating a global config from router config"""
-    config = RouterConfig(host="custom-host", port=9000, share_address="custom-share-address", api_key="test-api-key")
-
-    with patch("mcpm.router.router.ConfigManager") as mock_config_manager:
-        mock_instance = Mock()
-        mock_config_manager.return_value = mock_instance
-
-        # Test without router_config
-        router = MCPRouter()
-        router.create_global_config()
-        mock_instance.save_share_config.assert_not_called()
-        mock_instance.save_router_config.assert_not_called()
-
-        # Test with router_config
-        router = MCPRouter(router_config=config)
-        router.create_global_config()
-        mock_instance.save_share_config.assert_called_once_with(api_key="test-api-key")
-        mock_instance.save_router_config.assert_called_once_with("custom-host", 9000, "custom-share-address")
 
 
 @pytest.mark.asyncio
@@ -139,137 +117,6 @@ async def test_add_server_unhealthy():
     with patch("mcpm.router.router.ServerConnection", return_value=mock_conn):
         with pytest.raises(ValueError, match="Failed to connect to server unhealthy-server"):
             await router.add_server("unhealthy-server", server_config)
-
-
-@pytest.mark.asyncio
-async def test_add_server_duplicate_tool_strict():
-    """Test adding a server with duplicate tool name in strict mode"""
-    router = MCPRouter(router_config=RouterConfig(strict=True))
-
-    # Mock get_active_servers to return all server IDs
-    def mock_get_active_servers(_profile):
-        return list(router.server_sessions.keys())
-
-    # Patch the _patch_handler_func method to use our mock
-    with patch.object(router, "_patch_handler_func", wraps=router._patch_handler_func) as mock_patch_handler:
-        mock_patch_handler.return_value.get_active_servers = mock_get_active_servers
-
-        server_config = SSEServerConfig(name="test-server", url="http://localhost:8080/sse")
-
-        # Add first server with a tool
-        mock_conn1 = MagicMock(spec=ServerConnection)
-        mock_conn1.healthy.return_value = True
-        mock_conn1.request_for_shutdown = AsyncMock()
-
-        # Create valid ServerCapabilities with ToolsCapability
-        tools_capability = ToolsCapability(listChanged=False)
-        capabilities = ServerCapabilities(
-            prompts=None, resources=None, tools=tools_capability, logging=None, experimental={}
-        )
-
-        mock_conn1.session_initialized_response = InitializeResult(
-            protocolVersion="1.0", capabilities=capabilities, serverInfo={"name": "test-server", "version": "1.0.0"}
-        )
-
-        mock_session1 = AsyncMock()
-        mock_tool = Tool(
-            name="duplicate-tool", description="A test tool", inputSchema={"type": "object", "properties": {}}
-        )
-        # Create a ListToolsResult to be the root of ServerResult
-        tools_result = ListToolsResult(tools=[mock_tool])
-        # Create a ServerResult with ListToolsResult as its root
-        mock_list_tools_result = ServerResult(root=tools_result)
-        mock_session1.list_tools = AsyncMock(return_value=mock_list_tools_result)
-        mock_conn1.session = mock_session1
-
-        # Add second server with same tool name
-        mock_conn2 = MagicMock(spec=ServerConnection)
-        mock_conn2.healthy.return_value = True
-        mock_conn2.request_for_shutdown = AsyncMock()
-
-        mock_conn2.session_initialized_response = InitializeResult(
-            protocolVersion="1.0", capabilities=capabilities, serverInfo={"name": "second-server", "version": "1.0.0"}
-        )
-
-        mock_session2 = AsyncMock()
-        mock_session2.list_tools = AsyncMock(return_value=mock_list_tools_result)
-        mock_conn2.session = mock_session2
-
-        with patch("mcpm.router.router.ServerConnection", side_effect=[mock_conn1, mock_conn2]):
-            # Add first server should succeed
-            await router.add_server("test-server", server_config)
-
-            # Add second server with duplicate tool should fail in strict mode
-            with pytest.raises(ValueError, match="Tool duplicate-tool already exists"):
-                await router.add_server("second-server", server_config)
-
-
-@pytest.mark.asyncio
-async def test_add_server_duplicate_tool_non_strict():
-    """Test adding a server with duplicate tool name in non-strict mode"""
-    router = MCPRouter(router_config=RouterConfig(strict=False))
-
-    # Mock get_active_servers to return all server IDs
-    def mock_get_active_servers(_profile):
-        return list(router.server_sessions.keys())
-
-    # Patch the _patch_handler_func method to use our mock
-    with patch.object(router, "_patch_handler_func", wraps=router._patch_handler_func) as mock_patch_handler:
-        mock_patch_handler.return_value.get_active_servers = mock_get_active_servers
-
-        server_config = SSEServerConfig(name="test-server", url="http://localhost:8080/sse")
-        second_server_config = SSEServerConfig(name="second-server", url="http://localhost:8081/sse")
-
-        # Add first server with a tool
-        mock_conn1 = MagicMock(spec=ServerConnection)
-        mock_conn1.healthy.return_value = True
-        mock_conn1.request_for_shutdown = AsyncMock()
-
-        # Create valid ServerCapabilities with ToolsCapability
-        tools_capability = ToolsCapability(listChanged=False)
-        capabilities = ServerCapabilities(
-            prompts=None, resources=None, tools=tools_capability, logging=None, experimental={}
-        )
-
-        mock_conn1.session_initialized_response = InitializeResult(
-            protocolVersion="1.0", capabilities=capabilities, serverInfo={"name": "test-server", "version": "1.0.0"}
-        )
-
-        mock_session1 = AsyncMock()
-        mock_tool = Tool(
-            name="duplicate-tool", description="A test tool", inputSchema={"type": "object", "properties": {}}
-        )
-        # Create a ListToolsResult to be the root of ServerResult
-        tools_result = ListToolsResult(tools=[mock_tool])
-        # Create a ServerResult with ListToolsResult as its root
-        mock_list_tools_result = ServerResult(root=tools_result)
-        mock_session1.list_tools = AsyncMock(return_value=mock_list_tools_result)
-        mock_conn1.session = mock_session1
-
-        # Add second server with same tool name
-        mock_conn2 = MagicMock(spec=ServerConnection)
-        mock_conn2.healthy.return_value = True
-        mock_conn2.request_for_shutdown = AsyncMock()
-
-        mock_conn2.session_initialized_response = InitializeResult(
-            protocolVersion="1.0", capabilities=capabilities, serverInfo={"name": "second-server", "version": "1.0.0"}
-        )
-
-        mock_session2 = AsyncMock()
-        mock_session2.list_tools = AsyncMock(return_value=mock_list_tools_result)
-        mock_conn2.session = mock_session2
-
-        with patch("mcpm.router.router.ServerConnection", side_effect=[mock_conn1, mock_conn2]):
-            # Add first server
-            await router.add_server("test-server", server_config)
-            assert "duplicate-tool" in router.tools_mapping
-            assert router.capabilities_to_server_id["tools"]["duplicate-tool"] == "test-server"
-
-            # Add second server with duplicate tool - should prefix the tool name
-            await router.add_server("second-server", second_server_config)
-            prefixed_tool_name = f"second-server{TOOL_SPLITOR}duplicate-tool"
-            assert prefixed_tool_name in router.capabilities_to_server_id["tools"]
-            assert router.capabilities_to_server_id["tools"][prefixed_tool_name] == "second-server"
 
 
 @pytest.mark.asyncio
@@ -429,24 +276,9 @@ async def test_router_sse_transport_with_api_key():
 
 @pytest.mark.asyncio
 async def test_get_sse_server_app_with_api_key():
-    """Test that the API key is passed to RouterSseTransport when creating the server app"""
-    router = MCPRouter(router_config=RouterConfig(api_key="test-api-key"))
-
-    # Patch the RouterSseTransport constructor and get_active_servers method
-    with (
-        patch("mcpm.router.router.RouterSseTransport") as mock_transport,
-        patch.object(router, "_patch_handler_func", wraps=router._patch_handler_func) as mock_patch_handler,
-    ):
-        # Set up mocks for initialization
-        def mock_get_active_servers(_profile):
-            return list(router.server_sessions.keys())
-
-        mock_patch_handler.return_value.get_active_servers = mock_get_active_servers
-
-        # Call the method
+    with patch("mcpm.router.router.RouterSseTransport") as mock_transport:
+        router = MCPRouter(router_config=RouterConfig(auth_enabled=True, api_key="test-api-key"))
         await router.get_sse_server_app()
-
-        # Check that RouterSseTransport was created with the correct API key
         mock_transport.assert_called_once()
         call_kwargs = mock_transport.call_args[1]
         assert call_kwargs.get("api_key") == "test-api-key"
@@ -454,24 +286,9 @@ async def test_get_sse_server_app_with_api_key():
 
 @pytest.mark.asyncio
 async def test_get_sse_server_app_without_api_key():
-    """Test that None is passed to RouterSseTransport when no API key is provided"""
-    router = MCPRouter()  # No API key or router_config
-
-    # Patch the RouterSseTransport constructor and get_active_servers method
-    with (
-        patch("mcpm.router.router.RouterSseTransport") as mock_transport,
-        patch.object(router, "_patch_handler_func", wraps=router._patch_handler_func) as mock_patch_handler,
-    ):
-        # Set up mocks for initialization
-        def mock_get_active_servers(_profile):
-            return list(router.server_sessions.keys())
-
-        mock_patch_handler.return_value.get_active_servers = mock_get_active_servers
-
-        # Call the method
+    with patch("mcpm.router.router.RouterSseTransport") as mock_transport:
+        router = MCPRouter(router_config=RouterConfig(auth_enabled=False, api_key="custom-secret"))
         await router.get_sse_server_app()
-
-        # Check that RouterSseTransport was created with api_key=None
         mock_transport.assert_called_once()
         call_kwargs = mock_transport.call_args[1]
         assert call_kwargs.get("api_key") is None

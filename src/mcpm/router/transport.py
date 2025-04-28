@@ -258,14 +258,11 @@ class RouterSseTransport(SseServerTransport):
             share_config = config_manager.read_share_config()
             router_config = config_manager.get_router_config()
             host_name = urlsplit(host).hostname
-            share_host_name = urlsplit(share_config["url"]).hostname
-            if share_config["url"] and (host_name == share_host_name or host_name != router_config["host"]):
-                share_api_key = share_config["api_key"]
-                if api_key == share_api_key:
-                    return True
+            if share_config["url"] and host_name != router_config["host"]:
+                if api_key != self.api_key:
+                    return False
         except Exception as e:
             logger.error(f"Failed to validate API key: {e}")
+            return False
 
-        # If we reach here, the API key is invalid
-        logger.warning("Unauthorized API key")
-        return False
+        return True
