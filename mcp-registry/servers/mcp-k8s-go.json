@@ -1,0 +1,102 @@
+{
+  "display_name": "MCP K8S Go",
+  "license": "MIT",
+  "tags": [
+    "kubernetes",
+    "mcp",
+    "golang",
+    "k8s",
+    "model context protocol",
+    "claude",
+    "tools"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "@strowk/mcp-k8s"
+      ],
+      "description": "Run using npx"
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "-v",
+        "~/.kube/config:/home/nonroot/.kube/config",
+        "--rm",
+        "mcpk8s/server:latest"
+      ],
+      "description": "Run using Docker"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "List all available Kubernetes contexts"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Show me the namespaces in my current Kubernetes cluster"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "List all pods in the kube-system namespace"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Get logs for a pod in the kube-system namespace"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Show me the details of a specific deployment"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "List all services across all namespaces"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Check the status of Kubernetes nodes"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Run 'ls -la' command in a specific pod"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Get recent Kubernetes events"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Show me the configuration of a ConfigMap"
+    }
+  ],
+  "name": "mcp-k8s-go",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/strowk/mcp-k8s-go"
+  },
+  "homepage": "https://github.com/strowk/mcp-k8s-go",
+  "author": {
+    "name": "strowk"
+  },
+  "description": "MCP K8S Go is a Golang-based server that connects to Kubernetes, allowing users to interact with and manage Kubernetes resources using the Model Context Protocol (MCP).",
+  "categories": [
+    "Dev Tools"
+  ],
+  "is_official": false
+}

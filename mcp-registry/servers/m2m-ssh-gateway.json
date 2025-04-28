@@ -1,0 +1,130 @@
+{
+    "name": "m2m-ssh-gateway",
+    "display_name": "MCP SSH Gateway Client",
+    "description": "A Model Context Protocol Server (Remote SSH client) that connects to remote MCP servers over SSH, proxying tools, prompts, and resources.",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Machine-To-Machine/m2m-mcp-server-ssh-client.git"
+    },
+    "homepage": "https://github.com/Machine-To-Machine/m2m-mcp-server-ssh-client",
+    "author": {
+        "name": "Machine To Machine"
+    },
+    "license": "MIT",
+    "categories": [
+        "Dev Tools",
+        "Productivity",
+        "System Tools"
+    ],
+    "tags": [
+        "mcp",
+        "ssh",
+        "gateway",
+        "proxy",
+        "remote",
+        "client"
+    ],
+    "installations": {
+        "uvx": {
+            "type": "uvx",
+            "command": "uvx",
+            "args": [
+                "m2m-mcp-server-ssh-client"
+            ],
+            "description": "Run the MCP SSH Gateway client globally using uvx (requires uv installed)",
+            "recommended": true
+        }
+    },
+    "arguments": {
+        "host": {
+            "description": "Remote SSH server host.",
+            "required": false,
+            "example": "mcp-beta.machinetomachine.ai"
+        },
+        "port": {
+            "description": "Remote SSH server port.",
+            "required": false,
+            "example": "8022"
+        },
+        "username": {
+            "description": "SSH username.",
+            "required": false,
+            "example": "mcp"
+        },
+        "client_key": {
+            "description": "Path to the client private SSH key file.",
+            "required": false,
+            "example": "~/.ssh/m2m_mcp_server_ssh_client"
+        },
+        "known_hosts": {
+            "description": "Path to the known hosts file.",
+            "required": false,
+            "example": "~/.ssh/known_hosts"
+        },
+        "passphrase": {
+            "description": "Passphrase for the private key, if encrypted.",
+            "required": false,
+            "example": "your-passphrase"
+        },
+        "disable_host_key_checking": {
+            "description": "Skip server SSH key signature verification (use with caution).",
+            "required": false,
+            "example": "true"
+        },
+        "use_key_server": {
+            "description": "Use the key server for automatic key management.",
+            "required": false,
+            "example": "true"
+        },
+        "log_level": {
+            "description": "Set logging level (e.g., DEBUG, INFO, WARNING, ERROR).",
+            "required": false,
+            "example": "DEBUG"
+        }
+    },
+    "is_official": false,
+    "examples": [
+        {
+            "title": "Connect to M2M Demo Server",
+            "description": "Configure the gateway to connect to the public Machine-To-Machine demo SSH server using the key server for authentication.",
+            "prompt": "Configure m2m-ssh-gateway with host=mcp-beta.machinetomachine.ai, port=8022, use_key_server=true"
+        },
+        {
+            "title": "Connect to Custom Server with Key",
+            "description": "Configure the gateway to connect to a custom remote server using a specific SSH key and known hosts file.",
+            "prompt": "Configure m2m-ssh-gateway with host=your-server.example.com, client_key=~/.ssh/your_key, known_hosts=~/.ssh/known_hosts"
+        }
+    ],
+    "tools": [
+        {
+            "name": "proxied_remote_mcp_features",
+            "description": "Placeholder representing the tools, prompts, and resources proxied from the remote MCP server connected via SSH. The actual features available depend on the remote server's configuration. Refer to https://github.com/Machine-To-Machine/m2m-mcp-server-ssh-server on how to configure your own remote SSH server and use the server arguments to configure the corresponding SSH connection.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "host": {
+                        "type": "string",
+                        "description": "Hostname or IP address of the remote SSH server."
+                    },
+                    "port": {
+                        "type": "integer",
+                        "description": "Port number for the SSH connection (default: 8022)."
+                    },
+                    "username": {
+                        "type": "string",
+                        "description": "Username for SSH authentication (default: 'mcp')."
+                    },
+                    "client_key": {
+                        "type": "string",
+                        "description": "Path to the client's private SSH key."
+                    },
+                    "use_key_server": {
+                        "type": "boolean",
+                        "description": "Whether to use the key server for authentication."
+                    }
+                },
+                "required": []
+            }
+        }
+    ]
+}

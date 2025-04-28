@@ -1,0 +1,193 @@
+{
+  "display_name": "Fetcher MCP",
+  "license": "MIT License",
+  "tags": [
+    "web scraping",
+    "Playwright",
+    "headless browser",
+    "content extraction",
+    "JavaScript",
+    "Markdown",
+    "HTML",
+    "parallel processing",
+    "MCP server"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "fetcher-mcp"
+      ],
+      "description": "Configure in Claude Desktop"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Please fetch the content from https://example.com"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Fetch the webpage https://news.ycombinator.com and return it in HTML format"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Please fetch the complete webpage content instead of just the main content from https://github.com"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Please enable debug mode and fetch content from https://reddit.com"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Please wait for the page to fully load and fetch content from https://twitter.com"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Please set the page loading timeout to 60 seconds and fetch content from https://complex-site-example.com"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Please fetch the following URLs in parallel: https://example.com, https://github.com, https://news.ycombinator.com"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Please run in debug mode so I can manually log in to https://website-requiring-login.com"
+    }
+  ],
+  "name": "fetcher-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jae-jae/fetcher-mcp"
+  },
+  "homepage": "https://github.com/jae-jae/fetcher-mcp",
+  "author": {
+    "name": "jae-jae"
+  },
+  "description": "Fetcher MCP is a server for fetching web page content using the Playwright headless browser, capable of executing JavaScript and handling dynamic web content.",
+  "categories": [
+    "Web Services"
+  ],
+  "tools": [
+    {
+      "name": "fetch_url",
+      "description": "Retrieve web page content from a specified URL",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL to fetch"
+          },
+          "timeout": {
+            "type": "number",
+            "description": "Page loading timeout in milliseconds, default is 30000 (30 seconds)"
+          },
+          "waitUntil": {
+            "type": "string",
+            "description": "Specifies when navigation is considered complete, options: 'load', 'domcontentloaded', 'networkidle', 'commit', default is 'load'"
+          },
+          "extractContent": {
+            "type": "boolean",
+            "description": "Whether to intelligently extract the main content, default is true"
+          },
+          "maxLength": {
+            "type": "number",
+            "description": "Maximum length of returned content (in characters), default is no limit"
+          },
+          "returnHtml": {
+            "type": "boolean",
+            "description": "Whether to return HTML content instead of Markdown, default is false"
+          },
+          "waitForNavigation": {
+            "type": "boolean",
+            "description": "Whether to wait for additional navigation after initial page load (useful for sites with anti-bot verification), default is false"
+          },
+          "navigationTimeout": {
+            "type": "number",
+            "description": "Maximum time to wait for additional navigation in milliseconds, default is 10000 (10 seconds)"
+          },
+          "disableMedia": {
+            "type": "boolean",
+            "description": "Whether to disable media resources (images, stylesheets, fonts, media), default is true"
+          },
+          "debug": {
+            "type": "boolean",
+            "description": "Whether to enable debug mode (showing browser window), overrides the --debug command line flag if specified"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    },
+    {
+      "name": "fetch_urls",
+      "description": "Retrieve web page content from multiple specified URLs",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "urls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of URLs to fetch"
+          },
+          "timeout": {
+            "type": "number",
+            "description": "Page loading timeout in milliseconds, default is 30000 (30 seconds)"
+          },
+          "waitUntil": {
+            "type": "string",
+            "description": "Specifies when navigation is considered complete, options: 'load', 'domcontentloaded', 'networkidle', 'commit', default is 'load'"
+          },
+          "extractContent": {
+            "type": "boolean",
+            "description": "Whether to intelligently extract the main content, default is true"
+          },
+          "maxLength": {
+            "type": "number",
+            "description": "Maximum length of returned content (in characters), default is no limit"
+          },
+          "returnHtml": {
+            "type": "boolean",
+            "description": "Whether to return HTML content instead of Markdown, default is false"
+          },
+          "waitForNavigation": {
+            "type": "boolean",
+            "description": "Whether to wait for additional navigation after initial page load (useful for sites with anti-bot verification), default is false"
+          },
+          "navigationTimeout": {
+            "type": "number",
+            "description": "Maximum time to wait for additional navigation in milliseconds, default is 10000 (10 seconds)"
+          },
+          "disableMedia": {
+            "type": "boolean",
+            "description": "Whether to disable media resources (images, stylesheets, fonts, media), default is true"
+          },
+          "debug": {
+            "type": "boolean",
+            "description": "Whether to enable debug mode (showing browser window), overrides the --debug command line flag if specified"
+          }
+        },
+        "required": [
+          "urls"
+        ]
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": false
+}

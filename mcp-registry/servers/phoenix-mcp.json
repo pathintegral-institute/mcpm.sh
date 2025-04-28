@@ -1,0 +1,430 @@
+{
+  "display_name": "Arize Phoenix MCP Server",
+  "license": "Apache 2.0",
+  "tags": [
+    "MCP",
+    "Model Context Protocol",
+    "Prompts Management",
+    "Datasets",
+    "Experiments",
+    "LLM",
+    "Phoenix",
+    "Arize"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@arizeai/phoenix-mcp@latest",
+        "--baseUrl",
+        "${PHOENIX_BASE_URL}",
+        "--apiKey",
+        "${PHOENIX_API_KEY}"
+      ],
+      "description": "Phoenix MCP Server for integration with clients like Claude Desktop, Cursor, and more"
+    }
+  },
+  "arguments": {
+    "PHOENIX_API_KEY": {
+      "description": "API key for Arize Phoenix",
+      "required": true,
+      "example": "your-api-key"
+    },
+    "PHOENIX_BASE_URL": {
+      "description": "Base URL for Arize Phoenix",
+      "required": true,
+      "example": "https://my-phoenix.com"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Create a new prompt for my chatbot"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "List all my prompts"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Update my existing prompt"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Show me my datasets"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Synthesize new examples for my dataset"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Pull results from my experiment"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Visualize experiment results"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Help me iterate on my prompt"
+    }
+  ],
+  "name": "phoenix-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Arize-ai/phoenix/tree/main/js/packages/phoenix-mcp"
+  },
+  "homepage": "https://github.com/Arize-ai/phoenix/tree/main/js/packages/phoenix-mcp",
+  "author": {
+    "name": "Arize-ai"
+  },
+  "description": "Phoenix MCP Server is an implementation of the Model Context Protocol that provides a unified interface to the capabilities of the Arize Phoenix platform, enabling prompts management, dataset exploration and synthesis, and experiment visualization with the help of a language model.",
+  "categories": [
+    "AI Systems"
+  ],
+  "tools": [
+    {
+      "name": "list-prompts",
+      "description": "Get a list of all the prompts.\n\nPrompts (templates, prompt templates) are versioned templates for input messages to an LLM.\nEach prompt includes both the input messages, but also the model and invocation parameters\nto use when generating outputs.\n\nReturns a list of prompt objects with their IDs, names, and descriptions.\n\nExample usage: \n  List all available prompts\n\nExpected return: \n  Array of prompt objects with metadata. \n  Example:  [{\n      \"name\": \"article-summarizer\",\n      \"description\": \"Summarizes an article into concise bullet points\",\n      \"source_prompt_id\": null,\n      \"id\": \"promptid1234\"\n  }]",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 100
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "get-latest-prompt",
+      "description": "Get the latest version of a prompt. Returns the prompt version with its template, model configuration, and invocation parameters.\n\nExample usage: \n  Get the latest version of a prompt named 'article-summarizer'\n\nExpected return: \n  Prompt version object with template and configuration. \n  Example: {\n    \"description\": \"Initial version\",\n    \"model_provider\": \"OPENAI\",\n    \"model_name\": \"gpt-3.5-turbo\",\n    \"template\": {\n      \"type\": \"chat\",\n      \"messages\": [\n        {\n          \"role\": \"system\",\n          \"content\": \"You are an expert summarizer. Create clear, concise bullet points highlighting the key information.\"\n        },\n        {\n          \"role\": \"user\",\n          \"content\": \"Please summarize the following {{topic}} article:\n\n{{article}}\"\n        }\n      ]\n    },\n    \"template_type\": \"CHAT\",\n    \"template_format\": \"MUSTACHE\",\n    \"invocation_parameters\": {\n      \"type\": \"openai\",\n      \"openai\": {}\n    },\n    \"id\": \"promptversionid1234\"\n  }",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt_identifier": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "prompt_identifier"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "get-prompt-by-identifier",
+      "description": "Get a prompt's latest version by its identifier (name or ID). Returns the prompt version with its template, model configuration, and invocation parameters.\n\nExample usage: \n  Get the latest version of a prompt with name 'article-summarizer'\n\nExpected return: \n  Prompt version object with template and configuration. \n    Example: {\n      \"description\": \"Initial version\",\n      \"model_provider\": \"OPENAI\",\n      \"model_name\": \"gpt-3.5-turbo\",\n      \"template\": {\n        \"type\": \"chat\",\n        \"messages\": [\n          {\n            \"role\": \"system\",\n            \"content\": \"You are an expert summarizer. Create clear, concise bullet points highlighting the key information.\"\n          },\n          {\n            \"role\": \"user\",\n            \"content\": \"Please summarize the following {{topic}} article:\n\n{{article}}\"\n          }\n        ]\n      },\n      \"template_type\": \"CHAT\",\n      \"template_format\": \"MUSTACHE\",\n      \"invocation_parameters\": {\n        \"type\": \"openai\",\n        \"openai\": {}\n      },\n      \"id\": \"promptversionid1234\"\n    }",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt_identifier": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "prompt_identifier"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "get-prompt-version",
+      "description": "Get a specific version of a prompt using its version ID. Returns the prompt version with its template, model configuration, and invocation parameters.\n\nExample usage: \n  Get a specific prompt version with ID 'promptversionid1234'\n\nExpected return: \n  Prompt version object with template and configuration. \n  Example: {\n    \"description\": \"Initial version\",\n    \"model_provider\": \"OPENAI\",\n    \"model_name\": \"gpt-3.5-turbo\",\n    \"template\": {\n      \"type\": \"chat\",\n      \"messages\": [\n        {\n          \"role\": \"system\",\n          \"content\": \"You are an expert summarizer. Create clear, concise bullet points highlighting the key information.\"\n        },\n        {\n          \"role\": \"user\",\n          \"content\": \"Please summarize the following {{topic}} article:\n\n{{article}}\"\n        }\n      ]\n    },\n    \"template_type\": \"CHAT\",\n    \"template_format\": \"MUSTACHE\",\n    \"invocation_parameters\": {\n      \"type\": \"openai\",\n      \"openai\": {}\n    },\n    \"id\": \"promptversionid1234\"\n  }",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt_version_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "prompt_version_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "upsert-prompt",
+      "description": "Create or update a prompt with its template and configuration. Creates a new prompt and its initial version with specified model settings.\n\nExample usage: \n  Create a new prompt named 'email_generator' with a template for generating emails\n\nExpected return: \n  A confirmation message of successful prompt creation",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "template": {
+            "type": "string"
+          },
+          "model_provider": {
+            "type": "string",
+            "enum": [
+              "OPENAI",
+              "AZURE_OPENAI",
+              "ANTHROPIC",
+              "GOOGLE"
+            ],
+            "default": "OPENAI"
+          },
+          "model_name": {
+            "type": "string",
+            "default": "gpt-4"
+          },
+          "temperature": {
+            "type": "number",
+            "default": 0.7
+          }
+        },
+        "required": [
+          "name",
+          "template"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "list-prompt-versions",
+      "description": "Get a list of all versions for a specific prompt. Returns versions with pagination support.\n\nExample usage: \n  List all versions of a prompt named 'article-summarizer'\n\nExpected return: \n  Array of prompt version objects with IDs and configuration. \n  Example: [\n    {\n      \"description\": \"Initial version\",\n      \"model_provider\": \"OPENAI\",\n      \"model_name\": \"gpt-3.5-turbo\",\n      \"template\": {\n        \"type\": \"chat\",\n        \"messages\": [\n          {\n            \"role\": \"system\",\n            \"content\": \"You are an expert summarizer. Create clear, concise bullet points highlighting the key information.\"\n          },\n          {\n            \"role\": \"user\",\n            \"content\": \"Please summarize the following {{topic}} article:\n\n{{article}}\"\n          }\n        ]\n      },\n      \"template_type\": \"CHAT\",\n      \"template_format\": \"MUSTACHE\",\n      \"invocation_parameters\": {\n        \"type\": \"openai\",\n        \"openai\": {}\n      },\n      \"id\": \"promptversionid1234\"\n    }\n  ]",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt_identifier": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 100
+          }
+        },
+        "required": [
+          "prompt_identifier"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "get-prompt-version-by-tag",
+      "description": "Get a prompt version by its tag name. Returns the prompt version with its template, model configuration, and invocation parameters.\n\nExample usage: \n  Get the 'production' tagged version of prompt 'article-summarizer'\n\nExpected return: \n  Prompt version object with template and configuration. \n  Example: {\n      \"description\": \"Initial version\",\n      \"model_provider\": \"OPENAI\",\n      \"model_name\": \"gpt-3.5-turbo\",\n      \"template\": {\n        \"type\": \"chat\",\n        \"messages\": [\n          {\n            \"role\": \"system\",\n            \"content\": \"You are an expert summarizer. Create clear, concise bullet points highlighting the key information.\"\n          },\n          {\n            \"role\": \"user\",\n            \"content\": \"Please summarize the following {{topic}} article:\n\n{{article}}\"\n          }\n        ]\n      },\n      \"template_type\": \"CHAT\",\n      \"template_format\": \"MUSTACHE\",\n      \"invocation_parameters\": {\n        \"type\": \"openai\",\n        \"openai\": {}\n      },\n      \"id\": \"promptversionid1234\"\n    }",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt_identifier": {
+            "type": "string"
+          },
+          "tag_name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "prompt_identifier",
+          "tag_name"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "list-prompt-version-tags",
+      "description": "Get a list of all tags for a specific prompt version. Returns tag objects with pagination support.\n\nExample usage: \n  List all tags associated with prompt version 'promptversionid1234'\n\nExpected return: \n  Array of tag objects with names and IDs. \n  Example: [\n    {\n      \"name\": \"staging\",\n      \"description\": \"The version deployed to staging\",\n      \"id\": \"promptversionid1234\"\n    },\n    {\n      \"name\": \"development\",\n      \"description\": \"The version deployed for development\",\n      \"id\": \"promptversionid1234\"\n    }\n  ]",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt_version_id": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 100
+          }
+        },
+        "required": [
+          "prompt_version_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "add-prompt-version-tag",
+      "description": "Add a tag to a specific prompt version. The operation returns no content on success (204 status code).\n\nExample usage: \n  Tag prompt version 'promptversionid1234' with the name 'production'\n\nExpected return: \n  Confirmation message of successful tag addition",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt_version_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "prompt_version_id",
+          "name"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "list-experiments-for-dataset",
+      "description": "Get a list of all the experiments run on a given dataset.\n\nExperiments are collections of experiment runs, each experiment run corresponds to a single \ndataset example. The dataset example is passed to an implied `task` which in turn \nproduces an output.\n\nExample usage:\n  Show me all the experiments I've run on dataset RGF0YXNldDox\n\nExpected return:\n  Array of experiment objects with metadata. \n  Example: [\n    {\n      \"id\": \"experimentid1234\",\n      \"dataset_id\": \"datasetid1234\",\n      \"dataset_version_id\": \"datasetversionid1234\",\n      \"repetitions\": 1,\n      \"metadata\": {},\n      \"project_name\": \"Experiment-abc123\",\n      \"created_at\": \"YYYY-MM-DDTHH:mm:ssZ\",\n      \"updated_at\": \"YYYY-MM-DDTHH:mm:ssZ\"\n    }\n  ]",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "dataset_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "dataset_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "get-experiment-by-id",
+      "description": "Get an experiment by its ID.\n\nThe tool returns experiment metadata in the first content block and a JSON object with the \nexperiment data in the second. The experiment data contains both the results of each \nexperiment run and the annotations made by an evaluator to score or label the results, \nfor example, comparing the output of an experiment run to the expected output from the \ndataset example.\n\nExample usage:\n  Show me the experiment results for experiment RXhwZXJpbWVudDo4\n\nExpected return:\n  Object containing experiment metadata and results.\n  Example: {\n    \"metadata\": {\n      \"id\": \"experimentid1234\",\n      \"dataset_id\": \"datasetid1234\",\n      \"dataset_version_id\": \"datasetversionid1234\",\n      \"repetitions\": 1,\n      \"metadata\": {},\n      \"project_name\": \"Experiment-abc123\",\n      \"created_at\": \"YYYY-MM-DDTHH:mm:ssZ\",\n      \"updated_at\": \"YYYY-MM-DDTHH:mm:ssZ\"\n    },\n    \"experimentResult\": [\n      {\n        \"example_id\": \"exampleid1234\",\n        \"repetition_number\": 0,\n        \"input\": \"Sample input text\",\n        \"reference_output\": \"Expected output text\",\n        \"output\": \"Actual output text\",\n        \"error\": null,\n        \"latency_ms\": 1000,\n        \"start_time\": \"2025-03-20T12:00:00Z\",\n        \"end_time\": \"2025-03-20T12:00:01Z\",\n        \"trace_id\": \"trace-123\",\n        \"prompt_token_count\": 10,\n        \"completion_token_count\": 20,\n        \"annotations\": [\n          {\n            \"name\": \"quality\",\n            \"annotator_kind\": \"HUMAN\",\n            \"label\": \"good\",\n            \"score\": 0.9,\n            \"explanation\": \"Output matches expected format\",\n            \"trace_id\": \"trace-456\",\n            \"error\": null,\n            \"metadata\": {},\n            \"start_time\": \"YYYY-MM-DDTHH:mm:ssZ\",\n            \"end_time\": \"YYYY-MM-DDTHH:mm:ssZ\"\n          }\n        ]\n      }\n    ]\n  }",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "experiment_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "experiment_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "list-datasets",
+      "description": "Get a list of all datasets.\n\nDatasets are collections of 'dataset examples' that each example includes an input, \n(expected) output, and optional metadata. They are primarily used as inputs for experiments.\n\nExample usage:\n  Show me all available datasets\n\nExpected return:\n  Array of dataset objects with metadata.\n  Example: [\n    {\n      \"id\": \"RGF0YXNldDox\",\n      \"name\": \"my-dataset\",\n      \"description\": \"A dataset for testing\",\n      \"metadata\": {},\n      \"created_at\": \"2024-03-20T12:00:00Z\",\n      \"updated_at\": \"2024-03-20T12:00:00Z\"\n    }\n  ]",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 100
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "get-dataset-examples",
+      "description": "Get examples from a dataset.\n\nDataset examples are an array of objects that each include an input, \n(expected) output, and optional metadata. These examples are typically used to represent \ninput to an application or model (e.g. prompt template variables, a code file, or image) \nand used to test or benchmark changes.\n\nExample usage:\n  Show me all examples from dataset RGF0YXNldDox\n\nExpected return:\n  Object containing dataset ID, version ID, and array of examples.\n  Example: {\n    \"dataset_id\": \"datasetid1234\",\n    \"version_id\": \"datasetversionid1234\",\n    \"examples\": [\n      {\n        \"id\": \"exampleid1234\",\n        \"input\": {\n          \"text\": \"Sample input text\"\n        },\n        \"output\": {\n          \"text\": \"Expected output text\"\n        },\n        \"metadata\": {},\n        \"updated_at\": \"YYYY-MM-DDTHH:mm:ssZ\"\n      }\n    ]\n  }",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "datasetId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "datasetId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "get-dataset-experiments",
+      "description": "List experiments run on a dataset.\n\nExample usage:\n  Show me all experiments run on dataset RGF0YXNldDox\n\nExpected return:\n  Array of experiment objects with metadata.\n  Example: [\n    {\n      \"id\": \"experimentid1234\",\n      \"dataset_id\": \"datasetid1234\",\n      \"dataset_version_id\": \"datasetversionid1234\",\n      \"repetitions\": 1,\n      \"metadata\": {},\n      \"project_name\": \"Experiment-abc123\",\n      \"created_at\": \"YYYY-MM-DDTHH:mm:ssZ\",\n      \"updated_at\": \"YYYY-MM-DDTHH:mm:ssZ\"\n    }\n  ]",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "datasetId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "datasetId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "add-dataset-examples",
+      "description": "Add examples to an existing dataset.\n\nThis tool adds one or more examples to an existing dataset. Each example includes an input,\noutput, and metadata. The metadata will automatically include information indicating that\nthese examples were synthetically generated via MCP. When calling this tool, check existing\nexamples using the \"get-dataset-examples\" tool to ensure that you are not adding duplicate\nexamples and following existing patterns for how data should be structured.\n\nExample usage:\n  Look at the analyze \"my-dataset\" and augment them with new examples to cover relevant edge cases\n\nExpected return:\n  Confirmation of successful addition of examples to the dataset.\n  Example: {\n    \"dataset_name\": \"my-dataset\",\n    \"message\": \"Successfully added examples to dataset\"\n  }",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "datasetName": {
+            "type": "string"
+          },
+          "examples": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "input": {
+                  "type": "object",
+                  "additionalProperties": {}
+                },
+                "output": {
+                  "type": "object",
+                  "additionalProperties": {}
+                },
+                "metadata": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              },
+              "required": [
+                "input",
+                "output"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "datasetName",
+          "examples"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": false
+}

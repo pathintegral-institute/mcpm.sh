@@ -62,7 +62,7 @@ class FiveireManager(JSONClientManager):
             return empty_config
 
         try:
-            with open(self.config_path, "r") as f:
+            with open(self.config_path, "r", encoding="utf-8") as f:
                 config = json.load(f)
                 # Ensure servers section exists
                 if self.configure_key_name not in config:

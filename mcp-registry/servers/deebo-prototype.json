@@ -1,0 +1,84 @@
+{
+  "display_name": "Deebo: AI Agent's Debugging Partner",
+  "license": "Apache-2.0",
+  "tags": [
+    "debugging",
+    "AI",
+    "coding",
+    "MCP",
+    "Model Context Protocol",
+    "autonomous",
+    "development",
+    "git"
+  ],
+  "installations": {
+    "custom": {
+      "type": "custom",
+      "command": "node",
+      "args": [
+        "--experimental-specifier-resolution=node",
+        "--experimental-modules",
+        "--max-old-space-size=4096",
+        "/absolute/path/to/deebo/build/index.js"
+      ],
+      "env": {
+        "NODE_ENV": "development",
+        "USE_MEMORY_BANK": "true",
+        "MOTHER_HOST": "openrouter",
+        "MOTHER_MODEL": "anthropic/claude-3.5-sonnet",
+        "SCENARIO_HOST": "openrouter",
+        "SCENARIO_MODEL": "anthropic/claude-3.5-sonnet",
+        "OPENROUTER_API_KEY": "${OPENROUTER_API_KEY}"
+      },
+      "description": "Manual installation for other setups"
+    }
+  },
+  "arguments": {
+    "OPENROUTER_API_KEY": {
+      "description": "Your OpenRouter API key (required)",
+      "required": true,
+      "example": "sk-or-v1-..."
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "I'm getting an error in my React component where the state isn't updating properly. Can you help debug this issue?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "My Node.js server keeps crashing with a memory leak. Can you investigate what might be causing it?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "I have a bug in my Python code where the function returns None instead of the expected calculation result."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "My TypeScript project has type errors that I can't resolve. Can you help debug them?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "There's an issue with my API integration where the authentication keeps failing. Can you help troubleshoot?"
+    }
+  ],
+  "name": "deebo-prototype",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/snagasuri/deebo-prototype"
+  },
+  "homepage": "https://github.com/snagasuri/deebo-prototype",
+  "author": {
+    "name": "snagasuri"
+  },
+  "description": "Deebo is an autonomous debugging system that AI coding agents (Claude, Cline, Cursor, etc.) can delegate tricky bugs to using the Model Context Protocol (MCP). It runs structured investigations in parallel Git branches to test hypotheses, validate fixes, and helps you move faster. If your main coding agent is like a single-threaded process, Deebo introduces multi-threadedness to your development workflow.",
+  "categories": [
+    "Dev Tools"
+  ],
+  "is_official": false
+}

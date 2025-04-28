@@ -218,7 +218,7 @@ class JSONClientManager(BaseClientManager):
             return empty_config
 
         try:
-            with open(self.config_path, "r") as f:
+            with open(self.config_path, "r", encoding="utf-8") as f:
                 config = json.load(f)
                 # Ensure mcpServers section exists
                 if self.configure_key_name not in config:
@@ -252,7 +252,7 @@ class JSONClientManager(BaseClientManager):
             # Create directory if it doesn't exist
             os.makedirs(os.path.dirname(self.config_path), exist_ok=True)
 
-            with open(self.config_path, "w") as f:
+            with open(self.config_path, "w", encoding="utf-8") as f:
                 json.dump(config, f, indent=2)
             return True
         except Exception as e:
