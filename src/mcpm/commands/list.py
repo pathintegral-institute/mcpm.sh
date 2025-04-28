@@ -8,10 +8,11 @@ from rich.console import Console
 
 from mcpm.clients.client_config import ClientConfigManager
 from mcpm.clients.client_registry import ClientRegistry
+from mcpm.commands.server_operations.common import determine_scope
 from mcpm.profile.profile_config import ProfileConfigManager
 from mcpm.schemas.server_config import ServerConfig
-from mcpm.utils.display import print_active_scope, print_client_error, print_no_active_scope, print_server_config
-from mcpm.utils.scope import ScopeType, extract_from_scope, format_scope
+from mcpm.utils.display import print_client_error, print_server_config
+from mcpm.utils.scope import ScopeType, format_scope
 
 console = Console()
 client_config_manager = ClientConfigManager()
@@ -29,14 +30,9 @@ def list(target: str | None = None):
         mcpm ls
         mcpm ls -t @cursor
     """
-    if target is None:
-        target = ClientRegistry.determine_active_scope()
-        if not target:
-            print_no_active_scope()
-            return
-        print_active_scope(target)
-
-    scope_type, scope = extract_from_scope(target)
+    scope_type, scope = determine_scope(target)
+    if not scope:
+        return
 
     if scope_type == ScopeType.CLIENT:
         # Get the active client manager and information

@@ -6,6 +6,7 @@ import logging
 import os
 import secrets
 import signal
+import socket
 import subprocess
 import sys
 import uuid
@@ -39,6 +40,35 @@ def is_process_running(pid):
         return psutil.pid_exists(pid)
     except Exception:
         return False
+
+def is_port_listening(host, port) -> bool:
+    """
+    Check if the specified (host, port) is being listened on.
+
+    Args:
+        host: The host to check
+        port: The port to check
+
+    Returns:
+        True if the (host, port) is being listened on
+    """
+    sock = None
+    try:
+        # Try to connect to the port
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(1)
+        connected_host = "127.0.0.1" if host == "0.0.0.0" else host
+        result = sock.connect_ex((connected_host, port))
+        # result == 0 means connection successful, which means port is in use
+        # result != 0 means connection failed, which means port is not in use
+        # result == 61 means ECONNREFUSED
+        return result == 0
+    except Exception as e:
+        logger.error(f"Error checking host {host} and port {port}: {e}")
+        return False
+    finally:
+        if sock:
+            sock.close()
 
 
 def read_pid_file():
@@ -285,6 +315,15 @@ def router_status():
     # check process status
     pid = read_pid_file()
     if pid:
+        if not is_port_listening(host, port):
+            console.print(
+                f"[bold yellow]Notice:[/] [bold cyan]{host}:{port}[/] is not yet accepting connections. The service may still be starting up. Please wait a few seconds and try again."
+            )
+            console.print(
+                f"[yellow]If this message persists after waiting, please check the log for more details.[/] (Log file: {LOG_DIR / 'router_access.log'})"
+            )
+            return
+
         console.print(f"[bold green]MCPRouter is running[/] at http://{host}:{port} (PID: {pid})")
         share_config = ConfigManager().read_share_config()
         if share_config.get("pid"):

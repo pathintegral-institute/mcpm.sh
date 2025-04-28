@@ -1,0 +1,152 @@
+{
+  "display_name": "diff-mcp",
+  "license": "MIT",
+  "tags": [
+    "diff",
+    "json",
+    "text",
+    "comparison",
+    "mcp",
+    "jsondiffpatch",
+    "data comparison"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "diff-mcp"
+      ],
+      "description": "Usage with Claude Desktop"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Compare these two JSON objects: {\"name\": \"John\", \"age\": 30} and {\"name\": \"John\", \"age\": 31}"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Diff the following YAML: 'name: Alice\nage: 25' with 'name: Alice\nage: 26\noccupation: Developer'"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Show me the difference between '<p>Hello world</p>' and '<p>Hello beautiful world</p>' in HTML format"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Compare these two texts and show me the diff: 'The quick brown fox jumps over the lazy dog' and 'The quick brown fox leaps over the lazy dog'"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Generate a JSON patch comparing {\"items\": [1, 2, 3]} with {\"items\": [1, 2, 3, 4]}"
+    }
+  ],
+  "name": "diff-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/benjamine/jsondiffpatch/tree/master/packages/diff-mcp"
+  },
+  "homepage": "https://github.com/benjamine/jsondiffpatch/tree/master/packages/diff-mcp",
+  "author": {
+    "name": "benjamine"
+  },
+  "description": "diff-mcp is an MCP Server that allows you to compare text or data (JSON, JSON5, YAML, TOML, XML, HTML) and get a readable diff in multiple output formats (text, JSON, JSONPatch).",
+  "categories": [
+    "Dev Tools"
+  ],
+  "tools": [
+    {
+      "name": "diff",
+      "description": "compare text or data and get a readable diff",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "object",
+            "properties": {
+              "left": {
+                "anyOf": [
+                  {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": {}
+                      }
+                    ]
+                  },
+                  {
+                    "type": "array",
+                    "items": {}
+                  }
+                ],
+                "description": "The left side of the diff."
+              },
+              "leftFormat": {
+                "type": "string",
+                "enum": [
+                  "text",
+                  "json",
+                  "json5",
+                  "yaml",
+                  "toml",
+                  "xml",
+                  "html"
+                ],
+                "default": "json5",
+                "description": "format of left side of the diff"
+              },
+              "right": {
+                "anyOf": [
+                  {
+                    "$ref": "#/properties/state/properties/left/anyOf/0"
+                  },
+                  {
+                    "$ref": "#/properties/state/properties/left/anyOf/1"
+                  }
+                ],
+                "description": "The right side of the diff (to compare with the left side)."
+              },
+              "rightFormat": {
+                "$ref": "#/properties/state/properties/leftFormat",
+                "description": "format of right side of the diff"
+              },
+              "outputFormat": {
+                "type": "string",
+                "enum": [
+                  "text",
+                  "json",
+                  "jsonpatch"
+                ],
+                "default": "text",
+                "description": "The output format. text: (default) human readable text diff, json: a compact json diff (jsondiffpatch delta format), jsonpatch: json patch diff (RFC 6902)"
+              }
+            },
+            "required": [
+              "left",
+              "right"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "state"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": false
+}

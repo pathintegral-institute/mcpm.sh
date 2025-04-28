@@ -1,0 +1,95 @@
+{
+  "display_name": "Serena",
+  "license": "MIT",
+  "tags": [
+    "coding agent",
+    "code retrieval",
+    "code editing",
+    "language server",
+    "MCP",
+    "open-source",
+    "semantic analysis",
+    "AI assistant"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory",
+        "/abs/path/to/serena",
+        "serena-mcp-server",
+        "--project-file",
+        "/abs/path/to/myproject.yml"
+      ],
+      "description": "Run Serena MCP Server in Claude Desktop"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Can you help me understand the structure of this codebase?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "I need to implement a new feature that allows users to search for code symbols by name. How would I do that?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Find all references to the 'SerenaAgent' class in the codebase"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Create a new tool that can analyze code complexity"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Help me refactor the code that handles memory management"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "What language servers does Serena support out of the box?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Write a test for the 'find_symbol' tool"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "How can I integrate Serena with Claude Desktop?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Show me how to use Serena with Gemini through the Agno agent"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "I'm getting an error when trying to start the MCP server. How can I troubleshoot this?"
+    }
+  ],
+  "name": "serena",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oraios/serena"
+  },
+  "homepage": "https://github.com/oraios/serena",
+  "author": {
+    "name": "oraios"
+  },
+  "description": "You can use Serena for any coding tasks \u2013 whether it is focussed on analysis, planning,",
+  "categories": [
+    "Dev Tools"
+  ],
+  "is_official": false
+}

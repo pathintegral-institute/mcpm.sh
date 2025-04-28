@@ -1,0 +1,70 @@
+{
+  "display_name": "MCP Run Python",
+  "license": "MIT",
+  "tags": [
+    "python",
+    "sandbox",
+    "pyodide",
+    "deno",
+    "model context protocol",
+    "mcp",
+    "code execution"
+  ],
+  "installations": {
+    "custom": {
+      "type": "custom",
+      "command": "deno",
+      "args": [
+        "run",
+        "-N",
+        "-R=node_modules",
+        "-W=node_modules",
+        "--node-modules-dir=auto",
+        "jsr:@pydantic/mcp-run-python",
+        "stdio"
+      ],
+      "description": "Runs the server with the Stdio MCP transport — suitable for running the process as a subprocess locally"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "How many days between 2000-01-01 and 2025-03-18?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Calculate the square root of 144"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Create a list of prime numbers between 1 and 100"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Plot a simple sine wave using matplotlib"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Implement a function to check if a string is a palindrome"
+    }
+  ],
+  "name": "mcp-run-python",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pydantic/pydantic-ai/tree/main/mcp-run-python"
+  },
+  "homepage": "https://github.com/pydantic/pydantic-ai/tree/main/mcp-run-python",
+  "author": {
+    "name": "pydantic"
+  },
+  "description": "The code is executed using [Pyodide](https://pyodide.org) in [Deno](https://deno.com/) and is therefore isolated from",
+  "categories": [
+    "Dev Tools"
+  ],
+  "is_official": false
+}

@@ -27,31 +27,13 @@ MCPM is an open source service and a CLI package management tool for MCP servers
 
 ## 🚀 Quick Installation
 
-Choose your preferred installation method:
-
-### 🍺 Homebrew
-
-```bash
-brew install mcpm
-```
-
-### 📦 pipx (Recommended for Python tools)
-
-```bash
-pipx install mcpm
-```
-
-### 🐍 pip
-
-```bash
-pip install mcpm
-```
-
-### 🔄 Shell Script (One-liner)
+### Recommended: 
 
 ```bash
 curl -sSL https://mcpm.sh/install | bash
 ```
+
+Or choose [other installation methods](#-other-installation-methods) like `brew`, `pipx`, `uv` etc.
 
 ## 🔎 Overview
 
@@ -109,6 +91,11 @@ These commands operate on the active client unless a specific scope (`@CLIENT` o
 mcpm search [QUERY]       # Search the MCP Registry for available servers
 mcpm add SERVER_URL       # Add an MCP server configuration (from URL or registry name)
 mcpm add SERVER_URL --alias ALIAS # Add with a custom alias
+
+# 🛠️ Add custom server
+mcpm import stdio SERVER_NAME --command COMMAND --args ARGS --env ENV # Add a stdio MCP server to a client
+mcpm import sse SERVER_NAME --url URL # Add a SSE MCP server to a client
+mcpm import interact # Add a server by configuring it interactively
 
 # 📋 List and Remove
 mcpm ls                   # List server configurations for the active client/profile
@@ -189,6 +176,44 @@ The MCP Registry is a central repository of available MCP servers that can be in
 - [ ] MCPM Router over STDIO (same powerful feature set with profile and monitoring, but single client/tenant)
 - [ ] MCP Server for MCPM Router (experimental, allow MCP clients to dynamically switch between profiles, suggest new MCP servers from registry, etc.)
 - [ ] Additional client support
+
+
+## 📦 Other Installation Methods
+
+### 🍺 Homebrew
+
+```bash
+brew install mcpm
+```
+
+### 📦 pipx (Recommended for Python tools)
+
+```bash
+pipx install mcpm
+```
+
+### 🪄 uv tool
+
+```bash
+uv tool install mcpm
+```
+
+## More Installation Methods
+
+### 🐍 pip
+
+```bash
+pip install mcpm
+```
+
+### 🧰 X-CMD
+
+If you are a user of [x-cmd](https://x-cmd.com), you can run:
+
+```sh
+x install mcpm.sh
+```
+
 
 ## 👨‍💻 Development
 

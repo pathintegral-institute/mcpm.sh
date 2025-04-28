@@ -1,0 +1,174 @@
+{
+  "display_name": "Browser Use MCP Server",
+  "license": "MIT",
+  "tags": [
+    "browser-automation",
+    "web-research",
+    "MCP",
+    "AI-driven",
+    "browser-control",
+    "web-scraping",
+    "natural-language",
+    "chrome",
+    "playwright"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "mcp-server-browser-use"
+      ],
+      "env": {
+        "OPENROUTER_API_KEY": "${OPENROUTER_API_KEY}",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONUNBUFFERED": "1",
+        "PYTHONUTF8": "1",
+        "MCP_MODEL_PROVIDER": "openrouter",
+        "MCP_MODEL_NAME": "${MCP_MODEL_NAME}",
+        "BROWSER_HEADLESS": "true",
+        "BROWSER_USE_LOGGING_LEVEL": "INFO"
+      }
+    }
+  },
+  "arguments": {
+    "OPENROUTER_API_KEY": {
+      "description": "OpenRouter API key for authentication.",
+      "required": true,
+      "example": "your-openrouter-api-key"
+    },
+    "MCP_MODEL_NAME": {
+      "description": "Model name for the server.",
+      "required": true,
+      "example": "google/gemini-2.5-pro-exp-03-25:free"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Search for the latest news about artificial intelligence and summarize the top 3 articles."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Go to amazon.com and find the best-selling wireless headphones under $100. Compare the top 3 options."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Visit github.com and search for popular Python machine learning libraries. Create a list of the top 5 with their star counts and main features."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Go to Wikipedia and research the history of quantum computing. Create a timeline of major developments."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Visit a weather website and tell me the 5-day forecast for New York City."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Go to a recipe website and find a vegetarian pasta dish that takes less than 30 minutes to prepare. List the ingredients and steps."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Research the differences between electric vehicles and traditional gas vehicles. Create a comparison table of pros and cons."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Find information about the most popular tourist attractions in Tokyo and create an itinerary for a 3-day visit."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Go to an online bookstore and find the top-rated science fiction books released in the last year. Give me a brief summary of each."
+    }
+  ],
+  "name": "mcp-browser-use",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Saik0s/mcp-browser-use"
+  },
+  "homepage": "https://github.com/Saik0s/mcp-browser-use",
+  "author": {
+    "name": "Saik0s"
+  },
+  "description": "This project is an AI-driven browser automation server that implements the Model Context Protocol (MCP) for natural language control of web browsers and web research tasks.",
+  "categories": [
+    "Web Services"
+  ],
+  "tools": [
+    {
+      "name": "run_browser_agent",
+      "description": "Runs a browser agent task synchronously and waits for the result.",
+      "inputSchema": {
+        "properties": {
+          "task": {
+            "title": "Task",
+            "type": "string"
+          },
+          "add_infos": {
+            "default": "",
+            "title": "Add Infos",
+            "type": "string"
+          }
+        },
+        "required": [
+          "task"
+        ],
+        "title": "run_browser_agentArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "run_deep_search",
+      "description": "Performs deep search synchronously and waits for the report.",
+      "inputSchema": {
+        "properties": {
+          "research_task": {
+            "title": "Research Task",
+            "type": "string"
+          },
+          "max_search_iterations": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": 10,
+            "title": "Max Search Iterations"
+          },
+          "max_query_per_iteration": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": 3,
+            "title": "Max Query Per Iteration"
+          }
+        },
+        "required": [
+          "research_task"
+        ],
+        "title": "run_deep_searchArguments",
+        "type": "object"
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": false
+}

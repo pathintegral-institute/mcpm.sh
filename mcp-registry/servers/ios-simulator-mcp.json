@@ -1,0 +1,332 @@
+{
+  "display_name": "iOS Simulator MCP Server",
+  "license": "MIT",
+  "tags": [
+    "iOS",
+    "simulator",
+    "MCP",
+    "testing",
+    "QA",
+    "UI interaction",
+    "automation"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "ios-simulator-mcp"
+      ],
+      "description": "Using NPX with Cursor (Recommended)"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Verify all accessibility elements on the current screen"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Enter \"QA Test\" into the text input field and confirm the input is correct"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Tap on coordinates x=250, y=400 and verify the expected element is triggered"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Swipe from x=150, y=600 to x=150, y=100 and confirm correct behavior"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Describe the UI element at position x=300, y=350 to ensure proper labeling and functionality"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Take a screenshot of the current simulator screen and save it to my_screenshot.png"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Start recording a video of the simulator screen"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Stop the current simulator screen recording"
+    }
+  ],
+  "name": "ios-simulator-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joshuayoes/ios-simulator-mcp"
+  },
+  "homepage": "https://github.com/joshuayoes/ios-simulator-mcp",
+  "author": {
+    "name": "joshuayoes"
+  },
+  "description": "A Model Context Protocol (MCP) server for interacting with iOS simulators. This server allows you to interact with iOS simulators by getting information about them, controlling UI interactions, and inspecting UI elements.",
+  "categories": [
+    "Dev Tools"
+  ],
+  "tools": [
+    {
+      "name": "get_booted_sim_id",
+      "description": "Get the ID of the currently booted iOS simulator",
+      "inputSchema": {
+        "type": "object"
+      }
+    },
+    {
+      "name": "ui_describe_all",
+      "description": "Describes accessibility information for the entire screen in the iOS Simulator",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "udid": {
+            "type": "string",
+            "description": "Udid of target, can also be set with the IDB_UDID env var"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "ui_tap",
+      "description": "Tap on the screen in the iOS Simulator",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "duration": {
+            "type": "string",
+            "description": "Press duration"
+          },
+          "udid": {
+            "type": "string",
+            "description": "Udid of target, can also be set with the IDB_UDID env var"
+          },
+          "x": {
+            "type": "number",
+            "description": "The x-coordinate"
+          },
+          "y": {
+            "type": "number",
+            "description": "The x-coordinate"
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "ui_type",
+      "description": "Input text into the iOS Simulator",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "udid": {
+            "type": "string",
+            "description": "Udid of target, can also be set with the IDB_UDID env var"
+          },
+          "text": {
+            "type": "string",
+            "description": "Text to input"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "ui_swipe",
+      "description": "Swipe on the screen in the iOS Simulator",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "udid": {
+            "type": "string",
+            "description": "Udid of target, can also be set with the IDB_UDID env var"
+          },
+          "x_start": {
+            "type": "number",
+            "description": "The starting x-coordinate"
+          },
+          "y_start": {
+            "type": "number",
+            "description": "The starting y-coordinate"
+          },
+          "x_end": {
+            "type": "number",
+            "description": "The ending x-coordinate"
+          },
+          "y_end": {
+            "type": "number",
+            "description": "The ending y-coordinate"
+          },
+          "delta": {
+            "type": "number",
+            "description": "The size of each step in the swipe (default is 1)",
+            "default": 1
+          }
+        },
+        "required": [
+          "x_start",
+          "y_start",
+          "x_end",
+          "y_end"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "ui_describe_point",
+      "description": "Returns the accessibility element at given co-ordinates on the iOS Simulator's screen",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "udid": {
+            "type": "string",
+            "description": "Udid of target, can also be set with the IDB_UDID env var"
+          },
+          "x": {
+            "type": "number",
+            "description": "The x-coordinate"
+          },
+          "y": {
+            "type": "number",
+            "description": "The y-coordinate"
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "screenshot",
+      "description": "Takes a screenshot of the iOS Simulator",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "udid": {
+            "type": "string",
+            "description": "Udid of target, can also be set with the IDB_UDID env var"
+          },
+          "output_path": {
+            "type": "string",
+            "description": "File path where the screenshot will be saved (if relative, ~/Downloads will be used as base directory)"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "png",
+              "tiff",
+              "bmp",
+              "gif",
+              "jpeg"
+            ],
+            "description": "Image format (png, tiff, bmp, gif, or jpeg). Default is png."
+          },
+          "display": {
+            "type": "string",
+            "enum": [
+              "internal",
+              "external"
+            ],
+            "description": "Display to capture (internal or external). Default depends on device type."
+          },
+          "mask": {
+            "type": "string",
+            "enum": [
+              "ignored",
+              "alpha",
+              "black"
+            ],
+            "description": "For non-rectangular displays, handle the mask by policy (ignored, alpha, or black)"
+          }
+        },
+        "required": [
+          "output_path"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "record_video",
+      "description": "Records a video of the iOS Simulator using simctl directly",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "output_path": {
+            "type": "string",
+            "description": "Optional output path (defaults to ~/Downloads/simulator_recording_$DATE.mp4)"
+          },
+          "codec": {
+            "type": "string",
+            "enum": [
+              "h264",
+              "hevc"
+            ],
+            "description": "Specifies the codec type: \"h264\" or \"hevc\". Default is \"hevc\"."
+          },
+          "display": {
+            "type": "string",
+            "enum": [
+              "internal",
+              "external"
+            ],
+            "description": "Display to capture: \"internal\" or \"external\". Default depends on device type."
+          },
+          "mask": {
+            "type": "string",
+            "enum": [
+              "ignored",
+              "alpha",
+              "black"
+            ],
+            "description": "For non-rectangular displays, handle the mask by policy: \"ignored\", \"alpha\", or \"black\"."
+          },
+          "force": {
+            "type": "boolean",
+            "description": "Force the output file to be written to, even if the file already exists."
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "stop_recording",
+      "description": "Stops the simulator video recording using killall",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": false
+}

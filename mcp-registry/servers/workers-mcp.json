@@ -1,0 +1,77 @@
+{
+  "display_name": "Cloudflare Workers MCP",
+  "license": "<UNKNOWN>",
+  "tags": [
+    "cloudflare",
+    "workers",
+    "mcp",
+    "model context protocol",
+    "claude",
+    "ai",
+    "serverless"
+  ],
+  "installations": {
+    "cli": {
+      "type": "cli",
+      "command": "workers-mcp",
+      "args": [
+        "run",
+        "your-mcp-server-name",
+        "https://your-server-url.workers.dev",
+        "/path/to/your/project"
+      ],
+      "description": "Run workers-mcp server for MCP clients"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Can you generate a random number for me?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "I need a super random number, can you help?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Generate an image of a sunset over mountains"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Can you create an image of a cat wearing sunglasses?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "What functions can I use with this Cloudflare Worker?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "How do I use the image generation feature?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Can you explain how the random number generation works?"
+    }
+  ],
+  "name": "workers-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cloudflare/workers-mcp"
+  },
+  "homepage": "https://github.com/cloudflare/workers-mcp",
+  "author": {
+    "name": "cloudflare"
+  },
+  "description": "This package provides both the CLI tooling and the in-Worker logic to connect Claude Desktop (or any [MCP Client](https://modelcontextprotocol.io/)) to a Cloudflare Worker on your account, so you can customise it to suit your needs. It works via a build step that can translate TypeScript methods of your Worker like this:",
+  "categories": [
+    "Dev Tools"
+  ],
+  "is_official": false
+}

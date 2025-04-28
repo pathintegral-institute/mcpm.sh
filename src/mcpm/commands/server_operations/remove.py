@@ -4,7 +4,6 @@ Remove command for MCPM
 
 import click
 from rich.console import Console
-from rich.markup import escape
 from rich.prompt import Confirm
 
 from mcpm.commands.server_operations.common import (
@@ -14,6 +13,7 @@ from mcpm.commands.server_operations.common import (
     profile_get_server,
     profile_remove_server,
 )
+from mcpm.utils.display import print_server_config
 from mcpm.utils.scope import ScopeType
 
 console = Console()
@@ -54,31 +54,7 @@ def remove(server_name, force):
     # Display server information before removal
     console.print(f"\n[bold cyan]Server information for:[/] {server_name}")
 
-    # Server command
-    command = getattr(server_info, "command", "N/A")
-    console.print(f"  Command: [green]{command}[/]")
-
-    # Display arguments
-    args = getattr(server_info, "args", [])
-    if args:
-        console.print("  Arguments:")
-        for i, arg in enumerate(args):
-            console.print(f"    {i}: [yellow]{escape(arg)}[/]")
-
-        # Get package name (usually the second argument)
-        if len(args) > 1:
-            console.print(f"  Package: [magenta]{args[1]}[/]")
-
-    # Display environment variables
-    env_vars = getattr(server_info, "env", {})
-    if env_vars and len(env_vars) > 0:
-        console.print("  Environment Variables:")
-        for key, value in env_vars.items():
-            console.print(f'    [bold blue]{key}[/] = [green]"{value}"[/]')
-    else:
-        console.print("  Environment Variables: [italic]None[/]")
-
-    console.print("  " + "-" * 50)
+    print_server_config(server_info)
 
     # Get confirmation if --force is not used
     if not force:

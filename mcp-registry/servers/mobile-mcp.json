@@ -1,0 +1,349 @@
+{
+  "display_name": "Mobile MCP Server",
+  "license": "Apache-2.0",
+  "tags": [
+    "mobile",
+    "automation",
+    "iOS",
+    "Android",
+    "simulator",
+    "emulator",
+    "physical devices",
+    "MCP",
+    "Model Context Protocol",
+    "accessibility",
+    "testing",
+    "LLM"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@mobilenext/mobile-mcp@latest"
+      ],
+      "description": "Installation for Claude Desktop"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Launch the Notes app on my iPhone and create a new note with the text 'Shopping list: milk, eggs, bread'"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Open Google Keep on my Android device and show me all the elements on screen"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Take a screenshot of my current mobile screen"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Launch Instagram, scroll down my feed by swiping up, and like the first post you see"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Open Safari on iOS, navigate to github.com, and take a screenshot"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "List all installed apps on my device"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Open the Calculator app and perform a simple calculation by tapping the buttons"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Launch the Settings app and toggle the Wi-Fi setting"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Open the Camera app and take a photo"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Launch a messaging app, find a specific contact, and send them a text message"
+    }
+  ],
+  "name": "mobile-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mobile-next/mobile-mcp"
+  },
+  "homepage": "https://github.com/mobile-next/mobile-mcp",
+  "author": {
+    "name": "mobile-next"
+  },
+  "description": "This is a [Model Context Protocol (MCP) server](https://github.com/modelcontextprotocol) that enables scalable mobile automation, development through a platform-agnostic interface, eliminating the need for distinct iOS or Android knowledge. You can run it on emulators, simulators, and physical devices (iOS and Android).",
+  "categories": [
+    "Dev Tools"
+  ],
+  "tools": [
+    {
+      "name": "mobile_list_available_devices",
+      "description": "List all available devices. This includes both physical devices and simulators. If there is more than one device returned, you need to let the user select one of them.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "mobile_use_device",
+      "description": "Select a device to use. This can be a simulator or an Android device. Use the list_available_devices tool to get a list of available devices.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "device": {
+            "type": "string",
+            "description": "The name of the device to select"
+          },
+          "deviceType": {
+            "type": "string",
+            "enum": [
+              "simulator",
+              "ios",
+              "android"
+            ],
+            "description": "The type of device to select"
+          }
+        },
+        "required": [
+          "device",
+          "deviceType"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "mobile_list_apps",
+      "description": "List all the installed apps on the device",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "mobile_launch_app",
+      "description": "Launch an app on mobile device. Use this to open a specific app. You can find the package name of the app by calling list_apps_on_device.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "packageName": {
+            "type": "string",
+            "description": "The package name of the app to launch"
+          }
+        },
+        "required": [
+          "packageName"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "mobile_terminate_app",
+      "description": "Stop and terminate an app on mobile device",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "packageName": {
+            "type": "string",
+            "description": "The package name of the app to terminate"
+          }
+        },
+        "required": [
+          "packageName"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "mobile_get_screen_size",
+      "description": "Get the screen size of the mobile device in pixels",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "mobile_click_on_screen_at_coordinates",
+      "description": "Click on the screen at given x,y coordinates",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "number",
+            "description": "The x coordinate to click on the screen, in pixels"
+          },
+          "y": {
+            "type": "number",
+            "description": "The y coordinate to click on the screen, in pixels"
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "mobile_list_elements_on_screen",
+      "description": "List elements on screen and their coordinates, with display text or accessibility label. Do not cache this result.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "mobile_press_button",
+      "description": "Press a button on device",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "button": {
+            "type": "string",
+            "description": "The button to press. Supported buttons: BACK (android only), HOME, VOLUME_UP, VOLUME_DOWN, ENTER"
+          }
+        },
+        "required": [
+          "button"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "mobile_open_url",
+      "description": "Open a URL in browser on device",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "The URL to open"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "swipe_on_screen",
+      "description": "Swipe on the screen",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "direction": {
+            "type": "string",
+            "enum": [
+              "up",
+              "down"
+            ],
+            "description": "The direction to swipe"
+          }
+        },
+        "required": [
+          "direction"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "mobile_type_keys",
+      "description": "Type text into the focused element",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "The text to type"
+          },
+          "submit": {
+            "type": "boolean",
+            "description": "Whether to submit the text. If true, the text will be submitted as if the user pressed the enter key."
+          }
+        },
+        "required": [
+          "text",
+          "submit"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "mobile_take_screenshot",
+      "description": "Take a screenshot of the mobile device. Use this to understand what's on screen, if you need to press an element that is available through view hierarchy then you must list elements on screen instead. Do not cache this result.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "mobile_set_orientation",
+      "description": "Change the screen orientation of the device",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "orientation": {
+            "type": "string",
+            "enum": [
+              "portrait",
+              "landscape"
+            ],
+            "description": "The desired orientation"
+          }
+        },
+        "required": [
+          "orientation"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "mobile_get_orientation",
+      "description": "Get the current screen orientation of the device",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": false
+}

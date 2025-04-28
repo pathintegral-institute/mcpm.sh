@@ -1,0 +1,121 @@
+{
+  "display_name": "Twitter MCP Server",
+  "license": "MIT",
+  "tags": [
+    "twitter",
+    "social media",
+    "tweet",
+    "search",
+    "mcp",
+    "api"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@enescinar/twitter-mcp"
+      ],
+      "env": {
+        "API_KEY": "${API_KEY}",
+        "API_SECRET_KEY": "${API_SECRET_KEY}",
+        "ACCESS_TOKEN": "${ACCESS_TOKEN}",
+        "ACCESS_TOKEN_SECRET": "${ACCESS_TOKEN_SECRET}"
+      },
+      "description": "Install and run Twitter MCP server using npx"
+    }
+  },
+  "arguments": {
+    "API_KEY": {
+      "required": true,
+      "description": "Twitter API key",
+      "example": "your_api_key"
+    },
+    "API_SECRET_KEY": {
+      "required": true,
+      "description": "Twitter API secret key",
+      "example": "your_api_secret_key"
+    },
+    "ACCESS_TOKEN": {
+      "required": true,
+      "description": "Twitter access token",
+      "example": "your_access_token"
+    },
+    "ACCESS_TOKEN_SECRET": {
+      "required": true,
+      "description": "Twitter access token secret",
+      "example": "your_access_token_secret"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Can you post a tweet saying 'Hello from Claude!'"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Can you search for tweets about Claude AI?"
+    }
+  ],
+  "name": "twitter-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/EnesCinr/twitter-mcp"
+  },
+  "homepage": "https://github.com/EnesCinr/twitter-mcp",
+  "author": {
+    "name": "EnesCinr"
+  },
+  "description": "This MCP server allows Clients to interact with Twitter, enabling posting tweets and searching Twitter.",
+  "categories": [
+    "Messaging"
+  ],
+  "tools": [
+    {
+      "name": "post_tweet",
+      "description": "Post a new tweet to Twitter",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "The content of your tweet",
+            "maxLength": 280
+          }
+        },
+        "required": [
+          "text"
+        ]
+      }
+    },
+    {
+      "name": "search_tweets",
+      "description": "Search for tweets on Twitter",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query"
+          },
+          "count": {
+            "type": "number",
+            "description": "Number of tweets to return (10-100)",
+            "minimum": 10,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "query",
+          "count"
+        ]
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": false
+}
