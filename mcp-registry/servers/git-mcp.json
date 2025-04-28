@@ -1,0 +1,150 @@
+{
+  "display_name": "GitMCP",
+  "license": "Apache License 2.0",
+  "tags": [
+    "MCP",
+    "GitHub",
+    "documentation",
+    "AI assistant",
+    "Model Context Protocol",
+    "code",
+    "open-source",
+    "no-hallucinations"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "https://gitmcp.io/{owner}/{repo}"
+      ],
+      "description": "For Claude Desktop"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "How do I use the Playwright MCP?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Add memory to my LangGraph agent"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "I want to learn about the OpenAI Whisper speech recognition model. Explain how it works."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "What are the main features of TypeScript?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Show me how to create a three.js scene"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "How do I implement authentication in a React application?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "What's the best way to handle state management in Vue.js?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Explain how to use GitHub Actions for CI/CD"
+    }
+  ],
+  "name": "git-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/idosal/git-mcp"
+  },
+  "homepage": "https://github.com/idosal/git-mcp",
+  "author": {
+    "name": "idosal"
+  },
+  "description": "GitMCP is a free, open-source, remote Model Context Protocol (MCP) server that transforms any GitHub project into a documentation hub, enabling AI tools to access up-to-date documentation and code to eliminate code hallucinations.",
+  "categories": [
+    "Dev Tools"
+  ],
+  "tools": [
+    {
+      "name": "fetch__7Brepo_7D_documentation",
+      "description": "Fetch entire documentation file from GitHub repository: %7Bowner%7D/%7Brepo%7D. Useful for general questions. Always call this tool first if asked about %7Bowner%7D/%7Brepo%7D.",
+      "inputSchema": {
+        "type": "object"
+      }
+    },
+    {
+      "name": "search__7Brepo_7D_documentation",
+      "description": "Semantically search within the fetched documentation from GitHub repository: %7Bowner%7D/%7Brepo%7D. Useful for specific queries.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The search query to find relevant documentation"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "search__7Brepo_7D_code",
+      "description": "Search for code within the GitHub repository: \"%7Bowner%7D/%7Brepo%7D\" using the GitHub Search API (exact match). Returns matching files for you to query further if relevant.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The search query to find relevant code files"
+          },
+          "page": {
+            "type": "number",
+            "description": "Page number to retrieve (starting from 1). Each page contains 30 results."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "fetch_generic_url_content",
+      "description": "Generic tool to fetch content from any absolute URL, respecting robots.txt rules. Use this to retrieve referenced urls (absolute urls) that were mentioned in previously fetched documentation.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "The URL of the document or page to fetch"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": false
+}

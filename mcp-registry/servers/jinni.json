@@ -1,0 +1,151 @@
+{
+  "display_name": "Jinni: Bring Your Project Into Context",
+  "license": "MIT",
+  "tags": [
+    "context",
+    "project",
+    "LLM",
+    "MCP",
+    "development",
+    "code",
+    "file management",
+    "context window"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "jinni-server"
+      ],
+      "description": "MCP server config for Cursor / Roo / Claude Desktop"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Can you read the context of my project?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Read the context for the src directory only"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Read context for all Python files in the project"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Read context for the tests directory and exclude any test data files"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Can you list all the files in my project without showing their contents?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Read context for the project but limit to only markdown and Python files"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Read context for the src directory and explain which files are being included or excluded"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Read context for the project but exclude any binary or large files"
+    }
+  ],
+  "name": "jinni",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/smat-dev/jinni"
+  },
+  "homepage": "https://github.com/smat-dev/jinni",
+  "author": {
+    "name": "smat-dev"
+  },
+  "description": "<a href=\"https://glama.ai/mcp/servers/@smat-dev/jinni\">",
+  "categories": [
+    "Media Creation"
+  ],
+  "tools": [
+    {
+      "name": "usage",
+      "description": "Retrieves the Jinni usage documentation (content of README.md).",
+      "inputSchema": {
+        "properties": {},
+        "title": "usageArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "read_context",
+      "description": "Reads context from a specified project root directory (absolute path). Focuses on the specified target files/directories within that root. Returns a concatenated string of files with metadata including paths relative to the project root. Assume the user wants to read in context for the whole project unless otherwise specified - do not ask the user for clarification if just asked to read context. If the user just says 'jinni', interpret that as read_context. If the user asks to list context, use the list_only argument. Both `targets` and `rules` accept a JSON array of strings. The `project_root`, `targets`, and `rules` arguments are mandatory. You can ignore the other arguments by default. IMPORTANT NOTE ON RULES: Ensure you understand the rule syntax (details available via the `usage` tool) before providing specific rules. Using `rules=[]` is recommended if unsure, as this uses sensible defaults.\n\n**Guidance for AI Model Usage**\n\nWhen requesting context using this tool:\n*   **Default Behavior:** If you provide an empty `rules` list (`[]`), Jinni uses sensible default exclusions (like `.git`, `node_modules`, `__pycache__`, common binary types) combined with any project-specific `.contextfiles`. This usually provides the \"canonical context\" - files developers typically track in version control. Assume this is what the users wants if they just ask to read context.\n*   **Targeting Specific Files:** If you have a list of specific files you need (e.g., `[\"src/main.py\", \"README.md\"]`), provide them in the `targets` list. This is efficient and precise, quicker than reading one by one.\n",
+      "inputSchema": {
+        "properties": {
+          "project_root": {
+            "description": "**MUST BE ABSOLUTE PATH**. The absolute path to the project root directory.",
+            "title": "Project Root",
+            "type": "string"
+          },
+          "targets": {
+            "description": "**Mandatory**. List of paths (absolute or relative to CWD) to specific files or directories within the project root to process. Must be a JSON array of strings. If empty (`[]`), the entire `project_root` is processed.",
+            "items": {
+              "type": "string"
+            },
+            "title": "Targets",
+            "type": "array"
+          },
+          "rules": {
+            "description": "**Mandatory**. List of inline filtering rules. Provide `[]` if no specific rules are needed (uses defaults). It is strongly recommended to consult the `usage` tool documentation before providing a non-empty list.",
+            "items": {
+              "type": "string"
+            },
+            "title": "Rules",
+            "type": "array"
+          },
+          "list_only": {
+            "default": false,
+            "title": "List Only",
+            "type": "boolean"
+          },
+          "size_limit_mb": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Size Limit Mb"
+          },
+          "debug_explain": {
+            "default": false,
+            "title": "Debug Explain",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "project_root",
+          "targets",
+          "rules"
+        ],
+        "title": "read_contextArguments",
+        "type": "object"
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": false
+}

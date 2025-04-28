@@ -1,0 +1,61 @@
+{
+  "display_name": "Cursor Talk to Figma MCP",
+  "license": "MIT",
+  "tags": [
+    "figma",
+    "cursor",
+    "mcp",
+    "plugin"
+  ],
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Create a new design for a mobile app"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Explain how to use auto layout in Figma"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Generate a color palette for my design"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "How do I create a component in Figma?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Help me design a responsive website"
+    }
+  ],
+  "name": "cursor-talk-to-figma-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sonnylazuardi/cursor-talk-to-figma-mcp"
+  },
+  "homepage": "https://github.com/sonnylazuardi/cursor-talk-to-figma-mcp",
+  "author": {
+    "name": "sonnylazuardi"
+  },
+  "description": "Here is a concise description paragraph extracted from the README content, focused on what the project does, and kept under 200 characters:\n\nTailwind UI is a professional collection of UI components built with Tailwind CSS, including application UI like modals, dropdowns, and navigation menus, as well as marketing UI like headers, pricing tables, and testimonials.",
+  "categories": [
+    "Media Creation"
+  ],
+  "installations": {
+    "custom": {
+      "type": "custom",
+      "command": "bunx",
+      "args": [
+        "cursor-talk-to-figma-mcp@latest"
+      ],
+      "description": "Run with bunx"
+    }
+  },
+  "is_official": false
+}

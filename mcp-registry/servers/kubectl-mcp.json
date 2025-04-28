@@ -1,0 +1,126 @@
+{
+  "display_name": "Kubectl MCP Server",
+  "license": "MIT",
+  "tags": [
+    "kubernetes",
+    "kubectl",
+    "MCP",
+    "Model Context Protocol",
+    "AI assistants",
+    "CLI",
+    "Python",
+    "k8s"
+  ],
+  "installations": {
+    "python": {
+      "type": "python",
+      "command": "python",
+      "args": [
+        "-m",
+        "kubectl_mcp_tool.minimal_wrapper"
+      ],
+      "env": {
+        "KUBECONFIG": "${KUBECONFIG}"
+      },
+      "description": "Windsurf configuration"
+    }
+  },
+  "arguments": {
+    "KUBECONFIG": {
+      "description": "The path to the kubeconfig file",
+      "required": true,
+      "example": "/path/to/your/.kube/config"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "List all pods in the default namespace"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Create a deployment named nginx-test with 3 replicas using the nginx:latest image"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Get logs from the nginx-test pod"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Forward local port 8080 to port 80 on the nginx-test pod"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Show me the status of all nodes in the cluster"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Scale the nginx-test deployment to 5 replicas"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Delete the nginx-test deployment"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Create a ConfigMap named app-config with key=value pairs"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Install Prometheus using Helm"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Switch to the kube-system namespace"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Show me resource usage statistics for all pods"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Describe the nginx-test pod"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "List all available API resources"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Check the health of the cluster"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Create a new namespace called test-env"
+    }
+  ],
+  "name": "kubectl-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rohitg00/kubectl-mcp-server"
+  },
+  "homepage": "https://github.com/rohitg00/kubectl-mcp-server",
+  "author": {
+    "name": "rohitg00"
+  },
+  "description": "A Model Context Protocol (MCP) server for Kubernetes that enables AI assistants like Claude, Cursor, and others to interact with Kubernetes clusters through natural language.",
+  "categories": [
+    "Dev Tools"
+  ],
+  "is_official": false
+}
