@@ -9,15 +9,25 @@ from mcpm.utils.scope import ScopeType, extract_from_scope, parse_server
 console = Console()
 
 
+def determine_scope(scope: str | None) -> tuple[ScopeType | None, str | None]:
+    if not scope:
+        # Get the active scope
+        scope = ClientRegistry.determine_active_scope()
+        if not scope:
+            print_no_active_scope()
+            return None, None
+        print_active_scope(scope)
+
+    scope_type, scope = extract_from_scope(scope)
+    return scope_type, scope
+
+
 def determine_target(target: str) -> tuple[ScopeType | None, str | None, str | None]:
     scope_type, scope, server_name = parse_server(target)
     if not scope:
-        active_scope = ClientRegistry.determine_active_scope()
-        if not active_scope:
-            print_no_active_scope()
+        scope_type, scope = determine_scope(scope)
+        if not scope:
             return None, None, None
-        scope_type, scope = extract_from_scope(active_scope)
-        print_active_scope(active_scope)
     return scope_type, scope, server_name
 
 

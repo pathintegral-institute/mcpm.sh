@@ -126,6 +126,11 @@ mcpm search [QUERY]       # 在 MCP 注册表中搜索可用服务器
 mcpm add SERVER_URL       # 添加 MCP 服务器配置（从 URL 或注册表名称）
 mcpm add SERVER_URL --alias ALIAS # 添加并使用自定义别名
 
+# 🛠️ 自定义添加
+mcpm import stdio SERVER_NAME --command COMMAND --args ARGS --env ENV # 手动添加一个 stdio MCP 服务器
+mcpm import sse SERVER_NAME --url URL # 手动添加一个 SSE MCP 服务器
+mcpm import interact # 通过交互式添加一个服务器
+
 # 📋 列出和删除
 mcpm ls                   # 列出活动客户端/配置文件的服务器配置
 mcpm rm SERVER_NAME       # 删除服务器配置

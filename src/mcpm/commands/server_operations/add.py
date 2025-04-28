@@ -17,12 +17,11 @@ from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.prompt import Confirm
 
 from mcpm.clients.client_registry import ClientRegistry
-from mcpm.commands.server_operations.common import client_add_server, profile_add_server
+from mcpm.commands.server_operations.common import client_add_server, determine_scope, profile_add_server
 from mcpm.profile.profile_config import ProfileConfigManager
 from mcpm.schemas.full_server_config import FullServerConfig
-from mcpm.utils.display import print_active_scope, print_no_active_scope
 from mcpm.utils.repository import RepositoryManager
-from mcpm.utils.scope import ScopeType, extract_from_scope
+from mcpm.utils.scope import ScopeType
 
 console = Console()
 repo_manager = RepositoryManager()
@@ -106,15 +105,10 @@ def add(server_name, force=False, alias=None, target: str | None = None):
     """
     config_name = alias or server_name
 
-    if target is None:
-        # Get the active scope
-        target = ClientRegistry.determine_active_scope()
-        if not target:
-            print_no_active_scope()
-            return
-        print_active_scope(target)
+    scope_type, scope = determine_scope(target)
+    if not scope:
+        return
 
-    scope_type, scope = extract_from_scope(target)
     if scope_type == ScopeType.PROFILE:
         # Get profile
         profile = scope
