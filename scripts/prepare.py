@@ -54,8 +54,7 @@ def load_manifest(manifest_path: Path) -> Dict[str, Any]:
         except jsonschema.exceptions.ValidationError:
             # If validation fails, we continue but log a warning
             # This allows the site to build even with some schema issues
-            print(
-                f"⚠️ Warning: {manifest_path} does not fully conform to the schema")
+            print(f"⚠️ Warning: {manifest_path} does not fully conform to the schema")
 
         return manifest
     except json.JSONDecodeError as e:
@@ -92,9 +91,12 @@ def extract_github_repos(server_manifests: List[Path]) -> Dict[str, str]:
             # Handle both string and dictionary repository formats
             if isinstance(repo_url, str) and repo_url.startswith("https://github.com/"):
                 github_repos[server_name] = repo_url
-            elif (isinstance(repo_url, dict) and "url" in repo_url and
-                  isinstance(repo_url["url"], str) and
-                  repo_url["url"].startswith("https://github.com/")):
+            elif (
+                isinstance(repo_url, dict)
+                and "url" in repo_url
+                and isinstance(repo_url["url"], str)
+                and repo_url["url"].startswith("https://github.com/")
+            ):
                 github_repos[server_name] = repo_url["url"]
 
     return github_repos
@@ -130,7 +132,7 @@ def fetch_github_stars_batch(repo_urls: List[str]) -> Dict[str, int]:
 
     # Process repositories in batches
     for batch_start in range(0, len(repos), BATCH_SIZE):
-        batch = repos[batch_start:batch_start + BATCH_SIZE]
+        batch = repos[batch_start : batch_start + BATCH_SIZE]
 
         # Construct GraphQL query
         query_parts = []
@@ -147,8 +149,7 @@ def fetch_github_stars_batch(repo_urls: List[str]) -> Dict[str, int]:
             variables[f"repo{i}"] = repo
 
         # Join the query parts with proper line length
-        variable_defs = ", ".join(f"$owner{i}: String!, $repo{i}: String!"
-                                  for i in range(len(batch)))
+        variable_defs = ", ".join(f"$owner{i}: String!, $repo{i}: String!" for i in range(len(batch)))
         query_body = " ".join(query_parts)
 
         query = f"""query ({variable_defs}) {{
@@ -157,23 +158,16 @@ def fetch_github_stars_batch(repo_urls: List[str]) -> Dict[str, int]:
 
         # Send GraphQL request
         try:
-            response = requests.post(
-                GITHUB_API_URL,
-                headers=headers,
-                json={"query": query, "variables": variables}
-            )
+            response = requests.post(GITHUB_API_URL, headers=headers, json={"query": query, "variables": variables})
 
             # Check for errors
             if response.status_code != 200:
                 if response.status_code == 401:
-                    print(
-                        "⚠️ GitHub API authentication failed. Set GITHUB_TOKEN for higher rate limits.")
+                    print("⚠️ GitHub API authentication failed. Set GITHUB_TOKEN for higher rate limits.")
                 elif response.status_code == 403:
-                    print(
-                        "⚠️ GitHub API rate limit exceeded. Set GITHUB_TOKEN for higher rate limits.")
+                    print("⚠️ GitHub API rate limit exceeded. Set GITHUB_TOKEN for higher rate limits.")
                 else:
-                    print(
-                        f"⚠️ GitHub API request failed: status {response.status_code}")
+                    print(f"⚠️ GitHub API request failed: status {response.status_code}")
                 continue
 
             data = response.json()
@@ -191,16 +185,13 @@ def fetch_github_stars_batch(repo_urls: List[str]) -> Dict[str, int]:
                     star_count = data["data"][repo_key]["stargazerCount"]
                     stars[url] = star_count
                     if url.startswith("https://github.com/"):
-                        returned_parts = url.replace(
-                            "https://github.com/", "").split("/")
+                        returned_parts = url.replace("https://github.com/", "").split("/")
                         if len(returned_parts) >= 2:
                             returned_owner, returned_repo = returned_parts[0], returned_parts[1]
                             if owner != returned_owner:
-                                print(
-                                    f"⚠️owner mismatch:: {owner} != {returned_owner}")
+                                print(f"⚠️owner mismatch:: {owner} != {returned_owner}")
                             if repo != returned_repo:
-                                print(
-                                    f"⚠️repo mismatch:: {repo} != {returned_repo}")
+                                print(f"⚠️repo mismatch:: {repo} != {returned_repo}")
 
         except Exception as e:
             print(f"⚠️ Error fetching GitHub stars for batch: {e}")
@@ -249,7 +240,7 @@ def generate_servers_json(server_manifests: List[Path], output_path: Path) -> Di
         servers_data[server_name] = manifest
 
     # Write servers.json
-    with open(output_path, "w") as f:
+    with open(output_path, "w", encoding="utf-8") as f:
         json.dump(servers_data, f, indent=2)
 
     return servers_data
@@ -267,8 +258,7 @@ def generate_stars_json(stars: Dict[str, int], output_path: Path) -> None:
 def main() -> None:
     """Main function to prepare site data"""
     if len(sys.argv) < 3:
-        error_exit(
-            "Usage: prepare.py <source_dir> <target_dir> [--skip-stars]")
+        error_exit("Usage: prepare.py <source_dir> <target_dir> [--skip-stars]")
 
     source_dir = Path(sys.argv[1])
     target_dir = Path(sys.argv[2])

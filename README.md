@@ -27,7 +27,13 @@ MCPM is an open source service and a CLI package management tool for MCP servers
 
 ## 🚀 Quick Installation
 
-Choose your preferred installation method:
+### 🔄 Shell Script (One-liner)
+
+```bash
+curl -sSL https://mcpm.sh/install | bash
+```
+
+Or choose your preferred installation method:
 
 ### 🍺 Homebrew
 
@@ -40,6 +46,14 @@ brew install mcpm
 ```bash
 pipx install mcpm
 ```
+
+### 🪄 uv tool
+
+```bash
+uv tool install mcpm
+```
+
+## More Installation Methods
 
 ### 🐍 pip
 
@@ -55,11 +69,6 @@ If you are a user of [x-cmd](https://x-cmd.com), you can run:
 x install mcpm.sh
 ```
 
-### 🔄 Shell Script (One-liner)
-
-```bash
-curl -sSL https://mcpm.sh/install | bash
-```
 
 ## 🔎 Overview
 
