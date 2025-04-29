@@ -80,5 +80,5 @@ ServerConfig = Union[STDIOServerConfig, SSEServerConfig]
 
 class Profile(BaseModel):
     name: str
-    api_key: Optional[str]
+    api_key: Optional[str] = None
     servers: list[ServerConfig]
