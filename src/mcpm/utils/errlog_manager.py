@@ -30,5 +30,6 @@ class ServerErrorLogManager:
             del self._log_files[server_id]
 
     def close_all(self) -> None:
-        for server_id in self._log_files:
+        keys = list(self._log_files.keys())
+        for server_id in keys:
             self.close_errlog_file(server_id)
