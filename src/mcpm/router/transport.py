@@ -255,10 +255,9 @@ class RouterSseTransport(SseServerTransport):
             host = get_key_from_scope(scope, key_name="host") or ""
             if not host.startswith("http"):
                 host = f"http://{host}"
-            share_config = config_manager.read_share_config()
             router_config = config_manager.get_router_config()
             host_name = urlsplit(host).hostname
-            if share_config.get("url") and host_name != router_config["host"]:
+            if host_name != router_config["host"]:
                 if api_key != self.api_key:
                     return False
         except Exception as e:
