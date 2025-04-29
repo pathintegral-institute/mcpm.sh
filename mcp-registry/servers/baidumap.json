@@ -1,0 +1,367 @@
+{
+  "display_name": "Baidu Maps MCP Server",
+  "license": "MIT",
+  "tags": [
+    "maps",
+    "geolocation",
+    "geocoding",
+    "routing",
+    "places",
+    "weather",
+    "traffic",
+    "navigation",
+    "MCP",
+    "baidu"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "mcp-server-baidu-maps"
+      ],
+      "env": {
+        "BAIDU_MAP_API_KEY": "${BAIDU_MAP_API_KEY}"
+      },
+      "description": "Using uvx (recommended)"
+    },
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@baidumap/mcp-server-baidu-map"
+      ],
+      "env": {
+        "BAIDU_MAP_API_KEY": "${BAIDU_MAP_API_KEY}"
+      },
+      "description": "Using npm for non-Windows systems"
+    },
+    "python": {
+      "type": "python",
+      "command": "python",
+      "args": [
+        "-m",
+        "mcp_server_baidu_maps"
+      ],
+      "env": {
+        "BAIDU_MAP_API_KEY": "${BAIDU_MAP_API_KEY}"
+      },
+      "description": "Using pip installation"
+    }
+  },
+  "arguments": {
+    "BAIDU_MAP_API_KEY": {
+      "description": "The API key for Baidu Maps",
+      "required": true,
+      "example": "<YOUR_API_KEY>"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "我想从北京天安门去故宫，请帮我规划路线"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "上海有哪些好吃的餐厅？"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "北京今天的天气怎么样？"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "请帮我查询从北京到上海的驾车路线"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "从浦东到虹桥最近的地铁站是哪一个？"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "请帮我查询从北京到上海的驾车路线"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "我正在北京王府井，想找一个便宜的饭店"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "从北京南站到首钢最快怎么走？"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "请帮我查询从北京到上海的驾车路线"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "从北京到上海最快的交通方式是什么？"
+    }
+  ],
+  "name": "baidumap",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/baidu-maps/mcp"
+  },
+  "homepage": "https://github.com/baidu-maps/mcp",
+  "author": {
+    "name": "baidu-maps"
+  },
+  "description": "百度地图API现已全面兼容[MCP协议](https://modelcontextprotocol.io/)，是国内首家兼容MCP协议的地图服务商。",
+  "categories": [
+    "Web Services"
+  ],
+  "tools": [
+    {
+      "name": "map_geocode",
+      "description": "\n    Name:\n        地理编码服务\n        \n    Description:\n        将地址解析为对应的位置坐标。地址结构越完整，地址内容越准确，解析的坐标精度越高。\n        \n    Args:\n        address: 待解析的地址。最多支持84个字节。可以输入两种样式的值，分别是：\n        1、标准的结构化地址信息，如北京市海淀区上地十街十号【推荐，地址结构越完整，解析精度越高】\n        2、支持“*路与*路交叉口”描述方式，如北一环路和阜阳路的交叉路口\n        第二种方式并不总是有返回结果，只有当地址库中存在该地址描述时才有返回。\n        \n    ",
+      "inputSchema": {
+        "properties": {
+          "address": {
+            "title": "Address",
+            "type": "string"
+          }
+        },
+        "required": [
+          "address"
+        ],
+        "title": "map_geocodeArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "map_reverse_geocode",
+      "description": "\n    Name:\n        地理编码服务\n        \n    Description:\n        将地址解析为对应的位置坐标。地址结构越完整，地址内容越准确，解析的坐标精度越高。\n        \n    Args:\n        latitude: 纬度 (gcj02ll)\n        longitude: 经度 (gcj02ll)\n        \n    ",
+      "inputSchema": {
+        "properties": {
+          "latitude": {
+            "title": "Latitude",
+            "type": "number"
+          },
+          "longitude": {
+            "title": "Longitude",
+            "type": "number"
+          }
+        },
+        "required": [
+          "latitude",
+          "longitude"
+        ],
+        "title": "map_reverse_geocodeArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "map_search_places",
+      "description": "\n    Name:\n        地理编码服务\n    \n    Description:\n        市内检索: 检索某一城市内（目前最细到城市级别）的地点信息。\n        周边检索: 设置圆心和半径，检索圆形区域内的地点信息（常用于周边检索场景）。\n    \n    Args:\n        query: 检索关键字\n        region: 检索的行政区划\n        location: 圆形区域检索中心点\n        radius: 圆形区域检索半径，单位：米\n        \n   ",
+      "inputSchema": {
+        "properties": {
+          "query": {
+            "title": "Query",
+            "type": "string"
+          },
+          "region": {
+            "title": "Region",
+            "type": "string"
+          },
+          "location": {
+            "title": "Location",
+            "type": "string"
+          },
+          "radius": {
+            "title": "Radius",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "query",
+          "region",
+          "location",
+          "radius"
+        ],
+        "title": "map_search_placesArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "map_place_details",
+      "description": "\n    Name:\n        地理编码服务\n        \n    Description:\n        地理编码服务：将地址解析为对应的位置坐标。地址结构越完整，地址内容越准确，解析的坐标精度越高。\n        \n    Args:\n        uid: poi的唯一标识\n    ",
+      "inputSchema": {
+        "properties": {
+          "uid": {
+            "title": "Uid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "uid"
+        ],
+        "title": "map_place_detailsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "map_distance_matrix",
+      "description": "\n    Name:\n        距离矩阵服务\n        \n    Description:\n        根据起点和终点坐标计算距离矩阵和行车时间\n        批量算路目前支持驾车、骑行、步行\n        步行时任意起终点之间的距离不得超过200KM，超过此限制会返回参数错误\n        驾车批量算路一次最多计算100条路线，起终点个数之积不能超过100\n        \n    Args:\n        origins: 多个起点坐标纬度,经度，按|分隔。示例：40.056878,116.30815|40.063597,116.364973【骑行】【步行】支持传入起点uid提升绑路准确性，格式为：纬度,经度;POI的uid|纬度,经度;POI的uid。示例：40.056878,116.30815;xxxxx|40.063597,116.364973;xxxxx\n        destinations: 多个终点坐标纬度,经度，按|分隔。示例：40.056878,116.30815|40.063597,116.364973【【骑行】【步行】支持传入终点uid提升绑路准确性，格式为：纬度,经度;POI的uid|纬度,经度;POI的uid。示例：40.056878,116.30815;xxxxx|40.063597,116.364973;xxxxx\n        mode: 批量算路类型(driving, riding, walking)\n        \n    ",
+      "inputSchema": {
+        "properties": {
+          "origins": {
+            "title": "Origins",
+            "type": "string"
+          },
+          "destinations": {
+            "title": "Destinations",
+            "type": "string"
+          },
+          "mode": {
+            "title": "Mode",
+            "type": "string"
+          }
+        },
+        "required": [
+          "origins",
+          "destinations",
+          "mode"
+        ],
+        "title": "map_distance_matrixArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "map_directions",
+      "description": "\n    Name:\n        路线规划服务\n        \n    Description:\n        驾车路线规划: 根据起终点坐标规划驾车出行路线\n        骑行路线规划: 根据起终点坐标规划骑行出行路线\n        步行路线规划: 根据起终点坐标规划步行出行路线\n        公交路线规划: 根据起终点坐标规划公共交通出行路线\n        \n    Args:\n        model: 路线规划类型(driving, riding, walking, transit)\n        origin: 起点坐标，当用户只有起点名称时，需要先通过地理编码服务或地点地点检索服务确定起点的坐标\n        destination: 终点坐标，当用户只有起点名称时，需要先通过地理编码服务或地点检索服务确定起点的坐标\n \n    ",
+      "inputSchema": {
+        "properties": {
+          "model": {
+            "title": "Model",
+            "type": "string"
+          },
+          "origin": {
+            "title": "Origin",
+            "type": "string"
+          },
+          "destination": {
+            "title": "Destination",
+            "type": "string"
+          }
+        },
+        "required": [
+          "model",
+          "origin",
+          "destination"
+        ],
+        "title": "map_directionsArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "map_weather",
+      "description": "\n    Name:\n        \u5929\u6c14\u67e5\u8be2\u670d\u52a1\n        \n    Description:\n        \u7528\u6237\u53ef\u901a\u8fc7\u884c\u653f\u533a\u5212\u6216\u662f\u7ecf\u7eac\u5ea6\u5750\u6807\u67e5\u8be2\u5b9e\u65f6\u5929\u6c14\u4fe1\u606f\u53ca\u672a\u67655\u5929\u5929\u6c14\u9884\u62a5(\u6ce8\u610f: \u4f7f\u7528\u7ecf\u7eac\u5ea6\u5750\u6807\u9700\u8981\u9ad8\u7ea7\u6743\u9650)\u3002\n        \n    Args:\n        location: \u7ecf\u7eac\u5ea6\uff0c\u7ecf\u5ea6\u5728\u524d\u7eac\u5ea6\u5728\u540e\uff0c\u9017\u53f7\u5206\u9694 (\u9700\u8981\u9ad8\u7ea7\u6743\u9650, \u4f8b\u5982: 116.30815,40.056878)\n        district_id: \u884c\u653f\u533a\u5212 (\u4f8b\u5982: 1101010)\n    ",
+      "inputSchema": {
+        "properties": {
+          "location": {
+            "title": "Location",
+            "type": "string"
+          },
+          "district_id": {
+            "title": "District Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "location",
+          "district_id"
+        ],
+        "title": "map_weatherArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "map_ip_location",
+      "description": "\n    Name:\n        IP定位服务\n        \n    Description:\n        根据用户请求的IP获取当前的位置，当需要知道用户当前位置、所在城市时可以调用该工具获取\n        \n    Args:\n    ",
+      "inputSchema": {
+        "properties": {},
+        "title": "map_ip_locationArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "map_road_traffic",
+      "description": "\n    Name:\n        实时路况查询服务\n        \n    Description:\n        查询实时交通拥堵情况, 可通过指定道路名和区域形状(矩形, 多边形, 圆形)进行实时路况查询。\n        \n        道路实时路况查询: 查询具体道路的实时拥堵评价和拥堵路段、拥堵距离、拥堵趋势等信息\n        矩形区域实时路况查询: 查询指定矩形地理范围的实时拥堵情况和各拥堵路段信息\n        多边形区域实时路况查询: 查询指定多边形地理范围的实时拥堵情况和各拥堵路段信息\n        圆形区域(周边)实时路况查询: 查询某中心点周边半径范围内的实时拥堵情况和各拥堵路段信息\n\n        \n    Args:\n        model:      路况查询类型(road, bound, polygon, around)\n        road_name:  道路名称和道路方向, model=road时必传 (如:朝阳路南向北)\n        city:       城市名称或城市adcode, model=road时必传 (如:北京市)\n        bounds:     区域左下角和右上角的经纬度坐标, model=bound时必传 (如:39.912078,116.464303;39.918276,116.475442)\n        vertexes:   多边形区域的顶点经纬度, model=polygon时必传 (如:39.910528,116.472926;39.918276,116.475442;39.916671,116.459056;39.912078,116.464303)\n        center:     圆形区域的中心点经纬度坐标, model=around时必传 (如:39.912078,116.464303)\n        radius:     圆形区域的半径(米), 取值[1,1000], model=around时必传 (如:200)\n \n    ",
+      "inputSchema": {
+        "properties": {
+          "model": {
+            "title": "Model",
+            "type": "string"
+          },
+          "road_name": {
+            "title": "Road Name",
+            "type": "string"
+          },
+          "city": {
+            "title": "City",
+            "type": "string"
+          },
+          "bounds": {
+            "title": "Bounds",
+            "type": "string"
+          },
+          "vertexes": {
+            "title": "Vertexes",
+            "type": "string"
+          },
+          "center": {
+            "title": "Center",
+            "type": "string"
+          },
+          "radius": {
+            "title": "Radius",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "model",
+          "road_name",
+          "city",
+          "bounds",
+          "vertexes",
+          "center",
+          "radius"
+        ],
+        "title": "map_road_trafficArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "map_poi_extract",
+      "description": "\n    Name:\n        POI智能提取\n        \n    Description:\n        根据用户提供的文本描述信息, 智能提取出文本中所提及的POI相关信息. (注意: 使用该服务, api_key需要拥有对应的高级权限, 否则会报错)\n        \n    Args:\n        text_content: 用于提取POI的文本描述信息 (完整的旅游路线，行程规划，景点推荐描述等文本内容, 例如: 新疆独库公路和塔里木湖太美了, 从独山子大峡谷到天山神秘大峡谷也是很不错的体验)\n    ",
+      "inputSchema": {
+        "properties": {
+          "text_content": {
+            "title": "Text Content",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text_content"
+        ],
+        "title": "map_poi_extractArguments",
+        "type": "object"
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": false
+}

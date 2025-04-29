@@ -27,7 +27,13 @@ MCPM 是一个开源的服务和命令行界面(CLI)，用于管理模型上下�
 
 ## 🚀 快速安装
 
-选择您喜欢的安装方式：
+### 🔄 Shell 脚本（一行命令）
+
+```bash
+curl -sSL https://mcpm.sh/install | bash
+```
+
+或选择您喜欢的安装方式：
 
 ### 🍺 Homebrew
 
@@ -41,16 +47,26 @@ brew install mcpm
 pipx install mcpm
 ```
 
+### 🪄 uv tool
+
+```bash
+uv tool install mcpm
+```
+
+## 其他安装方式
+
 ### 🐍 pip
 
 ```bash
 pip install mcpm
 ```
 
-### 🔄 Shell 脚本（一行命令）
+### 🧰 X-CMD
 
-```bash
-curl -sSL https://mcpm.sh/install | bash
+如果你是 [x-cmd](https://x-cmd.com) 用户，可以运行以下命令安装：
+
+```sh
+x install mcpm.sh
 ```
 
 ## 🔎 概述
@@ -109,6 +125,11 @@ mcpm client edit      # 在外部编辑器中打开活动客户端的 MCP 配置
 mcpm search [QUERY]       # 在 MCP 注册表中搜索可用服务器
 mcpm add SERVER_URL       # 添加 MCP 服务器配置（从 URL 或注册表名称）
 mcpm add SERVER_URL --alias ALIAS # 添加并使用自定义别名
+
+# 🛠️ 自定义添加
+mcpm import stdio SERVER_NAME --command COMMAND --args ARGS --env ENV # 手动添加一个 stdio MCP 服务器
+mcpm import sse SERVER_NAME --url URL # 手动添加一个 SSE MCP 服务器
+mcpm import interact # 通过交互式添加一个服务器
 
 # 📋 列出和删除
 mcpm ls                   # 列出活动客户端/配置文件的服务器配置

@@ -1,3 +1,24 @@
+## [1.7.1](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.7.0...v1.7.1) (2025-04-29)
+
+
+### Bug Fixes
+
+* redirect the stderr of mcp servers to local ([#126](https://github.com/pathintegral-institute/mcpm.sh/issues/126)) ([91694d8](https://github.com/pathintegral-institute/mcpm.sh/commit/91694d8092a5b3e578d8a8ff93f1807fb5ce2326))
+
+# [1.7.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.6.2...v1.7.0) (2025-04-28)
+
+
+### Features
+
+* support custom add server ([#125](https://github.com/pathintegral-institute/mcpm.sh/issues/125)) ([80bd9c0](https://github.com/pathintegral-institute/mcpm.sh/commit/80bd9c03120a0b2d9d99173754243eff3feb5811))
+
+## [1.6.2](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.6.1...v1.6.2) (2025-04-27)
+
+
+### Bug Fixes
+
+* explicitly set encoding to utf-8 ([#131](https://github.com/pathintegral-institute/mcpm.sh/issues/131)) ([6a4b4a4](https://github.com/pathintegral-institute/mcpm.sh/commit/6a4b4a4ce693642f2b307ef333b0217272a598a0))
+
 ## [1.6.1](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.6.0...v1.6.1) (2025-04-25)
 
 

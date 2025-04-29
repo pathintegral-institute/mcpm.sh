@@ -1,0 +1,415 @@
+{
+  "display_name": "AbletonMCP",
+  "license": "MIT",
+  "tags": [
+    "ableton",
+    "music production",
+    "AI",
+    "Claude",
+    "MCP",
+    "Model Context Protocol",
+    "MIDI",
+    "audio",
+    "music"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "ableton-mcp"
+      ],
+      "description": "Claude for Desktop Integration"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Create an 80s synthwave track"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Create a Metro Boomin style hip-hop beat"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Create a new MIDI track with a synth bass instrument"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Add reverb to my drums"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Create a 4-bar MIDI clip with a simple melody"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Get information about the current Ableton session"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Load a 808 drum rack into the selected track"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Add a jazz chord progression to the clip in track 1"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Set the tempo to 120 BPM"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Play the clip in track 2"
+    }
+  ],
+  "name": "ableton-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ahujasid/ableton-mcp"
+  },
+  "homepage": "https://github.com/ahujasid/ableton-mcp",
+  "author": {
+    "name": "ahujasid"
+  },
+  "description": "AbletonMCP connects Ableton Live to Claude AI through the Model Context Protocol (MCP), allowing Claude to directly interact with and control Ableton Live. This integration enables prompt-assisted music production, track creation, and Live session manipulation.",
+  "categories": [
+    "Media Creation"
+  ],
+  "tools": [
+    {
+      "name": "get_session_info",
+      "description": "Get detailed information about the current Ableton session",
+      "inputSchema": {
+        "properties": {},
+        "title": "get_session_infoArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_track_info",
+      "description": "\n    Get detailed information about a specific track in Ableton.\n    \n    Parameters:\n    - track_index: The index of the track to get information about\n    ",
+      "inputSchema": {
+        "properties": {
+          "track_index": {
+            "title": "Track Index",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "track_index"
+        ],
+        "title": "get_track_infoArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_midi_track",
+      "description": "\n    Create a new MIDI track in the Ableton session.\n    \n    Parameters:\n    - index: The index to insert the track at (-1 = end of list)\n    ",
+      "inputSchema": {
+        "properties": {
+          "index": {
+            "default": -1,
+            "title": "Index",
+            "type": "integer"
+          }
+        },
+        "title": "create_midi_trackArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "set_track_name",
+      "description": "\n    Set the name of a track.\n    \n    Parameters:\n    - track_index: The index of the track to rename\n    - name: The new name for the track\n    ",
+      "inputSchema": {
+        "properties": {
+          "track_index": {
+            "title": "Track Index",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "track_index",
+          "name"
+        ],
+        "title": "set_track_nameArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_clip",
+      "description": "\n    Create a new MIDI clip in the specified track and clip slot. First check if there are less than 7 clips, if not, ask the user to delete a clip first.\n    \n    Parameters:\n    - track_index: The index of the track to create the clip in\n    - clip_index: The index of the clip slot to create the clip in\n    - length: The length of the clip in beats (default: 4.0)\n    ",
+      "inputSchema": {
+        "properties": {
+          "track_index": {
+            "title": "Track Index",
+            "type": "integer"
+          },
+          "clip_index": {
+            "title": "Clip Index",
+            "type": "integer"
+          },
+          "length": {
+            "default": 4.0,
+            "title": "Length",
+            "type": "number"
+          }
+        },
+        "required": [
+          "track_index",
+          "clip_index"
+        ],
+        "title": "create_clipArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "add_notes_to_clip",
+      "description": "\n    Add MIDI notes to a clip.\n    \n    Parameters:\n    - track_index: The index of the track containing the clip\n    - clip_index: The index of the clip slot containing the clip\n    - notes: List of note dictionaries, each with pitch, start_time, duration, velocity, and mute\n    ",
+      "inputSchema": {
+        "properties": {
+          "track_index": {
+            "title": "Track Index",
+            "type": "integer"
+          },
+          "clip_index": {
+            "title": "Clip Index",
+            "type": "integer"
+          },
+          "notes": {
+            "items": {
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  }
+                ]
+              },
+              "type": "object"
+            },
+            "title": "Notes",
+            "type": "array"
+          }
+        },
+        "required": [
+          "track_index",
+          "clip_index",
+          "notes"
+        ],
+        "title": "add_notes_to_clipArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "set_clip_name",
+      "description": "\n    Set the name of a clip.\n    \n    Parameters:\n    - track_index: The index of the track containing the clip\n    - clip_index: The index of the clip slot containing the clip\n    - name: The new name for the clip\n    ",
+      "inputSchema": {
+        "properties": {
+          "track_index": {
+            "title": "Track Index",
+            "type": "integer"
+          },
+          "clip_index": {
+            "title": "Clip Index",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "track_index",
+          "clip_index",
+          "name"
+        ],
+        "title": "set_clip_nameArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "set_tempo",
+      "description": "\n    Set the tempo of the Ableton session.\n    \n    Parameters:\n    - tempo: The new tempo in BPM\n    ",
+      "inputSchema": {
+        "properties": {
+          "tempo": {
+            "title": "Tempo",
+            "type": "number"
+          }
+        },
+        "required": [
+          "tempo"
+        ],
+        "title": "set_tempoArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "load_instrument_or_effect",
+      "description": "\n    Load an instrument or effect onto a track using its URI.\n    \n    Parameters:\n    - track_index: The index of the track to load the instrument on\n    - uri: The URI of the instrument or effect to load (e.g., 'query:Synths#Instrument%20Rack:Bass:FileId_5116')\n    ",
+      "inputSchema": {
+        "properties": {
+          "track_index": {
+            "title": "Track Index",
+            "type": "integer"
+          },
+          "uri": {
+            "title": "Uri",
+            "type": "string"
+          }
+        },
+        "required": [
+          "track_index",
+          "uri"
+        ],
+        "title": "load_instrument_or_effectArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "fire_clip",
+      "description": "\n    Start playing a clip.\n    \n    Parameters:\n    - track_index: The index of the track containing the clip\n    - clip_index: The index of the clip slot containing the clip\n    ",
+      "inputSchema": {
+        "properties": {
+          "track_index": {
+            "title": "Track Index",
+            "type": "integer"
+          },
+          "clip_index": {
+            "title": "Clip Index",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "track_index",
+          "clip_index"
+        ],
+        "title": "fire_clipArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "stop_clip",
+      "description": "\n    Stop playing a clip.\n    \n    Parameters:\n    - track_index: The index of the track containing the clip\n    - clip_index: The index of the clip slot containing the clip\n    ",
+      "inputSchema": {
+        "properties": {
+          "track_index": {
+            "title": "Track Index",
+            "type": "integer"
+          },
+          "clip_index": {
+            "title": "Clip Index",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "track_index",
+          "clip_index"
+        ],
+        "title": "stop_clipArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "start_playback",
+      "description": "Start playing the Ableton session.",
+      "inputSchema": {
+        "properties": {},
+        "title": "start_playbackArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "stop_playback",
+      "description": "Stop playing the Ableton session.",
+      "inputSchema": {
+        "properties": {},
+        "title": "stop_playbackArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_browser_tree",
+      "description": "\n    Get a hierarchical tree of browser categories from Ableton.\n    \n    Parameters:\n    - category_type: Type of categories to get ('all', 'instruments', 'sounds', 'drums', 'audio_effects', 'midi_effects')\n    ",
+      "inputSchema": {
+        "properties": {
+          "category_type": {
+            "default": "all",
+            "title": "Category Type",
+            "type": "string"
+          }
+        },
+        "title": "get_browser_treeArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_browser_items_at_path",
+      "description": "\n    Get browser items at a specific path in Ableton's browser.\n    \n    Parameters:\n    - path: Path in the format \"category/folder/subfolder\"\n            where category is one of the available browser categories in Ableton\n    ",
+      "inputSchema": {
+        "properties": {
+          "path": {
+            "title": "Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "title": "get_browser_items_at_pathArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "load_drum_kit",
+      "description": "\n    Load a drum rack and then load a specific drum kit into it.\n    \n    Parameters:\n    - track_index: The index of the track to load on\n    - rack_uri: The URI of the drum rack to load (e.g., 'Drums/Drum Rack')\n    - kit_path: Path to the drum kit inside the browser (e.g., 'drums/acoustic/kit1')\n    ",
+      "inputSchema": {
+        "properties": {
+          "track_index": {
+            "title": "Track Index",
+            "type": "integer"
+          },
+          "rack_uri": {
+            "title": "Rack Uri",
+            "type": "string"
+          },
+          "kit_path": {
+            "title": "Kit Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "track_index",
+          "rack_uri",
+          "kit_path"
+        ],
+        "title": "load_drum_kitArguments",
+        "type": "object"
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": false
+}

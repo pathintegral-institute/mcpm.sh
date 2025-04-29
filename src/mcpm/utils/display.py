@@ -27,6 +27,11 @@ def print_server_config(server_config: ServerConfig, is_stashed=False):
 
     if isinstance(server_config, SSEServerConfig):
         console.print(f"  Url: [green]{server_config.url}[/]")
+        headers = server_config.headers
+        if headers:
+            console.print("  Headers:")
+            for key, value in headers.items():
+                console.print(f'    [bold blue]{key}[/] = [green]"{value}"[/]')
         console.print("  " + "-" * 50)
         return
     command = server_config.command
