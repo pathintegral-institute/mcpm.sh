@@ -451,12 +451,12 @@ def try_clear_share():
     console.print("[bold yellow]Clearing share config...[/]")
     config_manager = ConfigManager()
     share_config = config_manager.read_share_config()
-    if share_config["url"]:
+    if share_config.get("url"):
         try:
             console.print("[bold yellow]Disabling share link...[/]")
             config_manager.save_share_config(share_url=None, share_pid=None)
             console.print("[bold green]Share link disabled[/]")
-            if share_config["pid"]:
+            if share_config.get("pid"):
                 os.kill(share_config["pid"], signal.SIGTERM)
         except OSError as e:
             if e.errno == 3:  # "No such process"
@@ -473,11 +473,11 @@ def stop_share():
     # check if there is a share link already running
     config_manager = ConfigManager()
     share_config = config_manager.read_share_config()
-    if not share_config["url"]:
+    if not share_config.get("url"):
         console.print("[yellow]No share link is active.[/]")
         return
 
-    pid = share_config["pid"]
+    pid = share_config.get("pid")
     if not pid:
         console.print("[yellow]No share link is active.[/]")
         return
