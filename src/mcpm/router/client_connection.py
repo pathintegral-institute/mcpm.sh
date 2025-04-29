@@ -5,7 +5,7 @@ from typing import Optional, TextIO, cast
 from mcp import ClientSession, InitializeResult, StdioServerParameters, stdio_client
 from mcp.client.sse import sse_client
 
-from mcpm.schemas.server_config import ServerConfig, SSEServerConfig, STDIOServerConfig
+from mcpm.core.schema import ServerConfig, SSEServerConfig, STDIOServerConfig
 
 logger = logging.getLogger(__name__)
 

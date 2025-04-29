@@ -49,7 +49,7 @@ flowchart TB
 ```python
 import asyncio
 from mcpm.router import MCPRouter
-from mcpm.schema.server_config import STDIOServerConfig, SSEServerConfig
+from mcpm.core.schema import STDIOServerConfig, SSEServerConfig
 
 async def main():
     # Create a router

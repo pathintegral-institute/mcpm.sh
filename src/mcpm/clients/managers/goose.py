@@ -9,7 +9,7 @@ from typing import Any, Dict, Optional
 from pydantic import TypeAdapter
 
 from mcpm.clients.base import YAMLClientManager
-from mcpm.schemas.server_config import ServerConfig, STDIOServerConfig
+from mcpm.core.schema import ServerConfig, STDIOServerConfig
 
 logger = logging.getLogger(__name__)
 

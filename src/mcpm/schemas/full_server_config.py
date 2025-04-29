@@ -4,7 +4,7 @@ from typing import ClassVar, Dict, List, Optional
 
 from pydantic import BaseModel, Field, model_validator
 
-from mcpm.schemas.server_config import ServerConfig, STDIOServerConfig
+from mcpm.core.schema import ServerConfig, STDIOServerConfig
 
 
 class FullServerConfig(BaseModel):

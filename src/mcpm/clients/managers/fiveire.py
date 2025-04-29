@@ -7,7 +7,7 @@ from typing import Any, Dict, List, Optional, Union
 from pydantic import TypeAdapter
 
 from mcpm.clients.base import JSONClientManager
-from mcpm.schemas.server_config import ServerConfig, STDIOServerConfig
+from mcpm.core.schema import ServerConfig, STDIOServerConfig
 
 logger = logging.getLogger(__name__)
 

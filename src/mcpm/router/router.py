@@ -19,10 +19,10 @@ from starlette.requests import Request
 from starlette.routing import Mount, Route
 from starlette.types import AppType, Lifespan
 
+from mcpm.core.schema import ServerConfig
 from mcpm.monitor.base import AccessEventType
 from mcpm.monitor.event import trace_event
 from mcpm.profile.profile_config import ProfileConfigManager
-from mcpm.schemas.server_config import ServerConfig
 from mcpm.utils.config import PROMPT_SPLITOR, RESOURCE_SPLITOR, RESOURCE_TEMPLATE_SPLITOR, TOOL_SPLITOR
 from mcpm.utils.errlog_manager import ServerErrorLogManager
 

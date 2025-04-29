@@ -4,7 +4,7 @@ from typing import Dict, Optional
 
 from pydantic import TypeAdapter
 
-from mcpm.schemas.server_config import ServerConfig
+from mcpm.core.schema import ServerConfig
 
 DEFAULT_PROFILE_PATH = os.path.expanduser("~/.config/mcpm/profiles.json")
 

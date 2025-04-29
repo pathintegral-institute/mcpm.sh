@@ -6,7 +6,7 @@ from rich.console import Console
 from rich.markup import escape
 from rich.table import Table
 
-from mcpm.schemas.server_config import ServerConfig, SSEServerConfig
+from mcpm.core.schema import ServerConfig, SSEServerConfig
 from mcpm.utils.scope import CLIENT_PREFIX, PROFILE_PREFIX
 
 console = Console()

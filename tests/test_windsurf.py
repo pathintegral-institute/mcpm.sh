@@ -13,7 +13,7 @@ from unittest.mock import patch
 import pytest
 
 from mcpm.clients.managers.windsurf import WindsurfManager
-from mcpm.schemas.server_config import ServerConfig, STDIOServerConfig
+from mcpm.core.schema import ServerConfig, STDIOServerConfig
 from mcpm.utils.config import ConfigManager
 
 
