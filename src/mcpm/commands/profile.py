@@ -3,8 +3,8 @@ from rich.console import Console
 from rich.table import Table
 
 from mcpm.clients.client_registry import ClientRegistry
+from mcpm.core.schema import STDIOServerConfig
 from mcpm.profile.profile_config import ProfileConfigManager
-from mcpm.schemas.server_config import STDIOServerConfig
 from mcpm.utils.config import ConfigManager
 
 profile_config_manager = ProfileConfigManager()

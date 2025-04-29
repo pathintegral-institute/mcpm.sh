@@ -1,8 +1,8 @@
 from rich.console import Console
 
 from mcpm.clients.client_registry import ClientRegistry
+from mcpm.core.schema import ServerConfig
 from mcpm.profile.profile_config import ProfileConfigManager
-from mcpm.schemas.server_config import ServerConfig
 from mcpm.utils.display import print_active_scope, print_no_active_scope
 from mcpm.utils.scope import ScopeType, extract_from_scope, parse_server
 

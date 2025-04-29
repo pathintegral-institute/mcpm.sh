@@ -4,7 +4,7 @@ from click.testing import CliRunner
 
 from mcpm.clients.client_registry import ClientRegistry
 from mcpm.commands.server_operations.add import add
-from mcpm.schemas.server_config import SSEServerConfig
+from mcpm.core.schema import SSEServerConfig
 from mcpm.utils.repository import RepositoryManager
 
 

@@ -9,7 +9,7 @@ from typing import Any, Dict, List, Optional
 from pydantic import TypeAdapter
 
 from mcpm.clients.base import YAMLClientManager
-from mcpm.schemas.server_config import ServerConfig, STDIOServerConfig
+from mcpm.core.schema import ServerConfig, STDIOServerConfig
 from mcpm.utils.router_server import format_server_url_with_proxy_headers
 
 logger = logging.getLogger(__name__)
