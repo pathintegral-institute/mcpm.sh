@@ -6,7 +6,7 @@ import logging
 import typing as t
 from collections import defaultdict
 from contextlib import asynccontextmanager
-from typing import Literal, Optional
+from typing import Literal, Optional, TextIO
 
 import uvicorn
 from mcp import server, types
@@ -24,6 +24,7 @@ from mcpm.monitor.event import trace_event
 from mcpm.profile.profile_config import ProfileConfigManager
 from mcpm.schemas.server_config import ServerConfig
 from mcpm.utils.config import PROMPT_SPLITOR, RESOURCE_SPLITOR, RESOURCE_TEMPLATE_SPLITOR, TOOL_SPLITOR
+from mcpm.utils.errlog_manager import ServerErrorLogManager
 
 from .client_connection import ServerConnection
 from .transport import RouterSseTransport
@@ -60,6 +61,7 @@ class MCPRouter:
         if reload_server:
             self.watcher = ConfigWatcher(self.profile_manager.profile_path)
         self.strict: bool = strict
+        self.error_log_manager = ServerErrorLogManager()
 
     def get_unique_servers(self) -> list[ServerConfig]:
         profiles = self.profile_manager.list_profiles()
@@ -110,11 +112,13 @@ class MCPRouter:
             raise ValueError(f"Server with ID {server_id} already exists")
 
         # Create client based on connection type
-        client = ServerConnection(server_config)
+        errlog: TextIO = self.error_log_manager.open_errlog_file(server_id)
+        client = ServerConnection(server_config, errlog=errlog)
 
         # Connect to the server
         await client.wait_for_initialization()
         if not client.healthy():
+            self.error_log_manager.close_errlog_file(server_id)
             raise ValueError(f"Failed to connect to server {server_id}")
 
         response = client.session_initialized_response
@@ -218,6 +222,7 @@ class MCPRouter:
         # Remove the server from all collections
         del self.server_sessions[server_id]
         del self.capabilities_mapping[server_id]
+        self.error_log_manager.close_errlog_file(server_id)
 
         # Delete registered tools, resources and prompts
         for key in list(self.tools_mapping.keys()):
@@ -573,5 +578,8 @@ class MCPRouter:
         for _, client in self.server_sessions.items():
             if client.healthy():
                 await client.request_for_shutdown()
+
+        # close all errlog files
+        self.error_log_manager.close_all()
 
         logger.info("all alive client sessions have been shut down")
