@@ -1,3 +1,10 @@
+## [1.7.1](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.7.0...v1.7.1) (2025-04-29)
+
+
+### Bug Fixes
+
+* redirect the stderr of mcp servers to local ([#126](https://github.com/pathintegral-institute/mcpm.sh/issues/126)) ([91694d8](https://github.com/pathintegral-institute/mcpm.sh/commit/91694d8092a5b3e578d8a8ff93f1807fb5ce2326))
+
 # [1.7.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.6.2...v1.7.0) (2025-04-28)
 
 
