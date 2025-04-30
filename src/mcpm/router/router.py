@@ -19,6 +19,7 @@ from starlette.requests import Request
 from starlette.routing import Mount, Route
 from starlette.types import Lifespan
 
+from mcpm.core.schema import ServerConfig
 from mcpm.monitor.base import AccessEventType
 from mcpm.monitor.event import trace_event
 from mcpm.profile.profile_config import ProfileConfigManager

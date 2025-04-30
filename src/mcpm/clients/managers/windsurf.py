@@ -7,7 +7,7 @@ import os
 from typing import Any, Dict
 
 from mcpm.clients.base import JSONClientManager
-from mcpm.schemas.server_config import ServerConfig, STDIOServerConfig
+from mcpm.core.schema import ServerConfig, STDIOServerConfig
 
 logger = logging.getLogger(__name__)
 

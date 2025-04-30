@@ -7,7 +7,7 @@ import os
 from typing import Any, Dict
 
 from mcpm.clients.base import JSONClientManager
-from mcpm.schemas.server_config import ServerConfig, SSEServerConfig
+from mcpm.core.schema import ServerConfig, SSEServerConfig
 from mcpm.utils.router_server import format_server_url_with_proxy_headers
 
 logger = logging.getLogger(__name__)

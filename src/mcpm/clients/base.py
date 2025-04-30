@@ -13,7 +13,7 @@ from typing import Any, Dict, List, Optional, Union
 from pydantic import TypeAdapter
 from ruamel.yaml import YAML
 
-from mcpm.schemas.server_config import ServerConfig, STDIOServerConfig
+from mcpm.core.schema import ServerConfig, STDIOServerConfig
 from mcpm.utils.config import ROUTER_SERVER_NAME
 from mcpm.utils.router_server import format_server_url
 

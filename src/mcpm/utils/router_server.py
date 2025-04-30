@@ -1,5 +1,5 @@
 from mcpm.clients.base import ROUTER_SERVER_NAME
-from mcpm.schemas.server_config import ServerConfig, SSEServerConfig, STDIOServerConfig
+from mcpm.core.schema import ServerConfig, SSEServerConfig, STDIOServerConfig
 
 
 def format_server_url(client: str, profile: str, router_url: str) -> ServerConfig:
