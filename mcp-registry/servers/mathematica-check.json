@@ -1,0 +1,103 @@
+{
+  "name": "mathematica-check",
+  "description": "A Model Context Protocol (MCP) server that allows MCP clients (like Cursor) to execute Mathematica code via wolframscript and verify mathematical derivations.",
+  "display_name": "Mathematica Check",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pathintegral-institute/mcp.science"
+  },
+  "homepage": "https://github.com/pathintegral-institute/mcp.science/tree/main/servers/mathematica-check",
+  "author": {
+    "name": "LionSR"
+  },
+  "license": "MIT",
+  "tags": [
+    "mathematica"
+  ],
+  "arguments": {},
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/pathintegral-institute/mcp.science#subdirectory=servers/mathematica-check",
+        "mcp-mathematica-check"
+      ],
+      "env": {},
+      "description": "Run server using uv"
+    }
+  },
+  "examples": [],
+  "categories": ["Professional Apps"],
+  "tools": [
+    {
+      "name": "execute_mathematica",
+      "description": "Execute Mathematica code and return the result",
+      "inputSchema": {
+        "properties": {
+          "code": {
+            "description": "Mathematica code to execute. Should be a complete, self-contained code block",
+            "title": "Code",
+            "type": "string"
+          },
+          "format": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": ["text", "mathematica"]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": "text",
+            "description": "Output format (text or mathematica). Defaults to text",
+            "title": "Format"
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "title": "execute_mathematicaArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "verify_derivation",
+      "description": "Verify a mathematical derivation step by step using Mathematica's Simplify",
+      "inputSchema": {
+        "properties": {
+          "steps": {
+            "description": "Array of mathematical expressions (as strings) representing steps in a derivation. Requires at least two steps",
+            "title": "Steps",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "format": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": ["text", "mathematica"]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": "text",
+            "description": "Output format for the verification report (text or mathematica). Defaults to text",
+            "title": "Format"
+          }
+        },
+        "required": [
+          "steps"
+        ],
+        "title": "verify_derivationArguments",
+        "type": "object"
+      }
+    }
+  ],
+  "is_official": false
+}
