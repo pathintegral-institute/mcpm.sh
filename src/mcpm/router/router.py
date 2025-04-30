@@ -23,7 +23,6 @@ from mcpm.core.schema import ServerConfig
 from mcpm.monitor.base import AccessEventType
 from mcpm.monitor.event import trace_event
 from mcpm.profile.profile_config import ProfileConfigManager
-from mcpm.schemas.server_config import ServerConfig
 from mcpm.utils.config import (
     PROMPT_SPLITOR,
     RESOURCE_SPLITOR,
