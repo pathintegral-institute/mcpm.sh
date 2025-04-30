@@ -6,7 +6,7 @@ import click
 from rich.console import Console
 
 from mcpm.clients.client_config import ClientConfigManager
-from mcpm.commands.server_operations.common import (
+from mcpm.commands.target_operations.common import (
     client_get_server,
     client_remove_server,
     determine_target,

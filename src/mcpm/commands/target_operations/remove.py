@@ -6,7 +6,7 @@ import click
 from rich.console import Console
 from rich.prompt import Confirm
 
-from mcpm.commands.server_operations.common import (
+from mcpm.commands.target_operations.common import (
     client_get_server,
     client_remove_server,
     determine_target,
@@ -21,7 +21,7 @@ console = Console()
 
 @click.command()
 @click.argument("server_name")
-@click.option("--force", is_flag=True, help="Force removal without confirmation")
+@click.option("--force", "-f", is_flag=True, help="Force removal without confirmation")
 @click.help_option("-h", "--help")
 def remove(server_name, force):
     """Remove an installed MCP server.

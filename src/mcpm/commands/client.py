@@ -30,7 +30,6 @@ def client():
 
     \b
         mcpm client ls              # List all supported MCP clients and their status
-        mcpm client set CLIENT      # Set the active client
         mcpm client edit            # Open active client MCP settings in external editor
     """
     pass
@@ -81,61 +80,18 @@ def list_clients():
                 console.print(f"[yellow]{info.get('name', client)}[/]: {info['download_url']}")
 
 
-@client.command(name="set", context_settings=dict(help_option_names=["-h", "--help"]))
-@click.argument("client_name", required=True)
-def set_client(client_name):
-    """Set the active MCP client.
-
-    CLIENT is the name of the client to set as active.
-    """
-
-    # Get the list of supported clients
-    supported_clients = ClientRegistry.get_supported_clients()
-
-    # Set the active client if provided
-    if client_name not in supported_clients:
-        console.print(f"[bold red]Error:[/] Unknown client: {client_name}")
-        console.print(f"Supported clients: {', '.join(sorted(supported_clients))}")
-        return
-
-    # Set the active client
-    if client_name == ClientRegistry.get_active_client():
-        console.print(f"[bold yellow]Note:[/] {client_name} is already the active client")
-        return
-
-    # Attempt to set the active client with active profile inner switched
-    success = ClientRegistry.set_active_client(client_name)
-    if success:
-        console.print(f"[bold green]Success:[/] Active client set to {client_name}")
-        active_profile = ClientRegistry.get_active_profile()
-        if active_profile:
-            console.print(f"[bold green]Success:[/] Active profile set to {active_profile}")
-
-        # Provide information about what this means
-        panel = Panel(
-            f"The active client ({client_name}) will be used for all MCP operations.\n"
-            f"Commands like 'mcpm ls', 'mcpm add', 'mcpm rm', 'mcpm stash', and 'mcpm pop' will now operate on {client_name}.",
-            title="Active Client Changed",
-            border_style="green",
-        )
-        console.print(panel)
-    else:
-        console.print(f"[bold red]Error:[/] Failed to set {client_name} as the active client")
-
-
 @client.command(name="edit", context_settings=dict(help_option_names=["-h", "--help"]))
 def edit_client():
     """Open the active client's MCP settings in external editor."""
     # Get the active client manager and related information
     client_manager = ClientRegistry.get_active_client_manager()
+    # Check if client is supported
+    if client_manager is None:
+        print_client_error()
+        return
     client = ClientRegistry.get_active_client()
     client_info = ClientRegistry.get_client_info(client)
     client_name = client_info.get("name", client)
-
-    # Check if client is supported
-    if client_manager is None:
-        print_client_error(client_name)
-        return
 
     # Get the client config file path
     config_path = client_manager.config_path

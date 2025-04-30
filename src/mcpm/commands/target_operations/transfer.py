@@ -2,7 +2,7 @@ import click
 from rich.console import Console
 
 from mcpm.clients.client_registry import ClientRegistry
-from mcpm.commands.server_operations.common import (
+from mcpm.commands.target_operations.common import (
     client_add_server,
     client_get_server,
     client_remove_server,
@@ -25,7 +25,7 @@ def determine_source_and_destination(
     source_context_type, source_context, source_server = determine_target(source)
     destination_context_type, destination_context, destination_server = determine_target(destination)
     if not source_context or not destination_context:
-        active_context = ClientRegistry.determine_active_scope()
+        active_context = ClientRegistry.get_active_target()
         if not active_context:
             print_no_active_scope()
             return None, None, None, None, None, None

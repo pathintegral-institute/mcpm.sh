@@ -213,8 +213,9 @@ class TestBaseClientManagerViaWindsurf:
         assert "windsurf" in supported_clients
 
         # Test setting Windsurf as active client
-        success = config_manager.set_active_client("windsurf")
+        success = config_manager.set_active_target("windsurf")
         assert success
+        assert config_manager.get_active_target() == "windsurf"
         assert config_manager.get_active_client() == "windsurf"
 
         # In the distributed architecture, each client manages its own servers
