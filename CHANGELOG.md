@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.7.1...v1.8.0) (2025-04-30)
+
+
+### Features
+
+* **router:** Support custom api key and auth enable/disable in router ([#106](https://github.com/pathintegral-institute/mcpm.sh/issues/106)) ([bf21d42](https://github.com/pathintegral-institute/mcpm.sh/commit/bf21d42cd4d5297edda22b7bf75008e962003b76))
+
 ## [1.7.1](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.7.0...v1.7.1) (2025-04-29)
 
 
