@@ -1,0 +1,7 @@
+---
+description: 
+globs: *.py
+alwaysApply: false
+---
+always run pytest at the end of a major change
+always run ruff lint at then end of any code changes

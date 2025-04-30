@@ -127,7 +127,7 @@ class ConfigManager:
 
         return router_config
 
-    def save_router_config(self, host, port, share_address):
+    def save_router_config(self, host, port, share_address, api_key: str | None = None, auth_enabled: bool = False):
         """save router configuration to config file"""
         router_config = self.get_config().get("router", {})
 
@@ -135,12 +135,14 @@ class ConfigManager:
         router_config["host"] = host
         router_config["port"] = port
         router_config["share_address"] = share_address
+        router_config["api_key"] = api_key
+        router_config["auth_enabled"] = auth_enabled
 
         # save config
         return self.set_config("router", router_config)
 
-    def save_share_config(self, share_url: str | None = None, share_pid: int | None = None, api_key: str | None = None):
-        return self.set_config("share", {"url": share_url, "pid": share_pid, "api_key": api_key})
+    def save_share_config(self, share_url: str | None = None, share_pid: int | None = None):
+        return self.set_config("share", {"url": share_url, "pid": share_pid})
 
     def read_share_config(self) -> Dict[str, Any]:
         return self.get_config().get("share", {})
