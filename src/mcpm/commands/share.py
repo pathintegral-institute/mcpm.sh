@@ -243,9 +243,6 @@ def monitor_for_errors(line: str) -> Optional[str]:
     "--http", is_flag=True, default=False, help="Use HTTP instead of HTTPS. NOT recommended to use on public networks."
 )
 @click.option(
-    "--secret/--no-secret", default=True, help="Generate a random secret token for authentication (default: enabled)"
-)
-@click.option(
     "--timeout",
     type=int,
     default=30,
@@ -253,7 +250,7 @@ def monitor_for_errors(line: str) -> Optional[str]:
 )
 @click.option("--retry", type=int, default=0, help="Number of times to automatically retry on error (default: 0)")
 @click.help_option("-h", "--help")
-def share(command, port, address, http, secret, timeout, retry):
+def share(command, port, address, http, timeout, retry):
     """Share an MCP server through a tunnel.
 
     This command uses mcp-proxy to expose a stdio MCP server as an SSE server,
@@ -267,7 +264,6 @@ def share(command, port, address, http, secret, timeout, retry):
         mcpm share "uvx mcp-server-fetch"
         mcpm share "npx mcp-server" --port 5000
         mcpm share "uv run my-mcp-server" --address myserver.com:7000
-        mcpm share "uvx mcp-server-fetch" --no-secret
         mcpm share "npx -y @modelcontextprotocol/server-everything" --retry 3
     """
     # Default to standard share address if not specified
@@ -295,8 +291,8 @@ def share(command, port, address, http, secret, timeout, retry):
 
             # Create and start the tunnel
             console.print(f"[cyan]Creating tunnel from localhost:{actual_port} to {remote_host}:{remote_port}...[/]")
-            # Generate a random token for security or use empty string if --no-secret
-            share_token = secrets.token_urlsafe(32) if secret else ""
+            # Always use empty string for token (equivalent to --no-secret)
+            share_token = secrets.token_urlsafe(32)
             tunnel = Tunnel(
                 remote_host=remote_host,
                 remote_port=remote_port,
@@ -313,15 +309,8 @@ def share(command, port, address, http, secret, timeout, retry):
             sse_url = f"{share_url}/sse"
             console.print(f"[bold green]Server is now shared at: [/][bold cyan]{sse_url}[/]")
 
-            # If secret is enabled, display a warning
-            if secret:
-                console.print(
-                    "[bold yellow]Note:[/] This URL includes a security token. Only share it with trusted users."
-                )
-            else:
-                console.print(
-                    "[bold red]Warning:[/] Security token is disabled. Anyone with the URL can access your server."
-                )
+            # Always show the warning about URL access
+            console.print("[bold red]Warning:[/] Anyone with the URL can access your server.")
 
             console.print("[yellow]Press Ctrl+C to stop sharing and terminate the server[/]")
 
