@@ -24,6 +24,7 @@ from mcpm.commands import (
     stash,
     transfer,
 )
+from mcpm.commands.share import share
 
 console = Console()
 client_config_manager = ClientConfigManager()
@@ -158,6 +159,7 @@ def main(ctx, help_flag, version):
         commands_table.add_row("  [cyan]ls[/]", "List all installed MCP servers.")
         commands_table.add_row("  [cyan]stash[/]", "Temporarily store a server configuration aside.")
         commands_table.add_row("  [cyan]pop[/]", "Restore a previously stashed server configuration.")
+        commands_table.add_row("  [cyan]share[/]", "Share a single MCP server through a tunnel.")
 
         commands_table.add_row("[yellow]profile[/]")
         commands_table.add_row("  [cyan]profile[/]", "Manage MCPM profiles.")
@@ -197,6 +199,7 @@ main.add_command(profile.activate)
 main.add_command(profile.deactivate)
 main.add_command(router.router, name="router")
 main.add_command(custom.import_server, name="import")
+main.add_command(share)
 
 if __name__ == "__main__":
     main()
