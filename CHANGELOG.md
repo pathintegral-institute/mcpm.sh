@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.8.0...v1.9.0) (2025-05-05)
+
+
+### Features
+
+* **share:** add simple share command to reverse proxy a single local mcp server ([#140](https://github.com/pathintegral-institute/mcpm.sh/issues/140)) ([78b1f0b](https://github.com/pathintegral-institute/mcpm.sh/commit/78b1f0b49861608e054e3c6f09c6d5d71174dd68))
+
 # [1.8.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.7.1...v1.8.0) (2025-04-30)
 
 
