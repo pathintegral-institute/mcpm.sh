@@ -36,6 +36,80 @@ def make_non_blocking(file_obj):
     fcntl.fcntl(fd, fcntl.F_SETFL, fl | os.O_NONBLOCK)
 
 
+def wait_for_random_port(process: subprocess.Popen, timeout: int = 20) -> Optional[int]:
+    """
+    Wait for mcp-proxy to output the random port information.
+
+    Args:
+        process: The mcp-proxy process
+        timeout: Maximum time to wait in seconds
+
+    Returns:
+        The detected port number or None if not found
+    """
+    console.print("[cyan]Waiting for mcp-proxy to start...[/]")
+
+    # Wait for mcp-proxy to output the port information
+    start_time = time.time()
+    port_found = False
+    actual_port = None
+
+    # Port detection loop
+    while time.time() - start_time < timeout and not port_found:
+        # Check if process is still running
+        if process.poll() is not None:
+            # Process terminated prematurely
+            stderr_output = ""
+            try:
+                if process.stderr:
+                    stderr_output = process.stderr.read() or ""
+            except (IOError, OSError):
+                pass
+
+            console.print("[bold red]Error:[/] mcp-proxy terminated unexpectedly")
+            console.print(f"[red]Error output:[/]\n{stderr_output}")
+            sys.exit(1)
+
+        # Use select to wait for data to be available without blocking
+        readable = []
+        if process.stdout:
+            readable.append(process.stdout)
+        if process.stderr:
+            readable.append(process.stderr)
+
+        if readable:
+            # Wait for up to 1 second for output
+            r, _, _ = select.select(readable, [], [], 1.0)
+
+            # Process available output
+            for stream in r:
+                try:
+                    line = stream.readline()
+                    if line:
+                        print(line.rstrip())
+
+                        # Check for port information
+                        if "Uvicorn running on http://" in line:
+                            try:
+                                url_part = line.split("Uvicorn running on ")[1].split(" ")[0]
+                                actual_port = int(url_part.split(":")[-1].strip())
+                                port_found = True
+                                console.print(
+                                    f"[cyan]mcp-proxy SSE server running on port [bold]{actual_port}[/bold][/]"
+                                )
+                                break
+                            except (ValueError, IndexError):
+                                pass
+                except (IOError, OSError):
+                    # Resource temporarily unavailable - this is normal for non-blocking IO
+                    pass
+        else:
+            # No streams to read from, just wait a bit
+            time.sleep(0.5)
+
+    return actual_port
+
+
 def start_mcp_proxy(command: str, port: Optional[int] = None) -> Tuple[subprocess.Popen, int]:
     """
     Start mcp-proxy to convert a stdio MCP server to an SSE server.
@@ -79,86 +153,13 @@ def start_mcp_proxy(command: str, port: Optional[int] = None) -> Tuple[subproces
     # If port is None, we need to parse the output to find the random port
     actual_port = port
     if not actual_port:
-        console.print("[cyan]Waiting for mcp-proxy to start...[/]")
+        actual_port = wait_for_random_port(process)
 
-        # Wait for mcp-proxy to output the port information
-        start_time = time.time()
-        port_found = False
-        timeout = 20  # Allow more time (20 seconds) for the server to start
-
-        # Port detection loop
-        while time.time() - start_time < timeout and not port_found:
-            # Check if process is still running
-            if process.poll() is not None:
-                # Process terminated prematurely
-                stderr_output = ""
-                try:
-                    if process.stderr:
-                        stderr_output = process.stderr.read() or ""
-                except (IOError, OSError):
-                    pass
-
-                console.print("[bold red]Error:[/] mcp-proxy terminated unexpectedly")
-                console.print(f"[red]Error output:[/]\n{stderr_output}")
-                sys.exit(1)
-
-            # Use select to wait for data to be available without blocking
-            readable = []
-            if process.stdout:
-                readable.append(process.stdout)
-            if process.stderr:
-                readable.append(process.stderr)
-
-            if readable:
-                # Wait for up to 1 second for output
-                r, _, _ = select.select(readable, [], [], 1.0)
-
-                # Process available output
-                for stream in r:
-                    try:
-                        line = stream.readline()
-                        if line:
-                            print(line.rstrip())
-
-                            # Check for port information
-                            if "Serving on" in line:
-                                try:
-                                    actual_port = int(line.split(":")[-1].strip())
-                                    port_found = True
-                                    console.print(
-                                        f"[cyan]mcp-proxy SSE server running on port [bold]{actual_port}[/bold][/]"
-                                    )
-                                    break
-                                except (ValueError, IndexError):
-                                    pass
-                            elif "Uvicorn running on http://" in line:
-                                try:
-                                    url_part = line.split("Uvicorn running on ")[1].split(" ")[0]
-                                    actual_port = int(url_part.split(":")[-1].strip())
-                                    port_found = True
-                                    console.print(
-                                        f"[cyan]mcp-proxy SSE server running on port [bold]{actual_port}[/bold][/]"
-                                    )
-                                    break
-                                except (ValueError, IndexError):
-                                    pass
-                    except (IOError, OSError):
-                        # Resource temporarily unavailable - this is normal for non-blocking IO
-                        pass
-            else:
-                # No streams to read from, just wait a bit
-                time.sleep(0.5)
-
-        # After the loop, check if we found the port
-        if not port_found and not actual_port:
+        # Check if we found the port
+        if not actual_port:
             console.print("[bold red]Error:[/] Could not determine the port mcp-proxy is running on")
             process.terminate()
             sys.exit(1)
-
-    if not actual_port:
-        console.print("[bold red]Error:[/] Could not determine the port mcp-proxy is running on")
-        process.terminate()
-        sys.exit(1)
 
     return process, actual_port
 
