@@ -1,5 +1,5 @@
 from typing import Any, Dict, List, Optional, Union
-
+from enum import Enum
 from pydantic import BaseModel
 
 
@@ -82,3 +82,9 @@ class Profile(BaseModel):
     name: str
     api_key: Optional[str]
     servers: list[ServerConfig]
+
+class ResourceType(str, Enum):
+    TOOL = "tool"
+    PROMPT = "prompt"
+    RESOURCE = "resource"
+    RESOURCE_TEMPLATE = "resource_template"
