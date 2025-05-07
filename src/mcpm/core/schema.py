@@ -1,5 +1,5 @@
 from typing import Any, Dict, List, Optional, Union
-
+from enum import Enum
 from pydantic import BaseModel
 
 
@@ -82,3 +82,7 @@ class Profile(BaseModel):
     name: str
     api_key: Optional[str]
     servers: list[ServerConfig]
+
+class ConfigType(str, Enum):
+    FILE = "file"
+    CLOUD = "cloud"
