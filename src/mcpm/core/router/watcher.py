@@ -11,7 +11,7 @@ from typing import Any, Optional
 from watchfiles import Change, awatch
 
 from mcpm.core.router.notifier import ConfigUpdateNotifier
-from mcpm.core.schema import ConfigType
+from mcpm.core.router.types import ConfigType
 
 logger = logging.getLogger(__name__)
 
