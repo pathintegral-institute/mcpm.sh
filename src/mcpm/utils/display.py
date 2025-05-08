@@ -130,6 +130,4 @@ def print_active_scope(scope: str):
 
 def print_no_active_scope():
     console.print("[bold red]Error:[/] No active client or profile found.\n")
-    console.print(
-        "Please set an active client with 'mcpm client set <client>' or a profile with 'mcpm activate <profile>'."
-    )
+    console.print("Please set an active target with 'mcpm target set @<client>' or 'mcpm target set %<profile>'.")

@@ -18,8 +18,6 @@ from mcpm.clients.managers.fiveire import FiveireManager
 from mcpm.clients.managers.goose import GooseClientManager
 from mcpm.clients.managers.trae import TraeManager
 from mcpm.clients.managers.windsurf import WindsurfManager
-from mcpm.utils.config import ConfigManager
-from mcpm.utils.scope import CLIENT_PREFIX, PROFILE_PREFIX
 
 logger = logging.getLogger(__name__)
 
@@ -116,19 +114,6 @@ class ClientRegistry:
         return cls._client_config_manager.get_active_client()
 
     @classmethod
-    def set_active_client(cls, client_name: str) -> bool:
-        """
-        Set the active client in the config manager
-
-        Args:
-            client_name: Name of the client
-
-        Returns:
-            bool: Success or failure
-        """
-        return cls._client_config_manager.set_active_client(client_name)
-
-    @classmethod
     def get_active_client_manager(cls) -> Optional[BaseClientManager]:
         """
         Get the client manager for the active client
@@ -173,72 +158,32 @@ class ClientRegistry:
     @classmethod
     def get_active_profile(cls) -> str | None:
         """
-        Get the active profile name from the config manager
+        Get the active profile from the config manager
 
         Returns:
-            str | None: Name of the active profile or None if not set
+            str | None: Name of the active profile, or None if not set
         """
         return cls._client_config_manager.get_active_profile()
 
     @classmethod
-    def set_active_profile(cls, profile_name: str | None) -> bool:
+    def get_active_target(cls) -> str | None:
         """
-        Set the active profile in the config manager
-
-        Args:
-            profile_name: Name of the profile or None to unset
-
-        Returns:
-            bool: Success or failure
-        """
-        return cls._client_config_manager.set_active_profile(profile_name)
-
-    @classmethod
-    def determine_active_scope(cls) -> str | None:
-        """
-        Determine the active scope (client or profile) based on config
+        Get the active target (client or profile) from the config manager
 
         Returns:
             str | None: Name of the active client or profile, or None if not set
         """
-        profile = cls.get_active_profile()
-        if profile:
-            return f"{PROFILE_PREFIX}{profile}"
-        client = cls.get_active_client()
-        if client:
-            return f"{CLIENT_PREFIX}{client}"
-        return None
+        return cls._client_config_manager.get_active_target()
 
     @classmethod
-    def activate_profile(cls, client_name: str, profile_name: str) -> bool:
+    def set_active_target(cls, target: str | None) -> bool:
         """
-        Activate a profile in the client config
+        Set the active target (client or profile) in the config manager
 
         Args:
-            client_name: Name of the client
-            profile_name: Name of the profile
+            target: Name of the client or profile
 
         Returns:
             bool: Success or failure
         """
-        router_config = ConfigManager().get_router_config()
-        client = cls.get_client_manager(client_name)
-        if client is None:
-            return False
-        return client.activate_profile(profile_name, router_config)
-
-    @classmethod
-    def deactivate_profile(cls, client_name: str) -> bool:
-        """
-        Deactivate a profile in the client config
-
-        Args:
-            profile_name: Name of the profile
-
-        Returns:
-            bool: Success or failure
-        """
-        client = cls.get_client_manager(client_name)
-        if client is None:
-            return False
-        return client.deactivate_profile()
+        return cls._client_config_manager.set_active_target(target)

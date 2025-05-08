@@ -112,7 +112,6 @@ mcpm --version       # 显示 MCPM 的当前版本
 
 ```bash
 mcpm client ls        # 列出所有支持的 MCP 客户端，检测已安装的客户端，并显示活动客户端
-mcpm client set CLIENT # 为后续命令设置活动客户端
 mcpm client edit      # 在外部编辑器中打开活动客户端的 MCP 配置文件
 ```
 
@@ -148,7 +147,7 @@ mcpm pop [SERVER_NAME]    # 恢复最后暂存的服务器，或按名称恢复�
 
 配置文件是服务器配置的命名集合。它们允许您轻松切换不同的 MCP 服务器集。例如，您可能有一个 `work` 配置文件和一个 `personal` 配置文件，每个都包含不同的服务器。或者，您可能有一个 `production` 配置文件和一个 `development` 配置文件，每个都包含同一服务器的不同配置。
 
-当前*活动*配置文件的服务器通常由 MCPM 路由器等功能使用。使用 `mcpm activate` 设置活动配置文件。
+当前*活动*配置文件的服务器通常由 MCPM 路由器等功能使用。使用 `mcpm target set %profile_name` 设置活动配置文件。
 
 ```bash
 # 🔄 配置文件生命周期
@@ -156,17 +155,13 @@ mcpm profile ls              # 列出所有可用的 MCPM 配置文件
 mcpm profile add PROFILE_NAME  # 添加新的空配置文件
 mcpm profile rm PROFILE_NAME   # 删除配置文件（不删除其中的服务器）
 mcpm profile rename OLD_NAME NEW_NAME # 重命名配置文件
-
-# ✅ 激活配置文件
-mcpm activate PROFILE_NAME       # 激活配置文件，将其服务器应用于活动客户端
-mcpm deactivate                # 为活动客户端停用当前配置文件
 ```
 
 ### 🔌 路由器管理 (`router`)
 
 MCPM 路由器作为后台守护进程运行，充当稳定端点（例如 `http://localhost:6276`），根据当前**活动配置文件**智能地将传入的 MCP 请求路由到适当的服务器。
 
-这允许您通过切换配置文件（使用 `mcpm activate`）来更改底层服务器，而无需重新配置客户端应用程序。它们可以始终指向 MCPM 路由器的地址。
+这允许您通过切换配置文件（使用 `mcpm target set %profile_name`）来更改底层服务器，而无需重新配置客户端应用程序。它们可以始终指向 MCPM 路由器的地址。
 
 路由器还维护与 MCP 服务器的持久连接，使多个客户端能够共享这些服务器会话。这消除了为每个客户端启动单独服务器实例的需要，显著减少资源使用和启动时间。在 [高级功能](docs/advanced_features.md) 中了解有关这些高级功能的更多信息。
 
@@ -202,7 +197,7 @@ MCP 注册表是可使用 MCPM 安装的可用 MCP 服务器的中央存储库�
 - [x] 基本服务器管理 (`mcpm add`, `mcpm ls`, `mcpm rm`)
 - [x] 注册表集成 (`mcpm search`, 按名称添加)
 - [x] 路由器功能 (`mcpm router`)
-- [x] MCP 配置文件 (`mcpm profile`, `mcpm activate/deactivate`)
+- [x] MCP 配置文件 (`mcpm profile`)
 - [x] 服务器复制/移动 (`mcpm cp`, `mcpm mv`)
 - [x] 服务器暂存 (`mcpm stash`, `mcpm pop`)
 - [x] 路由器远程分享 (`mcpm router share`) 远程访问本地路由器和 MCP 服务器

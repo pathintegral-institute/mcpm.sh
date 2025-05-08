@@ -8,7 +8,7 @@ from rich.console import Console
 
 from mcpm.clients.client_config import ClientConfigManager
 from mcpm.clients.client_registry import ClientRegistry
-from mcpm.commands.server_operations.common import determine_target
+from mcpm.commands.target_operations.common import determine_target
 from mcpm.core.schema import ServerConfig
 from mcpm.profile.profile_config import ProfileConfigManager
 from mcpm.utils.scope import ScopeType, format_scope

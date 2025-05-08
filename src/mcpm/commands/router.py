@@ -440,7 +440,7 @@ def share(address, profile, http):
     # print share link
     console.print(f"[bold green]Router is sharing at {share_url}[/]")
     console.print(
-        f"[green]Your profile can be accessed with the url {share_url}?profile={profile}{f'&s={api_key}' if api_key else ''}[/]\n"
+        f"[green]Your profile can be accessed with the url {share_url}?{f's={api_key}&' if api_key else ''}profile={profile}[/]\n"
     )
     console.print(
         "[bold yellow]Be careful about the share link, it will be exposed to the public. Make sure to share to trusted users only.[/]"

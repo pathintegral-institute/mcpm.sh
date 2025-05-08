@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 from typing import Dict, Optional
 
@@ -7,6 +8,8 @@ from pydantic import TypeAdapter
 from mcpm.core.schema import ServerConfig
 
 DEFAULT_PROFILE_PATH = os.path.expanduser("~/.config/mcpm/profiles.json")
+
+logger = logging.getLogger(__name__)
 
 
 class ProfileConfigManager:
@@ -17,8 +20,12 @@ class ProfileConfigManager:
     def _load_profiles(self) -> Dict[str, list[ServerConfig]]:
         if not os.path.exists(self.profile_path):
             return {}
-        with open(self.profile_path, "r", encoding="utf-8") as f:
-            profiles = json.load(f) or {}
+        try:
+            with open(self.profile_path, "r", encoding="utf-8") as f:
+                profiles = json.load(f) or {}
+        except json.JSONDecodeError as e:
+            logger.error(f"Error loading profiles from {self.profile_path}: {e}")
+            return {}
         return {
             name: [TypeAdapter(ServerConfig).validate_python(config) for config in configs]
             for name, configs in profiles.items()
