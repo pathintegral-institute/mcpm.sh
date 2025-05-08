@@ -523,11 +523,11 @@ def _replace_argument_variables(value: str, prev_value: str, variables: dict) ->
 
 
 def add_profile_to_client(profile_name: str, client: str, alias: str | None = None, force: bool = False):
-    if not force and not Confirm.ask(f"Add this profile to {client}{' as ' + alias if alias else ''}?"):
+    if not force and not Confirm.ask(f"Add this profile {profile_name} to {client}{' as ' + alias if alias else ''}?"):
         console.print("[yellow]Operation cancelled.[/]")
         return
 
-    success = client_add_profile(profile_name, client)
+    success = client_add_profile(profile_name, client, alias)
     if success:
         console.print(f"[bold green]Successfully added profile {profile_name} to {client}![/]")
     else:
