@@ -21,6 +21,12 @@ def get_meta(request: Request) -> dict[str, Any]:
 
         if value:
             meta[key] = value
+            if key == "client":
+                # legacy client id
+                meta["client_id"] = value
+
+    if "client_id" not in meta:
+        meta["client_id"] = "anonymous"
 
     return meta
 
