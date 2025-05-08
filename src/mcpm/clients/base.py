@@ -8,7 +8,7 @@ import logging
 import os
 import platform
 import re
-from typing import Any, Dict, List, Optional, Union, override
+from typing import Any, Dict, List, Optional, Union
 
 from pydantic import TypeAdapter
 from ruamel.yaml import YAML
@@ -695,7 +695,6 @@ class YAMLClientManager(BaseClientManager):
     def _format_router_server(self, profile_name, base_url, server_name: str | None = None) -> ServerConfig:
         return format_server_url(self.client_key, profile_name, base_url, server_name)
 
-    @override
     def deactivate_profile(self) -> bool:
         """Deactivate a profile in the client config
 
