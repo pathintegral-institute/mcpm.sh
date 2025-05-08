@@ -15,6 +15,7 @@ __all__ = [
     "transfer",
     "router",
     "custom",
+    "target",
 ]
 
 # All command modules

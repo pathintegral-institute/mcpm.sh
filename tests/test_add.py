@@ -213,8 +213,8 @@ def test_add_profile_to_client(windsurf_manager, monkeypatch):
     profile_name = "work"
     client_name = "windsurf"
 
+    monkeypatch.setattr(ClientRegistry, "get_active_target", Mock(return_value="@" + client_name))
     monkeypatch.setattr(ClientRegistry, "get_client_manager", Mock(return_value=windsurf_manager))
-    monkeypatch.setattr(ClientRegistry, "get_active_client", Mock(return_value=client_name))
     monkeypatch.setattr(ClientRegistry, "get_active_client_manager", Mock(return_value=windsurf_manager))
     monkeypatch.setattr(ConfigManager, "get_router_config", Mock(return_value={"host": "localhost", "port": 8080}))
 
@@ -222,4 +222,4 @@ def test_add_profile_to_client(windsurf_manager, monkeypatch):
     runner = CliRunner()
     result = runner.invoke(add, ["%" + profile_name, "--force", "--alias", "work"])
     assert result.exit_code == 0
-    assert "Successfully added profile: work" in result.output
+    assert "Successfully added profile %work to windsurf!" in result.output

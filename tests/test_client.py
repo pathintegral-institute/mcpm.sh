@@ -151,7 +151,7 @@ def test_client_edit_command_client_not_supported(monkeypatch):
 
         # Check the result
         assert result.exit_code == 0
-        mock_print_error.assert_called_once_with("Unsupported")
+        mock_print_error.assert_called_once_with()
 
 
 def test_client_edit_command_client_not_installed(monkeypatch):
