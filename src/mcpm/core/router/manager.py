@@ -16,7 +16,7 @@ from mcp.types import (
 )
 from pydantic import AnyUrl
 
-from mcpm.core.router.client_connection import ServerConnection
+from mcpm.core.mcp.client_connection import ServerConnection
 from mcpm.core.schema import ResourceType, ServerConfig
 from mcpm.utils.config import PROMPT_SPLITOR, RESOURCE_SPLITOR, TOOL_SPLITOR
 from mcpm.utils.errlog_manager import ServerErrorLogManager
