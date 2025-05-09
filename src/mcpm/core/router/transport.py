@@ -1,5 +1,4 @@
 import asyncio
-import json
 import logging
 from contextlib import asynccontextmanager
 from typing import Any
@@ -19,14 +18,6 @@ from .session import Session, SessionManager
 
 logger = logging.getLogger(__name__)
 
-def patch_meta_data(body: bytes, **kwargs) -> bytes:
-    data = json.loads(body.decode("utf-8"))
-    if "params" not in data:
-        data["params"] = {}
-
-    for key, value in kwargs.items():
-        data["params"].setdefault("_meta", {})[key] = value
-    return json.dumps(data).encode("utf-8")
 
 class SseTransport:
 
@@ -52,6 +43,9 @@ class SseTransport:
 
                 async for message in session["write_stream_reader"]:
                     logger.debug(f"Sending message via SSE: {message}")
+                    # we should pop the meta field from message
+                    if isinstance(message.root, types.JSONRPCResponse):
+                        message.root.result.pop("_meta", None)
                     await sse_stream_writer.send(
                         {
                             "event": "message",
@@ -92,8 +86,6 @@ class SseTransport:
 
         request = Request(scope, receive)
         body = await request.body()
-        # patch meta data
-        body = patch_meta_data(body, **session["meta"])
 
         # send message to writer
         writer = session["read_stream_writer"]
@@ -113,6 +105,11 @@ class SseTransport:
         logger.debug(f"Sending message to writer: {message}")
         response = Response("Accepted", status_code=202)
         await response(scope, receive, send)
+
+        if session["meta"]:
+            if isinstance(message.root, types.JSONRPCRequest):
+                message.root.params = message.root.params or {}
+                message.root.params.setdefault("_meta", {}).update(session["meta"])
 
         # add error handling, catch possible pipe errors
         try:

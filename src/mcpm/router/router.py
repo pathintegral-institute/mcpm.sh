@@ -19,6 +19,7 @@ from starlette.requests import Request
 from starlette.routing import Mount, Route
 from starlette.types import AppType, Lifespan
 
+from mcpm.core.router.extra import MCPResponseProcessor, MetaResponseProcessor
 from mcpm.monitor.base import AccessEventType
 from mcpm.monitor.event import trace_event
 from mcpm.profile.profile_config import ProfileConfigManager
@@ -62,6 +63,8 @@ class MCPRouter:
             self.watcher = ConfigWatcher(self.profile_manager.profile_path)
         self.strict: bool = strict
         self.error_log_manager = ServerErrorLogManager()
+        # we can just inject the processor here
+        self.meta_response_processor: MetaResponseProcessor = MCPResponseProcessor()
 
     def get_unique_servers(self) -> list[ServerConfig]:
         profiles = self.profile_manager.list_profiles()
@@ -263,7 +266,11 @@ class MCPRouter:
                 server_id = get_capability_server_id("prompts", server_prompt_id)
                 if server_id in active_servers:
                     prompts.append(prompt.model_copy(update={"name": server_prompt_id}))
-            return types.ServerResult(types.ListPromptsResult(prompts=prompts))
+            return self.meta_response_processor.process(
+                types.ServerResult(types.ListPromptsResult(prompts=prompts)),
+                request_context=req.params.meta.model_dump(), # type: ignore
+                response_context={}
+                )
 
         @trace_event(AccessEventType.PROMPT_EXECUTION)
         async def get_prompt(req: types.GetPromptRequest) -> types.ServerResult:
@@ -279,7 +286,11 @@ class MCPRouter:
             if prompt is None:
                 return empty_result()
             result = await self.server_sessions[server_id].session.get_prompt(prompt.name, req.params.arguments)
-            return types.ServerResult(result)
+            return self.meta_response_processor.process(
+                types.ServerResult(result),
+                request_context=req.params.meta.model_dump(), # type: ignore
+                response_context={"server_id": server_id, "prompt": prompt.name}
+            )
 
         async def list_resources(req: types.ListResourcesRequest) -> types.ServerResult:
             resources: list[types.Resource] = []
@@ -290,7 +301,11 @@ class MCPRouter:
                     continue
                 if server_id in active_servers:
                     resources.append(resource.model_copy(update={"uri": AnyUrl(server_resource_id)}))
-            return types.ServerResult(types.ListResourcesResult(resources=resources))
+            return self.meta_response_processor.process(
+                types.ServerResult(types.ListResourcesResult(resources=resources)),
+                request_context=req.params.meta.model_dump(), # type: ignore
+                response_context={}
+            )
 
         async def list_resource_templates(req: types.ListResourceTemplatesRequest) -> types.ServerResult:
             resource_templates: list[types.ResourceTemplate] = []
@@ -303,7 +318,11 @@ class MCPRouter:
                     resource_templates.append(
                         resource_template.model_copy(update={"uriTemplate": server_resource_template_id})
                     )
-            return types.ServerResult(types.ListResourceTemplatesResult(resourceTemplates=resource_templates))
+            return self.meta_response_processor.process(
+                types.ServerResult(types.ListResourceTemplatesResult(resourceTemplates=resource_templates)),
+                request_context=req.params.meta.model_dump(), # type: ignore
+                response_context={}
+            )
 
         @trace_event(AccessEventType.RESOURCE_ACCESS)
         async def read_resource(req: types.ReadResourceRequest) -> types.ServerResult:
@@ -319,7 +338,11 @@ class MCPRouter:
                 return empty_result()
 
             result = await self.server_sessions[server_id].session.read_resource(resource.uri)
-            return types.ServerResult(result)
+            return self.meta_response_processor.process(
+                types.ServerResult(result),
+                request_context=req.params.meta.model_dump(), # type: ignore
+                response_context={"server_id": server_id, "resource": str(resource.uri)}
+            )
 
         async def list_tools(req: types.ListToolsRequest) -> types.ServerResult:
             tools: list[types.Tool] = []
@@ -334,7 +357,11 @@ class MCPRouter:
             if not tools:
                 return empty_result()
 
-            return types.ServerResult(types.ListToolsResult(tools=tools))
+            return self.meta_response_processor.process(
+                types.ServerResult(types.ListToolsResult(tools=tools)),
+                request_context=req.params.meta.model_dump(), # type: ignore
+                response_context={}
+            )
 
         @trace_event(AccessEventType.TOOL_INVOCATION)
         async def call_tool(req: types.CallToolRequest) -> types.ServerResult:
@@ -357,7 +384,11 @@ class MCPRouter:
 
             try:
                 result = await self.server_sessions[server_id].session.call_tool(tool.name, req.params.arguments or {})
-                return types.ServerResult(result)
+                return self.meta_response_processor.process(
+                    types.ServerResult(result),
+                    request_context=req.params.meta.model_dump(), # type: ignore
+                    response_context={"server_id": server_id, "tool": tool.name}
+                )
             except Exception as e:
                 logger.error(f"Error calling tool {tool_name} on server {server_id}: {e}")
                 return types.ServerResult(
@@ -392,8 +423,12 @@ class MCPRouter:
             if server_id not in active_servers:
                 return empty_result()
 
-            result = await self.server_sessions[server_id].session.complete(ref, req.params.arguments or {})
-            return types.ServerResult(result)
+            result = await self.server_sessions[server_id].session.complete(ref, req.params.argument.model_dump() or {})
+            return self.meta_response_processor.process(
+                types.ServerResult(result),
+                request_context=req.params.meta.model_dump(), # type: ignore
+                response_context={"server_id": server_id}
+            )
 
         app.request_handlers[types.ListPromptsRequest] = list_prompts
         app.request_handlers[types.GetPromptRequest] = get_prompt

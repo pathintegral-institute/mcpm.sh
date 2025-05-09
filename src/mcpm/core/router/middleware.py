@@ -1,40 +1,30 @@
 import logging
-from typing import Any
 from uuid import UUID
 
 from starlette.requests import Request
 from starlette.responses import Response
 from starlette.types import ASGIApp, Receive, Scope, Send
 
+from .extra import ClientMetaRequestProcessor, MetaRequestProcessor, ProfileMetaRequestProcessor
 from .session import SessionManager
 
 logger = logging.getLogger(__name__)
 
-META_DATA_KEYS = ["profile", "client"]
-
-def get_meta(request: Request) -> dict[str, Any]:
-    meta: dict[str, Any] = {}
-    for key in META_DATA_KEYS:
-        value = request.query_params.get(key)
-        if not value:
-            value = request.headers.get(key)
-
-        if value:
-            meta[key] = value
-            if key == "client":
-                # legacy client id
-                meta["client_id"] = value
-
-    if "client_id" not in meta:
-        meta["client_id"] = "anonymous"
-
-    return meta
-
 class SessionMiddleware:
 
-    def __init__(self, app: ASGIApp, session_manager: SessionManager) -> None:
+    def __init__(
+        self,
+        app: ASGIApp,
+        session_manager: SessionManager,
+        meta_request_processors: list[MetaRequestProcessor] = [
+            ProfileMetaRequestProcessor(),
+            ClientMetaRequestProcessor(),
+        ]
+    ) -> None:
         self.app = app
         self.session_manager = session_manager
+        # patch meta data from request to session
+        self.meta_request_processors = meta_request_processors
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         # we related metadata with session through this middleware, so that in the transport layer we only need to handle
@@ -48,7 +38,12 @@ class SessionMiddleware:
 
         if scope["path"] == "/sse":
             # retrieve metadata from query params or header
-            session = await self.session_manager.create_session(meta=get_meta(request))
+            session = await self.session_manager.create_session()
+            # session.meta will identically copied to JSONRPCMessage
+            if self.meta_request_processors:
+                for processor in self.meta_request_processors:
+                    processor.process(request, session)
+
             logger.debug(f"Created new session with ID: {session['id']}")
 
             scope["session_id"] = session["id"].hex
