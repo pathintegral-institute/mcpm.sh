@@ -1,3 +1,10 @@
+# [1.10.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.9.0...v1.10.0) (2025-05-12)
+
+
+### Features
+
+* improve profile management ([#137](https://github.com/pathintegral-institute/mcpm.sh/issues/137)) ([8dcc5ef](https://github.com/pathintegral-institute/mcpm.sh/commit/8dcc5efd0789f06d1d4459fd8c6f4e6e6bcb2aa6))
+
 # [1.9.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.8.0...v1.9.0) (2025-05-05)
 
 
