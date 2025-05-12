@@ -3,6 +3,7 @@ from rich.console import Console
 from mcpm.clients.client_registry import ClientRegistry
 from mcpm.core.schema import ServerConfig
 from mcpm.profile.profile_config import ProfileConfigManager
+from mcpm.utils.config import ConfigManager
 from mcpm.utils.display import print_active_scope, print_no_active_scope
 from mcpm.utils.scope import ScopeType, extract_from_scope, parse_server
 
@@ -12,7 +13,7 @@ console = Console()
 def determine_scope(scope: str | None) -> tuple[ScopeType | None, str | None]:
     if not scope:
         # Get the active scope
-        scope = ClientRegistry.determine_active_scope()
+        scope = ClientRegistry.get_active_target()
         if not scope:
             print_no_active_scope()
             return None, None
@@ -91,3 +92,17 @@ def profile_get_server(profile: str, server: str) -> ServerConfig | None:
         console.print(f"[bold red]Error:[/] Profile '{profile}' not found.")
         return None
     return profile_manager.get_profile_server(profile, server)
+
+
+def client_add_profile(profile_name: str, client: str, alias_name: str | None = None) -> bool:
+    client_manager = ClientRegistry.get_client_manager(client)
+    if not client_manager:
+        console.print(f"[bold red]Error:[/] Client '{client}' not found.")
+        return False
+    router_config = ConfigManager().get_router_config()
+    if not router_config:
+        console.print("[bold red]Error:[/] Router config not found.")
+        return False
+
+    success = client_manager.activate_profile(profile_name, router_config, alias_name)
+    return success

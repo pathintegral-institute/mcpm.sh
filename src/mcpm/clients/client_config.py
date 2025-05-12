@@ -5,8 +5,8 @@ Client configuration management for MCPM
 import logging
 from typing import Any, Dict, List, Optional
 
-from mcpm.profile.profile_config import ProfileConfigManager
 from mcpm.utils.config import ConfigManager
+from mcpm.utils.scope import ScopeType, extract_from_scope
 
 logger = logging.getLogger(__name__)
 
@@ -24,72 +24,41 @@ class ClientConfigManager:
         self._config = self.config_manager.get_config()
 
     def get_active_client(self) -> str | None:
-        """Get the name of the currently active client or None if not set"""
-        self._refresh_config()
-        return self._config.get("active_client")
+        target = self.get_active_target()
+        if not target:
+            return
+        scope_type, scope = extract_from_scope(target)
+        if scope_type != ScopeType.CLIENT:
+            return
+        return scope
 
-    def set_active_client(self, client_name: Optional[str]) -> bool:
-        """Set the active client
+    def set_active_target(self, target_name: str | None) -> bool:
+        """Set the active target
 
         Args:
-            client_name: Name of client to set as active, or None to clear
+            target_name: Name of target to set as active
 
         Returns:
             bool: Success or failure
         """
-        # If None, remove the active client
-        if client_name is None:
-            result = self.config_manager.set_config("active_client", None)
-            self._refresh_config()
-            return result
-
-        # Get supported clients
-        from mcpm.clients.client_registry import ClientRegistry
-
-        supported_clients = ClientRegistry.get_supported_clients()
-
-        if client_name not in supported_clients:
-            logger.error(f"Unknown client: {client_name}")
-            return False
-
-        # Set the active client
-        result = self.config_manager.set_config("active_client", client_name)
-        # refresh the active profile
-        client = ClientRegistry.get_client_manager(client_name)
-        self.set_active_profile(client.get_associated_profile())  # type: ignore
+        # Set the active target
+        result = self.config_manager.set_config("active_target", target_name)
         self._refresh_config()
         return result
+
+    def get_active_target(self) -> str | None:
+        """Get the name of the currently active target or None if not set"""
+        self._refresh_config()
+        return self._config.get("active_target")
 
     def get_active_profile(self) -> str | None:
-        """Get the name of the currently active profile or None if not set"""
-        self._refresh_config()
-        return self._config.get("active_profile")
-
-    def set_active_profile(self, profile_name: Optional[str]) -> bool:
-        """Set the active profile
-
-        Args:
-            profile_name: Name of profile to set as active, or None to clear
-
-        Returns:
-            bool: Success or failure
-        """
-        # If None, remove the active profile
-        if profile_name is None:
-            result = self.config_manager.set_config("active_profile", None)
-            self._refresh_config()
-            return result
-
-        supported_profiles = ProfileConfigManager().list_profiles()
-
-        if profile_name not in supported_profiles:
-            logger.error(f"Unknown profile: {profile_name}")
-            return False
-
-        # Set the active profile
-        result = self.config_manager.set_config("active_profile", profile_name)
-        self._refresh_config()
-        return result
+        target = self.get_active_target()
+        if not target:
+            return
+        scope_type, scope = extract_from_scope(target)
+        if scope_type != ScopeType.PROFILE:
+            return
+        return scope
 
     def get_supported_clients(self) -> List[str]:
         """Get a list of supported client names"""

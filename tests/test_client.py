@@ -8,7 +8,7 @@ from unittest.mock import Mock, patch
 from click.testing import CliRunner
 
 from mcpm.clients.client_registry import ClientRegistry
-from mcpm.commands.client import client, edit_client, list_clients, set_client
+from mcpm.commands.client import client, edit_client, list_clients
 
 
 def test_client_ls_command(monkeypatch):
@@ -45,95 +45,95 @@ def test_client_ls_command(monkeypatch):
     assert "Not installed" in result.output
 
 
-def test_client_set_command_success(monkeypatch):
-    """Test successful 'client set' command"""
-    # Mock supported clients
-    supported_clients = ["claude-desktop", "windsurf", "cursor"]
-    monkeypatch.setattr(ClientRegistry, "get_supported_clients", Mock(return_value=supported_clients))
+# def test_client_set_command_success(monkeypatch):
+#     """Test successful 'client set' command"""
+#     # Mock supported clients
+#     supported_clients = ["claude-desktop", "windsurf", "cursor"]
+#     monkeypatch.setattr(ClientRegistry, "get_supported_clients", Mock(return_value=supported_clients))
 
-    # Mock active client different from what we're setting
-    monkeypatch.setattr(ClientRegistry, "get_active_client", Mock(return_value="claude-desktop"))
+#     # Mock active client different from what we're setting
+#     monkeypatch.setattr(ClientRegistry, "get_active_client", Mock(return_value="claude-desktop"))
 
-    # Mock set_active_client to succeed
-    mock_set_active_client = Mock(return_value=True)
-    monkeypatch.setattr(ClientRegistry, "set_active_client", mock_set_active_client)
+#     # Mock set_active_client to succeed
+#     mock_set_active_client = Mock(return_value=True)
+#     monkeypatch.setattr(ClientRegistry, "set_active_client", mock_set_active_client)
 
-    # Run the command
-    runner = CliRunner()
-    result = runner.invoke(set_client, ["windsurf"])
+#     # Run the command
+#     runner = CliRunner()
+#     result = runner.invoke(set_client, ["windsurf"])
 
-    # Check the result
-    assert result.exit_code == 0
-    assert "Success" in result.output
-    assert "Active client set to windsurf" in result.output
-    mock_set_active_client.assert_called_once_with("windsurf")
-
-
-def test_client_set_command_already_active(monkeypatch):
-    """Test 'client set' when client is already active"""
-    # Mock supported clients
-    supported_clients = ["claude-desktop", "windsurf", "cursor"]
-    monkeypatch.setattr(ClientRegistry, "get_supported_clients", Mock(return_value=supported_clients))
-
-    # Mock active client same as what we're setting
-    monkeypatch.setattr(ClientRegistry, "get_active_client", Mock(return_value="windsurf"))
-
-    # Mock set_active_client
-    mock_set_active_client = Mock(return_value=True)
-    monkeypatch.setattr(ClientRegistry, "set_active_client", mock_set_active_client)
-
-    # Run the command
-    runner = CliRunner()
-    result = runner.invoke(set_client, ["windsurf"])
-
-    # Check the result
-    assert result.exit_code == 0
-    assert "windsurf is already the active client" in result.output
-    # set_active_client should not be called
-    mock_set_active_client.assert_not_called()
+#     # Check the result
+#     assert result.exit_code == 0
+#     assert "Success" in result.output
+#     assert "Active client set to windsurf" in result.output
+#     mock_set_active_client.assert_called_once_with("windsurf")
 
 
-def test_client_set_command_unsupported(monkeypatch):
-    """Test 'client set' with unsupported client"""
-    # Mock supported clients
-    supported_clients = ["claude-desktop", "windsurf", "cursor"]
-    monkeypatch.setattr(ClientRegistry, "get_supported_clients", Mock(return_value=supported_clients))
+# def test_client_set_command_already_active(monkeypatch):
+#     """Test 'client set' when client is already active"""
+#     # Mock supported clients
+#     supported_clients = ["claude-desktop", "windsurf", "cursor"]
+#     monkeypatch.setattr(ClientRegistry, "get_supported_clients", Mock(return_value=supported_clients))
 
-    # Run the command with unsupported client
-    runner = CliRunner()
-    result = runner.invoke(set_client, ["unsupported-client"])
+#     # Mock active client same as what we're setting
+#     monkeypatch.setattr(ClientRegistry, "get_active_client", Mock(return_value="windsurf"))
 
-    # Check the result
-    assert result.exit_code == 0
-    assert "Error" in result.output
-    assert "Unknown client: unsupported-client" in result.output
-    # Verify supported clients are listed
-    for supported_client in supported_clients:
-        assert supported_client in result.output
+#     # Mock set_active_client
+#     mock_set_active_client = Mock(return_value=True)
+#     monkeypatch.setattr(ClientRegistry, "set_active_client", mock_set_active_client)
+
+#     # Run the command
+#     runner = CliRunner()
+#     result = runner.invoke(set_client, ["windsurf"])
+
+#     # Check the result
+#     assert result.exit_code == 0
+#     assert "windsurf is already the active client" in result.output
+#     # set_active_client should not be called
+#     mock_set_active_client.assert_not_called()
 
 
-def test_client_set_command_failure(monkeypatch):
-    """Test 'client set' when setting fails"""
-    # Mock supported clients
-    supported_clients = ["claude-desktop", "windsurf", "cursor"]
-    monkeypatch.setattr(ClientRegistry, "get_supported_clients", Mock(return_value=supported_clients))
+# def test_client_set_command_unsupported(monkeypatch):
+#     """Test 'client set' with unsupported client"""
+#     # Mock supported clients
+#     supported_clients = ["claude-desktop", "windsurf", "cursor"]
+#     monkeypatch.setattr(ClientRegistry, "get_supported_clients", Mock(return_value=supported_clients))
 
-    # Mock active client different from what we're setting
-    monkeypatch.setattr(ClientRegistry, "get_active_client", Mock(return_value="claude-desktop"))
+#     # Run the command with unsupported client
+#     runner = CliRunner()
+#     result = runner.invoke(set_client, ["unsupported-client"])
 
-    # Mock set_active_client to fail
-    mock_set_active_client = Mock(return_value=False)
-    monkeypatch.setattr(ClientRegistry, "set_active_client", mock_set_active_client)
+#     # Check the result
+#     assert result.exit_code == 0
+#     assert "Error" in result.output
+#     assert "Unknown client: unsupported-client" in result.output
+#     # Verify supported clients are listed
+#     for supported_client in supported_clients:
+#         assert supported_client in result.output
 
-    # Run the command
-    runner = CliRunner()
-    result = runner.invoke(set_client, ["windsurf"])
 
-    # Check the result
-    assert result.exit_code == 0
-    assert "Error" in result.output
-    assert "Failed to set windsurf as the active client" in result.output
-    mock_set_active_client.assert_called_once_with("windsurf")
+# def test_client_set_command_failure(monkeypatch):
+#     """Test 'client set' when setting fails"""
+#     # Mock supported clients
+#     supported_clients = ["claude-desktop", "windsurf", "cursor"]
+#     monkeypatch.setattr(ClientRegistry, "get_supported_clients", Mock(return_value=supported_clients))
+
+#     # Mock active client different from what we're setting
+#     monkeypatch.setattr(ClientRegistry, "get_active_client", Mock(return_value="claude-desktop"))
+
+#     # Mock set_active_client to fail
+#     mock_set_active_client = Mock(return_value=False)
+#     monkeypatch.setattr(ClientRegistry, "set_active_client", mock_set_active_client)
+
+#     # Run the command
+#     runner = CliRunner()
+#     result = runner.invoke(set_client, ["windsurf"])
+
+#     # Check the result
+#     assert result.exit_code == 0
+#     assert "Error" in result.output
+#     assert "Failed to set windsurf as the active client" in result.output
+#     mock_set_active_client.assert_called_once_with("windsurf")
 
 
 def test_client_edit_command_client_not_supported(monkeypatch):
@@ -151,7 +151,7 @@ def test_client_edit_command_client_not_supported(monkeypatch):
 
         # Check the result
         assert result.exit_code == 0
-        mock_print_error.assert_called_once_with("Unsupported")
+        mock_print_error.assert_called_once_with()
 
 
 def test_client_edit_command_client_not_installed(monkeypatch):

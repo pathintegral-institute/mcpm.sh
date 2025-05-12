@@ -14,7 +14,6 @@ from pydantic import TypeAdapter
 from ruamel.yaml import YAML
 
 from mcpm.core.schema import ServerConfig, STDIOServerConfig
-from mcpm.utils.config import ROUTER_SERVER_NAME
 from mcpm.utils.router_server import format_server_url
 
 logger = logging.getLogger(__name__)
@@ -136,13 +135,14 @@ class BaseClientManager(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def activate_profile(self, profile_name: str, router_config: Dict[str, Any]) -> bool:
+    def activate_profile(self, profile_name: str, router_config: Dict[str, Any], alias_name: str | None = None) -> bool:
         """
         Activate a profile in the client config
 
         Args:
             profile_name: Name of the profile
             router_config: Router configuration
+            alias_name: Alias name for the router in client config
 
         Returns:
             bool: Success or failure
@@ -150,43 +150,42 @@ class BaseClientManager(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def deactivate_profile(self) -> bool:
+    def deactivate_profile(self, profile_name: str) -> bool:
         """
         Deactivate a profile in the client config
+
+        Args:
+            profile_name: Name of the profile
 
         Returns:
             bool: Success or failure
         """
         pass
 
-    def get_associated_profile(self) -> Optional[str]:
+    def get_associated_profiles(self) -> List[str]:
         """
         Get the associated profile for this client
 
         Returns:
-            Optional[str]: Name of the associated profile, or None if no profile is associated
+            List[str]: List of associated profile names
         """
-        router_service = self.get_server(ROUTER_SERVER_NAME)
-        if not router_service:
-            # No associated profile
-            return None
+        profiles = []
+        for server_name, server_config in self.get_servers().items():
+            if isinstance(server_config, STDIOServerConfig):
+                if hasattr(server_config, "args") and "--headers" in server_config.args:
+                    try:
+                        idx = server_config.args.index("profile")
+                        if idx < len(server_config.args) - 1:
+                            profiles.append(server_config.args[idx + 1])
+                    except ValueError:
+                        pass
+            else:
+                if hasattr(server_config, "url") and "profile=" in server_config.url:
+                    matched = re.search(r"profile=([^&]+)", server_config.url)
+                    if matched:
+                        profiles.append(matched.group(1))
 
-        # Extract profile name from router service
-        if isinstance(router_service, STDIOServerConfig):
-            if hasattr(router_service, "args") and "--headers" in router_service.args:
-                try:
-                    idx = router_service.args.index("profile")
-                    if idx < len(router_service.args) - 1:
-                        return router_service.args[idx + 1]
-                except ValueError:
-                    pass
-        else:
-            if hasattr(router_service, "url") and "profile=" in router_service.url:
-                matched = re.search(r"profile=([^&]+)", router_service.url)
-                if matched:
-                    return matched.group(1)
-
-        return None
+        return profiles
 
 
 class JSONClientManager(BaseClientManager):
@@ -406,11 +405,13 @@ class JSONClientManager(BaseClientManager):
         # Can be overridden by subclasses
         return os.path.isdir(os.path.dirname(self.config_path))
 
-    def activate_profile(self, profile_name: str, router_config: Dict[str, Any]) -> bool:
+    def activate_profile(self, profile_name: str, router_config: Dict[str, Any], alias_name: str | None = None) -> bool:
         """Activate a profile in the client config
 
         Args:
             profile_name: Name of the profile
+            router_config: Router configuration
+            alias_name: Alias name for the router in client config
 
         Returns:
             bool: Success or failure
@@ -419,19 +420,22 @@ class JSONClientManager(BaseClientManager):
         port = router_config["port"]
         default_base_url = f"http://{host}:{port}/sse"
 
-        server_config = self._format_router_server(profile_name, default_base_url)
+        server_config = self._format_router_server(profile_name, default_base_url, alias_name)
         return self.add_server(server_config)
 
-    def _format_router_server(self, profile_name, base_url) -> ServerConfig:
-        return format_server_url(self.client_key, profile_name, base_url)
+    def _format_router_server(self, profile_name, base_url, alias_name: str | None = None) -> ServerConfig:
+        return format_server_url(self.client_key, profile_name, base_url, alias_name)
 
-    def deactivate_profile(self) -> bool:
+    def deactivate_profile(self, profile_name: str) -> bool:
         """Deactivate a profile in the client config
+
+        Args:
+            profile_name: Name of the profile
 
         Returns:
             bool: Success or failure
         """
-        return self.remove_server(ROUTER_SERVER_NAME)
+        return self.remove_server(profile_name)
 
 
 class YAMLClientManager(BaseClientManager):
@@ -673,7 +677,7 @@ class YAMLClientManager(BaseClientManager):
         # Check if the config directory exists
         return os.path.isdir(os.path.dirname(self.config_path))
 
-    def activate_profile(self, profile_name: str, router_config: Dict[str, Any]) -> bool:
+    def activate_profile(self, profile_name: str, router_config: Dict[str, Any], alias_name: str | None = None) -> bool:
         """Activate a profile in the client config
 
         Args:
@@ -686,16 +690,19 @@ class YAMLClientManager(BaseClientManager):
         port = router_config["port"]
         default_base_url = f"http://{host}:{port}/sse"
 
-        server_config = self._format_router_server(profile_name, default_base_url)
+        server_config = self._format_router_server(profile_name, default_base_url, alias_name)
         return self.add_server(server_config)
 
-    def _format_router_server(self, profile_name, base_url) -> ServerConfig:
-        return format_server_url(self.client_key, profile_name, base_url)
+    def _format_router_server(self, profile_name, base_url, server_name: str | None = None) -> ServerConfig:
+        return format_server_url(self.client_key, profile_name, base_url, server_name)
 
-    def deactivate_profile(self) -> bool:
+    def deactivate_profile(self, profile_name: str) -> bool:
         """Deactivate a profile in the client config
+
+        Args:
+            profile_name: Name of the profile
 
         Returns:
             bool: Success or failure
         """
-        return self.remove_server(ROUTER_SERVER_NAME)
+        return self.remove_server(profile_name)

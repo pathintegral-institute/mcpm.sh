@@ -3,7 +3,7 @@ from unittest.mock import Mock, patch
 from click.testing import CliRunner
 
 from mcpm.clients.client_registry import ClientRegistry
-from mcpm.commands.server_operations.remove import remove
+from mcpm.commands.target_operations.remove import remove
 
 
 def test_remove_server_success(windsurf_manager, monkeypatch):
@@ -12,7 +12,7 @@ def test_remove_server_success(windsurf_manager, monkeypatch):
     monkeypatch.setattr(ClientRegistry, "get_active_client_manager", Mock(return_value=windsurf_manager))
     monkeypatch.setattr(ClientRegistry, "get_client_manager", Mock(return_value=windsurf_manager))
     monkeypatch.setattr(ClientRegistry, "get_client_info", Mock(return_value={"name": "windsurf"}))
-    monkeypatch.setattr(ClientRegistry, "determine_active_scope", Mock(return_value="@windsurf"))
+    monkeypatch.setattr(ClientRegistry, "get_active_target", Mock(return_value="@windsurf"))
 
     # Mock server info
     mock_server = Mock()
@@ -36,7 +36,7 @@ def test_remove_server_not_found(windsurf_manager, monkeypatch):
     monkeypatch.setattr(ClientRegistry, "get_active_client_manager", Mock(return_value=windsurf_manager))
     monkeypatch.setattr(ClientRegistry, "get_client_manager", Mock(return_value=windsurf_manager))
     monkeypatch.setattr(ClientRegistry, "get_client_info", Mock(return_value={"name": "windsurf"}))
-    monkeypatch.setattr(ClientRegistry, "determine_active_scope", Mock(return_value="@windsurf"))
+    monkeypatch.setattr(ClientRegistry, "get_active_target", Mock(return_value="@windsurf"))
 
     # Mock server not found
     windsurf_manager.get_server = Mock(return_value=None)
@@ -51,7 +51,7 @@ def test_remove_server_not_found(windsurf_manager, monkeypatch):
 def test_remove_server_unsupported_client(monkeypatch):
     """Test removal with unsupported client"""
     monkeypatch.setattr(ClientRegistry, "get_active_client_manager", Mock(return_value=None))
-    monkeypatch.setattr(ClientRegistry, "determine_active_scope", Mock(return_value="@unsupported"))
+    monkeypatch.setattr(ClientRegistry, "get_active_target", Mock(return_value="@unsupported"))
 
     runner = CliRunner()
     result = runner.invoke(remove, ["server-test"])
@@ -65,7 +65,7 @@ def test_remove_server_cancelled(windsurf_manager, monkeypatch):
     monkeypatch.setattr(ClientRegistry, "get_active_client_manager", Mock(return_value=windsurf_manager))
     monkeypatch.setattr(ClientRegistry, "get_client_manager", Mock(return_value=windsurf_manager))
     monkeypatch.setattr(ClientRegistry, "get_client_info", Mock(return_value={"name": "windsurf"}))
-    monkeypatch.setattr(ClientRegistry, "determine_active_scope", Mock(return_value="@windsurf"))
+    monkeypatch.setattr(ClientRegistry, "get_active_target", Mock(return_value="@windsurf"))
 
     # Mock server info
     mock_server = Mock()
@@ -90,7 +90,7 @@ def test_remove_server_failure(windsurf_manager, monkeypatch):
     monkeypatch.setattr(ClientRegistry, "get_active_client_manager", Mock(return_value=windsurf_manager))
     monkeypatch.setattr(ClientRegistry, "get_client_manager", Mock(return_value=windsurf_manager))
     monkeypatch.setattr(ClientRegistry, "get_client_info", Mock(return_value={"name": "windsurf"}))
-    monkeypatch.setattr(ClientRegistry, "determine_active_scope", Mock(return_value="@windsurf"))
+    monkeypatch.setattr(ClientRegistry, "get_active_target", Mock(return_value="@windsurf"))
 
     # Mock server info
     mock_server = Mock()

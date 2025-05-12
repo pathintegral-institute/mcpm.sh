@@ -40,7 +40,7 @@ Or choose [other installation methods](#-other-installation-methods) like `brew`
 MCPM simplifies the installation, configuration, and management of Model Context Protocol servers and their configurations across different applications (clients). Key features include:
 
 - ✨ Easy addition and removal of MCP server configurations for supported clients.
-- 📋 Centralized management using profiles: group server configurations together and activate/deactivate them easily.
+- 📋 Centralized management using profiles: group server configurations together and add/remove them to client easily.
 - 🔍 Discovery of available MCP servers through a central registry.
 - 🔌 MCPM Router for aggregating multiple MCP servers behind a single endpoint with shared sessions.
 - 💻 A command-line interface (CLI) for all management tasks.
@@ -78,7 +78,6 @@ mcpm --version       # Display the current version of MCPM
 
 ```bash
 mcpm client ls        # List all supported MCP clients, detect installed ones, and show active client
-mcpm client set CLIENT # Set the active client for subsequent commands
 mcpm client edit      # Open the active client's MCP configuration file in an external editor
 ```
 
@@ -114,7 +113,7 @@ mcpm pop [SERVER_NAME]    # Restore the last stashed server, or a specific one b
 
 Profiles are named collections of server configurations. They allow you to easily switch between different sets of MCP servers. For example, you might have a `work` profile and a `personal` profile, each containing different servers. Or you might have a `production` profile and a `development` profile, each containing different configurations for the same servers.
 
-The currently *active* profile's servers are typically used by features like the MCPM Router. Use `mcpm activate` to set the active profile.
+The currently *active* profile's servers are typically used by features like the MCPM Router. Use `mcpm target set %profile_name` to set the active profile.
 
 ```bash
 # 🔄 Profile Lifecycle
@@ -122,17 +121,14 @@ mcpm profile ls              # List all available MCPM profiles
 mcpm profile add PROFILE_NAME  # Add a new, empty profile
 mcpm profile rm PROFILE_NAME   # Remove a profile (does not delete servers within it)
 mcpm profile rename OLD_NAME NEW_NAME # Rename a profile
-
-# ✅ Activating Profiles
-mcpm activate PROFILE_NAME       # Activate a profile, applying its servers to the active client
-mcpm deactivate                # Deactivate the current profile for the active client
+mcpm add %profile_name    # Add a profile to the active client
 ```
 
 ### 🔌 Router Management (`router`)
 
 The MCPM Router runs as a background daemon process, acting as a stable endpoint (e.g., `http://localhost:6276`) that intelligently routes incoming MCP requests to the appropriate server based on the currently **active profile**.
 
-This allows you to change the underlying servers (by switching profiles with `mcpm activate`) without reconfiguring your client applications. They can always point to the MCPM Router's address.
+This allows you to change the underlying servers (by switching profiles with `mcpm target set %profile_name`) without reconfiguring your client applications. They can always point to the MCPM Router's address.
 
 The Router also maintains persistent connections to MCP servers, enabling multiple clients to share these server sessions. This eliminates the need to start separate server instances for each client, significantly reducing resource usage and startup time. Learn more about these advanced capabilities in [Advanced Features](docs/advanced_features.md).
 
@@ -168,7 +164,7 @@ The MCP Registry is a central repository of available MCP servers that can be in
 - [x] Basic server management (`mcpm add`, `mcpm ls`, `mcpm rm`)
 - [x] Registry integration (`mcpm search`, adding by name)
 - [x] Router functionality (`mcpm router`)
-- [x] MCP Profiles (`mcpm profile`, `mcpm activate/deactivate`)
+- [x] MCP Profiles (`mcpm profile`)
 - [x] Server copying/moving (`mcpm cp`, `mcpm mv`)
 - [x] Server stashing (`mcpm stash`, `mcpm pop`)
 - [x] Router remote share (`mcpm router share`) remotely access local router and mcp servers

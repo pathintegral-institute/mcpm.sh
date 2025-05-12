@@ -4,7 +4,7 @@ import click
 from rich.console import Console
 from rich.prompt import Confirm, Prompt
 
-from mcpm.commands.server_operations.common import client_add_server, determine_scope, profile_add_server
+from mcpm.commands.target_operations.common import client_add_server, determine_scope, profile_add_server
 from mcpm.core.schema import SSEServerConfig, STDIOServerConfig
 from mcpm.utils.display import print_server_config
 from mcpm.utils.scope import ScopeType

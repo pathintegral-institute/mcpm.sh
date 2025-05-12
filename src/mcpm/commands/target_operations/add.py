@@ -17,11 +17,16 @@ from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.prompt import Confirm
 
 from mcpm.clients.client_registry import ClientRegistry
-from mcpm.commands.server_operations.common import client_add_server, determine_scope, profile_add_server
+from mcpm.commands.target_operations.common import (
+    client_add_profile,
+    client_add_server,
+    determine_scope,
+    profile_add_server,
+)
 from mcpm.profile.profile_config import ProfileConfigManager
 from mcpm.schemas.full_server_config import FullServerConfig
 from mcpm.utils.repository import RepositoryManager
-from mcpm.utils.scope import ScopeType
+from mcpm.utils.scope import PROFILE_PREFIX, ScopeType
 
 console = Console()
 repo_manager = RepositoryManager()
@@ -102,14 +107,20 @@ def add(server_name, force=False, alias=None, target: str | None = None):
         mcpm add everything --force
         mcpm add youtube --alias yt
         mcpm add youtube --target %myprofile
+        mcpm add %profile --target @windsurf
     """
     config_name = alias or server_name
+    is_adding_profile = server_name.startswith(PROFILE_PREFIX)
 
     scope_type, scope = determine_scope(target)
     if not scope:
         return
 
     if scope_type == ScopeType.PROFILE:
+        if is_adding_profile:
+            console.print("[bold red]Error:[/] Cannot add profile to profile.")
+            return
+
         # Get profile
         profile = scope
         console.print(f"[yellow]Adding server to profile: {profile}[/]")
@@ -131,8 +142,11 @@ def add(server_name, force=False, alias=None, target: str | None = None):
 
         target_name = profile
     else:
-        # Get client
         client = scope
+        if is_adding_profile:
+            add_profile_to_client(server_name.lstrip(PROFILE_PREFIX), client, alias, force)
+            return
+        # Get client
         console.print(f"[yellow]Adding server to client: {client}[/]")
         client_info = ClientRegistry.get_client_info(client)
         if client_info is None:
@@ -506,3 +520,15 @@ def _replace_argument_variables(value: str, prev_value: str, variables: dict) ->
 
     # nothing to replace
     return value, ReplacementStatus.NOT_REPLACED
+
+
+def add_profile_to_client(profile_name: str, client: str, alias: str | None = None, force: bool = False):
+    if not force and not Confirm.ask(f"Add this profile {profile_name} to {client}{' as ' + alias if alias else ''}?"):
+        console.print("[yellow]Operation cancelled.[/]")
+        return
+
+    success = client_add_profile(profile_name, client, alias)
+    if success:
+        console.print(f"[bold green]Successfully added profile {profile_name} to {client}![/]")
+    else:
+        console.print(f"[bold red]Failed to add profile {profile_name} to {client}.[/]")

@@ -15,10 +15,11 @@ __all__ = [
     "transfer",
     "router",
     "custom",
+    "target",
 ]
 
 # All command modules
 
 
-from . import client, inspector, list, profile, router, search
-from .server_operations import add, custom, pop, remove, stash, transfer
+from . import client, inspector, list, profile, router, search, target
+from .target_operations import add, custom, pop, remove, stash, transfer

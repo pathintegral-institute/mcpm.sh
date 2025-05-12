@@ -18,104 +18,6 @@ def profile():
     pass
 
 
-@click.command()
-@click.argument("profile_name")
-@click.option("--client", "-c", help="Client of the profile")
-@click.help_option("-h", "--help")
-def activate(profile_name, client=None):
-    """Activate a profile.
-
-    Sets the specified profile as the active profile.
-    """
-    # Activate the specified profile
-    if profile_config_manager.get_profile(profile_name) is None:
-        console.print(f"[bold red]Error:[/] Profile '{profile_name}' not found.")
-        return
-
-    # Set the active profile
-    client_registry = ClientRegistry()
-    config_manager = ConfigManager()
-
-    activate_this_client: bool = client is None
-
-    if client:
-        if client == ClientRegistry.get_active_client():
-            activate_this_client = True
-
-        console.print(f"[bold cyan]Activating profile '{profile_name}' in client '{client}'...[/]")
-        client_manager = ClientRegistry.get_client_manager(client)
-        if client_manager is None:
-            console.print(f"[bold red]Error:[/] Client '{client}' not found.")
-            return
-        success = client_manager.activate_profile(profile_name, config_manager.get_router_config())
-    else:
-        client = ClientRegistry.get_active_client()
-        if client is None:
-            console.print("[bold yellow]No active client found.[/]\n")
-            return
-        console.print(f"[bold cyan]Activating profile '{profile_name}' in active client '{client}'...[/]")
-        client_manager = ClientRegistry.get_client_manager(client)
-        if client_manager is None:
-            console.print(f"[bold red]Error:[/] Client '{client}' not found.")
-            return
-        success = client_manager.activate_profile(profile_name, config_manager.get_router_config())
-    if success and activate_this_client:
-        client_registry.set_active_profile(profile_name)
-        console.print(f"\n[green]Profile '{profile_name}' activated successfully.[/]\n")
-    elif success:
-        console.print(f"\n[green]Profile '{profile_name}' activated successfully for client '{client}'.[/]\n")
-    else:
-        console.print(f"[bold red]Error:[/] Failed to activate profile '{profile_name}'.")
-
-
-@click.command()
-@click.option("--client", "-c", help="Client of the profile")
-@click.help_option("-h", "--help")
-def deactivate(client=None):
-    """Deactivate a profile.
-
-    Unsets the active profile.
-    """
-    deactivate_this_client: bool = client is None
-
-    # Set the active profile
-    active_profile = ClientRegistry.get_active_profile()
-    if deactivate_this_client and active_profile is None:
-        console.print("[bold yellow]No active profile found.[/]\n")
-        return
-    console.print(f"\n[green]Deactivating profile '{active_profile}'...[/]")
-    client_registry = ClientRegistry()
-
-    if client:
-        if client == ClientRegistry.get_active_client():
-            deactivate_this_client = True
-
-        console.print(f"[bold cyan]Deactivating profile '{active_profile}' in client '{client}'...[/]")
-        client_manager = ClientRegistry.get_client_manager(client)
-        if client_manager is None:
-            console.print(f"[bold red]Error:[/] Client '{client}' not found.")
-            return
-        success = client_manager.deactivate_profile()
-    else:
-        client = ClientRegistry.get_active_client()
-        if client is None:
-            console.print("[bold yellow]No active client found.[/]\n")
-            return
-        console.print(f"[bold cyan]Deactivating profile '{active_profile}' in active client '{client}'...[/]")
-        client_manager = ClientRegistry.get_client_manager(client)
-        if client_manager is None:
-            console.print(f"[bold red]Error:[/] Client '{client}' not found.")
-            return
-        success = client_manager.deactivate_profile()
-    if success and deactivate_this_client:
-        client_registry.set_active_profile(None)
-        console.print(f"\n[yellow]Profile '{active_profile}' deactivated successfully.[/]\n")
-    elif success:
-        console.print(f"\n[yellow]Profile '{active_profile}' deactivated successfully for client '{client}'.[/]\n")
-    else:
-        console.print(f"[bold red]Error:[/] Failed to deactivate profile '{active_profile}' in client '{client}'.")
-
-
 @profile.command(name="ls")
 @click.option("--verbose", "-v", is_flag=True, help="Show detailed server information")
 @click.help_option("-h", "--help")
@@ -166,43 +68,6 @@ def add(profile, force=False):
     )
 
 
-@profile.command()
-@click.argument("profile")
-@click.option("--server", "-s", required=True, help="Server to apply config to")
-@click.help_option("-h", "--help")
-def apply(profile, server):
-    """Apply an existing MCPM config to a profile."""
-    client_manager = ClientRegistry.get_active_client_manager()
-    client = ClientRegistry.get_active_client()
-    if client is None:
-        console.print("[bold red]Error:[/] No active client found.")
-        return
-    client_info = ClientRegistry.get_client_info(client)
-    client_name = client_info.get("name", client)
-
-    # Check if client is supported
-    if client_manager is None:
-        console.print("[bold red]Error:[/] Unsupported active client")
-        console.print("Please switch to a supported client using 'mcpm client set <client-name>'")
-        return
-
-    # Check if the server exists in the active client
-    server_info = client_manager.get_server(server)
-    if server_info is None:
-        console.print(f"[bold red]Error:[/] Server '{server}' not found in {client_name}.")
-        return
-
-    # Get profile
-    profile_info = profile_config_manager.get_profile(profile)
-    if profile_info is None:
-        console.print(f"[bold red]Error:[/] Profile '{profile}' not found.")
-        return
-
-    # Save profile
-    profile_config_manager.set_profile(profile, server_info)
-    console.print(f"\n[green]Server '{server}' applied to profile '{profile}' successfully.[/]\n")
-
-
 @profile.command("rm")
 @click.argument("profile_name")
 @click.help_option("-h", "--help")
@@ -216,16 +81,16 @@ def remove(profile_name):
     for client in clients:
         client_manager = ClientRegistry.get_client_manager(client)
         if client_manager:
-            profile_this_client_associated = client_manager.get_associated_profile()
-            if profile_this_client_associated == profile_name:
+            profile_server = client_manager.get_server(profile_name)
+            if profile_server:
                 # Deactivate the profile in this client
-                client_manager.deactivate_profile()
-                console.print(f"\n[green]Profile '{profile_name}' deactivated successfully for client '{client}'.[/]\n")
+                client_manager.deactivate_profile(profile_name)
+                console.print(f"\n[green]Profile '{profile_name}' removed successfully from client '{client}'.[/]\n")
 
     # fresh the active_profile
     activated_profile = ClientRegistry.get_active_profile()
     if activated_profile == profile_name:
-        ClientRegistry.set_active_profile(None)
+        ClientRegistry.set_active_target(None)
 
     console.print(f"\n[green]Profile '{profile_name}' deleted successfully.[/]\n")
 
@@ -248,16 +113,16 @@ def rename(profile_name):
     for client in clients:
         client_manager = ClientRegistry.get_client_manager(client)
         if client_manager:
-            profile_this_client_associated = client_manager.get_associated_profile()
-            if profile_this_client_associated == profile_name:
+            profile_server = client_manager.get_server(profile_name)
+            if profile_server:
                 # fresh the config
-                client_manager.deactivate_profile()
+                client_manager.deactivate_profile(profile_name)
                 client_manager.activate_profile(new_profile_name, config_manager.get_router_config())
-                console.print(f"\n[green]Profile '{profile_name}' deactivated successfully for client '{client}'.[/]\n")
+                console.print(f"\n[green]Profile '{profile_name}' replaced successfully in client '{client}'.[/]\n")
 
     # fresh the active_profile
     activated_profile = ClientRegistry.get_active_profile()
     if activated_profile == profile_name:
-        ClientRegistry.set_active_profile(new_profile_name)
+        ClientRegistry.set_active_target(new_profile_name)
 
     console.print(f"\n[green]Profile '{profile_name}' renamed to '{new_profile_name}' successfully.[/]\n")

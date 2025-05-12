@@ -22,6 +22,7 @@ from mcpm.commands import (
     router,
     search,
     stash,
+    target,
     transfer,
 )
 from mcpm.commands.share import share
@@ -95,39 +96,45 @@ def main(ctx, help_flag, version):
         return
 
     # Check if a command is being executed (and it's not help, no command, or the client command)
-    if ctx.invoked_subcommand and ctx.invoked_subcommand != "client" and not help_flag:
+    if (
+        ctx.invoked_subcommand
+        and ctx.invoked_subcommand not in ["target", "client", "profile", "router", "share"]
+        and not help_flag
+    ):
         # Check if active client is set
-        active_client = client_config_manager.get_active_client()
-        if not active_client:
-            console.print("[bold red]Error:[/] No active client set.")
-            console.print("Please run 'mcpm client set <client-name>' to set an active client.")
-            console.print("Available clients:")
+        active_target = client_config_manager.get_active_target()
+        if not active_target:
+            console.print("[bold red]Error:[/] No active target set.")
+            console.print("Please run 'mcpm target set <target>' to set an active target\n")
 
             # Show available clients
             from mcpm.clients.client_registry import ClientRegistry
 
+            console.print("[bold green]Available Clients, set one with 'mcpm target set @<client>':[/]")
             for client in ClientRegistry.get_supported_clients():
                 console.print(f"  - {client}")
+
+            from mcpm.profile.profile_config import ProfileConfigManager
+
+            # Show available profiles
+            console.print("[bold green]Available Profiles, set one with 'mcpm target set %<profile>':[/]")
+            profile_manager = ProfileConfigManager()
+            for profile in profile_manager.list_profiles():
+                console.print(f"  - {profile}")
 
             # Exit with error
             ctx.exit(1)
     # If no command was invoked or help is requested, show our custom help
     if ctx.invoked_subcommand is None or help_flag:
         # Get active client
-        active_client = client_config_manager.get_active_client()
+        active_target = client_config_manager.get_active_target()
 
         print_logo()
-        # Get information about installed clients
-        from mcpm.clients.client_registry import ClientRegistry
-
-        installed_clients = ClientRegistry.detect_installed_clients()
-
         # Display active client information and main help
-        if active_client:
-            client_status = "[green]✓[/]" if installed_clients.get(active_client, False) else "[yellow]⚠[/]"
-            console.print(f"[bold magenta]Active client:[/] [yellow]{active_client}[/] {client_status}")
+        if active_target:
+            console.print(f"[bold magenta]Active target:[/] [yellow]{active_target}[/]")
         else:
-            console.print("[bold red]No active client set![/] Please run 'mcpm client set <client-name>' to set one.")
+            console.print("[bold red]No active target set![/] Please run 'mcpm target set <target>' to set one.")
         console.print("")
 
         # Display usage info
@@ -145,8 +152,12 @@ def main(ctx, help_flag, version):
         # Display available commands in a table
         console.print("[bold]Commands:[/]")
         commands_table = Table(show_header=False, box=None, padding=(0, 2, 0, 0))
+
+        commands_table.add_row("[yellow]work target[/]")
+        commands_table.add_row("  [cyan]target[/]", "Manage the active MCPM target.")
+
         commands_table.add_row("[yellow]client[/]")
-        commands_table.add_row("  [cyan]client[/]", "Manage the active MCPM client.")
+        commands_table.add_row("  [cyan]client[/]", "Manage supported MCPM clients.")
 
         commands_table.add_row("[yellow]server[/]")
         commands_table.add_row("  [cyan]search[/]", "Search available MCP servers.")
@@ -163,8 +174,6 @@ def main(ctx, help_flag, version):
 
         commands_table.add_row("[yellow]profile[/]")
         commands_table.add_row("  [cyan]profile[/]", "Manage MCPM profiles.")
-        commands_table.add_row("  [cyan]activate[/]", "Activate a profile.")
-        commands_table.add_row("  [cyan]deactivate[/]", "Deactivate a profile.")
 
         commands_table.add_row("[yellow]router[/]")
         commands_table.add_row("  [cyan]router[/]", "Manage MCP router service.")
@@ -189,14 +198,13 @@ main.add_command(list.list, name="ls")
 main.add_command(stash.stash)
 main.add_command(pop.pop)
 
+main.add_command(target.target)
 main.add_command(client.client)
 main.add_command(config.config)
 main.add_command(inspector.inspector, name="inspector")
 main.add_command(profile.profile, name="profile")
 main.add_command(transfer.move, name="mv")
 main.add_command(transfer.copy, name="cp")
-main.add_command(profile.activate)
-main.add_command(profile.deactivate)
 main.add_command(router.router, name="router")
 main.add_command(custom.import_server, name="import")
 main.add_command(share)

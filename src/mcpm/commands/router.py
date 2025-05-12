@@ -17,7 +17,7 @@ from rich.prompt import Confirm
 
 from mcpm.clients.client_registry import ClientRegistry
 from mcpm.router.share import Tunnel
-from mcpm.utils.config import ROUTER_SERVER_NAME, ConfigManager
+from mcpm.utils.config import ConfigManager
 from mcpm.utils.platform import get_log_directory, get_pid_directory
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
@@ -292,9 +292,9 @@ def set_router_config(host, port, address, auth, secret: str | None = None):
             if client_manager is None:
                 console.print(f"[yellow]Client '{client}' not found.[/] Skipping...")
                 continue
-            if client_manager.get_server(ROUTER_SERVER_NAME):
+            if client_manager.get_server(active_profile):
                 console.print(f"[cyan]Updating profile router for {client}...[/]")
-                client_manager.deactivate_profile()
+                client_manager.deactivate_profile(active_profile)
                 client_manager.activate_profile(active_profile, config_manager.get_router_config())
                 console.print(f"[green]Profile router updated for {client}[/]")
         console.print("[bold green]Success: Profile router updated for all clients[/]")
@@ -440,7 +440,7 @@ def share(address, profile, http):
     # print share link
     console.print(f"[bold green]Router is sharing at {share_url}[/]")
     console.print(
-        f"[green]Your profile can be accessed with the url {share_url}?profile={profile}{f'&s={api_key}' if api_key else ''}[/]\n"
+        f"[green]Your profile can be accessed with the url {share_url}?{f's={api_key}&' if api_key else ''}profile={profile}[/]\n"
     )
     console.print(
         "[bold yellow]Be careful about the share link, it will be exposed to the public. Make sure to share to trusted users only.[/]"
