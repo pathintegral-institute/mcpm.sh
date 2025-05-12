@@ -45,7 +45,6 @@ def list_clients():
     table.add_column("Client Name", style="cyan")
     table.add_column("Installation", style="yellow")
     table.add_column("Status", style="green")
-    table.add_column("Profile", style="magenta")
 
     active_client = ClientRegistry.get_active_client()
     installed_clients = ClientRegistry.detect_installed_clients()
@@ -61,12 +60,8 @@ def list_clients():
         # Get client info for more details
         client_info = ClientRegistry.get_client_info(client)
         display_name = client_info.get("name", client)
-        # Get Profile activated
-        client_manager = ClientRegistry.get_client_manager(client)
-        profile = client_manager.get_associated_profile() if client_manager else None
-        active_profile = f"[bold magenta]{profile}[/]" if profile else ""
 
-        table.add_row(f"{display_name} ({client})", install_status, active_status, active_profile)
+        table.add_row(f"{display_name} ({client})", install_status, active_status)
 
     console.print(table)
 

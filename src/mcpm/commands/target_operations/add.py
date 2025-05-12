@@ -144,7 +144,7 @@ def add(server_name, force=False, alias=None, target: str | None = None):
     else:
         client = scope
         if is_adding_profile:
-            add_profile_to_client(server_name, client, alias, force)
+            add_profile_to_client(server_name.lstrip(PROFILE_PREFIX), client, alias, force)
             return
         # Get client
         console.print(f"[yellow]Adding server to client: {client}[/]")

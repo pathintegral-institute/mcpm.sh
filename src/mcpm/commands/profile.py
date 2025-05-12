@@ -81,10 +81,10 @@ def remove(profile_name):
     for client in clients:
         client_manager = ClientRegistry.get_client_manager(client)
         if client_manager:
-            profile_this_client_associated = client_manager.get_associated_profile()
-            if profile_this_client_associated == profile_name:
+            profile_server = client_manager.get_server(profile_name)
+            if profile_server:
                 # Deactivate the profile in this client
-                client_manager.deactivate_profile()
+                client_manager.deactivate_profile(profile_name)
                 console.print(f"\n[green]Profile '{profile_name}' removed successfully from client '{client}'.[/]\n")
 
     # fresh the active_profile
@@ -113,10 +113,10 @@ def rename(profile_name):
     for client in clients:
         client_manager = ClientRegistry.get_client_manager(client)
         if client_manager:
-            profile_this_client_associated = client_manager.get_associated_profile()
-            if profile_this_client_associated == profile_name:
+            profile_server = client_manager.get_server(profile_name)
+            if profile_server:
                 # fresh the config
-                client_manager.deactivate_profile()
+                client_manager.deactivate_profile(profile_name)
                 client_manager.activate_profile(new_profile_name, config_manager.get_router_config())
                 console.print(f"\n[green]Profile '{profile_name}' replaced successfully in client '{client}'.[/]\n")
 

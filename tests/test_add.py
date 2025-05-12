@@ -222,4 +222,7 @@ def test_add_profile_to_client(windsurf_manager, monkeypatch):
     runner = CliRunner()
     result = runner.invoke(add, ["%" + profile_name, "--force", "--alias", "work"])
     assert result.exit_code == 0
-    assert "Successfully added profile %work to windsurf!" in result.output
+    assert "Successfully added profile work to windsurf!" in result.output
+
+    profile_server = windsurf_manager.get_server("work")
+    assert profile_server is not None
