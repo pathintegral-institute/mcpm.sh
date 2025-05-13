@@ -1,3 +1,10 @@
+## [1.10.1](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.10.0...v1.10.1) (2025-05-13)
+
+
+### Bug Fixes
+
+* fix mcp sdk version ([#145](https://github.com/pathintegral-institute/mcpm.sh/issues/145)) ([6e4e32c](https://github.com/pathintegral-institute/mcpm.sh/commit/6e4e32c4383ac84defe191355205012a0ce5cef1))
+
 # [1.10.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.9.0...v1.10.0) (2025-05-12)
 
 
