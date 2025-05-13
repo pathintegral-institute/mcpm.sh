@@ -24,7 +24,7 @@ dependencies = [
     "rich>=12.0.0",
     "requests>=2.28.0",
     "pydantic>=2.5.1",
-    "mcp>=1.6.0",
+    "mcp==1.6.0",
     "ruamel-yaml>=0.18.10",
     "watchfiles>=1.0.4",
     "duckdb>=1.2.2",
