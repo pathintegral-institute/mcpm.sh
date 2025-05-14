@@ -1,3 +1,10 @@
+# [1.11.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.10.1...v1.11.0) (2025-05-14)
+
+
+### Features
+
+* add client support for vscode ([#147](https://github.com/pathintegral-institute/mcpm.sh/issues/147)) ([ebbc113](https://github.com/pathintegral-institute/mcpm.sh/commit/ebbc113fcc7be86682ff0873eb94c9320b59f854))
+
 ## [1.10.1](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.10.0...v1.10.1) (2025-05-13)
 
 
