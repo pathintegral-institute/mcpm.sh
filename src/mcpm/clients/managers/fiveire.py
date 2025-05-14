@@ -1,8 +1,7 @@
-import json
 import logging
 import os
 import re
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, Optional
 
 from pydantic import TypeAdapter
 
@@ -17,8 +16,6 @@ class FiveireManager(JSONClientManager):
     client_key = "5ire"
     display_name = "5ire"
     download_url = "https://5ire.app/"
-
-    configure_key_name = "servers"
 
     def __init__(self, config_path=None):
         """Initialize the 5ire client manager
@@ -40,124 +37,35 @@ class FiveireManager(JSONClientManager):
                 # Linux
                 self.config_path = os.path.expanduser("~/.config/5ire/mcp.json")
 
+        self.server_name_key = {}
+
     def _get_empty_config(self) -> Dict[str, Any]:
         """Get an empty configuration structure for this client
 
         Returns:
             Dict containing the client configuration with at least {"servers": []}
         """
-        return {self.configure_key_name: []}
+        return {"mcpServers": {}}
 
-    def _load_config(self) -> Dict[str, Any]:
-        """Load client configuration file
-
-        Returns:
-            Dict containing the client configuration with at least {"servers": []}
-        """
-        # Create empty config with the correct structure
-        empty_config = self._get_empty_config()
-
-        if not os.path.exists(self.config_path):
-            logger.warning(f"Client config file not found at: {self.config_path}")
-            return empty_config
-
-        try:
-            with open(self.config_path, "r", encoding="utf-8") as f:
-                config = json.load(f)
-                # Ensure servers section exists
-                if self.configure_key_name not in config:
-                    config[self.configure_key_name] = []
-                return config
-        except json.JSONDecodeError:
-            logger.error(f"Error parsing client config file: {self.config_path}")
-
-            # Backup the corrupt file
-            if os.path.exists(self.config_path):
-                backup_path = f"{self.config_path}.bak"
-                try:
-                    os.rename(self.config_path, backup_path)
-                    logger.info(f"Backed up corrupt config file to: {backup_path}")
-                except Exception as e:
-                    logger.error(f"Failed to backup corrupt file: {str(e)}")
-
-            # Return empty config
-            return empty_config
-
-    def get_servers(self) -> Dict[str, Any]:
-        """Get all MCP servers configured for this client
-
-        Returns:
-            Dict of server configurations by name
-        """
-        config = self._load_config()
-        servers = {}
-
-        # Convert list of servers to dictionary by name
-        for server in config.get(self.configure_key_name, []):
-            if "name" in server:
-                servers[server["name"]] = server
-
-        return servers
+    def _update_server_name_key(self):
+        self.server_name_key = {}
+        servers = self.get_servers()
+        for key, server_config in servers.items():
+            self.server_name_key[server_config.get("name", key)] = key
 
     def get_server(self, server_name: str) -> Optional[ServerConfig]:
-        """Get a server configuration
+        self._update_server_name_key()
+        key = self.server_name_key.get(server_name)
+        if key:
+            return super().get_server(key)
+        return None
 
-        Args:
-            server_name: Name of the server
-
-        Returns:
-            ServerConfig object if found, None otherwise
-        """
-        servers = self.get_servers()
-
-        # Check if the server exists
-        if server_name not in servers:
-            logger.debug(f"Server {server_name} not found in {self.display_name} config")
-            return None
-
-        # Get the server config and convert to ServerConfig
-        return servers[server_name]
-
-    def add_server(self, server_config: Union[ServerConfig, Dict[str, Any]], name: Optional[str] = None) -> bool:
-        """Add or update a server in the client config
-
-        Args:
-            server_config: ServerConfig object or dictionary in client format
-            name: Required server name when using dictionary format
-
-        Returns:
-            bool: Success or failure
-        """
-        # Handle direct dictionary input
-        if isinstance(server_config, dict):
-            if name is None:
-                raise ValueError("Name must be provided when using dictionary format")
-            server_name = name
-            client_config = server_config  # Already in client format
-        # Handle ServerConfig objects
-        else:
-            server_name = server_config.name
-            client_config = self.to_client_format(server_config)
-            client_config["name"] = server_name  # Ensure name is in the config
-
-        # Update config
-        config = self._load_config()
-
-        # Check if server already exists and update it
-        server_exists = False
-        for i, server in enumerate(config.get(self.configure_key_name, [])):
-            if server.get("name") == server_name:
-                config[self.configure_key_name][i] = client_config
-                server_exists = True
-                break
-
-        # If server doesn't exist, add it
-        if not server_exists:
-            if self.configure_key_name not in config:
-                config[self.configure_key_name] = []
-            config[self.configure_key_name].append(client_config)
-
-        return self._save_config(config)
+    def remove_server(self, server_name: str) -> bool:
+        self._update_server_name_key()
+        key = self.server_name_key.get(server_name)
+        if key:
+            return super().remove_server(key)
+        return False
 
     def to_client_format(self, server_config: ServerConfig) -> Dict[str, Any]:
         """Convert ServerConfig to client-specific format
@@ -179,8 +87,10 @@ class FiveireManager(JSONClientManager):
             non_empty_env = server_config.get_filtered_env_vars(os.environ)
             if non_empty_env:
                 result["env"] = non_empty_env
+            result["type"] = "local"
         else:
             result = server_config.to_dict()
+            result["type"] = "remote"
 
         # Base result containing essential information
         key_slug = re.sub(r"[^a-zA-Z0-9]", "", server_config.name)
@@ -214,39 +124,6 @@ class FiveireManager(JSONClientManager):
         server_data.update(client_config)
         return TypeAdapter(ServerConfig).validate_python(server_data)
 
-    def list_servers(self) -> List[str]:
-        """List all MCP servers in client config
-
-        Returns:
-            List of server names
-        """
-        return list(self.get_servers().keys())
-
-    def remove_server(self, server_name: str) -> bool:
-        """Remove an MCP server from client config
-
-        Args:
-            server_name: Name of the server to remove
-
-        Returns:
-            bool: Success or failure
-        """
-        config = self._load_config()
-
-        # Find and remove the server
-        server_found = False
-        for i, server in enumerate(config.get(self.configure_key_name, [])):
-            if server.get("name") == server_name:
-                config[self.configure_key_name].pop(i)
-                server_found = True
-                break
-
-        if not server_found:
-            logger.warning(f"Server {server_name} not found in {self.display_name} config")
-            return False
-
-        return self._save_config(config)
-
     def disable_server(self, server_name: str) -> bool:
         """Temporarily disable a server by setting isActive to False
 
@@ -258,17 +135,11 @@ class FiveireManager(JSONClientManager):
         """
         config = self._load_config()
 
-        # Find and disable the server
-        server_found = False
-        for i, server in enumerate(config.get(self.configure_key_name, [])):
-            if server.get("name") == server_name:
-                config[self.configure_key_name][i]["isActive"] = False
-                server_found = True
-                break
-
-        if not server_found:
-            logger.warning(f"Server {server_name} not found in {self.display_name} config")
+        if "mcpServers" not in config or server_name not in config["mcpServers"]:
+            logger.warning(f"Server '{server_name}' not found in active servers")
             return False
+
+        config["mcpServers"][server_name]["isActive"] = False
 
         return self._save_config(config)
 
@@ -283,17 +154,11 @@ class FiveireManager(JSONClientManager):
         """
         config = self._load_config()
 
-        # Find and enable the server
-        server_found = False
-        for i, server in enumerate(config.get(self.configure_key_name, [])):
-            if server.get("name") == server_name:
-                config[self.configure_key_name][i]["isActive"] = True
-                server_found = True
-                break
-
-        if not server_found:
-            logger.warning(f"Server {server_name} not found in {self.display_name} config")
+        if "mcpServers" not in config or server_name not in config["mcpServers"]:
+            logger.warning(f"Server '{server_name}' not found in active servers")
             return False
+
+        config["mcpServers"][server_name]["isActive"] = True
 
         return self._save_config(config)
 

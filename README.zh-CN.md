@@ -88,6 +88,7 @@ MCPM 将支持为以下客户端管理 MCP 服务器：
 - 🤖 Claude Desktop (Anthropic)
 - ⌨️ Cursor
 - 🏄 Windsurf
+- 🧩 Vscode
 - 📝 Cline
 - ➡️ Continue
 - 🦢 Goose

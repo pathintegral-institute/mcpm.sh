@@ -54,6 +54,7 @@ MCPM will support managing MCP servers for the following clients:
 - 🤖 Claude Desktop (Anthropic)
 - ⌨️ Cursor
 - 🏄 Windsurf
+- 🧩 Vscode
 - 📝 Cline
 - ➡️ Continue
 - 🦢 Goose

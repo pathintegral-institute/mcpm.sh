@@ -17,6 +17,7 @@ from mcpm.clients.managers.cursor import CursorManager
 from mcpm.clients.managers.fiveire import FiveireManager
 from mcpm.clients.managers.goose import GooseClientManager
 from mcpm.clients.managers.trae import TraeManager
+from mcpm.clients.managers.vscode import VSCodeManager
 from mcpm.clients.managers.windsurf import WindsurfManager
 
 logger = logging.getLogger(__name__)
@@ -42,6 +43,7 @@ class ClientRegistry:
         "5ire": FiveireManager(),
         "roo-code": RooCodeManager(),
         "trae": TraeManager(),
+        "vscode": VSCodeManager(),
     }
 
     @classmethod
