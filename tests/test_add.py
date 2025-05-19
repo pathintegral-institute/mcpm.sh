@@ -96,7 +96,7 @@ def test_add_server_with_missing_arg(windsurf_manager, monkeypatch):
         patch("rich.progress.Progress.add_task"),
     ):
         # Use CliRunner which provides its own isolated environment
-        runner = CliRunner(mix_stderr=False)
+        runner = CliRunner()
         result = runner.invoke(add, ["server-test", "--force", "--alias", "test-missing-arg"])
 
         if result.exit_code != 0:
@@ -164,7 +164,7 @@ def test_add_server_with_empty_args(windsurf_manager, monkeypatch):
         patch("rich.progress.Progress.stop"),
         patch("rich.progress.Progress.add_task"),
     ):
-        runner = CliRunner(mix_stderr=False)
+        runner = CliRunner()
         result = runner.invoke(add, ["server-test", "--force", "--alias", "test-empty-args"])
 
         assert result.exit_code == 0
