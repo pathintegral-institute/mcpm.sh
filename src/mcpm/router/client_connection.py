@@ -82,8 +82,5 @@ class ServerConnection:
                     await self.wait_for_shutdown_request()
         except Exception as e:
             logger.error(f"Failed to connect to server {self.server_config.name}: {e}")
-            import traceback
-
-            traceback.print_exc()
             self._initialized_event.set()
             self._shutdown_event.set()
