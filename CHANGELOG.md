@@ -1,3 +1,10 @@
+# [1.12.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.11.0...v1.12.0) (2025-05-19)
+
+
+### Features
+
+* support streamable http server connection ([#150](https://github.com/pathintegral-institute/mcpm.sh/issues/150)) ([64fa046](https://github.com/pathintegral-institute/mcpm.sh/commit/64fa046eaa596f3d94e5f13fc132a19f46af2cf9))
+
 # [1.11.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.10.1...v1.11.0) (2025-05-14)
 
 
