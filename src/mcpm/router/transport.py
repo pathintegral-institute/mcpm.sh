@@ -10,6 +10,7 @@ import anyio
 from anyio.streams.memory import MemoryObjectReceiveStream, MemoryObjectSendStream
 from mcp import types
 from mcp.server.sse import SseServerTransport
+from mcp.shared.message import SessionMessage
 from pydantic import ValidationError
 from sse_starlette import EventSourceResponse
 from starlette.background import BackgroundTask
@@ -86,11 +87,11 @@ class RouterSseTransport(SseServerTransport):
             return
 
         logger.debug("Setting up SSE connection")
-        read_stream: MemoryObjectReceiveStream[types.JSONRPCMessage | Exception]
-        read_stream_writer: MemoryObjectSendStream[types.JSONRPCMessage | Exception]
+        read_stream: MemoryObjectReceiveStream[SessionMessage | Exception]
+        read_stream_writer: MemoryObjectSendStream[SessionMessage | Exception]
 
-        write_stream: MemoryObjectSendStream[types.JSONRPCMessage]
-        write_stream_reader: MemoryObjectReceiveStream[types.JSONRPCMessage]
+        write_stream: MemoryObjectSendStream[SessionMessage]
+        write_stream_reader: MemoryObjectReceiveStream[SessionMessage]
 
         read_stream_writer, read_stream = anyio.create_memory_object_stream(0)
         write_stream, write_stream_reader = anyio.create_memory_object_stream(0)
@@ -118,12 +119,12 @@ class RouterSseTransport(SseServerTransport):
                 await sse_stream_writer.send({"event": "endpoint", "data": session_uri})
                 logger.debug(f"Sent endpoint event: {session_uri}")
 
-                async for message in write_stream_reader:
-                    logger.debug(f"Sending message via SSE: {message}")
+                async for session_message in write_stream_reader:
+                    logger.debug(f"Sending message via SSE: {session_message}")
                     await sse_stream_writer.send(
                         {
                             "event": "message",
-                            "data": message.model_dump_json(by_alias=True, exclude_none=True),
+                            "data": session_message.message.model_dump_json(by_alias=True, exclude_none=True),
                         }
                     )
 
@@ -228,7 +229,7 @@ class RouterSseTransport(SseServerTransport):
 
         # add error handling, catch possible pipe errors
         try:
-            await writer.send(message)
+            await writer.send(SessionMessage(message=message))
         except (BrokenPipeError, ConnectionError, OSError) as e:
             # if it's EPIPE error or other connection error, log it but don't throw an exception
             if isinstance(e, OSError) and e.errno == 32:  # EPIPE

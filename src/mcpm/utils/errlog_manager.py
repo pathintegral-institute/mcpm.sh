@@ -6,6 +6,7 @@ from .platform import get_log_directory
 
 DEFAULT_ROOT_STDERR_LOG_DIR = get_log_directory("mcpm") / "errlogs"
 
+
 class ServerErrorLogManager:
     """
     A manager for server error logs.
@@ -30,5 +31,5 @@ class ServerErrorLogManager:
             del self._log_files[server_id]
 
     def close_all(self) -> None:
-        for server_id in self._log_files:
+        for server_id in list(self._log_files.keys()):
             self.close_errlog_file(server_id)
