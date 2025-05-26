@@ -56,10 +56,6 @@ def set_target(target):
             console.print(f"[bold green]Success:[/] Active client set to {scope}")
     else:
         # Set the active profile
-        active_profile = ClientRegistry.get_active_target()
-        if active_profile:
-            console.print(f"[bold green]Success:[/] Active profile set to {active_profile}")
-
         profiles = ProfileConfigManager().list_profiles()
         if scope not in profiles:
             console.print(f"[bold red]Error:[/] Unknown profile: {scope}")

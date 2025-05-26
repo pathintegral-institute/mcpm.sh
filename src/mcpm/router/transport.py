@@ -8,6 +8,7 @@ from uuid import UUID, uuid4
 
 import anyio
 from anyio.streams.memory import MemoryObjectReceiveStream, MemoryObjectSendStream
+from deprecated import deprecated
 from mcp import types
 from mcp.server.sse import SseServerTransport
 from mcp.shared.message import SessionMessage
@@ -64,6 +65,7 @@ def get_key_from_scope(scope: Scope, key_name: str) -> str | None:
     return None
 
 
+@deprecated
 class RouterSseTransport(SseServerTransport):
     """A SSE server transport that is used by the router to handle client connections."""
 

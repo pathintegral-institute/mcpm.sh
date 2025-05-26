@@ -94,7 +94,7 @@ mcpm add SERVER_URL --alias ALIAS # Add with a custom alias
 
 # 🛠️ Add custom server
 mcpm import stdio SERVER_NAME --command COMMAND --args ARGS --env ENV # Add a stdio MCP server to a client
-mcpm import sse SERVER_NAME --url URL # Add a SSE MCP server to a client
+mcpm import remote SERVER_NAME --url URL # Add a remote MCP server to a client
 mcpm import interact # Add a server by configuring it interactively
 
 # 📋 List and Remove

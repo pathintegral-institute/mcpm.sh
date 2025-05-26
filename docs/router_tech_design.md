@@ -49,7 +49,7 @@ flowchart TB
 ```python
 import asyncio
 from mcpm.router import MCPRouter
-from mcpm.core.schema import STDIOServerConfig, SSEServerConfig
+from mcpm.core.schema import STDIOServerConfig, RemoteServerConfig
 
 async def main():
     # Create a router
@@ -64,16 +64,16 @@ async def main():
         )
     )
 
-    # Add an SSE server
+    # Add an Remote server
     await router.add_server(
         "example2",
-        SSEServerConfig(
-            url="http://localhost:3000/sse"
+        RemoteServerConfig(
+            url="http://localhost:3000/"
         )
     )
 
-    # Start the SSE server
-    await router.start_sse_server(host="localhost", port=8080)
+    # Start the Remote server
+    await router.start_remote_server(host="localhost", port=8080)
 
 if __name__ == "__main__":
     asyncio.run(main())
@@ -99,11 +99,11 @@ The main orchestrator class that provides a unified API for the application:
 
 Manages individual connections to downstream MCP servers:
 - Handles connection lifecycle for a single server
-- Supports different transport types (STDIO, SSE)
+- Supports different transport types (STDIO, Remote)
 - Provides methods to initialize, check health, and gracefully shut down connections
 - Exposes the server's capabilities to the router
 
-### `RouterSseTransport`
+### `RouterSseTransport` (deprecated)
 
 Extends the SSE server transport to handle client connections:
 - Provides an SSE server endpoint for clients to connect
@@ -130,7 +130,7 @@ Monitors configuration changes:
 Defines the configuration for connecting to downstream servers:
 - Base `ServerConfig` class with common properties
 - `STDIOServerConfig` for command-line based servers
-- `SSEServerConfig` for HTTP/SSE based servers
+- `RemoteServerConfig` for HTTP/SSE based servers
 - Stores necessary connection parameters (command, args, env, URL)
 
 ## Namespacing
@@ -148,7 +148,7 @@ This allows the router to route requests to the appropriate server based on the 
 
 ### Downstream Connections (Router as Client)
 
-1. Router creates persistent connections to downstream MCP servers using STDIO or SSE
+1. Router creates persistent connections to downstream MCP servers using STDIO or remote (Streamable HTTP/SSE)
 2. Connections are maintained regardless of upstream client presence
 3. Server capabilities are fetched and aggregated with namespacing
 4. Connections are managed through the `ServerConnection` class
@@ -156,11 +156,11 @@ This allows the router to route requests to the appropriate server based on the 
 
 ### Upstream Connections (Router as Server)
 
-1. Router provides an SSE server interface for upstream clients
+1. Router provides an streamable HTTP server interface for upstream clients
 2. Clients connect with a profile identifier to determine server visibility
 3. Client requests are routed to appropriate downstream servers based on profile
 4. Responses and notifications are delivered back to clients
-5. Session management is handled by `RouterSseTransport`
+5. Session management is handled by `RouterSseTransport`(deprecated)
 
 ## Request Routing and Namespacing
 
@@ -202,7 +202,7 @@ sequenceDiagram
 1. **Decoupling**: Upstream clients are decoupled from downstream servers
 2. **Resilience**: Client disconnections don't affect server connections
 3. **Aggregation**: Multiple capabilities from different servers appear as one
-4. **Flexibility**: Supports different transport protocols (STDIO, SSE)
+4. **Flexibility**: Supports different transport protocols (STDIO, Remote)
 5. **Scalability**: Can manage multiple clients and servers simultaneously
 6. **Profile-based Access**: Controls which servers are available to which clients
 7. **Dynamic Configuration**: Supports runtime changes to server configurations

@@ -6,7 +6,7 @@ from rich.console import Console
 from rich.markup import escape
 from rich.table import Table
 
-from mcpm.core.schema import ServerConfig, SSEServerConfig
+from mcpm.core.schema import RemoteServerConfig, ServerConfig
 from mcpm.utils.scope import CLIENT_PREFIX, PROFILE_PREFIX
 
 console = Console()
@@ -25,36 +25,40 @@ def print_server_config(server_config: ServerConfig, is_stashed=False):
     else:
         console.print(f"[bold cyan]{server_config.name}[/]")
 
-    if isinstance(server_config, SSEServerConfig):
+    if isinstance(server_config, (RemoteServerConfig, RemoteServerConfig)):
         console.print(f"  Url: [green]{server_config.url}[/]")
-        headers = server_config.headers
+        headers = getattr(server_config, "headers", None)
         if headers:
             console.print("  Headers:")
             for key, value in headers.items():
                 console.print(f'    [bold blue]{key}[/] = [green]"{value}"[/]')
         console.print("  " + "-" * 50)
         return
-    command = server_config.command
-    console.print(f"  Command: [green]{command}[/]")
+    elif hasattr(server_config, "command") and hasattr(server_config, "args") and hasattr(server_config, "env"):
+        command = server_config.command
+        console.print(f"  Command: [green]{command}[/]")
 
-    # Display arguments
-    args = server_config.args
-    if args:
-        console.print("  Arguments:")
-        for i, arg in enumerate(args):
-            console.print(f"    {i}: [yellow]{escape(arg)}[/]")
+        # Display arguments
+        args = server_config.args
+        if args:
+            console.print("  Arguments:")
+            for i, arg in enumerate(args):
+                console.print(f"    {i}: [yellow]{escape(arg)}[/]")
 
-    # Display environment variables
-    env_vars = server_config.env
-    if env_vars:
-        console.print("  Environment Variables:")
-        for key, value in env_vars.items():
-            console.print(f'    [bold blue]{key}[/] = [green]"{value}"[/]')
+        # Display environment variables
+        env_vars = server_config.env
+        if env_vars:
+            console.print("  Environment Variables:")
+            for key, value in env_vars.items():
+                console.print(f'    [bold blue]{key}[/] = [green]"{value}"[/]')
+        else:
+            console.print("  Environment Variables: [italic]None[/]")
+        console.print("  " + "-" * 50)
+        return
     else:
-        console.print("  Environment Variables: [italic]None[/]")
-
-    # Add a separator line between servers
-    console.print("  " + "-" * 50)
+        console.print("[red]Unknown server config type![/]")
+        console.print("  " + "-" * 50)
+        return
 
 
 def print_servers_table(servers):

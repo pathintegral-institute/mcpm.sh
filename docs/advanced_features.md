@@ -91,9 +91,9 @@ The router prefixes capabilities from different servers to avoid conflicts:
 - Resources: `webfetch:https://example.com`
 
 #### 4. Server Connections
-The router supports both STDIO (command-line) and SSE (HTTP) server connections. For example:
+The router supports both STDIO (command-line) and Remote (HTTP and SSE) server connections. For example:
 - STDIO: Python Interpreter, Blender
-- SSE: Web Search, Notion, Slack
+- Remote: Web Search, Notion, Slack
 
 #### 5. Shared Server Sessions
 The router maintains persistent connections to all configured servers, allowing multiple clients to share the same server sessions. This means:
@@ -105,9 +105,9 @@ The router maintains persistent connections to all configured servers, allowing 
 ## Features
 
 - Aggregate multiple MCP servers as a single server
-- Support both SSE and STDIO connections to underlying servers
+- Support both Remote and STDIO connections to underlying servers
 - Namespace capabilities from different servers
-- Expose a unified SSE server interface
+- Expose a unified Remote server interface
 - Profile-based server access control
 - Dynamic configuration reloading
 - Share server connections among multiple clients (no need for separate server instances per client)
