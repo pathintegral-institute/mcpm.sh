@@ -25,40 +25,36 @@ def print_server_config(server_config: ServerConfig, is_stashed=False):
     else:
         console.print(f"[bold cyan]{server_config.name}[/]")
 
-    if isinstance(server_config, (RemoteServerConfig, RemoteServerConfig)):
+    if isinstance(server_config, RemoteServerConfig):
         console.print(f"  Url: [green]{server_config.url}[/]")
-        headers = getattr(server_config, "headers", None)
+        headers = server_config.headers
         if headers:
             console.print("  Headers:")
             for key, value in headers.items():
                 console.print(f'    [bold blue]{key}[/] = [green]"{value}"[/]')
         console.print("  " + "-" * 50)
         return
-    elif hasattr(server_config, "command") and hasattr(server_config, "args") and hasattr(server_config, "env"):
-        command = server_config.command
-        console.print(f"  Command: [green]{command}[/]")
+    command = server_config.command
+    console.print(f"  Command: [green]{command}[/]")
 
-        # Display arguments
-        args = server_config.args
-        if args:
-            console.print("  Arguments:")
-            for i, arg in enumerate(args):
-                console.print(f"    {i}: [yellow]{escape(arg)}[/]")
+    # Display arguments
+    args = server_config.args
+    if args:
+        console.print("  Arguments:")
+        for i, arg in enumerate(args):
+            console.print(f"    {i}: [yellow]{escape(arg)}[/]")
 
-        # Display environment variables
-        env_vars = server_config.env
-        if env_vars:
-            console.print("  Environment Variables:")
-            for key, value in env_vars.items():
-                console.print(f'    [bold blue]{key}[/] = [green]"{value}"[/]')
-        else:
-            console.print("  Environment Variables: [italic]None[/]")
-        console.print("  " + "-" * 50)
-        return
+    # Display environment variables
+    env_vars = server_config.env
+    if env_vars:
+        console.print("  Environment Variables:")
+        for key, value in env_vars.items():
+            console.print(f'    [bold blue]{key}[/] = [green]"{value}"[/]')
     else:
-        console.print("[red]Unknown server config type![/]")
-        console.print("  " + "-" * 50)
-        return
+        console.print("  Environment Variables: [italic]None[/]")
+
+    # Add a separator line between servers
+    console.print("  " + "-" * 50)
 
 
 def print_servers_table(servers):
