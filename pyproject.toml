@@ -7,7 +7,7 @@ name = "mcpm"
 dynamic = ["version"]
 description = "MCPM - Model Context Protocol Manager"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 license = "MIT"
 authors = [{ name = "MCPM Contributors" }]
 maintainers = [{ name = "Path Integral Institute" }]
@@ -30,6 +30,7 @@ dependencies = [
     "duckdb>=1.2.2",
     "psutil>=7.0.0",
     "prompt-toolkit>=3.0.0",
+    "deprecated>=1.2.18",
 ]
 
 [project.urls]

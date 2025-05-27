@@ -10,7 +10,7 @@ from unittest.mock import patch
 import pytest
 
 from mcpm.profile.profile_config import ProfileConfigManager
-from mcpm.schemas.server_config import SSEServerConfig, STDIOServerConfig
+from mcpm.schemas.server_config import RemoteServerConfig, STDIOServerConfig
 
 
 @pytest.fixture
@@ -113,7 +113,7 @@ def test_get_profile_server(profile_manager):
 
 def test_set_profile_new_server(profile_manager):
     """Test setting a new server in a profile"""
-    new_server = SSEServerConfig(name="new-server", url="http://localhost:8081/sse")
+    new_server = RemoteServerConfig(name="new-server", url="http://localhost:8081/sse")
     result = profile_manager.set_profile("test_profile", new_server)
     assert result is True
 
@@ -126,7 +126,7 @@ def test_set_profile_new_server(profile_manager):
 
 def test_set_profile_update_server(profile_manager):
     """Test updating an existing server in a profile"""
-    updated_server = SSEServerConfig(name="test-server", url="http://localhost:8082/sse")
+    updated_server = RemoteServerConfig(name="test-server", url="http://localhost:8082/sse")
     result = profile_manager.set_profile("test_profile", updated_server)
     assert result is True
 

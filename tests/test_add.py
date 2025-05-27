@@ -4,7 +4,7 @@ from click.testing import CliRunner
 
 from mcpm.clients.client_registry import ClientRegistry
 from mcpm.commands.target_operations.add import add
-from mcpm.core.schema import SSEServerConfig
+from mcpm.core.schema import RemoteServerConfig
 from mcpm.utils.config import ConfigManager
 from mcpm.utils.repository import RepositoryManager
 
@@ -192,7 +192,7 @@ def test_add_server_with_empty_args(windsurf_manager, monkeypatch):
 
 def test_add_sse_server_to_claude_desktop(claude_desktop_manager, monkeypatch):
     """Test add sse server to claude desktop"""
-    server_config = SSEServerConfig(
+    server_config = RemoteServerConfig(
         name="test-sse-server", url="http://localhost:8080", headers={"Authorization": "Bearer test-api-key"}
     )
     claude_desktop_manager.add_server(server_config)

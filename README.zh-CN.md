@@ -128,7 +128,7 @@ mcpm add SERVER_URL --alias ALIAS # 添加并使用自定义别名
 
 # 🛠️ 自定义添加
 mcpm import stdio SERVER_NAME --command COMMAND --args ARGS --env ENV # 手动添加一个 stdio MCP 服务器
-mcpm import sse SERVER_NAME --url URL # 手动添加一个 SSE MCP 服务器
+mcpm import remote SERVER_NAME --url URL # 手动添加一个 remote MCP 服务器
 mcpm import interact # 通过交互式添加一个服务器
 
 # 📋 列出和删除

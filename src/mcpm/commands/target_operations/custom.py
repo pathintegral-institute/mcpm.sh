@@ -5,7 +5,7 @@ from rich.console import Console
 from rich.prompt import Confirm, Prompt
 
 from mcpm.commands.target_operations.common import client_add_server, determine_scope, profile_add_server
-from mcpm.core.schema import SSEServerConfig, STDIOServerConfig
+from mcpm.core.schema import RemoteServerConfig, STDIOServerConfig
 from mcpm.utils.display import print_server_config
 from mcpm.utils.scope import ScopeType
 
@@ -83,12 +83,12 @@ def stdio(server_name, command, args, env, target, force):
 @click.option("--target", "-t", help="Target to import server to")
 @click.option("--force", is_flag=True, help="Force reinstall if server is already installed")
 @click.help_option("-h", "--help")
-def sse(server_name, url, header, target, force):
+def remote(server_name, url, header, target, force):
     """Add a server by specifying a URL and headers.
     Examples:
 
     \b
-        mcpm import sse <server_name> --url <url> --header <key1>=<value1> --header <key2>=<value2>
+        mcpm import remote <server_name> --url <url> --header <key1>=<value1> --header <key2>=<value2>
     """
     scope_type, scope = determine_scope(target)
     if not scope:
@@ -103,7 +103,7 @@ def sse(server_name, url, header, target, force):
             console.print(f"[yellow]Ignoring invalid header: {item}[/]")
 
     try:
-        server_config = SSEServerConfig(
+        server_config = RemoteServerConfig(
             name=server_name,
             url=url,
             headers=headers,
@@ -123,9 +123,9 @@ def sse(server_name, url, header, target, force):
         success = profile_add_server(scope, server_config, force)
 
     if success:
-        console.print(f"[bold green]SSE server '{server_name}' added successfully to {scope_type} {scope}.")
+        console.print(f"[bold green]Remote server '{server_name}' added successfully to {scope_type} {scope}.")
     else:
-        console.print(f"[bold red]Failed to add SSE server '{server_name}' to {scope_type} {scope}.")
+        console.print(f"[bold red]Failed to add remote server '{server_name}' to {scope_type} {scope}.")
 
 
 @import_server.command()
@@ -142,7 +142,7 @@ def interact(target: str | None = None):
         console.print("[red]Server name cannot be empty.[/]")
         return
 
-    config_type = Prompt.ask("Select server type", choices=["stdio", "sse"], default="stdio")
+    config_type = Prompt.ask("Select server type", choices=["stdio", "remote"], default="stdio")
 
     if config_type == "stdio":
         command = Prompt.ask("Enter command (executable)")
@@ -166,8 +166,8 @@ def interact(target: str | None = None):
         except ValueError as e:
             console.print(f"[bold red]Error:[/] {e}")
             return
-    elif config_type == "sse":
-        url = Prompt.ask("Enter SSE server URL")
+    elif config_type == "remote":
+        url = Prompt.ask("Enter remote server URL")
         headers_input = Prompt.ask("Enter HTTP headers (format: KEY=VAL, comma-separated, optional)", default="")
         headers = {}
         if headers_input.strip():
@@ -176,7 +176,7 @@ def interact(target: str | None = None):
                     k, v = pair.split("=", 1)
                     headers[k.strip()] = v.strip()
         try:
-            server_config = SSEServerConfig(
+            server_config = RemoteServerConfig(
                 name=server_name,
                 url=url,
                 headers=headers,

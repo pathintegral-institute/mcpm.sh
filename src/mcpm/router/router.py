@@ -6,24 +6,30 @@ import logging
 import typing as t
 from collections import defaultdict
 from contextlib import asynccontextmanager
-from typing import Literal, Optional, TextIO
+from typing import Literal, Optional, Sequence, TextIO
 
 import uvicorn
+from deprecated import deprecated
 from mcp import server, types
 from mcp.server import InitializationOptions, NotificationOptions
+from mcp.server.streamable_http_manager import StreamableHTTPSessionManager
 from pydantic import AnyUrl
 from starlette.applications import Starlette
 from starlette.middleware import Middleware
+from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.middleware.cors import CORSMiddleware
 from starlette.requests import Request
+from starlette.responses import JSONResponse, Response
 from starlette.routing import Mount, Route
-from starlette.types import Lifespan
+from starlette.types import Lifespan, Receive, Scope, Send
 
 from mcpm.core.schema import ServerConfig
-from mcpm.monitor.base import AccessEventType
+from mcpm.monitor.base import AccessEventType, AccessMonitor
 from mcpm.monitor.event import trace_event
 from mcpm.profile.profile_config import ProfileConfigManager
 from mcpm.utils.config import (
+    MCPM_AUTH_HEADER,
+    MCPM_PROFILE_HEADER,
     PROMPT_SPLITOR,
     RESOURCE_SPLITOR,
     RESOURCE_TEMPLATE_SPLITOR,
@@ -34,7 +40,7 @@ from mcpm.utils.errlog_manager import ServerErrorLogManager
 
 from .client_connection import ServerConnection
 from .router_config import RouterConfig
-from .transport import RouterSseTransport
+from .transport import RouterSseTransport, patch_meta_data
 from .watcher import ConfigWatcher
 
 logger = logging.getLogger(__name__)
@@ -95,7 +101,7 @@ class MCPRouter:
         name_to_server = {server.name: server for server_list in profiles.values() for server in server_list}
         return list(name_to_server.values())
 
-    async def update_servers(self, server_configs: list[ServerConfig]):
+    async def update_servers(self, server_configs: Sequence[ServerConfig]):
         """
         Update the servers based on the configuration file.
 
@@ -513,6 +519,82 @@ class MCPRouter:
             capabilities=capabilities,
         )
 
+    def get_remote_server_app(
+        self,
+        allow_origins: t.Optional[t.List[str]] = None,
+        include_lifespan: bool = True,
+        monitor: AccessMonitor | None = None,
+    ) -> Starlette:
+        """
+        Get the remote server app.
+
+        Args:
+            allow_origins: List of allowed origins for CORS
+            include_lifespan: Whether to include the router's lifespan manager in the app.
+
+        Returns:
+            An remote server app
+        """
+        session_manager = StreamableHTTPSessionManager(
+            self.aggregated_server,
+            event_store=None,
+            stateless=True,
+        )
+
+        async def handle_streamable_http(scope: Scope, receive: Receive, send: Send) -> None:
+            await session_manager.handle_request(scope, receive, send)
+
+        lifespan_handler: t.Optional[Lifespan[Starlette]] = None
+        if include_lifespan:
+
+            @asynccontextmanager
+            async def lifespan(app: Starlette):
+                async with session_manager.run():
+                    try:
+                        await self.initialize_router()
+                        if monitor:
+                            await monitor.initialize_storage()
+                        yield
+                    except Exception:
+                        await self.shutdown()
+                        if monitor:
+                            await monitor.close()
+
+            lifespan_handler = lifespan
+
+        middleware: t.List[Middleware] = [
+            Middleware(
+                ProfileMiddleware,
+            ),
+        ]
+        if allow_origins is not None:
+            middleware.append(
+                Middleware(
+                    CORSMiddleware,
+                    allow_origins=allow_origins,
+                    allow_methods=["*"],
+                    allow_headers=["*"],
+                ),
+            )
+        if self.router_config.auth_enabled and self.router_config.api_key is not None:
+            middleware.append(
+                Middleware(
+                    AuthMiddleware,
+                    api_key=self.router_config.api_key,
+                ),
+            )
+
+        app = Starlette(
+            debug=False,
+            middleware=middleware,
+            routes=[
+                Mount("/mcp/", app=handle_streamable_http),
+            ],
+            lifespan=lifespan_handler,
+        )
+        return app
+
+    @deprecated
     async def get_sse_server_app(
         self, allow_origins: t.Optional[t.List[str]] = None, include_lifespan: bool = True
     ) -> Starlette:
@@ -576,6 +658,7 @@ class MCPRouter:
         )
         return app
 
+    @deprecated
     async def start_sse_server(
         self, host: str = "localhost", port: int = 8080, allow_origins: t.Optional[t.List[str]] = None
     ) -> None:
@@ -588,6 +671,30 @@ class MCPRouter:
             allow_origins: List of allowed origins for CORS
         """
         app = await self.get_sse_server_app(allow_origins)
+
+        # Configure and start the server
+        config = uvicorn.Config(
+            app,
+            host=host,
+            port=port,
+            log_level="info",
+        )
+        server_instance = uvicorn.Server(config)
+        await server_instance.serve()
+
+    async def start_remote_server(
+        self, host: str = "localhost", port: int = 8080, allow_origins: t.Optional[t.List[str]] = None
+    ) -> None:
+        """
+        Start a remote server that exposes the aggregated MCP server.
+        Supports both HTTP and SSE.
+
+        Args:
+            host: The host to bind to
+            port: The port to bind to
+            allow_origins: List of allowed origins for CORS
+        """
+        app = self.get_remote_server_app(allow_origins)
 
         # Configure and start the server
         config = uvicorn.Config(
@@ -612,3 +719,29 @@ class MCPRouter:
         self.error_log_manager.close_all()
 
         logger.info("all alive client sessions have been shut down")
+
+
+class AuthMiddleware(BaseHTTPMiddleware):
+    def __init__(self, app: t.Callable[[Scope, Receive, Send], t.Awaitable[None]], api_key: str):
+        super().__init__(app)
+        self.api_key = api_key
+
+    async def dispatch(self, request: Request, call_next: t.Callable[[Request], t.Awaitable[Response]]):
+        auth_header = request.headers.get(MCPM_AUTH_HEADER)
+        if auth_header is None or auth_header != self.api_key:
+            return JSONResponse(status_code=401, content={"error": "Unauthorized"})
+        return await call_next(request)
+
+
+class ProfileMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next: t.Callable[[Request], t.Awaitable[Response]]):
+        profile = request.headers.get(MCPM_PROFILE_HEADER)
+        logger.info(f"Profile middleware: {profile}")
+        if profile is None:
+            return JSONResponse(status_code=400, content={"error": "Profile is required"})
+        body = await request.body()
+        logger.info(f"Profile body: {body}")
+        body = patch_meta_data(body, profile=profile)
+        request._body = body
+        logger.info(f"Profile new body: {body}")
+        return await call_next(request)

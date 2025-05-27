@@ -17,7 +17,7 @@ from rich.prompt import Confirm
 
 from mcpm.clients.client_registry import ClientRegistry
 from mcpm.router.share import Tunnel
-from mcpm.utils.config import ConfigManager
+from mcpm.utils.config import MCPM_AUTH_HEADER, MCPM_PROFILE_HEADER, ConfigManager
 from mcpm.utils.platform import get_log_directory, get_pid_directory
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
@@ -116,8 +116,9 @@ def router():
 
 @router.command(name="on")
 @click.help_option("-h", "--help")
+@click.option("--sse", "-s", is_flag=True, help="Use SSE endpoint(deprecated)")
 @click.option("--verbose", "-v", is_flag=True, help="Enable verbose output")
-def start_router(verbose):
+def start_router(sse, verbose):
     """Start MCPRouter as a daemon process.
 
     Example:
@@ -140,12 +141,17 @@ def start_router(verbose):
     auth_enabled = config.get("auth_enabled", False)
     api_key = config.get("api_key")
 
+    if sse:
+        app_path = "mcpm.router.sse_app:app"
+    else:
+        app_path = "mcpm.router.app:app"
+
     # prepare uvicorn command
     uvicorn_cmd = [
         sys.executable,
         "-m",
         "uvicorn",
-        "mcpm.router.app:app",
+        app_path,
         "--host",
         host,
         "--port",
@@ -197,17 +203,29 @@ def start_router(verbose):
 
         api_key = api_key if auth_enabled else None
 
-        # Show URL with or without authentication based on API key availability
-        if api_key:
-            # Show authenticated URL
-            console.print(f"SSE Server URL: [green]http://{host}:{port}/sse?s={api_key}[/]")
-            console.print("\n[bold cyan]To use a specific profile with authentication:[/]")
-            console.print(f"[green]http://{host}:{port}/sse?s={api_key}&profile=<profile_name>[/]")
+        if sse:
+            console.print("\n[bold yellow]SSE router is not recommended[/]")
+            console.print(f"Remote Server URL: [green]http://{host}:{port}/sse[/]")
+            if api_key:
+                console.print("\n[bold cyan]To use a specific profile with authentication:[/]")
+                console.print(
+                    f"Remote Server URL with authentication: [green]http://{host}:{port}/sse?s={api_key}&profile=<profile_name>[/]"
+                )
+            else:
+                console.print("\n[bold cyan]To use a specific profile:[/]")
+                console.print(
+                    f"Remote Server URL with authentication: [green]http://{host}:{port}/sse?profile=<profile_name>[/]"
+                )
         else:
-            # Show URL without authentication
-            console.print(f"SSE Server URL: [green]http://{host}:{port}/sse[/]")
-            console.print("\n[bold cyan]To use a specific profile:[/]")
-            console.print(f"[green]http://{host}:{port}/sse?profile=<profile_name>[/]")
+            console.print(f"Remote Server URL: [green]http://{host}:{port}/mcp/[/]")
+            if api_key:
+                console.print("\n[bold cyan]To use a specific profile with authentication:[/]")
+                console.print("[bold]Request headers:[/]")
+                console.print(f"{MCPM_AUTH_HEADER}: {api_key}")
+            else:
+                console.print("\n[bold cyan]To use a specific profile:[/]")
+                console.print("[bold]Request headers:[/]")
+            console.print(f"{MCPM_PROFILE_HEADER}: <profile_name>")
 
         console.print("\n[yellow]Use 'mcpm router off' to stop the router.[/]")
 
@@ -432,16 +450,18 @@ def share(address, profile, http):
     share_url = tunnel.start_tunnel()
     share_pid = tunnel.proc.pid if tunnel.proc else None
     api_key = config.get("api_key") if config.get("auth_enabled") else None
-    share_url = share_url + "/sse"
+
+    share_url = share_url + "/mcp/"
     # save share pid and link to config
     config_manager.save_share_config(share_url, share_pid)
     profile = profile or "<your_profile>"
 
     # print share link
     console.print(f"[bold green]Router is sharing at {share_url}[/]")
-    console.print(
-        f"[green]Your profile can be accessed with the url {share_url}?{f's={api_key}&' if api_key else ''}profile={profile}[/]\n"
-    )
+    console.print(f"[green]Your profile can be accessed with the url {share_url}[/]\n")
+    if api_key:
+        console.print(f"[green]Authorize with header {MCPM_AUTH_HEADER}: {api_key}[/]")
+    console.print(f"[green]Specify profile with header {MCPM_PROFILE_HEADER}: {profile}[/]")
     console.print(
         "[bold yellow]Be careful about the share link, it will be exposed to the public. Make sure to share to trusted users only.[/]"
     )

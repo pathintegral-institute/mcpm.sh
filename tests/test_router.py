@@ -11,7 +11,7 @@ from mcp.types import ListToolsResult, ServerCapabilities, Tool, ToolsCapability
 from mcpm.router.client_connection import ServerConnection
 from mcpm.router.router import MCPRouter
 from mcpm.router.router_config import RouterConfig
-from mcpm.schemas.server_config import SSEServerConfig
+from mcpm.schemas.server_config import RemoteServerConfig
 
 
 @pytest.fixture
@@ -84,7 +84,7 @@ async def test_add_server(mock_server_connection):
     with patch.object(router, "_patch_handler_func", wraps=router._patch_handler_func) as mock_patch_handler:
         mock_patch_handler.return_value.get_active_servers = mock_get_active_servers
 
-        server_config = SSEServerConfig(name="test-server", url="http://localhost:8080/sse")
+        server_config = RemoteServerConfig(name="test-server", url="http://localhost:8080/sse")
 
         with patch("mcpm.router.router.ServerConnection", return_value=mock_server_connection):
             await router.add_server("test-server", server_config)
@@ -109,7 +109,7 @@ async def test_add_server(mock_server_connection):
 async def test_add_server_unhealthy():
     """Test adding an unhealthy server"""
     router = MCPRouter()
-    server_config = SSEServerConfig(name="unhealthy-server", url="http://localhost:8080/sse")
+    server_config = RemoteServerConfig(name="unhealthy-server", url="http://localhost:8080/sse")
 
     mock_conn = MagicMock(spec=ServerConnection)
     mock_conn.healthy.return_value = False
@@ -178,7 +178,7 @@ async def test_update_servers(mock_server_connection):
         router.capabilities_mapping = {"old-server": {"tools": True}}
 
         # Configure new servers
-        server_configs = [SSEServerConfig(name="test-server", url="http://localhost:8080/sse")]
+        server_configs = [RemoteServerConfig(name="test-server", url="http://localhost:8080/sse")]
 
         with patch("mcpm.router.router.ServerConnection", return_value=mock_server_connection):
             await router.update_servers(server_configs)
@@ -211,7 +211,7 @@ async def test_update_servers_error_handling():
     router.capabilities_mapping = {"old-server": {"tools": True}}
 
     # Configure new servers
-    server_configs = [SSEServerConfig(name="test-server", url="http://localhost:8080/sse")]
+    server_configs = [RemoteServerConfig(name="test-server", url="http://localhost:8080/sse")]
 
     # Mock add_server to raise exception
     with patch.object(router, "add_server", side_effect=Exception("Test error")):

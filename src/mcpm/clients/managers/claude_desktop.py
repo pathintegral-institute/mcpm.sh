@@ -7,7 +7,7 @@ import os
 from typing import Any, Dict
 
 from mcpm.clients.base import JSONClientManager
-from mcpm.core.schema import ServerConfig, SSEServerConfig
+from mcpm.core.schema import RemoteServerConfig, ServerConfig
 from mcpm.utils.router_server import format_server_url_with_proxy_headers
 
 logger = logging.getLogger(__name__)
@@ -117,7 +117,7 @@ class ClaudeDesktopManager(JSONClientManager):
         return format_server_url_with_proxy_headers(self.client_key, profile_name, base_url)
 
     def to_client_format(self, server_config: ServerConfig) -> Dict[str, Any]:
-        if isinstance(server_config, SSEServerConfig):
+        if isinstance(server_config, RemoteServerConfig):
             # use mcp proxy to convert to stdio as sse is not supported for claude desktop yet
             return self.to_client_format(server_config.to_mcp_proxy_stdio())
         return super().to_client_format(server_config)

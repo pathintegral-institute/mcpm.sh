@@ -6,7 +6,7 @@ from rich.console import Console
 from rich.markup import escape
 from rich.table import Table
 
-from mcpm.core.schema import ServerConfig, SSEServerConfig
+from mcpm.core.schema import RemoteServerConfig, ServerConfig
 from mcpm.utils.scope import CLIENT_PREFIX, PROFILE_PREFIX
 
 console = Console()
@@ -25,7 +25,7 @@ def print_server_config(server_config: ServerConfig, is_stashed=False):
     else:
         console.print(f"[bold cyan]{server_config.name}[/]")
 
-    if isinstance(server_config, SSEServerConfig):
+    if isinstance(server_config, RemoteServerConfig):
         console.print(f"  Url: [green]{server_config.url}[/]")
         headers = server_config.headers
         if headers:

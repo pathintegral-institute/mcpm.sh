@@ -53,7 +53,7 @@ class STDIOServerConfig(BaseServerConfig):
         return filtered_env
 
 
-class SSEServerConfig(BaseServerConfig):
+class RemoteServerConfig(BaseServerConfig):
     url: str
     headers: Dict[str, Any] = {}
 
@@ -75,7 +75,7 @@ class SSEServerConfig(BaseServerConfig):
         )
 
 
-ServerConfig = Union[STDIOServerConfig, SSEServerConfig]
+ServerConfig = Union[STDIOServerConfig, RemoteServerConfig]
 
 
 class Profile(BaseModel):

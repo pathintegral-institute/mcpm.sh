@@ -1,8 +1,8 @@
-from mcpm.core.schema import ServerConfig, SSEServerConfig, STDIOServerConfig
+from mcpm.core.schema import RemoteServerConfig, ServerConfig, STDIOServerConfig
 
 
 def format_server_url(client: str, profile: str, router_url: str, server_name: str | None = None) -> ServerConfig:
-    return SSEServerConfig(
+    return RemoteServerConfig(
         name=server_name if server_name else profile,
         url=f"{router_url}?/client={client}&profile={profile}",
     )
