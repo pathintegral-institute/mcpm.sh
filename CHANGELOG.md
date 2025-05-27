@@ -1,3 +1,10 @@
+# [1.13.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.12.0...v1.13.0) (2025-05-27)
+
+
+### Features
+
+* router proxy with streamable http server by default ([#155](https://github.com/pathintegral-institute/mcpm.sh/issues/155)) ([b929ced](https://github.com/pathintegral-institute/mcpm.sh/commit/b929ced08b3c7e40736f107379360eabd817bf1d))
+
 # [1.12.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.11.0...v1.12.0) (2025-05-19)
 
 
