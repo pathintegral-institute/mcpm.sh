@@ -615,18 +615,17 @@ class MCPRouter:
         sse = RouterSseTransport("/messages/", api_key=api_key)
 
         async def handle_sse(request: Request) -> Response:
-            async def app(scope: Scope, receive: Receive, send: Send) -> None:
-                async with sse.connect_sse(
-                    scope,
-                    receive,
-                    send,
-                ) as (read_stream, write_stream):
-                    await self.aggregated_server.run(
-                        read_stream,
-                        write_stream,
-                        self.aggregated_server.initialization_options,
-                    )
-            return app
+            async with sse.connect_sse(
+                scope,
+                receive,
+                send,
+            ) as (read_stream, write_stream):
+                await self.aggregated_server.run(
+                    read_stream,
+                    write_stream,
+                    self.aggregated_server.initialization_options,
+                )
+            return Response()
 
         lifespan_handler: t.Optional[Lifespan[Starlette]] = None
         if include_lifespan:
