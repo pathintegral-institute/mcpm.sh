@@ -614,7 +614,7 @@ class MCPRouter:
         api_key = None if not self.router_config.auth_enabled else self.router_config.api_key
         sse = RouterSseTransport("/messages/", api_key=api_key)
 
-        async def handle_sse(request: Request):
+        async def handle_sse(request: Request) -> Response:
             async def app(scope: Scope, receive: Receive, send: Send) -> None:
                 async with sse.connect_sse(
                     scope,
