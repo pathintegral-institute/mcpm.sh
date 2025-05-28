@@ -616,9 +616,9 @@ class MCPRouter:
 
         async def handle_sse(request: Request) -> Response:
             async with sse.connect_sse(
-                scope,
-                receive,
-                send,
+                request.scope,
+                request.receive,
+                request._send,  # noqa: SLF001
             ) as (read_stream, write_stream):
                 await self.aggregated_server.run(
                     read_stream,
