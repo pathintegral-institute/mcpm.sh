@@ -614,7 +614,7 @@ class MCPRouter:
         api_key = None if not self.router_config.auth_enabled else self.router_config.api_key
         sse = RouterSseTransport("/messages/", api_key=api_key)
 
-        async def handle_sse(request: Request) -> None:
+        async def handle_sse(request: Request) -> Response:
             async with sse.connect_sse(
                 request.scope,
                 request.receive,
@@ -625,6 +625,7 @@ class MCPRouter:
                     write_stream,
                     self.aggregated_server.initialization_options,
                 )
+            return Response()
 
         lifespan_handler: t.Optional[Lifespan[Starlette]] = None
         if include_lifespan:
