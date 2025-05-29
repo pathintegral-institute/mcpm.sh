@@ -1,3 +1,10 @@
+## [1.13.1](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.13.0...v1.13.1) (2025-05-29)
+
+
+### Bug Fixes
+
+*  Fix handle_sse method to match Starlette route endpoint expectations ([#156](https://github.com/pathintegral-institute/mcpm.sh/issues/156)) ([7d13fc1](https://github.com/pathintegral-institute/mcpm.sh/commit/7d13fc12d25d454adf8dd424b2f3a9f39c256815))
+
 # [1.13.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.12.0...v1.13.0) (2025-05-27)
 
 
