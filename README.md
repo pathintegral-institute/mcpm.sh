@@ -23,7 +23,7 @@ MCPM is an open source service and a CLI package management tool for MCP servers
 
 ## 🤝 Community Contributions
 
-> 💡 **Grow the MCP ecosystem!** We welcome contributions to our [MCP Registry](mcp-registry/README.md). Add your own servers, improve documentation, or suggest features. Open source thrives with community participation!
+> 💡 **Internal MCP Registry!** This project includes an [Internal MCP Registry](mcp-registry/README.md) with 9 curated and tested MCP servers. The registry provides reliable, verified servers for production use. Community contributions to the main MCPM tool are welcome!
 
 ## 🚀 Quick Installation
 
@@ -153,9 +153,9 @@ mcpm config clear-cache          # Clear MCPM's registry cache. Cache defaults t
 mcpm inspector                   # Launch the MCPM Inspector UI to examine server configs
 ```
 
-### 📚 Registry
+### 📚 Internal Registry
 
-The MCP Registry is a central repository of available MCP servers that can be installed using MCPM. The registry is available at [mcpm.sh/registry](https://mcpm.sh/registry).
+This project includes an internal MCP Registry with 9 curated and tested MCP servers that can be installed using MCPM. The internal registry contains reliable servers for production use, including both internal (Melio) and verified external servers.
 
 ## 🗺️ Roadmap
 

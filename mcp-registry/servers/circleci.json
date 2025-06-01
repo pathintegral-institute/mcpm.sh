@@ -1,0 +1,269 @@
+{
+  "name": "circleci",
+  "display_name": "CircleCI MCP Server",
+  "description": "Official CircleCI MCP server for managing CI/CD pipelines, monitoring builds, and interacting with CircleCI projects through the Model Context Protocol.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CircleCI-Public/mcp-server-circleci"
+  },
+  "homepage": "https://github.com/CircleCI-Public/mcp-server-circleci",
+  "author": {
+    "name": "CircleCI"
+  },
+  "license": "MIT",
+  "categories": [
+    "Dev Tools",
+    "Professional Apps"
+  ],
+  "tags": [
+    "circleci",
+    "ci-cd",
+    "continuous-integration",
+    "deployment",
+    "automation",
+    "devops",
+    "model-context-protocol"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@circleci/mcp-server"
+      ],
+      "env": {
+        "CIRCLECI_TOKEN": "${CIRCLECI_TOKEN}"
+      },
+      "description": "Using npm to run the CircleCI MCP server",
+      "recommended": true
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "CIRCLECI_TOKEN",
+        "circleci/mcp-server"
+      ],
+      "env": {
+        "CIRCLECI_TOKEN": "${CIRCLECI_TOKEN}"
+      },
+      "description": "Using Docker to run the CircleCI MCP server"
+    }
+  },
+  "arguments": {
+    "CIRCLECI_TOKEN": {
+      "description": "CircleCI personal API token for authentication",
+      "required": true,
+      "example": "circle-token-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    }
+  },
+  "tools": [
+    {
+      "name": "list_projects",
+      "description": "List all CircleCI projects",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "vcs_type": {
+            "type": "string",
+            "description": "Version control system type (github, bitbucket)"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "get_project",
+      "description": "Get details of a specific project",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "vcs_type": {
+            "type": "string",
+            "description": "Version control system type (github, bitbucket)"
+          },
+          "username": {
+            "type": "string",
+            "description": "Username or organization name"
+          },
+          "project": {
+            "type": "string",
+            "description": "Project name"
+          }
+        },
+        "required": ["vcs_type", "username", "project"]
+      }
+    },
+    {
+      "name": "list_recent_builds",
+      "description": "List recent builds for a project",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "vcs_type": {
+            "type": "string",
+            "description": "Version control system type (github, bitbucket)"
+          },
+          "username": {
+            "type": "string",
+            "description": "Username or organization name"
+          },
+          "project": {
+            "type": "string",
+            "description": "Project name"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Number of builds to return"
+          },
+          "branch": {
+            "type": "string",
+            "description": "Specific branch to filter builds"
+          }
+        },
+        "required": ["vcs_type", "username", "project"]
+      }
+    },
+    {
+      "name": "get_build",
+      "description": "Get details of a specific build",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "vcs_type": {
+            "type": "string",
+            "description": "Version control system type (github, bitbucket)"
+          },
+          "username": {
+            "type": "string",
+            "description": "Username or organization name"
+          },
+          "project": {
+            "type": "string",
+            "description": "Project name"
+          },
+          "build_num": {
+            "type": "integer",
+            "description": "Build number"
+          }
+        },
+        "required": ["vcs_type", "username", "project", "build_num"]
+      }
+    },
+    {
+      "name": "trigger_build",
+      "description": "Trigger a new build",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "vcs_type": {
+            "type": "string",
+            "description": "Version control system type (github, bitbucket)"
+          },
+          "username": {
+            "type": "string",
+            "description": "Username or organization name"
+          },
+          "project": {
+            "type": "string",
+            "description": "Project name"
+          },
+          "branch": {
+            "type": "string",
+            "description": "Branch to build"
+          },
+          "parameters": {
+            "type": "object",
+            "description": "Build parameters"
+          }
+        },
+        "required": ["vcs_type", "username", "project"]
+      }
+    },
+    {
+      "name": "cancel_build",
+      "description": "Cancel a running build",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "vcs_type": {
+            "type": "string",
+            "description": "Version control system type (github, bitbucket)"
+          },
+          "username": {
+            "type": "string",
+            "description": "Username or organization name"
+          },
+          "project": {
+            "type": "string",
+            "description": "Project name"
+          },
+          "build_num": {
+            "type": "integer",
+            "description": "Build number to cancel"
+          }
+        },
+        "required": ["vcs_type", "username", "project", "build_num"]
+      }
+    },
+    {
+      "name": "get_build_artifacts",
+      "description": "Get artifacts from a build",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "vcs_type": {
+            "type": "string",
+            "description": "Version control system type (github, bitbucket)"
+          },
+          "username": {
+            "type": "string",
+            "description": "Username or organization name"
+          },
+          "project": {
+            "type": "string",
+            "description": "Project name"
+          },
+          "build_num": {
+            "type": "integer",
+            "description": "Build number"
+          }
+        },
+        "required": ["vcs_type", "username", "project", "build_num"]
+      }
+    }
+  ],
+  "examples": [
+    {
+      "title": "List projects",
+      "description": "Get a list of all your CircleCI projects",
+      "prompt": "Show me all my CircleCI projects"
+    },
+    {
+      "title": "Check recent builds",
+      "description": "Get recent builds for a specific project",
+      "prompt": "Show me the last 10 builds for my project 'my-app'"
+    },
+    {
+      "title": "Trigger build",
+      "description": "Trigger a new build for a project",
+      "prompt": "Trigger a build for the main branch of my project"
+    },
+    {
+      "title": "Get build details",
+      "description": "Get detailed information about a specific build",
+      "prompt": "Show me details for build #123 of my project"
+    },
+    {
+      "title": "Cancel build",
+      "description": "Cancel a running build",
+      "prompt": "Cancel build #456 that's currently running"
+    }
+  ],
+  "is_official": true
+}

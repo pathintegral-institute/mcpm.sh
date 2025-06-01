@@ -1,0 +1,215 @@
+{
+  "name": "serverless",
+  "display_name": "Serverless Framework MCP Server",
+  "description": "Serverless Framework – Effortlessly build apps that auto-scale, incur zero costs when idle, and require minimal maintenance using AWS Lambda and other managed cloud services.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/serverless/serverless"
+  },
+  "homepage": "https://www.serverless.com/",
+  "author": {
+    "name": "Serverless Inc."
+  },
+  "license": "MIT",
+  "categories": [
+    "Dev Tools",
+    "System Tools",
+    "Professional Apps"
+  ],
+  "tags": [
+    "serverless",
+    "aws",
+    "lambda",
+    "cloud",
+    "framework",
+    "deployment",
+    "infrastructure",
+    "model-context-protocol"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "serverless-mcp-server"
+      ],
+      "env": {
+        "AWS_ACCESS_KEY_ID": "${AWS_ACCESS_KEY_ID}",
+        "AWS_SECRET_ACCESS_KEY": "${AWS_SECRET_ACCESS_KEY}"
+      },
+      "description": "Using npm to run the Serverless Framework MCP server",
+      "recommended": true
+    },
+    "cli": {
+      "type": "cli",
+      "command": "sls",
+      "args": [
+        "mcp",
+        "start"
+      ],
+      "env": {
+        "AWS_ACCESS_KEY_ID": "${AWS_ACCESS_KEY_ID}",
+        "AWS_SECRET_ACCESS_KEY": "${AWS_SECRET_ACCESS_KEY}"
+      },
+      "description": "Using Serverless CLI to run the MCP server"
+    }
+  },
+  "arguments": {
+    "AWS_ACCESS_KEY_ID": {
+      "description": "AWS Access Key ID for deployment and management",
+      "required": true,
+      "example": "AKIAIOSFODNN7EXAMPLE"
+    },
+    "AWS_SECRET_ACCESS_KEY": {
+      "description": "AWS Secret Access Key for deployment and management",
+      "required": true,
+      "example": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+    }
+  },
+  "tools": [
+    {
+      "name": "create_service",
+      "description": "Create a new Serverless service",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Service name"
+          },
+          "template": {
+            "type": "string",
+            "description": "Template to use (e.g., aws-nodejs, aws-python3)"
+          },
+          "path": {
+            "type": "string",
+            "description": "Path where to create the service"
+          }
+        },
+        "required": ["name"]
+      }
+    },
+    {
+      "name": "deploy_service",
+      "description": "Deploy a Serverless service",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "stage": {
+            "type": "string",
+            "description": "Deployment stage (e.g., dev, prod)"
+          },
+          "region": {
+            "type": "string",
+            "description": "AWS region for deployment"
+          },
+          "function": {
+            "type": "string",
+            "description": "Specific function to deploy (optional)"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "invoke_function",
+      "description": "Invoke a deployed function",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "function": {
+            "type": "string",
+            "description": "Function name to invoke"
+          },
+          "stage": {
+            "type": "string",
+            "description": "Stage where the function is deployed"
+          },
+          "data": {
+            "type": "object",
+            "description": "Data to pass to the function"
+          }
+        },
+        "required": ["function"]
+      }
+    },
+    {
+      "name": "list_functions",
+      "description": "List all functions in a service",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "stage": {
+            "type": "string",
+            "description": "Stage to list functions from"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "get_logs",
+      "description": "Get logs for a function",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "function": {
+            "type": "string",
+            "description": "Function name"
+          },
+          "stage": {
+            "type": "string",
+            "description": "Stage"
+          },
+          "startTime": {
+            "type": "string",
+            "description": "Start time for logs"
+          },
+          "tail": {
+            "type": "boolean",
+            "description": "Tail the logs"
+          }
+        },
+        "required": ["function"]
+      }
+    },
+    {
+      "name": "remove_service",
+      "description": "Remove a deployed service",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "stage": {
+            "type": "string",
+            "description": "Stage to remove"
+          }
+        },
+        "required": []
+      }
+    }
+  ],
+  "examples": [
+    {
+      "title": "Create new service",
+      "description": "Create a new Serverless service from a template",
+      "prompt": "Create a new Node.js Serverless service called 'my-api'"
+    },
+    {
+      "title": "Deploy service",
+      "description": "Deploy a Serverless service to AWS",
+      "prompt": "Deploy my service to the production stage"
+    },
+    {
+      "title": "Invoke function",
+      "description": "Invoke a deployed Lambda function",
+      "prompt": "Invoke the 'hello' function with test data"
+    },
+    {
+      "title": "Get function logs",
+      "description": "Get logs for a specific function",
+      "prompt": "Show me the logs for the 'processData' function from the last hour"
+    }
+  ],
+  "is_official": true
+}

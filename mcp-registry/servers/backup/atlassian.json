@@ -1,0 +1,102 @@
+{
+  "name": "atlassian",
+  "display_name": "Atlassian",
+  "description": "Interact with Atlassian Cloud products (Confluence and Jira) including searching/reading Confluence spaces/pages, accessing Jira issues, and project metadata.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sooperset/mcp-atlassian"
+  },
+  "homepage": "https://github.com/sooperset/mcp-atlassian",
+  "author": {
+    "name": "sooperset"
+  },
+  "license": "MIT",
+  "categories": [
+    "Productivity"
+  ],
+  "tags": [
+    "Atlassian",
+    "Confluence",
+    "Jira"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "mcp-atlassian",
+        "--confluence-url=${CONFLUENCE_URL}",
+        "--confluence-username=${CONFLUENCE_USERNAME}",
+        "--confluence-token=${CONFLUENCE_TOKEN}",
+        "--jira-url=${JIRA_URL}",
+        "--jira-username=${JIRA_USERNAME}",
+        "--jira-token=${JIRA_TOKEN}"
+      ],
+      "description": "Run with uvx (requires uv install)"
+    },
+    "python": {
+      "type": "python",
+      "command": "python",
+      "args": [
+        "-m",
+        "mcp-atlassian",
+        "--confluence-url=${CONFLUENCE_URL}",
+        "--confluence-username=${CONFLUENCE_USERNAME}",
+        "--confluence-token=${CONFLUENCE_TOKEN}",
+        "--jira-url=${JIRA_URL}",
+        "--jira-username=${JIRA_USERNAME}",
+        "--jira-token=${JIRA_TOKEN}"
+      ],
+      "description": "Run with Python module (requires pip install)"
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "mcp/atlassian",
+        "--confluence-url=${CONFLUENCE_URL}",
+        "--confluence-username=${CONFLUENCE_USERNAME}",
+        "--confluence-token=${CONFLUENCE_TOKEN}",
+        "--jira-url=${JIRA_URL}",
+        "--jira-username=${JIRA_USERNAME}",
+        "--jira-token=${JIRA_TOKEN}"
+      ]
+    }
+  },
+  "arguments": {
+    "CONFLUENCE_URL": {
+      "description": "The URL of the Confluence site to connect to. Required for both Cloud and Server/Data Center deployments.",
+      "required": true,
+      "example": "https://your-company.atlassian.net/wiki or https://confluence.your-company.com"
+    },
+    "CONFLUENCE_USERNAME": {
+      "description": "The username for the Confluence account (email for Cloud). Required to authenticate with Confluence.",
+      "required": true,
+      "example": "your.email@company.com"
+    },
+    "CONFLUENCE_TOKEN": {
+      "description": "The API token or personal access token for the Confluence account. Required for authentication with Confluence.",
+      "required": true,
+      "example": "your_api_token or your_token"
+    },
+    "JIRA_URL": {
+      "description": "The URL of the Jira site to connect to. Required for both Cloud and Server/Data Center deployments.",
+      "required": true,
+      "example": "https://your-company.atlassian.net or https://jira.your-company.com"
+    },
+    "JIRA_USERNAME": {
+      "description": "The username for the Jira account (email for Cloud). Required to authenticate with Jira.",
+      "required": true,
+      "example": "your.email@company.com"
+    },
+    "JIRA_TOKEN": {
+      "description": "The API token or personal access token for the Jira account. Required for authentication with Jira.",
+      "required": true,
+      "example": "your_api_token or your_token"
+    }
+  },
+  "tools": []
+}

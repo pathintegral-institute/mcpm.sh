@@ -1,10 +1,10 @@
-# 📚 MCP Server Registry
+# 🔧 Internal MCP Installer
 
-The MCP Server Registry is a central repository of [Model Context Protocol](https://modelcontextprotocol.github.io/) servers. This registry enables easy discovery and installation of MCP servers for clients like Claude Desktop, Cursor, and Windsurf.
+This is an internal MCP (Model Context Protocol) installer containing a curated set of 9 supported MCP servers. This installer provides reliable, tested MCP servers for use with clients like Claude Desktop, Cursor, and Windsurf.
 
 <div align="center">
-<img src="https://img.shields.io/badge/Status-Active-brightgreen" alt="Status: Active">
-<img src="https://img.shields.io/badge/Contributions-Welcome-blue" alt="Contributions: Welcome">
+<img src="https://img.shields.io/badge/Status-Internal-orange" alt="Status: Internal">
+<img src="https://img.shields.io/badge/Servers-9-blue" alt="Servers: 9">
 </div>
 
 ## 🤔 What is MCP?
@@ -15,65 +15,81 @@ Model Context Protocol (MCP) is a standard for building LLM-powered tools. It en
 - 🧩 **Composable**: Mix and match tools from different providers
 - 🚀 **Portable**: Works across different clients and environments
 
-## 🧰 How to Use This Registry
+## 📦 Supported MCP Servers
 
-### 🔍 Browsing Servers
+This internal installer includes the following 9 curated MCP servers:
 
-Browse the `servers` directory to find MCP servers that match your needs. Each server has its own directory with:
+### Internal Servers (Melio)
+- **atlassian.json** - Atlassian/Jira integration tools
+- **figma.json** - Figma design tool integration
+- **mysql.json** - MySQL database operations
 
-- 📄 `[server-name].json` - Configuration details including endpoint, capabilities, and version
-- 📝 `README.md` - Documentation with usage examples and requirements
-- 🧪 Examples folder (optional)
+### External Servers (Verified)
+- **aws.json** - AWS cloud services integration (awslabs)
+- **circleci.json** - CircleCI CI/CD pipeline integration (CircleCI-Public)
+- **github.json** - GitHub repository and issue management (github)
+- **notion-mcp.json** - Notion workspace integration (makenotion)
+- **playwright-mcp.json** - Browser automation and testing (microsoft)
+- **serverless.json** - Serverless framework operations (serverless)
+
+## 🧰 How to Use This Installer
+
+### 🔍 Browsing Available Servers
+
+Browse the `servers/` directory to find the 9 supported MCP servers. Each server configuration file (`*.json`) contains:
+
+- 📄 Server metadata and configuration details
+- 🔗 Installation endpoints and version information
+- 🏷️ Categorization and capability descriptions
 
 ### ⬇️ Installing Servers
 
-You can install servers from this registry using:
+Install servers using [MCPM](https://github.com/pathintegral-institute/mcpm.sh):
 
-1. **[MCPM](https://github.com/pathintegral-institute/mcpm.sh)**: Our recommended tool
-   ```bash
-   # Install a server by name
-   mcpm add server-name
-   ```
+```bash
+# Install a server by name
+mcpm add server-name
 
-2. **Manual Configuration**: Add the server URL directly to your MCP client's configuration
+# Examples:
+mcpm add atlassian
+mcpm add github
+mcpm add playwright-mcp
+```
 
-## 🤝 Contributing Your Server
+Alternatively, you can manually configure servers using the URLs and settings from the JSON files.
 
-We welcome contributions! There are two ways to add your server to the registry:
+## 🏗️ Server Categories
 
-### 1. Create a GitHub Issue (Easiest)
+Our 9 supported servers are organized by functionality:
 
-Simply create a [new GitHub issue](https://github.com/pathintegral-institute/mcp-registry/issues/new) with:
-
-- Title: "Add server: [your-server-name]"
-- Body: URL to your server details or API documentation
-- We'll automatically generate the necessary files and create a PR for you
-
-### 2. Submit a Pull Request
-
-For more control over your submission:
-
-1. Fork this repository
-2. Create a new directory in `servers/` with your server name
-3. Add your `manifest.json` following our [schema](schema/manifest-schema.json)
-4. Submit a pull request
-
-For detailed instructions, see the [Contributing Guidelines](CONTRIBUTING.md).
+- **Development Tools**: github, circleci, playwright-mcp, serverless
+- **Design & Productivity**: figma, notion-mcp
+- **Infrastructure**: aws, mysql
+- **Project Management**: atlassian
 
 ## 📂 Registry Structure
 
 ```
 mcp-registry/
-├── README.md               # Overview, usage instructions
-├── CONTRIBUTING.md         # Guidelines for contributing servers
-├── servers/                # Directory containing all registered servers
-│   ├── [server-name]/      # Directory for each server
-│   │   ├── manifest.json   # Server metadata and configuration
-│   │   └── README.md       # Detailed server documentation
+├── README.md               # This file - overview and usage
+├── servers/                # 9 supported MCP server configurations
+│   ├── atlassian.json      # Atlassian/Jira integration
+│   ├── aws.json           # AWS cloud services
+│   ├── circleci.json      # CircleCI CI/CD
+│   ├── figma.json         # Figma design tools
+│   ├── github.json        # GitHub integration
+│   ├── mysql.json         # MySQL database
+│   ├── notion-mcp.json    # Notion workspace
+│   ├── playwright-mcp.json # Browser automation
+│   └── serverless.json    # Serverless framework
 └── schema/                 # Schema definitions
-    └── manifest-schema.json  # JSON Schema for manifest validation
+    └── server-schema.json  # JSON Schema for server validation
 ```
+
+## 🔄 Updates and Maintenance
+
+This internal installer is maintained with a fixed set of 9 verified MCP servers. Updates to server configurations are applied through controlled releases to ensure compatibility and reliability.
 
 ## 📜 License
 
-This registry is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This internal installer is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
