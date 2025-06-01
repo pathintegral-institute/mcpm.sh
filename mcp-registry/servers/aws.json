@@ -1,7 +1,7 @@
 {
   "name": "awslabs",
-  "display_name": "AWS MCP Servers",
-  "description": "AWS MCP Servers — specialized MCP servers that bring AWS best practices directly to your development workflow. Includes support for various AWS services and operations.",
+  "display_name": "AWS Labs MCP Servers",
+  "description": "AWS MCP Servers — specialized MCP servers that bring AWS best practices directly to your development workflow. Multiple service-specific servers for different AWS services.",
   "repository": {
     "type": "git",
     "url": "https://github.com/awslabs/mcp"
@@ -25,58 +25,149 @@
     "amazon"
   ],
   "installations": {
-    "npm": {
-      "type": "npm",
-      "command": "npx",
+    "lambda-mcp-server": {
+      "type": "uvx",
+      "command": "uvx",
       "args": [
-        "-y",
-        "@awslabs/mcp-server"
+        "awslabs.lambda-mcp-server@latest"
       ],
       "env": {
-        "AWS_ACCESS_KEY_ID": "${AWS_ACCESS_KEY_ID}",
-        "AWS_SECRET_ACCESS_KEY": "${AWS_SECRET_ACCESS_KEY}",
-        "AWS_REGION": "${AWS_REGION}"
+        "AWS_PROFILE": "${AWS_PROFILE}",
+        "AWS_REGION": "${AWS_REGION}",
+        "FUNCTION_PREFIX": "${FUNCTION_PREFIX}",
+        "FUNCTION_LIST": "${FUNCTION_LIST}",
+        "FUNCTION_TAG_KEY": "${FUNCTION_TAG_KEY}",
+        "FUNCTION_TAG_VALUE": "${FUNCTION_TAG_VALUE}"
       },
-      "description": "Using npm to run the AWS MCP server",
+      "description": "AWS Lambda MCP server for managing Lambda functions",
       "recommended": true
     },
-    "python": {
-      "type": "python",
-      "command": "python",
+    "cloudformation": {
+      "type": "uvx",
+      "command": "uvx",
       "args": [
-        "-m",
-        "awslabs_mcp_server"
+        "awslabs.cfn-mcp-server@latest"
       ],
-      "package": "awslabs-mcp-server",
       "env": {
-        "AWS_ACCESS_KEY_ID": "${AWS_ACCESS_KEY_ID}",
-        "AWS_SECRET_ACCESS_KEY": "${AWS_SECRET_ACCESS_KEY}",
+        "AWS_PROFILE": "${AWS_PROFILE}",
         "AWS_REGION": "${AWS_REGION}"
       },
-      "description": "Using Python to run the AWS MCP server"
+      "description": "AWS CloudFormation MCP server for stack management"
+    },
+    "aws-documentation": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "awslabs.aws-documentation-mcp-server@latest"
+      ],
+      "env": {
+        "AWS_PROFILE": "${AWS_PROFILE}"
+      },
+      "description": "AWS Documentation MCP server for accessing AWS documentation"
+    },
+    "cdk": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "awslabs.cdk-mcp-server@latest"
+      ],
+      "env": {
+        "AWS_PROFILE": "${AWS_PROFILE}",
+        "AWS_REGION": "${AWS_REGION}"
+      },
+      "description": "AWS CDK MCP server for Cloud Development Kit operations"
+    },
+    "bedrock-kb-retrieval": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "awslabs.bedrock-kb-retrieval-mcp-server@latest"
+      ],
+      "env": {
+        "AWS_PROFILE": "${AWS_PROFILE}",
+        "AWS_REGION": "${AWS_REGION}"
+      },
+      "description": "AWS Bedrock Knowledge Base retrieval MCP server"
+    },
+    "core": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "awslabs.core-mcp-server@latest"
+      ],
+      "env": {
+        "AWS_PROFILE": "${AWS_PROFILE}",
+        "AWS_REGION": "${AWS_REGION}"
+      },
+      "description": "AWS Core MCP server for general AWS operations"
+    },
+    "nova-canvas": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "awslabs.nova-canvas-mcp-server@latest"
+      ],
+      "env": {
+        "AWS_PROFILE": "${AWS_PROFILE}",
+        "AWS_REGION": "${AWS_REGION}"
+      },
+      "description": "AWS Nova Canvas MCP server for canvas operations"
     }
   },
   "arguments": {
-    "AWS_ACCESS_KEY_ID": {
-      "description": "AWS Access Key ID for authentication",
+    "AWS_PROFILE": {
+      "description": "AWS profile to use for authentication",
       "required": true,
-      "example": "AKIAIOSFODNN7EXAMPLE"
-    },
-    "AWS_SECRET_ACCESS_KEY": {
-      "description": "AWS Secret Access Key for authentication",
-      "required": true,
-      "example": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+      "example": "your-aws-profile"
     },
     "AWS_REGION": {
       "description": "AWS region to use",
       "required": false,
       "example": "us-east-1"
+    },
+    "FUNCTION_PREFIX": {
+      "description": "Prefix for Lambda function names (Lambda server only)",
+      "required": false,
+      "example": "your-function-prefix"
+    },
+    "FUNCTION_LIST": {
+      "description": "Comma-separated list of Lambda function names (Lambda server only)",
+      "required": false,
+      "example": "your-first-function, your-second-function"
+    },
+    "FUNCTION_TAG_KEY": {
+      "description": "Tag key for filtering Lambda functions (Lambda server only)",
+      "required": false,
+      "example": "your-tag-key"
+    },
+    "FUNCTION_TAG_VALUE": {
+      "description": "Tag value for filtering Lambda functions (Lambda server only)",
+      "required": false,
+      "example": "your-tag-value"
     }
   },
   "tools": [
     {
-      "name": "list_s3_buckets",
-      "description": "List all S3 buckets in the account",
+      "name": "invoke_lambda_function",
+      "description": "Invoke a Lambda function (Lambda server)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "function_name": {
+            "type": "string",
+            "description": "Name of the Lambda function to invoke"
+          },
+          "payload": {
+            "type": "object",
+            "description": "Payload to send to the function"
+          }
+        },
+        "required": ["function_name"]
+      }
+    },
+    {
+      "name": "list_lambda_functions",
+      "description": "List Lambda functions (Lambda server)",
       "inputSchema": {
         "type": "object",
         "properties": {},
@@ -84,92 +175,104 @@
       }
     },
     {
-      "name": "create_s3_bucket",
-      "description": "Create a new S3 bucket",
+      "name": "deploy_cloudformation_stack",
+      "description": "Deploy a CloudFormation stack (CloudFormation server)",
       "inputSchema": {
         "type": "object",
         "properties": {
-          "bucket_name": {
+          "stack_name": {
             "type": "string",
-            "description": "Name of the S3 bucket to create"
+            "description": "Name of the CloudFormation stack"
           },
-          "region": {
+          "template_body": {
             "type": "string",
-            "description": "AWS region for the bucket"
+            "description": "CloudFormation template body"
           }
         },
-        "required": ["bucket_name"]
+        "required": ["stack_name", "template_body"]
       }
     },
     {
-      "name": "list_ec2_instances",
-      "description": "List EC2 instances",
+      "name": "list_cloudformation_stacks",
+      "description": "List CloudFormation stacks (CloudFormation server)",
       "inputSchema": {
         "type": "object",
-        "properties": {
-          "instance_ids": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "List of instance IDs to filter by"
-          }
-        },
+        "properties": {},
         "required": []
       }
     },
     {
-      "name": "describe_lambda_functions",
-      "description": "List and describe Lambda functions",
+      "name": "search_aws_docs",
+      "description": "Search AWS documentation (Documentation server)",
       "inputSchema": {
         "type": "object",
         "properties": {
-          "function_name": {
+          "query": {
             "type": "string",
-            "description": "Specific function name to describe"
+            "description": "Search query for AWS documentation"
           }
         },
-        "required": []
+        "required": ["query"]
       }
     },
     {
-      "name": "get_cloudformation_stacks",
-      "description": "List CloudFormation stacks",
+      "name": "deploy_cdk_stack",
+      "description": "Deploy a CDK stack (CDK server)",
       "inputSchema": {
         "type": "object",
         "properties": {
-          "stack_status_filter": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Filter stacks by status"
+          "stack_name": {
+            "type": "string",
+            "description": "Name of the CDK stack to deploy"
           }
         },
-        "required": []
+        "required": ["stack_name"]
+      }
+    },
+    {
+      "name": "query_bedrock_kb",
+      "description": "Query Bedrock knowledge base (Bedrock KB server)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Query for the knowledge base"
+          },
+          "kb_id": {
+            "type": "string",
+            "description": "Knowledge base ID"
+          }
+        },
+        "required": ["query", "kb_id"]
       }
     }
   ],
   "examples": [
     {
-      "title": "List S3 buckets",
-      "description": "Get a list of all S3 buckets in your AWS account",
-      "prompt": "Show me all my S3 buckets"
+      "title": "Invoke Lambda function",
+      "description": "Invoke a specific Lambda function with payload",
+      "prompt": "Invoke my 'process-data' Lambda function with test data"
     },
     {
-      "title": "Create S3 bucket",
-      "description": "Create a new S3 bucket with a specific name",
-      "prompt": "Create a new S3 bucket called 'my-data-bucket' in us-west-2"
+      "title": "Deploy CloudFormation stack",
+      "description": "Deploy a CloudFormation stack",
+      "prompt": "Deploy a new CloudFormation stack for my web application"
     },
     {
-      "title": "List EC2 instances",
-      "description": "Get information about EC2 instances",
-      "prompt": "Show me all my running EC2 instances"
+      "title": "Search AWS documentation",
+      "description": "Search AWS documentation for specific topics",
+      "prompt": "Search AWS documentation for Lambda best practices"
     },
     {
-      "title": "Lambda functions",
-      "description": "List all Lambda functions in the account",
-      "prompt": "What Lambda functions do I have deployed?"
+      "title": "Deploy CDK stack",
+      "description": "Deploy a CDK stack",
+      "prompt": "Deploy my CDK stack for the production environment"
+    },
+    {
+      "title": "Query Bedrock knowledge base",
+      "description": "Query a Bedrock knowledge base",
+      "prompt": "Search my company knowledge base for deployment procedures"
     }
   ],
   "is_official": true

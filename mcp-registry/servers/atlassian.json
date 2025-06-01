@@ -37,6 +37,32 @@
       },
       "description": "Using uvx to run the Atlassian MCP server",
       "recommended": true
+    },
+    "custom": {
+      "type": "custom",
+      "command": "git",
+      "args": [
+        "clone",
+        "https://github.com/melio/mcp-atlassian.git",
+        "&&",
+        "cd",
+        "mcp-atlassian",
+        "&&",
+        "pip",
+        "install",
+        "-e",
+        ".",
+        "&&",
+        "python",
+        "-m",
+        "mcp_atlassian"
+      ],
+      "env": {
+        "JIRA_API_TOKEN": "${JIRA_API_TOKEN}",
+        "JIRA_USERNAME": "${JIRA_USERNAME}",
+        "JIRA_INSTANCE_URL": "${JIRA_INSTANCE_URL}"
+      },
+      "description": "Install and run from GitHub repository"
     }
   },
   "arguments": {
