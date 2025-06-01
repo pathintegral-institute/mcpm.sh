@@ -4,11 +4,11 @@
   "description": "Give your coding agent direct access to Figma file data, helping it one-shot design implementation.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/GLips/Figma-Context-MCP"
+    "url": "https://github.com/melio/Figma-Context-MCP"
   },
-  "homepage": "https://github.com/GLips/Figma-Context-MCP",
+  "homepage": "https://github.com/melio/Figma-Context-MCP",
   "author": {
-    "name": "GLips"
+    "name": "Melio"
   },
   "license": "MIT",
   "categories": [
@@ -19,14 +19,12 @@
     "AI"
   ],
   "installations": {
-    "npm": {
-      "type": "npm",
-      "command": "npx",
-      "args": [
-        "-y",
-        "figma-developer-mcp",
-        "--figma-api-key=${FIGMA_API_KEY}",
-        "--stdio"
+    "custom": {
+      "type": "custom",
+      "commands": [
+        "git clone https://github.com/melio/Figma-Context-MCP.git figma-context-mcp",
+        "cd figma-context-mcp && npm install",
+        "cd figma-context-mcp && node index.js --figma-api-key=${FIGMA_API_KEY}"
       ]
     }
   },
