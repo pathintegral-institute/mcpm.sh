@@ -21,6 +21,9 @@ wheels/
 .installed.cfg
 *.egg
 
+# Nix Build
+result
+
 # Virtual environments
 .venv
 venv/
