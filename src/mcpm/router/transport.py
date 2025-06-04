@@ -240,6 +240,7 @@ class RouterSseTransport(SseServerTransport):
                 logger.warning(f"Connection error when sending message to session {session_id}: {e}")
                 self._read_stream_writers.pop(session_id, None)
                 self._session_id_to_identifier.pop(session_id, None)
+        return response
 
     def _validate_api_key(self, scope: Scope, api_key: str | None) -> bool:
         # If api_key is explicitly set to None, disable API key validation
