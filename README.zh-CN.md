@@ -179,6 +179,31 @@ mcpm router share                 # 将router分享到公网
 mcpm router unshare               # 取消分享
 ```
 
+### 🤝 共享管理 (`share`)
+
+`mcpm share` 命令允许您将任何启动 MCP 服务器的 shell 命令，并立即将其公开为 SSE (Server-Sent Events) 服务器。它使用 `mcp-proxy` 处理服务器转换，然后创建一个安全隧道进行远程访问，使您的本地 MCP 服务器可以从任何地方访问。
+
+这对于快速共享开发服务器、自定义 MCP 服务器，甚至具有特定配置的标准服务器（无需公开部署）特别有用。
+
+```bash
+# 🚀 共享本地 MCP 服务器
+mcpm share "COMMAND" # 将 COMMAND 替换为您的实际服务器启动命令
+
+# ⚙️ 选项
+# COMMAND: 启动 MCP 服务器的 shell 命令 (例如 "uvx mcp-server-fetch", "npx mcp-server")。如果包含空格，则必须用引号括起来。
+# --port PORT: 指定 mcp-proxy 监听的本地端口。默认为随机可用端口。
+# --address ADDRESS: 指定隧道的公共地址 (例如 yourdomain.com:7000)。如果未提供，将生成随机隧道 URL。
+# --http: 如果设置，隧道将使用 HTTP 而不是 HTTPS。请谨慎使用。
+# --timeout TIMEOUT: mcp-proxy 等待服务器启动的超时时间（秒）。默认为 60。
+# --retry RETRY: 如果服务器启动失败，重试启动服务器的次数。默认为 0。
+
+# 💡 使用示例
+mcpm share "uvx mcp-server-fetch"
+mcpm share "npx mcp-server" --port 5000
+mcpm share "uv run my-mcp-server" --address myserver.com:7000
+mcpm share "npx -y @modelcontextprotocol/server-everything" --retry 3
+```
+
 ### 🛠️ 实用工具 (`util`)
 
 ```bash
