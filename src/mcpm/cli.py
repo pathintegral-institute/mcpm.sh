@@ -45,7 +45,7 @@ def print_logo():
         " ╚═╝     ╚═╝ ╚═════╝╚═╝     ╚═╝     ╚═╝ ",
         "",
         f"v{__version__}",
-        "Open Source. Forever Free.",
+        "Melio MCP Installer",
         "Built with ❤️ by Path Integral Institute",
     ]
 

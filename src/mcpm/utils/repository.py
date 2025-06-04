@@ -15,8 +15,8 @@ from mcpm.utils.config import DEFAULT_CONFIG_DIR
 
 logger = logging.getLogger(__name__)
 
-# Default repository URL
-DEFAULT_REPO_URL = "https://mcpm.sh/api/servers.json"
+# Default repository URL - can be overridden with MCPM_REPO_URL environment variable
+DEFAULT_REPO_URL = os.environ.get("MCPM_REPO_URL", "https://mcpm.sh/api/servers.json")
 
 # Default cache file path
 DEFAULT_CACHE_FILE = os.path.join(DEFAULT_CONFIG_DIR, "servers_cache.json")
@@ -91,16 +91,28 @@ class RepositoryManager:
                 return self.servers_cache
 
         try:
-            response = requests.get(self.repo_url)
-            response.raise_for_status()
-            self.servers_cache = response.json()
-            self.last_refresh = datetime.now()
+            # Handle file:// URLs for local development
+            if self.repo_url.startswith("file://"):
+                file_path = self.repo_url[7:]  # Remove 'file://' prefix
+                with open(file_path, "r", encoding="utf-8") as f:
+                    self.servers_cache = json.load(f)
+                self.last_refresh = datetime.now()
+                
+                # Save the updated cache to file
+                self._save_cache_to_file()
+                
+                return self.servers_cache
+            else:
+                response = requests.get(self.repo_url)
+                response.raise_for_status()
+                self.servers_cache = response.json()
+                self.last_refresh = datetime.now()
 
-            # Save the updated cache to file
-            self._save_cache_to_file()
+                # Save the updated cache to file
+                self._save_cache_to_file()
 
-            return self.servers_cache
-        except requests.RequestException as e:
+                return self.servers_cache
+        except (requests.RequestException, FileNotFoundError, json.JSONDecodeError) as e:
             logger.error(f"Failed to fetch servers from {self.repo_url}: {e}")
             # Return empty dict if we can't fetch and have no cache
             return self.servers_cache or {}
