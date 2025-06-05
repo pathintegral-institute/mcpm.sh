@@ -2,9 +2,7 @@
 Share command for MCPM - Share a single MCP server through a tunnel
 """
 
-import os
 import secrets
-import select
 import shlex
 import shutil
 import signal
@@ -25,19 +23,6 @@ console = Console()
 def find_mcp_proxy() -> Optional[str]:
     """Find the mcp-proxy executable in PATH."""
     return shutil.which("mcp-proxy")
-
-
-def make_non_blocking(file_obj):
-    """Make a file object non-blocking."""
-    if os.name == 'posix':
-        import fcntl
-
-        fd = file_obj.fileno()
-        fl = fcntl.fcntl(fd, fcntl.F_GETFL)
-        fcntl.fcntl(fd, fcntl.F_SETFL, fl | os.O_NONBLOCK)
-    # On other platforms (e.g., Windows), we rely on the behavior of select()
-    # and the non-blocking nature of readline() on Popen streams,
-    # or the existing try-except for IOError/OSError.
 
 
 def wait_for_random_port(process: subprocess.Popen, timeout: int = 20) -> Optional[int]:
@@ -74,39 +59,26 @@ def wait_for_random_port(process: subprocess.Popen, timeout: int = 20) -> Option
             console.print(f"[red]Error output:[/]\n{stderr_output}")
             sys.exit(1)
 
-        # Use select to wait for data to be available without blocking
-        readable = []
-        if process.stdout:
-            readable.append(process.stdout)
-        if process.stderr:
-            readable.append(process.stderr)
+        # Process available output
+        try:
+            if process.stderr:
+                line = process.stderr.readline()
+                if line:
+                    console.print(line.rstrip())
 
-        if readable:
-            # Wait for up to 1 second for output
-            r, _, _ = select.select(readable, [], [], 1.0)
-
-            # Process available output
-            for stream in r:
-                try:
-                    line = stream.readline()
-                    if line:
-                        print(line.rstrip())
-
-                        # Check for port information
-                        if "Uvicorn running on http://" in line:
-                            try:
-                                url_part = line.split("Uvicorn running on ")[1].split(" ")[0]
-                                actual_port = int(url_part.split(":")[-1].strip())
-                                port_found = True
-                                console.print(
-                                    f"[cyan]mcp-proxy SSE server running on port [bold]{actual_port}[/bold][/]"
-                                )
-                                break
-                            except (ValueError, IndexError):
-                                pass
-                except (IOError, OSError):
-                    # Resource temporarily unavailable - this is normal for non-blocking IO
-                    pass
+                # Check for port information
+                if "Uvicorn running on http://" in line:
+                    try:
+                        url_part = line.split("Uvicorn running on ")[1].split(" ")[0]
+                        actual_port = int(url_part.split(":")[-1].strip())
+                        port_found = True
+                        console.print(f"[cyan]mcp-proxy SSE server running on port [bold]{actual_port}[/bold][/]")
+                        break
+                    except (ValueError, IndexError):
+                        pass
+        except (IOError, OSError):
+            # Resource temporarily unavailable - this is normal for non-blocking IO
+            pass
         else:
             # No streams to read from, just wait a bit
             time.sleep(0.5)
@@ -147,12 +119,6 @@ def start_mcp_proxy(command: str, port: Optional[int] = None) -> Tuple[subproces
     # Start mcp-proxy as a subprocess
     console.print(f"[cyan]Running command: [bold]{' '.join(cmd_parts)}[/bold][/]")
     process = subprocess.Popen(cmd_parts, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, bufsize=1)
-
-    # Make stdout and stderr non-blocking
-    if process.stdout:
-        make_non_blocking(process.stdout)
-    if process.stderr:
-        make_non_blocking(process.stderr)
 
     # If port is None, we need to parse the output to find the random port
     actual_port = port
@@ -352,45 +318,31 @@ def share(command, port, address, http, timeout, retry):
                     if tunnel:
                         tunnel.kill()
                     break
+                # Process available output
+                try:
+                    if server_process.stderr:
+                        line = server_process.stderr.readline()
+                        if line:
+                            line_str = line.rstrip()
+                            console.print(line_str)
+                            last_activity_time = time.time()
 
-                # Use select to check for available output without blocking
-                readable = []
-                if server_process.stdout:
-                    readable.append(server_process.stdout)
-                if server_process.stderr:
-                    readable.append(server_process.stderr)
+                            # Check for error messages
+                            error_msg = monitor_for_errors(line_str)
+                            if error_msg and error_msg not in error_messages:
+                                console.print(f"[bold red]Error:[/] {error_msg}")
+                                error_messages.append(error_msg)
+                                server_error_detected = True
 
-                if readable:
-                    # Wait for up to 1 second for output
-                    r, _, _ = select.select(readable, [], [], 1.0)
-
-                    # Process available output
-                    for stream in r:
-                        try:
-                            line = stream.readline()
-                            if line:
-                                line_str = line.rstrip()
-                                print(line_str)
-                                last_activity_time = time.time()
-
-                                # Check for error messages
-                                error_msg = monitor_for_errors(line_str)
-                                if error_msg and error_msg not in error_messages:
-                                    console.print(f"[bold red]Error:[/] {error_msg}")
-                                    error_messages.append(error_msg)
-                                    server_error_detected = True
-
-                                    # If this is a critical error and we have retries left, restart
-                                    if "Protocol initialization error" in error_msg and retries_left > 0:
-                                        console.print(
-                                            f"[yellow]Will attempt to restart ({retries_left} retries left)[/]"
-                                        )
-                                        # Break out of the loop to trigger a restart
-                                        server_process.terminate()
-                                        break
-                        except (IOError, OSError):
-                            # Resource temporarily unavailable - this is normal for non-blocking IO
-                            pass
+                                # If this is a critical error and we have retries left, restart
+                                if "Protocol initialization error" in error_msg and retries_left > 0:
+                                    console.print(f"[yellow]Will attempt to restart ({retries_left} retries left)[/]")
+                                    # Break out of the loop to trigger a restart
+                                    server_process.terminate()
+                                    break
+                except (IOError, OSError):
+                    # Resource temporarily unavailable - this is normal for non-blocking IO
+                    pass
                 else:
                     # No streams to read from, just wait a bit
                     time.sleep(0.5)

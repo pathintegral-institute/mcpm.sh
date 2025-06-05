@@ -220,7 +220,7 @@ class RouterSseTransport(SseServerTransport):
             response = Response("Could not parse message", status_code=400)
             await response(scope, receive, send)
             try:
-                await writer.send(SessionMessage(message=err))
+                await writer.send(err)
             except (BrokenPipeError, ConnectionError, OSError) as pipe_err:
                 logger.warning(f"Failed to send error due to pipe issue: {pipe_err}")
             return
@@ -240,7 +240,7 @@ class RouterSseTransport(SseServerTransport):
                 logger.warning(f"Connection error when sending message to session {session_id}: {e}")
                 self._read_stream_writers.pop(session_id, None)
                 self._session_id_to_identifier.pop(session_id, None)
-        
+
         # Implicitly return None. The original 'return response' is removed.
         return
 

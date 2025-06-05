@@ -9,7 +9,6 @@ from click.testing import CliRunner
 
 from src.mcpm.commands.share import (
     find_mcp_proxy,
-    make_non_blocking,
     monitor_for_errors,
     share,
     terminate_process,
@@ -32,23 +31,6 @@ class TestShareCommand:
         monkeypatch.setattr("shutil.which", lambda _: None)
 
         assert find_mcp_proxy() is None
-
-    @patch("fcntl.fcntl")
-    def test_make_non_blocking(self, mock_fcntl):
-        """Test making a file object non-blocking"""
-        # Create a mock file object
-        mock_file = Mock()
-        mock_file.fileno.return_value = 42
-
-        # Set up mock fcntl return values
-        mock_fcntl.return_value = 0
-
-        # Call the function
-        make_non_blocking(mock_file)
-
-        # Verify that functions were called correctly
-        mock_file.fileno.assert_called_once()
-        assert mock_fcntl.call_count == 2
 
     def test_monitor_for_errors_with_known_error(self):
         """Test error detection with a known error pattern"""
