@@ -1,3 +1,10 @@
+## [1.13.2](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.13.1...v1.13.2) (2025-06-05)
+
+
+### Bug Fixes
+
+* trigger semantic release for Windows compatibility fix ([16b5e44](https://github.com/pathintegral-institute/mcpm.sh/commit/16b5e44f01c34422c8f8c72528b781cd5f908e44))
+
 ## [1.13.1](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.13.0...v1.13.1) (2025-05-29)
 
 
