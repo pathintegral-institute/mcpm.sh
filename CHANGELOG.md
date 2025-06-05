@@ -1,3 +1,10 @@
+## [1.13.3](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.13.2...v1.13.3) (2025-06-05)
+
+
+### Bug Fixes
+
+* remove stdout stream handling for share ([#167](https://github.com/pathintegral-institute/mcpm.sh/issues/167)) ([11fddcc](https://github.com/pathintegral-institute/mcpm.sh/commit/11fddcc1ce68e96105cd33f1050f3dd0814ce9e0))
+
 ## [1.13.2](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.13.1...v1.13.2) (2025-06-05)
 
 
