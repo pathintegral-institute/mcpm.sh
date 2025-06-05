@@ -7,6 +7,7 @@ import typing as t
 from collections import defaultdict
 from contextlib import asynccontextmanager
 from typing import Literal, Optional, Sequence, TextIO
+import asyncio
 
 import uvicorn
 from deprecated import deprecated
@@ -44,6 +45,21 @@ from .transport import RouterSseTransport, patch_meta_data
 from .watcher import ConfigWatcher
 
 logger = logging.getLogger(__name__)
+
+
+class NoOpsResponse(Response):
+    def __init__(self):
+        super().__init__(content=b"", status_code=204)
+
+    async def __call__(self, scope, receive, send):
+        await send(
+            {
+                "type": "http.response.start",
+                "status": self.status_code,
+                "headers": self.render_headers(),
+            }
+        )
+        await send({"type": "http.response.body", "body": b"", "more_body": False})
 
 
 class MCPRouter:
@@ -615,17 +631,29 @@ class MCPRouter:
         sse = RouterSseTransport("/messages/", api_key=api_key)
 
         async def handle_sse(request: Request) -> Response:
-            async with sse.connect_sse(
-                request.scope,
-                request.receive,
-                request._send,  # noqa: SLF001
-            ) as (read_stream, write_stream):
-                await self.aggregated_server.run(
-                    read_stream,
-                    write_stream,
-                    self.aggregated_server.initialization_options,
-                )
-            return Response()
+            try:
+                async with sse.connect_sse(
+                    request.scope,
+                    request.receive,
+                    request._send,  # noqa: SLF001
+                ) as (read_stream, write_stream):
+                    await self.aggregated_server.run(
+                        read_stream,
+                        write_stream,
+                        self.aggregated_server.initialization_options,
+                    )
+                    # Keep alive while client connected.
+                    # EventSourceResponse (inside connect_sse) manages the stream,
+                    # but this loop ensures this handler itself stays alive until disconnect.
+                    while not await request.is_disconnected():
+                        await asyncio.sleep(0.1)
+
+            except asyncio.CancelledError:
+                raise
+            except Exception as e:
+                logger.error(f"Unexpected error in handle_sse (router.py): {e}", exc_info=True)
+            finally:
+                return NoOpsResponse()
 
         lifespan_handler: t.Optional[Lifespan[Starlette]] = None
         if include_lifespan:
