@@ -29,11 +29,15 @@ def find_mcp_proxy() -> Optional[str]:
 
 def make_non_blocking(file_obj):
     """Make a file object non-blocking."""
-    import fcntl
+    if os.name == 'posix':
+        import fcntl
 
-    fd = file_obj.fileno()
-    fl = fcntl.fcntl(fd, fcntl.F_GETFL)
-    fcntl.fcntl(fd, fcntl.F_SETFL, fl | os.O_NONBLOCK)
+        fd = file_obj.fileno()
+        fl = fcntl.fcntl(fd, fcntl.F_GETFL)
+        fcntl.fcntl(fd, fcntl.F_SETFL, fl | os.O_NONBLOCK)
+    # On other platforms (e.g., Windows), we rely on the behavior of select()
+    # and the non-blocking nature of readline() on Popen streams,
+    # or the existing try-except for IOError/OSError.
 
 
 def wait_for_random_port(process: subprocess.Popen, timeout: int = 20) -> Optional[int]:
