@@ -103,3 +103,6 @@ def get_frpc_directory(app_name: str = "mcpm") -> Path:
 
         # Default to ~/.local/share if XDG_DATA_HOME is not defined
         return Path.home() / ".local" / "share" / app_name / "frpc"
+
+
+NPX_CMD = "npx" if sys.platform != "win32" else "npx.cmd"
