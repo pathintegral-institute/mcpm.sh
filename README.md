@@ -146,6 +146,31 @@ mcpm router share                 # Share the router to public
 mcpm router unshare               # Unshare the router
 ```
 
+### 🤝 Share Management (`share`)
+
+The `mcpm share` command allows you to take any shell command that starts an MCP server and instantly expose it as an SSE (Server-Sent Events) server. It uses `mcp-proxy` to handle the server transformation and then creates a secure tunnel for remote access, making your local MCP server accessible from anywhere.
+
+This is particularly useful for quickly sharing a development server, a custom MCP server, or even a standard server with specific configurations without needing to deploy it publicly.
+
+```bash
+# 🚀 Share a local MCP server
+mcpm share "COMMAND" # Replace COMMAND with your actual server start command
+
+# ⚙️ Options
+# COMMAND: The shell command that starts your MCP server (e.g., "uvx mcp-server-fetch", "npx mcp-server"). This must be enclosed in quotes if it contains spaces.
+# --port PORT: Specify a local port for the mcp-proxy to listen on. Defaults to a random available port.
+# --address ADDRESS: Specify a public address for the tunnel (e.g., yourdomain.com:7000). If not provided, a random tunnel URL will be generated.
+# --http: If set, the tunnel will use HTTP instead of HTTPS. Use with caution.
+# --timeout TIMEOUT: Timeout in seconds for the mcp-proxy to wait for the server to start. Defaults to 60.
+# --retry RETRY: Number of times to retry starting the server if it fails. Defaults to 0.
+
+# 💡 Usage Examples
+mcpm share "uvx mcp-server-fetch"
+mcpm share "npx mcp-server" --port 5000
+mcpm share "uv run my-mcp-server" --address myserver.com:7000
+mcpm share "npx -y @modelcontextprotocol/server-everything" --retry 3
+```
+
 ### 🛠️ Utilities (`util`)
 
 ```bash

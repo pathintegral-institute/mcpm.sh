@@ -225,11 +225,11 @@ class RouterSseTransport(SseServerTransport):
                 logger.warning(f"Failed to send error due to pipe issue: {pipe_err}")
             return
 
-        logger.debug(f"Sending message to writer: {message}")
-        response = Response("Accepted", status_code=202)
-        await response(scope, receive, send)
+        # Send the 202 Accepted response
+        accepted_response = Response("Accepted", status_code=202)
+        await accepted_response(scope, receive, send)
 
-        # add error handling, catch possible pipe errors
+        # Attempt to send the message to the writer
         try:
             await writer.send(SessionMessage(message=message))
         except (BrokenPipeError, ConnectionError, OSError) as e:
@@ -240,6 +240,9 @@ class RouterSseTransport(SseServerTransport):
                 logger.warning(f"Connection error when sending message to session {session_id}: {e}")
                 self._read_stream_writers.pop(session_id, None)
                 self._session_id_to_identifier.pop(session_id, None)
+
+        # Implicitly return None. The original 'return response' is removed.
+        return
 
     def _validate_api_key(self, scope: Scope, api_key: str | None) -> bool:
         # If api_key is explicitly set to None, disable API key validation
