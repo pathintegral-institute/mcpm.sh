@@ -1,24 +1,36 @@
 #!/bin/bash
 
 # melio-mcp-install.sh - Universal MCP server installer and runner
-# Usage: melio-mcp-install.sh <repo_url> <setup_command> <run_command>
-# Example: melio-mcp-install.sh "https://github.com/melio/Figma-Context-MCP.git" "npm install && npm run build" "node dist/cli.js"
+# Usage: Set environment variables and run the script:
+#   export MCP_REPO_URL="https://github.com/user/repo.git"
+#   export MCP_SETUP_COMMAND="npm install && npm run build"  
+#   export MCP_RUN_COMMAND="node dist/cli.js --stdio"
+#   ./melio-mcp-install.sh
 
 set -e  # Exit on any error
 
-REPO_URL="$1"
-SETUP_COMMAND="$2"
-RUN_COMMAND="$3"
+# Check for required environment variables
+if [ -z "$MCP_REPO_URL" ] || [ -z "$MCP_SETUP_COMMAND" ] || [ -z "$MCP_RUN_COMMAND" ]; then
+    echo "Error: Missing required environment variables:" >&2
+    echo "  MCP_REPO_URL: $MCP_REPO_URL" >&2
+    echo "  MCP_SETUP_COMMAND: $MCP_SETUP_COMMAND" >&2
+    echo "  MCP_RUN_COMMAND: $MCP_RUN_COMMAND" >&2
+    echo "" >&2
+    echo "Usage:" >&2
+    echo "  export MCP_REPO_URL=\"https://github.com/user/repo.git\"" >&2
+    echo "  export MCP_SETUP_COMMAND=\"npm install && npm run build\"" >&2
+    echo "  export MCP_RUN_COMMAND=\"node dist/cli.js --stdio\"" >&2
+    echo "  $0" >&2
+    exit 1
+fi
+
+REPO_URL="$MCP_REPO_URL"
+SETUP_COMMAND="$MCP_SETUP_COMMAND"
+RUN_COMMAND="$MCP_RUN_COMMAND"
 
 #echo "\n🔧 Setting up MCP server from repository: $REPO_URL\n"
 #echo "📦 Setup command: $SETUP_COMMAND"
 #echo "🚀 Run command: $RUN_COMMAND\n"
-
-if [ $# -ne 3 ]; then
-    # Redirect error to stderr, not stdout (to avoid breaking MCP JSON protocol)
-    echo "Error: Invalid arguments. Usage: $0 <repo_url> <setup_command> <run_command>" >&2
-    exit 1
-fi
 
 # Extract repo name from URL (last part without .git)
 REPO_NAME=$(basename "$REPO_URL" .git)

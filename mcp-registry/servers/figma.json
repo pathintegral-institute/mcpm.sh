@@ -17,13 +17,12 @@
     "custom": {
       "type": "custom",
       "command": "melio-mcp-install.sh",
-      "args": [
-        "https://github.com/melio/Figma-Context-MCP.git",
-        "npm install && npm run build",
-        "node dist/cli.js --stdio"
-      ],
+      "args": [],
       "env": {
-        "FIGMA_API_KEY": "${FIGMA_API_KEY}"
+        "FIGMA_API_KEY": "${FIGMA_API_KEY}",
+        "MCP_REPO_URL": "https://github.com/melio/Figma-Context-MCP.git",
+        "MCP_SETUP_COMMAND": "npm install && npm run build",
+        "MCP_RUN_COMMAND": "node dist/cli.js --stdio"
       },
       "description": "Clone, build, and run the Figma MCP server using melio-mcp-install.sh",
       "recommended": true
@@ -45,7 +44,7 @@
         "properties": {
           "fileKey": {
             "type": "string",
-            "description": "The key of the Figma file to fetch, often found in a provided URL like figma.com/(file|design)/<fileKey>/..."
+            "description": "//The key of the Figma file to fetch, often found in a provided URL like figma.com/(file|design)/<fileKey>/..."
           },
           "nodeId": {
             "type": "string",
