@@ -11,6 +11,8 @@ import click
 from rich.console import Console
 from rich.panel import Panel
 
+from mcpm.utils.platform import NPX_CMD
+
 console = Console()
 
 # Define context settings to handle help flag properly
@@ -48,7 +50,7 @@ def inspector(args, yes):
         if args:
             # Pass all arguments directly to the inspector
             arg_string = " ".join(args)
-            cmd = f"npx @modelcontextprotocol/inspector {arg_string}"
+            cmd = f"{NPX_CMD} @modelcontextprotocol/inspector {arg_string}"
             console.print(f"[bold]Running MCPM Inspector with arguments:[/] {arg_string}")
         else:
             # No arguments provided, prompt for confirmation
@@ -59,7 +61,7 @@ def inspector(args, yes):
                     console.print("[yellow]Inspector cancelled.[/]")
                     return
 
-            cmd = "npx @modelcontextprotocol/inspector"
+            cmd = f"{NPX_CMD} @modelcontextprotocol/inspector"
 
         console.print("[cyan]Starting MCPM Inspector...[/]")
         console.print("The Inspector UI will open in your web browser.")

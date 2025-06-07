@@ -15,6 +15,7 @@ from rich.table import Table
 from mcpm.clients.client_config import ClientConfigManager
 from mcpm.clients.client_registry import ClientRegistry
 from mcpm.utils.display import print_client_error, print_error, print_server_config
+from mcpm.utils.platform import NPX_CMD
 
 console = Console()
 client_config_manager = ClientConfigManager()
@@ -111,7 +112,7 @@ def edit_client():
         basic_config = {
             "mcpServers": {
                 "filesystem": {
-                    "command": "npx",
+                    "command": NPX_CMD,
                     "args": [
                         "-y",
                         "@modelcontextprotocol/server-filesystem",
