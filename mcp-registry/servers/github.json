@@ -25,22 +25,26 @@
     "model-context-protocol"
   ],
   "installations": {
-    "npm": {
-      "type": "npm",
-      "command": "npx",
+    "docker": {
+      "type": "docker",
+      "command": "docker",
       "args": [
-        "-y",
-        "@github/github-mcp-server"
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "GITHUB_PERSONAL_ACCESS_TOKEN",
+        "ghcr.io/github/github-mcp-server"
       ],
       "env": {
-        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
       },
-      "description": "Using npm to run the GitHub MCP server",
+      "description": "Using Docker to run the GitHub MCP server",
       "recommended": true
     }
   },
   "arguments": {
-    "GITHUB_TOKEN": {
+    "GITHUB_PERSONAL_ACCESS_TOKEN": {
       "description": "GitHub personal access token for authentication",
       "required": true,
       "example": "ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
