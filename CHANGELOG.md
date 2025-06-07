@@ -1,3 +1,10 @@
+## [1.13.4](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.13.3...v1.13.4) (2025-06-07)
+
+
+### Bug Fixes
+
+* npx path in windows is npx.cmd ([#169](https://github.com/pathintegral-institute/mcpm.sh/issues/169)) ([9dc8746](https://github.com/pathintegral-institute/mcpm.sh/commit/9dc874644a309fb297a310188ce7ad1e753bb67b))
+
 ## [1.13.3](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.13.2...v1.13.3) (2025-06-05)
 
 
