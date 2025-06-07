@@ -11,21 +11,22 @@
     "name": "Melio"
   },
   "license": "MIT",
-  "categories": [
-    "Professional Apps"
-  ],
-  "tags": [
-    "Figma",
-    "AI"
-  ],
+  "categories": ["Professional Apps"],
+  "tags": ["Figma", "AI"],
   "installations": {
     "custom": {
       "type": "custom",
-      "commands": [
-        "git clone https://github.com/melio/Figma-Context-MCP.git figma-context-mcp",
-        "cd figma-context-mcp && npm install",
-        "cd figma-context-mcp && node index.js --figma-api-key=${FIGMA_API_KEY}"
-      ]
+      "command": "melio-mcp-install.sh",
+      "args": [
+        "https://github.com/melio/Figma-Context-MCP.git",
+        "npm install && npm run build",
+        "node dist/cli.js --stdio"
+      ],
+      "env": {
+        "FIGMA_API_KEY": "${FIGMA_API_KEY}"
+      },
+      "description": "Clone, build, and run the Figma MCP server using melio-mcp-install.sh",
+      "recommended": true
     }
   },
   "arguments": {
@@ -55,9 +56,7 @@
             "description": "How many levels deep to traverse the node tree, only use if explicitly requested by the user"
           }
         },
-        "required": [
-          "fileKey"
-        ]
+        "required": ["fileKey"]
       }
     },
     {
@@ -88,10 +87,7 @@
                   "description": "The local name for saving the fetched file"
                 }
               },
-              "required": [
-                "nodeId",
-                "fileName"
-              ],
+              "required": ["nodeId", "fileName"],
               "additionalProperties": false
             },
             "description": "The nodes to fetch as images"
@@ -101,11 +97,7 @@
             "description": "The absolute path to the directory where images are stored in the project. Automatically creates directories if needed."
           }
         },
-        "required": [
-          "fileKey",
-          "nodes",
-          "localPath"
-        ]
+        "required": ["fileKey", "nodes", "localPath"]
       }
     }
   ]
