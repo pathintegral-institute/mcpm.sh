@@ -1,6 +1,6 @@
 {
-  "name": "mcp-atlassian",
-  "display_name": "Atlassian MCP Server",
+  "name": "jira",
+  "display_name": "Jira Atlassian MCP Server",
   "description": "Model Context Protocol (MCP) server for Atlassian products (Confluence and Jira). This integration supports both Confluence & Jira Cloud and Server/Data Center deployments.",
   "repository": {
     "type": "git",
@@ -11,10 +11,7 @@
     "name": "melio"
   },
   "license": "MIT",
-  "categories": [
-    "Professional Apps",
-    "Productivity"
-  ],
+  "categories": ["Professional Apps", "Productivity"],
   "tags": [
     "atlassian",
     "jira",
@@ -24,45 +21,19 @@
     "integration"
   ],
   "installations": {
-    "uvx": {
-      "type": "uvx",
-      "command": "uvx",
-      "args": [
-        "mcp-atlassian"
-      ],
-      "env": {
-        "JIRA_API_TOKEN": "${JIRA_API_TOKEN}",
-        "JIRA_USERNAME": "${JIRA_USERNAME}",
-        "JIRA_INSTANCE_URL": "${JIRA_INSTANCE_URL}"
-      },
-      "description": "Using uvx to run the Atlassian MCP server",
-      "recommended": true
-    },
-    "custom": {
+    "melio-mcp-install": {
       "type": "custom",
-      "command": "git",
-      "args": [
-        "clone",
-        "https://github.com/melio/mcp-atlassian.git",
-        "&&",
-        "cd",
-        "mcp-atlassian",
-        "&&",
-        "pip",
-        "install",
-        "-e",
-        ".",
-        "&&",
-        "python",
-        "-m",
-        "mcp_atlassian"
-      ],
+      "command": "melio-mcp-install.sh",
+      "args": [],
       "env": {
-        "JIRA_API_TOKEN": "${JIRA_API_TOKEN}",
+        "MCP_REPO_URL": "https://github.com/melio/mcp-atlassian.git",
+        "MCP_SETUP_COMMAND": "uv sync --frozen --all-extras",
+        "MCP_RUN_COMMAND": "uv run mcp-atlassian",
+        "JIRA_URL": "${JIRA_INSTANCE_URL}",
         "JIRA_USERNAME": "${JIRA_USERNAME}",
-        "JIRA_INSTANCE_URL": "${JIRA_INSTANCE_URL}"
+        "JIRA_API_TOKEN": "${JIRA_API_TOKEN}"
       },
-      "description": "Install and run from GitHub repository"
+      "description": "Clone, build, and run the Atlassian MCP server using melio-mcp-install.sh"
     }
   },
   "arguments": {
@@ -79,7 +50,7 @@
     "JIRA_INSTANCE_URL": {
       "description": "Jira instance URL",
       "required": true,
-      "example": "https://your-domain.atlassian.net"
+      "example": "https://meliorisk.atlassian.net"
     }
   },
   "tools": [
