@@ -11,10 +11,7 @@
     "name": "CircleCI"
   },
   "license": "MIT",
-  "categories": [
-    "Dev Tools",
-    "Professional Apps"
-  ],
+  "categories": ["Dev Tools", "Professional Apps"],
   "tags": [
     "circleci",
     "ci-cd",
@@ -28,10 +25,7 @@
     "npm": {
       "type": "npm",
       "command": "npx",
-      "args": [
-        "-y",
-        "@circleci/mcp-server"
-      ],
+      "args": ["-y", "@circleci/mcp-server-circleci"],
       "env": {
         "CIRCLECI_TOKEN": "${CIRCLECI_TOKEN}"
       },
@@ -47,7 +41,7 @@
         "--rm",
         "-e",
         "CIRCLECI_TOKEN",
-        "circleci/mcp-server"
+        "circleci:mcp-server-circleci"
       ],
       "env": {
         "CIRCLECI_TOKEN": "${CIRCLECI_TOKEN}"
