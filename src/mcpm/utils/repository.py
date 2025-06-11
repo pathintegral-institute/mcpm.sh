@@ -16,7 +16,7 @@ from mcpm.utils.config import DEFAULT_CONFIG_DIR
 logger = logging.getLogger(__name__)
 
 # Default repository URL - can be overridden with MCPM_REPO_URL environment variable
-DEFAULT_REPO_URL = os.environ.get("MCPM_REPO_URL", "https://mcpm.sh/api/servers.json")
+DEFAULT_REPO_URL = os.environ.get("MCPM_REPO_URL", "https://aitools.eilat.melioservices.com/mcpm/servers.json")
 
 # Default cache file path
 DEFAULT_CACHE_FILE = os.path.join(DEFAULT_CONFIG_DIR, "servers_cache.json")
@@ -97,10 +97,10 @@ class RepositoryManager:
                 with open(file_path, "r", encoding="utf-8") as f:
                     self.servers_cache = json.load(f)
                 self.last_refresh = datetime.now()
-                
+
                 # Save the updated cache to file
                 self._save_cache_to_file()
-                
+
                 return self.servers_cache
             else:
                 response = requests.get(self.repo_url)
