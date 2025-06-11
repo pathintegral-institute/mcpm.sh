@@ -1,92 +1,93 @@
-name: Semantic Release
-
-on:
-  push:
-    branches:
-      - main
-
-permissions:
-  contents: write
-  issues: write
-  pull-requests: write
-
-jobs:
-  test:
-    uses: ./.github/workflows/test.yml
-
-  release:
-    name: Release
-    needs: test
-    runs-on: ubuntu-latest
-    environment:
-      name: melio-s3
-      url: https://aitools.eilat.melioservices.com/mcpm/servers.json
-    
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          persist-credentials: false
-
-      - name: Generate token
-        id: generate_token
-        uses: tibdex/github-app-token@v2
-        with:
-          app_id: ${{ secrets.BOT_APP_ID }}
-          private_key: ${{ secrets.BOT_PRIVATE_KEY }}
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 8
-          run_install: false
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 'lts/*'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Semantic Release
-        id: semantic
-        uses: cycjimmy/semantic-release-action@v4
-        env:
-          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
-
-      - name: Install uv with caching
-        if: steps.semantic.outputs.new_release_published == 'true'
-        uses: astral-sh/setup-uv@v5
-        with:
-          enable-cache: true
-          cache-dependency-glob: "pyproject.toml"
-
-      - name: Run preparation script
-        if: steps.semantic.outputs.new_release_published == 'true'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          chmod +x ./scripts/prepare.sh
-          source .venv/bin/activate
-          ./scripts/prepare.sh ./output
-
-      - name: Configure AWS credentials
-        if: steps.semantic.outputs.new_release_published == 'true'
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
-      - name: Upload servers.json to S3
-        if: steps.semantic.outputs.new_release_published == 'true'
-        run: |
-          aws s3 cp ./output/api/servers.json s3://aitools.eilat.melioservices.com/mcpm/servers.json --content-type "application/json"
-
-      - name: Invalidate CloudFront cache
-        if: steps.semantic.outputs.new_release_published == 'true'
-        run: |
-          aws cloudfront create-invalidation --distribution-id E3VSH7IG39WRB6 --paths "/mcpm/servers.json" 
+# DISABLED: Moved to CircleCI
+# name: Semantic Release
+# 
+# on:
+#   push:
+#     branches:
+#       - main
+# 
+# permissions:
+#   contents: write
+#   issues: write
+#   pull-requests: write
+# 
+# jobs:
+#   test:
+#     uses: ./.github/workflows/test.yml
+# 
+#   release:
+#     name: Release
+#     needs: test
+#     runs-on: ubuntu-latest
+#     environment:
+#       name: melio-s3
+#       url: https://aitools.eilat.melioservices.com/mcpm/servers.json
+#     
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v4
+#         with:
+#           fetch-depth: 0
+#           persist-credentials: false
+# 
+#       - name: Generate token
+#         id: generate_token
+#         uses: tibdex/github-app-token@v2
+#         with:
+#           app_id: ${{ secrets.BOT_APP_ID }}
+#           private_key: ${{ secrets.BOT_PRIVATE_KEY }}
+# 
+#       - name: Install pnpm
+#         uses: pnpm/action-setup@v4
+#         with:
+#           version: 8
+#           run_install: false
+# 
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: 'lts/*'
+#           cache: 'pnpm'
+# 
+#       - name: Install dependencies
+#         run: pnpm install
+# 
+#       - name: Semantic Release
+#         id: semantic
+#         uses: cycjimmy/semantic-release-action@v4
+#         env:
+#           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+# 
+#       - name: Install uv with caching
+#         if: steps.semantic.outputs.new_release_published == 'true'
+#         uses: astral-sh/setup-uv@v5
+#         with:
+#           enable-cache: true
+#           cache-dependency-glob: "pyproject.toml"
+# 
+#       - name: Run preparation script
+#         if: steps.semantic.outputs.new_release_published == 'true'
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         run: |
+#           chmod +x ./scripts/prepare.sh
+#           source .venv/bin/activate
+#           ./scripts/prepare.sh ./output
+# 
+#       - name: Configure AWS credentials
+#         if: steps.semantic.outputs.new_release_published == 'true'
+#         uses: aws-actions/configure-aws-credentials@v4
+#         with:
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#           aws-region: us-east-1
+# 
+#       - name: Upload servers.json to S3
+#         if: steps.semantic.outputs.new_release_published == 'true'
+#         run: |
+#           aws s3 cp ./output/api/servers.json s3://aitools.eilat.melioservices.com/mcpm/servers.json --content-type "application/json"
+# 
+#       - name: Invalidate CloudFront cache
+#         if: steps.semantic.outputs.new_release_published == 'true'
+#         run: |
+#           aws cloudfront create-invalidation --distribution-id E3VSH7IG39WRB6 --paths "/mcpm/servers.json" 
