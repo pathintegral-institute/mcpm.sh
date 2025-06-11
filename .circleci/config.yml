@@ -78,9 +78,13 @@ jobs:
           command: |
             aws s3 cp ./output/api/servers.json s3://aitools.eilat.melioservices.com/mcpm/servers.json --content-type "application/json"
       - run:
+          name: Upload install script to S3
+          command: |
+            aws s3 cp ./pages/install s3://aitools.eilat.melioservices.com/mcpm/install --content-type "text/plain"
+      - run:
           name: Invalidate CloudFront cache
           command: |
-            aws cloudfront create-invalidation --distribution-id E3VSH7IG39WRB6 --paths "/mcpm/servers.json"
+            aws cloudfront create-invalidation --distribution-id E3VSH7IG39WRB6 --paths "/mcpm/servers.json" "/mcpm/install"
 
 workflows:
   test-and-deploy:

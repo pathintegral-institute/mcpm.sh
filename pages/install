@@ -84,17 +84,17 @@ install_mcp() {
         # macOS installation path
         if command_exists pipx; then
             info "Using pipx to install MCPM (recommended)..."
-            pipx install "git+https://github.com/melio/mcpmelio.git@melio"
+            pipx install --force "git+https://github.com/melio/mcpmelio.git@melio"
         elif command_exists brew; then
             info "pipx not found, installing it via Homebrew..."
             brew install pipx
             info "Now installing MCPM with pipx..."
-            pipx install git+https://github.com/melio/mcpmelio.git@melio
+            pipx install --force git+https://github.com/melio/mcpmelio.git@melio
         else
             info "Creating a dedicated virtual environment for MCPM..."
             MCPM_VENV="$HOME/.mcpm-venv"
             python3 -m venv "$MCPM_VENV"
-            "$MCPM_VENV/bin/pip" install mcpm
+            "$MCPM_VENV/bin/pip" install --upgrade --force-reinstall git+https://github.com/melio/mcpmelio.git@melio
 
             # Create symlinks to the user's bin directory
             USER_BIN="$HOME/.local/bin"
@@ -115,11 +115,11 @@ install_mcp() {
         # Non-macOS installation path - try standard methods
         if command_exists pipx; then
             info "Using pipx to install MCPM (recommended)..."
-            pipx install git+https://github.com/melio/mcpmelio.git@melio
+            pipx install --force git+https://github.com/melio/mcpmelio.git@melio
         else
             # Try to use pip in user mode with appropriate flags
             info "Installing with pip in user mode..."
-            python3 -m pip install --user mcpm || {
+            python3 -m pip install --user --upgrade --force-reinstall git+https://github.com/melio/mcpmelio.git@melio || {
                 error "Failed to install MCPM. Please check your permissions and try again."
                 echo "You may want to try one of these alternatives:"
                 echo "  1. Install pipx (https://pypa.github.io/pipx/) and run: pipx install git+https://github.com/melio/mcpmelio.git@melio"

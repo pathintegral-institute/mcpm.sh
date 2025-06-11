@@ -27,13 +27,13 @@ MCPM is an open source service and a CLI package management tool for MCP servers
 
 ## 🚀 Quick Installation
 
-### Recommended: 
+### Recommended (Melio Internal): 
 
 ```bash
-curl -sSL https://mcpm.sh/install | bash
+curl -sSL https://aitools.eilat.melioservices.com/mcpm/install | bash
 ```
 
-Or choose [other installation methods](#-other-installation-methods) like `brew`, `pipx`, `uv` etc.
+This installs the latest version directly from the internal Melio repository, ensuring you always get the most up-to-date features and configurations.
 
 ## 🔎 Overview
 
@@ -200,40 +200,26 @@ This project includes an internal MCP Registry with 9 curated and tested MCP ser
 - [ ] Additional client support
 
 
-## 📦 Other Installation Methods
+## 📦 Alternative Installation Methods
 
-### 🍺 Homebrew
+For development or external use, you can also install from the GitHub repository:
 
-```bash
-brew install mcpm
-```
-
-### 📦 pipx (Recommended for Python tools)
+### 📦 pipx (Direct from GitHub)
 
 ```bash
-pipx install mcpm
+pipx install git+https://github.com/melio/mcpmelio.git@melio
 ```
 
-### 🪄 uv tool
+### 🪄 uv tool (Direct from GitHub)
 
 ```bash
-uv tool install mcpm
+uv tool install git+https://github.com/melio/mcpmelio.git@melio
 ```
 
-## More Installation Methods
-
-### 🐍 pip
+### 🐍 pip (Direct from GitHub)
 
 ```bash
-pip install mcpm
-```
-
-### 🧰 X-CMD
-
-If you are a user of [x-cmd](https://x-cmd.com), you can run:
-
-```sh
-x install mcpm.sh
+pip install git+https://github.com/melio/mcpmelio.git@melio
 ```
 
 
