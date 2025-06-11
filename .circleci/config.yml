@@ -11,9 +11,11 @@ jobs:
       - image: cimg/python:3.10
     steps:
       - checkout
-      - python/install-packages:
-          pkg-manager: pip
-          args: uv
+      - run:
+          name: Install uv
+          command: |
+            curl -LsSf https://astral.sh/uv/install.sh | sh
+            echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> $BASH_ENV
       - run:
           name: Install dependencies
           command: |
@@ -21,9 +23,8 @@ jobs:
       - run:
           name: Validate Server JSON Files
           command: |
-            # Install jsonschema if not already installed
-            pip install jsonschema
-            # Validate all server JSON files against schema
+            # Validate all server JSON files against schema using uv environment
+            source .venv/bin/activate
             for file in mcp-registry/servers/*.json; do
               echo "Validating $file"
               python -c "
@@ -56,9 +57,11 @@ jobs:
       - image: cimg/python:3.10
     steps:
       - checkout
-      - python/install-packages:
-          pkg-manager: pip
-          args: uv
+      - run:
+          name: Install uv
+          command: |
+            curl -LsSf https://astral.sh/uv/install.sh | sh
+            echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> $BASH_ENV
       - run:
           name: Install Python dependencies
           command: |
@@ -84,6 +87,7 @@ workflows:
     jobs:
       - test
       - deploy:
+          context: melio-eilat
           requires:
             - test
           filters:
