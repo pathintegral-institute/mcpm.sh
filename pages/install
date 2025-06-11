@@ -78,32 +78,32 @@ ensure_pip() {
 # Function to install MCPM
 install_mcp() {
     info "Installing MCPM..."
-    
+
     # Check if we're on macOS
     if [[ "$(uname)" == "Darwin" ]]; then
         # macOS installation path
         if command_exists pipx; then
             info "Using pipx to install MCPM (recommended)..."
-            pipx install mcpm
+            pipx install "git+https://github.com/melio/mcpmelio.git@melio"
         elif command_exists brew; then
             info "pipx not found, installing it via Homebrew..."
             brew install pipx
             info "Now installing MCPM with pipx..."
-            pipx install mcpm
+            pipx install git+https://github.com/melio/mcpmelio.git@melio
         else
             info "Creating a dedicated virtual environment for MCPM..."
             MCPM_VENV="$HOME/.mcpm-venv"
             python3 -m venv "$MCPM_VENV"
             "$MCPM_VENV/bin/pip" install mcpm
-            
+
             # Create symlinks to the user's bin directory
             USER_BIN="$HOME/.local/bin"
             mkdir -p "$USER_BIN"
             ln -sf "$MCPM_VENV/bin/mcpm" "$USER_BIN/mcpm"
-            
+
             info "Installed MCPM in a virtual environment at $MCPM_VENV"
             info "Added symlink to $USER_BIN/mcpm"
-            
+
             # Add PATH warning if needed
             if ! echo "$PATH" | grep -q "$USER_BIN"; then
                 echo "Warning: $USER_BIN is not in your PATH"
@@ -115,14 +115,14 @@ install_mcp() {
         # Non-macOS installation path - try standard methods
         if command_exists pipx; then
             info "Using pipx to install MCPM (recommended)..."
-            pipx install mcpm
+            pipx install git+https://github.com/melio/mcpmelio.git@melio
         else
             # Try to use pip in user mode with appropriate flags
             info "Installing with pip in user mode..."
             python3 -m pip install --user mcpm || {
                 error "Failed to install MCPM. Please check your permissions and try again."
                 echo "You may want to try one of these alternatives:"
-                echo "  1. Install pipx (https://pypa.github.io/pipx/) and run: pipx install mcpm"
+                echo "  1. Install pipx (https://pypa.github.io/pipx/) and run: pipx install git+https://github.com/melio/mcpmelio.git@melio"
                 echo "  2. Create a virtual environment and install there:"
                 echo "     python3 -m venv ~/.mcpm-venv"
                 echo "     source ~/.mcpm-venv/bin/activate"
@@ -149,7 +149,7 @@ verify_installation() {
     else
         PATH_DIRS=$(echo $PATH | tr ':' '\n')
         USER_BIN_DIR="$HOME/.local/bin"
-        
+
         if ! echo "$PATH_DIRS" | grep -q "$USER_BIN_DIR"; then
             info "MCPM might be installed but not in your PATH."
             echo "Try adding this to your shell profile (~/.bashrc, ~/.zshrc, etc.):"
