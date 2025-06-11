@@ -96,4 +96,4 @@ workflows:
             - test
           filters:
             branches:
-              only: adapt-ci
+              only: melio
