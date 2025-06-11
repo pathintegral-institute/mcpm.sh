@@ -1,5 +1,5 @@
 {
-  "name": "awslabs",
+  "name": "aws",
   "display_name": "AWS Labs MCP Servers",
   "description": "AWS MCP Servers — specialized MCP servers that bring AWS best practices directly to your development workflow. Multiple service-specific servers for different AWS services.",
   "repository": {

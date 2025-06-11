@@ -1,5 +1,5 @@
 {
-  "name": "github-mcp-server",
+  "name": "github",
   "display_name": "GitHub MCP Server",
   "description": "GitHub's official MCP Server for interacting with GitHub repositories, issues, pull requests, and more.",
   "repository": {

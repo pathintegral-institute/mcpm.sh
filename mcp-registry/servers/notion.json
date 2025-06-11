@@ -1,4 +1,5 @@
 {
+  "name": "notion",
   "display_name": "Notion MCP Server",
   "license": "MIT",
   "tags": [
@@ -94,7 +95,6 @@
       "prompt": "Add a new item to my \"Tasks\" database"
     }
   ],
-  "name": "notion-mcp",
   "repository": {
     "type": "git",
     "url": "https://github.com/makenotion/notion-mcp-server"
