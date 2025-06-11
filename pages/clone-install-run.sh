@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# melio-mcp-install.sh - Universal MCP server installer and runner
+# clone-install-run.sh - Universal MCP server installer and runner
 # Usage: Set environment variables and run the script:
 #   export MCP_REPO_URL="https://github.com/user/repo.git"
 #   export MCP_SETUP_COMMAND="npm install && npm run build"  
 #   export MCP_RUN_COMMAND="node dist/cli.js --stdio"
-#   ./melio-mcp-install.sh
+#   ./clone-install-run.sh
 
 set -e  # Exit on any error
 
