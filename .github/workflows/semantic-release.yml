@@ -9,7 +9,6 @@ permissions:
   contents: write
   issues: write
   pull-requests: write
-  id-token: write  # Required for PyPI trusted publishing
 
 jobs:
   test:
@@ -20,8 +19,8 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     environment:
-      name: pypi
-      url: https://pypi.org/p/mcpm
+      name: melio-s3
+      url: https://aitools.eilat.melioservices.com/mcpm/servers.json
     
     steps:
       - name: Checkout
@@ -65,10 +64,29 @@ jobs:
           enable-cache: true
           cache-dependency-glob: "pyproject.toml"
 
-      - name: Build
+      - name: Run preparation script
         if: steps.semantic.outputs.new_release_published == 'true'
-        run: uv build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          chmod +x ./scripts/prepare.sh
+          source .venv/bin/activate
+          ./scripts/prepare.sh ./output
 
-      - name: Publish distribution to PyPI
+      - name: Configure AWS credentials
         if: steps.semantic.outputs.new_release_published == 'true'
-        uses: pypa/gh-action-pypi-publish@release/v1 
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Upload servers.json to S3
+        if: steps.semantic.outputs.new_release_published == 'true'
+        run: |
+          aws s3 cp ./output/api/servers.json s3://aitools.eilat.melioservices.com/mcpm/servers.json --content-type "application/json"
+
+      - name: Invalidate CloudFront cache
+        if: steps.semantic.outputs.new_release_published == 'true'
+        run: |
+          aws cloudfront create-invalidation --distribution-id E3VSH7IG39WRB6 --paths "/mcpm/servers.json" 
