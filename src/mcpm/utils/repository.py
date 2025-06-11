@@ -127,7 +127,7 @@ class RepositoryManager:
         Returns:
             List of matching server metadata
         """
-        servers_dict = self._fetch_servers()
+        servers_dict = self._fetch_servers(True)
         results = list(servers_dict.values())
 
         # Filter by query if provided
