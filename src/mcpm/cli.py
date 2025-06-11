@@ -98,7 +98,7 @@ def main(ctx, help_flag, version):
     # Check if a command is being executed (and it's not help, no command, or the client command)
     if (
         ctx.invoked_subcommand
-        and ctx.invoked_subcommand not in ["target", "client", "profile", "router", "share"]
+        and ctx.invoked_subcommand not in ["target", "client", "profile", "router", "share", "inspector"]
         and not help_flag
     ):
         # Check if active client is set
