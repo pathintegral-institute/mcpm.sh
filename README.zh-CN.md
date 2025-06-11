@@ -30,7 +30,7 @@ MCPM 是一个开源的服务和命令行界面(CLI)，用于管理模型上下�
 ### 🔄 Shell 脚本（一行命令）
 
 ```bash
-curl -sSL https://mcpm.sh/install | bash
+curl -sSL https://mcpm.sh/install.sh | bash
 ```
 
 或选择您喜欢的安装方式：
