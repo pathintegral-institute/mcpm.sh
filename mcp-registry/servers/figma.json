@@ -16,7 +16,7 @@
   "installations": {
     "custom": {
       "type": "custom",
-      "command": "melio-mcp-install.sh",
+      "command": "clone-install-run.sh",
       "args": [],
       "env": {
         "FIGMA_API_KEY": "${FIGMA_API_KEY}",
@@ -24,7 +24,7 @@
         "MCP_SETUP_COMMAND": "npm install && npm run build",
         "MCP_RUN_COMMAND": "node dist/cli.js --stdio"
       },
-      "description": "Clone, build, and run the Figma MCP server using melio-mcp-install.sh",
+      "description": "Clone, build, and run the Figma MCP server using clone-install-run.sh",
       "recommended": true
     }
   },

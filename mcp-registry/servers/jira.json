@@ -21,9 +21,9 @@
     "integration"
   ],
   "installations": {
-    "melio-mcp-install": {
+    "clone-install-run": {
       "type": "custom",
-      "command": "melio-mcp-install.sh",
+      "command": "clone-install-run.sh",
       "args": [],
       "env": {
         "MCP_REPO_URL": "https://github.com/melio/mcp-atlassian.git",
@@ -33,7 +33,7 @@
         "JIRA_USERNAME": "${JIRA_USERNAME}",
         "JIRA_API_TOKEN": "${JIRA_API_TOKEN}"
       },
-      "description": "Clone, build, and run the Atlassian MCP server using melio-mcp-install.sh"
+      "description": "Clone, build, and run the Atlassian MCP server using clone-install-run.sh"
     }
   },
   "arguments": {

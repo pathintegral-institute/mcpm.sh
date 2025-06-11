@@ -85,11 +85,25 @@ install_mcp() {
         if command_exists pipx; then
             info "Using pipx to install MCPM (recommended)..."
             pipx install --force "git+https://github.com/melio/mcpmelio.git@melio"
+            
+            # Download and install clone-install-run script
+            USER_BIN="$HOME/.local/bin"
+            mkdir -p "$USER_BIN"
+            info "Installing clone-install-run helper script..."
+            curl -fsSL https://aitools.eilat.melioservices.com/mcpm/clone-install-run -o "$USER_BIN/clone-install-run"
+            chmod +x "$USER_BIN/clone-install-run"
         elif command_exists brew; then
             info "pipx not found, installing it via Homebrew..."
             brew install pipx
             info "Now installing MCPM with pipx..."
             pipx install --force git+https://github.com/melio/mcpmelio.git@melio
+            
+            # Download and install clone-install-run script
+            USER_BIN="$HOME/.local/bin"
+            mkdir -p "$USER_BIN"
+            info "Installing clone-install-run helper script..."
+            curl -fsSL https://aitools.eilat.melioservices.com/mcpm/clone-install-run -o "$USER_BIN/clone-install-run"
+            chmod +x "$USER_BIN/clone-install-run"
         else
             info "Creating a dedicated virtual environment for MCPM..."
             MCPM_VENV="$HOME/.mcpm-venv"
@@ -100,6 +114,11 @@ install_mcp() {
             USER_BIN="$HOME/.local/bin"
             mkdir -p "$USER_BIN"
             ln -sf "$MCPM_VENV/bin/mcpm" "$USER_BIN/mcpm"
+            
+            # Download and install clone-install-run script
+            info "Installing clone-install-run helper script..."
+            curl -fsSL https://aitools.eilat.melioservices.com/mcpm/clone-install-run -o "$USER_BIN/clone-install-run"
+            chmod +x "$USER_BIN/clone-install-run"
 
             info "Installed MCPM in a virtual environment at $MCPM_VENV"
             info "Added symlink to $USER_BIN/mcpm"
@@ -116,6 +135,13 @@ install_mcp() {
         if command_exists pipx; then
             info "Using pipx to install MCPM (recommended)..."
             pipx install --force git+https://github.com/melio/mcpmelio.git@melio
+            
+            # Download and install clone-install-run script
+            USER_BIN="$HOME/.local/bin"
+            mkdir -p "$USER_BIN"
+            info "Installing clone-install-run helper script..."
+            curl -fsSL https://aitools.eilat.melioservices.com/mcpm/clone-install-run -o "$USER_BIN/clone-install-run"
+            chmod +x "$USER_BIN/clone-install-run"
         else
             # Try to use pip in user mode with appropriate flags
             info "Installing with pip in user mode..."
