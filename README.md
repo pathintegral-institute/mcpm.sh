@@ -30,7 +30,7 @@ MCPM is an open source service and a CLI package management tool for MCP servers
 ### Recommended (Melio Internal): 
 
 ```bash
-curl -sSL https://aitools.eilat.melioservices.com/mcpm/install | bash
+curl -sSL https://aitools.eilat.melioservices.com/mcpm/install.sh | bash
 ```
 
 This installs the latest version directly from the internal Melio repository, ensuring you always get the most up-to-date features and configurations.

@@ -90,8 +90,8 @@ install_mcp() {
             USER_BIN="$HOME/.local/bin"
             mkdir -p "$USER_BIN"
             info "Installing clone-install-run helper script..."
-            curl -fsSL https://aitools.eilat.melioservices.com/mcpm/clone-install-run -o "$USER_BIN/clone-install-run"
-            chmod +x "$USER_BIN/clone-install-run"
+            curl -fsSL https://aitools.eilat.melioservices.com/mcpm/clone-install-run.sh -o "$USER_BIN/clone-install-run.sh"
+            chmod +x "$USER_BIN/clone-install-run.sh"
         elif command_exists brew; then
             info "pipx not found, installing it via Homebrew..."
             brew install pipx
@@ -102,8 +102,8 @@ install_mcp() {
             USER_BIN="$HOME/.local/bin"
             mkdir -p "$USER_BIN"
             info "Installing clone-install-run helper script..."
-            curl -fsSL https://aitools.eilat.melioservices.com/mcpm/clone-install-run -o "$USER_BIN/clone-install-run"
-            chmod +x "$USER_BIN/clone-install-run"
+            curl -fsSL https://aitools.eilat.melioservices.com/mcpm/clone-install-run.sh -o "$USER_BIN/clone-install-run.sh"
+            chmod +x "$USER_BIN/clone-install-run.sh"
         else
             info "Creating a dedicated virtual environment for MCPM..."
             MCPM_VENV="$HOME/.mcpm-venv"
@@ -117,8 +117,8 @@ install_mcp() {
             
             # Download and install clone-install-run script
             info "Installing clone-install-run helper script..."
-            curl -fsSL https://aitools.eilat.melioservices.com/mcpm/clone-install-run -o "$USER_BIN/clone-install-run"
-            chmod +x "$USER_BIN/clone-install-run"
+            curl -fsSL https://aitools.eilat.melioservices.com/mcpm/clone-install-run.sh -o "$USER_BIN/clone-install-run.sh"
+            chmod +x "$USER_BIN/clone-install-run.sh"
 
             info "Installed MCPM in a virtual environment at $MCPM_VENV"
             info "Added symlink to $USER_BIN/mcpm"
@@ -140,8 +140,8 @@ install_mcp() {
             USER_BIN="$HOME/.local/bin"
             mkdir -p "$USER_BIN"
             info "Installing clone-install-run helper script..."
-            curl -fsSL https://aitools.eilat.melioservices.com/mcpm/clone-install-run -o "$USER_BIN/clone-install-run"
-            chmod +x "$USER_BIN/clone-install-run"
+            curl -fsSL https://aitools.eilat.melioservices.com/mcpm/clone-install-run.sh -o "$USER_BIN/clone-install-run.sh"
+            chmod +x "$USER_BIN/clone-install-run.sh"
         else
             # Try to use pip in user mode with appropriate flags
             info "Installing with pip in user mode..."
