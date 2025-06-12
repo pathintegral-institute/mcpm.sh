@@ -1,0 +1,30 @@
+name: Codex
+
+on:
+  issues:
+    types: [opened, labeled]
+  pull_request:
+    branches: [main]
+    types: [labeled]
+
+jobs:
+  codex:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    steps:
+      # By default, Codex runs network disabled using --full-auto, so perform
+      # any setup that requires network (such as installing dependencies)
+      # before openai/codex-action.
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Codex
+        uses: openai/codex/.github/actions/codex@main
+        with:
+          openai_api_key: ${{ secrets.CODEX_OPENAI_API_KEY }}
+          codex_args: --full-auto
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          codex_home: ./.github/codex/home
