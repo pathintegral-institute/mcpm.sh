@@ -9,8 +9,18 @@ from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 
-# Default configuration paths
-DEFAULT_CONFIG_DIR = os.path.expanduser("~/.config/mcpm")
+# Default configuration paths – fallback to a writable directory when
+# the user’s home directory is not writable (for instance in sandboxed
+# CI environments).
+
+_home_config = os.path.expanduser("~/.config/mcpm")
+if os.access(os.path.dirname(_home_config), os.W_OK):
+    DEFAULT_CONFIG_DIR = _home_config
+else:
+    # Use a directory inside the current working directory as a safe
+    # fall-back.  This avoids *permission denied* errors when the global
+    # HOME is read-only.
+    DEFAULT_CONFIG_DIR = os.path.abspath(".mcpm_config")
 DEFAULT_CONFIG_FILE = os.path.join(DEFAULT_CONFIG_DIR, "config.json")
 # default router config
 DEFAULT_HOST = "localhost"
@@ -41,7 +51,14 @@ class ConfigManager:
 
     def _ensure_dirs(self) -> None:
         """Ensure all configuration directories exist"""
-        os.makedirs(self.config_dir, exist_ok=True)
+        try:
+            os.makedirs(self.config_dir, exist_ok=True)
+        except PermissionError:
+            # Fall back to a local directory that is guaranteed to be writable.
+            fallback_dir = os.path.abspath(".mcpm_config")
+            os.makedirs(fallback_dir, exist_ok=True)
+            self.config_dir = fallback_dir
+            self.config_path = os.path.join(self.config_dir, os.path.basename(self.config_path))
 
     def _load_config(self) -> None:
         """Load configuration from file or create default"""
