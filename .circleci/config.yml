@@ -88,7 +88,7 @@ jobs:
       - run:
           name: Invalidate CloudFront cache
           command: |
-            aws cloudfront create-invalidation --distribution-id E3VSH7IG39WRB6 --paths "/mcpm/servers.json" "/mcpm/install.sh" "/mcpm/clone-install-run.sh"
+            aws cloudfront create-invalidation --distribution-id ELOOQ9B288JB8 --paths "/mcpm/servers.json" "/mcpm/install.sh" "/mcpm/clone-install-run.sh"
 
 workflows:
   test-and-deploy:
