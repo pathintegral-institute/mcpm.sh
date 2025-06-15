@@ -171,5 +171,5 @@ class RepositoryManager:
         Returns:
             Server metadata or None if not found
         """
-        servers_dict = self._fetch_servers()
+        servers_dict = self._fetch_servers(True)
         return servers_dict.get(server_name)
