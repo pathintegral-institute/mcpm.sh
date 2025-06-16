@@ -31,9 +31,6 @@ class ClaudeCodeManager(JSONClientManager):
         if config_path:
             self.config_path = config_path
         else:
-            # Claude Code uses .mcp.json in the current working directory for project scope
-            # For user scope, it uses the home directory
-            # We'll default to user scope configuration
             self.config_path = os.path.expanduser("~/.claude.json")
 
     def _get_empty_config(self) -> Dict[str, Any]:
@@ -45,7 +42,6 @@ class ClaudeCodeManager(JSONClientManager):
         Returns:
             bool: True if claude command is available, False otherwise
         """
-        # Check if 'claude' command is available in PATH
         claude_executable = "claude.exe" if self._system == "Windows" else "claude"
         return shutil.which(claude_executable) is not None
 
