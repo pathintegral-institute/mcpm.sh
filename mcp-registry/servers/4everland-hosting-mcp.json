@@ -9,7 +9,7 @@
   ],
   "installations": {
     "4ever-mcpserver": {
-      "type": "node",
+      "type": "npm",
       "command": "npx",
       "args": [
         "-y",
