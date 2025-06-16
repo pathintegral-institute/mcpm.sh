@@ -20,10 +20,9 @@
       "args": [],
       "env": {
         "MYSQL_CONNECTION_STRING": "${MYSQL_CONNECTION_STRING}",
-        "MYSQL_SSL_FLAG": "${MYSQL_SSL_FLAG}",
         "MCP_REPO_URL": "https://github.com/melio/mysql-mcp-server.git",
         "MCP_SETUP_COMMAND": "npm install && npm run build",
-        "MCP_RUN_COMMAND": "node build/index.js \"${MYSQL_CONNECTION_STRING}\" ${MYSQL_SSL_FLAG}"
+        "MCP_RUN_COMMAND": "node build/index.js"
       },
       "description": "Clone, build, and run the MySQL MCP server using clone-install-run.sh",
       "recommended": true
@@ -34,11 +33,6 @@
       "description": "MySQL connection string in the format mysql://username:password@hostname:port/database",
       "required": true,
       "example": "mysql://root:password@localhost:3306/mydb"
-    },
-    "MYSQL_SSL_FLAG": {
-      "description": "Optional SSL flag for secure connections (use --ssl for Amazon RDS)",
-      "required": false,
-      "example": "--ssl"
     }
   },
   "tools": [
