@@ -1,3 +1,10 @@
+## [1.13.5](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.13.4...v1.13.5) (2025-06-16)
+
+
+### Bug Fixes
+
+* automated fix for [#171](https://github.com/pathintegral-institute/mcpm.sh/issues/171) via Codex ([#173](https://github.com/pathintegral-institute/mcpm.sh/issues/173)) ([88b554b](https://github.com/pathintegral-institute/mcpm.sh/commit/88b554b1d057a470cb44efc0cf26a98941291f35))
+
 ## [1.13.4](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.13.3...v1.13.4) (2025-06-07)
 
 
