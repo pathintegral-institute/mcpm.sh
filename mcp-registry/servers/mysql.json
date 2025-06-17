@@ -1,81 +1,53 @@
 {
   "name": "mysql",
   "display_name": "MySQL Database Integration",
-  "description": "MySQL database integration in Python with configurable access controls and schema inspection",
+  "description": "MySQL database integration providing schema discovery and read-only query execution with secure database access",
   "repository": {
     "type": "git",
-    "url": "https://github.com/designcomputer/mysql_mcp_server"
+    "url": "https://github.com/melio/mysql-mcp-server"
   },
-  "homepage": "https://github.com/designcomputer/mysql_mcp_server",
+  "homepage": "https://github.com/melio/mysql-mcp-server",
   "author": {
-    "name": "designcomputer"
+    "name": "Melio"
   },
   "license": "MIT",
-  "categories": [
-    "Databases"
-  ],
-  "tags": [
-    "MySQL",
-    "Database Access"
-  ],
+  "categories": ["Databases"],
+  "tags": ["MySQL", "Database Access"],
   "installations": {
-    "uvx": {
-      "type": "uvx",
-      "command": "uvx",
-      "args": [
-        "mysql_mcp_server"
-      ],
+    "custom": {
+      "type": "custom",
+      "command": "clone-install-run.sh",
+      "args": [],
       "env": {
-        "MYSQL_HOST": "${MYSQL_HOST}",
-        "MYSQL_PORT": "${MYSQL_PORT}",
-        "MYSQL_USER": "${MYSQL_USER}",
-        "MYSQL_PASSWORD": "${MYSQL_PASSWORD}",
-        "MYSQL_DATABASE": "${MYSQL_DATABASE}"
-      }
+        "MYSQL_CONNECTION_STRING": "${MYSQL_CONNECTION_STRING}",
+        "MCP_REPO_URL": "https://github.com/melio/mysql-mcp-server.git",
+        "MCP_SETUP_COMMAND": "npm install && npm run build",
+        "MCP_RUN_COMMAND": "node build/index.js"
+      },
+      "description": "Clone, build, and run the MySQL MCP server using clone-install-run.sh",
+      "recommended": true
     }
   },
   "arguments": {
-    "MYSQL_HOST": {
-      "description": "Database host",
+    "MYSQL_CONNECTION_STRING": {
+      "description": "MySQL connection string in the format mysql://username:password@hostname:port/database",
       "required": true,
-      "example": "localhost"
-    },
-    "MYSQL_PORT": {
-      "description": "Database port (defaults to 3306 if not specified)",
-      "required": false,
-      "example": "3306"
-    },
-    "MYSQL_USER": {
-      "description": "Username for database access",
-      "required": true,
-      "example": "your_username"
-    },
-    "MYSQL_PASSWORD": {
-      "description": "Password for the database user",
-      "required": true,
-      "example": "your_password"
-    },
-    "MYSQL_DATABASE": {
-      "description": "Database name to connect to",
-      "required": true,
-      "example": "your_database"
+      "example": "mysql://root:password@localhost:3306/mydb"
     }
   },
   "tools": [
     {
-      "name": "execute_sql",
-      "description": "Execute an SQL query on the MySQL server",
+      "name": "query",
+      "description": "Run a read-only SQL query against the MySQL database",
       "inputSchema": {
         "type": "object",
         "properties": {
-          "query": {
+          "sql": {
             "type": "string",
-            "description": "The SQL query to execute"
+            "description": "The SQL query to execute (read-only)"
           }
         },
-        "required": [
-          "query"
-        ]
+        "required": ["sql"]
       }
     }
   ]
