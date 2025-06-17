@@ -16,11 +16,11 @@
   "installations": {
     "custom": {
       "type": "custom",
-      "command": "clone-install-run.sh",
+      "command": "~/.mcpm/clone-install-run.sh",
       "args": [],
       "env": {
         "MYSQL_CONNECTION_STRING": "${MYSQL_CONNECTION_STRING}",
-        "MCP_REPO_URL": "https://github.com/melio/mysql-mcp-server.git",
+        "MCP_REPO_URL": "git+ssh://git@github.com/melio/mysql-mcp-server.git",
         "MCP_SETUP_COMMAND": "npm install && npm run build",
         "MCP_RUN_COMMAND": "node build/index.js"
       },
