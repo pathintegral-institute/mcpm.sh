@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh -l
 
 # clone-install-run.sh - Universal MCP server installer and runner
 # Usage: Set environment variables and run the script:
@@ -56,4 +56,4 @@ fi
 
 # Run the server
 #echo "🚀 Starting server: $RUN_COMMAND"
-eval "$RUN_COMMAND"
+exec $RUN_COMMAND
