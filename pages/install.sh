@@ -87,11 +87,11 @@ install_mcp() {
             pipx install --force "git+ssh://git@github.com/melio/mcpmelio.git@melio"
             
             # Download and install clone-install-run script
-            USER_BIN="$HOME/.local/bin"
-            mkdir -p "$USER_BIN"
+            MCPM_DIR="$HOME/.mcpm"
+            mkdir -p "$MCPM_DIR"
             info "Installing clone-install-run helper script..."
-            curl -fsSL https://aitools.eilat.melioservices.com/mcpm/clone-install-run.sh -o "$USER_BIN/clone-install-run.sh"
-            chmod +x "$USER_BIN/clone-install-run.sh"
+            curl -fsSL https://aitools.eilat.melioservices.com/mcpm/clone-install-run.sh -o "$MCPM_DIR/clone-install-run.sh"
+            chmod +x "$MCPM_DIR/clone-install-run.sh"
         elif command_exists brew; then
             info "pipx not found, installing it via Homebrew..."
             brew install pipx

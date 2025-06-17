@@ -23,10 +23,10 @@
   "installations": {
     "clone-install-run": {
       "type": "custom",
-      "command": "clone-install-run.sh",
+      "command": "~/.mcpm/clone-install-run.sh",
       "args": [],
       "env": {
-        "MCP_REPO_URL": "https://github.com/melio/mcp-atlassian.git",
+        "MCP_REPO_URL": "git+ssh://git@github.com/melio/mcp-atlassian.git",
         "MCP_SETUP_COMMAND": "uv sync --frozen --all-extras",
         "MCP_RUN_COMMAND": "uv run mcp-atlassian",
         "JIRA_URL": "${JIRA_INSTANCE_URL}",
