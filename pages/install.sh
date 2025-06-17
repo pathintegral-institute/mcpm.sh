@@ -75,6 +75,54 @@ ensure_pip() {
     fi
 }
 
+# Function to install uv if missing
+ensure_uv() {
+    if ! command_exists uv; then
+        info "Installing uv (Python package manager)..."
+        
+        # Try to install uv using the official installer
+        if command_exists curl; then
+            curl -LsSf https://astral.sh/uv/install.sh | sh || {
+                error "Failed to install uv using curl installer."
+                return 1
+            }
+        elif command_exists wget; then
+            wget -qO- https://astral.sh/uv/install.sh | sh || {
+                error "Failed to install uv using wget installer."
+                return 1
+            }
+        else
+            # Fall back to pipx installation if available, otherwise pip
+            if command_exists pipx; then
+                info "curl/wget not available, installing uv via pipx..."
+                pipx install uv || {
+                    error "Failed to install uv via pipx."
+                    return 1
+                }
+            else
+                info "curl/wget/pipx not available, installing uv via pip..."
+                python3 -m pip install --user uv || {
+                    error "Failed to install uv via pip."
+                    return 1
+                }
+            fi
+        fi
+        
+        # Source the new PATH to make uv available
+        export PATH="$HOME/.cargo/bin:$PATH"
+        export PATH="$HOME/.local/bin:$PATH"
+        
+        if command_exists uv; then
+            success "uv installed successfully"
+        else
+            error "uv installation failed or not found in PATH"
+            return 1
+        fi
+    else
+        info "uv is already installed"
+    fi
+}
+
 # Function to install MCPM
 install_mcp() {
     info "Installing MCPM..."
@@ -195,6 +243,7 @@ main() {
     info "Starting MCPM installation..."
     check_python
     ensure_pip
+    ensure_uv
     install_mcp
     verify_installation
 }
