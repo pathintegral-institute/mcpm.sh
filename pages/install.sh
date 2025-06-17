@@ -84,7 +84,7 @@ install_mcp() {
         # macOS installation path
         if command_exists pipx; then
             info "Using pipx to install MCPM (recommended)..."
-            pipx install --force "git+https://github.com/melio/mcpmelio.git@melio"
+            pipx install --force "git+ssh://git@github.com/melio/mcpmelio.git@melio"
             
             # Download and install clone-install-run script
             USER_BIN="$HOME/.local/bin"
@@ -96,7 +96,7 @@ install_mcp() {
             info "pipx not found, installing it via Homebrew..."
             brew install pipx
             info "Now installing MCPM with pipx..."
-            pipx install --force git+https://github.com/melio/mcpmelio.git@melio
+            pipx install --force git+ssh://git@github.com/melio/mcpmelio.git@melio
             
             # Download and install clone-install-run script
             USER_BIN="$HOME/.local/bin"
@@ -134,7 +134,7 @@ install_mcp() {
         # Non-macOS installation path - try standard methods
         if command_exists pipx; then
             info "Using pipx to install MCPM (recommended)..."
-            pipx install --force git+https://github.com/melio/mcpmelio.git@melio
+            pipx install --force git+ssh://git@github.com/melio/mcpmelio.git@melio
             
             # Download and install clone-install-run script
             USER_BIN="$HOME/.local/bin"
@@ -145,10 +145,10 @@ install_mcp() {
         else
             # Try to use pip in user mode with appropriate flags
             info "Installing with pip in user mode..."
-            python3 -m pip install --user --upgrade --force-reinstall git+https://github.com/melio/mcpmelio.git@melio || {
+                python3 -m pip install --user --upgrade --force-reinstall git+ssh://git@github.com/melio/mcpmelio.git@melio || {
                 error "Failed to install MCPM. Please check your permissions and try again."
                 echo "You may want to try one of these alternatives:"
-                echo "  1. Install pipx (https://pypa.github.io/pipx/) and run: pipx install git+https://github.com/melio/mcpmelio.git@melio"
+                echo "  1. Install pipx (https://pypa.github.io/pipx/) and run: pipx install git+ssh://git@github.com/melio/mcpmelio.git@melio"
                 echo "  2. Create a virtual environment and install there:"
                 echo "     python3 -m venv ~/.mcpm-venv"
                 echo "     source ~/.mcpm-venv/bin/activate"
