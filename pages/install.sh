@@ -80,30 +80,37 @@ ensure_uv() {
     if ! command_exists uv; then
         info "Installing uv (Python package manager)..."
         
-        # Try to install uv using the official installer
-        if command_exists curl; then
+        # Try to install uv using Homebrew first (if available)
+        if command_exists brew; then
+            info "Installing uv via Homebrew..."
+            brew install uv || {
+                error "Failed to install uv using Homebrew, trying other methods..."
+                # Continue to other installation methods
+            }
+        fi
+        
+        # If uv is still not available, try the official installer
+        if ! command_exists uv && command_exists curl; then
+            info "Installing uv using official installer (curl)..."
             curl -LsSf https://astral.sh/uv/install.sh | sh || {
                 error "Failed to install uv using curl installer."
-                return 1
             }
-        elif command_exists wget; then
+        elif ! command_exists uv && command_exists wget; then
+            info "Installing uv using official installer (wget)..."
             wget -qO- https://astral.sh/uv/install.sh | sh || {
                 error "Failed to install uv using wget installer."
-                return 1
             }
-        else
+        elif ! command_exists uv; then
             # Fall back to pipx installation if available, otherwise pip
             if command_exists pipx; then
-                info "curl/wget not available, installing uv via pipx..."
+                info "Installing uv via pipx..."
                 pipx install uv || {
                     error "Failed to install uv via pipx."
-                    return 1
                 }
             else
-                info "curl/wget/pipx not available, installing uv via pip..."
+                info "Installing uv via pip..."
                 python3 -m pip install --user uv || {
                     error "Failed to install uv via pip."
-                    return 1
                 }
             fi
         fi
@@ -115,7 +122,8 @@ ensure_uv() {
         if command_exists uv; then
             success "uv installed successfully"
         else
-            error "uv installation failed or not found in PATH"
+            error "All uv installation methods failed. Please install uv manually:"
+            echo "  Visit https://docs.astral.sh/uv/getting-started/installation/ for installation instructions"
             return 1
         fi
     else
