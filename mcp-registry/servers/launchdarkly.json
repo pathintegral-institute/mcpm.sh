@@ -1,0 +1,303 @@
+{
+  "name": "launchdarkly",
+  "display_name": "LaunchDarkly MCP Server",
+  "description": "Official MCP server for LaunchDarkly's feature flag and AI configuration management platform. Allows managing feature flags, AI configs, and targeting rules through natural language interactions.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/launchdarkly/mcp-server"
+  },
+  "homepage": "https://launchdarkly.com/docs/home/getting-started/mcp",
+  "author": {
+    "name": "LaunchDarkly",
+    "url": "https://launchdarkly.com"
+  },
+  "license": "MIT",
+  "categories": [
+    "Dev Tools",
+    "Professional Apps"
+  ],
+  "tags": [
+    "feature-flags",
+    "launchdarkly",
+    "ai-config",
+    "configuration-management",
+    "targeting",
+    "model-context-protocol"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "--package",
+        "@launchdarkly/mcp-server",
+        "--",
+        "mcp",
+        "start",
+        "--api-key",
+        "${LAUNCHDARKLY_API_KEY}"
+      ],
+      "package": "@launchdarkly/mcp-server",
+      "env": {
+        "LAUNCHDARKLY_API_KEY": "${LAUNCHDARKLY_API_KEY}"
+      },
+      "description": "Using npm to run the LaunchDarkly MCP server",
+      "recommended": true
+    },
+    "binary": {
+      "type": "custom",
+      "command": "./launchdarkly-mcp-server",
+      "args": [
+        "--api-key",
+        "${LAUNCHDARKLY_API_KEY}"
+      ],
+      "env": {
+        "LAUNCHDARKLY_API_KEY": "${LAUNCHDARKLY_API_KEY}"
+      },
+      "description": "Using standalone binary downloaded from GitHub releases"
+    }
+  },
+  "arguments": {
+    "LAUNCHDARKLY_API_KEY": {
+      "description": "LaunchDarkly API access token with appropriate permissions for feature flag and AI config management",
+      "required": true,
+      "example": "api-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    },
+    "LAUNCHDARKLY_BASE_URI": {
+      "description": "LaunchDarkly environment base URI (optional, defaults to commercial environment)",
+      "required": false,
+      "example": "https://app.launchdarkly.com"
+    }
+  },
+  "tools": [
+    {
+      "name": "list_feature_flags",
+      "description": "List all feature flags in the project",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "description": "Project key"
+          }
+        },
+        "required": ["project"]
+      }
+    },
+    {
+      "name": "create_feature_flag",
+      "description": "Create a new feature flag",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "description": "Project key"
+          },
+          "key": {
+            "type": "string",
+            "description": "Feature flag key"
+          },
+          "name": {
+            "type": "string",
+            "description": "Feature flag name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Feature flag description"
+          }
+        },
+        "required": ["project", "key", "name"]
+      }
+    },
+    {
+      "name": "update_feature_flag",
+      "description": "Update feature flag targeting rules and variations",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "description": "Project key"
+          },
+          "flag": {
+            "type": "string",
+            "description": "Feature flag key"
+          },
+          "environment": {
+            "type": "string",
+            "description": "Environment key"
+          }
+        },
+        "required": ["project", "flag", "environment"]
+      }
+    },
+    {
+      "name": "get_feature_flag",
+      "description": "Get details of a specific feature flag",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "description": "Project key"
+          },
+          "flag": {
+            "type": "string",
+            "description": "Feature flag key"
+          }
+        },
+        "required": ["project", "flag"]
+      }
+    },
+    {
+      "name": "delete_feature_flag",
+      "description": "Delete a feature flag",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "description": "Project key"
+          },
+          "flag": {
+            "type": "string",
+            "description": "Feature flag key"
+          }
+        },
+        "required": ["project", "flag"]
+      }
+    },
+    {
+      "name": "list_ai_configs",
+      "description": "List all AI configurations in the project",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "description": "Project key"
+          }
+        },
+        "required": ["project"]
+      }
+    },
+    {
+      "name": "create_ai_config",
+      "description": "Create a new AI configuration",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "description": "Project key"
+          },
+          "key": {
+            "type": "string",
+            "description": "AI config key"
+          },
+          "name": {
+            "type": "string",
+            "description": "AI config name"
+          }
+        },
+        "required": ["project", "key", "name"]
+      }
+    },
+    {
+      "name": "update_ai_config",
+      "description": "Update an AI configuration",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "description": "Project key"
+          },
+          "config": {
+            "type": "string",
+            "description": "AI config key"
+          }
+        },
+        "required": ["project", "config"]
+      }
+    },
+    {
+      "name": "get_ai_config",
+      "description": "Get details of a specific AI configuration",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "description": "Project key"
+          },
+          "config": {
+            "type": "string",
+            "description": "AI config key"
+          }
+        },
+        "required": ["project", "config"]
+      }
+    },
+    {
+      "name": "delete_ai_config",
+      "description": "Delete an AI configuration",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "description": "Project key"
+          },
+          "config": {
+            "type": "string",
+            "description": "AI config key"
+          }
+        },
+        "required": ["project", "config"]
+      }
+    }
+  ],
+  "resources": [
+    {
+      "name": "feature_flags",
+      "uri": "launchdarkly://feature-flags/{project}",
+      "description": "Access to feature flags in a LaunchDarkly project"
+    },
+    {
+      "name": "ai_configs",
+      "uri": "launchdarkly://ai-configs/{project}",
+      "description": "Access to AI configurations in a LaunchDarkly project"
+    }
+  ],
+  "examples": [
+    {
+      "title": "Create a feature flag",
+      "description": "Create a new feature flag with basic configuration",
+      "prompt": "Create a feature flag called 'new-checkout-flow' for the mobile-app project"
+    },
+    {
+      "title": "Turn feature flag on",
+      "description": "Enable a feature flag in all environments",
+      "prompt": "Turn the 'new-checkout-flow' flag ON in all environments"
+    },
+    {
+      "title": "Update targeting rules",
+      "description": "Modify feature flag targeting and rollout rules",
+      "prompt": "Update the targeting rules for 'new-checkout-flow' to serve true to 25% of users in production"
+    },
+    {
+      "title": "Create AI configuration",
+      "description": "Set up a new AI configuration for model parameters",
+      "prompt": "Create an AI config called 'chat-model-settings' with GPT-4 parameters"
+    },
+    {
+      "title": "List project resources",
+      "description": "Get overview of all feature flags and AI configs",
+      "prompt": "Show me all feature flags and AI configurations in the mobile-app project"
+    }
+  ],
+  "is_official": true
+}
