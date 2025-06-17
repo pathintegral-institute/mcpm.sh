@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # clone-install-run.sh - Universal MCP server installer and runner
 # Usage: Set environment variables and run the script:
