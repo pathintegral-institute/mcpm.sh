@@ -418,7 +418,9 @@ class JSONClientManager(BaseClientManager):
         """
         host = router_config["host"]
         port = router_config["port"]
-        default_base_url = f"http://{host}:{port}/sse"
+
+        # Use streamable HTTP endpoint instead of the deprecated SSE one.
+        default_base_url = f"http://{host}:{port}/mcp/"
 
         server_config = self._format_router_server(profile_name, default_base_url, alias_name)
         return self.add_server(server_config)
@@ -688,7 +690,8 @@ class YAMLClientManager(BaseClientManager):
         """
         host = router_config["host"]
         port = router_config["port"]
-        default_base_url = f"http://{host}:{port}/sse"
+        # Use streamable HTTP endpoint.
+        default_base_url = f"http://{host}:{port}/mcp/"
 
         server_config = self._format_router_server(profile_name, default_base_url, alias_name)
         return self.add_server(server_config)
