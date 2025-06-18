@@ -1,0 +1,53 @@
+{
+  "display_name": "4EVERLAND Hosting MCP Server",
+  "license": "MIT",
+  "tags": [
+    "4everland",
+    "hosting",
+    "cloud",
+    "mcp"
+  ],
+  "installations": {
+    "4ever-mcpserver": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@4everland/hosting-mcp@latest",
+        "serve"
+      ],
+      "description": "Run the 4EVERLAND MCP server directly with node",
+      "env": {
+        "TOKEN": "${4EVERLAND_HOSTING_AUTH_TOKEN}"
+      }
+    }
+  },
+  "arguments": {
+    "TOKEN": {
+      "description": "4everland Hosting auth key",
+      "required": true,
+      "example": "your_auth_key"
+    }
+  },
+  "examples": [
+    {
+      "title": "deploy simple webapp",
+      "description": "",
+      "prompt": "generate a simple counter using html, then deploy it to 4ever and tell me how to view it"
+    }
+  ],
+  "name": "4everland-hosting-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/4everland/4everland-hosting-mcp"
+  },
+  "homepage": "https://github.com/4everland/4everland-hosting-mcp#readme",
+  "author": {
+    "name": "4EVERLAND"
+  },
+  "description": "A Model Context Protocol (MCP) server implementation for 4EVERLAND Hosting enabling instant deployment of AI-generated code to decentralized storage networks like Greenfield, IPFS, and Arweave.",
+  "categories": [
+    "Dev Tools"
+  ],
+  "is_official": true
+}
