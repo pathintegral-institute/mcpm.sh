@@ -42,7 +42,6 @@ class ClaudeCodeManager(JSONClientManager):
 
     def is_client_installed(self) -> bool:
         """Check if Claude Code CLI is installed
-        
         Returns:
             bool: True if claude command is available, False otherwise
         """
