@@ -4,10 +4,10 @@ Claude Code CLI integration utilities for MCP
 
 import logging
 import os
+import shutil
 from typing import Any, Dict
 
 from mcpm.clients.base import JSONClientManager
-from mcpm.utils.platform import is_windows
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +34,7 @@ class ClaudeCodeManager(JSONClientManager):
             # Claude Code uses .mcp.json in the current working directory for project scope
             # For user scope, it uses the home directory
             # We'll default to user scope configuration
-            self.config_path = os.path.expanduser("~/.mcp.json")
+            self.config_path = os.path.expanduser("~/.claude.json")
 
     def _get_empty_config(self) -> Dict[str, Any]:
         """Get empty config structure for Claude Code"""
@@ -46,10 +46,8 @@ class ClaudeCodeManager(JSONClientManager):
         Returns:
             bool: True if claude command is available, False otherwise
         """
-        import shutil
-        
         # Check if 'claude' command is available in PATH
-        claude_executable = "claude.exe" if is_windows() else "claude"
+        claude_executable = "claude.exe" if self._system == "Windows" else "claude"
         return shutil.which(claude_executable) is not None
 
     def get_client_info(self) -> Dict[str, str]:
