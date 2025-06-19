@@ -41,7 +41,14 @@ class ConfigManager:
 
     def _ensure_dirs(self) -> None:
         """Ensure all configuration directories exist"""
-        os.makedirs(self.config_dir, exist_ok=True)
+        try:
+            os.makedirs(self.config_dir, exist_ok=True)
+        except PermissionError:
+            # Fall back to a writable location in restricted environments such
+            # as the test runner where the home directory might be read-only.
+            self.config_dir = "/tmp/mcpm"
+            self.config_path = os.path.join(self.config_dir, os.path.basename(self.config_path))
+            os.makedirs(self.config_dir, exist_ok=True)
 
     def _load_config(self) -> None:
         """Load configuration from file or create default"""

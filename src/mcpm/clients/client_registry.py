@@ -20,6 +20,7 @@ from mcpm.clients.managers.goose import GooseClientManager
 from mcpm.clients.managers.trae import TraeManager
 from mcpm.clients.managers.vscode import VSCodeManager
 from mcpm.clients.managers.windsurf import WindsurfManager
+from mcpm.clients.managers.kilo_code import KiloCodeManager
 
 logger = logging.getLogger(__name__)
 
@@ -46,6 +47,7 @@ class ClientRegistry:
         "roo-code": RooCodeManager(),
         "trae": TraeManager(),
         "vscode": VSCodeManager(),
+        "kilo-code": KiloCodeManager(),
     }
 
     @classmethod
