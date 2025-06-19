@@ -10,6 +10,7 @@ from mcpm.clients.base import BaseClientManager
 from mcpm.clients.client_config import ClientConfigManager
 
 # Import all client managers
+from mcpm.clients.managers.claude_code import ClaudeCodeManager
 from mcpm.clients.managers.claude_desktop import ClaudeDesktopManager
 from mcpm.clients.managers.cline import ClineManager, RooCodeManager
 from mcpm.clients.managers.continue_extension import ContinueManager
@@ -34,6 +35,7 @@ class ClientRegistry:
 
     # Dictionary mapping client keys to manager instances
     _CLIENT_MANAGERS = {
+        "claude-code": ClaudeCodeManager(),
         "claude-desktop": ClaudeDesktopManager(),
         "windsurf": WindsurfManager(),
         "cursor": CursorManager(),

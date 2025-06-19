@@ -2,12 +2,12 @@
 Router implementation for aggregating multiple MCP servers into a single server.
 """
 
+import asyncio
 import logging
 import typing as t
 from collections import defaultdict
 from contextlib import asynccontextmanager
 from typing import Literal, Optional, Sequence, TextIO
-import asyncio
 
 import uvicorn
 from deprecated import deprecated
