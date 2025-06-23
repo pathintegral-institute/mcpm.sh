@@ -175,7 +175,7 @@ class GooseClientManager(YAMLClientManager):
             if non_empty_env:
                 result["envs"] = non_empty_env
         elif isinstance(server_config, CustomServerConfig):
-            result = server_config.config
+            result = dict(server_config.config)
             result["type"] = "builtin"
         else:
             result = server_config.to_dict()
