@@ -3,7 +3,7 @@ from rich.console import Console
 from rich.table import Table
 
 from mcpm.clients.client_registry import ClientRegistry
-from mcpm.core.schema import STDIOServerConfig
+from mcpm.core.schema import CustomServerConfig, STDIOServerConfig
 from mcpm.profile.profile_config import ProfileConfigManager
 from mcpm.utils.config import ConfigManager
 
@@ -41,6 +41,8 @@ def list(verbose=False):
             for config in configs:
                 if isinstance(config, STDIOServerConfig):
                     details.append(f"{config.name}: {config.command} {' '.join(config.args)}")
+                elif isinstance(config, CustomServerConfig):
+                    details.append(f"{config.name}: Custom")
                 else:
                     details.append(f"{config.name}: {config.url}")
             row.append("\n".join(details))
