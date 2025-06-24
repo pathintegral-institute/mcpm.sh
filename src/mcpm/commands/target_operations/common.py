@@ -1,9 +1,9 @@
 from rich.console import Console
 
 from mcpm.clients.client_registry import ClientRegistry
-from mcpm.core.schema import ServerConfig
+from mcpm.core.schema import ServerConfig, STDIOServerConfig
 from mcpm.profile.profile_config import ProfileConfigManager
-from mcpm.utils.config import ConfigManager
+from mcpm.utils.config import NODE_EXECUTABLES, ConfigManager
 from mcpm.utils.display import print_active_scope, print_no_active_scope
 from mcpm.utils.scope import ScopeType, extract_from_scope, parse_server
 
@@ -32,6 +32,22 @@ def determine_target(target: str) -> tuple[ScopeType | None, str | None, str | N
     return scope_type, scope, server_name
 
 
+def _replace_node_executable(server_config: ServerConfig) -> ServerConfig:
+    if not isinstance(server_config, STDIOServerConfig):
+        return server_config
+    command = server_config.command.strip()
+    if command not in NODE_EXECUTABLES:
+        return server_config
+    config = ConfigManager().get_config()
+    config_node_executable = config.get("node_executable")
+    if not config_node_executable:
+        return server_config
+    if config_node_executable != command:
+        console.print(f"[bold cyan]Replace node executable {command} with {config_node_executable}[/]")
+        server_config.command = config_node_executable
+    return server_config
+
+
 def client_add_server(client: str, server_config: ServerConfig, force: bool = False) -> bool:
     client_manager = ClientRegistry.get_client_manager(client)
     if not client_manager:
@@ -41,6 +57,7 @@ def client_add_server(client: str, server_config: ServerConfig, force: bool = Fa
         console.print(f"[bold red]Error:[/] Server '{server_config.name}' already exists in {client}.")
         console.print("Use --force to override.")
         return False
+    server_config = _replace_node_executable(server_config)
     success = client_manager.add_server(server_config)
 
     return success
@@ -73,6 +90,7 @@ def profile_add_server(profile: str, server_config: ServerConfig, force: bool = 
         console.print(f"[bold red]Error:[/] Server '{server_config.name}' already exists in {profile}.")
         console.print("Use --force to override.")
         return False
+    server_config = _replace_node_executable(server_config)
     success = profile_manager.set_profile(profile, server_config)
     return success
 

@@ -175,6 +175,8 @@ mcpm share "npx -y @modelcontextprotocol/server-everything" --retry 3
 
 ```bash
 mcpm config clear-cache          # Clear MCPM's registry cache. Cache defaults to refresh every 1 hour.
+mcpm config set                  # Set global MCPM configuration, currently only support node_executable 
+mcpm config get <name>           # Get global MCPM configuration
 mcpm inspector                   # Launch the MCPM Inspector UI to examine server configs
 ```
 

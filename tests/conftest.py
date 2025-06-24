@@ -7,12 +7,14 @@ import os
 import sys
 import tempfile
 from pathlib import Path
+from unittest.mock import Mock
 
 import pytest
 
 # Add the src directory to the path for all tests
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+from mcpm.clients.client_registry import ClientRegistry
 from mcpm.clients.managers.claude_desktop import ClaudeDesktopManager
 from mcpm.clients.managers.windsurf import WindsurfManager
 from mcpm.utils.config import ConfigManager
@@ -43,12 +45,21 @@ def temp_config_file():
 
 
 @pytest.fixture
-def config_manager():
+def config_manager(monkeypatch):
     """Create a ClientConfigManager with a temp config for testing"""
     with tempfile.TemporaryDirectory() as temp_dir:
-        config_path = os.path.join(temp_dir, "config.json")
+        tmp_config_path = os.path.join(temp_dir, "config.json")
         # Create ConfigManager with the temp path
-        config_mgr = ConfigManager(config_path=config_path)
+
+        _original_init = ConfigManager.__init__
+
+        def _mock_init(self, config_path=tmp_config_path):
+            _original_init(self, config_path)
+            self.config_path = tmp_config_path
+
+        monkeypatch.setattr(ConfigManager, "__init__", _mock_init)
+
+        config_mgr = ConfigManager()
         # Create ClientConfigManager that will use this ConfigManager internally
         from mcpm.clients.client_config import ClientConfigManager
 
@@ -59,9 +70,13 @@ def config_manager():
 
 
 @pytest.fixture
-def windsurf_manager(temp_config_file):
+def windsurf_manager(temp_config_file, monkeypatch, config_manager):
     """Create a WindsurfManager instance using the temp config file"""
-    return WindsurfManager(config_path=temp_config_file)
+    windsurf_manager = WindsurfManager(config_path=temp_config_file)
+    monkeypatch.setattr(ClientRegistry, "get_active_client_manager", Mock(return_value=windsurf_manager))
+    monkeypatch.setattr(ClientRegistry, "get_client_manager", Mock(return_value=windsurf_manager))
+    monkeypatch.setattr(ClientRegistry, "get_active_target", Mock(return_value="@windsurf"))
+    return windsurf_manager
 
 
 @pytest.fixture
