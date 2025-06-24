@@ -26,7 +26,13 @@ def config():
 @config.command()
 @click.help_option("-h", "--help")
 def set():
-    """Set MCPM configuration."""
+    """Set MCPM configuration.
+    
+    Example:
+    
+    \b
+        mcpm config set
+    """
     set_key = Prompt.ask("Configuration key to set", choices=["node_executable"], default="node_executable")
     node_executable = Prompt.ask(
         "Select default node executable, it will be automatically applied when adding npx server with mcpm add",
