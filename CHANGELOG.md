@@ -1,3 +1,10 @@
+# [1.14.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.13.6...v1.14.0) (2025-06-24)
+
+
+### Features
+
+* support custom node runtime config ([#186](https://github.com/pathintegral-institute/mcpm.sh/issues/186)) ([3c77974](https://github.com/pathintegral-institute/mcpm.sh/commit/3c7797481c311cfdb16b3add82455a0f07ab838d))
+
 ## [1.13.6](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.13.5...v1.13.6) (2025-06-24)
 
 
