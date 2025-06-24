@@ -151,7 +151,7 @@ def test_pop_server_success(windsurf_manager, monkeypatch):
     windsurf_manager.add_server.assert_called_once_with(mock_server_config)
 
 
-def test_pop_server_not_stashed(monkeypatch):
+def test_pop_server_not_stashed(windsurf_manager, monkeypatch):
     """Test popping a non-stashed server"""
     # Mock client config manager
     mock_config_manager = Mock()

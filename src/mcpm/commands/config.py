@@ -47,7 +47,7 @@ def get(name):
     if name not in current_config:
         console.print(f"[red]Configuration '{name}' not set or not supported.[/]")
         return
-    console.print(f"[green]{name}:[/] {current_config[name]}[/]")
+    console.print(f"[green]{name}:[/] {current_config[name]}")
 
 
 @config.command()
