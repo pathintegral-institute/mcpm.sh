@@ -75,7 +75,11 @@ class RemoteServerConfig(BaseServerConfig):
         )
 
 
-ServerConfig = Union[STDIOServerConfig, RemoteServerConfig]
+class CustomServerConfig(BaseServerConfig):
+    config: Dict[str, Any]
+
+
+ServerConfig = Union[STDIOServerConfig, RemoteServerConfig, CustomServerConfig]
 
 
 class Profile(BaseModel):

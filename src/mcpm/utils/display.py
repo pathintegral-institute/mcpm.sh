@@ -2,11 +2,13 @@
 Utility functions for displaying MCP server configurations
 """
 
+import json
+
 from rich.console import Console
 from rich.markup import escape
 from rich.table import Table
 
-from mcpm.core.schema import RemoteServerConfig, ServerConfig
+from mcpm.core.schema import CustomServerConfig, RemoteServerConfig, ServerConfig
 from mcpm.utils.scope import CLIENT_PREFIX, PROFILE_PREFIX
 
 console = Console()
@@ -32,6 +34,13 @@ def print_server_config(server_config: ServerConfig, is_stashed=False):
             console.print("  Headers:")
             for key, value in headers.items():
                 console.print(f'    [bold blue]{key}[/] = [green]"{value}"[/]')
+        console.print("  " + "-" * 50)
+        return
+    if isinstance(server_config, CustomServerConfig):
+        console.print("  Type: [green]Custom[/]")
+        console.print("  " + "-" * 50)
+        console.print("  Config:")
+        console.print(json.dumps(server_config.config, indent=2))
         console.print("  " + "-" * 50)
         return
     command = server_config.command

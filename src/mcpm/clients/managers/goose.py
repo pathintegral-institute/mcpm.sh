@@ -9,7 +9,7 @@ from typing import Any, Dict, Optional
 from pydantic import TypeAdapter
 
 from mcpm.clients.base import YAMLClientManager
-from mcpm.core.schema import ServerConfig, STDIOServerConfig
+from mcpm.core.schema import CustomServerConfig, ServerConfig, STDIOServerConfig
 
 logger = logging.getLogger(__name__)
 
@@ -144,6 +144,8 @@ class GooseClientManager(YAMLClientManager):
         normalized = dict(server_config)
 
         # Map Goose-specific fields to standard fields
+        if normalized.get("type") == "builtin":
+            return {"config": normalized}
         if "cmd" in normalized:
             normalized["command"] = normalized.pop("cmd")
         if "envs" in normalized:
@@ -172,6 +174,9 @@ class GooseClientManager(YAMLClientManager):
             non_empty_env = server_config.get_filtered_env_vars(os.environ)
             if non_empty_env:
                 result["envs"] = non_empty_env
+        elif isinstance(server_config, CustomServerConfig):
+            result = dict(server_config.config)
+            result["type"] = "builtin"
         else:
             result = server_config.to_dict()
             result["type"] = "sse"
