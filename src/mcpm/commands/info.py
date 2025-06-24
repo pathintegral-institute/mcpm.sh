@@ -27,21 +27,24 @@ def info(server_name):
         mcpm info github            # Show details for the GitHub server
         mcpm info pinecone          # Show details for the Pinecone server
     """
-    console.print(f"[bold green]Showing information for MCP server:[/] [bold cyan]{server_name}[/]")
+    console.print(
+        f"[bold green]Showing information for MCP server:[/] [bold cyan]{server_name}[/]")
 
     try:
         # Get the server information
         server = repo_manager.get_server_metadata(server_name)
 
         if not server:
-            console.print(f"[yellow]Server '[bold]{server_name}[/]' not found.[/]")
+            console.print(
+                f"[yellow]Server '[bold]{server_name}[/]' not found.[/]")
             return
 
         # Display detailed information for this server
         _display_server_info(server)
 
     except Exception as e:
-        print_error(f"Error retrieving information for server '{server_name}'", str(e))
+        print_error(
+            f"Error retrieving information for server '{server_name}'", str(e))
 
 
 def _display_server_info(server):
@@ -52,6 +55,7 @@ def _display_server_info(server):
     description = server.get("description", "No description")
     license_info = server.get("license", "Unknown")
     is_official = server.get("is_official", False)
+    is_archived = server.get("is_archived", False)
 
     # Get author info
     author_info = server.get("author", {})
@@ -80,9 +84,12 @@ def _display_server_info(server):
         console.print(f"Tags: {', '.join(tags)}")
     if package:
         console.print(f"Package: {package}")
-    console.print(f"Author: {author_name}" + (f" ({author_email})" if author_email else ""))
+    console.print(f"Author: {author_name}" +
+                  (f" ({author_email})" if author_email else ""))
     console.print(f"License: {license_info}")
     console.print(f"Official: {is_official}")
+    if is_archived:
+        console.print(f"Archived: {is_archived}")
     console.print("")
 
     # URLs section
@@ -114,10 +121,13 @@ def _display_server_info(server):
         console.print("[bold yellow]Installation Details:[/]")
         for method_name, method in installations.items():
             method_type = method.get("type", "unknown")
-            description = method.get("description", f"{method_type} installation")
-            recommended = " [green](recommended)[/]" if method.get("recommended", False) else ""
+            description = method.get(
+                "description", f"{method_type} installation")
+            recommended = " [green](recommended)[/]" if method.get(
+                "recommended", False) else ""
 
-            console.print(f"[cyan]{method_type}[/]: {description}{recommended}")
+            console.print(
+                f"[cyan]{method_type}[/]: {description}{recommended}")
 
             # Show command if available
             if "command" in method:
@@ -136,7 +146,8 @@ def _display_server_info(server):
             if env_vars:
                 console.print("Environment Variables:")
                 for key, value in env_vars.items():
-                    console.print(f'  [bold blue]{key}[/] = [green]"{value}"[/]')
+                    console.print(
+                        f'  [bold blue]{key}[/] = [green]"{value}"[/]')
             console.print("")
 
     # Examples section
