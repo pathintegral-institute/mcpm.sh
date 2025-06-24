@@ -27,9 +27,9 @@ def config():
 @click.help_option("-h", "--help")
 def set():
     """Set MCPM configuration.
-    
+
     Example:
-    
+
     \b
         mcpm config set
     """
@@ -48,9 +48,9 @@ def set():
 @click.help_option("-h", "--help")
 def get(name):
     """Get MCPM configuration.
-    
+
     Example:
-    
+
     \b
         mcpm config get node_executable
     """
