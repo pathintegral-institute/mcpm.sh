@@ -49,6 +49,8 @@ class ServerConnection:
             return _stdio_transport_context(server_config, self._errlog)
         elif isinstance(server_config, RemoteServerConfig):
             return _streamable_http_transport_context(server_config)
+        else:
+            raise ValueError(f"Custom server config {server_config.name} is not supported for router proxy")
 
     def healthy(self) -> bool:
         return self.session is not None and self._initialized
