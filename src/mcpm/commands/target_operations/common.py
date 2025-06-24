@@ -43,7 +43,7 @@ def _replace_node_executable(server_config: ServerConfig) -> ServerConfig:
     if not config_node_executable:
         return server_config
     if config_node_executable != command:
-        console.print(f"[bold cyan]Replace node excutable {command} with {config_node_executable}[/]")
+        console.print(f"[bold cyan]Replace node executable {command} with {config_node_executable}[/]")
         server_config.command = config_node_executable
     return server_config
 
