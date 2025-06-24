@@ -41,7 +41,13 @@ def set():
 @click.argument("name", required=True)
 @click.help_option("-h", "--help")
 def get(name):
-    """Get MCPM configuration."""
+    """Get MCPM configuration.
+    
+    Example:
+    
+    \b
+        mcpm config get node_executable
+    """
     config_manager = ConfigManager()
     current_config = config_manager.get_config()
     if name not in current_config:
