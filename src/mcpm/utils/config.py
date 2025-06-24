@@ -24,6 +24,8 @@ DEFAULT_SHARE_ADDRESS = f"share.mcpm.sh:{DEFAULT_PORT}"
 MCPM_AUTH_HEADER = "X-MCPM-SECRET"
 MCPM_PROFILE_HEADER = "X-MCPM-PROFILE"
 
+NODE_EXECUTABLES = ["npx", "bunx", "pnpm dlx", "yarn dlx"]
+
 
 class ConfigManager:
     """Manages MCP basic configuration
@@ -35,7 +37,7 @@ class ConfigManager:
     def __init__(self, config_path: str = DEFAULT_CONFIG_FILE):
         self.config_path = config_path
         self.config_dir = os.path.dirname(config_path)
-        self._config = None
+        self._config = {}
         self._ensure_dirs()
         self._load_config()
 
