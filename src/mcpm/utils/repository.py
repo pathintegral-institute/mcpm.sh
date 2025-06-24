@@ -16,7 +16,7 @@ from mcpm.utils.config import DEFAULT_CONFIG_DIR
 logger = logging.getLogger(__name__)
 
 # Default repository URL
-DEFAULT_REPO_URL = "https://mcpm.sh/api/servers.json"
+DEFAULT_REPO_URL = "https://getmcp.io/api/servers.json"
 
 # Default cache file path
 DEFAULT_CACHE_FILE = os.path.join(DEFAULT_CONFIG_DIR, "servers_cache.json")
@@ -50,11 +50,14 @@ class RepositoryManager:
                     # Parse the last_refresh timestamp if it exists
                     last_refresh_str = cache_data.get("last_refresh")
                     if last_refresh_str:
-                        self.last_refresh = datetime.fromisoformat(last_refresh_str)
+                        self.last_refresh = datetime.fromisoformat(
+                            last_refresh_str)
 
-                    logger.debug(f"Loaded servers cache from {self.cache_file}")
+                    logger.debug(
+                        f"Loaded servers cache from {self.cache_file}")
             except (json.JSONDecodeError, ValueError) as e:
-                logger.error(f"Error parsing cache file: {self.cache_file}: {e}")
+                logger.error(
+                    f"Error parsing cache file: {self.cache_file}: {e}")
                 self.servers_cache = None
                 self.last_refresh = None
 
@@ -64,7 +67,8 @@ class RepositoryManager:
         """
         if self.servers_cache and self.last_refresh:
             try:
-                cache_data = {"servers": self.servers_cache, "last_refresh": self.last_refresh.isoformat()}
+                cache_data = {"servers": self.servers_cache,
+                              "last_refresh": self.last_refresh.isoformat()}
 
                 with open(self.cache_file, "w", encoding="utf-8") as f:
                     json.dump(cache_data, f, indent=2)
