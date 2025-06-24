@@ -1,0 +1,70 @@
+{
+  "display_name": "UUIDv7 Generator",
+  "license": "<UNKNOWN>",
+  "tags": [
+    "uuid",
+    "uuidv7",
+    "generator",
+    "mcp",
+    "model context protocol"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "mcp-uuid-server"
+      ],
+      "description": "Hypothetical example using uvx (not currently published this way)"
+    },
+    "python": {
+      "type": "python",
+      "command": "python",
+      "args": [
+        "/path/to/your/mcp-uuid-server/mcp_uuid_server/server.py"
+      ],
+      "description": "Run the server directly from source code"
+    }
+  },
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Generate a single UUIDv7 string for me."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "I need a UUIDv7 for a new database record."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Can you generate 5 UUIDv7 strings for batch processing?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Create a batch of 10 UUIDv7 identifiers."
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "I need unique identifiers for my application. Please generate a UUIDv7."
+    }
+  ],
+  "name": "@pomazanbohdan/mcp-uuidv7-generator",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pomazanbohdan/mcp-uuidv7-generator"
+  },
+  "homepage": "https://github.com/pomazanbohdan/mcp-uuidv7-generator",
+  "author": {
+    "name": "pomazanbohdan"
+  },
+  "description": "A Model Context Protocol (MCP) server for generating UUIDv7 strings.",
+  "categories": [
+    "System Tools"
+  ],
+  "is_official": false
+}
