@@ -1,3 +1,10 @@
+## [1.13.6](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.13.5...v1.13.6) (2025-06-24)
+
+
+### Bug Fixes
+
+* compatible with goose builtin config ([#185](https://github.com/pathintegral-institute/mcpm.sh/issues/185)) ([8485c1b](https://github.com/pathintegral-institute/mcpm.sh/commit/8485c1b423659eacadebc131a38268d8d6de00de))
+
 ## [1.13.5](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.13.4...v1.13.5) (2025-06-16)
 
 
