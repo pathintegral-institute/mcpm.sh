@@ -16,9 +16,10 @@ from rich.console import Console
 from rich.prompt import Confirm
 
 from mcpm.clients.client_registry import ClientRegistry
+from mcpm.core.utils.log_manager import get_log_directory
 from mcpm.router.share import Tunnel
 from mcpm.utils.config import MCPM_AUTH_HEADER, MCPM_PROFILE_HEADER, ConfigManager
-from mcpm.utils.platform import get_log_directory, get_pid_directory
+from mcpm.utils.platform import get_pid_directory
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)

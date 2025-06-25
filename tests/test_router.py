@@ -8,7 +8,7 @@ import pytest
 from mcp import InitializeResult
 from mcp.types import ListToolsResult, ServerCapabilities, Tool, ToolsCapability
 
-from mcpm.router.client_connection import ServerConnection
+from mcpm.core.router.client_connection import ServerConnection
 from mcpm.router.router import MCPRouter
 from mcpm.router.router_config import RouterConfig
 from mcpm.schemas.server_config import RemoteServerConfig
@@ -82,11 +82,11 @@ async def test_add_server(mock_server_connection):
 
     # Patch the _patch_handler_func method to use our mock
     with patch.object(router, "_patch_handler_func", wraps=router._patch_handler_func) as mock_patch_handler:
-        mock_patch_handler.return_value.get_active_servers = mock_get_active_servers
+        mock_patch_handler.return_value.get_target_servers = mock_get_active_servers
 
         server_config = RemoteServerConfig(name="test-server", url="http://localhost:8080/sse")
 
-        with patch("mcpm.router.router.ServerConnection", return_value=mock_server_connection):
+        with patch("mcpm.core.router.router.ServerConnection", return_value=mock_server_connection):
             await router.add_server("test-server", server_config)
 
             # Verify server was added
@@ -114,7 +114,7 @@ async def test_add_server_unhealthy():
     mock_conn = MagicMock(spec=ServerConnection)
     mock_conn.healthy.return_value = False
 
-    with patch("mcpm.router.router.ServerConnection", return_value=mock_conn):
+    with patch("mcpm.core.router.router.ServerConnection", return_value=mock_conn):
         with pytest.raises(ValueError, match="Failed to connect to server unhealthy-server"):
             await router.add_server("unhealthy-server", server_config)
 
@@ -166,7 +166,7 @@ async def test_update_servers(mock_server_connection):
 
     # Patch the _patch_handler_func method to use our mock
     with patch.object(router, "_patch_handler_func", wraps=router._patch_handler_func) as mock_patch_handler:
-        mock_patch_handler.return_value.get_active_servers = mock_get_active_servers
+        mock_patch_handler.return_value.get_target_servers = mock_get_active_servers
 
         # Setup initial servers with awaitable request_for_shutdown
         mock_old_server = MagicMock(spec=ServerConnection)
@@ -180,7 +180,7 @@ async def test_update_servers(mock_server_connection):
         # Configure new servers
         server_configs = [RemoteServerConfig(name="test-server", url="http://localhost:8080/sse")]
 
-        with patch("mcpm.router.router.ServerConnection", return_value=mock_server_connection):
+        with patch("mcpm.core.router.router.ServerConnection", return_value=mock_server_connection):
             await router.update_servers(server_configs)
 
             # Verify old server was removed

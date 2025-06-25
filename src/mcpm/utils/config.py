@@ -16,10 +16,6 @@ DEFAULT_CONFIG_FILE = os.path.join(DEFAULT_CONFIG_DIR, "config.json")
 DEFAULT_HOST = "localhost"
 DEFAULT_PORT = 6276  # 6276 represents MCPM on a T9 keypad (6=M, 2=C, 7=P, 6=M)
 # default splitor pattern
-TOOL_SPLITOR = "_t_"
-RESOURCE_SPLITOR = ":"
-RESOURCE_TEMPLATE_SPLITOR = ":"
-PROMPT_SPLITOR = "_p_"
 DEFAULT_SHARE_ADDRESS = f"share.mcpm.sh:{DEFAULT_PORT}"
 MCPM_AUTH_HEADER = "X-MCPM-SECRET"
 MCPM_PROFILE_HEADER = "X-MCPM-PROFILE"
