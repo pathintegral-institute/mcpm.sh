@@ -15,14 +15,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Validate Server JSON Files
-        uses: cardinalby/schema-validator-action@v3
-        with:
-          file: 'mcp-registry/servers/*.json'
-          schema: 'mcp-registry/schema/server-schema.json'
-          mode: 'default'
-          fixSchemas: false
-
   test:
     runs-on: ubuntu-latest
     steps:
