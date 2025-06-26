@@ -12,12 +12,12 @@ from starlette.responses import JSONResponse, Response
 from starlette.routing import Mount, Route
 from starlette.types import Receive, Scope, Send
 
+from mcpm.core.utils.log_manager import get_log_directory
 from mcpm.monitor.base import AccessEventType
 from mcpm.monitor.event import monitor
 from mcpm.router.router import MCPRouter
 from mcpm.router.transport import RouterSseTransport
 from mcpm.utils.config import ConfigManager
-from mcpm.utils.platform import get_log_directory
 
 LOG_DIR = get_log_directory("mcpm")
 LOG_DIR.mkdir(parents=True, exist_ok=True)

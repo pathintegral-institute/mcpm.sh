@@ -14,7 +14,7 @@ from mcp.types import (
     TextContent,
 )
 
-from mcpm.utils.config import PROMPT_SPLITOR, RESOURCE_SPLITOR, TOOL_SPLITOR
+from mcpm.core.router.router import PROMPT_SPLITOR, RESOURCE_SPLITOR, TOOL_SPLITOR
 
 from .base import AccessEventType
 from .duckdb import DuckDBAccessMonitor

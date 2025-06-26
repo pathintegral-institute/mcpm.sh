@@ -1,11 +1,11 @@
 import logging
 import os
 
+from mcpm.core.utils.log_manager import get_log_directory
 from mcpm.monitor.event import monitor
 from mcpm.router.router import MCPRouter
 from mcpm.router.router_config import RouterConfig
 from mcpm.utils.config import ConfigManager
-from mcpm.utils.platform import get_log_directory
 
 LOG_DIR = get_log_directory("mcpm")
 LOG_DIR.mkdir(parents=True, exist_ok=True)

@@ -1,13 +1,45 @@
 import os
+import sys
 from pathlib import Path
 from typing import Optional, TextIO
 
-from .platform import get_log_directory
+
+def get_log_directory(app_name: str = "mcpm") -> Path:
+    """
+    Return the appropriate log directory path based on the current operating system.
+
+    Args:
+        app_name: The name of the application, used in the path
+
+    Returns:
+        Path object representing the log directory
+    """
+    # macOS
+    if sys.platform == "darwin":
+        return Path.home() / "Library" / "Logs" / app_name / "logs"
+
+    # Windows
+    elif sys.platform == "win32":
+        localappdata = os.environ.get("LOCALAPPDATA")
+        if localappdata:
+            return Path(localappdata) / app_name / "logs"
+        return Path.home() / "AppData" / "Local" / app_name / "logs"
+
+    # Linux and other Unix-like systems
+    else:
+        # Check if XDG_DATA_HOME is defined
+        xdg_data_home = os.environ.get("XDG_DATA_HOME")
+        if xdg_data_home:
+            return Path(xdg_data_home) / app_name / "logs"
+
+        # Default to ~/.local/share if XDG_DATA_HOME is not defined
+        return Path.home() / ".local" / "share" / app_name / "logs"
+
 
 DEFAULT_ROOT_STDERR_LOG_DIR = get_log_directory("mcpm") / "errlogs"
 
 
-class ServerErrorLogManager:
+class ServerLogManager:
     """
     A manager for server error logs.
     """
