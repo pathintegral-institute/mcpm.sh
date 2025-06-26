@@ -208,6 +208,8 @@ mcpm share "npx -y @modelcontextprotocol/server-everything" --retry 3
 
 ```bash
 mcpm config clear-cache          # 清除 MCPM 的注册表缓存。缓存默认每 1 小时刷新一次。
+mcpm config set                  # 设置 MCPM 的全局配置，目前仅支持 node_executable
+mcpm config get <name>           # 获取 MCPM 的全局配置
 mcpm inspector                   # 启动 MCPM 检查器 UI 以检查服务器配置
 ```
 

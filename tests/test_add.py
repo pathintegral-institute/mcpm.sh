@@ -2,7 +2,6 @@ from unittest.mock import Mock, patch
 
 from click.testing import CliRunner
 
-from mcpm.clients.client_registry import ClientRegistry
 from mcpm.commands.target_operations.add import add
 from mcpm.core.schema import RemoteServerConfig
 from mcpm.utils.config import ConfigManager
@@ -11,9 +10,6 @@ from mcpm.utils.repository import RepositoryManager
 
 def test_add_server(windsurf_manager, monkeypatch):
     """Test add server"""
-    monkeypatch.setattr(ClientRegistry, "get_active_client_manager", Mock(return_value=windsurf_manager))
-    monkeypatch.setattr(ClientRegistry, "get_client_manager", Mock(return_value=windsurf_manager))
-    monkeypatch.setattr(ClientRegistry, "get_active_target", Mock(return_value="@windsurf"))
     monkeypatch.setattr(
         RepositoryManager,
         "_fetch_servers",
@@ -53,9 +49,6 @@ def test_add_server(windsurf_manager, monkeypatch):
 
 def test_add_server_with_missing_arg(windsurf_manager, monkeypatch):
     """Test add server with a missing argument that should be replaced with empty string"""
-    monkeypatch.setattr(ClientRegistry, "get_active_client_manager", Mock(return_value=windsurf_manager))
-    monkeypatch.setattr(ClientRegistry, "get_client_manager", Mock(return_value=windsurf_manager))
-    monkeypatch.setattr(ClientRegistry, "get_active_target", Mock(return_value="@windsurf"))
     monkeypatch.setattr(
         RepositoryManager,
         "_fetch_servers",
@@ -117,10 +110,6 @@ def test_add_server_with_missing_arg(windsurf_manager, monkeypatch):
 
 def test_add_server_with_empty_args(windsurf_manager, monkeypatch):
     """Test add server with missing arguments that should be replaced with empty strings"""
-    monkeypatch.setattr(ClientRegistry, "get_active_client", Mock(return_value="windsurf"))
-    monkeypatch.setattr(ClientRegistry, "get_active_client_manager", Mock(return_value=windsurf_manager))
-    monkeypatch.setattr(ClientRegistry, "get_client_manager", Mock(return_value=windsurf_manager))
-    monkeypatch.setattr(ClientRegistry, "get_active_target", Mock(return_value="@windsurf"))
     monkeypatch.setattr(
         RepositoryManager,
         "_fetch_servers",
@@ -211,11 +200,6 @@ def test_add_sse_server_to_claude_desktop(claude_desktop_manager, monkeypatch):
 
 def test_add_profile_to_client(windsurf_manager, monkeypatch):
     profile_name = "work"
-    client_name = "windsurf"
-
-    monkeypatch.setattr(ClientRegistry, "get_active_target", Mock(return_value="@" + client_name))
-    monkeypatch.setattr(ClientRegistry, "get_client_manager", Mock(return_value=windsurf_manager))
-    monkeypatch.setattr(ClientRegistry, "get_active_client_manager", Mock(return_value=windsurf_manager))
     monkeypatch.setattr(ConfigManager, "get_router_config", Mock(return_value={"host": "localhost", "port": 8080}))
 
     # test cli
@@ -226,3 +210,45 @@ def test_add_profile_to_client(windsurf_manager, monkeypatch):
 
     profile_server = windsurf_manager.get_server("work")
     assert profile_server is not None
+
+
+def test_add_server_with_configured_npx(windsurf_manager, monkeypatch):
+    monkeypatch.setattr(ConfigManager, "get_config", Mock(return_value={"node_executable": "bunx"}))
+    monkeypatch.setattr(
+        RepositoryManager,
+        "_fetch_servers",
+        Mock(
+            return_value={
+                "server-test": {
+                    "installations": {
+                        "npm": {
+                            "type": "npm",
+                            "command": "npx",
+                            "args": ["-y", "@modelcontextprotocol/server-test", "--fmt", "${fmt}"],
+                            "env": {"API_KEY": "${API_KEY}"},
+                        }
+                    },
+                    "arguments": {
+                        "fmt": {"type": "string", "description": "Output format", "required": True},
+                        "API_KEY": {"type": "string", "description": "API key", "required": True},
+                    },
+                }
+            }
+        ),
+    )
+
+    # Mock Rich's progress display to prevent 'Only one live display may be active at once' error
+    with patch("rich.progress.Progress.__enter__", return_value=Mock()), \
+         patch("rich.progress.Progress.__exit__"), \
+         patch("prompt_toolkit.PromptSession.prompt", side_effect=["json", "test-api-key"]):
+        runner = CliRunner()
+        result = runner.invoke(add, ["server-test", "--force", "--alias", "test"])
+        assert result.exit_code == 0
+
+    # Check that the server was added with alias
+    server = windsurf_manager.get_server("test")
+    assert server is not None
+    # Should use configured node executable
+    assert server.command == "bunx"
+    assert server.args == ["-y", "@modelcontextprotocol/server-test", "--fmt", "json"]
+    assert server.env["API_KEY"] == "test-api-key"

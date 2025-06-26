@@ -14,7 +14,6 @@ import pytest
 
 from mcpm.clients.managers.windsurf import WindsurfManager
 from mcpm.core.schema import ServerConfig, STDIOServerConfig
-from mcpm.utils.config import ConfigManager
 
 
 class TestBaseClientManagerViaWindsurf:
@@ -42,21 +41,6 @@ class TestBaseClientManagerViaWindsurf:
             args=["-y", "@modelcontextprotocol/sample-server"],
             env={"API_KEY": "sample-key"},
         )
-
-    @pytest.fixture
-    def config_manager(self):
-        """Create a ClientConfigManager with a temp config for testing"""
-        with tempfile.TemporaryDirectory() as temp_dir:
-            config_path = os.path.join(temp_dir, "config.json")
-            # Create ConfigManager with the temp path
-            config_mgr = ConfigManager(config_path=config_path)
-            # Create ClientConfigManager that will use this ConfigManager internally
-            from mcpm.clients.client_config import ClientConfigManager
-
-            client_mgr = ClientConfigManager()
-            # Override its internal config_manager with our temp one
-            client_mgr.config_manager = config_mgr
-            yield client_mgr
 
     def test_list_servers(self, windsurf_manager):
         """Test list_servers method from BaseClientManager"""
