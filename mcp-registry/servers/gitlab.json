@@ -366,5 +366,6 @@
     }
   ],
   "is_official": true,
+  "is_archived": true,
   "docker_url": "https://hub.docker.com/r/mcp/gitlab"
 }
