@@ -61,7 +61,7 @@ def pop(server_name):
         # Check if client is supported
         if client_manager is None:
             console.print("[bold red]Error:[/] Unsupported active client")
-            console.print("Please switch to a supported client using 'mcpm client set <client-name>'")
+            console.print("Please switch to a supported client using 'mcpm target set @<client-name>'")
             return
 
         server_config = client_manager.from_client_format(server_name, server_data)
