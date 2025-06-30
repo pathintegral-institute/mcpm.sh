@@ -1520,8 +1520,7 @@
             'others': 2,
         }
         const isLucien = searchParams.get('source') === 'lucien'
-        const isStaging = Boolean(searchParams.get('isStaging'))
-        const sourceProtocol = (isLucien && isStaging) ? 'lucien-staging' : 'lucien'
+        const sourceProtocol = searchParams.get('protocol') || 'lucien'
         
         // Use the Lucien specified servers from the external JS file
         const defaultSpecifiedServers = []
@@ -2105,12 +2104,11 @@
                     const installInfo = Object.values(server.installations)[0];
                     // No remote for now, only stdio
                     params.append('command', installInfo.command);
-                    params.append('args', installInfo.args.join(' '));
+                    params.append('args', encodeURIComponent(installInfo.args.join(' ')));
                     if (installInfo.env) {
                         params.append('env', JSON.stringify(installInfo.env));
                     }
 
-                    console.log(params)
                     // Create and trigger the deeplink
                     const deeplink = `${sourceProtocol}://mcpm?${params.toString()}`;
                     window.location.href = deeplink;
