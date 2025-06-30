@@ -55,7 +55,15 @@ For more control over your submission:
 
 1. Fork this repository
 2. Create a JSON file in `mcp-registry/servers/` named `[your-server-name].json`. The JSON should follow our [schema](schema/server-schema.json)
-3. Submit a pull request
+3. Validate locally to ensure correct schema
+   ```bash
+   python scripts/validate_manifest.py | grep "your-server-name"
+   ```
+   If validation succeeds, you should see:
+   ```
+   ✓ your-server-name: Valid
+   ```
+4. Submit a pull request
 
 ## 📂 Registry Structure
 
