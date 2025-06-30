@@ -2,6 +2,7 @@
     "name": "elevenlabs-mcp",
     "display_name": "ElevenLabs Official MCP Server",
     "description": "Text-to-speech and speech-to-text via ElevenLabs API.",
+    "is_official": true,
     "repository": {
       "type": "git",
       "url": "https://github.com/elevenlabs/elevenlabs-mcp"
@@ -577,5 +578,18 @@
           "required": ["input_file_path"]
         }
       }
+    ],
+    "examples": [
+      {
+        "title": "Convert Text to Speech",
+        "description": "Convert a piece of text into an audio file using a specific voice.",
+        "prompt": "Use the text_to_speech tool to convert the text 'Hello, this is a test of the ElevenLabs MCP server.' into an audio file using the 'Adam' voice."
+      },
+      {
+        "title": "Transcribe an Audio File",
+        "description": "Transcribe the spoken content of an audio file into text.",
+        "prompt": "I have an audio file located at '~/Desktop/meeting_recording.mp3'. Please transcribe it using the speech_to_text tool and save the transcript to a file."
+      }
     ]
+  }
     
