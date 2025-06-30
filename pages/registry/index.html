@@ -2089,32 +2089,32 @@
                         </svg>
                         Install
                     `;
-                }
-                
-                // Handle click event to build search params and trigger deeplink
-                installButton.addEventListener('click', (event) => {
-                    // Prevent the modal from opening
-                    event.stopPropagation();
-                    
-                    // Build search params with server install info
-                    const params = new URLSearchParams();
-                    params.append('name', server.name);
-                    params.append('action', 'install');
-                    
-                    const installInfo = Object.values(server.installations)[0];
-                    // No remote for now, only stdio
-                    params.append('command', installInfo.command);
-                    params.append('args', encodeURIComponent(installInfo.args.join(' ')));
-                    if (installInfo.env) {
-                        params.append('env', JSON.stringify(installInfo.env));
-                    }
 
-                    // Create and trigger the deeplink
-                    const deeplink = `${sourceProtocol}://mcpm?${params.toString()}`;
-                    window.location.href = deeplink;
-                });
-                
-                serverContent.appendChild(installButton);
+                    // Handle click event to build search params and trigger deeplink
+                    installButton.addEventListener('click', (event) => {
+                        // Prevent the modal from opening
+                        event.stopPropagation();
+                        
+                        // Build search params with server install info
+                        const params = new URLSearchParams();
+                        params.append('name', server.name);
+                        params.append('action', 'install');
+                        
+                        const installInfo = Object.values(server.installations)[0];
+                        // No remote for now, only stdio
+                        params.append('command', installInfo.command);
+                        params.append('args', encodeURIComponent(installInfo.args.join(' ')));
+                        if (installInfo.env) {
+                            params.append('env', JSON.stringify(installInfo.env));
+                        }
+
+                        // Create and trigger the deeplink
+                        const deeplink = `${sourceProtocol}://mcpm?${params.toString()}`;
+                        window.location.href = deeplink;
+                    });
+                    
+                    serverContent.appendChild(installButton);
+                }
 
                 const linksContainer = document.createElement('div');
                 linksContainer.className = 'server-links';
