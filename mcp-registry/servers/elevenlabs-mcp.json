@@ -1,0 +1,145 @@
+{
+    "name": "elevenlabs-mcp",
+    "display_name": "ElevenLabs Official MCP Server",
+    "description": "Text-to-speech and speech-to-text via ElevenLabs API.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/elevenlabs/elevenlabs-mcp"
+    },
+    "homepage": "https://elevenlabs.io/",
+    "author": {
+      "name": "elevenlabs"
+    },
+    "license": "MIT",
+    "categories": [
+      "Media Creation"
+    ],
+    "tags": [
+      "ElevenLabs",
+      "text-to-speech",
+      "TTS",
+      "speech-to-text",
+      "STT",
+      "audio"
+    ],
+    "arguments": {
+      "ELEVEN_API_KEY": {
+        "description": "Your ElevenLabs API key obtained from the ElevenLabs website.",
+        "required": true,
+        "example": "..."
+      }
+    },
+    "installations": {
+      "uvx": {
+        "type": "uvx",
+        "command": "uvx",
+        "args": [
+          "elevenlabs-mcp"
+        ],
+        "env": {
+          "ELEVEN_API_KEY": "${ELEVEN_API_KEY}"
+        }
+      }
+    },
+    "tools": [
+      {
+        "name": "text_to_speech_stream",
+        "description": "Converts text to speech and streams the audio back.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string",
+              "description": "The text to convert to speech."
+            },
+            "voice_id": {
+              "type": "string",
+              "description": "The ID of the voice to use."
+            },
+            "stability": {
+              "type": "number",
+              "description": "The stability of the voice."
+            },
+            "similarity_boost": {
+              "type": "number",
+              "description": "The similarity boost of the voice."
+            },
+            "style": {
+              "type": "number",
+              "description": "The style of the voice."
+            },
+            "use_speaker_boost": {
+              "type": "boolean",
+              "description": "Whether to use the speaker boost."
+            },
+            "model_id": {
+              "type": "string",
+              "description": "The ID of the model to use.",
+              "default": "eleven_monolingual_v1"
+            }
+          },
+          "required": [
+            "text",
+            "voice_id"
+          ]
+        }
+      },
+      {
+        "name": "get_voices",
+        "description": "Returns a list of available voices.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {},
+          "required": []
+        }
+      },
+      {
+        "name": "save_speech",
+        "description": "Converts text to speech and saves it to a file.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string",
+              "description": "The text to convert to speech."
+            },
+            "voice_id": {
+              "type": "string",
+              "description": "The ID of the voice to use."
+            },
+            "file_path": {
+              "type": "string",
+              "description": "The path to save the audio file."
+            },
+            "stability": {
+              "type": "number",
+              "description": "The stability of the voice."
+            },
+            "similarity_boost": {
+              "type": "number",
+              "description": "The similarity boost of the voice."
+            },
+            "style": {
+              "type": "number",
+              "description": "The style of the voice."
+            },
+            "use_speaker_boost": {
+              "type": "boolean",
+              "description": "Whether to use the speaker boost."
+            },
+            "model_id": {
+              "type": "string",
+              "description": "The ID of the model to use.",
+              "default": "eleven_monolingual_v1"
+            }
+          },
+          "required": [
+            "text",
+            "voice_id",
+            "file_path"
+          ]
+        }
+      }
+    ],
+    "is_official": true
+  }
