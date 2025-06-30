@@ -27,7 +27,7 @@
       "ELEVEN_API_KEY": {
         "description": "Your ElevenLabs API key obtained from the ElevenLabs website.",
         "required": true,
-        "example": "..."
+        "example": "your-elevenlabs-api-key"
       }
     },
     "installations": {
