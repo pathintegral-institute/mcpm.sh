@@ -284,6 +284,7 @@
             flex-direction: column;
             border: 1px solid var(--border);
             cursor: pointer;
+            position: relative;
         }
 
         .server-card:hover {
@@ -391,6 +392,35 @@
             padding-top: 0.5rem;
             margin-top: auto;
             margin-bottom: 0;
+        }
+        
+        .install-button {
+            background-color: var(--button-bg);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: background-color 0.2s;
+            text-decoration: none;
+            width: fit-content;
+            position: absolute;
+            bottom: 10px;
+            right: 1.25rem;
+            z-index: 10;
+        }
+        
+        .install-button:hover {
+            background-color: var(--button-hover);
+        }
+        
+        .install-button svg {
+            width: 14px;
+            height: 14px;
         }
 
         .server-card .meta .author {
@@ -1473,13 +1503,48 @@
         </div>
     </div>
 
+    <!-- Load Lucien servers configuration -->
+    
     <script>
+        {% include lucien-servers.js %}
         // Server data - to be loaded from the combined JSON file (as a map with server names as keys)
         let serversMap = {};
         let serversArray = []; // Also keep an array version for rendering
 
         // Fetch all servers data
         const serverDataUrl = '/api/servers.json';
+        const searchParams = new URLSearchParams(window.location.search);
+        const sortRule = {
+            'isPinned': 0,
+            'isOfficial': 1,
+            'others': 2,
+        }
+        const isLucien = searchParams.get('source') === 'lucien'
+        const sourceProtocol = searchParams.get('protocol') || 'lucien'
+        
+        // Use the Lucien specified servers from the external JS file
+        const defaultSpecifiedServers = []
+        if (isLucien) {
+            // Get servers based on whether we're in staging or production
+            defaultSpecifiedServers.push(...lucienSpecifiedServers);
+        }
+
+        function serverSortRule(serverA, serverB) {
+
+            function determineServerType(server) {
+                if (defaultSpecifiedServers.includes(server.name)) {
+                    return 'isPinned';
+                }
+                if (server.is_official) {
+                    return 'isOfficial';
+                }
+                return 'others';
+            }
+
+            const serverAType = determineServerType(serverA);
+            const serverBType = determineServerType(serverB);
+            return sortRule[serverAType] - sortRule[serverBType];
+        }
 
         // First load GitHub star counts, then fetch server data
         loadGitHubStarCounts()
@@ -1493,6 +1558,8 @@
             .then(data => {
                 serversMap = data;
                 serversArray = Object.values(serversMap);
+                // sort servers by sortRule
+                serversArray.sort(serverSortRule);
 
                 // Generate tag filters dynamically from server data
                 generateTagFilters(serversArray);
@@ -2006,6 +2073,48 @@
                 // Use the star count element created in the header
 
                 serverContent.appendChild(meta);
+                
+                // Add install button with click function for deeplink
+                if (isLucien) {
+                    const installButton = document.createElement('button');
+                    installButton.className = 'install-button';
+                    installButton.type = 'button';
+                    
+                    // Add download icon
+                    installButton.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Install
+                    `;
+
+                    // Handle click event to build search params and trigger deeplink
+                    installButton.addEventListener('click', (event) => {
+                        // Prevent the modal from opening
+                        event.stopPropagation();
+                        
+                        // Build search params with server install info
+                        const params = new URLSearchParams();
+                        params.append('name', server.name);
+                        params.append('action', 'install');
+                        
+                        const installInfo = Object.values(server.installations)[0];
+                        // No remote for now, only stdio
+                        params.append('command', installInfo.command);
+                        params.append('args', encodeURIComponent(installInfo.args.join(' ')));
+                        if (installInfo.env) {
+                            params.append('env', JSON.stringify(installInfo.env));
+                        }
+
+                        // Create and trigger the deeplink
+                        const deeplink = `${sourceProtocol}://mcpm?${params.toString()}`;
+                        window.location.href = deeplink;
+                    });
+                    
+                    serverContent.appendChild(installButton);
+                }
 
                 const linksContainer = document.createElement('div');
                 linksContainer.className = 'server-links';
