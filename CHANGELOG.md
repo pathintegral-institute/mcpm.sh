@@ -1,3 +1,10 @@
+## [1.14.1](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.14.0...v1.14.1) (2025-06-30)
+
+
+### Bug Fixes
+
+* outdated error message instructions ([#196](https://github.com/pathintegral-institute/mcpm.sh/issues/196)) ([49c9be1](https://github.com/pathintegral-institute/mcpm.sh/commit/49c9be170bffca0a7fbf08a8b4f5381c5a95e7a2))
+
 # [1.14.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.13.6...v1.14.0) (2025-06-24)
 
 
