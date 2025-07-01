@@ -18,7 +18,7 @@
   "author": {
     "name": "modelcontextprotocol"
   },
-  "homepage": "https://github.com/modelcontextprotocol/servers/blob/main/src/postgres",
+  "homepage": "https://github.com/modelcontextprotocol/servers-archived/tree/main/src/postgres",
   "installations": {
     "npm": {
       "type": "npm",
