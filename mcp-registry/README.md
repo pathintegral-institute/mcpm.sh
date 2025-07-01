@@ -43,7 +43,7 @@ We welcome contributions! There are two ways to add your server to the registry:
 
 ### 1. Create a GitHub Issue (Easiest)
 
-Simply create a [new GitHub issue](https://github.com/pathintegral-institute/mcp-registry/issues/new) with:
+Simply create a [new GitHub issue](https://github.com/pathintegral-institute/mcpm.sh/issues/new) with:
 
 - Title: "Add server: [your-server-name]"
 - Body: URL to your server details or API documentation
@@ -54,26 +54,30 @@ Simply create a [new GitHub issue](https://github.com/pathintegral-institute/mcp
 For more control over your submission:
 
 1. Fork this repository
-2. Create a new directory in `servers/` with your server name
-3. Add your `manifest.json` following our [schema](schema/manifest-schema.json)
+2. Create a JSON file in `mcp-registry/servers/` named `[your-server-name].json`. The JSON should follow our [schema](schema/server-schema.json)
+3. Validate locally to ensure correct schema
+   ```bash
+   python scripts/validate_manifest.py | grep "your-server-name"
+   ```
+   If validation succeeds, you should see:
+   ```
+   ✓ your-server-name: Valid
+   ```
 4. Submit a pull request
-
-For detailed instructions, see the [Contributing Guidelines](CONTRIBUTING.md).
 
 ## 📂 Registry Structure
 
 ```
 mcp-registry/
 ├── README.md               # Overview, usage instructions
-├── CONTRIBUTING.md         # Guidelines for contributing servers
 ├── servers/                # Directory containing all registered servers
-│   ├── [server-name]/      # Directory for each server
-│   │   ├── manifest.json   # Server metadata and configuration
-│   │   └── README.md       # Detailed server documentation
+│   ├── [server-1-name].json   # Server metadata and configuration
+│   ├── [server-2-name].json   
+│   └── ...
 └── schema/                 # Schema definitions
-    └── manifest-schema.json  # JSON Schema for manifest validation
+    └── server-schema.json  # JSON Schema for server validation
 ```
 
 ## 📜 License
 
-This registry is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This registry is licensed under the MIT License - see the [LICENSE](../LICENSE) file for details.
