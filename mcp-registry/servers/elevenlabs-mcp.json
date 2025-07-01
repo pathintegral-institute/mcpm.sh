@@ -40,6 +40,21 @@
         "env": {
           "ELEVEN_API_KEY": "${ELEVEN_API_KEY}"
         }
+      },
+      "docker": {
+        "type": "docker",
+        "command": "docker",
+        "args": [
+          "run",
+          "-i",
+          "--rm",
+          "-e",
+          "ELEVENLABS_API_KEY",
+          "mcp/elevenlabs"
+        ],
+        "env": {
+          "ELEVENLABS_API_KEY": "${ELEVENLABS_API_KEY}"
+        }
       }
     },
     "tools": [
@@ -590,6 +605,7 @@
         "description": "Transcribe the spoken content of an audio file into text.",
         "prompt": "I have an audio file located at '~/Desktop/meeting_recording.mp3'. Please transcribe it using the speech_to_text tool and save the transcript to a file."
       }
-    ]
+    ],
+    "docker_url": "https://hub.docker.com/r/mcp/elevenlabs"
   }
     
