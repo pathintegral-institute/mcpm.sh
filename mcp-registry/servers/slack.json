@@ -57,7 +57,7 @@
   "author": {
     "name": "modelcontextprotocol"
   },
-  "homepage": "https://github.com/modelcontextprotocol/servers/blob/main/src/slack",
+  "homepage": "https://github.com/modelcontextprotocol/servers-archived/tree/main/src/slack",
   "arguments": {
     "SLACK_BOT_TOKEN": {
       "description": "The OAuth token for the bot user in the Slack workspace, used for authenticating API requests.",
