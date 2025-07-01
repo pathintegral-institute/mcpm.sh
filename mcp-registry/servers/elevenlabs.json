@@ -36,21 +36,6 @@
         "ELEVENLABS_STYLE": "${ELEVENLABS_STYLE}",
         "ELEVENLABS_OUTPUT_DIR": "${ELEVENLABS_OUTPUT_DIR}"
       }
-    },
-    "docker": {
-      "type": "docker",
-      "command": "docker",
-      "args": [
-        "run",
-        "-i",
-        "--rm",
-        "-e",
-        "ELEVENLABS_API_KEY",
-        "mcp/elevenlabs"
-      ],
-      "env": {
-        "ELEVENLABS_API_KEY": "${ELEVENLABS_API_KEY}"
-      }
     }
   },
   "arguments": {
@@ -182,6 +167,5 @@
         "required": []
       }
     }
-  ],
-  "docker_url": "https://hub.docker.com/r/mcp/elevenlabs"
+  ]
 }
