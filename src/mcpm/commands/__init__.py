@@ -4,22 +4,38 @@ MCPM commands package
 
 __all__ = [
     "add",
-    "client",
+    "client", 
+    "config",
+    "doctor",
+    "import_client",
+    "info",
+    "inspect", 
     "inspector",
     "list",
-    "pop",
     "profile",
     "remove",
-    "search",
-    "stash",
-    "transfer",
     "router",
-    "custom",
-    "target",
+    "run",
+    "search",
+    "usage",
 ]
 
 # All command modules
 
 
-from . import client, inspector, list, profile, router, search, target
-from .target_operations import add, custom, pop, remove, stash, transfer
+from . import (
+    client,
+    config,
+    doctor,
+    import_client,
+    info,
+    inspect,
+    inspector,
+    list,
+    profile,
+    router,
+    run,
+    search,
+    usage,
+)
+from .target_operations import add, remove

@@ -123,20 +123,20 @@ def print_error(message, details=None):
 
 def print_client_error():
     """Print a standardized client-related error message."""
-    console.print("[bold red]Error:[/] Unsupported active client")
-    console.print("Please switch to a supported client using 'mcpm target set @<client-name>'")
+    console.print("[bold red]Error:[/] No supported MCP client found")
+    console.print("Please install a supported MCP client (Claude Desktop, Cursor, Windsurf, etc.)")
 
 
 def print_active_scope(scope: str):
-    """Display the active client or profile."""
+    """Display the working client or profile."""
     if scope.startswith(CLIENT_PREFIX):
-        console.print(f"[bold green]Working on Active Client:[/] {scope[1:]}\n")
+        console.print(f"[bold green]Using Client:[/] {scope[1:]}\n")
     elif scope.startswith(PROFILE_PREFIX):
-        console.print(f"[bold green]Working on Active Profile:[/] {scope[1:]}\n")
+        console.print(f"[bold green]Using Profile:[/] {scope[1:]}\n")
     else:
-        console.print(f"[bold red]Error:[/] Invalid active scope: {scope}\n")
+        console.print(f"[bold red]Error:[/] Invalid scope: {scope}\n")
 
 
 def print_no_active_scope():
-    console.print("[bold red]Error:[/] No active client or profile found.\n")
-    console.print("Please set an active target with 'mcpm target set @<client>' or 'mcpm target set %<profile>'.")
+    console.print("[bold red]Error:[/] No supported MCP client found.\n")
+    console.print("Please install a supported MCP client (Claude Desktop, Cursor, Windsurf, etc.).")

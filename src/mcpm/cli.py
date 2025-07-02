@@ -12,18 +12,18 @@ from mcpm.commands import (
     add,
     client,
     config,
-    custom,
+    doctor,
+    import_client,
     info,
+    inspect,
     inspector,
     list,
-    pop,
     profile,
     remove,
     router,
+    run,
     search,
-    stash,
-    target,
-    transfer,
+    usage,
 )
 from mcpm.commands.share import share
 
@@ -32,6 +32,34 @@ client_config_manager = ClientConfigManager()
 
 # Set -h as an alias for --help but we'll handle it ourselves
 CONTEXT_SETTINGS = dict(help_option_names=[])
+
+
+def create_deprecated_command(command_name: str, replacement_suggestions=None):
+    """Create a deprecated command that shows v2.0 migration guidance."""
+    if replacement_suggestions is None:
+        replacement_suggestions = [
+            "mcpm install <server>                    # Install servers globally",
+            "mcpm profile add <profile> <server>      # Tag servers with profiles", 
+            "mcpm run <server>                        # Run servers directly"
+        ]
+    
+    @click.command(context_settings=dict(ignore_unknown_options=True, help_option_names=[]))
+    @click.option('--help', '-h', 'help_requested', is_flag=True, help='Show deprecation message.')
+    @click.argument('args', nargs=-1, type=click.UNPROCESSED)
+    def deprecated_command(help_requested, args):
+        f"""The '{command_name}' command has been removed in MCPM v2.0."""
+        console.print(f"[bold red]Error:[/] The 'mcpm {command_name}' command has been removed in MCPM v2.0.")
+        console.print("[yellow]Use the new global configuration model instead:[/]")
+        console.print()
+        console.print("[cyan]New approach:[/]")
+        for suggestion in replacement_suggestions:
+            console.print(f"  [dim]{suggestion}[/]")
+        console.print()
+        raise click.ClickException("Command has been removed in v2.0")
+    
+    # Set the name properly on the command
+    deprecated_command.name = command_name
+    return deprecated_command
 
 
 def print_logo():
@@ -89,58 +117,31 @@ def print_logo():
 def main(ctx, help_flag, version):
     """MCPM - Model Context Protocol Manager.
 
-    A tool for managing MCP servers across various clients.
+    A simplified tool for managing MCP servers in a global configuration.
+    Install servers, organize them with profiles, and run them directly.
     """
     if version:
         print_logo()
         return
 
-    # Check if a command is being executed (and it's not help, no command, or the client command)
-    if (
-        ctx.invoked_subcommand
-        and ctx.invoked_subcommand not in ["target", "client", "profile", "router", "share", "inspector"]
-        and not help_flag
-    ):
-        # Check if active client is set
-        active_target = client_config_manager.get_active_target()
-        if not active_target:
-            console.print("[bold red]Error:[/] No active target set.")
-            console.print("Please run 'mcpm target set <target>' to set an active target\n")
-
-            # Show available clients
-            from mcpm.clients.client_registry import ClientRegistry
-
-            console.print("[bold green]Available Clients, set one with 'mcpm target set @<client>':[/]")
-            for client in ClientRegistry.get_supported_clients():
-                console.print(f"  - {client}")
-
-            from mcpm.profile.profile_config import ProfileConfigManager
-
-            # Show available profiles
-            console.print("[bold green]Available Profiles, set one with 'mcpm target set %<profile>':[/]")
-            profile_manager = ProfileConfigManager()
-            for profile in profile_manager.list_profiles():
-                console.print(f"  - {profile}")
-
-            # Exit with error
-            ctx.exit(1)
+    # v2.0 simplified model - no active target system
     # If no command was invoked or help is requested, show our custom help
     if ctx.invoked_subcommand is None or help_flag:
-        # Get active client
-        active_target = client_config_manager.get_active_target()
-
         print_logo()
-        # Display active client information and main help
-        if active_target:
-            console.print(f"[bold magenta]Active target:[/] [yellow]{active_target}[/]")
-        else:
-            console.print("[bold red]No active target set![/] Please run 'mcpm target set <target>' to set one.")
-        console.print("")
-
-        # Display usage info
+        
+        # Display usage info for new simplified model
         console.print("[bold green]Usage:[/] [white]mcpm [OPTIONS] COMMAND [ARGS]...[/]")
         console.print("")
-        console.print("[bold green]Description:[/] [white]A tool for managing MCP servers across various clients.[/]")
+        console.print("[bold green]Description:[/] [white]Manage MCP servers in a global configuration with profile organization.[/]")
+        console.print("")
+        
+        # Show quick start examples
+        console.print("[bold cyan]Quick Start:[/]")
+        console.print("  [dim]mcpm search browser          # Find available servers[/]")
+        console.print("  [dim]mcpm install mcp-server-browse  # Install a server[/]") 
+        console.print("  [dim]mcpm run mcp-server-browse      # Run server directly[/]")
+        console.print("  [dim]mcpm profile create web-dev     # Create a profile[/]")
+        console.print("  [dim]mcpm profile add web-dev mcp-server-browse  # Tag server[/]")
         console.print("")
 
         # Display options
@@ -153,34 +154,34 @@ def main(ctx, help_flag, version):
         console.print("[bold]Commands:[/]")
         commands_table = Table(show_header=False, box=None, padding=(0, 2, 0, 0))
 
-        commands_table.add_row("[yellow]work target[/]")
-        commands_table.add_row("  [cyan]target[/]", "Manage the active MCPM target.")
+        commands_table.add_row("[yellow]Server Management[/]")
+        commands_table.add_row("  [cyan]search[/]", "Search available MCP servers from registry.")
+        commands_table.add_row("  [cyan]info[/]", "Show detailed registry information for a server.")
+        commands_table.add_row("  [cyan]install[/]", "Install a server from registry, local file, or URL.")
+        commands_table.add_row("  [cyan]uninstall[/]", "Remove a server from configuration.")
+        commands_table.add_row("  [cyan]ls[/]", "List all installed servers and profile assignments.")
+        commands_table.add_row("  [cyan]inspect[/]", "Launch MCP Inspector to test/debug a server.")
+        commands_table.add_row("  [cyan]import[/]", "Import server configurations from supported clients.")
 
-        commands_table.add_row("[yellow]client[/]")
-        commands_table.add_row("  [cyan]client[/]", "Manage supported MCPM clients.")
+        commands_table.add_row("[yellow]Server Execution[/]")
+        commands_table.add_row("  [cyan]run[/]", "Execute a single server over stdio.")
 
-        commands_table.add_row("[yellow]server[/]")
-        commands_table.add_row("  [cyan]search[/]", "Search available MCP servers.")
-        commands_table.add_row("  [cyan]info[/]", "Show detailed information about a specific MCP server.")
-        commands_table.add_row("  [cyan]add[/]", "Add an MCP server directly to a client/profile.")
-        commands_table.add_row("  [cyan]import[/]", "Import a custom MCP server to a client/profile.")
-        commands_table.add_row("  [cyan]cp[/]", "Copy a server from one client/profile to another.")
-        commands_table.add_row("  [cyan]mv[/]", "Move a server from one client/profile to another.")
-        commands_table.add_row("  [cyan]rm[/]", "Remove an installed MCP server.")
-        commands_table.add_row("  [cyan]ls[/]", "List all installed MCP servers.")
-        commands_table.add_row("  [cyan]stash[/]", "Temporarily store a server configuration aside.")
-        commands_table.add_row("  [cyan]pop[/]", "Restore a previously stashed server configuration.")
-        commands_table.add_row("  [cyan]share[/]", "Share a single MCP server through a tunnel.")
+        commands_table.add_row("[yellow]Profile Management[/]")
+        commands_table.add_row("  [cyan]profile[/]", "Manage server profiles and tags.")
 
-        commands_table.add_row("[yellow]profile[/]")
-        commands_table.add_row("  [cyan]profile[/]", "Manage MCPM profiles.")
+        commands_table.add_row("[yellow]Server Sharing[/]")
+        commands_table.add_row("  [cyan]share[/]", "Share a single server through secure tunnel.")
 
-        commands_table.add_row("[yellow]router[/]")
-        commands_table.add_row("  [cyan]router[/]", "Manage MCP router service.")
+        commands_table.add_row("[yellow]System & Configuration[/]")
+        commands_table.add_row("  [cyan]doctor[/]", "Check system health and server status.")
+        commands_table.add_row("  [cyan]usage[/]", "Display analytics and usage data.")
+        commands_table.add_row("  [cyan]config[/]", "Manage MCPM configuration and settings.")
 
-        commands_table.add_row("[yellow]util[/]")
-        commands_table.add_row("  [cyan]config[/]", "Manage MCPM configuration.")
-        commands_table.add_row("  [cyan]inspector[/]", "Launch the MCPM Inspector UI to examine servers.")
+        commands_table.add_row("[yellow]Legacy Commands[/]")
+        commands_table.add_row("  [cyan]add[/]", "Legacy: use 'install' instead.")
+        commands_table.add_row("  [cyan]rm[/]", "Legacy: use 'uninstall' instead.")
+        commands_table.add_row("  [cyan]client[/]", "Legacy: client management (use global config).")
+        commands_table.add_row("  [cyan]stash/pop/mv/cp/target[/]", "Legacy: removed in v2.0 (use profiles).")
         console.print(commands_table)
 
         # Additional helpful information
@@ -188,26 +189,42 @@ def main(ctx, help_flag, version):
         console.print("[italic]Run [bold]mcpm COMMAND -h[/] for more information on a command.[/]")
 
 
-# Register commands
+# Register v2.0 commands
 main.add_command(search.search)
 main.add_command(info.info)
-main.add_command(remove.remove, name="rm")
-main.add_command(add.add)
 main.add_command(list.list, name="ls")
-
-main.add_command(stash.stash)
-main.add_command(pop.pop)
-
-main.add_command(target.target)
-main.add_command(client.client)
-main.add_command(config.config)
-main.add_command(inspector.inspector, name="inspector")
+main.add_command(add.add, name="install")
+main.add_command(remove.remove, name="uninstall")
+main.add_command(run.run)
+main.add_command(inspect.inspect)
 main.add_command(profile.profile, name="profile")
-main.add_command(transfer.move, name="mv")
-main.add_command(transfer.copy, name="cp")
-main.add_command(router.router, name="router")
-main.add_command(custom.import_server, name="import")
+main.add_command(import_client.import_client, name="import")
+main.add_command(doctor.doctor)
+main.add_command(usage.usage)
+main.add_command(config.config)
 main.add_command(share)
+
+# Legacy command aliases that still work
+main.add_command(add.add, name="add")  # Legacy alias for install
+main.add_command(remove.remove, name="rm")  # Legacy alias for uninstall
+
+# Deprecated v1 commands - show migration guidance
+main.add_command(create_deprecated_command("stash"), name="stash")
+main.add_command(create_deprecated_command("pop"), name="pop")
+main.add_command(create_deprecated_command("mv", [
+    "mcpm profile add <profile> <server>      # Tag servers with profiles",
+    "mcpm profile remove <profile> <server>   # Remove tags from servers"
+]), name="mv")
+main.add_command(create_deprecated_command("cp", [
+    "mcpm profile add <profile> <server>      # Tag servers with profiles", 
+    "mcpm profile remove <profile> <server>   # Remove tags from servers"
+]), name="cp")
+main.add_command(create_deprecated_command("target"), name="target")
+
+# Keep these for now but they could be simplified later
+main.add_command(client.client)
+main.add_command(inspector.inspector, name="inspector") 
+main.add_command(router.router, name="router")
 
 if __name__ == "__main__":
     main()

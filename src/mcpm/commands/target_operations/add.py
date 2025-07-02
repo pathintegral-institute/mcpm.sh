@@ -19,8 +19,7 @@ from rich.prompt import Confirm
 from mcpm.clients.client_registry import ClientRegistry
 from mcpm.commands.target_operations.common import (
     client_add_profile,
-    client_add_server,
-    determine_scope,
+    global_add_server,
     profile_add_server,
 )
 from mcpm.profile.profile_config import ProfileConfigManager
@@ -95,7 +94,7 @@ def prompt_with_default(prompt_text, default="", hide_input=False, required=Fals
 @click.argument("server_name")
 @click.option("--force", is_flag=True, help="Force reinstall if server is already installed")
 @click.option("--alias", help="Alias for the server", required=False)
-@click.option("--target", "-t", help="Target to add server to", required=False)
+@click.option("--target", "-t", help="[DEPRECATED] Ignored in v2.0", required=False, hidden=True)
 @click.help_option("-h", "--help")
 def add(server_name, force=False, alias=None, target: str | None = None):
     """Add an MCP server to a client configuration.
@@ -109,58 +108,13 @@ def add(server_name, force=False, alias=None, target: str | None = None):
         mcpm add youtube --target %myprofile
         mcpm add %profile --target @windsurf
     """
+    
+    # v2.0: ignore target parameter - use global config
+    
     config_name = alias or server_name
-    is_adding_profile = server_name.startswith(PROFILE_PREFIX)
-
-    scope_type, scope = determine_scope(target)
-    if not scope:
-        return
-
-    if scope_type == ScopeType.PROFILE:
-        if is_adding_profile:
-            console.print("[bold red]Error:[/] Cannot add profile to profile.")
-            return
-
-        # Get profile
-        profile = scope
-        console.print(f"[yellow]Adding server to profile: {profile}[/]")
-        profile_info = profile_config_manager.get_profile(profile)
-        if profile_info is None:
-            console.print(f"[yellow]Profile '{profile}' not found. Create new profile? [bold]y/n[/]", end=" ")
-            if not Confirm.ask():
-                return
-            profile_config_manager.new_profile(profile)
-            console.print(f"[green]Profile '{profile}' added successfully.[/]\n")
-            profile_info = []
-
-        # Check if server already exists in client config
-        for server in profile_info:
-            if server.name == config_name and not force:
-                console.print(f"[yellow]Server '{config_name}' is already added to {profile}.[/]")
-                console.print("Use '--force' to overwrite the existing configuration.")
-                return
-
-        target_name = profile
-    else:
-        client = scope
-        if is_adding_profile:
-            add_profile_to_client(server_name.lstrip(PROFILE_PREFIX), client, alias, force)
-            return
-        # Get client
-        console.print(f"[yellow]Adding server to client: {client}[/]")
-        client_info = ClientRegistry.get_client_info(client)
-        if client_info is None:
-            console.print(f"[bold red]Error:[/] Client '{client}' not found.")
-            return
-
-        # Check if server already exists in client config
-        for server in client_info:
-            if server == config_name and not force:
-                console.print(f"[yellow]Server '{config_name}' is already added to {client}.[/]")
-                console.print("Use '--force' to overwrite the existing configuration.")
-                return
-
-        target_name = client
+    
+    # v2.0: All servers are installed to global configuration
+    console.print(f"[yellow]Installing server to global configuration...[/]")
 
     # Get server metadata from repository
     server_metadata = repo_manager.get_server_metadata(server_name)
@@ -183,7 +137,8 @@ def add(server_name, force=False, alias=None, target: str | None = None):
         console.print(f"[dim]Author: {author_name} {author_url}[/]")
 
     # Confirm addition
-    if not force and not Confirm.ask(f"Add this server to {target_name}{' as ' + alias if alias else ''}?"):
+    alias_text = f" as '{alias}'" if alias else ""
+    if not force and not Confirm.ask(f"Install this server to global configuration{alias_text}?"):
         console.print("[yellow]Operation cancelled.[/]")
         return
 
@@ -401,16 +356,12 @@ def add(server_name, force=False, alias=None, target: str | None = None):
         installation=installation_method,
     )
 
-    if scope_type == ScopeType.CLIENT:
-        # Add the server to the client configuration
-        success = client_add_server(target_name, full_server_config.to_server_config(), force)
-    else:
-        # Add the server to the profile configuration
-        success = profile_add_server(target_name, full_server_config.to_server_config(), force)
+    # v2.0: Add server to global configuration
+    success = global_add_server(full_server_config.to_server_config(), force)
 
     if success:
-        # Server has been successfully added to the client configuration
-        console.print(f"[bold green]Successfully added {display_name} to {target_name}![/]")
+        # Server has been successfully added to the global configuration
+        console.print(f"[bold green]Successfully installed {display_name} to global configuration![/]")
 
         # Display usage examples if available
         examples = server_metadata.get("examples", [])
@@ -425,7 +376,7 @@ def add(server_name, force=False, alias=None, target: str | None = None):
                 if prompt:
                     console.print(f'  Try: [italic]"{prompt}"[/]\n')
     else:
-        console.print(f"[bold red]Failed to add {server_name} to {target_name}.[/]")
+        console.print(f"[bold red]Failed to install {server_name} to global configuration.[/]")
 
 
 def _should_hide_input(arg_name: str) -> bool:
