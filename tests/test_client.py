@@ -246,18 +246,22 @@ def test_client_edit_command_open_editor(monkeypatch, tmp_path):
     monkeypatch.setattr(ClientRegistry, "get_client_manager", Mock(return_value=mock_client_manager))
     monkeypatch.setattr(ClientRegistry, "get_client_info", Mock(return_value={"name": "Windsurf"}))
     
-    # Mock GlobalConfigManager - return empty dict to trigger "no servers" path
+    # Mock GlobalConfigManager - return some servers to avoid early exit
     mock_global_config = Mock()
-    mock_global_config.list_servers = Mock(return_value={})
+    mock_global_config.list_servers = Mock(return_value={"test-server": Mock(description="Test server")})
     monkeypatch.setattr("mcpm.commands.client.global_config_manager", mock_global_config)
 
-    # Run the command with external editor flag
-    runner = CliRunner()
-    result = runner.invoke(edit_client, ["windsurf", "--external"])
+    # Mock the _open_in_editor function to prevent actual editor launching
+    with patch("mcpm.commands.client._open_in_editor") as mock_open_editor:
+        # Run the command with external editor flag
+        runner = CliRunner()
+        result = runner.invoke(edit_client, ["windsurf", "--external"])
 
-    # Check the result - should exit early due to no servers
-    assert result.exit_code == 0
-    assert "Windsurf Configuration Management" in result.output
+        # Check the result
+        assert result.exit_code == 0
+        assert "Windsurf Configuration Management" in result.output
+        # Verify that _open_in_editor was called instead of actually opening an editor
+        mock_open_editor.assert_called_once_with(str(config_path), "Windsurf")
 
 
 def test_main_client_command_help():
