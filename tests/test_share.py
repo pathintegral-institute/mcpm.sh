@@ -1,18 +1,24 @@
 """
-Tests for the share command in MCPM
+Tests for MCPM v2.0 share command (global configuration model)
 """
 
 import sys
+import tempfile
+from pathlib import Path
 from unittest.mock import Mock, patch
 
 from click.testing import CliRunner
 
-from src.mcpm.commands.share import (
+from mcpm.commands.share import (
     find_mcp_proxy,
     monitor_for_errors,
     share,
     terminate_process,
+    find_installed_server,
+    build_server_command,
 )
+from mcpm.core.schema import STDIOServerConfig
+from mcpm.global_config import GlobalConfigManager
 
 
 class TestShareCommand:
@@ -103,16 +109,107 @@ class TestShareCommand:
         mock_process.terminate.assert_called_once()
         mock_process.kill.assert_called_once()
 
-    def test_share_command_no_mcp_proxy(self, monkeypatch):
-        """Test share command when mcp-proxy is not installed"""
-        # Mock find_mcp_proxy to return None
-        monkeypatch.setattr("src.mcpm.commands.share.find_mcp_proxy", lambda: None)
+    def test_find_installed_server(self):
+        """Test finding server in global configuration"""
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            # Setup temporary global config
+            global_config_path = Path(tmp_dir) / "servers.json"
+            global_config_manager = GlobalConfigManager(config_path=str(global_config_path))
+            
+            # Add a test server to global config
+            test_server = STDIOServerConfig(
+                name="test-server",
+                command="echo",
+                args=["hello"]
+            )
+            global_config_manager.add_server(test_server)
+            
+            # Mock the global config manager
+            with patch("mcpm.commands.share.global_config_manager", global_config_manager):
+                server_config, location = find_installed_server("test-server")
+                
+                assert server_config is not None
+                assert server_config.name == "test-server"
+                assert location == "global"
+                
+                # Test non-existent server
+                server_config, location = find_installed_server("non-existent")
+                assert server_config is None
+                assert location is None
 
-        # Run the command
+    def test_build_server_command(self):
+        """Test building server command"""
+        test_server = STDIOServerConfig(
+            name="test-server",
+            command="echo",
+            args=["hello"]
+        )
+        
+        command = build_server_command(test_server, "test-server")
+        assert command == "mcpm run test-server"
+        
+        # Test with None server config
+        command = build_server_command(None, "test-server")
+        assert command is None
+
+    def test_share_server_not_found(self):
+        """Test sharing non-existent server"""
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            # Setup temporary global config
+            global_config_path = Path(tmp_dir) / "servers.json"
+            global_config_manager = GlobalConfigManager(config_path=str(global_config_path))
+            
+            # Mock the global config manager
+            with patch("mcpm.commands.share.global_config_manager", global_config_manager):
+                runner = CliRunner()
+                result = runner.invoke(share, ["non-existent-server"])
+                
+                assert result.exit_code == 1
+                assert "Server 'non-existent-server' not found" in result.output
+                assert "mcpm ls" in result.output
+                assert "mcpm install" in result.output
+
+    def test_share_empty_server_name(self):
+        """Test sharing with empty server name"""
         runner = CliRunner()
-        with patch.object(sys, "exit") as mock_exit:
-            result = runner.invoke(share, ["test command"])
+        result = runner.invoke(share, [""])
+        
+        assert result.exit_code == 1
+        assert "Server name cannot be empty" in result.output
 
-            # Verify the command failed with the right error
-            assert mock_exit.called
-            assert "mcp-proxy not found" in result.output
+    def test_share_command_no_mcp_proxy(self):
+        """Test share command when mcp-proxy is not installed"""
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            # Setup temporary global config
+            global_config_path = Path(tmp_dir) / "servers.json"
+            global_config_manager = GlobalConfigManager(config_path=str(global_config_path))
+            
+            # Add a test server to global config
+            test_server = STDIOServerConfig(
+                name="test-server",
+                command="echo",
+                args=["hello"]
+            )
+            global_config_manager.add_server(test_server)
+            
+            # Mock the global config manager and make mcp-proxy not found
+            with patch("mcpm.commands.share.global_config_manager", global_config_manager), \
+                 patch("mcpm.commands.share.find_mcp_proxy", return_value=None):
+                
+                runner = CliRunner()
+                result = runner.invoke(share, ["test-server"])
+                
+                assert result.exit_code == 1
+                assert "mcp-proxy not found in PATH" in result.output
+                assert "install mcp-proxy" in result.output
+
+    def test_share_help_shows_v2_usage(self):
+        """Test that share help shows v2.0 server name usage"""
+        runner = CliRunner()
+        result = runner.invoke(share, ["--help"])
+        
+        assert result.exit_code == 0
+        assert "SERVER_NAME" in result.output
+        assert "mcpm share time" in result.output
+        assert "installed server" in result.output
+        assert "global configuration" in result.output

@@ -95,5 +95,13 @@ class ProfileConfigManager:
                 return True
         return False
 
+    def clear_profile(self, profile_name: str) -> bool:
+        """Clear all servers from a profile while keeping the profile."""
+        if profile_name not in self._profiles:
+            return False
+        self._profiles[profile_name] = []
+        self._save_profiles()
+        return True
+
     def reload(self):
         self._profiles = self._load_profiles()

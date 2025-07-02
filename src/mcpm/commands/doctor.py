@@ -105,22 +105,49 @@ def doctor():
     console.print("[bold cyan]🖥️  Supported Clients[/]")
     try:
         clients = ClientRegistry.get_supported_clients()
-        console.print(f"  ✅ {len(clients)} supported clients found")
+        console.print(f"  ✅ {len(clients)} clients supported:")
+        
+        # Get display names for better readability
+        client_info = ClientRegistry.get_all_client_info()
         
         # Check which clients are installed
         installed_clients = []
+        not_installed_clients = []
+        
         for client in clients:
             try:
-                client_instance = ClientRegistry.get_client(client)
-                if client_instance and client_instance.is_installed():
+                client_manager = ClientRegistry.get_client_manager(client)
+                if client_manager and client_manager.is_client_installed():
                     installed_clients.append(client)
+                else:
+                    not_installed_clients.append(client)
             except Exception:
-                pass
+                not_installed_clients.append(client)
         
+        # Show installed clients
         if installed_clients:
-            console.print(f"  ✅ Installed: {', '.join(installed_clients)}")
-        else:
-            console.print("  ⚠️  No supported clients detected")
+            console.print(f"    ✅ Installed ({len(installed_clients)}): ", end="")
+            display_names = []
+            for client in installed_clients:
+                info = client_info.get(client, {})
+                display_name = info.get('name', client)
+                display_names.append(display_name)
+            console.print(", ".join(display_names))
+        
+        # Show available but not installed clients (first few)
+        if not_installed_clients:
+            console.print(f"    ⚪ Available ({len(not_installed_clients)}): ", end="")
+            display_names = []
+            for client in not_installed_clients[:3]:  # Show first 3
+                info = client_info.get(client, {})
+                display_name = info.get('name', client)
+                display_names.append(display_name)
+            if len(not_installed_clients) > 3:
+                display_names.append(f"and {len(not_installed_clients) - 3} more")
+            console.print(", ".join(display_names))
+        
+        if not installed_clients and not not_installed_clients:
+            console.print("  ⚠️  No client information available")
             
     except Exception as e:
         console.print(f"  ❌ Client check error: {e}")

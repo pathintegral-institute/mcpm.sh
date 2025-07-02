@@ -14,10 +14,29 @@ from typing import Optional, Tuple
 import click
 from rich.console import Console
 
+from mcpm.global_config import GlobalConfigManager
 from mcpm.router.share import Tunnel
 from mcpm.utils.config import DEFAULT_SHARE_ADDRESS
 
 console = Console()
+global_config_manager = GlobalConfigManager()
+
+
+def find_installed_server(server_name):
+    """Find an installed server by name in global configuration."""
+    server_config = global_config_manager.get_server(server_name)
+    if server_config:
+        return server_config, "global"
+    return None, None
+
+
+def build_server_command(server_config, server_name):
+    """Build the command to run the server using mcpm run."""
+    if not server_config:
+        return None
+    
+    # Use mcpm run to execute the server - this handles all the configuration properly
+    return f"mcpm run {shlex.quote(server_name)}"
 
 
 def find_mcp_proxy() -> Optional[str]:
@@ -207,7 +226,7 @@ def monitor_for_errors(line: str) -> Optional[str]:
 
 
 @click.command()
-@click.argument("command", type=str)
+@click.argument("server_name", type=str)
 @click.option("--port", type=int, default=None, help="Port for the SSE server (random if not specified)")
 @click.option("--address", type=str, default=None, help="Remote address for tunnel, use share.mcpm.sh if not specified")
 @click.option(
@@ -221,22 +240,53 @@ def monitor_for_errors(line: str) -> Optional[str]:
 )
 @click.option("--retry", type=int, default=0, help="Number of times to automatically retry on error (default: 0)")
 @click.help_option("-h", "--help")
-def share(command, port, address, http, timeout, retry):
-    """Share an MCP server through a tunnel.
+def share(server_name, port, address, http, timeout, retry):
+    """Share an installed MCP server through a tunnel.
 
-    This command uses mcp-proxy to expose a stdio MCP server as an SSE server,
-    then creates a tunnel to make it accessible remotely.
+    This command finds an installed server in the global configuration,
+    uses mcp-proxy to expose it as an SSE server, then creates a tunnel
+    to make it accessible remotely.
 
-    COMMAND is the shell command to run the MCP server.
+    SERVER_NAME is the name of an installed server from your global configuration.
 
     Examples:
 
     \b
-        mcpm share "uvx mcp-server-fetch"
-        mcpm share "npx mcp-server" --port 5000
-        mcpm share "uv run my-mcp-server" --address myserver.com:7000
-        mcpm share "npx -y @modelcontextprotocol/server-everything" --retry 3
+        mcpm share time                    # Share the time server
+        mcpm share mcp-server-browse       # Share the browse server  
+        mcpm share filesystem --port 5000  # Share filesystem server on specific port
+        mcpm share sqlite --retry 3        # Share with auto-retry on errors
     """
+    # Validate server name
+    if not server_name or not server_name.strip():
+        console.print("[red]Error: Server name cannot be empty[/]")
+        sys.exit(1)
+    
+    server_name = server_name.strip()
+    
+    # Find the server configuration
+    server_config, location = find_installed_server(server_name)
+    
+    if not server_config:
+        console.print(f"[red]Error: Server '[bold]{server_name}[/]' not found[/]")
+        console.print()
+        console.print("[yellow]Available options:[/]")
+        console.print("  • Run 'mcpm ls' to see installed servers")
+        console.print("  • Run 'mcpm search {name}' to find available servers")
+        console.print("  • Run 'mcpm install {name}' to install a server")
+        sys.exit(1)
+    
+    # Build the command to run the server
+    command = build_server_command(server_config, server_name)
+    
+    if not command:
+        console.print(f"[red]Error: Invalid server configuration for '{server_name}'[/]")
+        sys.exit(1)
+    
+    # Show server info
+    console.print(f"[dim]Found server '{server_name}' in {location} configuration[/]")
+    console.print(f"[dim]Server will be launched via: {command}[/]")
+
     # Default to standard share address if not specified
     if not address:
         address = DEFAULT_SHARE_ADDRESS
@@ -256,7 +306,7 @@ def share(command, port, address, http, timeout, retry):
 
         try:
             # Start mcp-proxy to convert stdio to SSE
-            console.print(f"[cyan]Starting mcp-proxy with command: [bold]{command}[/bold][/]")
+            console.print(f"[cyan]Starting mcp-proxy to share server '[bold]{server_name}[/bold]'...[/]")
             server_process, actual_port = start_mcp_proxy(command, port)
             console.print(f"[cyan]mcp-proxy SSE server running on port [bold]{actual_port}[/bold][/]")
 
