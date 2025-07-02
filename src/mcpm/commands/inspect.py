@@ -42,10 +42,10 @@ def build_inspector_command(server_config, server_name):
 @click.argument("server_name")
 @click.help_option("-h", "--help")
 def inspect(server_name):
-    """Launch MCP Inspector to test and debug an installed server.
+    """Launch MCP Inspector to test and debug a server from global configuration.
     
-    Finds the specified installed server and launches the MCP Inspector
-    with the correct configuration to connect to and test the server.
+    Finds the specified server in the global configuration and launches
+    the MCP Inspector with the correct configuration to connect to and test the server.
     
     Examples:
         mcpm inspect mcp-server-browse    # Inspect the browse server

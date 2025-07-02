@@ -241,7 +241,7 @@ def monitor_for_errors(line: str) -> Optional[str]:
 @click.option("--retry", type=int, default=0, help="Number of times to automatically retry on error (default: 0)")
 @click.help_option("-h", "--help")
 def share(server_name, port, address, http, timeout, retry):
-    """Share an installed MCP server through a tunnel.
+    """Share a server from global configuration through a tunnel.
 
     This command finds an installed server in the global configuration,
     uses mcp-proxy to expose it as an SSE server, then creates a tunnel

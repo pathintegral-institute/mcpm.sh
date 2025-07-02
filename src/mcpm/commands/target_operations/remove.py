@@ -22,14 +22,15 @@ console = Console()
 @click.option("--force", "-f", is_flag=True, help="Force removal without confirmation")
 @click.help_option("-h", "--help")
 def remove(server_name, force):
-    """Remove an installed MCP server.
+    """Remove an installed MCP server from global configuration.
+
+    Removes servers from the global MCPM configuration and clears
+    any profile tags associated with the server.
 
     Examples:
 
     \b
         mcpm rm filesystem
-        mcpm rm @cursor/filesystem
-        mcpm rm %profile/filesystem
         mcpm rm filesystem --force
     """
     # v2.0: Extract server name and use global configuration

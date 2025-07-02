@@ -1,5 +1,5 @@
 """
-Add command for adding MCP servers directly to client configurations
+Install command for adding MCP servers to the global configuration
 """
 
 import json
@@ -97,7 +97,10 @@ def prompt_with_default(prompt_text, default="", hide_input=False, required=Fals
 @click.option("--target", "-t", help="[DEPRECATED] Ignored in v2.0", required=False, hidden=True)
 @click.help_option("-h", "--help")
 def add(server_name, force=False, alias=None, target: str | None = None):
-    """Add an MCP server to a client configuration.
+    """Install an MCP server to the global configuration.
+
+    Installs servers to the global MCPM configuration where they can be
+    used across all MCP clients and organized into profiles.
 
     Examples:
 
@@ -105,8 +108,6 @@ def add(server_name, force=False, alias=None, target: str | None = None):
         mcpm add time
         mcpm add everything --force
         mcpm add youtube --alias yt
-        mcpm add youtube --target %myprofile
-        mcpm add %profile --target @windsurf
     """
     
     # v2.0: ignore target parameter - use global config

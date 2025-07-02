@@ -84,11 +84,10 @@ def execute_server_command(server_config, server_name):
 @click.argument("server_name")
 @click.help_option("-h", "--help")
 def run(server_name):
-    """Execute a single server over stdio.
+    """Execute a server from global configuration over stdio.
     
-    Runs an installed MCP server directly, making it available over stdio
-    for client communication. The server must be installed first via
-    'mcpm install' or 'mcpm import'.
+    Runs an installed MCP server directly from the global configuration,
+    making it available over stdio for client communication.
     
     Examples:
         mcpm run mcp-server-browse    # Run the browse server
