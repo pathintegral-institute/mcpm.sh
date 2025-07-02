@@ -60,23 +60,11 @@ def global_remove_server(server_name: str) -> bool:
         console.print(f"[bold red]Error:[/] Server '{server_name}' not found in global configuration.")
         return False
     
-    # Remove from global config
+    # Remove from global config (this automatically removes all profile tags)
     success = global_config_manager.remove_server(server_name)
     
-    if success:
-        # Also remove from all profiles (clean up tags)
-        profile_manager = ProfileConfigManager()
-        profiles = profile_manager.list_profiles()
-        
-        for profile_name, profile_servers in profiles.items():
-            # Remove the server from this profile if it exists
-            updated_servers = [s for s in profile_servers if s.name != server_name]
-            if len(updated_servers) != len(profile_servers):
-                # Server was found and removed from this profile
-                profile_manager._profiles[profile_name] = updated_servers
-        
-        # Save the updated profiles
-        profile_manager._save_profiles()
+    # No need for additional profile cleanup since virtual profiles
+    # are managed automatically through profile tags on servers
     
     return success
 

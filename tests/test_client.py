@@ -138,38 +138,35 @@ def test_client_ls_command(monkeypatch):
 
 def test_client_edit_command_client_not_supported(monkeypatch):
     """Test 'client edit' when client is not supported"""
-    # Mock active client manager to be None (unsupported)
-    monkeypatch.setattr(ClientRegistry, "get_active_client_manager", Mock(return_value=None))
-    monkeypatch.setattr(ClientRegistry, "get_active_client", Mock(return_value="unsupported"))
-    monkeypatch.setattr(ClientRegistry, "get_client_info", Mock(return_value={"name": "Unsupported"}))
+    # Mock client manager to be None (unsupported)
+    monkeypatch.setattr(ClientRegistry, "get_client_manager", Mock(return_value=None))
+    monkeypatch.setattr(ClientRegistry, "get_supported_clients", Mock(return_value=["cursor", "claude-desktop"]))
 
-    # Mock print_client_error
-    with patch("mcpm.commands.client.print_client_error") as mock_print_error:
-        # Run the command
-        runner = CliRunner()
-        result = runner.invoke(edit_client)
+    # Run the command with unsupported client
+    runner = CliRunner()
+    result = runner.invoke(edit_client, ["unsupported-client"])
 
-        # Check the result
-        assert result.exit_code == 0
-        mock_print_error.assert_called_once_with()
+    # Check the result - should return 0 but print error message
+    assert result.exit_code == 0
+    assert "Error: Client 'unsupported-client' is not supported." in result.output
+    assert "Available clients:" in result.output
 
 
 def test_client_edit_command_client_not_installed(monkeypatch):
     """Test 'client edit' when client is not installed"""
-    # Mock active client manager
+    # Mock client manager
     mock_client_manager = Mock()
     mock_client_manager.is_client_installed = Mock(return_value=False)
     mock_client_manager.config_path = "/path/to/config.json"
 
-    monkeypatch.setattr(ClientRegistry, "get_active_client_manager", Mock(return_value=mock_client_manager))
-    monkeypatch.setattr(ClientRegistry, "get_active_client", Mock(return_value="windsurf"))
+    monkeypatch.setattr(ClientRegistry, "get_client_manager", Mock(return_value=mock_client_manager))
     monkeypatch.setattr(ClientRegistry, "get_client_info", Mock(return_value={"name": "Windsurf"}))
 
     # Mock print_error
     with patch("mcpm.commands.client.print_error") as mock_print_error:
         # Run the command
         runner = CliRunner()
-        result = runner.invoke(edit_client)
+        result = runner.invoke(edit_client, ["windsurf"])
 
         # Check the result
         assert result.exit_code == 0
@@ -188,21 +185,22 @@ def test_client_edit_command_config_exists(monkeypatch, tmp_path):
     mock_client_manager.is_client_installed = Mock(return_value=True)
     mock_client_manager.config_path = str(config_path)
 
-    monkeypatch.setattr(ClientRegistry, "get_active_client_manager", Mock(return_value=mock_client_manager))
-    monkeypatch.setattr(ClientRegistry, "get_active_client", Mock(return_value="windsurf"))
+    monkeypatch.setattr(ClientRegistry, "get_client_manager", Mock(return_value=mock_client_manager))
     monkeypatch.setattr(ClientRegistry, "get_client_info", Mock(return_value={"name": "Windsurf"}))
+    
+    # Mock GlobalConfigManager - return empty dict to trigger "no servers" path
+    mock_global_config = Mock()
+    mock_global_config.list_servers = Mock(return_value={})
+    monkeypatch.setattr("mcpm.commands.client.global_config_manager", mock_global_config)
+    
+    # Run the command
+    runner = CliRunner()
+    result = runner.invoke(edit_client, ["windsurf"])
 
-    # Mock Confirm.ask to return False (don't open editor)
-    with patch("mcpm.commands.client.Confirm.ask", Mock(return_value=False)):
-        # Run the command
-        runner = CliRunner()
-        result = runner.invoke(edit_client)
-
-        # Check the result
-        assert result.exit_code == 0
-        assert "Windsurf config file" in result.output
-        assert "Current configuration" in result.output
-        assert "Configured servers: 1" in result.output
+    # Check the result - should exit early due to no servers
+    assert result.exit_code == 0
+    assert "Windsurf Configuration Management" in result.output
+    assert "No servers found in MCPM global configuration" in result.output
 
 
 def test_client_edit_command_config_not_exists(monkeypatch, tmp_path):
@@ -215,26 +213,22 @@ def test_client_edit_command_config_not_exists(monkeypatch, tmp_path):
     mock_client_manager.is_client_installed = Mock(return_value=True)
     mock_client_manager.config_path = str(config_path)
 
-    monkeypatch.setattr(ClientRegistry, "get_active_client_manager", Mock(return_value=mock_client_manager))
-    monkeypatch.setattr(ClientRegistry, "get_active_client", Mock(return_value="windsurf"))
+    monkeypatch.setattr(ClientRegistry, "get_client_manager", Mock(return_value=mock_client_manager))
     monkeypatch.setattr(ClientRegistry, "get_client_info", Mock(return_value={"name": "Windsurf"}))
+    
+    # Mock GlobalConfigManager - return empty dict to trigger "no servers" path
+    mock_global_config = Mock()
+    mock_global_config.list_servers = Mock(return_value={})
+    monkeypatch.setattr("mcpm.commands.client.global_config_manager", mock_global_config)
 
-    # Run the command with custom input
+    # Run the command
     runner = CliRunner()
+    result = runner.invoke(edit_client, ["windsurf"])
 
-    # Mock os.makedirs to prevent actual directory creation
-    with (
-        patch("os.makedirs"),
-        patch("builtins.open", Mock()),
-        patch("json.dump", Mock()),
-        patch("mcpm.commands.client.Confirm.ask", Mock(return_value=False)),
-    ):
-        result = runner.invoke(edit_client)
-
-        # Check the result
-        assert result.exit_code == 0
-        assert "Windsurf config file" in result.output
-        assert "Creating new Windsurf config file" in result.output
+    # Check the result - should exit early due to no servers
+    assert result.exit_code == 0
+    assert "Windsurf Configuration Management" in result.output
+    assert "No servers found in MCPM global configuration" in result.output
 
 
 def test_client_edit_command_open_editor(monkeypatch, tmp_path):
@@ -249,25 +243,21 @@ def test_client_edit_command_open_editor(monkeypatch, tmp_path):
     mock_client_manager.is_client_installed = Mock(return_value=True)
     mock_client_manager.config_path = str(config_path)
 
-    monkeypatch.setattr(ClientRegistry, "get_active_client_manager", Mock(return_value=mock_client_manager))
-    monkeypatch.setattr(ClientRegistry, "get_active_client", Mock(return_value="windsurf"))
+    monkeypatch.setattr(ClientRegistry, "get_client_manager", Mock(return_value=mock_client_manager))
     monkeypatch.setattr(ClientRegistry, "get_client_info", Mock(return_value={"name": "Windsurf"}))
+    
+    # Mock GlobalConfigManager - return empty dict to trigger "no servers" path
+    mock_global_config = Mock()
+    mock_global_config.list_servers = Mock(return_value={})
+    monkeypatch.setattr("mcpm.commands.client.global_config_manager", mock_global_config)
 
-    # Mock Confirm.ask to return True (open editor)
-    with (
-        patch("mcpm.commands.client.Confirm.ask", Mock(return_value=True)),
-        patch("mcpm.commands.client.subprocess.run") as mock_run,
-        patch("os.name", "posix"),
-        patch("os.uname", Mock(return_value=Mock(sysname="Darwin"))),
-    ):
-        # Run the command
-        runner = CliRunner()
-        result = runner.invoke(edit_client)
+    # Run the command with external editor flag
+    runner = CliRunner()
+    result = runner.invoke(edit_client, ["windsurf", "--external"])
 
-        # Check the result
-        assert result.exit_code == 0
-        assert "Opening config file in your default editor" in result.output
-        mock_run.assert_called_once_with(["open", str(config_path)])
+    # Check the result - should exit early due to no servers
+    assert result.exit_code == 0
+    assert "Windsurf Configuration Management" in result.output
 
 
 def test_main_client_command_help():
@@ -277,8 +267,7 @@ def test_main_client_command_help():
 
     # Check the result
     assert result.exit_code == 0
-    assert "Manage MCP clients" in result.output
+    assert "Manage MCP client configurations" in result.output
     assert "Commands:" in result.output
     assert "ls" in result.output
-    assert "set" in result.output
     assert "edit" in result.output

@@ -5,9 +5,24 @@ from pydantic import BaseModel
 
 class BaseServerConfig(BaseModel):
     name: str
+    profile_tags: List[str] = []
 
     def to_dict(self) -> Dict[str, Any]:
         return self.model_dump()
+
+    def add_profile_tag(self, tag: str) -> None:
+        """Add a profile tag to this server if not already present."""
+        if tag not in self.profile_tags:
+            self.profile_tags.append(tag)
+
+    def remove_profile_tag(self, tag: str) -> None:
+        """Remove a profile tag from this server if present."""
+        if tag in self.profile_tags:
+            self.profile_tags.remove(tag)
+
+    def has_profile_tag(self, tag: str) -> bool:
+        """Check if this server has a specific profile tag."""
+        return tag in self.profile_tags
 
 
 class STDIOServerConfig(BaseServerConfig):
@@ -82,7 +97,9 @@ class CustomServerConfig(BaseServerConfig):
 ServerConfig = Union[STDIOServerConfig, RemoteServerConfig, CustomServerConfig]
 
 
-class Profile(BaseModel):
+# Profile metadata - servers are now associated via virtual tags
+class ProfileMetadata(BaseModel):
     name: str
-    api_key: Optional[str]
-    servers: list[ServerConfig]
+    api_key: Optional[str] = None
+    description: Optional[str] = None
+    # Additional metadata can be added here (sharing settings, etc.)

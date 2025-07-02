@@ -160,10 +160,9 @@ def edit_profile(profile_name, name, servers):
             # Create new profile with selected servers
             profile_config_manager.new_profile(new_name)
 
-            # Add selected servers to new profile
+            # Add selected servers to new profile (using efficient tagging)
             for server_name in selected_servers:
-                server_config = all_servers[server_name]
-                profile_config_manager.set_profile(new_name, server_config)
+                profile_config_manager.add_server_to_profile(new_name, server_name)
 
             # Delete old profile
             profile_config_manager.delete_profile(profile_name)
@@ -174,10 +173,9 @@ def edit_profile(profile_name, name, servers):
             # Clear current servers
             profile_config_manager.clear_profile(profile_name)
 
-            # Add selected servers
+            # Add selected servers (using efficient tagging)
             for server_name in selected_servers:
-                server_config = all_servers[server_name]
-                profile_config_manager.set_profile(profile_name, server_config)
+                profile_config_manager.add_server_to_profile(profile_name, server_name)
 
             console.print(f"[green]✅ Profile '[cyan]{profile_name}[/]' updated[/]")
 
