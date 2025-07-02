@@ -177,11 +177,12 @@ def main(ctx, help_flag, version):
         commands_table.add_row("  [cyan]usage[/]", "Display analytics and usage data.")
         commands_table.add_row("  [cyan]config[/]", "Manage MCPM configuration and settings.")
 
-        commands_table.add_row("[yellow]Legacy Commands[/]")
-        commands_table.add_row("  [cyan]add[/]", "Legacy: use 'install' instead.")
-        commands_table.add_row("  [cyan]rm[/]", "Legacy: use 'uninstall' instead.")
-        commands_table.add_row("  [cyan]client[/]", "Legacy: client management (use global config).")
-        commands_table.add_row("  [cyan]stash/pop/mv/cp/target[/]", "Legacy: removed in v2.0 (use profiles).")
+        commands_table.add_row("[yellow]Client Management[/]")
+        commands_table.add_row("  [cyan]client[/]", "Manage MCP client configurations and server integrations.")
+
+        commands_table.add_row("[yellow]Legacy Aliases[/]")
+        commands_table.add_row("  [cyan]add[/]", "Alias for 'install'.")
+        commands_table.add_row("  [cyan]rm[/]", "Alias for 'uninstall'.")
         console.print(commands_table)
 
         # Additional helpful information
