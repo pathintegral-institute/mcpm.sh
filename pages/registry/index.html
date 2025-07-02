@@ -1192,6 +1192,7 @@
             'isPinned': 0,
             'isOfficial': 1,
             'others': 2,
+            'archived': 3,
         }
         const isLucien = searchParams.get('source') === 'lucien'
         const sourceProtocol = searchParams.get('protocol') || 'lucien'
@@ -1206,6 +1207,10 @@
         function serverSortRule(serverA, serverB) {
 
             function determineServerType(server) {
+                // Archived servers get lowest priority regardless of other factors
+                if (server.is_archived) {
+                    return 'archived';
+                }
                 if (defaultSpecifiedServers.includes(server.name)) {
                     return 'isPinned';
                 }
