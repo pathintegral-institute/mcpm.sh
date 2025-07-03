@@ -2,9 +2,9 @@
 Tests for MCPM v2.0 remove command (global configuration model)
 """
 
-from unittest.mock import Mock, patch
 import tempfile
 from pathlib import Path
+from unittest.mock import patch
 
 from click.testing import CliRunner
 
@@ -19,16 +19,16 @@ def test_remove_server_success():
         # Setup temporary global config
         global_config_path = Path(tmp_dir) / "servers.json"
         global_config_manager = GlobalConfigManager(config_path=str(global_config_path))
-        
+
         # Add a test server to global config
         test_server = STDIOServerConfig(
             name="test-server",
             command="npx",
             args=["-y", "@modelcontextprotocol/server-test"],
-            env={"API_KEY": "test-key"}
+            env={"API_KEY": "test-key"},
         )
         global_config_manager.add_server(test_server)
-        
+
         # Mock the global config manager in the remove command
         with patch("mcpm.commands.target_operations.common.global_config_manager", global_config_manager):
             runner = CliRunner()
@@ -45,7 +45,7 @@ def test_remove_server_not_found():
         # Setup temporary global config
         global_config_path = Path(tmp_dir) / "servers.json"
         global_config_manager = GlobalConfigManager(config_path=str(global_config_path))
-        
+
         # Mock the global config manager
         with patch("mcpm.commands.target_operations.common.global_config_manager", global_config_manager):
             runner = CliRunner()
@@ -61,19 +61,21 @@ def test_remove_server_cancelled():
         # Setup temporary global config
         global_config_path = Path(tmp_dir) / "servers.json"
         global_config_manager = GlobalConfigManager(config_path=str(global_config_path))
-        
+
         # Add a test server to global config
         test_server = STDIOServerConfig(
             name="test-server",
             command="npx",
             args=["-y", "@modelcontextprotocol/server-test"],
-            env={"API_KEY": "test-key"}
+            env={"API_KEY": "test-key"},
         )
         global_config_manager.add_server(test_server)
-        
+
         # Mock the global config manager and user input
-        with patch("mcpm.commands.target_operations.common.global_config_manager", global_config_manager), \
-             patch("rich.prompt.Confirm.ask", return_value=False):
+        with (
+            patch("mcpm.commands.target_operations.common.global_config_manager", global_config_manager),
+            patch("rich.prompt.Confirm.ask", return_value=False),
+        ):
             runner = CliRunner()
             result = runner.invoke(remove, ["test-server"])
 
@@ -89,19 +91,21 @@ def test_remove_server_with_confirmation():
         # Setup temporary global config
         global_config_path = Path(tmp_dir) / "servers.json"
         global_config_manager = GlobalConfigManager(config_path=str(global_config_path))
-        
+
         # Add a test server to global config
         test_server = STDIOServerConfig(
             name="test-server",
             command="npx",
             args=["-y", "@modelcontextprotocol/server-test"],
-            env={"API_KEY": "test-key"}
+            env={"API_KEY": "test-key"},
         )
         global_config_manager.add_server(test_server)
-        
+
         # Mock the global config manager and user input
-        with patch("mcpm.commands.target_operations.common.global_config_manager", global_config_manager), \
-             patch("rich.prompt.Confirm.ask", return_value=True):
+        with (
+            patch("mcpm.commands.target_operations.common.global_config_manager", global_config_manager),
+            patch("rich.prompt.Confirm.ask", return_value=True),
+        ):
             runner = CliRunner()
             result = runner.invoke(remove, ["test-server"])
 

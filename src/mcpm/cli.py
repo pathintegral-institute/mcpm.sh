@@ -38,13 +38,13 @@ def create_deprecated_command(command_name: str, replacement_suggestions=None):
     if replacement_suggestions is None:
         replacement_suggestions = [
             "mcpm install <server>                    # Install servers globally",
-            "mcpm profile add <profile> <server>      # Tag servers with profiles", 
-            "mcpm run <server>                        # Run servers directly"
+            "mcpm profile add <profile> <server>      # Tag servers with profiles",
+            "mcpm run <server>                        # Run servers directly",
         ]
-    
+
     @click.command(context_settings=dict(ignore_unknown_options=True, help_option_names=[]))
-    @click.option('--help', '-h', 'help_requested', is_flag=True, help='Show deprecation message.')
-    @click.argument('args', nargs=-1, type=click.UNPROCESSED)
+    @click.option("--help", "-h", "help_requested", is_flag=True, help="Show deprecation message.")
+    @click.argument("args", nargs=-1, type=click.UNPROCESSED)
     def deprecated_command(help_requested, args):
         f"""The '{command_name}' command has been removed in MCPM v2.0."""
         console.print(f"[bold red]Error:[/] The 'mcpm {command_name}' command has been removed in MCPM v2.0.")
@@ -55,7 +55,7 @@ def create_deprecated_command(command_name: str, replacement_suggestions=None):
             console.print(f"  [dim]{suggestion}[/]")
         console.print()
         raise click.ClickException("Command has been removed in v2.0")
-    
+
     # Set the name properly on the command
     deprecated_command.name = command_name
     return deprecated_command
@@ -127,17 +127,19 @@ def main(ctx, help_flag, version):
     # If no command was invoked or help is requested, show our custom help
     if ctx.invoked_subcommand is None or help_flag:
         print_logo()
-        
+
         # Display usage info for new simplified model
         console.print("[bold green]Usage:[/] [white]mcpm [OPTIONS] COMMAND [ARGS]...[/]")
         console.print("")
-        console.print("[bold green]Description:[/] [white]Manage MCP servers in a global configuration with profile organization.[/]")
+        console.print(
+            "[bold green]Description:[/] [white]Manage MCP servers in a global configuration with profile organization.[/]"
+        )
         console.print("")
-        
+
         # Show quick start examples
         console.print("[bold cyan]Quick Start:[/]")
         console.print("  [dim]mcpm search browser          # Find available servers[/]")
-        console.print("  [dim]mcpm install mcp-server-browse  # Install a server[/]") 
+        console.print("  [dim]mcpm install mcp-server-browse  # Install a server[/]")
         console.print("  [dim]mcpm run mcp-server-browse      # Run server directly[/]")
         console.print("  [dim]mcpm profile create web-dev     # Create a profile[/]")
         console.print("  [dim]mcpm profile add web-dev mcp-server-browse  # Tag server[/]")
@@ -211,19 +213,31 @@ main.add_command(remove.remove, name="rm")  # Legacy alias for uninstall
 # Deprecated v1 commands - show migration guidance
 main.add_command(create_deprecated_command("stash"), name="stash")
 main.add_command(create_deprecated_command("pop"), name="pop")
-main.add_command(create_deprecated_command("mv", [
-    "mcpm profile add <profile> <server>      # Tag servers with profiles",
-    "mcpm profile remove <profile> <server>   # Remove tags from servers"
-]), name="mv")
-main.add_command(create_deprecated_command("cp", [
-    "mcpm profile add <profile> <server>      # Tag servers with profiles", 
-    "mcpm profile remove <profile> <server>   # Remove tags from servers"
-]), name="cp")
+main.add_command(
+    create_deprecated_command(
+        "mv",
+        [
+            "mcpm profile add <profile> <server>      # Tag servers with profiles",
+            "mcpm profile remove <profile> <server>   # Remove tags from servers",
+        ],
+    ),
+    name="mv",
+)
+main.add_command(
+    create_deprecated_command(
+        "cp",
+        [
+            "mcpm profile add <profile> <server>      # Tag servers with profiles",
+            "mcpm profile remove <profile> <server>   # Remove tags from servers",
+        ],
+    ),
+    name="cp",
+)
 main.add_command(create_deprecated_command("target"), name="target")
 
 # Keep these for now but they could be simplified later
 main.add_command(client.client)
-main.add_command(inspector.inspector, name="inspector") 
+main.add_command(inspector.inspector, name="inspector")
 
 if __name__ == "__main__":
     main()

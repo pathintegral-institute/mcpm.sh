@@ -201,4 +201,3 @@ class ContinueManager(YAMLClientManager):
         }
         server_data.update(client_config)
         return TypeAdapter(ServerConfig).validate_python(server_data)
-

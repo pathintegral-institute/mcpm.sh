@@ -14,12 +14,9 @@ def test_add_server(windsurf_manager, monkeypatch, tmp_path):
     # Setup temporary global config
     global_config_path = tmp_path / "servers.json"
     global_config_manager = GlobalConfigManager(config_path=str(global_config_path))
-    
-    monkeypatch.setattr(
-        "mcpm.commands.target_operations.common.global_config_manager",
-        global_config_manager
-    )
-    
+
+    monkeypatch.setattr("mcpm.commands.target_operations.common.global_config_manager", global_config_manager)
+
     monkeypatch.setattr(
         RepositoryManager,
         "_fetch_servers",
@@ -62,12 +59,9 @@ def test_add_server_with_missing_arg(windsurf_manager, monkeypatch, tmp_path):
     # Setup temporary global config
     global_config_path = tmp_path / "servers.json"
     global_config_manager = GlobalConfigManager(config_path=str(global_config_path))
-    
-    monkeypatch.setattr(
-        "mcpm.commands.target_operations.common.global_config_manager",
-        global_config_manager
-    )
-    
+
+    monkeypatch.setattr("mcpm.commands.target_operations.common.global_config_manager", global_config_manager)
+
     monkeypatch.setattr(
         RepositoryManager,
         "_fetch_servers",
@@ -132,12 +126,9 @@ def test_add_server_with_empty_args(windsurf_manager, monkeypatch, tmp_path):
     # Setup temporary global config
     global_config_path = tmp_path / "servers.json"
     global_config_manager = GlobalConfigManager(config_path=str(global_config_path))
-    
-    monkeypatch.setattr(
-        "mcpm.commands.target_operations.common.global_config_manager",
-        global_config_manager
-    )
-    
+
+    monkeypatch.setattr("mcpm.commands.target_operations.common.global_config_manager", global_config_manager)
+
     monkeypatch.setattr(
         RepositoryManager,
         "_fetch_servers",
@@ -232,18 +223,15 @@ def test_add_profile_to_client(windsurf_manager, monkeypatch, tmp_path):
     # Setup temporary global config
     global_config_path = tmp_path / "servers.json"
     global_config_manager = GlobalConfigManager(config_path=str(global_config_path))
-    
-    monkeypatch.setattr(
-        "mcpm.commands.target_operations.common.global_config_manager",
-        global_config_manager
-    )
-    
+
+    monkeypatch.setattr("mcpm.commands.target_operations.common.global_config_manager", global_config_manager)
+
     profile_name = "work"
 
     # test cli - in v2.0, profile with % prefix should fail gracefully
     runner = CliRunner()
     result = runner.invoke(add, ["%" + profile_name, "--force", "--alias", "work"])
-    
+
     # In v2.0, this should fail because % profiles and profile activation are not supported
     assert result.exit_code == 1  # Command fails
     assert "Profile activation has been removed" in result.output
@@ -253,12 +241,9 @@ def test_add_server_with_configured_npx(windsurf_manager, monkeypatch, tmp_path)
     # Setup temporary global config
     global_config_path = tmp_path / "servers.json"
     global_config_manager = GlobalConfigManager(config_path=str(global_config_path))
-    
-    monkeypatch.setattr(
-        "mcpm.commands.target_operations.common.global_config_manager",
-        global_config_manager
-    )
-    
+
+    monkeypatch.setattr("mcpm.commands.target_operations.common.global_config_manager", global_config_manager)
+
     monkeypatch.setattr(ConfigManager, "get_config", Mock(return_value={"node_executable": "bunx"}))
     monkeypatch.setattr(
         RepositoryManager,
@@ -284,9 +269,11 @@ def test_add_server_with_configured_npx(windsurf_manager, monkeypatch, tmp_path)
     )
 
     # Mock Rich's progress display to prevent 'Only one live display may be active at once' error
-    with patch("rich.progress.Progress.__enter__", return_value=Mock()), \
-         patch("rich.progress.Progress.__exit__"), \
-         patch("prompt_toolkit.PromptSession.prompt", side_effect=["json", "test-api-key"]):
+    with (
+        patch("rich.progress.Progress.__enter__", return_value=Mock()),
+        patch("rich.progress.Progress.__exit__"),
+        patch("prompt_toolkit.PromptSession.prompt", side_effect=["json", "test-api-key"]),
+    ):
         runner = CliRunner()
         result = runner.invoke(add, ["server-test", "--force", "--alias", "test"])
         assert result.exit_code == 0

@@ -4,12 +4,12 @@ MCPM commands package
 
 __all__ = [
     "add",
-    "client", 
+    "client",
     "config",
     "doctor",
     "import_client",
     "info",
-    "inspect", 
+    "inspect",
     "inspector",
     "list",
     "profile",

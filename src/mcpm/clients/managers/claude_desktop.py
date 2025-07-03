@@ -112,7 +112,6 @@ class ClaudeDesktopManager(JSONClientManager):
         config = self._load_config()
         return "disabledServers" in config and server_name in config["disabledServers"]
 
-
     def to_client_format(self, server_config: ServerConfig) -> Dict[str, Any]:
         if isinstance(server_config, RemoteServerConfig):
             # use mcp proxy to convert to stdio as sse is not supported for claude desktop yet

@@ -1,18 +1,16 @@
 """Simple tunnel functionality for sharing."""
 
+import logging
 import subprocess
 import tempfile
-import os
-import signal
 from typing import Optional
-import logging
 
 logger = logging.getLogger(__name__)
 
 
 class Tunnel:
     """Simple tunnel for sharing MCP servers."""
-    
+
     def __init__(
         self,
         remote_host: str,
@@ -31,7 +29,7 @@ class Tunnel:
         self.http = http
         self.share_server_tls_certificate = share_server_tls_certificate
         self.process: Optional[subprocess.Popen] = None
-        
+
     def start_tunnel(self) -> Optional[str]:
         """Start the tunnel and return the public URL."""
         try:
@@ -46,44 +44,40 @@ local_ip = {self.local_host}
 local_port = {self.local_port}
 custom_domains = {self.share_token}.{self.remote_host}
 """
-            
+
             # Write config to temporary file
-            with tempfile.NamedTemporaryFile(mode='w', suffix='.ini', delete=False) as f:
+            with tempfile.NamedTemporaryFile(mode="w", suffix=".ini", delete=False) as f:
                 f.write(config_content)
                 config_path = f.name
-            
+
             # Start frpc process
-            cmd = ['frpc', '-c', config_path]
-            self.process = subprocess.Popen(
-                cmd,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True
-            )
-            
+            cmd = ["frpc", "-c", config_path]
+            self.process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
             # Wait a moment for the tunnel to establish
             import time
+
             time.sleep(3)
-            
+
             # Check if process is still running
             if self.process.poll() is not None:
                 # Process died, read error
                 _, stderr = self.process.communicate()
                 logger.error(f"Tunnel process failed: {stderr}")
                 return None
-            
+
             # Return the public URL
             protocol = "http" if self.http else "https"
             public_url = f"{protocol}://{self.share_token}.{self.remote_host}"
             if self.remote_port not in (80, 443):
                 public_url += f":{self.remote_port}"
-            
+
             return public_url
-            
+
         except Exception as e:
             logger.error(f"Failed to start tunnel: {e}")
             return None
-    
+
     def kill(self):
         """Kill the tunnel process."""
         if self.process:

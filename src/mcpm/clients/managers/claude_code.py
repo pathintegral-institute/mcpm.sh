@@ -55,5 +55,5 @@ class ClaudeCodeManager(JSONClientManager):
             "name": self.display_name,
             "download_url": self.download_url,
             "config_file": self.config_path,
-            "description": "Anthropic's Claude Code CLI tool"
+            "description": "Anthropic's Claude Code CLI tool",
         }

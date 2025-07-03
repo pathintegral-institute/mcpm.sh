@@ -4,7 +4,6 @@ List command for MCP v2.0 - Global Configuration Model
 
 import click
 from rich.console import Console
-from rich.table import Table
 
 from mcpm.commands.target_operations.common import global_list_servers
 from mcpm.profile.profile_config import ProfileConfigManager
@@ -26,13 +25,13 @@ def list(target: str | None = None):
         mcpm ls                    # List all servers in global config
         mcpm profile ls            # List profiles and their tagged servers
     """
-    
+
     # v2.0: Use global configuration model
     console.print("[bold green]MCPM Global Configuration:[/]")
-    
+
     # Get all servers from global configuration
     servers = global_list_servers()
-    
+
     if not servers:
         console.print("\n[yellow]No MCP servers found in global configuration.[/]")
         console.print("Use 'mcpm install <server>' to install a server.")
@@ -41,7 +40,7 @@ def list(target: str | None = None):
 
     # Get all profiles to show which servers are tagged
     profiles = profile_manager.list_profiles()
-    
+
     # Create a mapping of server names to their profile tags
     server_profiles = {}
     for profile_name, profile_servers in profiles.items():
@@ -61,7 +60,7 @@ def list(target: str | None = None):
             tag_display = f" [dim](tagged: {', '.join(tags)})[/]"
         else:
             tag_display = " [dim](no profile tags)[/]"
-        
+
         console.print(f"[bold cyan]{server_name}[/]{tag_display}")
         print_server_config(server_config)
 

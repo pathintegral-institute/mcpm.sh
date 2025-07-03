@@ -14,8 +14,7 @@ from openai import OpenAI
 from utils import McpClient, inspect_docker_repo, validate_arguments_in_installation
 
 dotenv.load_dotenv()
-logging.basicConfig(level=logging.INFO,
-                    format="%(asctime)s - %(levelname)s - %(message)s")
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 _OUTPUT_DIR = "mcp-registry/servers/"
@@ -127,30 +126,25 @@ class ManifestGenerator:
         while retry_count < max_retries:
             try:
                 completion = self.client.chat.completions.create(
-                    extra_headers={
-                        "HTTP-Referer": os.environ.get("SITE_URL", "https://mcpm.sh"),
-                        "X-Title": "MCPM"
-                    },
+                    extra_headers={"HTTP-Referer": os.environ.get("SITE_URL", "https://mcpm.sh"), "X-Title": "MCPM"},
                     model="anthropic/claude-3-sonnet",
                     messages=[
-                        {"role": "system",
-                            "content": "Extract concise descriptions from README content."},
+                        {"role": "system", "content": "Extract concise descriptions from README content."},
                         {
                             "role": "user",
                             "content": (
                                 f"Extract a single concise description paragraph from this README "
                                 f"content. Focus on what the project does, not how to use it. "
                                 f"Keep it under 200 characters if possible:\n\n{readme_content}"
-                            )
-                        }
+                            ),
+                        },
                     ],
                     temperature=0,
-                    max_tokens=200
+                    max_tokens=200,
                 )
 
                 if not completion.choices or not completion.choices[0].message:
-                    logger.warning(
-                        f"Retry {retry_count+1}/{max_retries}: Empty completion response")
+                    logger.warning(f"Retry {retry_count + 1}/{max_retries}: Empty completion response")
                     retry_count += 1
                     continue
 
@@ -158,27 +152,23 @@ class ManifestGenerator:
 
                 # Validate the description
                 if not description:
-                    logger.warning(
-                        f"Retry {retry_count+1}/{max_retries}: Empty description")
+                    logger.warning(f"Retry {retry_count + 1}/{max_retries}: Empty description")
                     retry_count += 1
                     continue
 
                 if len(description) < 10:
-                    logger.warning(
-                        f"Retry {retry_count+1}/{max_retries}: Description too short: {description}")
+                    logger.warning(f"Retry {retry_count + 1}/{max_retries}: Description too short: {description}")
                     retry_count += 1
                     continue
 
                 return description
 
             except Exception as e:
-                logger.error(
-                    f"Error extracting description with LLM (try {retry_count+1}/{max_retries}): {e}")
+                logger.error(f"Error extracting description with LLM (try {retry_count + 1}/{max_retries}): {e}")
                 retry_count += 1
 
         # If all retries failed, return empty string
-        logger.error(
-            f"All {max_retries} attempts to extract description failed")
+        logger.error(f"All {max_retries} attempts to extract description failed")
         return ""
 
     def fetch_readme(self, repo_url: str) -> str:
@@ -223,8 +213,7 @@ class ManifestGenerator:
         if "/tree/" in repo_url:
             # For URLs like github.com/user/repo/tree/branch/path/to/dir
             parts = repo_url.split("/tree/")
-            base_url = parts[0].replace(
-                "github.com", "raw.githubusercontent.com")
+            base_url = parts[0].replace("github.com", "raw.githubusercontent.com")
             path_parts = parts[1].split("/", 1)
 
             if len(path_parts) > 1:
@@ -305,11 +294,7 @@ class ManifestGenerator:
 
         return complete_manifest
 
-    def _call_llm(self,
-                  repo_url: str,
-                  readme_content: str,
-                  schema: Dict,
-                  prompt: str) -> Dict:
+    def _call_llm(self, repo_url: str, readme_content: str, schema: Dict, prompt: str) -> Dict:
         """Generic helper method to call LLM with common retry pattern.
 
         Args:
@@ -333,29 +318,22 @@ class ManifestGenerator:
         while retry_count < max_retries:
             try:
                 completion = self.client.chat.completions.create(
-                    extra_headers={
-                        "HTTP-Referer": os.environ.get("SITE_URL", "https://mcpm.sh"),
-                        "X-Title": "MCPM"
-                    },
+                    extra_headers={"HTTP-Referer": os.environ.get("SITE_URL", "https://mcpm.sh"), "X-Title": "MCPM"},
                     model="anthropic/claude-3.7-sonnet",
                     messages=[
-                        {
-                            "role": "system",
-                            "content": system_prompt
-                        },
+                        {"role": "system", "content": system_prompt},
                         {
                             "role": "user",
-                            "content": f"GitHub URL: {repo_url}\n\nREADME Content:\n{readme_content}\n\n{prompt}"
-                        }
+                            "content": f"GitHub URL: {repo_url}\n\nREADME Content:\n{readme_content}\n\n{prompt}",
+                        },
                     ],
                     tools=[{"type": "function", "function": schema}],
                     temperature=0,
-                    tool_choice="required"
+                    tool_choice="required",
                 )
 
                 if not completion.choices or not completion.choices[0].message.tool_calls:
-                    logger.warning(
-                        f"Retry {retry_count+1}/{max_retries}: No tool calls in response")
+                    logger.warning(f"Retry {retry_count + 1}/{max_retries}: No tool calls in response")
                     retry_count += 1
                     continue
 
@@ -364,19 +342,16 @@ class ManifestGenerator:
 
                 # Validate required fields if specified
                 if required_fields:
-                    missing_fields = [
-                        field for field in required_fields if field not in result]
+                    missing_fields = [field for field in required_fields if field not in result]
                     if missing_fields:
-                        logger.warning(
-                            f"Retry {retry_count+1}/{max_retries}: Missing fields: {missing_fields}")
+                        logger.warning(f"Retry {retry_count + 1}/{max_retries}: Missing fields: {missing_fields}")
                         retry_count += 1
                         continue
 
                 return result
 
             except Exception as e:
-                logger.error(
-                    f"Error extracting data with LLM (try {retry_count+1}/{max_retries}): {e}")
+                logger.error(f"Error extracting data with LLM (try {retry_count + 1}/{max_retries}): {e}")
                 retry_count += 1
 
         logger.error(f"All {max_retries} attempts to extract data failed")
@@ -392,17 +367,11 @@ class ManifestGenerator:
                 "type": "object",
                 "required": ["display_name", "tags"],
                 "properties": {
-                    "display_name": {
-                        "type": "string",
-                        "description": "Human-readable server name"
-                    },
+                    "display_name": {"type": "string", "description": "Human-readable server name"},
                     "license": {"type": "string"},
-                    "tags": {
-                        "type": "array",
-                        "items": {"type": "string"}
-                    }
+                    "tags": {"type": "array", "items": {"type": "string"}},
                 },
-                "additionalProperties": False
+                "additionalProperties": False,
             },
         }
 
@@ -410,9 +379,11 @@ class ManifestGenerator:
             repo_url=repo_url,
             readme_content=readme_content,
             schema=schema,
-            prompt=("Extract the display_name, license, and tags from the README file. "
-                    "The display_name should be a human-readable server name close to the name of the repository. "
-                    "The tags should be a list of tags that describe the server.")
+            prompt=(
+                "Extract the display_name, license, and tags from the README file. "
+                "The display_name should be a human-readable server name close to the name of the repository. "
+                "The tags should be a list of tags that describe the server."
+            ),
         )
 
     def _extract_arguments(self, repo_url: str, readme_content: str) -> Dict:
@@ -431,34 +402,23 @@ class ManifestGenerator:
                             "type": "object",
                             "required": ["key", "description"],
                             "properties": {
-                                "key": {
-                                    "type": "string",
-                                    "description": "The name of the argument"
-                                },
-                                "description": {
-                                    "type": "string",
-                                    "description": "Description of the argument"
-                                },
-                                "required": {
-                                    "type": "boolean",
-                                    "description": "Whether this argument is required"
-                                },
-                                "example": {
-                                    "type": "string",
-                                    "description": "Example value"
-                                }
-                            }
-                        }
+                                "key": {"type": "string", "description": "The name of the argument"},
+                                "description": {"type": "string", "description": "Description of the argument"},
+                                "required": {"type": "boolean", "description": "Whether this argument is required"},
+                                "example": {"type": "string", "description": "Example value"},
+                            },
+                        },
                     }
-                }
-            }
+                },
+            },
         }
 
         result = self._call_llm(
             repo_url=repo_url,
             readme_content=readme_content,
             schema=schema,
-            prompt=("""Extract the configuration arguments required by this server from the README file.
+            prompt=(
+                """Extract the configuration arguments required by this server from the README file.
 The arguments should be a list of arguments that are required when running the server.
 It can often be found in the usage section of the README file.
 <Example>
@@ -509,7 +469,8 @@ From the example README, you should get:
   ]
 }
 <Example/>
-if no arguments are required, return an empty array. """)
+if no arguments are required, return an empty array. """
+            ),
         )
 
         results = result.get("arguments", [])
@@ -518,7 +479,7 @@ if no arguments are required, return an empty array. """)
             arguments[result["key"]] = {
                 "description": result.get("description", ""),
                 "required": result.get("required", ""),
-                "example": result.get("example", "")
+                "example": result.get("example", ""),
             }
 
         return result.get("arguments", {})
@@ -539,33 +500,24 @@ if no arguments are required, return an empty array. """)
                             "type": "object",
                             "required": ["type", "command", "args"],
                             "properties": {
-                                "type": {
-                                    "type": "string",
-                                    "enum": ["npm", "python", "docker", "cli", "uvx", "custom"]
-                                },
-                                "command": {
-                                    "type": "string",
-                                    "description": "Command to run the server"
-                                },
+                                "type": {"type": "string", "enum": ["npm", "python", "docker", "cli", "uvx", "custom"]},
+                                "command": {"type": "string", "description": "Command to run the server"},
                                 "args": {
                                     "type": "array",
                                     "description": "Arguments for the command",
-                                    "items": {"type": "string"}
+                                    "items": {"type": "string"},
                                 },
                                 "env": {
                                     "type": "object",
                                     "description": "Environment variables",
                                     "additionalProperties": {"type": "string"},
                                 },
-                                "description": {
-                                    "type": "string",
-                                    "description": "Human-readable description"
-                                }
-                            }
-                        }
+                                "description": {"type": "string", "description": "Human-readable description"},
+                            },
+                        },
                     }
-                }
-            }
+                },
+            },
         }
 
         result = self._call_llm(
@@ -652,8 +604,8 @@ From the example README, you should get:
 </Example>
 Note that installation type should be one of the following: npm, python, docker, cli, uvx, custom.
 For placeholder variables, use ${...} to indicate the variable.
-If no installations are provided, return an empty array. """)
-
+If no installations are provided, return an empty array. """
+            ),
         )
 
         results = result.get("installations", [])
@@ -675,33 +627,28 @@ If no installations are provided, return an empty array. """)
                     "example_prompts": {
                         "type": "array",
                         "description": "An array of examples prompts that can be used to test the server",
-                        "items": {
-                            "type": "string",
-                            "description": "A prompt that can be used to test the server"
-                        }
+                        "items": {"type": "string", "description": "A prompt that can be used to test the server"},
                     }
-                }
-            }
+                },
+            },
         }
 
         result = self._call_llm(
             repo_url=repo_url,
             readme_content=readme_content,
             schema=schema,
-            prompt=("""Extract usage examples for this server.
+            prompt=(
+                """Extract usage examples for this server.
 The examples should be a short list of examples prompts that can be used to test the server.
 If no examples are provided, return an empty array.
-""")
+"""
+            ),
         )
 
         result = result.get("example_prompts", [])
         examples = []
         for prompt in result:
-            examples.append({
-                "title": "",
-                "description": "",
-                "prompt": prompt
-            })
+            examples.append({"title": "", "description": "", "prompt": prompt})
         return examples
 
     def generate_manifest(self, repo_url: str, server_name: Optional[str] = None) -> Dict:
@@ -750,16 +697,13 @@ If no examples are provided, return an empty array.
             )
 
             # Update manifest with description
-            description = self.extract_description_from_readme(
-                readme_content, repo_url)
+            description = self.extract_description_from_readme(readme_content, repo_url)
             if not description:
-                description = self.extract_description_from_readme_with_llms(
-                    readme_content)
+                description = self.extract_description_from_readme_with_llms(readme_content)
             manifest["description"] = description
 
             # Categorize the server
-            categorized_category = asyncio.run(
-                self.categorize_servers_with_llms(name, description))
+            categorized_category = asyncio.run(self.categorize_servers_with_llms(name, description))
             if categorized_category:
                 logger.info(f"Server categorized as: {categorized_category}")
                 manifest["categories"] = [categorized_category]
@@ -767,16 +711,13 @@ If no examples are provided, return an empty array.
                 logger.error(f"Server not categorized: {name} - {description}")
 
             # Sort installations by priority
-            manifest["installations"] = self.filter_and_sort_installations(
-                manifest.get("installations", {}))
+            manifest["installations"] = self.filter_and_sort_installations(manifest.get("installations", {}))
 
             # Extract capabilities if installations are available
             if manifest["installations"]:
-                logger.info(
-                    f"Server installations: {manifest['installations']}")
+                logger.info(f"Server installations: {manifest['installations']}")
                 try:
-                    capabilities = asyncio.run(
-                        self.run_server_and_extract_capabilities(manifest))
+                    capabilities = asyncio.run(self.run_server_and_extract_capabilities(manifest))
                     if capabilities:
                         manifest.update(capabilities)
                 except Exception as e:
@@ -823,8 +764,7 @@ If no examples are provided, return an empty array.
 
         if envs:
             for k, v in envs.items():
-                env_vars[k] = manifest.get("arguments", {}).get(
-                    k, {}).get("example", v)
+                env_vars[k] = manifest.get("arguments", {}).get(k, {}).get("example", v)
 
         # Use the command and args from the installation directly
         command = installation["command"]
@@ -836,16 +776,13 @@ If no examples are provided, return an empty array.
         try:
             tools = await mcp_client.list_tools()
             # to avoid $schema field
-            result["tools"] = [json.loads(tool.model_dump_json())
-                               for tool in tools.tools]
+            result["tools"] = [json.loads(tool.model_dump_json()) for tool in tools.tools]
 
             prompts = await mcp_client.list_prompts()
-            result["prompts"] = [json.loads(
-                prompt.model_dump_json()) for prompt in prompts.prompts]
+            result["prompts"] = [json.loads(prompt.model_dump_json()) for prompt in prompts.prompts]
 
             resources = await mcp_client.list_resources()
-            result["resources"] = [json.loads(
-                resource.model_dump_json()) for resource in resources.resources]
+            result["resources"] = [json.loads(resource.model_dump_json()) for resource in resources.resources]
 
         except Exception as e:
             logger.error(f"Failed to list tools: {e}")
@@ -868,16 +805,12 @@ If no examples are provided, return an empty array.
         """
         # Check if installations is a dictionary
         if not isinstance(installations, dict):
-            logger.error(
-                f"Expected dictionary for installations, got {type(installations)}: {installations}")
+            logger.error(f"Expected dictionary for installations, got {type(installations)}: {installations}")
             return {}
 
-        priority = {"uvx": 0, "npm": 1, "python": 2,
-                    "docker": 3, "cli": 4, "custom": 5}
-        filtered_installations = {k: v for k,
-                                  v in installations.items() if k in priority}
-        sorted_installations = sorted(
-            filtered_installations.items(), key=lambda x: priority.get(x[0], 6))
+        priority = {"uvx": 0, "npm": 1, "python": 2, "docker": 3, "cli": 4, "custom": 5}
+        filtered_installations = {k: v for k, v in installations.items() if k in priority}
+        sorted_installations = sorted(filtered_installations.items(), key=lambda x: priority.get(x[0], 6))
         return dict(sorted_installations)
 
 
@@ -890,8 +823,7 @@ def main(repo_url: str, is_official: bool = False, output_dir: str = _OUTPUT_DIR
 
         # Ensure the manifest has a valid name
         if not manifest.get("name") or not manifest.get("author", {}).get("name"):
-            raise ValueError(
-                "Generated manifest is missing a name and/or author name")
+            raise ValueError("Generated manifest is missing a name and/or author name")
 
         # determine the filename
         filename = os.path.join(output_dir, f"{manifest['name']}_new.json")
@@ -902,8 +834,7 @@ def main(repo_url: str, is_official: bool = False, output_dir: str = _OUTPUT_DIR
 
         # save the manifest with the determined filename
         if os.path.exists(filename):
-            logger.warning(
-                f"Official manifest already exists: {filename}. Overwriting...")
+            logger.warning(f"Official manifest already exists: {filename}. Overwriting...")
         with open(filename, "w", encoding="utf-8") as file:
             json.dump(manifest, file, indent=2)
         logger.info(f"Manifest saved to {filename}")
@@ -916,8 +847,7 @@ def main(repo_url: str, is_official: bool = False, output_dir: str = _OUTPUT_DIR
 if __name__ == "__main__":
     """Process command-line arguments and generate manifest."""
     if len(sys.argv) < 2:
-        logger.error(
-            "Usage: python script.py <github-url> or python script.py test")
+        logger.error("Usage: python script.py <github-url> or python script.py test")
         sys.exit(1)
 
     repo_url = sys.argv[1].strip()
@@ -936,7 +866,7 @@ if __name__ == "__main__":
             "https://github.com/modelcontextprotocol/servers/tree/main/src/sqlite",
             "https://github.com/modelcontextprotocol/servers/tree/main/src/slack",
             "https://github.com/modelcontextprotocol/servers/tree/main/src/sequentialthinking",
-            "https://github.com/modelcontextprotocol/servers/tree/main/src/sentry"
+            "https://github.com/modelcontextprotocol/servers/tree/main/src/sentry",
         ]
 
         for repo_url in repo_urls:

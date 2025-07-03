@@ -10,7 +10,6 @@ import click
 from InquirerPy import inquirer
 from InquirerPy.base.control import Choice
 from rich.console import Console
-from rich.prompt import Confirm
 from rich.table import Table
 
 from mcpm.clients.client_config import ClientConfigManager
@@ -125,7 +124,7 @@ def edit_client(client_name, external):
     if external:
         # Ensure config file exists before opening
         if not config_exists:
-            console.print(f"[yellow]Config file does not exist. Creating basic config...[/]")
+            console.print("[yellow]Config file does not exist. Creating basic config...[/]")
             _create_basic_config(config_path)
 
         _open_in_editor(config_path, display_name)

@@ -12,7 +12,6 @@ from mcpm.commands.target_operations.common import (
     global_remove_server,
 )
 from mcpm.utils.display import print_server_config
-from mcpm.utils.scope import ScopeType
 
 console = Console()
 
@@ -35,10 +34,10 @@ def remove(server_name, force):
     """
     # v2.0: Extract server name and use global configuration
     scope_type, scope, extracted_server_name = determine_target(server_name)
-    
+
     # In v2.0, we use the extracted server name, or the original if no extraction occurred
     actual_server_name = extracted_server_name if extracted_server_name else server_name
-    
+
     # Get server from global configuration
     server_info = global_get_server(actual_server_name)
     if not server_info:

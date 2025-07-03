@@ -16,15 +16,12 @@ from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.prompt import Confirm
 
-from mcpm.clients.client_registry import ClientRegistry
 from mcpm.commands.target_operations.common import (
     global_add_server,
-    profile_add_server,
 )
 from mcpm.profile.profile_config import ProfileConfigManager
 from mcpm.schemas.full_server_config import FullServerConfig
 from mcpm.utils.repository import RepositoryManager
-from mcpm.utils.scope import PROFILE_PREFIX, ScopeType
 
 console = Console()
 repo_manager = RepositoryManager()
@@ -108,19 +105,19 @@ def add(server_name, force=False, alias=None, target: str | None = None):
         mcpm add everything --force
         mcpm add youtube --alias yt
     """
-    
+
     # v2.0: ignore target parameter - use global config
-    
+
     # Check if this is a profile (starts with %)
     if server_name.startswith("%"):
         profile_name = server_name[1:]  # Remove % prefix
         add_profile_to_client(profile_name, "global", alias, force)
         return
-    
+
     config_name = alias or server_name
-    
+
     # v2.0: All servers are installed to global configuration
-    console.print(f"[yellow]Installing server to global configuration...[/]")
+    console.print("[yellow]Installing server to global configuration...[/]")
 
     # Get server metadata from repository
     server_metadata = repo_manager.get_server_metadata(server_name)
@@ -484,7 +481,7 @@ def add_profile_to_client(profile_name: str, client: str, alias: str | None = No
         console.print("[yellow]Operation cancelled.[/]")
         raise click.ClickException("Operation cancelled")
 
-    console.print(f"[bold red]Error:[/] Profile activation has been removed in MCPM v2.0.")
+    console.print("[bold red]Error:[/] Profile activation has been removed in MCPM v2.0.")
     console.print("[yellow]Use 'mcpm profile share' to share profiles instead.[/]")
     success = False
     if success:

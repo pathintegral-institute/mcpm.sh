@@ -187,12 +187,12 @@ def test_client_edit_command_config_exists(monkeypatch, tmp_path):
 
     monkeypatch.setattr(ClientRegistry, "get_client_manager", Mock(return_value=mock_client_manager))
     monkeypatch.setattr(ClientRegistry, "get_client_info", Mock(return_value={"name": "Windsurf"}))
-    
+
     # Mock GlobalConfigManager - return empty dict to trigger "no servers" path
     mock_global_config = Mock()
     mock_global_config.list_servers = Mock(return_value={})
     monkeypatch.setattr("mcpm.commands.client.global_config_manager", mock_global_config)
-    
+
     # Run the command
     runner = CliRunner()
     result = runner.invoke(edit_client, ["windsurf"])
@@ -215,7 +215,7 @@ def test_client_edit_command_config_not_exists(monkeypatch, tmp_path):
 
     monkeypatch.setattr(ClientRegistry, "get_client_manager", Mock(return_value=mock_client_manager))
     monkeypatch.setattr(ClientRegistry, "get_client_info", Mock(return_value={"name": "Windsurf"}))
-    
+
     # Mock GlobalConfigManager - return empty dict to trigger "no servers" path
     mock_global_config = Mock()
     mock_global_config.list_servers = Mock(return_value={})
@@ -245,7 +245,7 @@ def test_client_edit_command_open_editor(monkeypatch, tmp_path):
 
     monkeypatch.setattr(ClientRegistry, "get_client_manager", Mock(return_value=mock_client_manager))
     monkeypatch.setattr(ClientRegistry, "get_client_info", Mock(return_value={"name": "Windsurf"}))
-    
+
     # Mock GlobalConfigManager - return some servers to avoid early exit
     mock_global_config = Mock()
     mock_global_config.list_servers = Mock(return_value={"test-server": Mock(description="Test server")})

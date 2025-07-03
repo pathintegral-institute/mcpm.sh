@@ -18,7 +18,6 @@ def interactive_profile_edit(profile_name: str, all_servers: dict, current_serve
         return None
 
     try:
-
         # Build server choices in a single loop
         server_choices = []
         for server_name, server_config in all_servers.items():

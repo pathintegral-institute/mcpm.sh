@@ -6,6 +6,7 @@ from mcpm.clients.base import JSONClientManager
 
 logger = logging.getLogger(__name__)
 
+
 class ClineManager(JSONClientManager):
     """Manages Cline MCP server configurations"""
 
@@ -27,12 +28,24 @@ class ClineManager(JSONClientManager):
         else:
             # Set config path based on detected platform
             if self._system == "Darwin":  # macOS
-                self.config_path = os.path.expanduser("~/Library/Application Support/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json")
+                self.config_path = os.path.expanduser(
+                    "~/Library/Application Support/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json"
+                )
             elif self._system == "Windows":
-                self.config_path = os.path.join(os.environ.get("APPDATA", ""), "Code", "User", "globalStorage", "saoudrizwan.claude-dev", "settings", "cline_mcp_settings.json")
+                self.config_path = os.path.join(
+                    os.environ.get("APPDATA", ""),
+                    "Code",
+                    "User",
+                    "globalStorage",
+                    "saoudrizwan.claude-dev",
+                    "settings",
+                    "cline_mcp_settings.json",
+                )
             else:
                 # Linux
-                self.config_path = os.path.expanduser("~/.config/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json")
+                self.config_path = os.path.expanduser(
+                    "~/.config/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json"
+                )
 
     def _get_empty_config(self) -> Dict[str, Any]:
         """Get empty config structure for Cline"""
@@ -105,7 +118,6 @@ class ClineManager(JSONClientManager):
 
 
 class RooCodeManager(ClineManager):
-
     # Client information
     client_key = "roo-code"
     display_name = "Roo Code"
@@ -124,9 +136,21 @@ class RooCodeManager(ClineManager):
         else:
             # Set config path based on detected platform
             if self._system == "Darwin":  # macOS
-                self.config_path = os.path.expanduser("~/Library/Application Support/Code/User/globalStorage/rooveterinaryinc.roo-cline/settings/mcp_settings.json")
+                self.config_path = os.path.expanduser(
+                    "~/Library/Application Support/Code/User/globalStorage/rooveterinaryinc.roo-cline/settings/mcp_settings.json"
+                )
             elif self._system == "Windows":
-                self.config_path = os.path.join(os.environ.get("APPDATA", ""), "Code", "User", "globalStorage", "rooveterinaryinc.roo-cline", "settings", "mcp_settings.json")
+                self.config_path = os.path.join(
+                    os.environ.get("APPDATA", ""),
+                    "Code",
+                    "User",
+                    "globalStorage",
+                    "rooveterinaryinc.roo-cline",
+                    "settings",
+                    "mcp_settings.json",
+                )
             else:
                 # Linux
-                self.config_path = os.path.expanduser("~/.config/Code/User/globalStorage/rooveterinaryinc.roo-cline/settings/mcp_settings.json")
+                self.config_path = os.path.expanduser(
+                    "~/.config/Code/User/globalStorage/rooveterinaryinc.roo-cline/settings/mcp_settings.json"
+                )

@@ -10,10 +10,10 @@ from typing import Optional
 import click
 from rich.console import Console
 
-from mcpm.global_config import GlobalConfigManager
 from mcpm.core.router_config import RouterConfig
-from mcpm.fastmcp_integration.proxy import create_mcpm_proxy
 from mcpm.core.tunnel import Tunnel
+from mcpm.fastmcp_integration.proxy import create_mcpm_proxy
+from mcpm.global_config import GlobalConfigManager
 from mcpm.utils.config import DEFAULT_SHARE_ADDRESS
 
 console = Console()
@@ -31,18 +31,18 @@ def find_installed_server(server_name):
 async def find_available_port(preferred_port, max_attempts=10):
     """Find an available port starting from preferred_port."""
     import socket
-    
+
     for attempt in range(max_attempts):
         port_to_try = preferred_port + attempt
-        
+
         # Check if port is available
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-                s.bind(('127.0.0.1', port_to_try))
+                s.bind(("127.0.0.1", port_to_try))
                 return port_to_try
         except OSError:
             continue  # Port is busy, try next one
-    
+
     # If no port found, return the original (will likely fail but user will see the error)
     return preferred_port
 
@@ -61,19 +61,20 @@ async def start_fastmcp_proxy(server_config, server_name, port: Optional[int] = 
     """
     # Use default port if none specified
     preferred_port = port or 8000
-    
+
     # Find an available port
     actual_port = await find_available_port(preferred_port)
     if actual_port != preferred_port:
         console.print(f"[yellow]Port {preferred_port} is busy, using port {actual_port} instead[/]")
-    
+
     console.print(f"[cyan]Starting FastMCP proxy for server '{server_name}' on port {actual_port}...[/]")
-    
+
     try:
         # Record usage
         from mcpm.commands.usage import record_server_usage
+
         record_server_usage(server_name, "share")
-        
+
         # Create a router config with auth disabled for public sharing
         router_config = RouterConfig(auth_enabled=False)
 
@@ -84,12 +85,12 @@ async def start_fastmcp_proxy(server_config, server_name, port: Optional[int] = 
             stdio_mode=False,  # HTTP mode for sharing
             router_config=router_config,  # Pass config to disable auth
         )
-        
+
         console.print(f"[green]FastMCP proxy ready on port {actual_port}[/]")
-        
+
         # Return the port and proxy instance
         return actual_port, proxy
-        
+
     except Exception as e:
         console.print(f"[red]Error starting FastMCP proxy: {e}[/]")
         raise
@@ -123,7 +124,7 @@ def share(server_name, port, address, http, timeout, retry):
 
     \b
         mcpm share time                    # Share the time server
-        mcpm share mcp-server-browse       # Share the browse server  
+        mcpm share mcp-server-browse       # Share the browse server
         mcpm share filesystem --port 5000  # Share filesystem server on specific port
         mcpm share sqlite --retry 3        # Share with auto-retry on errors
     """
@@ -131,12 +132,12 @@ def share(server_name, port, address, http, timeout, retry):
     if not server_name or not server_name.strip():
         console.print("[red]Error: Server name cannot be empty[/]")
         sys.exit(1)
-    
+
     server_name = server_name.strip()
-    
+
     # Find the server configuration
     server_config, location = find_installed_server(server_name)
-    
+
     if not server_config:
         console.print(f"[red]Error: Server '[bold]{server_name}[/]' not found[/]")
         console.print()
@@ -145,7 +146,7 @@ def share(server_name, port, address, http, timeout, retry):
         console.print("  • Run 'mcpm search {name}' to find available servers")
         console.print("  • Run 'mcpm install {name}' to install a server")
         sys.exit(1)
-    
+
     # Show server info
     console.print(f"[dim]Found server '{server_name}' in {location} configuration[/]")
 
@@ -164,21 +165,19 @@ def share(server_name, port, address, http, timeout, retry):
 
 async def _share_async(server_config, server_name, port, remote_host, remote_port, http, timeout, retry):
     """Async function to handle sharing with FastMCP proxy."""
-    
+
     proxy = None
     tunnel = None
     server_task = None
-    
+
     try:
         # Start FastMCP proxy
         console.print(f"[cyan]Starting FastMCP proxy to share server '[bold]{server_name}[/bold]'...[/]")
         actual_port, proxy = await start_fastmcp_proxy(server_config, server_name, port)
 
         # Start the FastMCP proxy as a streamable HTTP server in a background task
-        server_task = asyncio.create_task(
-            proxy.run_streamable_http_async(port=actual_port)
-        )
-        
+        server_task = asyncio.create_task(proxy.run_streamable_http_async(port=actual_port))
+
         # Wait a moment for server to start
         await asyncio.sleep(2)
 
@@ -196,7 +195,7 @@ async def _share_async(server_config, server_name, port, remote_host, remote_por
         )
 
         share_url = tunnel.start_tunnel()
-        
+
         if not share_url:
             raise RuntimeError("Could not get share URL from tunnel.")
 

@@ -133,7 +133,6 @@ class BaseClientManager(abc.ABC):
         """
         pass
 
-
     def get_associated_profiles(self) -> List[str]:
         """
         Get the associated profile for this client
@@ -378,7 +377,6 @@ class JSONClientManager(BaseClientManager):
         return os.path.isdir(os.path.dirname(self.config_path))
 
 
-
 class YAMLClientManager(BaseClientManager):
     """
     YAML-based implementation of the client manager interface.
@@ -617,4 +615,3 @@ class YAMLClientManager(BaseClientManager):
         """
         # Check if the config directory exists
         return os.path.isdir(os.path.dirname(self.config_path))
-

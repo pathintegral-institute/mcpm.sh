@@ -19,7 +19,7 @@ def build_profile_inspector_command(profile_name):
     """Build the inspector command using mcpm profile run."""
     # Use mcpm profile run to start the FastMCP proxy - don't reinvent the wheel!
     mcpm_profile_run_cmd = f"mcpm profile run {shlex.quote(profile_name)}"
-    
+
     # Build inspector command that uses mcpm profile run
     inspector_cmd = f"{NPX_CMD} @modelcontextprotocol/inspector {mcpm_profile_run_cmd}"
     return inspector_cmd
@@ -30,10 +30,10 @@ def build_profile_inspector_command(profile_name):
 @click.help_option("-h", "--help")
 def inspect_profile(profile_name):
     """Launch MCP Inspector to test and debug all servers in a profile.
-    
+
     Creates a FastMCP proxy that aggregates all servers in the specified profile
     and launches the MCP Inspector to interact with the combined capabilities.
-    
+
     Examples:
         mcpm profile inspect web-dev     # Inspect all servers in web-dev profile
         mcpm profile inspect ai          # Inspect all servers in ai profile
@@ -43,17 +43,16 @@ def inspect_profile(profile_name):
     if not profile_name or not profile_name.strip():
         console.print("[red]Error: Profile name cannot be empty[/]")
         sys.exit(1)
-    
+
     profile_name = profile_name.strip()
-    
+
     # Show header
     console.print(
         Panel.fit(
-            f"[bold green]MCPM Profile Inspector[/]\\nInspecting profile: [cyan]{profile_name}[/]", 
-            border_style="cyan"
+            f"[bold green]MCPM Profile Inspector[/]\\nInspecting profile: [cyan]{profile_name}[/]", border_style="cyan"
         )
     )
-    
+
     # Check if profile exists
     try:
         profile_servers = profile_config_manager.get_profile(profile_name)
@@ -80,35 +79,35 @@ def inspect_profile(profile_name):
     console.print(f"[dim]Profile contains {server_count} server(s):[/]")
     for server_config in profile_servers:
         console.print(f"  • [cyan]{server_config.name}[/]")
-    
+
     console.print(f"\\n[bold]Starting Inspector for profile '[cyan]{profile_name}[/]'[/]")
     console.print("The Inspector will show aggregated capabilities from all servers in the profile.")
     console.print("The Inspector UI will open in your web browser.")
-    
+
     # Build inspector command using mcpm profile run
     inspector_cmd = build_profile_inspector_command(profile_name)
-    
+
     try:
         console.print("[cyan]Starting MCPM Profile Inspector...[/]")
         console.print("The Inspector UI will open in your web browser.")
         console.print("[yellow]Press Ctrl+C to stop the Inspector.[/]")
-        
+
         # Split the command into components for subprocess
         cmd_parts = shlex.split(inspector_cmd)
-        
+
         try:
             console.print(f"[dim]Executing: {inspector_cmd}[/]")
             console.print("[bold green]Starting MCPM Profile Inspector...[/]")
             console.print("[cyan]Press Ctrl+C to exit[/]")
             sys.stdout.flush()
-            
+
             # Execute the command with direct terminal access
             returncode = subprocess.call(cmd_parts)
-            
+
         except KeyboardInterrupt:
             console.print("\\n[bold yellow]Inspector process terminated by keyboard interrupt.[/]")
             returncode = 130
-        
+
         # Check exit code
         if returncode == 0:
             console.print("[bold green]Inspector process completed successfully.[/]")
@@ -116,9 +115,9 @@ def inspect_profile(profile_name):
             console.print("[bold yellow]Inspector process was terminated.[/]")
         else:
             console.print(f"[bold red]Inspector process exited with code {returncode}[/]")
-            
+
         sys.exit(returncode)
-        
+
     except FileNotFoundError:
         console.print("[bold red]Error:[/] Could not find npx. Please make sure Node.js is installed.")
         console.print("Install Node.js from https://nodejs.org/")

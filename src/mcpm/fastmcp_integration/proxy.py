@@ -11,12 +11,10 @@ from fastmcp.utilities.mcp_config import (
     StdioMCPServer,
 )
 
-from mcpm.core.schema import ServerConfig, STDIOServerConfig, RemoteServerConfig, CustomServerConfig
+from mcpm.core.router_config import RouterConfig
+from mcpm.core.schema import CustomServerConfig, RemoteServerConfig, ServerConfig, STDIOServerConfig
 from mcpm.monitor.base import AccessMonitor
 from mcpm.monitor.duckdb import DuckDBAccessMonitor
-from mcpm.utils.config import ConfigManager
-
-from mcpm.core.router_config import RouterConfig
 
 # FastMCP config models are available if needed in the future
 # from .config import create_mcp_config, create_stdio_server_config, create_remote_server_config

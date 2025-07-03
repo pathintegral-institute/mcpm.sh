@@ -93,7 +93,6 @@ class ConfigManager:
             logger.error(f"Error setting configuration {key}: {str(e)}")
             return False
 
-
     def save_share_config(self, share_url: str | None = None, share_pid: int | None = None):
         return self.set_config("share", {"url": share_url, "pid": share_pid})
 
