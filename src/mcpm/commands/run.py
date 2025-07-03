@@ -7,12 +7,10 @@ import subprocess
 import sys
 
 import click
-from rich.console import Console
 
 from mcpm.global_config import GlobalConfigManager
 from mcpm.fastmcp_integration.proxy import create_mcpm_proxy
 
-console = Console()
 global_config_manager = GlobalConfigManager()
 logger = logging.getLogger(__name__)
 
@@ -29,7 +27,6 @@ def execute_server_command(server_config, server_name):
     """Execute a server command with proper environment setup."""
     if not server_config:
         logger.error(f"Invalid server configuration for '{server_name}'")
-        console.print(f"[red]Invalid server configuration for '{server_name}'[/]")
         sys.exit(1)
     
     # Get command and args from the server config
@@ -38,7 +35,6 @@ def execute_server_command(server_config, server_name):
     
     if not command:
         logger.error(f"Invalid command format for server '{server_name}'")
-        console.print(f"[red]Invalid command format for server '{server_name}'[/]")
         sys.exit(1)
     
     # Build the full command list
@@ -76,16 +72,14 @@ def execute_server_command(server_config, server_name):
         
     except FileNotFoundError:
         logger.error(f"Command not found: {full_command[0]}")
-        console.print(f"[red]Command not found: {full_command[0]}[/]")
-        console.print(f"[yellow]Make sure the required runtime is installed[/]")
+        logger.warning("Make sure the required runtime is installed")
         sys.exit(1)
     except KeyboardInterrupt:
         logger.info("Server execution interrupted")
-        console.print("\n[yellow]Server execution interrupted[/]")
+        logger.warning("\nServer execution interrupted")
         sys.exit(130)
     except Exception as e:
         logger.error(f"Error running server '{server_name}': {e}")
-        console.print(f"[red]Error running server '{server_name}': {e}[/]")
         sys.exit(1)
 
 
@@ -104,15 +98,13 @@ async def run_server_with_fastmcp(server_config, server_name, http_mode=False, p
         )
         
         if http_mode:
-            logger.info(f"Starting server '{server_name}' on HTTP port {port}")
-            console.print(f"[cyan]Starting server '{server_name}' on HTTP port {port}...[/]")
-            console.print("[yellow]Press Ctrl+C to stop the server.[/]")
+            logger.info(f"Starting server '{server_name}' on HTTP port {port}...")
+            logger.info("Press Ctrl+C to stop the server.")
             
             # Try to find an available port if the requested one is taken
             actual_port = await find_available_port(port)
             if actual_port != port:
                 logger.warning(f"Port {port} is busy, using port {actual_port} instead")
-                console.print(f"[yellow]Port {port} is busy, using port {actual_port} instead[/]")
             
             # Run FastMCP proxy in HTTP mode
             await proxy.run_streamable_http_async(host="127.0.0.1", port=actual_port)
@@ -126,11 +118,10 @@ async def run_server_with_fastmcp(server_config, server_name, http_mode=False, p
     except KeyboardInterrupt:
         logger.info("Server execution interrupted")
         if http_mode:
-            console.print("\\n[yellow]Server execution interrupted[/]")
+            logger.warning("\nServer execution interrupted")
         return 130
     except Exception as e:
         logger.error(f"Error running server '{server_name}': {e}")
-        console.print(f"[red]Error running server '{server_name}': {e}[/]")
         return 1
 
 
@@ -174,7 +165,7 @@ def run(server_name, http, port):
     """
     # Validate server name
     if not server_name or not server_name.strip():
-        console.print("[red]Error: Server name cannot be empty[/]")
+        logger.error("Error: Server name cannot be empty")
         sys.exit(1)
     
     server_name = server_name.strip()
@@ -183,23 +174,22 @@ def run(server_name, http, port):
     server_config, location = find_installed_server(server_name)
     
     if not server_config:
-        console.print(f"[red]Error: Server '[bold]{server_name}[/]' not found[/]")
-        console.print()
-        console.print("[yellow]Available options:[/]")
-        console.print("  • Run 'mcpm ls' to see installed servers")
-        console.print("  • Run 'mcpm search {name}' to find available servers")
-        console.print("  • Run 'mcpm install {name}' to install a server")
+        logger.error(f"Error: Server '{server_name}' not found")
+        logger.warning("Available options:")
+        logger.info("  • Run 'mcpm ls' to see installed servers")
+        logger.info("  • Run 'mcpm search {name}' to find available servers")
+        logger.info("  • Run 'mcpm install {name}' to install a server")
         sys.exit(1)
     
     # Show debug info in verbose mode or if MCPM_DEBUG is set
     debug = os.getenv("MCPM_DEBUG", "").lower() in ("1", "true", "yes")
     if debug:
-        debug_console = Console(file=sys.stderr)
-        debug_console.print(f"[dim]Running server '{server_name}' from {location} configuration[/]")
-        debug_console.print(f"[dim]Command: {server_config.command} {' '.join(server_config.args or [])}[/]")
-        debug_console.print(f"[dim]Mode: {'HTTP' if http else 'stdio'}[/]")
+        logging.basicConfig(level=logging.DEBUG)
+        logger.debug(f"Running server '{server_name}' from {location} configuration")
+        logger.debug(f"Command: {server_config.command} {' '.join(server_config.args or [])}")
+        logger.debug(f"Mode: {'HTTP' if http else 'stdio'}")
         if http:
-            debug_console.print(f"[dim]Port: {port}[/]")
+            logger.debug(f"Port: {port}")
     
     # Choose execution method
     if http:

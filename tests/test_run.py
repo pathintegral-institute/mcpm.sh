@@ -55,7 +55,7 @@ def test_run_server_success(tmp_path):
         mock_usage.assert_called_once_with("test-server", "run")
 
 
-def test_run_server_not_found(tmp_path):
+def test_run_server_not_found(tmp_path, caplog):
     """Test running non-existent server from global configuration"""
     # Setup temporary global config
     global_config_path = tmp_path / "servers.json"
@@ -67,9 +67,12 @@ def test_run_server_not_found(tmp_path):
         result = runner.invoke(run, ["non-existent-server"])
         
         assert result.exit_code == 1
-        assert "Server 'non-existent-server' not found" in result.output
-        assert "mcpm ls" in result.output
-        assert "mcpm install" in result.output
+        
+        assert len(caplog.records) == 2
+        assert caplog.records[0].levelname == "ERROR"
+        assert "Error: Server 'non-existent-server' not found" in caplog.records[0].message
+        assert caplog.records[1].levelname == "WARNING"
+        assert "Available options:" in caplog.records[1].message
 
 
 def test_run_server_with_debug(tmp_path):
@@ -104,7 +107,7 @@ def test_run_server_with_debug(tmp_path):
         # We can't easily separate them in this test context
 
 
-def test_run_server_keyboard_interrupt(tmp_path):
+def test_run_server_keyboard_interrupt(tmp_path, caplog):
     """Test server execution interrupted by keyboard"""
     # Setup temporary global config
     global_config_path = tmp_path / "servers.json"
@@ -129,10 +132,11 @@ def test_run_server_keyboard_interrupt(tmp_path):
         result = runner.invoke(run, ["interrupt-server"])
         
         assert result.exit_code == 130
-        assert "Server execution interrupted" in result.output
+        assert "Server execution interrupted" in caplog.text
 
 
-def test_run_server_command_not_found(tmp_path):
+
+def test_run_server_command_not_found(tmp_path, caplog):
     """Test server execution with non-existent command"""
     # Setup temporary global config
     global_config_path = tmp_path / "servers.json"
@@ -157,8 +161,9 @@ def test_run_server_command_not_found(tmp_path):
         result = runner.invoke(run, ["missing-cmd-server"])
         
         assert result.exit_code == 1
-        assert "Command not found: nonexistent-command" in result.output
-        assert "Make sure the required runtime is installed" in result.output
+        assert "Command not found: nonexistent-command" in caplog.text
+        assert "Make sure the required runtime is installed" in caplog.text
+
 
 
 def test_run_server_with_cwd(tmp_path):
@@ -194,25 +199,25 @@ def test_run_server_with_cwd(tmp_path):
         assert call_args[1]['cwd'] is None
 
 
-def test_run_empty_server_name():
+def test_run_empty_server_name(caplog):
     """Test running with empty server name"""
     runner = CliRunner()
     result = runner.invoke(run, [""])
     
     assert result.exit_code == 1
-    assert "Server name cannot be empty" in result.output
+    assert "Error: Server name cannot be empty" in caplog.text
 
 
-def test_run_whitespace_server_name():
+def test_run_whitespace_server_name(caplog):
     """Test running with whitespace-only server name"""
     runner = CliRunner()
     result = runner.invoke(run, ["   "])
     
     assert result.exit_code == 1
-    assert "Server name cannot be empty" in result.output
+    assert "Error: Server name cannot be empty" in caplog.text
 
 
-def test_run_server_no_command(tmp_path):
+def test_run_server_no_command(tmp_path, caplog):
     """Test server with missing command field"""
     # Setup temporary global config
     global_config_path = tmp_path / "servers.json"
@@ -242,4 +247,4 @@ def test_run_server_no_command(tmp_path):
         result = runner.invoke(run, ["broken-server"])
         
         assert result.exit_code == 1
-        assert "Invalid command format for server 'broken-server'" in result.output
+        assert "Invalid command format for server 'broken-server'" in caplog.text
