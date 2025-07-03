@@ -1,0 +1,179 @@
+"""
+FastMCP proxy factory for MCPM server aggregation.
+"""
+
+from typing import Any, Dict, List, Optional
+
+from fastmcp import FastMCP
+from fastmcp.utilities.mcp_config import (
+    MCPConfig,
+    RemoteMCPServer,
+    StdioMCPServer,
+)
+
+from mcpm.core.schema import ServerConfig, STDIOServerConfig, RemoteServerConfig, CustomServerConfig
+from mcpm.monitor.base import AccessMonitor
+from mcpm.monitor.duckdb import DuckDBAccessMonitor
+from mcpm.router.router_config import RouterConfig
+from mcpm.utils.config import ConfigManager
+
+# FastMCP config models are available if needed in the future
+# from .config import create_mcp_config, create_stdio_server_config, create_remote_server_config
+from .middleware import MCPMAuthMiddleware, MCPMMonitoringMiddleware, MCPMUsageTrackingMiddleware
+
+
+class MCPMProxyFactory:
+    """Factory for creating FastMCP proxies with MCPM integration."""
+
+    def __init__(self, router_config: Optional[RouterConfig] = None, access_monitor: Optional[AccessMonitor] = None):
+        """
+        Initialize the proxy factory.
+
+        Args:
+            router_config: Router configuration for auth. If None, loads from ConfigManager.
+            access_monitor: Access monitor for tracking. If None, creates DuckDBMonitor.
+        """
+        if router_config is None:
+            config = ConfigManager().get_router_config()
+            router_config = RouterConfig(api_key=config.get("api_key"), auth_enabled=config.get("auth_enabled", False))
+        self.router_config = router_config
+
+        if access_monitor is None:
+            access_monitor = DuckDBAccessMonitor()
+        self.access_monitor = access_monitor
+
+    async def create_proxy_for_servers(
+        self, servers: List[ServerConfig], name: Optional[str] = None, stdio_mode: bool = True
+    ) -> FastMCP:
+        """
+        Create a FastMCP proxy that aggregates multiple MCPM servers.
+
+        Args:
+            servers: List of ServerConfig objects to aggregate
+            name: Optional name for the proxy
+            stdio_mode: If True, skip auth middleware (for stdio operations)
+
+        Returns:
+            FastMCP proxy instance with MCPM middleware
+        """
+        if not servers:
+            raise ValueError("At least one server must be provided")
+
+        # Create FastMCP server configurations as plain dictionaries
+        server_configs: Dict[str, StdioMCPServer | RemoteMCPServer] = {}
+
+        for server in servers:
+            # Handle different server transport types with proper type checking
+            if isinstance(server, STDIOServerConfig):
+                # STDIOServerConfig - command must be a list of strings
+                # The command should be a list containing the command and its arguments
+                command_parts = [server.command]
+                if server.args:
+                    command_parts.extend(server.args)
+
+                # Always provide environment variables to trigger FastMCP's os.environ.copy()
+                # This fixes a bug where stdio subprocesses get no PATH if env_vars is empty
+                env_config = {"MCPM_STDIO_SERVER": "true"}
+                if server.env:
+                    # Ensure all environment values are strings (server.env is Dict[str, str])
+                    env_config.update(server.env)
+
+                config: Dict[str, Any] = {"command": command_parts, "env": env_config}
+                server_configs[server.name] = StdioMCPServer(
+                    command=server.command,
+                    args=server.args or [],
+                    env=env_config,
+                )
+            elif isinstance(server, RemoteServerConfig):
+                # RemoteServerConfig - HTTP/SSE transport
+                config: Dict[str, Any] = {"url": server.url}
+                if server.headers:
+                    # Convert all header values to strings (FastMCP expects Dict[str, str])
+                    string_headers = {k: str(v) for k, v in server.headers.items()}
+                    config["headers"] = string_headers
+                server_configs[server.name] = RemoteMCPServer(
+                    url=server.url,
+                    headers=server.headers or {},
+                )
+            elif isinstance(server, CustomServerConfig):
+                # CustomServerConfig is for non-standard client configs - skip it
+                # These are client-specific configurations that don't go through the proxy
+                continue
+            else:
+                # Unknown server type
+                raise ValueError(f"Server {server.name} has unsupported configuration type: {type(server).__name__}")
+
+        # Check if we have any servers to proxy after filtering
+        if not server_configs:
+            raise ValueError("No supported servers to proxy (all servers were skipped or unsupported)")
+
+        # Create the proxy configuration dictionary directly
+        proxy_config = MCPConfig(mcpServers=server_configs)
+
+        proxy = FastMCP.as_proxy(proxy_config, name=name or "mcpm-aggregated")
+
+        # Add MCPM middleware
+        self._add_mcpm_middleware(proxy, stdio_mode=stdio_mode)
+
+        return proxy
+
+    async def create_proxy_for_profile(
+        self, profile_servers: List[ServerConfig], profile_name: str, stdio_mode: bool = True
+    ) -> FastMCP:
+        """
+        Create a FastMCP proxy for a specific MCPM profile.
+
+        Args:
+            profile_servers: List of servers in the profile
+            profile_name: Name of the profile
+            stdio_mode: If True, skip auth middleware (for stdio operations)
+
+        Returns:
+            FastMCP proxy instance configured for the profile
+        """
+        return await self.create_proxy_for_servers(
+            profile_servers, name=f"mcpm-profile-{profile_name}", stdio_mode=stdio_mode
+        )
+
+    def _add_mcpm_middleware(self, proxy: FastMCP, stdio_mode: bool = True) -> None:
+        """Add MCPM-specific middleware to the proxy."""
+        # Add monitoring middleware
+        if self.access_monitor:
+            proxy.add_middleware(MCPMMonitoringMiddleware(self.access_monitor))
+
+        # Add authentication middleware (only for HTTP/network operations, not stdio)
+        if self.router_config.auth_enabled and not stdio_mode:
+            proxy.add_middleware(MCPMAuthMiddleware(self.router_config))
+
+        # Add usage tracking middleware
+        proxy.add_middleware(MCPMUsageTrackingMiddleware())
+
+
+async def create_mcpm_proxy(
+    servers: List[ServerConfig],
+    name: Optional[str] = None,
+    router_config: Optional[RouterConfig] = None,
+    access_monitor: Optional[AccessMonitor] = None,
+    stdio_mode: bool = True,
+) -> FastMCP:
+    """
+    Convenience function to create a FastMCP proxy with MCPM integration.
+
+    Args:
+        servers: List of ServerConfig objects to aggregate
+        name: Optional name for the proxy
+        router_config: Optional router configuration
+        access_monitor: Optional access monitor
+        stdio_mode: If True, skip auth middleware (for stdio operations)
+
+    Returns:
+        Configured FastMCP proxy instance
+    """
+    factory = MCPMProxyFactory(router_config, access_monitor)
+    proxy = await factory.create_proxy_for_servers(servers, name, stdio_mode=stdio_mode)
+
+    # Initialize the access monitor if provided
+    if access_monitor:
+        await access_monitor.initialize_storage()
+
+    return proxy

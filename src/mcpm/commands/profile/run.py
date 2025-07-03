@@ -1,35 +1,120 @@
 """Profile run command."""
 
-import os
-import subprocess
-import sys
-import time
+import asyncio
+import logging
 
 import click
 from rich.console import Console
 
+from mcpm.fastmcp_integration.proxy import create_mcpm_proxy
 from mcpm.profile.profile_config import ProfileConfigManager
+from mcpm.utils.config import DEFAULT_PORT
 
 console = Console()
 profile_config_manager = ProfileConfigManager()
+logger = logging.getLogger(__name__)
+
+
+async def find_available_port(preferred_port, max_attempts=10):
+    """Find an available port starting from preferred_port."""
+    import socket
+
+    for attempt in range(max_attempts):
+        port_to_try = preferred_port + attempt
+
+        # Check if port is available
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.bind(("127.0.0.1", port_to_try))
+                return port_to_try
+        except OSError:
+            continue  # Port is busy, try next one
+
+    # If no port found, return the original (will likely fail but user will see the error)
+    return preferred_port
+
+
+async def run_profile_fastmcp(profile_servers, profile_name, debug=False, http_mode=False, port=DEFAULT_PORT):
+    """Run profile servers using FastMCP proxy for proper aggregation."""
+    server_count = len(profile_servers)
+    if debug:
+        debug_console = Console(stderr=True)
+        debug_console.print(f"[dim]Using FastMCP proxy to aggregate {server_count} server(s)[/]")
+        debug_console.print(f"[dim]Mode: {'HTTP' if http_mode else 'stdio'}[/]")
+
+    try:
+        # Create FastMCP proxy for profile servers
+        proxy = await create_mcpm_proxy(
+            servers=profile_servers,
+            name=f"profile-{profile_name}",
+            stdio_mode=not http_mode,  # stdio_mode=False for HTTP
+        )
+
+        if debug:
+            debug_console = Console(stderr=True)
+            debug_console.print(f"[dim]FastMCP proxy initialized with: {[s.name for s in profile_servers]}[/]")
+
+        # Record profile usage
+        from mcpm.commands.usage import record_profile_usage
+
+        record_profile_usage(profile_name, "run" + ("_http" if http_mode else ""))
+
+        if http_mode:
+            # Try to find an available port if the requested one is taken
+            actual_port = await find_available_port(port)
+            if actual_port != port:
+                logger.warning(f"Port {port} is busy, using port {actual_port} instead")
+                if debug:
+                    debug_console = Console(stderr=True)
+                    debug_console.print(f"[yellow]Port {port} is busy, using port {actual_port} instead[/]")
+
+            logger.info(f"Starting profile '{profile_name}' on HTTP port {actual_port}")
+            if debug:
+                debug_console = Console(stderr=True)
+                debug_console.print(f"[cyan]Starting profile '{profile_name}' on HTTP port {actual_port}...[/]")
+                debug_console.print("[yellow]Press Ctrl+C to stop the profile.[/]")
+
+            # Run the aggregated proxy over HTTP
+            await proxy.run_streamable_http_async(host="127.0.0.1", port=actual_port)
+        else:
+            # Run the aggregated proxy over stdio (default)
+            logger.info(f"Starting profile '{profile_name}' over stdio")
+            await proxy.run_stdio_async()
+
+        return 0
+
+    except KeyboardInterrupt:
+        logger.info("Profile execution interrupted")
+        if debug:
+            debug_console = Console(stderr=True)
+            debug_console.print("\n[yellow]Profile execution interrupted[/]")
+        return 130
+    except Exception as e:
+        logger.error(f"Error running profile '{profile_name}': {e}")
+        # For errors, still use console.print as we need to show the error to user
+        console.print(f"[red]Error running profile '{profile_name}': {e}[/]")
+        return 1
 
 
 @click.command()
 @click.argument("profile_name")
 @click.option("--debug", is_flag=True, help="Show debug output")
+@click.option("--http", is_flag=True, help="Run profile over HTTP instead of stdio")
+@click.option("--port", type=int, default=8000, help="Port for HTTP mode (default: 8000)")
 @click.help_option("-h", "--help")
-def run(profile_name, debug):
-    """Execute all servers in a profile over stdio.
+def run(profile_name, debug, http, port):
+    """Execute all servers in a profile over stdio or HTTP.
 
-    Runs all servers tagged with the specified profile simultaneously,
-    multiplexing their stdio streams. This is useful for running a complete
-    development environment or a set of related servers.
+    Uses FastMCP proxy to aggregate servers into a unified MCP interface
+    with proper capability namespacing. By default runs over stdio.
 
     Examples:
 
     \\b
-        mcpm profile run web-dev     # Run all servers in web-dev profile
-        mcpm profile run --debug ai  # Run ai profile with debug output
+        mcpm profile run web-dev                    # Run over stdio (default)
+        mcpm profile run --http web-dev             # Run over HTTP on port 8000
+        mcpm profile run --http --port 9000 ai      # Run over HTTP on port 9000
+        mcpm profile run --debug --http web-dev     # Debug + HTTP mode
     """
     # Validate profile name
     if not profile_name or not profile_name.strip():
@@ -52,148 +137,31 @@ def run(profile_name, debug):
         console.print(f"[red]Error accessing profile '{profile_name}': {e}[/]")
         return 1
 
-    # Get servers in profile
-    servers = []
-    if profile_servers:
-        # Convert ServerConfig objects to (name, dict) tuples for compatibility
-        for server_config in profile_servers:
-            server_dict = server_config.model_dump()
-            servers.append((server_config.name, server_dict))
-
-    if not servers:
+    if not profile_servers:
         console.print(f"[yellow]Profile '[bold]{profile_name}[/]' has no servers configured[/]")
         console.print()
         console.print("[dim]Add servers to this profile with:[/]")
         console.print(f"  mcpm profile edit {profile_name}")
         return 0
 
-    console.print(f"[bold green]Running profile '[cyan]{profile_name}[/]' with {len(servers)} server(s)[/]")
+    logger.info(f"Running profile '{profile_name}' with {len(profile_servers)} server(s)")
 
+    # Only show visual output in debug mode or HTTP mode
+    if debug or http:
+        debug_console = Console(stderr=True)
+        debug_console.print(f"[bold green]Running profile '[cyan]{profile_name}[/]' with {len(profile_servers)} server(s)[/]")
+
+        if debug:
+            debug_console.print("[dim]Servers to run:[/]")
+            for server_config in profile_servers:
+                debug_console.print(f"  - {server_config.name}: {server_config}")
+
+    # Use FastMCP proxy for all cases (single or multiple servers)
     if debug:
-        console.print("[dim]Servers to run:[/]")
-        for name, config in servers:
-            console.print(f"  - {name}: {config.get('command', ['unknown'])}")
+        debug_console = Console(stderr=True)
+        debug_console.print(f"[dim]Using FastMCP proxy for {len(profile_servers)} server(s)[/]")
+        if http:
+            debug_console.print(f"[dim]HTTP mode on port {port}[/]")
 
-    # Record profile usage
-    try:
-        from mcpm.commands.usage import record_profile_usage
-
-        record_profile_usage(profile_name, "run")
-    except ImportError:
-        pass  # Usage tracking not available
-
-    # Start all servers
-    processes = []
-
-    try:
-        for server_name, server_config in servers:
-            if "command" not in server_config:
-                console.print(f"[yellow]Skipping '{server_name}': no command specified[/]", err=True)
-                continue
-
-            command = server_config["command"]
-            if not isinstance(command, list) or not command:
-                console.print(f"[yellow]Skipping '{server_name}': invalid command format[/]", err=True)
-                continue
-
-            # Set up environment
-            env = os.environ.copy()
-            if "env" in server_config:
-                for key, value in server_config["env"].items():
-                    env[key] = str(value)
-
-            # Set working directory
-            cwd = server_config.get("cwd")
-            if cwd:
-                cwd = os.path.expanduser(cwd)
-
-            if debug:
-                console.print(f"[dim]Starting {server_name}: {' '.join(command)}[/]", err=True)
-
-            # Start process
-            try:
-                process = subprocess.Popen(
-                    command, env=env, cwd=cwd, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr
-                )
-                processes.append((server_name, process))
-
-            except FileNotFoundError:
-                console.print(f"[red]Error: Command not found for '{server_name}': {command[0]}[/]", err=True)
-                continue
-            except Exception as e:
-                console.print(f"[red]Error starting '{server_name}': {e}[/]", err=True)
-                continue
-
-        if not processes:
-            console.print("[red]Error: No servers could be started[/]")
-            return 1
-
-        console.print(f"[green]Started {len(processes)} server(s). Press Ctrl+C to stop all.[/]", err=True)
-
-        # Wait for all processes
-        return_codes = []
-        try:
-            # Wait for any process to complete
-            while processes:
-                time.sleep(0.1)
-                completed = []
-
-                for i, (name, process) in enumerate(processes):
-                    if process.poll() is not None:
-                        return_code = process.returncode
-                        return_codes.append(return_code)
-                        completed.append(i)
-
-                        if debug:
-                            console.print(f"[dim]Server '{name}' exited with code {return_code}[/]", err=True)
-
-                # Remove completed processes
-                for i in reversed(completed):
-                    processes.pop(i)
-
-                # If any process failed, stop all others
-                if any(code != 0 for code in return_codes):
-                    break
-
-        except KeyboardInterrupt:
-            console.print("\\n[yellow]Stopping all servers...[/]", err=True)
-
-            # Terminate all remaining processes
-            for name, process in processes:
-                try:
-                    process.terminate()
-                    if debug:
-                        console.print(f"[dim]Terminated {name}[/]", err=True)
-                except Exception:
-                    pass
-
-            # Wait for processes to exit
-            for name, process in processes:
-                try:
-                    process.wait(timeout=5)
-                except subprocess.TimeoutExpired:
-                    process.kill()
-                    if debug:
-                        console.print(f"[dim]Killed {name}[/]", err=True)
-
-            return 130
-
-        # Check final return codes
-        if return_codes and all(code == 0 for code in return_codes):
-            console.print("[green]All servers completed successfully[/]", err=True)
-            return 0
-        else:
-            console.print("[red]One or more servers failed[/]", err=True)
-            return 1
-
-    except Exception as e:
-        console.print(f"[red]Error running profile: {e}[/]", err=True)
-
-        # Clean up any running processes
-        for name, process in processes:
-            try:
-                process.terminate()
-            except Exception:
-                pass
-
-        return 1
+    # Run the async function
+    return asyncio.run(run_profile_fastmcp(profile_servers, profile_name, debug, http_mode=http, port=port))

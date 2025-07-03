@@ -4,6 +4,7 @@ import click
 
 from .create import create_profile
 from .edit import edit_profile
+from .inspect import inspect_profile
 from .list import list_profiles
 from .remove import remove_profile
 from .run import run
@@ -21,6 +22,7 @@ def profile():
 profile.add_command(list_profiles)
 profile.add_command(create_profile)
 profile.add_command(edit_profile)
+profile.add_command(inspect_profile)
 profile.add_command(share_profile)
 profile.add_command(remove_profile)
 profile.add_command(run)

@@ -1,12 +1,109 @@
 """Profile share command."""
 
+import asyncio
 import click
 from rich.console import Console
 
+from mcpm.fastmcp_integration.proxy import create_mcpm_proxy
 from mcpm.profile.profile_config import ProfileConfigManager
+from mcpm.router.share import Tunnel
 
 console = Console()
 profile_config_manager = ProfileConfigManager()
+
+
+async def find_available_port(preferred_port, max_attempts=10):
+    """Find an available port starting from preferred_port."""
+    import socket
+    
+    for attempt in range(max_attempts):
+        port_to_try = preferred_port + attempt
+        
+        # Check if port is available
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.bind(('127.0.0.1', port_to_try))
+                return port_to_try
+        except OSError:
+            continue  # Port is busy, try next one
+    
+    # If no port found, return the original (will likely fail but user will see the error)
+    return preferred_port
+
+
+async def share_profile_fastmcp(profile_servers, profile_name, port, address, http, timeout, retry):
+    """Share profile servers using FastMCP proxy + tunnel."""
+    try:
+        console.print(f"[cyan]Creating FastMCP proxy for profile '{profile_name}'...[/]")
+        
+        # Create FastMCP proxy for profile servers (HTTP mode - enable auth)
+        proxy = await create_mcpm_proxy(
+            servers=profile_servers,
+            name=f"shared-profile-{profile_name}",
+            stdio_mode=False  # Enable auth middleware for HTTP sharing
+        )
+        
+        server_count = len(profile_servers)
+        console.print(f"[green]FastMCP proxy created with {server_count} server(s)[/]")
+        
+        # Use default port if none specified, then find available port
+        preferred_port = port or 8000
+        actual_port = await find_available_port(preferred_port)
+        if actual_port != preferred_port:
+            console.print(f"[yellow]Port {preferred_port} is busy, using port {actual_port} instead[/]")
+        
+        console.print(f"[cyan]Starting streamable HTTP server on port {actual_port}...[/]")
+        
+        # Start the FastMCP proxy as a streamable HTTP server in a background task
+        server_task = asyncio.create_task(
+            proxy.run_streamable_http_async(host="127.0.0.1", port=actual_port)
+        )
+        
+        # Wait a moment for server to start
+        await asyncio.sleep(2)
+        
+        console.print(f"[green]FastMCP proxy running on port {actual_port}[/]")
+        
+        # Create tunnel to make it publicly accessible
+        tunnel = Tunnel(
+            local_port=actual_port,
+            remote_address=address,
+            use_https=not http,
+            timeout=timeout,
+            retry_count=retry
+        )
+        
+        console.print("[cyan]Creating secure tunnel...[/]")
+        public_url = await tunnel.create()
+        
+        if public_url:
+            console.print(f"[bold green]Profile '{profile_name}' is now publicly accessible![/]")
+            console.print(f"[cyan]Public URL:[/] {public_url}")
+            console.print()
+            console.print("[bold]Available servers in this profile:[/]")
+            for server_config in profile_servers:
+                console.print(f"  • {server_config.name}")
+            console.print()
+            console.print("[dim]Press Ctrl+C to stop sharing...[/]")
+            
+            # Keep running until interrupted
+            try:
+                await server_task
+            except asyncio.CancelledError:
+                pass
+        else:
+            console.print("[red]Failed to create tunnel[/]")
+            server_task.cancel()
+            return 1
+        
+        return 0
+        
+    except KeyboardInterrupt:
+        console.print("\n[yellow]Stopping profile sharing...[/]")
+        return 130
+    except Exception as e:
+        console.print(f"[red]Error sharing profile: {e}[/]")
+        return 1
 
 
 @click.command(name="share")
@@ -57,40 +154,8 @@ def share_profile(profile_name, port, address, http, timeout, retry):
 
     console.print(f"[bold green]Sharing profile '[cyan]{profile_name}[/]' with {len(profile_servers)} server(s)[/]")
 
-    # For now, we'll use the router approach or share the first server
-    # In a full implementation, this would set up a multiplexed sharing system
-    if len(profile_servers) == 1:
-        # Single server - use direct sharing
-        server_config = profile_servers[0]
-        server_dict = server_config.model_dump()
-
-        if "command" not in server_dict:
-            console.print(f"[red]Error: Server '{server_config.name}' has no command specified[/]")
-            return 1
-
-        command = server_dict["command"]
-        if isinstance(command, list):
-            command_str = " ".join(f'"{arg}"' if " " in arg else arg for arg in command)
-        else:
-            command_str = str(command)
-
-        console.print(f"[cyan]Sharing server: {server_config.name}[/]")
-        console.print(f"[dim]Command: {command_str}[/]")
-
-        # Import and call the share command
-        from mcpm.commands.share import share
-
-        # Create a context and invoke the share command
-        ctx = click.Context(share)
-        ctx.invoke(share, command=command_str, port=port, address=address, http=http, timeout=timeout, retry=retry)
-
-    else:
-        # Multiple servers - would need router or multiplexed approach
-        console.print("[yellow]Multi-server profile sharing not yet implemented.[/]")
-        console.print("[dim]For now, you can share individual servers with 'mcpm share <server-name>'[/]")
-        console.print()
-        console.print("[cyan]Servers in this profile:[/]")
-        for server_config in profile_servers:
-            console.print(f"  • {server_config.name}")
-
-        return 1
+    # Use FastMCP proxy for all cases (single or multiple servers)
+    console.print(f"[cyan]Setting up FastMCP proxy for {len(profile_servers)} server(s)...[/]")
+    return asyncio.run(share_profile_fastmcp(
+        profile_servers, profile_name, port, address, http, timeout, retry
+    ))

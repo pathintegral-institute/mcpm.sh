@@ -1,5 +1,7 @@
-"""Run command for MCPM - Execute servers directly over stdio"""
+"""Run command for MCPM - Execute servers directly over stdio or HTTP"""
 
+import asyncio
+import logging
 import os
 import subprocess
 import sys
@@ -8,9 +10,11 @@ import click
 from rich.console import Console
 
 from mcpm.global_config import GlobalConfigManager
+from mcpm.fastmcp_integration.proxy import create_mcpm_proxy
 
 console = Console()
 global_config_manager = GlobalConfigManager()
+logger = logging.getLogger(__name__)
 
 
 def find_installed_server(server_name):
@@ -24,6 +28,7 @@ def find_installed_server(server_name):
 def execute_server_command(server_config, server_name):
     """Execute a server command with proper environment setup."""
     if not server_config:
+        logger.error(f"Invalid server configuration for '{server_name}'")
         console.print(f"[red]Invalid server configuration for '{server_name}'[/]")
         sys.exit(1)
     
@@ -32,6 +37,7 @@ def execute_server_command(server_config, server_name):
     args = server_config.args or []
     
     if not command:
+        logger.error(f"Invalid command format for server '{server_name}'")
         console.print(f"[red]Invalid command format for server '{server_name}'[/]")
         sys.exit(1)
     
@@ -69,31 +75,101 @@ def execute_server_command(server_config, server_name):
         return result.returncode
         
     except FileNotFoundError:
+        logger.error(f"Command not found: {full_command[0]}")
         console.print(f"[red]Command not found: {full_command[0]}[/]")
         console.print(f"[yellow]Make sure the required runtime is installed[/]")
         sys.exit(1)
     except KeyboardInterrupt:
+        logger.info("Server execution interrupted")
         console.print("\n[yellow]Server execution interrupted[/]")
         sys.exit(130)
     except Exception as e:
+        logger.error(f"Error running server '{server_name}': {e}")
         console.print(f"[red]Error running server '{server_name}': {e}[/]")
         sys.exit(1)
 
 
+async def run_server_with_fastmcp(server_config, server_name, http_mode=False, port=8000):
+    """Run server using FastMCP proxy (stdio or HTTP)."""
+    try:
+        # Record usage
+        from mcpm.commands.usage import record_server_usage
+        record_server_usage(server_name, "run" + ("_http" if http_mode else ""))
+        
+        # Create FastMCP proxy for single server
+        proxy = await create_mcpm_proxy(
+            servers=[server_config],
+            name=f"mcpm-run-{server_name}",
+            stdio_mode=not http_mode  # stdio_mode=False for HTTP
+        )
+        
+        if http_mode:
+            logger.info(f"Starting server '{server_name}' on HTTP port {port}")
+            console.print(f"[cyan]Starting server '{server_name}' on HTTP port {port}...[/]")
+            console.print("[yellow]Press Ctrl+C to stop the server.[/]")
+            
+            # Try to find an available port if the requested one is taken
+            actual_port = await find_available_port(port)
+            if actual_port != port:
+                logger.warning(f"Port {port} is busy, using port {actual_port} instead")
+                console.print(f"[yellow]Port {port} is busy, using port {actual_port} instead[/]")
+            
+            # Run FastMCP proxy in HTTP mode
+            await proxy.run_streamable_http_async(host="127.0.0.1", port=actual_port)
+        else:
+            # Run FastMCP proxy in stdio mode (default)
+            logger.info(f"Starting server '{server_name}' over stdio")
+            await proxy.run_stdio_async()
+            
+        return 0
+        
+    except KeyboardInterrupt:
+        logger.info("Server execution interrupted")
+        if http_mode:
+            console.print("\\n[yellow]Server execution interrupted[/]")
+        return 130
+    except Exception as e:
+        logger.error(f"Error running server '{server_name}': {e}")
+        console.print(f"[red]Error running server '{server_name}': {e}[/]")
+        return 1
+
+
+async def find_available_port(preferred_port, max_attempts=10):
+    """Find an available port starting from preferred_port."""
+    import socket
+    
+    for attempt in range(max_attempts):
+        port_to_try = preferred_port + attempt
+        
+        # Check if port is available
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.bind(('127.0.0.1', port_to_try))
+                return port_to_try
+        except OSError:
+            continue  # Port is busy, try next one
+    
+    # If no port found, return the original (will likely fail but user will see the error)
+    return preferred_port
+
+
 @click.command()
 @click.argument("server_name")
+@click.option("--http", is_flag=True, help="Run server over HTTP instead of stdio")
+@click.option("--port", type=int, default=8000, help="Port for HTTP mode (default: 8000)")
 @click.help_option("-h", "--help")
-def run(server_name):
-    """Execute a server from global configuration over stdio.
+def run(server_name, http, port):
+    """Execute a server from global configuration over stdio or HTTP.
     
-    Runs an installed MCP server directly from the global configuration,
-    making it available over stdio for client communication.
+    Runs an installed MCP server from the global configuration. By default
+    runs over stdio for client communication, but can run over HTTP with --http.
     
     Examples:
-        mcpm run mcp-server-browse    # Run the browse server
-        mcpm run filesystem          # Run filesystem server
+        mcpm run mcp-server-browse              # Run over stdio (default)
+        mcpm run --http mcp-server-browse       # Run over HTTP on port 8000
+        mcpm run --http --port 9000 filesystem # Run over HTTP on port 9000
         
-    Note: This command is typically used in MCP client configurations:
+    Note: stdio mode is typically used in MCP client configurations:
         {"command": ["mcpm", "run", "mcp-server-browse"]}
     """
     # Validate server name
@@ -121,7 +197,16 @@ def run(server_name):
         debug_console = Console(file=sys.stderr)
         debug_console.print(f"[dim]Running server '{server_name}' from {location} configuration[/]")
         debug_console.print(f"[dim]Command: {server_config.command} {' '.join(server_config.args or [])}[/]")
+        debug_console.print(f"[dim]Mode: {'HTTP' if http else 'stdio'}[/]")
+        if http:
+            debug_console.print(f"[dim]Port: {port}[/]")
     
-    # Execute the server
-    exit_code = execute_server_command(server_config, server_name)
+    # Choose execution method
+    if http:
+        # Use FastMCP proxy for HTTP mode
+        exit_code = asyncio.run(run_server_with_fastmcp(server_config, server_name, http_mode=True, port=port))
+    else:
+        # Use direct execution for stdio mode (maintains backwards compatibility)
+        exit_code = execute_server_command(server_config, server_name)
+    
     sys.exit(exit_code)

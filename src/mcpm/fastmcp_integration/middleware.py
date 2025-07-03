@@ -1,0 +1,157 @@
+"""
+FastMCP middleware adapters for MCPM monitoring and authentication.
+"""
+
+import time
+from typing import Optional
+
+from fastmcp.server.middleware import Middleware, MiddlewareContext
+
+from mcpm.monitor.base import AccessEventType, AccessMonitor
+from mcpm.router.router_config import RouterConfig
+
+
+class MCPMMonitoringMiddleware(Middleware):
+    """FastMCP middleware that integrates with MCPM's AccessMonitor system."""
+    
+    def __init__(self, access_monitor: AccessMonitor):
+        self.monitor = access_monitor
+    
+    async def on_call_tool(self, context, call_next):
+        """Track tool invocation events."""
+        start_time = time.time()
+        tool_name = getattr(context, 'tool_name', 'unknown')
+        server_id = getattr(context, 'server_id', 'unknown')
+        
+        try:
+            result = await call_next(context)
+            await self.monitor.track_event(
+                event_type=AccessEventType.TOOL_INVOCATION,
+                server_id=server_id,
+                resource_id=tool_name,
+                duration_ms=int((time.time() - start_time) * 1000),
+                success=True,
+                metadata={'middleware': 'fastmcp'}
+            )
+            return result
+        except Exception as e:
+            await self.monitor.track_event(
+                event_type=AccessEventType.TOOL_INVOCATION,
+                server_id=server_id,
+                resource_id=tool_name,
+                duration_ms=int((time.time() - start_time) * 1000),
+                success=False,
+                error_message=str(e),
+                metadata={'middleware': 'fastmcp'}
+            )
+            raise
+    
+    async def on_read_resource(self, context, call_next):
+        """Track resource access events."""
+        start_time = time.time()
+        resource_uri = getattr(context, 'resource_uri', 'unknown')
+        server_id = getattr(context, 'server_id', 'unknown')
+        
+        try:
+            result = await call_next(context)
+            await self.monitor.track_event(
+                event_type=AccessEventType.RESOURCE_ACCESS,
+                server_id=server_id,
+                resource_id=resource_uri,
+                duration_ms=int((time.time() - start_time) * 1000),
+                success=True,
+                metadata={'middleware': 'fastmcp'}
+            )
+            return result
+        except Exception as e:
+            await self.monitor.track_event(
+                event_type=AccessEventType.RESOURCE_ACCESS,
+                server_id=server_id,
+                resource_id=resource_uri,
+                duration_ms=int((time.time() - start_time) * 1000),
+                success=False,
+                error_message=str(e),
+                metadata={'middleware': 'fastmcp'}
+            )
+            raise
+    
+    async def on_get_prompt(self, context, call_next):
+        """Track prompt execution events."""
+        start_time = time.time()
+        prompt_name = getattr(context, 'prompt_name', 'unknown')
+        server_id = getattr(context, 'server_id', 'unknown')
+        
+        try:
+            result = await call_next(context)
+            await self.monitor.track_event(
+                event_type=AccessEventType.PROMPT_EXECUTION,
+                server_id=server_id,
+                resource_id=prompt_name,
+                duration_ms=int((time.time() - start_time) * 1000),
+                success=True,
+                metadata={'middleware': 'fastmcp'}
+            )
+            return result
+        except Exception as e:
+            await self.monitor.track_event(
+                event_type=AccessEventType.PROMPT_EXECUTION,
+                server_id=server_id,
+                resource_id=prompt_name,
+                duration_ms=int((time.time() - start_time) * 1000),
+                success=False,
+                error_message=str(e),
+                metadata={'middleware': 'fastmcp'}
+            )
+            raise
+
+
+class MCPMAuthMiddleware(Middleware):
+    """FastMCP middleware that integrates with MCPM's authentication system."""
+    
+    def __init__(self, router_config: RouterConfig):
+        self.router_config = router_config
+    
+    async def on_request(self, context, call_next):
+        """Authenticate requests using MCPM's auth configuration."""
+        if not self.router_config.auth_enabled:
+            # Auth disabled, pass through
+            return await call_next(context)
+        
+        # Check for API key in request headers
+        auth_header = getattr(context, 'headers', {}).get('Authorization')
+        if not auth_header:
+            raise ValueError("Authorization header required")
+        
+        # Extract API key from Bearer token or direct key
+        api_key = None
+        if auth_header.startswith('Bearer '):
+            api_key = auth_header[7:]
+        else:
+            api_key = auth_header
+        
+        if api_key != self.router_config.api_key:
+            raise ValueError("Invalid API key")
+        
+        return await call_next(context)
+
+
+class MCPMUsageTrackingMiddleware(Middleware):
+    """FastMCP middleware that integrates with MCPM's usage tracking system."""
+    
+    def __init__(self):
+        pass
+    
+    async def on_request(self, context, call_next):
+        """Track usage for servers and operations."""
+        try:
+            # Import here to avoid circular imports
+            from mcpm.commands.usage import record_server_usage
+            
+            server_id = getattr(context, 'server_id', None)
+            if server_id:
+                record_server_usage(server_id, action="proxy")
+        except ImportError:
+            # Usage tracking not available
+            pass
+        
+        return await call_next(context)

@@ -91,6 +91,21 @@ class RemoteServerConfig(BaseServerConfig):
 
 
 class CustomServerConfig(BaseServerConfig):
+    """Configuration for non-standard MCP servers in client configurations.
+
+    This class is used for parsing non-standard MCP configs that appear in client
+    configuration files (like Claude Desktop, Goose, etc.) but don't fit into the
+    standard STDIO or HTTP/SSE server models. These configs are client-specific
+    and are not processed by MCPM's proxy system.
+
+    Examples might include:
+    - Built-in servers in specific clients
+    - Client-specific transport mechanisms
+    - Proprietary server configurations
+
+    The `config` field stores the raw configuration as-is from the client config file.
+    """
+
     config: Dict[str, Any]
 
 
