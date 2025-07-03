@@ -20,7 +20,6 @@ from mcpm.commands import (
     list,
     profile,
     remove,
-    router,
     run,
     search,
     usage,
@@ -225,7 +224,6 @@ main.add_command(create_deprecated_command("target"), name="target")
 # Keep these for now but they could be simplified later
 main.add_command(client.client)
 main.add_command(inspector.inspector, name="inspector") 
-main.add_command(router.router, name="router")
 
 if __name__ == "__main__":
     main()

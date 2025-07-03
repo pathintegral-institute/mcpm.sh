@@ -162,15 +162,3 @@ def profile_get_server(profile: str, server: str) -> ServerConfig | None:
     return profile_manager.get_profile_server(profile, server)
 
 
-def client_add_profile(profile_name: str, client: str, alias_name: str | None = None) -> bool:
-    client_manager = ClientRegistry.get_client_manager(client)
-    if not client_manager:
-        console.print(f"[bold red]Error:[/] Client '{client}' not found.")
-        return False
-    router_config = ConfigManager().get_router_config()
-    if not router_config:
-        console.print("[bold red]Error:[/] Router config not found.")
-        return False
-
-    success = client_manager.activate_profile(profile_name, router_config, alias_name)
-    return success

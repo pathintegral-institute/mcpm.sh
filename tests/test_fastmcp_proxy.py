@@ -131,7 +131,7 @@ class TestFastMCPProxy:
         server = STDIOServerConfig(name="test", command="test")
         
         # Create factory with auth enabled
-        from mcpm.router.router_config import RouterConfig
+        from mcpm.core.router_config import RouterConfig
         router_config = RouterConfig(auth_enabled=True, api_key="secret")
         
         factory = MCPMProxyFactory(router_config=router_config)
@@ -157,7 +157,7 @@ class TestFastMCPProxy:
         server = RemoteServerConfig(name="test", url="http://example.com")
         
         # Create factory with auth enabled
-        from mcpm.router.router_config import RouterConfig
+        from mcpm.core.router_config import RouterConfig
         router_config = RouterConfig(auth_enabled=True, api_key="secret")
         
         factory = MCPMProxyFactory(router_config=router_config)

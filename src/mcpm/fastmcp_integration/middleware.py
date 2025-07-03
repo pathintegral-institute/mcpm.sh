@@ -8,7 +8,7 @@ from typing import Optional
 from fastmcp.server.middleware import Middleware, MiddlewareContext
 
 from mcpm.monitor.base import AccessEventType, AccessMonitor
-from mcpm.router.router_config import RouterConfig
+from mcpm.core.router_config import RouterConfig
 
 
 class MCPMMonitoringMiddleware(Middleware):

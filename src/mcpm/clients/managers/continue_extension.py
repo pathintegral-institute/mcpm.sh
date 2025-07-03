@@ -10,7 +10,6 @@ from pydantic import TypeAdapter
 
 from mcpm.clients.base import YAMLClientManager
 from mcpm.core.schema import ServerConfig, STDIOServerConfig
-from mcpm.utils.router_server import format_server_url_with_proxy_headers
 
 logger = logging.getLogger(__name__)
 
@@ -203,5 +202,3 @@ class ContinueManager(YAMLClientManager):
         server_data.update(client_config)
         return TypeAdapter(ServerConfig).validate_python(server_data)
 
-    def _format_router_server(self, profile_name, base_url) -> ServerConfig:
-        return format_server_url_with_proxy_headers(self.client_key, profile_name, base_url)

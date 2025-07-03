@@ -18,7 +18,6 @@ from rich.prompt import Confirm
 
 from mcpm.clients.client_registry import ClientRegistry
 from mcpm.commands.target_operations.common import (
-    client_add_profile,
     global_add_server,
     profile_add_server,
 )
@@ -111,6 +110,12 @@ def add(server_name, force=False, alias=None, target: str | None = None):
     """
     
     # v2.0: ignore target parameter - use global config
+    
+    # Check if this is a profile (starts with %)
+    if server_name.startswith("%"):
+        profile_name = server_name[1:]  # Remove % prefix
+        add_profile_to_client(profile_name, "global", alias, force)
+        return
     
     config_name = alias or server_name
     
@@ -477,10 +482,13 @@ def _replace_argument_variables(value: str, prev_value: str, variables: dict) ->
 def add_profile_to_client(profile_name: str, client: str, alias: str | None = None, force: bool = False):
     if not force and not Confirm.ask(f"Add this profile {profile_name} to {client}{' as ' + alias if alias else ''}?"):
         console.print("[yellow]Operation cancelled.[/]")
-        return
+        raise click.ClickException("Operation cancelled")
 
-    success = client_add_profile(profile_name, client, alias)
+    console.print(f"[bold red]Error:[/] Profile activation has been removed in MCPM v2.0.")
+    console.print("[yellow]Use 'mcpm profile share' to share profiles instead.[/]")
+    success = False
     if success:
         console.print(f"[bold green]Successfully added profile {profile_name} to {client}![/]")
     else:
         console.print(f"[bold red]Failed to add profile {profile_name} to {client}.[/]")
+        raise click.ClickException(f"Failed to add profile {profile_name} to {client}")

@@ -11,9 +11,9 @@ import click
 from rich.console import Console
 
 from mcpm.global_config import GlobalConfigManager
-from mcpm.router.router_config import RouterConfig
+from mcpm.core.router_config import RouterConfig
 from mcpm.fastmcp_integration.proxy import create_mcpm_proxy
-from mcpm.router.share import Tunnel
+from mcpm.core.tunnel import Tunnel
 from mcpm.utils.config import DEFAULT_SHARE_ADDRESS
 
 console = Console()

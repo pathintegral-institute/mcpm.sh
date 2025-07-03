@@ -228,7 +228,7 @@ def test_add_sse_server_to_claude_desktop(claude_desktop_manager, monkeypatch):
 
 
 def test_add_profile_to_client(windsurf_manager, monkeypatch, tmp_path):
-    """Test adding a router profile - this should be updated for v2.0 but keeping basic structure"""
+    """Test adding a profile in v2.0 - profile activation has been removed"""
     # Setup temporary global config
     global_config_path = tmp_path / "servers.json"
     global_config_manager = GlobalConfigManager(config_path=str(global_config_path))
@@ -239,15 +239,14 @@ def test_add_profile_to_client(windsurf_manager, monkeypatch, tmp_path):
     )
     
     profile_name = "work"
-    monkeypatch.setattr(ConfigManager, "get_router_config", Mock(return_value={"host": "localhost", "port": 8080}))
 
     # test cli - in v2.0, profile with % prefix should fail gracefully
     runner = CliRunner()
     result = runner.invoke(add, ["%" + profile_name, "--force", "--alias", "work"])
     
-    # In v2.0, this should fail because % profiles aren't supported the same way
-    assert result.exit_code == 0  # Command runs but shows error message
-    assert "not found in registry" in result.output
+    # In v2.0, this should fail because % profiles and profile activation are not supported
+    assert result.exit_code == 1  # Command fails
+    assert "Profile activation has been removed" in result.output
 
 
 def test_add_server_with_configured_npx(windsurf_manager, monkeypatch, tmp_path):

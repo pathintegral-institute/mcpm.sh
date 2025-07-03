@@ -14,8 +14,9 @@ from fastmcp.utilities.mcp_config import (
 from mcpm.core.schema import ServerConfig, STDIOServerConfig, RemoteServerConfig, CustomServerConfig
 from mcpm.monitor.base import AccessMonitor
 from mcpm.monitor.duckdb import DuckDBAccessMonitor
-from mcpm.router.router_config import RouterConfig
 from mcpm.utils.config import ConfigManager
+
+from mcpm.core.router_config import RouterConfig
 
 # FastMCP config models are available if needed in the future
 # from .config import create_mcp_config, create_stdio_server_config, create_remote_server_config
@@ -34,8 +35,7 @@ class MCPMProxyFactory:
             access_monitor: Access monitor for tracking. If None, creates DuckDBMonitor.
         """
         if router_config is None:
-            config = ConfigManager().get_router_config()
-            router_config = RouterConfig(api_key=config.get("api_key"), auth_enabled=config.get("auth_enabled", False))
+            router_config = RouterConfig(api_key=None, auth_enabled=False)
         self.router_config = router_config
 
         if access_monitor is None:
