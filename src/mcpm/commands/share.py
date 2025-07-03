@@ -11,6 +11,7 @@ import click
 from rich.console import Console
 
 from mcpm.global_config import GlobalConfigManager
+from mcpm.router.router_config import RouterConfig
 from mcpm.fastmcp_integration.proxy import create_mcpm_proxy
 from mcpm.router.share import Tunnel
 from mcpm.utils.config import DEFAULT_SHARE_ADDRESS
@@ -73,11 +74,15 @@ async def start_fastmcp_proxy(server_config, server_name, port: Optional[int] = 
         from mcpm.commands.usage import record_server_usage
         record_server_usage(server_name, "share")
         
+        # Create a router config with auth disabled for public sharing
+        router_config = RouterConfig(auth_enabled=False)
+
         # Create FastMCP proxy for single server (HTTP mode for sharing)
         proxy = await create_mcpm_proxy(
             servers=[server_config],
             name=f"mcpm-share-{server_name}",
-            stdio_mode=False  # HTTP mode for sharing
+            stdio_mode=False,  # HTTP mode for sharing
+            router_config=router_config,  # Pass config to disable auth
         )
         
         console.print(f"[green]FastMCP proxy ready on port {actual_port}[/]")
@@ -159,97 +164,56 @@ def share(server_name, port, address, http, timeout, retry):
 
 async def _share_async(server_config, server_name, port, remote_host, remote_port, http, timeout, retry):
     """Async function to handle sharing with FastMCP proxy."""
-    import signal
-    import time
     
-    # Prepare to handle retries
-    retries_left = retry
-    should_retry = True
+    proxy = None
+    tunnel = None
+    server_task = None
+    
+    try:
+        # Start FastMCP proxy
+        console.print(f"[cyan]Starting FastMCP proxy to share server '[bold]{server_name}[/bold]'...[/]")
+        actual_port, proxy = await start_fastmcp_proxy(server_config, server_name, port)
 
-    while should_retry:
-        proxy = None
-        tunnel = None
+        # Start the FastMCP proxy as a streamable HTTP server in a background task
+        server_task = asyncio.create_task(
+            proxy.run_streamable_http_async(port=actual_port)
+        )
+        
+        # Wait a moment for server to start
+        await asyncio.sleep(2)
 
-        try:
-            # Start FastMCP proxy
-            console.print(f"[cyan]Starting FastMCP proxy to share server '[bold]{server_name}[/bold]'...[/]")
-            actual_port, proxy = await start_fastmcp_proxy(server_config, server_name, port)
+        # Create and start the tunnel
+        console.print(f"[cyan]Creating tunnel from localhost:{actual_port} to {remote_host}:{remote_port}...[/]")
+        share_token = secrets.token_urlsafe(32)
+        tunnel = Tunnel(
+            remote_host=remote_host,
+            remote_port=remote_port,
+            local_host="localhost",
+            local_port=actual_port,
+            share_token=share_token,
+            http=http,
+            share_server_tls_certificate=None,
+        )
 
-            # Create and start the tunnel
-            console.print(f"[cyan]Creating tunnel from localhost:{actual_port} to {remote_host}:{remote_port}...[/]")
-            share_token = secrets.token_urlsafe(32)
-            tunnel = Tunnel(
-                remote_host=remote_host,
-                remote_port=remote_port,
-                local_host="localhost",
-                local_port=actual_port,
-                share_token=share_token,
-                http=http,
-                share_server_tls_certificate=None,
-            )
+        share_url = tunnel.start_tunnel()
+        
+        if not share_url:
+            raise RuntimeError("Could not get share URL from tunnel.")
 
-            share_url = tunnel.start_tunnel()
+        console.print(f"[bold green]Server is now shared at: [/][bold cyan]{share_url}[/]")
+        console.print("[bold red]Warning:[/] Anyone with the URL can access your server.")
+        console.print("[yellow]Press Ctrl+C to stop sharing and terminate the server[/]")
 
-            # Display the share URL
-            console.print(f"[bold green]Server is now shared at: [/][bold cyan]{share_url}[/]")
+        # Keep running until interrupted
+        await server_task
 
-            # Always show the warning about URL access
-            console.print("[bold red]Warning:[/] Anyone with the URL can access your server.")
-
-            console.print("[yellow]Press Ctrl+C to stop sharing and terminate the server[/]")
-
-            # Track activity
-            last_activity_time = time.time()
-            server_error_detected = False
-
-            # Handle cleanup on termination signals
-            def signal_handler(sig, frame):
-                nonlocal should_retry
-                should_retry = False  # Don't retry after explicit termination
-                console.print("\n[yellow]Terminating server and tunnel...[/]")
-                if tunnel:
-                    console.print(f"[yellow]Killing tunnel localhost:{actual_port} <> {share_url}[/]")
-                    tunnel.kill()
-
-                # Only exit if not in retry mode
-                if retries_left <= 0:
-                    sys.exit(0)
-
-            # Register signal handlers
-            signal.signal(signal.SIGINT, signal_handler)
-            signal.signal(signal.SIGTERM, signal_handler)
-
-            # Run the HTTP server
-            try:
-                await proxy.run_streamable_http_async(port=actual_port)
-            except Exception as e:
-                if "Protocol initialization error" in str(e) and retries_left > 0:
-                    console.print(f"[yellow]Will attempt to restart ({retries_left} retries left)[/]")
-                    server_error_detected = True
-                else:
-                    raise
-
-            # If we got here, the server stopped or had an error
-            should_retry = server_error_detected and retries_left > 0
-
-        except KeyboardInterrupt:
-            console.print("\n[yellow]Stopping server and tunnel...[/]")
-            should_retry = False
-        except Exception as e:
-            console.print(f"[bold red]Error:[/] {str(e)}")
-            # Determine if we should retry
-            should_retry = retries_left > 0
-
-        # Clean up resources before retrying or exiting
+    except (KeyboardInterrupt, asyncio.CancelledError):
+        console.print("\n[yellow]Stopping server and tunnel...[/]")
+    except Exception as e:
+        console.print(f"[bold red]Error during sharing: {e}[/]")
+    finally:
         if tunnel:
             tunnel.kill()
-
-        # Manage retries
-        if should_retry:
-            retries_left -= 1
-            console.print(f"[yellow]Retrying in 3 seconds... ({retries_left} attempts left)[/]")
-            await asyncio.sleep(3)
-        elif retries_left > 0:
-            # We still have retries but chose not to use them (e.g. clean exit)
-            console.print("[green]Server stopped cleanly, no need to retry.[/]")
-            break
+        if server_task and not server_task.done():
+            server_task.cancel()
+        console.print("[green]Sharing stopped.[/]")
