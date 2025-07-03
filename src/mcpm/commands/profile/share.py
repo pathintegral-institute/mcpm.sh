@@ -98,6 +98,10 @@ async def share_profile_fastmcp(profile_servers, profile_name, port, address, ht
             console.print(f"[bold green]Profile '{profile_name}' is now publicly accessible![/]")
             console.print(f"[cyan]Public URL:[/] {public_url}")
             console.print()
+            console.print("[bold]Connection URLs:[/]")
+            console.print(f"  • Streamable HTTP: [cyan]{public_url}/mcp/[/]")
+            console.print(f"  • SSE endpoint: [cyan]{public_url}/sse/[/]")
+            console.print()
             console.print("[bold]Available servers in this profile:[/]")
             for server_config in profile_servers:
                 console.print(f"  • {server_config.name}")

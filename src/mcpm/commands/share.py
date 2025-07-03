@@ -201,6 +201,11 @@ async def _share_async(server_config, server_name, port, remote_host, remote_por
             raise RuntimeError("Could not get share URL from tunnel.")
 
         console.print(f"[bold green]Server is now shared at: [/][bold cyan]{share_url}[/]")
+        console.print()
+        console.print("[bold]Connection URLs:[/]")
+        console.print(f"  • Streamable HTTP: [cyan]{share_url}/mcp/[/]")
+        console.print(f"  • SSE endpoint: [cyan]{share_url}/sse/[/]")
+        console.print()
         console.print("[bold red]Warning:[/] Anyone with the URL can access your server.")
         console.print("[yellow]Press Ctrl+C to stop sharing and terminate the server[/]")
 
