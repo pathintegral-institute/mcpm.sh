@@ -9,6 +9,7 @@ from rich.traceback import Traceback
 
 from mcpm import __version__
 from mcpm.clients.client_config import ClientConfigManager
+from mcpm.utils.logging_config import setup_logging
 from mcpm.commands import (
     add,
     client,
@@ -29,6 +30,9 @@ from mcpm.commands.share import share
 
 console = Console()
 client_config_manager = ClientConfigManager()
+
+# Setup Rich logging early - this runs when the module is imported
+setup_logging()
 
 # Set -h as an alias for --help but we'll handle it ourselves
 CONTEXT_SETTINGS = dict(help_option_names=[])

@@ -7,13 +7,16 @@ import subprocess
 import sys
 
 import click
+from rich.console import Console
 
 from mcpm.fastmcp_integration.proxy import create_mcpm_proxy
 from mcpm.global_config import GlobalConfigManager
 from mcpm.utils.config import DEFAULT_PORT
+from mcpm.utils.logging_config import setup_dependency_logging, ensure_dependency_logging_suppressed, get_uvicorn_log_level
 
 global_config_manager = GlobalConfigManager()
 logger = logging.getLogger(__name__)
+console = Console()
 
 
 def find_installed_server(server_name):
@@ -95,18 +98,29 @@ async def run_server_with_fastmcp(server_config, server_name, http_mode=False, p
             name=f"mcpm-run-{server_name}",
             stdio_mode=not http_mode,  # stdio_mode=False for HTTP
         )
+        
+        # Set up dependency logging for FastMCP/MCP libraries
+        setup_dependency_logging()
+        
+        # Re-suppress library logging after FastMCP initialization
+        ensure_dependency_logging_suppressed()
 
         if http_mode:
-            logger.info(f"Starting server '{server_name}' on HTTP port {port}...")
-            logger.info("Press Ctrl+C to stop the server.")
-
             # Try to find an available port if the requested one is taken
             actual_port = await find_available_port(port)
             if actual_port != port:
-                logger.warning(f"Port {port} is busy, using port {actual_port} instead")
+                logger.debug(f"Port {port} is busy, using port {actual_port} instead")
 
-            # Run FastMCP proxy in HTTP mode
-            await proxy.run_http_async(host="127.0.0.1", port=actual_port)
+            # Display server information
+            http_url = f"http://127.0.0.1:{actual_port}/mcp/"
+            console.print(f"[bold green]Server '{server_name}' is now running at:[/]")
+            console.print(f"[cyan]{http_url}[/]")
+            console.print("[dim]Press Ctrl+C to stop the server[/]")
+            
+            logger.debug(f"Starting FastMCP proxy for server '{server_name}' on port {actual_port}")
+
+            # Run FastMCP proxy in HTTP mode with uvicorn logging control
+            await proxy.run_http_async(host="127.0.0.1", port=actual_port, uvicorn_config={"log_level": get_uvicorn_log_level()})
         else:
             # Run FastMCP proxy in stdio mode (default)
             logger.info(f"Starting server '{server_name}' over stdio")
@@ -180,15 +194,13 @@ def run(server_name, http, port):
         logger.info("  • Run 'mcpm install {name}' to install a server")
         sys.exit(1)
 
-    # Show debug info in verbose mode or if MCPM_DEBUG is set
-    debug = os.getenv("MCPM_DEBUG", "").lower() in ("1", "true", "yes")
-    if debug:
-        logging.basicConfig(level=logging.DEBUG)
-        logger.debug(f"Running server '{server_name}' from {location} configuration")
-        logger.debug(f"Command: {server_config.command} {' '.join(server_config.args or [])}")
-        logger.debug(f"Mode: {'HTTP' if http else 'stdio'}")
-        if http:
-            logger.debug(f"Port: {port}")
+    # Debug logging is now handled by the Rich logging setup in CLI
+    # Just log debug info - the level is controlled centrally
+    logger.debug(f"Running server '{server_name}' from {location} configuration")
+    logger.debug(f"Command: {server_config.command} {' '.join(server_config.args or [])}")
+    logger.debug(f"Mode: {'HTTP' if http else 'stdio'}")
+    if http:
+        logger.debug(f"Port: {port}")
 
     # Choose execution method
     if http:

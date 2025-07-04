@@ -4,13 +4,16 @@ import asyncio
 import logging
 
 import click
+from rich.console import Console
 
 from mcpm.fastmcp_integration.proxy import create_mcpm_proxy
 from mcpm.profile.profile_config import ProfileConfigManager
 from mcpm.utils.config import DEFAULT_PORT
+from mcpm.utils.logging_config import setup_dependency_logging, ensure_dependency_logging_suppressed, get_uvicorn_log_level
 
 profile_config_manager = ProfileConfigManager()
 logger = logging.getLogger(__name__)
+console = Console()
 
 
 async def find_available_port(preferred_port, max_attempts=10):
@@ -47,6 +50,12 @@ async def run_profile_fastmcp(profile_servers, profile_name, http_mode=False, po
         )
 
         logger.debug(f"FastMCP proxy initialized with: {[s.name for s in profile_servers]}")
+        
+        # Set up dependency logging for FastMCP/MCP libraries
+        setup_dependency_logging()
+        
+        # Re-suppress library logging after FastMCP initialization
+        ensure_dependency_logging_suppressed()
 
         # Record profile usage
         from mcpm.commands.usage import record_profile_usage
@@ -57,13 +66,24 @@ async def run_profile_fastmcp(profile_servers, profile_name, http_mode=False, po
             # Try to find an available port if the requested one is taken
             actual_port = await find_available_port(port)
             if actual_port != port:
-                logger.warning(f"Port {port} is busy, using port {actual_port} instead")
+                logger.debug(f"Port {port} is busy, using port {actual_port} instead")
 
-            logger.info(f"Starting profile '{profile_name}' on HTTP port {actual_port}")
-            logger.info("Press Ctrl+C to stop the profile.")
+            # Display server information
+            http_url = f"http://127.0.0.1:{actual_port}/mcp/"
+            console.print(f"[bold green]Profile '{profile_name}' is now running at:[/]")
+            console.print(f"[cyan]{http_url}[/]")
+            
+            # Show servers in the profile
+            console.print(f"[bold green]Servers:[/]")
+            for server_config in profile_servers:
+                console.print(f"  • [cyan]{server_config.name}[/]")
+            
+            console.print("[dim]Press Ctrl+C to stop the profile[/]")
+            
+            logger.debug(f"Starting FastMCP proxy for profile '{profile_name}' on port {actual_port}")
 
-            # Run the aggregated proxy over HTTP
-            await proxy.run_http_async(host="127.0.0.1", port=actual_port)
+            # Run the aggregated proxy over HTTP with uvicorn logging control
+            await proxy.run_http_async(host="127.0.0.1", port=actual_port, uvicorn_config={"log_level": get_uvicorn_log_level()})
         else:
             # Run the aggregated proxy over stdio (default)
             logger.info(f"Starting profile '{profile_name}' over stdio")

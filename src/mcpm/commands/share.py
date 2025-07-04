@@ -3,6 +3,7 @@ Share command for MCPM - Share a single MCP server through a tunnel
 """
 
 import asyncio
+import logging
 import secrets
 import sys
 from typing import Optional
@@ -14,9 +15,11 @@ from mcpm.core.tunnel import Tunnel
 from mcpm.fastmcp_integration.proxy import create_mcpm_proxy
 from mcpm.global_config import GlobalConfigManager
 from mcpm.utils.config import DEFAULT_SHARE_ADDRESS, DEFAULT_PORT
+from mcpm.utils.logging_config import setup_dependency_logging, ensure_dependency_logging_suppressed, get_uvicorn_log_level
 
 console = Console()
 global_config_manager = GlobalConfigManager()
+logger = logging.getLogger(__name__)
 
 
 def find_installed_server(server_name):
@@ -66,9 +69,9 @@ async def start_fastmcp_proxy(server_config, server_name, port: Optional[int] = 
     # Find an available port
     actual_port = await find_available_port(preferred_port)
     if actual_port != preferred_port:
-        console.print(f"[yellow]Port {preferred_port} is busy, using port {actual_port} instead[/]")
+        logger.debug(f"Port {preferred_port} is busy, using port {actual_port} instead")
 
-    console.print(f"[cyan]Starting FastMCP proxy for server '{server_name}' on port {actual_port}...[/]")
+    logger.debug(f"Starting FastMCP proxy for server '{server_name}' on port {actual_port}")
 
     try:
         # Record usage
@@ -85,13 +88,19 @@ async def start_fastmcp_proxy(server_config, server_name, port: Optional[int] = 
             api_key=api_key,
         )
 
-        console.print(f"[green]FastMCP proxy ready on port {actual_port}[/]")
+        logger.debug(f"FastMCP proxy ready on port {actual_port}")
+        
+        # Set up dependency logging for FastMCP/MCP libraries
+        setup_dependency_logging()
+        
+        # Re-suppress library logging after FastMCP initialization
+        ensure_dependency_logging_suppressed()
 
         # Return the port and proxy instance
         return actual_port, proxy
 
     except Exception as e:
-        console.print(f"[red]Error starting FastMCP proxy: {e}[/]")
+        logger.error(f"Error starting FastMCP proxy: {e}")
         raise
 
 
@@ -183,17 +192,17 @@ async def _share_async(server_config, server_name, port, remote_host, remote_por
 
     try:
         # Start FastMCP proxy
-        console.print(f"[cyan]Starting FastMCP proxy to share server '[bold]{server_name}[/bold]'...[/]")
+        logger.debug(f"Starting FastMCP proxy to share server '{server_name}'")
         actual_port, proxy = await start_fastmcp_proxy(server_config, server_name, port, auth_enabled=not no_auth, api_key=api_key)
 
         # Start the FastMCP proxy as an HTTP server in a background task
-        server_task = asyncio.create_task(proxy.run_http_async(port=actual_port))
+        server_task = asyncio.create_task(proxy.run_http_async(port=actual_port, uvicorn_config={"log_level": get_uvicorn_log_level()}))
 
         # Wait a moment for server to start
         await asyncio.sleep(2)
 
         # Create and start the tunnel
-        console.print(f"[cyan]Creating tunnel from localhost:{actual_port} to {remote_host}:{remote_port}...[/]")
+        logger.debug(f"Creating tunnel from localhost:{actual_port} to {remote_host}:{remote_port}")
         share_token = secrets.token_urlsafe(32)
         tunnel = Tunnel(
             remote_host=remote_host,
@@ -210,27 +219,29 @@ async def _share_async(server_config, server_name, port, remote_host, remote_por
         if not share_url:
             raise RuntimeError("Could not get share URL from tunnel.")
 
-        # Display HTTP URL
+        # Display critical information only
         http_url = f"{share_url}/mcp/"
-        console.print(f"[bold green]Server is now shared at:[/]")
-        console.print(f"  • HTTP: [cyan]{http_url}[/]")
+        console.print(f"[bold green]Server '{server_name}' is now shared at:[/]")
+        console.print(f"[cyan]{http_url}[/]")
+        
         if not no_auth and api_key:
             console.print(f"[bold green]API Key:[/] [cyan]{api_key}[/]")
-            console.print(f"[dim]Provide this key in the 'Authorization' header as a Bearer token.[/]")
         else:
             console.print("[bold red]Warning:[/] Anyone with the URL can access your server.")
-        console.print("[yellow]Press Ctrl+C to stop sharing and terminate the server[/]")
+        
+        console.print("[dim]Press Ctrl+C to stop sharing[/]")
 
         # Keep running until interrupted
         await server_task
 
     except (KeyboardInterrupt, asyncio.CancelledError):
-        console.print("\n[yellow]Stopping server and tunnel...[/]")
+        console.print("\n[yellow]Stopping...[/]")
     except Exception as e:
-        console.print(f"[bold red]Error during sharing: {e}[/]")
+        console.print(f"[bold red]Error: {e}[/]")
+        logger.exception("Detailed error information")
     finally:
         if tunnel:
             tunnel.kill()
         if server_task and not server_task.done():
             server_task.cancel()
-        console.print("[green]Sharing stopped.[/]")
+        logger.debug("Sharing stopped")

@@ -1,6 +1,7 @@
 """Profile share command."""
 
 import asyncio
+import logging
 import secrets
 
 import click
@@ -10,9 +11,11 @@ from mcpm.core.tunnel import Tunnel
 from mcpm.fastmcp_integration.proxy import create_mcpm_proxy
 from mcpm.profile.profile_config import ProfileConfigManager
 from mcpm.utils.config import DEFAULT_SHARE_ADDRESS, DEFAULT_PORT
+from mcpm.utils.logging_config import setup_dependency_logging, ensure_dependency_logging_suppressed, get_uvicorn_log_level
 
 console = Console()
 profile_config_manager = ProfileConfigManager()
+logger = logging.getLogger(__name__)
 
 
 async def find_available_port(preferred_port, max_attempts=10):
@@ -47,7 +50,8 @@ async def share_profile_fastmcp(profile_servers, profile_name, port, address, ht
             config_manager.save_auth_config(api_key)
             console.print(f"[green]Generated new API key:[/] [cyan]{api_key}[/]")
     try:
-        console.print(f"[cyan]Creating FastMCP proxy for profile '{profile_name}'...[/]")
+        server_count = len(profile_servers)
+        logger.debug(f"Creating FastMCP proxy for profile '{profile_name}' with {server_count} server(s)")
 
         # Create FastMCP proxy for profile servers (HTTP mode - disable auth)
         proxy = await create_mcpm_proxy(
@@ -58,30 +62,36 @@ async def share_profile_fastmcp(profile_servers, profile_name, port, address, ht
             api_key=api_key,
         )
 
-        server_count = len(profile_servers)
-        console.print(f"[green]FastMCP proxy created with {server_count} server(s)[/]")
+        logger.debug(f"FastMCP proxy created with {server_count} server(s)")
+        
+        # Set up dependency logging for FastMCP/MCP libraries
+        setup_dependency_logging()
+        
+        # Re-suppress library logging after FastMCP initialization
+        ensure_dependency_logging_suppressed()
 
         # Use default port if none specified, then find available port
         preferred_port = port or DEFAULT_PORT
         actual_port = await find_available_port(preferred_port)
         if actual_port != preferred_port:
-            console.print(f"[yellow]Port {preferred_port} is busy, using port {actual_port} instead[/]")
+            logger.debug(f"Port {preferred_port} is busy, using port {actual_port} instead")
 
-        console.print(f"[cyan]Starting streamable HTTP server on port {actual_port}...[/]")
+        logger.debug(f"Starting HTTP server on port {actual_port}")
 
         # Start the FastMCP proxy as a streamable HTTP server in a background task
-        server_task = asyncio.create_task(proxy.run_http_async(host="127.0.0.1", port=actual_port))
+        server_task = asyncio.create_task(proxy.run_http_async(host="127.0.0.1", port=actual_port, uvicorn_config={"log_level": get_uvicorn_log_level()}))
 
         # Wait a moment for server to start
         await asyncio.sleep(2)
 
-        console.print(f"[green]FastMCP proxy running on port {actual_port}[/]")
+        logger.debug(f"FastMCP proxy running on port {actual_port}")
 
         # Create tunnel to make it publicly accessible
         if not address:
             address = DEFAULT_SHARE_ADDRESS
 
         remote_host, remote_port = address.split(":")
+        logger.debug(f"Creating tunnel from localhost:{actual_port} to {remote_host}:{remote_port}")
 
         # Generate a random share token
         share_token = secrets.token_urlsafe(32)
@@ -96,26 +106,25 @@ async def share_profile_fastmcp(profile_servers, profile_name, port, address, ht
             share_server_tls_certificate=None,
         )
 
-        console.print("[cyan]Creating secure tunnel...[/]")
         public_url = tunnel.start_tunnel()
 
         if public_url:
-            console.print(f"[bold green]Profile '{profile_name}' is now publicly accessible![/]")
-            console.print(f"[cyan]Public URL:[/] {public_url}")
+            # Display critical information only
+            http_url = f"{public_url}/mcp/"
+            console.print(f"[bold green]Profile '{profile_name}' is now shared at:[/]")
+            console.print(f"[cyan]{http_url}[/]")
+            
             if not no_auth and api_key:
                 console.print(f"[bold green]API Key:[/] [cyan]{api_key}[/]")
-                console.print(f"[dim]Provide this key in the 'Authorization' header as a Bearer token.[/]")
             else:
                 console.print("[bold red]Warning:[/] Anyone with the URL can access your servers.")
-            console.print()
-            console.print("[bold]Connection URL:[/]")
-            console.print(f"  • HTTP: [cyan]{public_url}/mcp/[/]")
-            console.print()
-            console.print("[bold]Available servers in this profile:[/]")
+            
+            # Show available servers 
+            console.print(f"[bold green]Shared servers:[/]")
             for server_config in profile_servers:
-                console.print(f"  • {server_config.name}")
-            console.print()
-            console.print("[dim]Press Ctrl+C to stop sharing...[/]")
+                console.print(f"  • [cyan]{server_config.name}[/]")
+            
+            console.print("[dim]Press Ctrl+C to stop sharing[/]")
 
             # Keep running until interrupted
             try:
@@ -127,6 +136,7 @@ async def share_profile_fastmcp(profile_servers, profile_name, port, address, ht
                     tunnel.kill()
         else:
             console.print("[red]Failed to create tunnel[/]")
+            logger.error("Failed to create tunnel")
             server_task.cancel()
             # Wait for cancellation to complete
             await asyncio.gather(server_task, return_exceptions=True)
@@ -135,10 +145,11 @@ async def share_profile_fastmcp(profile_servers, profile_name, port, address, ht
         return 0
 
     except KeyboardInterrupt:
-        console.print("\n[yellow]Stopping profile sharing...[/]")
+        console.print("\n[yellow]Stopping...[/]")
         return 130
     except Exception as e:
-        console.print(f"[red]Error sharing profile: {e}[/]")
+        console.print(f"[red]Error: {e}[/]")
+        logger.exception("Detailed error information")
         return 1
 
 
