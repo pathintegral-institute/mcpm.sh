@@ -47,9 +47,11 @@ def test_client_ls_command(monkeypatch, tmp_path):
     # Check the result - should show clients with their enabled MCPM servers
     assert result.exit_code == 0
     assert "Found 2 MCP client(s)" in result.output
-    assert "Claude-desktop (claude-desktop)" in result.output
+    assert "Claude-desktop" in result.output
+    assert "claude-desktop" in result.output  # Client code in parentheses
     assert "Cursor (cursor)" in result.output
     assert "ACTIVE" in result.output
+    assert "MCPM Profiles" in result.output
     assert "MCPM Servers" in result.output
     assert "Other Servers" in result.output
     # Windsurf should appear in the "Additional supported clients" section since it's not installed
@@ -103,12 +105,13 @@ def test_client_ls_verbose_flag(monkeypatch):
 
     # Check the result - should show detailed server information
     assert result.exit_code == 0
-    assert "Server Details" in result.output
+    assert "Server" in result.output and "Details" in result.output  # Column header may be split
+    assert "MCPM Profiles" in result.output
     assert "MCPM Servers" in result.output
     assert "Other Servers" in result.output
     assert "filesystem" in result.output
-    # Check for the client name and code (may be on separate lines due to table formatting)
-    assert "Claude-desktop" in result.output and "(claude-desktop)" in result.output
+    # Check for the client name and code (may be truncated due to table formatting)
+    assert "Claude-desk" in result.output and "claude-desk" in result.output
 
 
 def test_client_ls_with_other_servers(monkeypatch):
@@ -159,6 +162,7 @@ def test_client_ls_with_other_servers(monkeypatch):
 
     # Check the result - should show both MCPM and other servers
     assert result.exit_code == 0
+    assert "MCPM Profiles" in result.output
     assert "MCPM Servers" in result.output
     assert "Other Servers" in result.output
     assert "filesystem" in result.output  # MCPM server
