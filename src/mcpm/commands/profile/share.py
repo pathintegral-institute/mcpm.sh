@@ -6,11 +6,10 @@ import secrets
 import click
 from rich.console import Console
 
-from mcpm.core.router_config import RouterConfig
 from mcpm.core.tunnel import Tunnel
 from mcpm.fastmcp_integration.proxy import create_mcpm_proxy
 from mcpm.profile.profile_config import ProfileConfigManager
-from mcpm.utils.config import DEFAULT_SHARE_ADDRESS
+from mcpm.utils.config import DEFAULT_SHARE_ADDRESS, DEFAULT_PORT
 
 console = Console()
 profile_config_manager = ProfileConfigManager()
@@ -35,27 +34,35 @@ async def find_available_port(preferred_port, max_attempts=10):
     return preferred_port
 
 
-async def share_profile_fastmcp(profile_servers, profile_name, port, address, http):
+async def share_profile_fastmcp(profile_servers, profile_name, port, address, http, no_auth):
     """Share profile servers using FastMCP proxy + tunnel."""
+    api_key = None
+    if not no_auth:
+        from mcpm.utils.config import ConfigManager
+        config_manager = ConfigManager()
+        auth_config = config_manager.get_auth_config()
+        api_key = auth_config.get("api_key")
+        if not api_key:
+            api_key = secrets.token_urlsafe(32)
+            config_manager.save_auth_config(api_key)
+            console.print(f"[green]Generated new API key:[/] [cyan]{api_key}[/]")
     try:
         console.print(f"[cyan]Creating FastMCP proxy for profile '{profile_name}'...[/]")
-
-        # Create a router config with auth disabled for public sharing
-        router_config = RouterConfig(auth_enabled=False)
 
         # Create FastMCP proxy for profile servers (HTTP mode - disable auth)
         proxy = await create_mcpm_proxy(
             servers=profile_servers,
             name=f"shared-profile-{profile_name}",
             stdio_mode=False,  # HTTP mode for sharing
-            router_config=router_config,  # Pass config to disable auth
+            auth_enabled=not no_auth,
+            api_key=api_key,
         )
 
         server_count = len(profile_servers)
         console.print(f"[green]FastMCP proxy created with {server_count} server(s)[/]")
 
         # Use default port if none specified, then find available port
-        preferred_port = port or 8000
+        preferred_port = port or DEFAULT_PORT
         actual_port = await find_available_port(preferred_port)
         if actual_port != preferred_port:
             console.print(f"[yellow]Port {preferred_port} is busy, using port {actual_port} instead[/]")
@@ -63,7 +70,7 @@ async def share_profile_fastmcp(profile_servers, profile_name, port, address, ht
         console.print(f"[cyan]Starting streamable HTTP server on port {actual_port}...[/]")
 
         # Start the FastMCP proxy as a streamable HTTP server in a background task
-        server_task = asyncio.create_task(proxy.run_streamable_http_async(host="127.0.0.1", port=actual_port))
+        server_task = asyncio.create_task(proxy.run_http_async(host="127.0.0.1", port=actual_port))
 
         # Wait a moment for server to start
         await asyncio.sleep(2)
@@ -95,6 +102,9 @@ async def share_profile_fastmcp(profile_servers, profile_name, port, address, ht
         if public_url:
             console.print(f"[bold green]Profile '{profile_name}' is now publicly accessible![/]")
             console.print(f"[cyan]Public URL:[/] {public_url}")
+            if not no_auth and api_key:
+                console.print(f"[bold green]API Key:[/] [cyan]{api_key}[/]")
+                console.print(f"[dim]Provide this key in the 'Authorization' header as a Bearer token.[/]")
             console.print()
             console.print("[bold]Connection URLs:[/]")
             console.print(f"  • Streamable HTTP: [cyan]{public_url}/mcp/[/]")
@@ -138,8 +148,9 @@ async def share_profile_fastmcp(profile_servers, profile_name, port, address, ht
 @click.option(
     "--http", is_flag=True, default=False, help="Use HTTP instead of HTTPS. NOT recommended to use on public networks."
 )
+@click.option("--no-auth", is_flag=True, default=False, help="Disable authentication for the shared profile.")
 @click.help_option("-h", "--help")
-def share_profile(profile_name, port, address, http):
+def share_profile(profile_name, port, address, http, no_auth):
     """Create a secure public tunnel to all servers in a profile.
 
     This command runs all servers in a profile and creates a shared tunnel
@@ -173,4 +184,4 @@ def share_profile(profile_name, port, address, http):
 
     # Use FastMCP proxy for all cases (single or multiple servers)
     console.print(f"[cyan]Setting up FastMCP proxy for {len(profile_servers)} server(s)...[/]")
-    return asyncio.run(share_profile_fastmcp(profile_servers, profile_name, port, address, http))
+    return asyncio.run(share_profile_fastmcp(profile_servers, profile_name, port, address, http, no_auth))

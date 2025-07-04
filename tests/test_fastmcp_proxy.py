@@ -113,7 +113,7 @@ class TestFastMCPProxy:
         server = STDIOServerConfig(name="test", command="test")
 
         # Create factory with auth enabled
-        from mcpm.core.router_config import RouterConfig
+        
 
         router_config = RouterConfig(auth_enabled=True, api_key="secret")
 
@@ -137,7 +137,7 @@ class TestFastMCPProxy:
         server = RemoteServerConfig(name="test", url="http://example.com")
 
         # Create factory with auth enabled
-        from mcpm.core.router_config import RouterConfig
+        
 
         router_config = RouterConfig(auth_enabled=True, api_key="secret")
 

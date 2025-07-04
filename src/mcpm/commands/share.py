@@ -10,11 +10,10 @@ from typing import Optional
 import click
 from rich.console import Console
 
-from mcpm.core.router_config import RouterConfig
 from mcpm.core.tunnel import Tunnel
 from mcpm.fastmcp_integration.proxy import create_mcpm_proxy
 from mcpm.global_config import GlobalConfigManager
-from mcpm.utils.config import DEFAULT_SHARE_ADDRESS
+from mcpm.utils.config import DEFAULT_SHARE_ADDRESS, DEFAULT_PORT
 
 console = Console()
 global_config_manager = GlobalConfigManager()
@@ -47,7 +46,7 @@ async def find_available_port(preferred_port, max_attempts=10):
     return preferred_port
 
 
-async def start_fastmcp_proxy(server_config, server_name, port: Optional[int] = None) -> int:
+async def start_fastmcp_proxy(server_config, server_name, port: Optional[int] = None, auth_enabled: bool = True, api_key: Optional[str] = None) -> int:
     """
     Start FastMCP proxy in HTTP mode for sharing a single server.
 
@@ -55,12 +54,14 @@ async def start_fastmcp_proxy(server_config, server_name, port: Optional[int] = 
         server_config: The server configuration
         server_name: The server name
         port: Preferred port number (finds available port if None or busy)
+        auth_enabled: Whether to enable authentication
+        api_key: The API key to use for authentication
 
     Returns:
         The actual port number the proxy is running on
     """
     # Use default port if none specified
-    preferred_port = port or 8000
+    preferred_port = port or DEFAULT_PORT
 
     # Find an available port
     actual_port = await find_available_port(preferred_port)
@@ -75,15 +76,13 @@ async def start_fastmcp_proxy(server_config, server_name, port: Optional[int] = 
 
         record_server_usage(server_name, "share")
 
-        # Create a router config with auth disabled for public sharing
-        router_config = RouterConfig(auth_enabled=False)
-
         # Create FastMCP proxy for single server (HTTP mode for sharing)
         proxy = await create_mcpm_proxy(
             servers=[server_config],
             name=f"mcpm-share-{server_name}",
             stdio_mode=False,  # HTTP mode for sharing
-            router_config=router_config,  # Pass config to disable auth
+            auth_enabled=auth_enabled,
+            api_key=api_key,
         )
 
         console.print(f"[green]FastMCP proxy ready on port {actual_port}[/]")
@@ -110,8 +109,9 @@ async def start_fastmcp_proxy(server_config, server_name, port: Optional[int] = 
     help="Timeout in seconds to wait for server requests before considering the server inactive",
 )
 @click.option("--retry", type=int, default=0, help="Number of times to automatically retry on error (default: 0)")
+@click.option("--no-auth", is_flag=True, default=False, help="Disable authentication for the shared server.")
 @click.help_option("-h", "--help")
-def share(server_name, port, address, http, timeout, retry):
+def share(server_name, port, address, http, timeout, retry, no_auth):
     """Share a server from global configuration through a tunnel.
 
     This command finds an installed server in the global configuration,
@@ -160,23 +160,34 @@ def share(server_name, port, address, http, timeout, retry):
     remote_port = int(remote_port)
 
     # Run the async function to start proxy and create tunnel
-    asyncio.run(_share_async(server_config, server_name, port, remote_host, remote_port, http, timeout, retry))
+    asyncio.run(_share_async(server_config, server_name, port, remote_host, remote_port, http, timeout, retry, no_auth))
 
 
-async def _share_async(server_config, server_name, port, remote_host, remote_port, http, timeout, retry):
+async def _share_async(server_config, server_name, port, remote_host, remote_port, http, timeout, retry, no_auth):
     """Async function to handle sharing with FastMCP proxy."""
 
     proxy = None
     tunnel = None
     server_task = None
+    api_key = None
+
+    if not no_auth:
+        from mcpm.utils.config import ConfigManager
+        config_manager = ConfigManager()
+        auth_config = config_manager.get_auth_config()
+        api_key = auth_config.get("api_key")
+        if not api_key:
+            api_key = secrets.token_urlsafe(32)
+            config_manager.save_auth_config(api_key)
+            console.print(f"[green]Generated new API key:[/] [cyan]{api_key}[/]")
 
     try:
         # Start FastMCP proxy
         console.print(f"[cyan]Starting FastMCP proxy to share server '[bold]{server_name}[/bold]'...[/]")
-        actual_port, proxy = await start_fastmcp_proxy(server_config, server_name, port)
+        actual_port, proxy = await start_fastmcp_proxy(server_config, server_name, port, auth_enabled=not no_auth, api_key=api_key)
 
-        # Start the FastMCP proxy as a streamable HTTP server in a background task
-        server_task = asyncio.create_task(proxy.run_streamable_http_async(port=actual_port))
+        # Start the FastMCP proxy as an HTTP server in a background task
+        server_task = asyncio.create_task(proxy.run_http_async(port=actual_port))
 
         # Wait a moment for server to start
         await asyncio.sleep(2)
@@ -199,12 +210,15 @@ async def _share_async(server_config, server_name, port, remote_host, remote_por
         if not share_url:
             raise RuntimeError("Could not get share URL from tunnel.")
 
-        console.print(f"[bold green]Server is now shared at: [/][bold cyan]{share_url}[/]")
-        console.print()
-        console.print("[bold]Connection URLs:[/]")
-        console.print(f"  • Streamable HTTP: [cyan]{share_url}/mcp/[/]")
-        console.print(f"  • SSE endpoint: [cyan]{share_url}/sse/[/]")
-        console.print()
+        # Display both HTTP (newer) and SSE (original) URLs
+        http_url = f"{share_url}/mcp/"
+        sse_url = f"{share_url}/sse"
+        console.print(f"[bold green]Server is now shared at:[/]")
+        console.print(f"  • HTTP (recommended): [cyan]{http_url}[/]")
+        console.print(f"  • SSE (legacy): [cyan]{sse_url}[/]")
+        if not no_auth and api_key:
+            console.print(f"[bold green]API Key:[/] [cyan]{api_key}[/]")
+            console.print(f"[dim]Provide this key in the 'Authorization' header as a Bearer token.[/]")
         console.print("[bold red]Warning:[/] Anyone with the URL can access your server.")
         console.print("[yellow]Press Ctrl+C to stop sharing and terminate the server[/]")
 

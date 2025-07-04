@@ -63,7 +63,7 @@ async def run_profile_fastmcp(profile_servers, profile_name, debug=False, http_m
             logger.info("Press Ctrl+C to stop the profile.")
 
             # Run the aggregated proxy over HTTP
-            await proxy.run_streamable_http_async(host="127.0.0.1", port=actual_port)
+            await proxy.run_http_async(host="127.0.0.1", port=actual_port)
         else:
             # Run the aggregated proxy over stdio (default)
             logger.info(f"Starting profile '{profile_name}' over stdio")
@@ -83,7 +83,7 @@ async def run_profile_fastmcp(profile_servers, profile_name, debug=False, http_m
 @click.argument("profile_name")
 @click.option("--debug", is_flag=True, help="Show debug output")
 @click.option("--http", is_flag=True, help="Run profile over HTTP instead of stdio")
-@click.option("--port", type=int, default=8000, help="Port for HTTP mode (default: 8000)")
+@click.option("--port", type=int, default=DEFAULT_PORT, help=f"Port for HTTP mode (default: {DEFAULT_PORT})")
 @click.help_option("-h", "--help")
 def run(profile_name, debug, http, port):
     """Execute all servers in a profile over stdio or HTTP.
@@ -95,7 +95,7 @@ def run(profile_name, debug, http, port):
 
     \b
         mcpm profile run web-dev                    # Run over stdio (default)
-        mcpm profile run --http web-dev             # Run over HTTP on port 8000
+        mcpm profile run --http web-dev             # Run over HTTP on port 6276
         mcpm profile run --http --port 9000 ai      # Run over HTTP on port 9000
         mcpm profile run --debug --http web-dev     # Debug + HTTP mode
     """

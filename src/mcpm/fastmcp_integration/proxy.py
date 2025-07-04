@@ -11,7 +11,6 @@ from fastmcp.utilities.mcp_config import (
     StdioMCPServer,
 )
 
-from mcpm.core.router_config import RouterConfig
 from mcpm.core.schema import CustomServerConfig, RemoteServerConfig, ServerConfig, STDIOServerConfig
 from mcpm.monitor.base import AccessMonitor
 from mcpm.monitor.duckdb import DuckDBAccessMonitor
@@ -24,17 +23,22 @@ from .middleware import MCPMAuthMiddleware, MCPMMonitoringMiddleware, MCPMUsageT
 class MCPMProxyFactory:
     """Factory for creating FastMCP proxies with MCPM integration."""
 
-    def __init__(self, router_config: Optional[RouterConfig] = None, access_monitor: Optional[AccessMonitor] = None):
+    def __init__(
+        self,
+        auth_enabled: bool = False,
+        api_key: Optional[str] = None,
+        access_monitor: Optional[AccessMonitor] = None,
+    ):
         """
         Initialize the proxy factory.
 
         Args:
-            router_config: Router configuration for auth. If None, loads from ConfigManager.
+            auth_enabled: Whether authentication is enabled.
+            api_key: The API key to use for authentication.
             access_monitor: Access monitor for tracking. If None, creates DuckDBMonitor.
         """
-        if router_config is None:
-            router_config = RouterConfig(api_key=None, auth_enabled=False)
-        self.router_config = router_config
+        self.auth_enabled = auth_enabled
+        self.api_key = api_key
 
         if access_monitor is None:
             access_monitor = DuckDBAccessMonitor()
@@ -140,8 +144,8 @@ class MCPMProxyFactory:
             proxy.add_middleware(MCPMMonitoringMiddleware(self.access_monitor))
 
         # Add authentication middleware (only for HTTP/network operations, not stdio)
-        if self.router_config.auth_enabled and not stdio_mode:
-            proxy.add_middleware(MCPMAuthMiddleware(self.router_config))
+        if self.auth_enabled and not stdio_mode:
+            proxy.add_middleware(MCPMAuthMiddleware(self.api_key))
 
         # Add usage tracking middleware
         proxy.add_middleware(MCPMUsageTrackingMiddleware())
@@ -150,7 +154,8 @@ class MCPMProxyFactory:
 async def create_mcpm_proxy(
     servers: List[ServerConfig],
     name: Optional[str] = None,
-    router_config: Optional[RouterConfig] = None,
+    auth_enabled: bool = False,
+    api_key: Optional[str] = None,
     access_monitor: Optional[AccessMonitor] = None,
     stdio_mode: bool = True,
 ) -> FastMCP:
@@ -160,14 +165,15 @@ async def create_mcpm_proxy(
     Args:
         servers: List of ServerConfig objects to aggregate
         name: Optional name for the proxy
-        router_config: Optional router configuration
+        auth_enabled: Whether authentication is enabled.
+        api_key: The API key to use for authentication.
         access_monitor: Optional access monitor
         stdio_mode: If True, skip auth middleware (for stdio operations)
 
     Returns:
         Configured FastMCP proxy instance
     """
-    factory = MCPMProxyFactory(router_config, access_monitor)
+    factory = MCPMProxyFactory(auth_enabled=auth_enabled, api_key=api_key, access_monitor=access_monitor)
     proxy = await factory.create_proxy_for_servers(servers, name, stdio_mode=stdio_mode)
 
     # Initialize the access monitor if provided

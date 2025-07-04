@@ -10,6 +10,7 @@ import click
 
 from mcpm.fastmcp_integration.proxy import create_mcpm_proxy
 from mcpm.global_config import GlobalConfigManager
+from mcpm.utils.config import DEFAULT_PORT
 
 global_config_manager = GlobalConfigManager()
 logger = logging.getLogger(__name__)
@@ -77,9 +78,12 @@ def execute_server_command(server_config, server_name):
         sys.exit(1)
 
 
-async def run_server_with_fastmcp(server_config, server_name, http_mode=False, port=8000):
+async def run_server_with_fastmcp(server_config, server_name, http_mode=False, port=None):
     """Run server using FastMCP proxy (stdio or HTTP)."""
     try:
+        # Use default port if none specified
+        if port is None:
+            port = DEFAULT_PORT
         # Record usage
         from mcpm.commands.usage import record_server_usage
 
@@ -102,7 +106,7 @@ async def run_server_with_fastmcp(server_config, server_name, http_mode=False, p
                 logger.warning(f"Port {port} is busy, using port {actual_port} instead")
 
             # Run FastMCP proxy in HTTP mode
-            await proxy.run_streamable_http_async(host="127.0.0.1", port=actual_port)
+            await proxy.run_http_async(host="127.0.0.1", port=actual_port)
         else:
             # Run FastMCP proxy in stdio mode (default)
             logger.info(f"Starting server '{server_name}' over stdio")
@@ -142,7 +146,7 @@ async def find_available_port(preferred_port, max_attempts=10):
 @click.command()
 @click.argument("server_name")
 @click.option("--http", is_flag=True, help="Run server over HTTP instead of stdio")
-@click.option("--port", type=int, default=8000, help="Port for HTTP mode (default: 8000)")
+@click.option("--port", type=int, default=DEFAULT_PORT, help=f"Port for HTTP mode (default: {DEFAULT_PORT})")
 @click.help_option("-h", "--help")
 def run(server_name, http, port):
     """Execute a server from global configuration over stdio or HTTP.
@@ -152,7 +156,7 @@ def run(server_name, http, port):
 
     Examples:
         mcpm run mcp-server-browse              # Run over stdio (default)
-        mcpm run --http mcp-server-browse       # Run over HTTP on port 8000
+        mcpm run --http mcp-server-browse       # Run over HTTP on port 6276
         mcpm run --http --port 9000 filesystem # Run over HTTP on port 9000
 
     Note: stdio mode is typically used in MCP client configurations:

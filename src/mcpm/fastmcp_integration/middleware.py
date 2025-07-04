@@ -6,7 +6,6 @@ import time
 
 from fastmcp.server.middleware import Middleware
 
-from mcpm.core.router_config import RouterConfig
 from mcpm.monitor.base import AccessEventType, AccessMonitor
 
 
@@ -107,15 +106,11 @@ class MCPMMonitoringMiddleware(Middleware):
 class MCPMAuthMiddleware(Middleware):
     """FastMCP middleware that integrates with MCPM's authentication system."""
 
-    def __init__(self, router_config: RouterConfig):
-        self.router_config = router_config
+    def __init__(self, api_key: str):
+        self.api_key = api_key
 
     async def on_request(self, context, call_next):
         """Authenticate requests using MCPM's auth configuration."""
-        if not self.router_config.auth_enabled:
-            # Auth disabled, pass through
-            return await call_next(context)
-
         # Check for API key in request headers
         auth_header = getattr(context, "headers", {}).get("Authorization")
         if not auth_header:
@@ -128,7 +123,7 @@ class MCPMAuthMiddleware(Middleware):
         else:
             api_key = auth_header
 
-        if api_key != self.router_config.api_key:
+        if api_key != self.api_key:
             raise ValueError("Invalid API key")
 
         return await call_next(context)

@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 # Default configuration paths
 DEFAULT_CONFIG_DIR = os.path.expanduser("~/.config/mcpm")
 DEFAULT_CONFIG_FILE = os.path.join(DEFAULT_CONFIG_DIR, "config.json")
+DEFAULT_AUTH_FILE = os.path.join(DEFAULT_CONFIG_DIR, "auth.json")
 # default router config
 DEFAULT_HOST = "localhost"
 DEFAULT_PORT = 6276  # 6276 represents MCPM on a T9 keypad (6=M, 2=C, 7=P, 6=M)
@@ -30,12 +31,15 @@ class ConfigManager:
     Client-specific configurations are managed by ClientConfigManager.
     """
 
-    def __init__(self, config_path: str = DEFAULT_CONFIG_FILE):
+    def __init__(self, config_path: str = DEFAULT_CONFIG_FILE, auth_path: str = DEFAULT_AUTH_FILE):
         self.config_path = config_path
+        self.auth_path = auth_path
         self.config_dir = os.path.dirname(config_path)
         self._config = {}
+        self._auth_config = {}
         self._ensure_dirs()
         self._load_config()
+        self._load_auth_config()
 
     def _ensure_dirs(self) -> None:
         """Ensure all configuration directories exist"""
@@ -54,6 +58,19 @@ class ConfigManager:
             self._config = self._default_config()
             self._save_config()
 
+    def _load_auth_config(self) -> None:
+        """Load auth configuration from file or create default"""
+        if os.path.exists(self.auth_path):
+            try:
+                with open(self.auth_path, "r", encoding="utf-8") as f:
+                    self._auth_config = json.load(f)
+            except json.JSONDecodeError:
+                logger.error(f"Error parsing auth file: {self.auth_path}")
+                self._auth_config = {}
+        else:
+            self._auth_config = {}
+            self._save_auth_config()
+
     def _default_config(self) -> Dict[str, Any]:
         """Create default configuration"""
         # Return empty config - don't set any defaults
@@ -64,9 +81,18 @@ class ConfigManager:
         with open(self.config_path, "w", encoding="utf-8") as f:
             json.dump(self._config, f, indent=2)
 
+    def _save_auth_config(self) -> None:
+        """Save current auth configuration to file"""
+        with open(self.auth_path, "w", encoding="utf-8") as f:
+            json.dump(self._auth_config, f, indent=2)
+
     def get_config(self) -> Dict[str, Any]:
         """Get the complete configuration"""
         return self._config
+
+    def get_auth_config(self) -> Dict[str, Any]:
+        """Get the auth configuration"""
+        return self._auth_config
 
     def set_config(self, key: str, value: Any) -> bool:
         """Set a configuration value and persist to file
@@ -92,6 +118,12 @@ class ConfigManager:
         except Exception as e:
             logger.error(f"Error setting configuration {key}: {str(e)}")
             return False
+
+    def save_auth_config(self, api_key: str) -> bool:
+        """Save the auth configuration"""
+        self._auth_config["api_key"] = api_key
+        self._save_auth_config()
+        return True
 
     def save_share_config(self, share_url: str | None = None, share_pid: int | None = None):
         return self.set_config("share", {"url": share_url, "pid": share_pid})
