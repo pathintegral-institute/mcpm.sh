@@ -2,6 +2,7 @@
 Tests for MCPM v2.0 run command (global configuration model)
 """
 
+import logging
 from unittest.mock import patch
 
 from click.testing import CliRunner
@@ -57,6 +58,9 @@ def test_run_server_not_found(tmp_path, caplog):
     global_config_path = tmp_path / "servers.json"
     global_config_manager = GlobalConfigManager(config_path=str(global_config_path))
 
+    # Set logging level to capture INFO messages
+    caplog.set_level(logging.INFO)
+
     # Mock the global config manager
     with patch("mcpm.commands.run.global_config_manager", global_config_manager):
         runner = CliRunner()
@@ -64,11 +68,14 @@ def test_run_server_not_found(tmp_path, caplog):
 
         assert result.exit_code == 1
 
-        assert len(caplog.records) == 2
+        assert len(caplog.records) == 5
         assert caplog.records[0].levelname == "ERROR"
         assert "Error: Server 'non-existent-server' not found" in caplog.records[0].message
         assert caplog.records[1].levelname == "WARNING"
         assert "Available options:" in caplog.records[1].message
+        # Check that helpful info messages are included
+        assert any("mcpm ls" in record.message for record in caplog.records)
+        assert any("mcpm install" in record.message for record in caplog.records)
 
 
 def test_run_server_with_debug(tmp_path):

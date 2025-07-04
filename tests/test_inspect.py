@@ -95,21 +95,39 @@ def test_inspect_direct_execution(tmp_path):
 
 
 def test_inspect_empty_server_name():
-    """Test inspecting with empty server name"""
+    """Test inspecting with empty server name launches raw inspector prompt"""
     runner = CliRunner()
-    result = runner.invoke(inspect, [""])
+    # Provide "n" to decline the raw inspector prompt
+    result = runner.invoke(inspect, [""], input="n\n")
 
-    assert result.exit_code == 1
-    assert "Server name cannot be empty" in result.output
+    assert result.exit_code == 0
+    assert "MCP Inspector without a specific server" in result.output
+    assert "Launch raw MCP Inspector" in result.output
+    assert "Cancelled." in result.output
 
 
 def test_inspect_whitespace_server_name():
-    """Test inspecting with whitespace-only server name"""
+    """Test inspecting with whitespace-only server name launches raw inspector prompt"""
     runner = CliRunner()
-    result = runner.invoke(inspect, ["   "])
+    # Provide "n" to decline the raw inspector prompt
+    result = runner.invoke(inspect, ["   "], input="n\n")
 
-    assert result.exit_code == 1
-    assert "Server name cannot be empty" in result.output
+    assert result.exit_code == 0
+    assert "MCP Inspector without a specific server" in result.output
+    assert "Launch raw MCP Inspector" in result.output
+    assert "Cancelled." in result.output
+
+
+def test_inspect_no_server_name():
+    """Test inspecting with no server name launches raw inspector prompt"""
+    runner = CliRunner()
+    # Provide "n" to decline the raw inspector prompt
+    result = runner.invoke(inspect, [], input="n\n")
+
+    assert result.exit_code == 0
+    assert "MCP Inspector without a specific server" in result.output
+    assert "Launch raw MCP Inspector" in result.output
+    assert "Cancelled." in result.output
 
 
 def test_inspect_keyboard_interrupt(tmp_path):
