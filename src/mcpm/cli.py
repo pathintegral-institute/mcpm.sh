@@ -13,7 +13,6 @@ from mcpm.commands import (
     client,
     config,
     doctor,
-    import_client,
     info,
     inspect,
     inspector,
@@ -162,7 +161,6 @@ def main(ctx, help_flag, version):
         commands_table.add_row("  [cyan]uninstall[/]", "Remove a server from configuration.")
         commands_table.add_row("  [cyan]ls[/]", "List all installed servers and profile assignments.")
         commands_table.add_row("  [cyan]inspect[/]", "Launch MCP Inspector to test/debug a server.")
-        commands_table.add_row("  [cyan]import[/]", "Import server configurations from supported clients.")
 
         commands_table.add_row("[yellow]Server Execution[/]")
         commands_table.add_row("  [cyan]run[/]", "Execute a single server over stdio.")
@@ -179,7 +177,7 @@ def main(ctx, help_flag, version):
         commands_table.add_row("  [cyan]config[/]", "Manage MCPM configuration and settings.")
 
         commands_table.add_row("[yellow]Client Management[/]")
-        commands_table.add_row("  [cyan]client[/]", "Manage MCP client configurations and server integrations.")
+        commands_table.add_row("  [cyan]client[/]", "Manage MCP client configurations and import server configs.")
 
         commands_table.add_row("[yellow]Legacy Aliases[/]")
         commands_table.add_row("  [cyan]add[/]", "Alias for 'install'.")
@@ -200,7 +198,6 @@ main.add_command(remove.remove, name="uninstall")
 main.add_command(run.run)
 main.add_command(inspect.inspect)
 main.add_command(profile.profile, name="profile")
-main.add_command(import_client.import_client, name="import")
 main.add_command(doctor.doctor)
 main.add_command(usage.usage)
 main.add_command(config.config)
