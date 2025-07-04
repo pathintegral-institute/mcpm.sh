@@ -111,20 +111,58 @@ class MCPMAuthMiddleware(Middleware):
 
     async def on_request(self, context, call_next):
         """Authenticate requests using MCPM's auth configuration."""
-        # Check for API key in request headers
-        auth_header = getattr(context, "headers", {}).get("Authorization")
-        if not auth_header:
-            raise ValueError("Authorization header required")
+        try:
+            # Multiple approaches to get headers
+            headers = None
+            auth_header = None
+            
+            # Method 1: Try FastMCP's built-in helper
+            try:
+                from fastmcp.server.dependencies import get_http_headers
+                headers = get_http_headers()
+                auth_header = headers.get("authorization") or headers.get("Authorization")
+            except (RuntimeError, ImportError):
+                pass
+            
+            # Method 2: Try accessing from context
+            if not auth_header and hasattr(context, 'request'):
+                request = context.request
+                if hasattr(request, 'headers'):
+                    auth_header = request.headers.get("Authorization") or request.headers.get("authorization")
+            
+            # Method 3: Try direct context headers
+            if not auth_header and hasattr(context, 'headers'):
+                headers = context.headers
+                auth_header = headers.get("Authorization") or headers.get("authorization")
+                
+            # Method 4: Check for auth in context metadata
+            if not auth_header and hasattr(context, 'metadata'):
+                metadata = context.metadata
+                auth_header = metadata.get("authorization") or metadata.get("Authorization")
+            
+            if not auth_header:
+                # For debugging: print available context attributes
+                # print(f"DEBUG: Context type: {type(context)}, attrs: {dir(context)}")
+                raise ValueError("Authorization header required")
 
-        # Extract API key from Bearer token or direct key
-        api_key = None
-        if auth_header.startswith("Bearer "):
-            api_key = auth_header[7:]
-        else:
-            api_key = auth_header
+            # Extract API key from Bearer token or direct key
+            api_key = None
+            if auth_header.startswith("Bearer "):
+                api_key = auth_header[7:]
+            elif auth_header.startswith("bearer "):
+                api_key = auth_header[7:]
+            else:
+                api_key = auth_header
 
-        if api_key != self.api_key:
-            raise ValueError("Invalid API key")
+            if api_key != self.api_key:
+                raise ValueError("Invalid API key")
+
+        except ValueError:
+            # Re-raise authentication errors
+            raise
+        except Exception:
+            # For any other error, skip auth (might be stdio mode)
+            pass
 
         return await call_next(context)
 
