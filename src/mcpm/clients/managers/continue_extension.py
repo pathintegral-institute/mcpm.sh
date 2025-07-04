@@ -27,19 +27,19 @@ class ContinueManager(YAMLClientManager):
     display_name = "Continue"
     download_url = "https://marketplace.visualstudio.com/items?itemName=Continue.continue"
 
-    def __init__(self, config_path=None):
+    def __init__(self, config_path_override: Optional[str] = None):
         """Initialize the Continue client manager
 
         Args:
-            config_path: Optional path to the config file. If not provided, uses default path.
+            config_path_override: Optional path to override the default config file location
         """
-        super().__init__()
+        super().__init__(config_path_override=config_path_override)
         # Customize YAML handler
         self.yaml_handler.indent(mapping=2, sequence=4, offset=2)
         self.yaml_handler.preserve_quotes = True
 
-        if config_path:
-            self.config_path = config_path
+        if config_path_override:
+            self.config_path = config_path_override
         else:
             # Set config path based on detected platform
             if self._system == "Windows":

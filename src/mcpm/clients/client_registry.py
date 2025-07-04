@@ -33,33 +33,37 @@ class ClientRegistry:
     # Client configuration manager for system-wide client settings
     _client_config_manager = ClientConfigManager()
 
-    # Dictionary mapping client keys to manager instances
+    # Dictionary mapping client keys to manager classes
     _CLIENT_MANAGERS = {
-        "claude-code": ClaudeCodeManager(),
-        "claude-desktop": ClaudeDesktopManager(),
-        "windsurf": WindsurfManager(),
-        "cursor": CursorManager(),
-        "cline": ClineManager(),
-        "continue": ContinueManager(),
-        "goose-cli": GooseClientManager(),
-        "5ire": FiveireManager(),
-        "roo-code": RooCodeManager(),
-        "trae": TraeManager(),
-        "vscode": VSCodeManager(),
+        "claude-code": ClaudeCodeManager,
+        "claude-desktop": ClaudeDesktopManager,
+        "windsurf": WindsurfManager,
+        "cursor": CursorManager,
+        "cline": ClineManager,
+        "continue": ContinueManager,
+        "goose-cli": GooseClientManager,
+        "5ire": FiveireManager,
+        "roo-code": RooCodeManager,
+        "trae": TraeManager,
+        "vscode": VSCodeManager,
     }
 
     @classmethod
-    def get_client_manager(cls, client_name: str) -> Optional[BaseClientManager]:
+    def get_client_manager(cls, client_name: str, config_path_override: Optional[str] = None) -> Optional[BaseClientManager]:
         """
         Get the client manager for a given client name
 
         Args:
             client_name: Name of the client
+            config_path_override: Optional path to override the default config file location
 
         Returns:
             BaseClientManager: Client manager instance or None if not found
         """
-        return cls._CLIENT_MANAGERS.get(client_name)
+        manager_class = cls._CLIENT_MANAGERS.get(client_name)
+        if manager_class:
+            return manager_class(config_path_override=config_path_override)
+        return None
 
     @classmethod
     def get_all_client_managers(cls) -> Dict[str, BaseClientManager]:
@@ -69,7 +73,7 @@ class ClientRegistry:
         Returns:
             Dict[str, BaseClientManager]: Dictionary mapping client names to manager instances
         """
-        return cls._CLIENT_MANAGERS
+        return {name: manager() for name, manager in cls._CLIENT_MANAGERS.items()}
 
     @classmethod
     def detect_installed_clients(cls) -> Dict[str, bool]:
@@ -79,7 +83,7 @@ class ClientRegistry:
         Returns:
             Dict[str, bool]: Dictionary mapping client names to installed status
         """
-        return {client_name: manager.is_client_installed() for client_name, manager in cls._CLIENT_MANAGERS.items()}
+        return {client_name: manager().is_client_installed() for client_name, manager in cls._CLIENT_MANAGERS.items()}
 
     @classmethod
     def get_client_info(cls, client_name: str) -> Dict[str, str]:
@@ -105,7 +109,7 @@ class ClientRegistry:
         Returns:
             Dict[str, Dict[str, str]]: Dictionary mapping client names to display information
         """
-        return {client_name: manager.get_client_info() for client_name, manager in cls._CLIENT_MANAGERS.items()}
+        return {client_name: manager().get_client_info() for client_name, manager in cls._CLIENT_MANAGERS.items()}
 
     @classmethod
     def get_active_client(cls) -> str | None:

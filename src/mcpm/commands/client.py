@@ -217,7 +217,8 @@ def list_clients(verbose):
 @client.command(name="edit", context_settings=dict(help_option_names=["-h", "--help"]))
 @click.argument("client_name")
 @click.option("-e", "--external", is_flag=True, help="Open config file in external editor instead of interactive mode")
-def edit_client(client_name, external):
+@click.option("-f", "--file", "config_path_override", type=click.Path(), help="Specify a custom path to the client's config file.")
+def edit_client(client_name, external, config_path_override):
     """Enable/disable MCPM-managed servers in the specified client configuration.
 
     This command provides an interactive interface to integrate MCPM-managed
@@ -230,7 +231,7 @@ def edit_client(client_name, external):
     CLIENT_NAME is the name of the MCP client to configure (e.g., cursor, claude-desktop, windsurf).
     """
     # Get the client manager for the specified client
-    client_manager = ClientRegistry.get_client_manager(client_name)
+    client_manager = ClientRegistry.get_client_manager(client_name, config_path_override=config_path_override)
     if client_manager is None:
         console.print(f"[red]Error: Client '{client_name}' is not supported.[/]")
         console.print("[yellow]Available clients:[/]")

@@ -18,11 +18,11 @@ class VSCodeManager(JSONClientManager):
     download_url = "https://code.visualstudio.com/"
     configure_key_name = "servers"
 
-    def __init__(self, config_path=None):
-        super().__init__()
+    def __init__(self, config_path_override: str | None = None):
+        super().__init__(config_path_override=config_path_override)
 
-        if config_path:
-            self.config_path = config_path
+        if config_path_override:
+            self.config_path = config_path_override
         else:
             # Set config path based on detected platform
             if self._system == "Windows":

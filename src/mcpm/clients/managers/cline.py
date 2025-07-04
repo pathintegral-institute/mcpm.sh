@@ -15,16 +15,16 @@ class ClineManager(JSONClientManager):
     display_name = "Cline"
     download_url = "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
 
-    def __init__(self, config_path=None):
+    def __init__(self, config_path_override: str | None = None):
         """Initialize the Cline client manager
 
         Args:
-            config_path: Optional path to the config file. If not provided, uses default path.
+            config_path_override: Optional path to override the default config file location
         """
-        super().__init__()
+        super().__init__(config_path_override=config_path_override)
 
-        if config_path:
-            self.config_path = config_path
+        if config_path_override:
+            self.config_path = config_path_override
         else:
             # Set config path based on detected platform
             if self._system == "Darwin":  # macOS
@@ -123,16 +123,16 @@ class RooCodeManager(ClineManager):
     display_name = "Roo Code"
     download_url = "https://marketplace.visualstudio.com/items?itemName=RooVeterinaryInc.roo-cline"
 
-    def __init__(self, config_path=None):
+    def __init__(self, config_path_override: str | None = None):
         """Initialize the Roo Code client manager
 
         Args:
-            config_path: Optional path to the config file. If not provided, uses default path.
+            config_path_override: Optional path to override the default config file location
         """
-        super().__init__()
+        super().__init__(config_path_override=config_path_override)
 
-        if config_path:
-            self.config_path = config_path
+        if config_path_override:
+            self.config_path = config_path_override
         else:
             # Set config path based on detected platform
             if self._system == "Darwin":  # macOS

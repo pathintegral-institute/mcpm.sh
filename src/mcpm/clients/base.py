@@ -32,9 +32,11 @@ class BaseClientManager(abc.ABC):
     download_url = ""  # URL to download the client
     config_path: str
 
-    def __init__(self):
+    def __init__(self, config_path_override: Optional[str] = None):
         """Initialize the client manager"""
         self._system = platform.system()
+        if config_path_override:
+            self.config_path = config_path_override
 
     @abc.abstractmethod
     def get_servers(self) -> Dict[str, Any]:
@@ -169,9 +171,9 @@ class JSONClientManager(BaseClientManager):
 
     configure_key_name: str = "mcpServers"
 
-    def __init__(self):
+    def __init__(self, config_path_override: Optional[str] = None):
         """Initialize the JSON client manager"""
-        super().__init__()
+        super().__init__(config_path_override=config_path_override)
         self._config = None
 
     def _load_config(self) -> Dict[str, Any]:
@@ -386,9 +388,9 @@ class YAMLClientManager(BaseClientManager):
     YAML-based client managers with varying configuration formats.
     """
 
-    def __init__(self):
+    def __init__(self, config_path_override: Optional[str] = None):
         """Initialize the YAML client manager"""
-        super().__init__()
+        super().__init__(config_path_override=config_path_override)
         self.yaml_handler: YAML = YAML()
 
     def _load_config(self) -> Dict[str, Any]:
