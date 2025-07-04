@@ -30,9 +30,9 @@ def test_edit_server_interactive_fallback(monkeypatch):
         command="test-cmd",
         args=["arg1", "arg2"],
         env={"KEY": "value"},
-        profile_tags=["test-profile"]
+        profile_tags=["test-profile"],
     )
-    
+
     mock_global_config = Mock()
     mock_global_config.get_server.return_value = test_server
     monkeypatch.setattr("mcpm.commands.edit.global_config_manager", mock_global_config)
@@ -71,14 +71,14 @@ def test_edit_editor_flag(monkeypatch):
     mock_global_config = Mock()
     mock_global_config.config_path = "/tmp/test_servers.json"
     monkeypatch.setattr("mcpm.commands.edit.global_config_manager", mock_global_config)
-    
+
     # Mock os.path.exists to return True
     monkeypatch.setattr("os.path.exists", lambda path: True)
-    
+
     # Mock subprocess.run to avoid actually opening an editor
     mock_subprocess = Mock()
     monkeypatch.setattr("subprocess.run", mock_subprocess)
-    
+
     # Mock os.uname to simulate macOS
     mock_uname = Mock()
     mock_uname.sysname = "Darwin"
@@ -91,6 +91,6 @@ def test_edit_editor_flag(monkeypatch):
     assert "Opening global MCPM configuration in your default editor" in result.output
     assert "/tmp/test_servers.json" in result.output
     assert "After editing, restart any running MCP servers" in result.output
-    
+
     # Verify subprocess.run was called with correct arguments
     mock_subprocess.assert_called_once_with(["open", "/tmp/test_servers.json"])

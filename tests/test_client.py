@@ -15,21 +15,25 @@ def test_client_ls_command(monkeypatch, tmp_path):
     """Test the 'client ls' command - should list all supported MCP clients and their enabled MCPM servers"""
     # Mock supported clients
     supported_clients = ["claude-desktop", "windsurf", "cursor"]
-    monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_supported_clients", Mock(return_value=supported_clients))
-    
+    monkeypatch.setattr(
+        "mcpm.commands.client.ClientRegistry.get_supported_clients", Mock(return_value=supported_clients)
+    )
+
     # Mock installed clients
     installed_clients = {"claude-desktop": True, "windsurf": False, "cursor": True}
-    monkeypatch.setattr("mcpm.commands.client.ClientRegistry.detect_installed_clients", Mock(return_value=installed_clients))
-    
+    monkeypatch.setattr(
+        "mcpm.commands.client.ClientRegistry.detect_installed_clients", Mock(return_value=installed_clients)
+    )
+
     # Mock active client
     monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_active_client", Mock(return_value="claude-desktop"))
-    
+
     # Mock client info
     def mock_get_client_info(client_name):
         return {"name": client_name.capitalize(), "download_url": f"https://example.com/{client_name}"}
-    
+
     monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_client_info", Mock(side_effect=mock_get_client_info))
-    
+
     # Mock client managers - installed clients return a manager, uninstalled don't
     def mock_get_client_manager(client_name):
         if installed_clients.get(client_name, False):
@@ -37,8 +41,10 @@ def test_client_ls_command(monkeypatch, tmp_path):
             mock_manager.get_servers.return_value = {}  # No MCPM servers enabled
             return mock_manager
         return None
-    
-    monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_client_manager", Mock(side_effect=mock_get_client_manager))
+
+    monkeypatch.setattr(
+        "mcpm.commands.client.ClientRegistry.get_client_manager", Mock(side_effect=mock_get_client_manager)
+    )
 
     # Run the command
     runner = CliRunner()
@@ -62,21 +68,25 @@ def test_client_ls_verbose_flag(monkeypatch):
     """Test the 'client ls --verbose' command - should show detailed server information"""
     # Mock supported clients
     supported_clients = ["claude-desktop", "cursor"]
-    monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_supported_clients", Mock(return_value=supported_clients))
-    
+    monkeypatch.setattr(
+        "mcpm.commands.client.ClientRegistry.get_supported_clients", Mock(return_value=supported_clients)
+    )
+
     # Mock installed clients
     installed_clients = {"claude-desktop": True, "cursor": True}
-    monkeypatch.setattr("mcpm.commands.client.ClientRegistry.detect_installed_clients", Mock(return_value=installed_clients))
-    
+    monkeypatch.setattr(
+        "mcpm.commands.client.ClientRegistry.detect_installed_clients", Mock(return_value=installed_clients)
+    )
+
     # Mock active client
     monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_active_client", Mock(return_value="claude-desktop"))
-    
+
     # Mock client info
     def mock_get_client_info(client_name):
         return {"name": client_name.capitalize(), "download_url": f"https://example.com/{client_name}"}
-    
+
     monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_client_info", Mock(side_effect=mock_get_client_info))
-    
+
     # Mock client managers with some MCPM servers
     def mock_get_client_manager(client_name):
         mock_manager = Mock()
@@ -89,11 +99,14 @@ def test_client_ls_verbose_flag(monkeypatch):
         else:
             mock_manager.get_servers.return_value = {}
         return mock_manager
-    
-    monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_client_manager", Mock(side_effect=mock_get_client_manager))
-    
+
+    monkeypatch.setattr(
+        "mcpm.commands.client.ClientRegistry.get_client_manager", Mock(side_effect=mock_get_client_manager)
+    )
+
     # Mock global config manager for verbose details
     from mcpm.core.schema import STDIOServerConfig
+
     test_server = STDIOServerConfig(name="filesystem", command="mcp-server-filesystem", args=["/tmp"])
     mock_global_config = Mock()
     mock_global_config.get_server.return_value = test_server
@@ -118,21 +131,25 @@ def test_client_ls_with_other_servers(monkeypatch):
     """Test the 'client ls' command with both MCPM and other servers"""
     # Mock supported clients
     supported_clients = ["claude-desktop"]
-    monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_supported_clients", Mock(return_value=supported_clients))
-    
+    monkeypatch.setattr(
+        "mcpm.commands.client.ClientRegistry.get_supported_clients", Mock(return_value=supported_clients)
+    )
+
     # Mock installed clients
     installed_clients = {"claude-desktop": True}
-    monkeypatch.setattr("mcpm.commands.client.ClientRegistry.detect_installed_clients", Mock(return_value=installed_clients))
-    
+    monkeypatch.setattr(
+        "mcpm.commands.client.ClientRegistry.detect_installed_clients", Mock(return_value=installed_clients)
+    )
+
     # Mock active client
     monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_active_client", Mock(return_value="claude-desktop"))
-    
+
     # Mock client info
     def mock_get_client_info(client_name):
         return {"name": client_name.capitalize(), "download_url": f"https://example.com/{client_name}"}
-    
+
     monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_client_info", Mock(side_effect=mock_get_client_info))
-    
+
     # Mock client manager with both MCPM and other servers
     def mock_get_client_manager(client_name):
         mock_manager = Mock()
@@ -140,17 +157,16 @@ def test_client_ls_with_other_servers(monkeypatch):
         mock_mcpm_server = Mock()
         mock_mcpm_server.command = "mcpm"
         mock_mcpm_server.args = ["run", "filesystem"]
-        
+
         mock_other_server = {"command": "npx", "args": ["-y", "playwright-server"]}
-        
-        mock_manager.get_servers.return_value = {
-            "mcpm_filesystem": mock_mcpm_server,
-            "playwright": mock_other_server
-        }
+
+        mock_manager.get_servers.return_value = {"mcpm_filesystem": mock_mcpm_server, "playwright": mock_other_server}
         return mock_manager
-    
-    monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_client_manager", Mock(side_effect=mock_get_client_manager))
-    
+
+    monkeypatch.setattr(
+        "mcpm.commands.client.ClientRegistry.get_client_manager", Mock(side_effect=mock_get_client_manager)
+    )
+
     # Mock global config manager
     mock_global_config = Mock()
     mock_global_config.get_server.return_value = None  # Not needed for this test

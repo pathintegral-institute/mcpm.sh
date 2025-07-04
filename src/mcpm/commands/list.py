@@ -65,13 +65,13 @@ def list(target: str | None = None, verbose: bool = False):
             profile_display = " [dim](no profiles)[/]"
 
         console.print(f"[bold cyan]{server_name}[/]{profile_display}")
-        
+
         # Only show detailed config in verbose mode
         if verbose:
             print_server_config(server_config, show_name=False)
 
     console.print()
-    
+
     # Add hint about verbose mode if not specified
     if not verbose:
         console.print("[dim]Tip: Use 'mcpm ls -v' to see detailed server configurations[/]")

@@ -31,9 +31,9 @@ def edit(server_name, new, editor):
     - Change the server name with real-time validation
     - Modify server-specific properties (command, args, env for STDIO; URL, headers for remote)
     - Step through each field, press Enter to confirm, ESC to cancel
-    
+
     Examples:
-    
+
         mcpm edit time                                    # Edit existing server
         mcpm edit agentkit                                # Edit agentkit server
         mcpm edit -N                                      # Create new server
@@ -43,46 +43,61 @@ def edit(server_name, new, editor):
     if editor:
         _open_global_config_in_editor()
         return 0
-    
+
     # Handle new server mode
     if new:
         if server_name:
-            print_error("Cannot specify both server name and --new flag", "Use either 'mcpm edit <server>' or 'mcpm edit --new'")
+            print_error(
+                "Cannot specify both server name and --new flag", "Use either 'mcpm edit <server>' or 'mcpm edit --new'"
+            )
             raise click.ClickException("Cannot specify both server name and --new flag")
         _create_new_server()
         return 0
-    
+
     # Require server name for editing existing servers
     if not server_name:
         print_error("Server name is required", "Use 'mcpm edit <server>', 'mcpm edit --new', or 'mcpm edit --editor'")
         raise click.ClickException("Server name is required")
-        
+
     # Get the existing server
     server_config = global_config_manager.get_server(server_name)
     if not server_config:
-        print_error(f"Server '{server_name}' not found", "Run 'mcpm ls' to see available servers or use 'mcpm edit --new' to create one")
+        print_error(
+            f"Server '{server_name}' not found",
+            "Run 'mcpm ls' to see available servers or use 'mcpm edit --new' to create one",
+        )
         raise click.ClickException(f"Server '{server_name}' not found")
 
     # Display current configuration
     console.print(f"\n[bold green]Current Configuration for '{server_name}':[/]")
-    
+
     table = Table(show_header=True, header_style="bold cyan")
     table.add_column("Property", style="yellow")
     table.add_column("Current Value", style="white")
-    
+
     table.add_row("Name", server_config.name)
     table.add_row("Type", type(server_config).__name__)
-    
+
     if isinstance(server_config, STDIOServerConfig):
         table.add_row("Command", server_config.command)
         table.add_row("Arguments", ", ".join(server_config.args) if server_config.args else "[dim]None[/]")
-        table.add_row("Environment", ", ".join(f"{k}={v}" for k, v in server_config.env.items()) if server_config.env else "[dim]None[/]")
+        table.add_row(
+            "Environment",
+            ", ".join(f"{k}={v}" for k, v in server_config.env.items()) if server_config.env else "[dim]None[/]",
+        )
     elif isinstance(server_config, RemoteServerConfig):
         table.add_row("URL", server_config.url)
-        table.add_row("Headers", ", ".join(f"{k}={v}" for k, v in server_config.headers.items()) if server_config.headers else "[dim]None[/]")
-    
-    table.add_row("Profile Tags", ", ".join(server_config.profile_tags) if server_config.profile_tags else "[dim]None[/]")
-    
+        table.add_row(
+            "Headers",
+            ", ".join(f"{k}={v}" for k, v in server_config.headers.items())
+            if server_config.headers
+            else "[dim]None[/]",
+        )
+
+    table.add_row(
+        "Profile Tags", ", ".join(server_config.profile_tags) if server_config.profile_tags else "[dim]None[/]"
+    )
+
     console.print(table)
     console.print()
 
@@ -150,7 +165,7 @@ def interactive_server_edit(server_config) -> Optional[Dict[str, Any]]:
 
         try:
             answers = {}
-            
+
             # Server name - always editable
             answers["name"] = inquirer.text(
                 message="Server name:",
@@ -163,7 +178,7 @@ def interactive_server_edit(server_config) -> Optional[Dict[str, Any]]:
             if isinstance(server_config, STDIOServerConfig):
                 # STDIO Server configuration
                 console.print("\n[cyan]STDIO Server Configuration[/]")
-                
+
                 answers["command"] = inquirer.text(
                     message="Command to execute:",
                     default=server_config.command,
@@ -193,7 +208,7 @@ def interactive_server_edit(server_config) -> Optional[Dict[str, Any]]:
             elif isinstance(server_config, RemoteServerConfig):
                 # Remote Server configuration
                 console.print("\n[cyan]Remote Server Configuration[/]")
-                
+
                 answers["url"] = inquirer.text(
                     message="Server URL:",
                     default=server_config.url,
@@ -203,7 +218,9 @@ def interactive_server_edit(server_config) -> Optional[Dict[str, Any]]:
                 ).execute()
 
                 # Headers
-                current_headers = ", ".join(f"{k}={v}" for k, v in server_config.headers.items()) if server_config.headers else ""
+                current_headers = (
+                    ", ".join(f"{k}={v}" for k, v in server_config.headers.items()) if server_config.headers else ""
+                )
                 answers["headers"] = inquirer.text(
                     message="HTTP headers (KEY=value,KEY2=value2):",
                     default=current_headers,
@@ -217,26 +234,26 @@ def interactive_server_edit(server_config) -> Optional[Dict[str, Any]]:
             # Confirmation
             console.print("\n[bold]Summary of changes:[/]")
             console.print(f"Name: [cyan]{server_config.name}[/] → [cyan]{answers['name']}[/]")
-            
+
             if isinstance(server_config, STDIOServerConfig):
                 console.print(f"Command: [cyan]{server_config.command}[/] → [cyan]{answers['command']}[/]")
-                new_args = [arg.strip() for arg in answers['args'].split(",") if arg.strip()] if answers['args'] else []
+                new_args = [arg.strip() for arg in answers["args"].split(",") if arg.strip()] if answers["args"] else []
                 console.print(f"Arguments: [cyan]{server_config.args}[/] → [cyan]{new_args}[/]")
-                
+
                 new_env = {}
-                if answers['env']:
-                    for env_pair in answers['env'].split(","):
+                if answers["env"]:
+                    for env_pair in answers["env"].split(","):
                         if "=" in env_pair:
                             key, value = env_pair.split("=", 1)
                             new_env[key.strip()] = value.strip()
                 console.print(f"Environment: [cyan]{server_config.env}[/] → [cyan]{new_env}[/]")
-                
+
             elif isinstance(server_config, RemoteServerConfig):
                 console.print(f"URL: [cyan]{server_config.url}[/] → [cyan]{answers['url']}[/]")
-                
+
                 new_headers = {}
-                if answers['headers']:
-                    for header_pair in answers['headers'].split(","):
+                if answers["headers"]:
+                    for header_pair in answers["headers"].split(","):
                         if "=" in header_pair:
                             key, value = header_pair.split("=", 1)
                             new_headers[key.strip()] = value.strip()
@@ -255,11 +272,7 @@ def interactive_server_edit(server_config) -> Optional[Dict[str, Any]]:
             # Restore original argv
             sys.argv = original_argv
 
-        return {
-            "cancelled": False,
-            "answers": answers,
-            "server_type": type(server_config).__name__
-        }
+        return {"cancelled": False, "answers": answers, "server_type": type(server_config).__name__}
 
     except (KeyboardInterrupt, EOFError):
         console.print("\n[yellow]Operation cancelled[/]")
@@ -273,22 +286,22 @@ def apply_interactive_changes(server_config, interactive_result):
     """Apply the changes from interactive editing to the server config."""
     if interactive_result.get("cancelled", True):
         return False
-        
+
     answers = interactive_result["answers"]
-    
+
     # Update name
     server_config.name = answers["name"].strip()
-    
+
     if isinstance(server_config, STDIOServerConfig):
         # Update STDIO-specific fields
         server_config.command = answers["command"].strip()
-        
+
         # Parse arguments
         if answers["args"].strip():
             server_config.args = [arg.strip() for arg in answers["args"].split(",") if arg.strip()]
         else:
             server_config.args = []
-            
+
         # Parse environment variables
         server_config.env = {}
         if answers["env"].strip():
@@ -296,11 +309,11 @@ def apply_interactive_changes(server_config, interactive_result):
                 if "=" in env_pair:
                     key, value = env_pair.split("=", 1)
                     server_config.env[key.strip()] = value.strip()
-                    
+
     elif isinstance(server_config, RemoteServerConfig):
         # Update remote-specific fields
         server_config.url = answers["url"].strip()
-        
+
         # Parse headers
         server_config.headers = {}
         if answers["headers"].strip():
@@ -308,7 +321,7 @@ def apply_interactive_changes(server_config, interactive_result):
                 if "=" in header_pair:
                     key, value = header_pair.split("=", 1)
                     server_config.headers[key.strip()] = value.strip()
-    
+
     return True
 
 
@@ -317,12 +330,12 @@ def _open_global_config_in_editor():
     try:
         # Get the global config file path
         config_path = global_config_manager.config_path
-        
+
         if not os.path.exists(config_path):
             console.print("[yellow]No global configuration file found.[/]")
             console.print("[dim]Install a server first with 'mcpm install <server>' to create the config file.[/]")
             return
-            
+
         console.print("[bold green]Opening global MCPM configuration in your default editor...[/]")
 
         # Use appropriate command based on platform
@@ -368,10 +381,12 @@ def _create_new_server():
             server_config = STDIOServerConfig(
                 name=server_name,
                 command=result["answers"]["command"],
-                args=[arg.strip() for arg in result["answers"]["args"].split(",") if arg.strip()] if result["answers"]["args"] else [],
-                env={}
+                args=[arg.strip() for arg in result["answers"]["args"].split(",") if arg.strip()]
+                if result["answers"]["args"]
+                else [],
+                env={},
             )
-            
+
             # Parse environment variables
             if result["answers"]["env"]:
                 for env_pair in result["answers"]["env"].split(","):
@@ -379,12 +394,8 @@ def _create_new_server():
                         key, value = env_pair.split("=", 1)
                         server_config.env[key.strip()] = value.strip()
         else:  # remote
-            server_config = RemoteServerConfig(
-                name=server_name,
-                url=result["answers"]["url"],
-                headers={}
-            )
-            
+            server_config = RemoteServerConfig(name=server_name, url=result["answers"]["url"], headers={})
+
             # Parse headers
             if result["answers"]["headers"]:
                 for header_pair in result["answers"]["headers"].split(","):
@@ -420,7 +431,7 @@ def _interactive_new_server_form() -> Optional[Dict[str, Any]]:
 
         try:
             answers = {}
-            
+
             # Server name - required
             answers["name"] = inquirer.text(
                 message="Server name:",
@@ -442,7 +453,7 @@ def _interactive_new_server_form() -> Optional[Dict[str, Any]]:
             if answers["type"] == "stdio":
                 # STDIO Server configuration
                 console.print("\n[cyan]STDIO Server Configuration[/]")
-                
+
                 answers["command"] = inquirer.text(
                     message="Command to execute:",
                     validate=lambda text: len(text.strip()) > 0,
@@ -465,7 +476,7 @@ def _interactive_new_server_form() -> Optional[Dict[str, Any]]:
             else:  # remote
                 # Remote Server configuration
                 console.print("\n[cyan]Remote Server Configuration[/]")
-                
+
                 answers["url"] = inquirer.text(
                     message="Server URL:",
                     validate=lambda text: text.strip().startswith(("http://", "https://")) if text.strip() else False,
@@ -483,26 +494,26 @@ def _interactive_new_server_form() -> Optional[Dict[str, Any]]:
             console.print("\n[bold]Summary of new server:[/]")
             console.print(f"Name: [cyan]{answers['name']}[/]")
             console.print(f"Type: [cyan]{answers['type'].upper()}[/]")
-            
+
             if answers["type"] == "stdio":
                 console.print(f"Command: [cyan]{answers['command']}[/]")
-                new_args = [arg.strip() for arg in answers['args'].split(",") if arg.strip()] if answers['args'] else []
+                new_args = [arg.strip() for arg in answers["args"].split(",") if arg.strip()] if answers["args"] else []
                 console.print(f"Arguments: [cyan]{new_args}[/]")
-                
+
                 new_env = {}
-                if answers['env']:
-                    for env_pair in answers['env'].split(","):
+                if answers["env"]:
+                    for env_pair in answers["env"].split(","):
                         if "=" in env_pair:
                             key, value = env_pair.split("=", 1)
                             new_env[key.strip()] = value.strip()
                 console.print(f"Environment: [cyan]{new_env}[/]")
-                
+
             else:  # remote
                 console.print(f"URL: [cyan]{answers['url']}[/]")
-                
+
                 new_headers = {}
-                if answers['headers']:
-                    for header_pair in answers['headers'].split(","):
+                if answers["headers"]:
+                    for header_pair in answers["headers"].split(","):
                         if "=" in header_pair:
                             key, value = header_pair.split("=", 1)
                             new_headers[key.strip()] = value.strip()
