@@ -6,6 +6,7 @@ import secrets
 
 import click
 from rich.console import Console
+from rich.panel import Panel
 
 from mcpm.core.tunnel import Tunnel
 from mcpm.fastmcp_integration.proxy import create_mcpm_proxy
@@ -118,22 +119,30 @@ async def share_profile_fastmcp(profile_servers, profile_name, port, address, ht
         public_url = tunnel.start_tunnel()
 
         if public_url:
-            # Display critical information only
+            # Display critical information in a nice panel
             http_url = f"{public_url}/mcp/"
-            console.print(f"[bold green]Profile '{profile_name}' is now shared at:[/]")
-            console.print(f"[cyan]{http_url}[/]")
-
+            
+            # Build server list
+            server_list = "\n".join([f"  • [cyan]{server.name}[/]" for server in profile_servers])
+            
+            # Build panel content based on auth status
+            panel_content = f"[bold]Profile:[/] {profile_name}\n[bold]URL:[/] [cyan]{http_url}[/cyan]\n"
+            
             if not no_auth and api_key:
-                console.print(f"[bold green]API Key:[/] [cyan]{api_key}[/]")
+                panel_content += f"[bold]HEADER Authorization:[/] [cyan]Bearer {api_key}[/cyan]\n"
             else:
-                console.print("[bold red]Warning:[/] Anyone with the URL can access your servers.")
-
-            # Show available servers
-            console.print("[bold green]Shared servers:[/]")
-            for server_config in profile_servers:
-                console.print(f"  • [cyan]{server_config.name}[/]")
-
-            console.print("[dim]Press Ctrl+C to stop sharing[/]")
+                panel_content += "[bold red]⚠️  Warning:[/] Anyone with the URL can access your servers\n"
+            
+            panel_content += f"\n[bold]Shared servers:[/]\n{server_list}\n\n[dim]Press Ctrl+C to stop sharing[/]"
+            
+            panel = Panel(
+                panel_content,
+                title="📁 Profile Shared Publicly",
+                title_align="left",
+                border_style="blue",
+                padding=(1, 2)
+            )
+            console.print(panel)
 
             # Keep running until interrupted
             try:

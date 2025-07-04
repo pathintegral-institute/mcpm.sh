@@ -8,6 +8,7 @@ import sys
 
 import click
 from rich.console import Console
+from rich.panel import Panel
 
 from mcpm.fastmcp_integration.proxy import create_mcpm_proxy
 from mcpm.global_config import GlobalConfigManager
@@ -115,11 +116,17 @@ async def run_server_with_fastmcp(server_config, server_name, http_mode=False, p
             if actual_port != port:
                 logger.debug(f"Port {port} is busy, using port {actual_port} instead")
 
-            # Display server information
+            # Display server information in a nice panel
             http_url = f"http://127.0.0.1:{actual_port}/mcp/"
-            console.print(f"[bold green]Server '{server_name}' is now running at:[/]")
-            console.print(f"[cyan]{http_url}[/]")
-            console.print("[dim]Press Ctrl+C to stop the server[/]")
+            panel_content = f"[bold]Server:[/] {server_name}\n[bold]URL:[/] [cyan]{http_url}[/cyan]\n\n[dim]Press Ctrl+C to stop the server[/]"
+            panel = Panel(
+                panel_content,
+                title="🌐 Local Server Running",
+                title_align="left",
+                border_style="green",
+                padding=(1, 2)
+            )
+            console.print(panel)
 
             logger.debug(f"Starting FastMCP proxy for server '{server_name}' on port {actual_port}")
 

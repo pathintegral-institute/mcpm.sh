@@ -5,6 +5,7 @@ import logging
 
 import click
 from rich.console import Console
+from rich.panel import Panel
 
 from mcpm.fastmcp_integration.proxy import create_mcpm_proxy
 from mcpm.profile.profile_config import ProfileConfigManager
@@ -72,17 +73,22 @@ async def run_profile_fastmcp(profile_servers, profile_name, http_mode=False, po
             if actual_port != port:
                 logger.debug(f"Port {port} is busy, using port {actual_port} instead")
 
-            # Display server information
+            # Display profile information in a nice panel
             http_url = f"http://127.0.0.1:{actual_port}/mcp/"
-            console.print(f"[bold green]Profile '{profile_name}' is now running at:[/]")
-            console.print(f"[cyan]{http_url}[/]")
-
-            # Show servers in the profile
-            console.print("[bold green]Servers:[/]")
-            for server_config in profile_servers:
-                console.print(f"  • [cyan]{server_config.name}[/]")
-
-            console.print("[dim]Press Ctrl+C to stop the profile[/]")
+            
+            # Build server list
+            server_list = "\n".join([f"  • [cyan]{server.name}[/]" for server in profile_servers])
+            
+            panel_content = f"[bold]Profile:[/] {profile_name}\n[bold]URL:[/] [cyan]{http_url}[/cyan]\n\n[bold]Servers:[/]\n{server_list}\n\n[dim]Press Ctrl+C to stop the profile[/]"
+            
+            panel = Panel(
+                panel_content,
+                title="📁 Profile Running Locally",
+                title_align="left",
+                border_style="green",
+                padding=(1, 2)
+            )
+            console.print(panel)
 
             logger.debug(f"Starting FastMCP proxy for profile '{profile_name}' on port {actual_port}")
 
