@@ -24,18 +24,18 @@ def setup_logging() -> None:
     debug_enabled = is_debug_enabled()
     log_level = os.getenv("MCPM_LOG_LEVEL", "DEBUG" if debug_enabled else "INFO")
 
-    # Create Rich handler with simple configuration
+    # Create Rich handler with timestamp and class information
     handler = RichHandler(
         console=Console(stderr=True),
         rich_tracebacks=True,
-        show_time=False,  # Keep output clean
-        show_path=False,  # Keep output clean
+        show_time=True,  # Show timestamps
+        show_path=False,  # Keep path clean
     )
 
-    # Configure root logger
+    # Configure root logger with timestamp and class name format
     logging.basicConfig(
         level=log_level,
-        format="%(message)s",
+        format="%(name)s: %(message)s",  # Include class/module name
         handlers=[handler],
         force=True,  # Replace any existing handlers
     )
