@@ -37,24 +37,95 @@ def build_inspector_command(server_config, server_name):
     return inspector_cmd
 
 
+def launch_raw_inspector():
+    """Launch raw MCP Inspector without a specified server."""
+    # Show information panel with options
+    panel_content = """[bold]MCP Inspector without a specific server[/]
+
+This will launch the raw MCP Inspector where you can manually configure
+the connection to any MCP server.
+
+[bold]To inspect MCPM-managed servers instead:[/]
+  • Run [cyan]mcpm ls[/] to see available servers
+  • Run [cyan]mcpm inspect <server-name>[/] to inspect a specific server
+
+Examples:
+  [cyan]mcpm inspect filesystem[/]     # Inspect filesystem server
+  [cyan]mcpm inspect time[/]           # Inspect time server
+
+[bold yellow]Continue with raw inspector?[/]"""
+    
+    panel = Panel(
+        panel_content,
+        title="🔍 MCP Inspector",
+        border_style="yellow",
+        padding=(1, 2)
+    )
+    console.print(panel)
+    
+    # Prompt for confirmation
+    try:
+        confirm = click.confirm("Launch raw MCP Inspector", default=True)
+        if not confirm:
+            console.print("[yellow]Cancelled.[/]")
+            sys.exit(0)
+    except (KeyboardInterrupt, EOFError):
+        console.print("\n[yellow]Cancelled.[/]")
+        sys.exit(0)
+    
+    # Launch raw inspector
+    raw_inspector_cmd = f"{NPX_CMD} @modelcontextprotocol/inspector"
+    
+    console.print("\n[bold]Launching raw MCP Inspector...[/]")
+    console.print("The Inspector UI will open in your web browser.")
+    console.print("[yellow]Press Ctrl+C to stop the Inspector.[/]")
+    
+    try:
+        console.print(f"[dim]Executing: {raw_inspector_cmd}[/]")
+        cmd_parts = shlex.split(raw_inspector_cmd)
+        returncode = subprocess.call(cmd_parts)
+        
+        if returncode == 0:
+            console.print("[bold green]Inspector process completed successfully.[/]")
+        elif returncode in (130, -2):
+            console.print("[bold yellow]Inspector process was terminated.[/]")
+        else:
+            console.print(f"[bold red]Inspector process exited with code {returncode}[/]")
+            
+        sys.exit(returncode)
+        
+    except KeyboardInterrupt:
+        console.print("\n[bold yellow]Inspector process terminated by keyboard interrupt.[/]")
+        sys.exit(130)
+    except FileNotFoundError:
+        console.print("[bold red]Error:[/] Could not find npx. Please make sure Node.js is installed.")
+        console.print("Install Node.js from https://nodejs.org/")
+        sys.exit(1)
+    except Exception as e:
+        console.print(f"[bold red]Error launching Inspector:[/] {str(e)}")
+        sys.exit(1)
+
+
 @click.command()
-@click.argument("server_name")
+@click.argument("server_name", required=False)
 @click.help_option("-h", "--help")
 def inspect(server_name):
     """Launch MCP Inspector to test and debug a server from global configuration.
 
-    Finds the specified server in the global configuration and launches
-    the MCP Inspector with the correct configuration to connect to and test the server.
+    If SERVER_NAME is provided, finds the specified server in the global configuration 
+    and launches the MCP Inspector with the correct configuration to connect to and test the server.
+    
+    If no SERVER_NAME is provided, launches the raw MCP Inspector for manual configuration.
 
     Examples:
-        mcpm inspect mcp-server-browse    # Inspect the browse server
+        mcpm inspect                     # Launch raw inspector (manual setup)
+        mcpm inspect mcp-server-browse   # Inspect the browse server  
         mcpm inspect filesystem          # Inspect filesystem server
         mcpm inspect time                # Inspect the time server
     """
-    # Validate server name
+    # Handle case where no server name is provided
     if not server_name or not server_name.strip():
-        console.print("[red]Error: Server name cannot be empty[/]")
-        sys.exit(1)
+        return launch_raw_inspector()
 
     server_name = server_name.strip()
 
