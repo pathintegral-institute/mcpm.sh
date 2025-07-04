@@ -32,7 +32,7 @@ async def find_available_port(preferred_port, max_attempts=10):
     return preferred_port
 
 
-async def run_profile_fastmcp(profile_servers, profile_name, debug=False, http_mode=False, port=DEFAULT_PORT):
+async def run_profile_fastmcp(profile_servers, profile_name, http_mode=False, port=DEFAULT_PORT):
     """Run profile servers using FastMCP proxy for proper aggregation."""
     server_count = len(profile_servers)
     logger.debug(f"Using FastMCP proxy to aggregate {server_count} server(s)")
@@ -81,11 +81,10 @@ async def run_profile_fastmcp(profile_servers, profile_name, debug=False, http_m
 
 @click.command()
 @click.argument("profile_name")
-@click.option("--debug", is_flag=True, help="Show debug output")
 @click.option("--http", is_flag=True, help="Run profile over HTTP instead of stdio")
 @click.option("--port", type=int, default=DEFAULT_PORT, help=f"Port for HTTP mode (default: {DEFAULT_PORT})")
 @click.help_option("-h", "--help")
-def run(profile_name, debug, http, port):
+def run(profile_name, http, port):
     """Execute all servers in a profile over stdio or HTTP.
 
     Uses FastMCP proxy to aggregate servers into a unified MCP interface
@@ -97,7 +96,8 @@ def run(profile_name, debug, http, port):
         mcpm profile run web-dev                    # Run over stdio (default)
         mcpm profile run --http web-dev             # Run over HTTP on port 6276
         mcpm profile run --http --port 9000 ai      # Run over HTTP on port 9000
-        mcpm profile run --debug --http web-dev     # Debug + HTTP mode
+    
+    Debug logging: Set MCPM_DEBUG=1 for verbose output
     """
     # Validate profile name
     if not profile_name or not profile_name.strip():
@@ -127,17 +127,10 @@ def run(profile_name, debug, http, port):
 
     logger.info(f"Running profile '{profile_name}' with {len(profile_servers)} server(s)")
 
-    if debug:
-        logging.basicConfig(level=logging.DEBUG)
-
-    # Only show visual output in debug mode or HTTP mode
-    if debug or http:
-        logger.info(f"Running profile '{profile_name}' with {len(profile_servers)} server(s)")
-
-        if debug:
-            logger.debug("Servers to run:")
-            for server_config in profile_servers:
-                logger.debug(f"  - {server_config.name}: {server_config}")
+    # Log debug info about servers (controlled by MCPM_DEBUG environment variable)
+    logger.debug("Servers to run:")
+    for server_config in profile_servers:
+        logger.debug(f"  - {server_config.name}: {server_config}")
 
     # Use FastMCP proxy for all cases (single or multiple servers)
     logger.debug(f"Using FastMCP proxy for {len(profile_servers)} server(s)")
@@ -145,4 +138,4 @@ def run(profile_name, debug, http, port):
         logger.debug(f"HTTP mode on port {port}")
 
     # Run the async function
-    return asyncio.run(run_profile_fastmcp(profile_servers, profile_name, debug, http_mode=http, port=port))
+    return asyncio.run(run_profile_fastmcp(profile_servers, profile_name, http_mode=http, port=port))
