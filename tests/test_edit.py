@@ -60,4 +60,37 @@ def test_edit_command_help():
     assert "Edit a server configuration" in result.output
     assert "Opens an interactive form editor" in result.output
     assert "mcpm edit time" in result.output
-    assert "Interactive form" in result.output
+    assert "mcpm edit -N" in result.output
+    assert "mcpm edit -e" in result.output
+    assert "--new" in result.output
+    assert "--editor" in result.output
+
+
+def test_edit_editor_flag(monkeypatch):
+    """Test the -e/--editor flag."""
+    mock_global_config = Mock()
+    mock_global_config.config_path = "/tmp/test_servers.json"
+    monkeypatch.setattr("mcpm.commands.edit.global_config_manager", mock_global_config)
+    
+    # Mock os.path.exists to return True
+    monkeypatch.setattr("os.path.exists", lambda path: True)
+    
+    # Mock subprocess.run to avoid actually opening an editor
+    mock_subprocess = Mock()
+    monkeypatch.setattr("subprocess.run", mock_subprocess)
+    
+    # Mock os.uname to simulate macOS
+    mock_uname = Mock()
+    mock_uname.sysname = "Darwin"
+    monkeypatch.setattr("os.uname", lambda: mock_uname)
+
+    runner = CliRunner()
+    result = runner.invoke(edit, ["-e"])
+
+    assert result.exit_code == 0
+    assert "Opening global MCPM configuration in your default editor" in result.output
+    assert "/tmp/test_servers.json" in result.output
+    assert "After editing, restart any running MCP servers" in result.output
+    
+    # Verify subprocess.run was called with correct arguments
+    mock_subprocess.assert_called_once_with(["open", "/tmp/test_servers.json"])
