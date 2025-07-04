@@ -11,14 +11,8 @@
     "name": "modelcontextprotocol"
   },
   "license": "MIT",
-  "categories": [
-    "Databases"
-  ],
-  "tags": [
-    "sqlite",
-    "database",
-    "business insights"
-  ],
+  "categories": ["Databases"],
+  "tags": ["sqlite", "database", "business insights"],
   "installations": {
     "docker": {
       "type": "docker",
@@ -27,19 +21,31 @@
         "run",
         "--rm",
         "-i",
-        "-v",
-        "mcp-test:/mcp",
+        "--mount",
+        "type=bind,src=${DB_PATH},dst=/data/database.db",
         "mcp/sqlite",
         "--db-path",
-        "/mcp/test.db"
+        "/data/database.db"
       ]
+    }
+  },
+  "arguments": {
+    "DB_PATH": {
+      "description": "The path to the SQLite database file on your local machine.",
+      "required": true,
+      "example": "/path/to/your/database.db"
     }
   },
   "examples": [
     {
-      "title": "Interactive SQL Analysis",
-      "description": "Guides users through database operations and insights generation.",
-      "prompt": "mcp-demo -topic [business_domain]"
+      "title": "List Tables",
+      "description": "List all tables in the database.",
+      "prompt": "List all the tables in my database"
+    },
+    {
+      "title": "Query Data",
+      "description": "Run a SELECT query to get data from a table.",
+      "prompt": "Show me the first 10 rows from the 'customers' table"
     }
   ],
   "tools": [
@@ -54,9 +60,7 @@
             "description": "SELECT SQL query to execute"
           }
         },
-        "required": [
-          "query"
-        ]
+        "required": ["query"]
       }
     },
     {
@@ -70,9 +74,7 @@
             "description": "SQL query to execute"
           }
         },
-        "required": [
-          "query"
-        ]
+        "required": ["query"]
       }
     },
     {
@@ -86,9 +88,7 @@
             "description": "CREATE TABLE SQL statement"
           }
         },
-        "required": [
-          "query"
-        ]
+        "required": ["query"]
       }
     },
     {
@@ -110,9 +110,7 @@
             "description": "Name of the table to describe"
           }
         },
-        "required": [
-          "table_name"
-        ]
+        "required": ["table_name"]
       }
     },
     {
@@ -126,9 +124,7 @@
             "description": "Business insight discovered from data analysis"
           }
         },
-        "required": [
-          "insight"
-        ]
+        "required": ["insight"]
       }
     }
   ],
