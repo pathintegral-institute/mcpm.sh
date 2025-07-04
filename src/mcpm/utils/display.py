@@ -14,18 +14,20 @@ from mcpm.utils.scope import CLIENT_PREFIX, PROFILE_PREFIX
 console = Console()
 
 
-def print_server_config(server_config: ServerConfig, is_stashed=False):
+def print_server_config(server_config: ServerConfig, is_stashed=False, show_name=True):
     """Print detailed information about a server configuration.
 
     Args:
         server_config: Server configuration information
         is_stashed: Whether the server is stashed (affects display style)
+        show_name: Whether to show the server name (default True for backwards compatibility)
     """
     # Server name and command
-    if is_stashed:
-        console.print(f"[bold yellow]{server_config.name}[/] [dim](stashed)[/]")
-    else:
-        console.print(f"[bold cyan]{server_config.name}[/]")
+    if show_name:
+        if is_stashed:
+            console.print(f"[bold yellow]{server_config.name}[/] [dim](stashed)[/]")
+        else:
+            console.print(f"[bold cyan]{server_config.name}[/]")
 
     if isinstance(server_config, RemoteServerConfig):
         console.print(f"  Url: [green]{server_config.url}[/]")

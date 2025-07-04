@@ -15,15 +15,17 @@ profile_manager = ProfileConfigManager()
 
 @click.command()
 @click.option("--target", "-t", help="[DEPRECATED] Ignored in v2.0", hidden=True)
+@click.option("--verbose", "-v", is_flag=True, help="Show detailed server configuration")
 @click.help_option("-h", "--help")
-def list(target: str | None = None):
+def list(target: str | None = None, verbose: bool = False):
     """List all installed MCP servers from global configuration.
 
     Examples:
 
     \b
-        mcpm ls                    # List all servers in global config
-        mcpm profile ls            # List profiles and their tagged servers
+        mcpm ls                    # List server names and profiles
+        mcpm ls -v                 # List servers with detailed configuration
+        mcpm profile ls            # List profiles and their included servers
     """
 
     # v2.0: Use global configuration model
@@ -52,16 +54,25 @@ def list(target: str | None = None):
     console.print(f"\n[bold]Found {len(servers)} server(s) in global configuration:[/]")
     console.print()
 
-    # Display servers with their profile tags
+    # Display servers with their profiles
     for server_name, server_config in servers.items():
-        # Show profile tags if any
-        tags = server_profiles.get(server_name, [])
-        if tags:
-            tag_display = f" [dim](tagged: {', '.join(tags)})[/]"
+        # Show profiles if any
+        profiles_list = server_profiles.get(server_name, [])
+        if profiles_list:
+            highlighted_profiles = [f"[yellow]{profile}[/]" for profile in profiles_list]
+            profile_display = f" [dim](profiles:[/] {', '.join(highlighted_profiles)}[dim])[/]"
         else:
-            tag_display = " [dim](no profile tags)[/]"
+            profile_display = " [dim](no profiles)[/]"
 
-        console.print(f"[bold cyan]{server_name}[/]{tag_display}")
-        print_server_config(server_config)
+        console.print(f"[bold cyan]{server_name}[/]{profile_display}")
+        
+        # Only show detailed config in verbose mode
+        if verbose:
+            print_server_config(server_config, show_name=False)
 
     console.print()
+    
+    # Add hint about verbose mode if not specified
+    if not verbose:
+        console.print("[dim]Tip: Use 'mcpm ls -v' to see detailed server configurations[/]")
+        console.print()
