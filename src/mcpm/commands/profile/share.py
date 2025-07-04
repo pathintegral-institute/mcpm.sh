@@ -105,6 +105,8 @@ async def share_profile_fastmcp(profile_servers, profile_name, port, address, ht
             if not no_auth and api_key:
                 console.print(f"[bold green]API Key:[/] [cyan]{api_key}[/]")
                 console.print(f"[dim]Provide this key in the 'Authorization' header as a Bearer token.[/]")
+            else:
+                console.print("[bold red]Warning:[/] Anyone with the URL can access your servers.")
             console.print()
             console.print("[bold]Connection URLs:[/]")
             console.print(f"  • Streamable HTTP: [cyan]{public_url}/mcp/[/]")

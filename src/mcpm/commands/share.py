@@ -219,7 +219,8 @@ async def _share_async(server_config, server_name, port, remote_host, remote_por
         if not no_auth and api_key:
             console.print(f"[bold green]API Key:[/] [cyan]{api_key}[/]")
             console.print(f"[dim]Provide this key in the 'Authorization' header as a Bearer token.[/]")
-        console.print("[bold red]Warning:[/] Anyone with the URL can access your server.")
+        else:
+            console.print("[bold red]Warning:[/] Anyone with the URL can access your server.")
         console.print("[yellow]Press Ctrl+C to stop sharing and terminate the server[/]")
 
         # Keep running until interrupted
