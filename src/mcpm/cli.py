@@ -5,6 +5,7 @@ MCPM CLI - Main entry point for the Model Context Protocol Manager CLI
 import click
 from rich.console import Console
 from rich.table import Table
+from rich.traceback import Traceback
 
 from mcpm import __version__
 from mcpm.clients.client_config import ClientConfigManager
@@ -109,10 +110,28 @@ def print_logo():
     console.print("[bold cyan]" + "=" * terminal_width + "[/]")
 
 
+def handle_exceptions(func):
+    """Decorator to catch unhandled exceptions and provide a helpful error message."""
+
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception:
+            console.print(Traceback(show_locals=True))
+            console.print("[bold red]An unexpected error occurred.[/bold red]")
+            console.print(
+                "Please report this issue on our GitHub repository: "
+                "[link=https://github.com/pathintegral-institute/mcpm.sh/issues]https://github.com/pathintegral-institute/mcpm.sh/issues[/link]"
+            )
+
+    return wrapper
+
+
 @click.group(context_settings=CONTEXT_SETTINGS, invoke_without_command=True)
 @click.option("-h", "--help", "help_flag", is_flag=True, help="Show this message and exit.")
 @click.option("-v", "--version", is_flag=True, help="Show version and exit.")
 @click.pass_context
+@handle_exceptions
 def main(ctx, help_flag, version):
     """MCPM - Model Context Protocol Manager.
 
