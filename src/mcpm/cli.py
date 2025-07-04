@@ -208,6 +208,18 @@ def main(ctx, help_flag, version):
         # Additional helpful information
         console.print("")
         console.print("[italic]Run [bold]mcpm COMMAND -h[/] for more information on a command.[/]")
+        console.print("")
+
+        # Add links for feedback and support
+        console.print("[bold]Feedback and Support:[/]")
+        console.print(
+            "  [dim]🐛 Report a bug or request a feature: "
+            "[link=https://github.com/pathintegral-institute/mcpm.sh/issues]https://github.com/pathintegral-institute/mcpm.sh/issues[/link]"
+        )
+        console.print(
+            "  [dim]💬 Join the discussion: "
+            "[link=https://github.com/pathintegral-institute/mcpm.sh/discussions]https://github.com/pathintegral-institute/mcpm.sh/discussions[/link]"
+        )
 
 
 # Register v2.0 commands
