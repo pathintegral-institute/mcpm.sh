@@ -41,43 +41,152 @@ def client():
 
 
 @client.command(name="ls", context_settings=dict(help_option_names=["-h", "--help"]))
-def list_clients():
-    """List all supported MCP clients and their status."""
+@click.option("--verbose", "-v", is_flag=True, help="Show detailed server information")
+def list_clients(verbose):
+    """List all supported MCP clients and their enabled MCPM servers."""
     # Get the list of supported clients
     supported_clients = ClientRegistry.get_supported_clients()
-
-    table = Table(title="Supported MCP Clients")
-    table.add_column("Client Name", style="cyan")
-    table.add_column("Installation", style="yellow")
-    table.add_column("Status", style="green")
-
-    active_client = ClientRegistry.get_active_client()
     installed_clients = ClientRegistry.detect_installed_clients()
+    active_client = ClientRegistry.get_active_client()
 
-    for client in sorted(supported_clients):
-        # Determine installation status
-        installed = installed_clients.get(client, False)
-        install_status = "[green]Installed[/]" if installed else "[gray]Not installed[/]"
+    # Count total clients
+    total_clients = len(supported_clients)
+    installed_count = sum(1 for c in supported_clients if installed_clients.get(c, False))
+    
+    console.print(f"\n[green]Found {installed_count} MCP client(s)[/]\n")
 
-        # Determine active status
-        active_status = "[bold green]ACTIVE[/]" if client == active_client else ""
+    table = Table(show_header=True, header_style="bold")
+    table.add_column("Name", style="cyan")
+    table.add_column("MCPM Servers", overflow="fold")
+    table.add_column("Other Servers", overflow="fold")
+    if verbose:
+        table.add_column("Server Details", overflow="fold")
 
-        # Get client info for more details
-        client_info = ClientRegistry.get_client_info(client)
-        display_name = client_info.get("name", client)
-
-        table.add_row(f"{display_name} ({client})", install_status, active_status)
+    # Separate installed and uninstalled clients
+    installed_client_names = [c for c in supported_clients if installed_clients.get(c, False)]
+    uninstalled_client_names = [c for c in supported_clients if not installed_clients.get(c, False)]
+    
+    # Process only installed clients in the table
+    for client_name in sorted(installed_client_names):
+        # Get client info
+        client_info = ClientRegistry.get_client_info(client_name)
+        display_name = client_info.get("name", client_name)
+        
+        # Build client name with code and status indicators
+        name_parts = [f"{display_name} [dim]({client_name})[/]"]
+            
+        if client_name == active_client:
+            name_parts.append("[bold green]ACTIVE[/]")
+            
+        client_display = " ".join(name_parts)
+        
+        # Get the client manager to check MCPM servers
+        client_manager = ClientRegistry.get_client_manager(client_name)
+        if not client_manager:
+            row = [client_display, "[dim]Cannot read config[/]", "[dim]Cannot read config[/]"]
+            if verbose:
+                row.append("[dim]-[/]")
+            table.add_row(*row)
+            continue
+            
+        # Find MCPM-managed servers and other servers in the client config
+        mcpm_servers = []
+        other_servers = []
+        mcpm_server_details = []
+        
+        try:
+            client_servers = client_manager.get_servers()
+            for server_name, server_config in client_servers.items():
+                # Check if this is an MCPM-managed server
+                # Look for servers using 'mcpm run' command or with mcpm_ prefix
+                is_mcpm_server = False
+                actual_server_name = None
+                
+                # Handle both object attributes and dictionary keys
+                if hasattr(server_config, "command"):
+                    command = server_config.command
+                    args = getattr(server_config, "args", [])
+                elif isinstance(server_config, dict):
+                    command = server_config.get("command", "")
+                    args = server_config.get("args", [])
+                else:
+                    continue
+                
+                if command == "mcpm":
+                    if len(args) >= 2 and args[0] == "run":
+                        is_mcpm_server = True
+                        actual_server_name = args[1]
+                elif server_name.startswith("mcpm_"):
+                    # Check if it's using mcpm run command
+                    if command == "mcpm":
+                        if len(args) >= 2 and args[0] == "run":
+                            is_mcpm_server = True
+                            actual_server_name = args[1]
+                            
+                if is_mcpm_server and actual_server_name:
+                    mcpm_servers.append(actual_server_name)
+                    
+                    if verbose:
+                        # Get the actual server config from global config for details
+                        global_server = global_config_manager.get_server(actual_server_name)
+                        if global_server:
+                            if hasattr(global_server, "command"):
+                                cmd_args = " ".join(global_server.args or [])
+                                mcpm_server_details.append(f"{actual_server_name}: {global_server.command} {cmd_args}")
+                            elif hasattr(global_server, "url"):
+                                mcpm_server_details.append(f"{actual_server_name}: {global_server.url}")
+                            else:
+                                mcpm_server_details.append(f"{actual_server_name}: Custom")
+                        else:
+                            mcpm_server_details.append(f"{actual_server_name}: [dim]Not in global config[/]")
+                else:
+                    # This is a non-MCPM server
+                    other_servers.append(server_name)
+                            
+        except Exception as e:
+            # If we can't read the client config, note it
+            row = [client_display, "[red]Error reading config[/]", "[red]Error reading config[/]"]
+            if verbose:
+                row.append("[dim]-[/]")
+            table.add_row(*row)
+            continue
+        
+        # Format server lists
+        if mcpm_servers:
+            mcpm_display = ", ".join(mcpm_servers)
+            detail_display = "\n".join(mcpm_server_details) if verbose and mcpm_server_details else None
+        else:
+            mcpm_display = "[dim]None[/]"
+            detail_display = "[dim]-[/]" if verbose else None
+            
+        if other_servers:
+            other_display = ", ".join(other_servers)
+        else:
+            other_display = "[dim]None[/]"
+        
+        # Add row
+        row = [client_display, mcpm_display, other_display]
+        if verbose:
+            row.append(detail_display or "[dim]-[/]")
+        table.add_row(*row)
 
     console.print(table)
-
-    # Add helpful instructions for non-installed clients
-    non_installed = [c for c, installed in installed_clients.items() if not installed]
-    if non_installed:
-        console.print("\n[italic]To use a non-installed client, you need to install it first.[/]")
-        for client in non_installed:
-            info = ClientRegistry.get_client_info(client)
-            if "download_url" in info:
-                console.print(f"[yellow]{info.get('name', client)}[/]: {info['download_url']}")
+    console.print()
+    
+    # Show uninstalled clients in compact format
+    if uninstalled_client_names:
+        uninstalled_display_names = []
+        for client_name in sorted(uninstalled_client_names):
+            client_info = ClientRegistry.get_client_info(client_name)
+            display_name = client_info.get("name", client_name)
+            uninstalled_display_names.append(display_name)
+        
+        console.print(f"[dim]Additional supported clients (not detected): {', '.join(uninstalled_display_names)}[/]")
+        console.print()
+        
+    console.print("[dim]Tips:[/]")
+    console.print("[dim]  • Use 'mcpm client edit <client>' to enable/disable MCPM servers in a client[/]")
+    console.print("[dim]  • Use 'mcpm client edit <client> -e' to open client config in your default editor[/]\n")
 
 
 @client.command(name="edit", context_settings=dict(help_option_names=["-h", "--help"]))
@@ -255,38 +364,38 @@ def _interactive_server_selection_inquirer(
 
 
 def _save_config_with_mcpm_servers(client_manager, config_path, current_config, mcpm_servers, client_name):
-    """Save the client config with updated MCPM server entries."""
-    # Ensure the config has the mcpServers section
-    if "mcpServers" not in current_config:
-        current_config["mcpServers"] = {}
-
-    mcp_servers_config = current_config["mcpServers"]
-
-    # Remove existing MCPM-managed entries (those with mcpm_ prefix)
-    servers_to_remove = []
-    for client_server_name, server_config in mcp_servers_config.items():
-        command = server_config.get("command", "")
-        args = server_config.get("args", [])
-
-        # Check if this is an MCPM-managed server entry
-        if client_server_name.startswith("mcpm_") and (command == "mcpm" and len(args) >= 2 and args[0] == "run"):
-            servers_to_remove.append(client_server_name)
-
-    for client_server_name in servers_to_remove:
-        del mcp_servers_config[client_server_name]
-
-    # Add new MCPM-managed entries with mcpm_ prefix
-    for server_name in mcpm_servers:
-        prefixed_name = f"mcpm_{server_name}"
-        mcp_servers_config[prefixed_name] = {"command": "mcpm", "args": ["run", server_name]}
-
-    # Ensure directory exists
-    os.makedirs(os.path.dirname(config_path), exist_ok=True)
-
-    # Save the updated configuration
+    """Save the client config with updated MCPM server entries using the client manager."""
     try:
-        with open(config_path, "w", encoding="utf-8") as f:
-            json.dump(current_config, f, indent=2)
+        from mcpm.core.schema import STDIOServerConfig
+        
+        # Get list of current servers
+        current_server_list = client_manager.list_servers()
+        
+        # Remove existing MCPM-managed entries (those with mcpm_ prefix)
+        servers_to_remove = []
+        for server_name in current_server_list:
+            if server_name.startswith("mcpm_"):
+                # Check if it's actually an MCPM server by getting its config
+                server_config = client_manager.get_server(server_name)
+                if server_config and hasattr(server_config, "command") and server_config.command == "mcpm":
+                    args = getattr(server_config, "args", [])
+                    if len(args) >= 2 and args[0] == "run":
+                        servers_to_remove.append(server_name)
+
+        # Remove old MCPM servers
+        for server_name in servers_to_remove:
+            client_manager.remove_server(server_name)
+
+        # Add new MCPM-managed entries with mcpm_ prefix
+        for server_name in mcpm_servers:
+            prefixed_name = f"mcpm_{server_name}"
+            # Create a proper ServerConfig object for MCPM server
+            server_config = STDIOServerConfig(
+                name=prefixed_name,
+                command="mcpm",
+                args=["run", server_name]
+            )
+            client_manager.add_server(server_config)
 
         console.print(f"[green]Successfully updated {client_name} configuration![/]")
         console.print(f"[dim]Config saved to: {config_path}[/]")

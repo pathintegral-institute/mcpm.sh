@@ -96,3 +96,29 @@ class VSCodeManager(JSONClientManager):
             logger.error(f"Error saving client config: {str(e)}")
             traceback.print_exc()
             return False
+
+    def to_client_format(self, server_config) -> dict:
+        """Convert ServerConfig to VSCode-specific format
+
+        VSCode expects a "type" field in addition to command and args.
+        """
+        from mcpm.core.schema import STDIOServerConfig
+
+        if isinstance(server_config, STDIOServerConfig):
+            result = {
+                "type": "stdio",
+                "command": server_config.command,
+                "args": server_config.args,
+            }
+
+            # Add environment variables if present
+            import os
+
+            non_empty_env = server_config.get_filtered_env_vars(os.environ)
+            if non_empty_env:
+                result["env"] = non_empty_env
+
+            return result
+        else:
+            # For other server types, use the default implementation
+            return super().to_client_format(server_config)
