@@ -10,8 +10,12 @@ from rich.console import Console
 from mcpm.core.tunnel import Tunnel
 from mcpm.fastmcp_integration.proxy import create_mcpm_proxy
 from mcpm.profile.profile_config import ProfileConfigManager
-from mcpm.utils.config import DEFAULT_SHARE_ADDRESS, DEFAULT_PORT
-from mcpm.utils.logging_config import setup_dependency_logging, ensure_dependency_logging_suppressed, get_uvicorn_log_level
+from mcpm.utils.config import DEFAULT_PORT, DEFAULT_SHARE_ADDRESS
+from mcpm.utils.logging_config import (
+    ensure_dependency_logging_suppressed,
+    get_uvicorn_log_level,
+    setup_dependency_logging,
+)
 
 console = Console()
 profile_config_manager = ProfileConfigManager()
@@ -42,6 +46,7 @@ async def share_profile_fastmcp(profile_servers, profile_name, port, address, ht
     api_key = None
     if not no_auth:
         from mcpm.utils.config import ConfigManager
+
         config_manager = ConfigManager()
         auth_config = config_manager.get_auth_config()
         api_key = auth_config.get("api_key")
@@ -63,10 +68,10 @@ async def share_profile_fastmcp(profile_servers, profile_name, port, address, ht
         )
 
         logger.debug(f"FastMCP proxy created with {server_count} server(s)")
-        
+
         # Set up dependency logging for FastMCP/MCP libraries
         setup_dependency_logging()
-        
+
         # Re-suppress library logging after FastMCP initialization
         ensure_dependency_logging_suppressed()
 
@@ -79,7 +84,11 @@ async def share_profile_fastmcp(profile_servers, profile_name, port, address, ht
         logger.debug(f"Starting HTTP server on port {actual_port}")
 
         # Start the FastMCP proxy as a streamable HTTP server in a background task
-        server_task = asyncio.create_task(proxy.run_http_async(host="127.0.0.1", port=actual_port, uvicorn_config={"log_level": get_uvicorn_log_level()}))
+        server_task = asyncio.create_task(
+            proxy.run_http_async(
+                host="127.0.0.1", port=actual_port, uvicorn_config={"log_level": get_uvicorn_log_level()}
+            )
+        )
 
         # Wait a moment for server to start
         await asyncio.sleep(2)
@@ -113,17 +122,17 @@ async def share_profile_fastmcp(profile_servers, profile_name, port, address, ht
             http_url = f"{public_url}/mcp/"
             console.print(f"[bold green]Profile '{profile_name}' is now shared at:[/]")
             console.print(f"[cyan]{http_url}[/]")
-            
+
             if not no_auth and api_key:
                 console.print(f"[bold green]API Key:[/] [cyan]{api_key}[/]")
             else:
                 console.print("[bold red]Warning:[/] Anyone with the URL can access your servers.")
-            
-            # Show available servers 
-            console.print(f"[bold green]Shared servers:[/]")
+
+            # Show available servers
+            console.print("[bold green]Shared servers:[/]")
             for server_config in profile_servers:
                 console.print(f"  • [cyan]{server_config.name}[/]")
-            
+
             console.print("[dim]Press Ctrl+C to stop sharing[/]")
 
             # Keep running until interrupted

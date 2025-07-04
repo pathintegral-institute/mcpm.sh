@@ -115,31 +115,32 @@ class MCPMAuthMiddleware(Middleware):
             # Multiple approaches to get headers
             headers = None
             auth_header = None
-            
+
             # Method 1: Try FastMCP's built-in helper
             try:
                 from fastmcp.server.dependencies import get_http_headers
+
                 headers = get_http_headers()
                 auth_header = headers.get("authorization") or headers.get("Authorization")
             except (RuntimeError, ImportError):
                 pass
-            
+
             # Method 2: Try accessing from context
-            if not auth_header and hasattr(context, 'request'):
+            if not auth_header and hasattr(context, "request"):
                 request = context.request
-                if hasattr(request, 'headers'):
+                if hasattr(request, "headers"):
                     auth_header = request.headers.get("Authorization") or request.headers.get("authorization")
-            
+
             # Method 3: Try direct context headers
-            if not auth_header and hasattr(context, 'headers'):
+            if not auth_header and hasattr(context, "headers"):
                 headers = context.headers
                 auth_header = headers.get("Authorization") or headers.get("authorization")
-                
+
             # Method 4: Check for auth in context metadata
-            if not auth_header and hasattr(context, 'metadata'):
+            if not auth_header and hasattr(context, "metadata"):
                 metadata = context.metadata
                 auth_header = metadata.get("authorization") or metadata.get("Authorization")
-            
+
             if not auth_header:
                 # For debugging: print available context attributes
                 # print(f"DEBUG: Context type: {type(context)}, attrs: {dir(context)}")

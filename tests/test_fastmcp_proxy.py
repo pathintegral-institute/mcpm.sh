@@ -113,11 +113,7 @@ class TestFastMCPProxy:
         server = STDIOServerConfig(name="test", command="test")
 
         # Create factory with auth enabled
-        
-
-        router_config = RouterConfig(auth_enabled=True, api_key="secret")
-
-        factory = MCPMProxyFactory(router_config=router_config)
+        factory = MCPMProxyFactory(auth_enabled=True, api_key="secret")
 
         with patch("mcpm.fastmcp_integration.proxy.FastMCP") as mock_fastmcp:
             mock_proxy = Mock()
@@ -137,11 +133,7 @@ class TestFastMCPProxy:
         server = RemoteServerConfig(name="test", url="http://example.com")
 
         # Create factory with auth enabled
-        
-
-        router_config = RouterConfig(auth_enabled=True, api_key="secret")
-
-        factory = MCPMProxyFactory(router_config=router_config)
+        factory = MCPMProxyFactory(auth_enabled=True, api_key="secret")
 
         with patch("mcpm.fastmcp_integration.proxy.FastMCP") as mock_fastmcp:
             mock_proxy = Mock()

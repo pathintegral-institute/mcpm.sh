@@ -14,8 +14,12 @@ from rich.console import Console
 from mcpm.core.tunnel import Tunnel
 from mcpm.fastmcp_integration.proxy import create_mcpm_proxy
 from mcpm.global_config import GlobalConfigManager
-from mcpm.utils.config import DEFAULT_SHARE_ADDRESS, DEFAULT_PORT
-from mcpm.utils.logging_config import setup_dependency_logging, ensure_dependency_logging_suppressed, get_uvicorn_log_level
+from mcpm.utils.config import DEFAULT_PORT, DEFAULT_SHARE_ADDRESS
+from mcpm.utils.logging_config import (
+    ensure_dependency_logging_suppressed,
+    get_uvicorn_log_level,
+    setup_dependency_logging,
+)
 
 console = Console()
 global_config_manager = GlobalConfigManager()
@@ -49,7 +53,9 @@ async def find_available_port(preferred_port, max_attempts=10):
     return preferred_port
 
 
-async def start_fastmcp_proxy(server_config, server_name, port: Optional[int] = None, auth_enabled: bool = True, api_key: Optional[str] = None) -> int:
+async def start_fastmcp_proxy(
+    server_config, server_name, port: Optional[int] = None, auth_enabled: bool = True, api_key: Optional[str] = None
+) -> int:
     """
     Start FastMCP proxy in HTTP mode for sharing a single server.
 
@@ -89,10 +95,10 @@ async def start_fastmcp_proxy(server_config, server_name, port: Optional[int] = 
         )
 
         logger.debug(f"FastMCP proxy ready on port {actual_port}")
-        
+
         # Set up dependency logging for FastMCP/MCP libraries
         setup_dependency_logging()
-        
+
         # Re-suppress library logging after FastMCP initialization
         ensure_dependency_logging_suppressed()
 
@@ -182,6 +188,7 @@ async def _share_async(server_config, server_name, port, remote_host, remote_por
 
     if not no_auth:
         from mcpm.utils.config import ConfigManager
+
         config_manager = ConfigManager()
         auth_config = config_manager.get_auth_config()
         api_key = auth_config.get("api_key")
@@ -193,10 +200,14 @@ async def _share_async(server_config, server_name, port, remote_host, remote_por
     try:
         # Start FastMCP proxy
         logger.debug(f"Starting FastMCP proxy to share server '{server_name}'")
-        actual_port, proxy = await start_fastmcp_proxy(server_config, server_name, port, auth_enabled=not no_auth, api_key=api_key)
+        actual_port, proxy = await start_fastmcp_proxy(
+            server_config, server_name, port, auth_enabled=not no_auth, api_key=api_key
+        )
 
         # Start the FastMCP proxy as an HTTP server in a background task
-        server_task = asyncio.create_task(proxy.run_http_async(port=actual_port, uvicorn_config={"log_level": get_uvicorn_log_level()}))
+        server_task = asyncio.create_task(
+            proxy.run_http_async(port=actual_port, uvicorn_config={"log_level": get_uvicorn_log_level()})
+        )
 
         # Wait a moment for server to start
         await asyncio.sleep(2)
@@ -223,12 +234,12 @@ async def _share_async(server_config, server_name, port, remote_host, remote_por
         http_url = f"{share_url}/mcp/"
         console.print(f"[bold green]Server '{server_name}' is now shared at:[/]")
         console.print(f"[cyan]{http_url}[/]")
-        
+
         if not no_auth and api_key:
             console.print(f"[bold green]API Key:[/] [cyan]{api_key}[/]")
         else:
             console.print("[bold red]Warning:[/] Anyone with the URL can access your server.")
-        
+
         console.print("[dim]Press Ctrl+C to stop sharing[/]")
 
         # Keep running until interrupted

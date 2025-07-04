@@ -9,7 +9,6 @@ from rich.traceback import Traceback
 
 from mcpm import __version__
 from mcpm.clients.client_config import ClientConfigManager
-from mcpm.utils.logging_config import setup_logging
 from mcpm.commands import (
     add,
     client,
@@ -27,6 +26,7 @@ from mcpm.commands import (
     usage,
 )
 from mcpm.commands.share import share
+from mcpm.utils.logging_config import setup_logging
 
 console = Console()
 client_config_manager = ClientConfigManager()

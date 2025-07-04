@@ -9,7 +9,11 @@ from rich.console import Console
 from mcpm.fastmcp_integration.proxy import create_mcpm_proxy
 from mcpm.profile.profile_config import ProfileConfigManager
 from mcpm.utils.config import DEFAULT_PORT
-from mcpm.utils.logging_config import setup_dependency_logging, ensure_dependency_logging_suppressed, get_uvicorn_log_level
+from mcpm.utils.logging_config import (
+    ensure_dependency_logging_suppressed,
+    get_uvicorn_log_level,
+    setup_dependency_logging,
+)
 
 profile_config_manager = ProfileConfigManager()
 logger = logging.getLogger(__name__)
@@ -50,10 +54,10 @@ async def run_profile_fastmcp(profile_servers, profile_name, http_mode=False, po
         )
 
         logger.debug(f"FastMCP proxy initialized with: {[s.name for s in profile_servers]}")
-        
+
         # Set up dependency logging for FastMCP/MCP libraries
         setup_dependency_logging()
-        
+
         # Re-suppress library logging after FastMCP initialization
         ensure_dependency_logging_suppressed()
 
@@ -72,18 +76,20 @@ async def run_profile_fastmcp(profile_servers, profile_name, http_mode=False, po
             http_url = f"http://127.0.0.1:{actual_port}/mcp/"
             console.print(f"[bold green]Profile '{profile_name}' is now running at:[/]")
             console.print(f"[cyan]{http_url}[/]")
-            
+
             # Show servers in the profile
-            console.print(f"[bold green]Servers:[/]")
+            console.print("[bold green]Servers:[/]")
             for server_config in profile_servers:
                 console.print(f"  • [cyan]{server_config.name}[/]")
-            
+
             console.print("[dim]Press Ctrl+C to stop the profile[/]")
-            
+
             logger.debug(f"Starting FastMCP proxy for profile '{profile_name}' on port {actual_port}")
 
             # Run the aggregated proxy over HTTP with uvicorn logging control
-            await proxy.run_http_async(host="127.0.0.1", port=actual_port, uvicorn_config={"log_level": get_uvicorn_log_level()})
+            await proxy.run_http_async(
+                host="127.0.0.1", port=actual_port, uvicorn_config={"log_level": get_uvicorn_log_level()}
+            )
         else:
             # Run the aggregated proxy over stdio (default)
             logger.info(f"Starting profile '{profile_name}' over stdio")
@@ -116,7 +122,7 @@ def run(profile_name, http, port):
         mcpm profile run web-dev                    # Run over stdio (default)
         mcpm profile run --http web-dev             # Run over HTTP on port 6276
         mcpm profile run --http --port 9000 ai      # Run over HTTP on port 9000
-    
+
     Debug logging: Set MCPM_DEBUG=1 for verbose output
     """
     # Validate profile name

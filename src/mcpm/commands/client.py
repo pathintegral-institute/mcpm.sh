@@ -217,7 +217,9 @@ def list_clients(verbose):
 @client.command(name="edit", context_settings=dict(help_option_names=["-h", "--help"]))
 @click.argument("client_name")
 @click.option("-e", "--external", is_flag=True, help="Open config file in external editor instead of interactive mode")
-@click.option("-f", "--file", "config_path_override", type=click.Path(), help="Specify a custom path to the client's config file.")
+@click.option(
+    "-f", "--file", "config_path_override", type=click.Path(), help="Specify a custom path to the client's config file."
+)
 def edit_client(client_name, external, config_path_override):
     """Enable/disable MCPM-managed servers in the specified client configuration.
 

@@ -49,7 +49,9 @@ class ClientRegistry:
     }
 
     @classmethod
-    def get_client_manager(cls, client_name: str, config_path_override: Optional[str] = None) -> Optional[BaseClientManager]:
+    def get_client_manager(
+        cls, client_name: str, config_path_override: Optional[str] = None
+    ) -> Optional[BaseClientManager]:
         """
         Get the client manager for a given client name
 
