@@ -13,6 +13,7 @@ from mcpm.commands import (
     client,
     config,
     doctor,
+    edit,
     info,
     inspect,
     inspector,
@@ -160,6 +161,7 @@ def main(ctx, help_flag, version):
         commands_table.add_row("  [cyan]install[/]", "Install a server from registry, local file, or URL.")
         commands_table.add_row("  [cyan]uninstall[/]", "Remove a server from configuration.")
         commands_table.add_row("  [cyan]ls[/]", "List all installed servers and profile assignments.")
+        commands_table.add_row("  [cyan]edit[/]", "Edit server configuration properties.")
         commands_table.add_row("  [cyan]inspect[/]", "Launch MCP Inspector to test/debug a server.")
 
         commands_table.add_row("[yellow]Server Execution[/]")
@@ -195,6 +197,7 @@ main.add_command(info.info)
 main.add_command(list.list, name="ls")
 main.add_command(add.add, name="install")
 main.add_command(remove.remove, name="uninstall")
+main.add_command(edit.edit)
 main.add_command(run.run)
 main.add_command(inspect.inspect)
 main.add_command(profile.profile, name="profile")
