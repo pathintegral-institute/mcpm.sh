@@ -108,9 +108,8 @@ async def share_profile_fastmcp(profile_servers, profile_name, port, address, ht
             else:
                 console.print("[bold red]Warning:[/] Anyone with the URL can access your servers.")
             console.print()
-            console.print("[bold]Connection URLs:[/]")
-            console.print(f"  • Streamable HTTP: [cyan]{public_url}/mcp/[/]")
-            console.print(f"  • SSE endpoint: [cyan]{public_url}/sse/[/]")
+            console.print("[bold]Connection URL:[/]")
+            console.print(f"  • HTTP: [cyan]{public_url}/mcp/[/]")
             console.print()
             console.print("[bold]Available servers in this profile:[/]")
             for server_config in profile_servers:

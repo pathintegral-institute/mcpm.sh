@@ -210,12 +210,10 @@ async def _share_async(server_config, server_name, port, remote_host, remote_por
         if not share_url:
             raise RuntimeError("Could not get share URL from tunnel.")
 
-        # Display both HTTP (newer) and SSE (original) URLs
+        # Display HTTP URL
         http_url = f"{share_url}/mcp/"
-        sse_url = f"{share_url}/sse"
         console.print(f"[bold green]Server is now shared at:[/]")
-        console.print(f"  • HTTP (recommended): [cyan]{http_url}[/]")
-        console.print(f"  • SSE (legacy): [cyan]{sse_url}[/]")
+        console.print(f"  • HTTP: [cyan]{http_url}[/]")
         if not no_auth and api_key:
             console.print(f"[bold green]API Key:[/] [cyan]{api_key}[/]")
             console.print(f"[dim]Provide this key in the 'Authorization' header as a Bearer token.[/]")
