@@ -120,11 +120,7 @@ async def run_server_with_fastmcp(server_config, server_name, http_mode=False, p
             http_url = f"http://127.0.0.1:{actual_port}/mcp/"
             panel_content = f"[bold]Server:[/] {server_name}\n[bold]URL:[/] [cyan]{http_url}[/cyan]\n\n[dim]Press Ctrl+C to stop the server[/]"
             panel = Panel(
-                panel_content,
-                title="🌐 Local Server Running",
-                title_align="left",
-                border_style="green",
-                padding=(1, 2)
+                panel_content, title="🌐 Local Server Running", title_align="left", border_style="green", padding=(1, 2)
             )
             console.print(panel)
 

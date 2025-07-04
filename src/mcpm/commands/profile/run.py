@@ -75,18 +75,18 @@ async def run_profile_fastmcp(profile_servers, profile_name, http_mode=False, po
 
             # Display profile information in a nice panel
             http_url = f"http://127.0.0.1:{actual_port}/mcp/"
-            
+
             # Build server list
             server_list = "\n".join([f"  • [cyan]{server.name}[/]" for server in profile_servers])
-            
+
             panel_content = f"[bold]Profile:[/] {profile_name}\n[bold]URL:[/] [cyan]{http_url}[/cyan]\n\n[bold]Servers:[/]\n{server_list}\n\n[dim]Press Ctrl+C to stop the profile[/]"
-            
+
             panel = Panel(
                 panel_content,
                 title="📁 Profile Running Locally",
                 title_align="left",
                 border_style="green",
-                padding=(1, 2)
+                padding=(1, 2),
             )
             console.print(panel)
 

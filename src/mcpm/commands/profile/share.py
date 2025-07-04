@@ -121,26 +121,26 @@ async def share_profile_fastmcp(profile_servers, profile_name, port, address, ht
         if public_url:
             # Display critical information in a nice panel
             http_url = f"{public_url}/mcp/"
-            
+
             # Build server list
             server_list = "\n".join([f"  • [cyan]{server.name}[/]" for server in profile_servers])
-            
+
             # Build panel content based on auth status
             panel_content = f"[bold]Profile:[/] {profile_name}\n[bold]URL:[/] [cyan]{http_url}[/cyan]\n"
-            
+
             if not no_auth and api_key:
                 panel_content += f"[bold]HEADER Authorization:[/] [cyan]Bearer {api_key}[/cyan]\n"
             else:
                 panel_content += "[bold red]⚠️  Warning:[/] Anyone with the URL can access your servers\n"
-            
+
             panel_content += f"\n[bold]Shared servers:[/]\n{server_list}\n\n[dim]Press Ctrl+C to stop sharing[/]"
-            
+
             panel = Panel(
                 panel_content,
                 title="📁 Profile Shared Publicly",
                 title_align="left",
                 border_style="blue",
-                padding=(1, 2)
+                padding=(1, 2),
             )
             console.print(panel)
 

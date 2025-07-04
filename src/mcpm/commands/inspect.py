@@ -54,15 +54,10 @@ Examples:
   [cyan]mcpm inspect time[/]           # Inspect time server
 
 [bold yellow]Continue with raw inspector?[/]"""
-    
-    panel = Panel(
-        panel_content,
-        title="🔍 MCP Inspector",
-        border_style="yellow",
-        padding=(1, 2)
-    )
+
+    panel = Panel(panel_content, title="🔍 MCP Inspector", border_style="yellow", padding=(1, 2))
     console.print(panel)
-    
+
     # Prompt for confirmation
     try:
         confirm = click.confirm("Launch raw MCP Inspector", default=True)
@@ -72,28 +67,28 @@ Examples:
     except (KeyboardInterrupt, EOFError):
         console.print("\n[yellow]Cancelled.[/]")
         sys.exit(0)
-    
+
     # Launch raw inspector
     raw_inspector_cmd = f"{NPX_CMD} @modelcontextprotocol/inspector"
-    
+
     console.print("\n[bold]Launching raw MCP Inspector...[/]")
     console.print("The Inspector UI will open in your web browser.")
     console.print("[yellow]Press Ctrl+C to stop the Inspector.[/]")
-    
+
     try:
         console.print(f"[dim]Executing: {raw_inspector_cmd}[/]")
         cmd_parts = shlex.split(raw_inspector_cmd)
         returncode = subprocess.call(cmd_parts)
-        
+
         if returncode == 0:
             console.print("[bold green]Inspector process completed successfully.[/]")
         elif returncode in (130, -2):
             console.print("[bold yellow]Inspector process was terminated.[/]")
         else:
             console.print(f"[bold red]Inspector process exited with code {returncode}[/]")
-            
+
         sys.exit(returncode)
-        
+
     except KeyboardInterrupt:
         console.print("\n[bold yellow]Inspector process terminated by keyboard interrupt.[/]")
         sys.exit(130)
@@ -112,14 +107,14 @@ Examples:
 def inspect(server_name):
     """Launch MCP Inspector to test and debug a server from global configuration.
 
-    If SERVER_NAME is provided, finds the specified server in the global configuration 
+    If SERVER_NAME is provided, finds the specified server in the global configuration
     and launches the MCP Inspector with the correct configuration to connect to and test the server.
-    
+
     If no SERVER_NAME is provided, launches the raw MCP Inspector for manual configuration.
 
     Examples:
         mcpm inspect                     # Launch raw inspector (manual setup)
-        mcpm inspect mcp-server-browse   # Inspect the browse server  
+        mcpm inspect mcp-server-browse   # Inspect the browse server
         mcpm inspect filesystem          # Inspect filesystem server
         mcpm inspect time                # Inspect the time server
     """

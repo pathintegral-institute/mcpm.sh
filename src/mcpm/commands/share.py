@@ -233,23 +233,19 @@ async def _share_async(server_config, server_name, port, remote_host, remote_por
 
         # Display critical information in a nice panel
         http_url = f"{share_url}/mcp/"
-        
+
         # Build panel content based on auth status
         panel_content = f"[bold]Server:[/] {server_name}\n[bold]URL:[/] [cyan]{http_url}[/cyan]\n"
-        
+
         if not no_auth and api_key:
             panel_content += f"[bold]HEADER Authorization:[/] [cyan]Bearer {api_key}[/cyan]\n"
         else:
             panel_content += "[bold red]⚠️  Warning:[/] Anyone with the URL can access your server\n"
-        
+
         panel_content += "\n[dim]Press Ctrl+C to stop sharing[/]"
-        
+
         panel = Panel(
-            panel_content,
-            title="🌍 Server Shared Publicly",
-            title_align="left",
-            border_style="blue",
-            padding=(1, 2)
+            panel_content, title="🌍 Server Shared Publicly", title_align="left", border_style="blue", padding=(1, 2)
         )
         console.print(panel)
 
