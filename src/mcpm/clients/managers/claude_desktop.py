@@ -8,7 +8,6 @@ from typing import Any, Dict
 
 from mcpm.clients.base import JSONClientManager
 from mcpm.core.schema import RemoteServerConfig, ServerConfig
-from mcpm.utils.router_server import format_server_url_with_proxy_headers
 
 logger = logging.getLogger(__name__)
 
@@ -21,16 +20,16 @@ class ClaudeDesktopManager(JSONClientManager):
     display_name = "Claude Desktop"
     download_url = "https://claude.ai/download"
 
-    def __init__(self, config_path=None):
+    def __init__(self, config_path_override: str | None = None):
         """Initialize the Claude Desktop client manager
 
         Args:
-            config_path: Optional path to the config file. If not provided, uses default path.
+            config_path_override: Optional path to override the default config file location
         """
-        super().__init__()
+        super().__init__(config_path_override=config_path_override)
 
-        if config_path:
-            self.config_path = config_path
+        if config_path_override:
+            self.config_path = config_path_override
         else:
             # Set config path based on detected platform
             if self._system == "Darwin":  # macOS
@@ -112,22 +111,6 @@ class ClaudeDesktopManager(JSONClientManager):
         """
         config = self._load_config()
         return "disabledServers" in config and server_name in config["disabledServers"]
-
-    def _format_router_server(
-        self, profile_name: str, base_url: str, alias_name: str | None = None
-    ) -> ServerConfig:
-        """Construct a ServerConfig for a router entry.
-
-        The parent JSONClientManager passes in an optional ``alias_name`` which
-        should be used as the final server name inside the client config when
-        provided.  Accepting the parameter keeps the overriding method
-        signature compatible with the base implementation and prevents the
-        ``TypeError`` that occurred when ``activate_profile`` tried to forward
-        three arguments.
-        """
-        return format_server_url_with_proxy_headers(
-            self.client_key, profile_name, base_url, alias_name
-        )
 
     def to_client_format(self, server_config: ServerConfig) -> Dict[str, Any]:
         if isinstance(server_config, RemoteServerConfig):

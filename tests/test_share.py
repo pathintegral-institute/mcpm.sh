@@ -1,118 +1,78 @@
 """
-Tests for the share command in MCPM
+Test cases for share command with FastMCP proxy integration.
 """
 
-import sys
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
+import pytest
 from click.testing import CliRunner
 
-from src.mcpm.commands.share import (
-    find_mcp_proxy,
-    monitor_for_errors,
+from mcpm.commands.share import (
+    find_available_port,
+    find_installed_server,
     share,
-    terminate_process,
 )
+from mcpm.core.schema import STDIOServerConfig
+from mcpm.global_config import GlobalConfigManager
 
 
-class TestShareCommand:
-    """Tests for the share command"""
+class TestShare:
+    @pytest.mark.asyncio
+    async def test_find_available_port_first_port_available(self):
+        """Test find_available_port when the first port is available."""
+        result = await find_available_port(9999)  # Use an uncommon port
+        assert result == 9999
 
-    def test_find_mcp_proxy_found(self, monkeypatch):
-        """Test finding mcp-proxy when it exists in PATH"""
-        # Mock shutil.which to return a path
-        monkeypatch.setattr("shutil.which", lambda _: "/usr/bin/mcp-proxy")
+    @pytest.mark.asyncio
+    async def test_find_available_port_finds_alternative(self):
+        """Test find_available_port finds an alternative when preferred is busy."""
+        import socket
 
-        assert find_mcp_proxy() == "/usr/bin/mcp-proxy"
+        # Bind to the preferred port to make it busy
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        try:
+            sock.bind(("127.0.0.1", 9998))
 
-    def test_find_mcp_proxy_not_found(self, monkeypatch):
-        """Test finding mcp-proxy when it does not exist in PATH"""
-        # Mock shutil.which to return None
-        monkeypatch.setattr("shutil.which", lambda _: None)
+            # Now try to find an available port starting from 9998
+            result = await find_available_port(9998)
+            assert result == 9999  # Should find the next available port
+        finally:
+            sock.close()
 
-        assert find_mcp_proxy() is None
+    def test_find_installed_server(self):
+        """Test finding installed server in global configuration."""
+        # Create a mock server config
+        mock_config = STDIOServerConfig(name="test-server", command="python", args=["-m", "test_server"])
 
-    def test_monitor_for_errors_with_known_error(self):
-        """Test error detection with a known error pattern"""
-        error_line = "Error: RuntimeError: Received request before initialization was complete"
+        with patch.object(GlobalConfigManager, "get_server", return_value=mock_config):
+            server_config, location = find_installed_server("test-server")
+            assert server_config == mock_config
+            assert location == "global"
 
-        result = monitor_for_errors(error_line)
+        with patch.object(GlobalConfigManager, "get_server", return_value=None):
+            server_config, location = find_installed_server("nonexistent")
+            assert server_config is None
+            assert location is None
 
-        assert result is not None
-        assert "Protocol initialization error" in result
-
-    def test_monitor_for_errors_connection_error(self):
-        """Test error detection with connection broken error"""
-        error_line = "Exception: anyio.BrokenResourceError occurred during processing"
-
-        result = monitor_for_errors(error_line)
-
-        assert result is not None
-        assert "Connection broken unexpectedly" in result
-
-    def test_monitor_for_errors_taskgroup_error(self):
-        """Test error detection with task group error"""
-        error_line = "Error: ExceptionGroup: unhandled errors in a TaskGroup"
-
-        result = monitor_for_errors(error_line)
-
-        assert result is not None
-        assert "Server task error detected" in result
-
-    def test_monitor_for_errors_no_error(self):
-        """Test error detection with no error patterns"""
-        normal_line = "Server started successfully on port 8000"
-
-        result = monitor_for_errors(normal_line)
-
-        assert result is None
-
-    def test_terminate_process_already_terminated(self):
-        """Test terminating a process that's already terminated"""
-        mock_process = Mock()
-        mock_process.poll.return_value = 0  # Process already exited
-
-        result = terminate_process(mock_process)
-
-        assert result is True
-        mock_process.terminate.assert_not_called()
-
-    def test_terminate_process_successful_termination(self):
-        """Test successful termination of a process"""
-        mock_process = Mock()
-        # Process is running, then terminates after SIGTERM
-        mock_process.poll.side_effect = [None, 0]
-
-        result = terminate_process(mock_process, timeout=1)
-
-        assert result is True
-        mock_process.terminate.assert_called_once()
-        mock_process.kill.assert_not_called()
-
-    @patch("time.sleep")  # Add sleep patch to avoid actual sleep
-    def test_terminate_process_needs_sigkill(self, mock_sleep):
-        """Test termination of a process that needs SIGKILL"""
-        mock_process = Mock()
-        # First 20 poll calls return None (not terminated)
-        # Then the 21st call returns 0 (terminated after SIGKILL)
-        mock_process.poll.side_effect = [None] * 20 + [0]
-
-        result = terminate_process(mock_process, timeout=1)
-
-        assert result is True
-        mock_process.terminate.assert_called_once()
-        mock_process.kill.assert_called_once()
-
-    def test_share_command_no_mcp_proxy(self, monkeypatch):
-        """Test share command when mcp-proxy is not installed"""
-        # Mock find_mcp_proxy to return None
-        monkeypatch.setattr("src.mcpm.commands.share.find_mcp_proxy", lambda: None)
-
-        # Run the command
+    def test_share_server_not_found(self):
+        """Test share command with server not found."""
         runner = CliRunner()
-        with patch.object(sys, "exit") as mock_exit:
-            result = runner.invoke(share, ["test command"])
 
-            # Verify the command failed with the right error
-            assert mock_exit.called
-            assert "mcp-proxy not found" in result.output
+        with patch.object(GlobalConfigManager, "get_server", return_value=None):
+            result = runner.invoke(share, ["nonexistent-server"])
+            assert result.exit_code != 0
+            assert "not found" in result.output
+
+    def test_share_empty_server_name(self):
+        """Test share command with empty server name."""
+        runner = CliRunner()
+        result = runner.invoke(share, [""])
+        assert result.exit_code != 0
+        assert "cannot be empty" in result.output
+
+    def test_share_help_shows_fastmcp_usage(self):
+        """Test that share help shows FastMCP proxy usage."""
+        runner = CliRunner()
+        result = runner.invoke(share, ["--help"])
+        assert result.exit_code == 0
+        assert "FastMCP proxy" in result.output

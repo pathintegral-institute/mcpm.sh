@@ -14,6 +14,7 @@ def error_exit(message: str) -> None:
     print(f"❌ {message}")
     sys.exit(1)
 
+
 def load_schema(schema_path: Path) -> Dict:
     """Load and parse the schema file"""
     if not schema_path.exists():
@@ -26,6 +27,7 @@ def load_schema(schema_path: Path) -> Dict:
         error_exit(f"Invalid schema JSON: {e}")
     except Exception as e:
         error_exit(f"Error reading schema file: {e}")
+
 
 def validate_manifest(manifest_path: Path, schema: Dict) -> Tuple[bool, str]:
     """Validate a single manifest file against the schema"""
@@ -45,6 +47,7 @@ def validate_manifest(manifest_path: Path, schema: Dict) -> Tuple[bool, str]:
     except jsonschema.exceptions.SchemaError as e:
         return False, f"Schema error: {e}"
 
+
 def find_server_files(servers_dir: Path) -> List[Path]:
     """Find all server JSON files in the servers directory"""
     if not servers_dir.exists() or not servers_dir.is_dir():
@@ -56,6 +59,7 @@ def find_server_files(servers_dir: Path) -> List[Path]:
             server_files.append(file_path)
 
     return server_files
+
 
 def main() -> int:
     """Validate all MCP server JSON files"""
@@ -91,6 +95,7 @@ def main() -> int:
             any_errors = True
 
     return 1 if any_errors else 0
+
 
 if __name__ == "__main__":
     sys.exit(main())

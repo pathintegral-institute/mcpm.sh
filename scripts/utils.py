@@ -11,6 +11,7 @@ from mcp.types import ListPromptsResult, ListResourcesResult, ListToolsResult
 
 DOCKER_HUB_REPO_URL = "https://hub.docker.com/v2/repositories/"
 
+
 class McpClient:
     session: ClientSession
 
@@ -162,7 +163,7 @@ def validate_docker_url(docker_url: str) -> bool:
 
 
 def inspect_docker_repo(installation: dict[str, Any]) -> Optional[str]:
-    """ inspect the docker url from docker installation args, the args should pattern as {namespace}/{repo_name} where namespace=mcp
+    """inspect the docker url from docker installation args, the args should pattern as {namespace}/{repo_name} where namespace=mcp
     Example
         if args = ["run", "-i", "--rm", "-e", "PERPLEXITY_API_KEY", "mcp/perplexity-ask"]
         return "mcp/perplexity-ask"
@@ -176,6 +177,6 @@ def inspect_docker_repo(installation: dict[str, Any]) -> Optional[str]:
             if repo_match:
                 repo_name = repo_match.group(1)
                 if validate_docker_url(DOCKER_HUB_REPO_URL + repo_name):
-                    return repo_name # namespace/repo without tag
+                    return repo_name  # namespace/repo without tag
 
     return None

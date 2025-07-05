@@ -32,7 +32,7 @@ def temp_yml_config():
 
 @pytest.fixture
 def goose_manager(temp_yml_config):
-    return GooseClientManager(config_path=temp_yml_config)
+    return GooseClientManager(config_path_override=temp_yml_config)
 
 
 def test_list_servers(goose_manager):

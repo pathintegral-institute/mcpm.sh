@@ -7,6 +7,7 @@ PROFILE_PREFIX = "%"
 class ScopeType(StrEnum):
     CLIENT = "client"
     PROFILE = "profile"
+    GLOBAL = "global"  # v2.0: Global MCPM configuration
 
 
 def normalize_scope(scope: str):

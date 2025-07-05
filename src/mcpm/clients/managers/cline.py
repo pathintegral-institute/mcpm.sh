@@ -6,6 +6,7 @@ from mcpm.clients.base import JSONClientManager
 
 logger = logging.getLogger(__name__)
 
+
 class ClineManager(JSONClientManager):
     """Manages Cline MCP server configurations"""
 
@@ -14,25 +15,37 @@ class ClineManager(JSONClientManager):
     display_name = "Cline"
     download_url = "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
 
-    def __init__(self, config_path=None):
+    def __init__(self, config_path_override: str | None = None):
         """Initialize the Cline client manager
 
         Args:
-            config_path: Optional path to the config file. If not provided, uses default path.
+            config_path_override: Optional path to override the default config file location
         """
-        super().__init__()
+        super().__init__(config_path_override=config_path_override)
 
-        if config_path:
-            self.config_path = config_path
+        if config_path_override:
+            self.config_path = config_path_override
         else:
             # Set config path based on detected platform
             if self._system == "Darwin":  # macOS
-                self.config_path = os.path.expanduser("~/Library/Application Support/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json")
+                self.config_path = os.path.expanduser(
+                    "~/Library/Application Support/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json"
+                )
             elif self._system == "Windows":
-                self.config_path = os.path.join(os.environ.get("APPDATA", ""), "Code", "User", "globalStorage", "saoudrizwan.claude-dev", "settings", "cline_mcp_settings.json")
+                self.config_path = os.path.join(
+                    os.environ.get("APPDATA", ""),
+                    "Code",
+                    "User",
+                    "globalStorage",
+                    "saoudrizwan.claude-dev",
+                    "settings",
+                    "cline_mcp_settings.json",
+                )
             else:
                 # Linux
-                self.config_path = os.path.expanduser("~/.config/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json")
+                self.config_path = os.path.expanduser(
+                    "~/.config/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json"
+                )
 
     def _get_empty_config(self) -> Dict[str, Any]:
         """Get empty config structure for Cline"""
@@ -105,28 +118,39 @@ class ClineManager(JSONClientManager):
 
 
 class RooCodeManager(ClineManager):
-
     # Client information
     client_key = "roo-code"
     display_name = "Roo Code"
     download_url = "https://marketplace.visualstudio.com/items?itemName=RooVeterinaryInc.roo-cline"
 
-    def __init__(self, config_path=None):
+    def __init__(self, config_path_override: str | None = None):
         """Initialize the Roo Code client manager
 
         Args:
-            config_path: Optional path to the config file. If not provided, uses default path.
+            config_path_override: Optional path to override the default config file location
         """
-        super().__init__()
+        super().__init__(config_path_override=config_path_override)
 
-        if config_path:
-            self.config_path = config_path
+        if config_path_override:
+            self.config_path = config_path_override
         else:
             # Set config path based on detected platform
             if self._system == "Darwin":  # macOS
-                self.config_path = os.path.expanduser("~/Library/Application Support/Code/User/globalStorage/rooveterinaryinc.roo-cline/settings/mcp_settings.json")
+                self.config_path = os.path.expanduser(
+                    "~/Library/Application Support/Code/User/globalStorage/rooveterinaryinc.roo-cline/settings/mcp_settings.json"
+                )
             elif self._system == "Windows":
-                self.config_path = os.path.join(os.environ.get("APPDATA", ""), "Code", "User", "globalStorage", "rooveterinaryinc.roo-cline", "settings", "mcp_settings.json")
+                self.config_path = os.path.join(
+                    os.environ.get("APPDATA", ""),
+                    "Code",
+                    "User",
+                    "globalStorage",
+                    "rooveterinaryinc.roo-cline",
+                    "settings",
+                    "mcp_settings.json",
+                )
             else:
                 # Linux
-                self.config_path = os.path.expanduser("~/.config/Code/User/globalStorage/rooveterinaryinc.roo-cline/settings/mcp_settings.json")
+                self.config_path = os.path.expanduser(
+                    "~/.config/Code/User/globalStorage/rooveterinaryinc.roo-cline/settings/mcp_settings.json"
+                )

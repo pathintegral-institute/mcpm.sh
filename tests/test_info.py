@@ -85,17 +85,14 @@ def test_info_comprehensive(monkeypatch):
             "name": "comprehensive-server",
             "display_name": "Comprehensive Server",
             "description": "A server with comprehensive details",
-            "repository": {
-                "type": "git",
-                "url": "https://github.com/example/comprehensive-server"
-            },
+            "repository": {"type": "git", "url": "https://github.com/example/comprehensive-server"},
             "homepage": "https://example.com/comprehensive-server",
             "documentation": "https://docs.example.com/comprehensive-server",
             "license": "Apache-2.0",
             "author": {
                 "name": "Comprehensive Author",
                 "email": "author@example.com",
-                "url": "https://author.example.com"
+                "url": "https://author.example.com",
             },
             "categories": ["test", "comprehensive"],
             "tags": ["example", "testing", "comprehensive"],
@@ -107,28 +104,20 @@ def test_info_comprehensive(monkeypatch):
                     "command": "npx",
                     "args": ["-y", "comprehensive-package"],
                     "dependencies": ["dep1", "dep2"],
-                    "env": {"API_KEY": "${API_KEY}"}
+                    "env": {"API_KEY": "${API_KEY}"},
                 },
                 "docker": {
                     "type": "docker",
                     "description": "Docker installation",
                     "command": "docker",
                     "args": ["run", "comprehensive-server"],
-                    "env": {"DOCKER_ENV": "value"}
-                }
+                    "env": {"DOCKER_ENV": "value"},
+                },
             },
             "examples": [
-                {
-                    "title": "Example 1",
-                    "description": "First example",
-                    "prompt": "Use the comprehensive server"
-                },
-                {
-                    "title": "Example 2",
-                    "description": "Second example",
-                    "code": "server.connect()"
-                }
-            ]
+                {"title": "Example 1", "description": "First example", "prompt": "Use the comprehensive server"},
+                {"title": "Example 2", "description": "Second example", "code": "server.connect()"},
+            ],
         }
     )
     monkeypatch.setattr("mcpm.commands.info.repo_manager", mock_repo_manager)

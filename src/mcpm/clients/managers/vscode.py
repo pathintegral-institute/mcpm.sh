@@ -18,11 +18,11 @@ class VSCodeManager(JSONClientManager):
     download_url = "https://code.visualstudio.com/"
     configure_key_name = "servers"
 
-    def __init__(self, config_path=None):
-        super().__init__()
+    def __init__(self, config_path_override: str | None = None):
+        super().__init__(config_path_override=config_path_override)
 
-        if config_path:
-            self.config_path = config_path
+        if config_path_override:
+            self.config_path = config_path_override
         else:
             # Set config path based on detected platform
             if self._system == "Windows":
@@ -96,3 +96,29 @@ class VSCodeManager(JSONClientManager):
             logger.error(f"Error saving client config: {str(e)}")
             traceback.print_exc()
             return False
+
+    def to_client_format(self, server_config) -> dict:
+        """Convert ServerConfig to VSCode-specific format
+
+        VSCode expects a "type" field in addition to command and args.
+        """
+        from mcpm.core.schema import STDIOServerConfig
+
+        if isinstance(server_config, STDIOServerConfig):
+            result = {
+                "type": "stdio",
+                "command": server_config.command,
+                "args": server_config.args,
+            }
+
+            # Add environment variables if present
+            import os
+
+            non_empty_env = server_config.get_filtered_env_vars(os.environ)
+            if non_empty_env:
+                result["env"] = non_empty_env
+
+            return result
+        else:
+            # For other server types, use the default implementation
+            return super().to_client_format(server_config)

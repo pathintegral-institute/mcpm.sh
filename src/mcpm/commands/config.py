@@ -44,22 +44,48 @@ def set():
 
 
 @config.command()
-@click.argument("name", required=True)
 @click.help_option("-h", "--help")
-def get(name):
-    """Get MCPM configuration.
+def ls():
+    """List all MCPM configuration settings.
 
     Example:
 
     \b
-        mcpm config get node_executable
+        mcpm config ls
     """
     config_manager = ConfigManager()
     current_config = config_manager.get_config()
-    if name not in current_config:
-        console.print(f"[red]Configuration '{name}' not set or not supported.[/]")
+
+    if not current_config:
+        console.print("[yellow]No configuration settings found.[/]")
         return
-    console.print(f"[green]{name}:[/] {current_config[name]}")
+
+    console.print("[bold green]Current configuration:[/]")
+    for key, value in current_config.items():
+        console.print(f"  [cyan]{key}:[/] {value}")
+
+
+@config.command()
+@click.argument("name", required=True)
+@click.help_option("-h", "--help")
+def unset(name):
+    """Remove a configuration setting.
+
+    Example:
+
+    \b
+        mcpm config unset node_executable
+    """
+    config_manager = ConfigManager()
+    current_config = config_manager.get_config()
+
+    if name not in current_config:
+        console.print(f"[red]Configuration '{name}' is not set.[/]")
+        return
+
+    # Remove the configuration by setting it to None
+    config_manager.set_config(name, None)
+    console.print(f"[green]Configuration '{name}' has been removed.[/]")
 
 
 @config.command()
