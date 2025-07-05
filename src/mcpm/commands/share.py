@@ -15,6 +15,7 @@ from rich.panel import Panel
 from mcpm.core.tunnel import Tunnel
 from mcpm.fastmcp_integration.proxy import create_mcpm_proxy
 from mcpm.global_config import GlobalConfigManager
+# Removed SessionAction import - using strings directly
 from mcpm.utils.config import DEFAULT_PORT, DEFAULT_SHARE_ADDRESS
 from mcpm.utils.logging_config import (
     ensure_dependency_logging_suppressed,
@@ -81,10 +82,7 @@ async def start_fastmcp_proxy(
     logger.debug(f"Starting FastMCP proxy for server '{server_name}' on port {actual_port}")
 
     try:
-        # Record usage
-        from mcpm.commands.usage import record_server_usage
-
-        record_server_usage(server_name, "share")
+        # Note: Usage tracking is handled by proxy middleware
 
         # Create FastMCP proxy for single server (HTTP mode for sharing)
         proxy = await create_mcpm_proxy(
@@ -93,6 +91,7 @@ async def start_fastmcp_proxy(
             stdio_mode=False,  # HTTP mode for sharing
             auth_enabled=auth_enabled,
             api_key=api_key,
+            action="share",
         )
 
         logger.debug(f"FastMCP proxy ready on port {actual_port}")

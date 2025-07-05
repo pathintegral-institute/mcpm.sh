@@ -1,97 +1,36 @@
-"""Usage command for MCPM - Display analytics and usage data"""
+"""Enhanced usage command for MCPM - Display analytics using SQLite"""
 
-import json
-from datetime import datetime, timedelta
-from pathlib import Path
+import asyncio
+from datetime import datetime
 
 import click
 from rich.console import Console
+from rich.panel import Panel
 from rich.table import Table
 
-from mcpm.utils.config import ConfigManager
+from mcpm.monitor import get_monitor
 
 console = Console()
 
 
-def get_usage_data_file():
-    """Get path to usage data file."""
-    config_manager = ConfigManager()
-    config_dir = Path(config_manager.config_dir)
-    return config_dir / "usage_data.json"
-
-
-def load_usage_data():
-    """Load usage data from file."""
-    usage_file = get_usage_data_file()
-    if not usage_file.exists():
-        return {"servers": {}, "profiles": {}, "sessions": []}
+async def get_usage_stats_async(days: int, server_name: str = None, profile_name: str = None):
+    """Get usage statistics from DuckDB asynchronously"""
+    monitor = await get_monitor()
 
     try:
-        with open(usage_file, "r") as f:
-            return json.load(f)
-    except (json.JSONDecodeError, IOError):
-        return {"servers": {}, "profiles": {}, "sessions": []}
-
-
-def save_usage_data(data):
-    """Save usage data to file."""
-    usage_file = get_usage_data_file()
-    usage_file.parent.mkdir(parents=True, exist_ok=True)
-
-    try:
-        with open(usage_file, "w") as f:
-            json.dump(data, f, indent=2)
-    except IOError:
-        pass  # Fail silently for usage tracking
-
-
-def record_server_usage(server_name, action="run"):
-    """Record server usage event."""
-    data = load_usage_data()
-
-    # Initialize server data if not exists
-    if server_name not in data["servers"]:
-        data["servers"][server_name] = {"total_runs": 0, "last_used": None, "first_used": None, "total_runtime": 0}
-
-    # Update server stats
-    now = datetime.now().isoformat()
-    server_data = data["servers"][server_name]
-
-    if action == "run":
-        server_data["total_runs"] += 1
-        server_data["last_used"] = now
-        if not server_data["first_used"]:
-            server_data["first_used"] = now
-
-    # Record session
-    data["sessions"].append({"server": server_name, "action": action, "timestamp": now})
-
-    # Keep only last 1000 sessions
-    if len(data["sessions"]) > 1000:
-        data["sessions"] = data["sessions"][-1000:]
-
-    save_usage_data(data)
-
-
-def record_profile_usage(profile_name, action="run"):
-    """Record profile usage event."""
-    data = load_usage_data()
-
-    # Initialize profile data if not exists
-    if profile_name not in data["profiles"]:
-        data["profiles"][profile_name] = {"total_runs": 0, "last_used": None, "first_used": None}
-
-    # Update profile stats
-    now = datetime.now().isoformat()
-    profile_data = data["profiles"][profile_name]
-
-    if action == "run":
-        profile_data["total_runs"] += 1
-        profile_data["last_used"] = now
-        if not profile_data["first_used"]:
-            profile_data["first_used"] = now
-
-    save_usage_data(data)
+        if server_name:
+            return await monitor.get_server_stats(server_name, days)
+        elif profile_name:
+            return await monitor.get_profile_stats(profile_name, days)
+        else:
+            # Try to use computed stats, fallback to legacy if needed
+            try:
+                return await monitor.get_computed_usage_stats(days)
+            except AttributeError:
+                # Fallback to legacy method if get_computed_usage_stats doesn't exist
+                return await monitor.get_usage_stats(days)
+    finally:
+        await monitor.close()
 
 
 @click.command()
@@ -100,10 +39,11 @@ def record_profile_usage(profile_name, action="run"):
 @click.option("--profile", "-p", help="Show usage for specific profile")
 @click.help_option("-h", "--help")
 def usage(days, server, profile):
-    """Display analytics and usage data for servers.
+    """Display comprehensive analytics and usage data.
 
-    Shows usage statistics including run counts, last usage times,
-    and activity patterns for servers and profiles.
+    Shows detailed usage statistics including run counts, session data,
+    performance metrics, and activity patterns for servers and profiles.
+    Data is stored in SQLite for efficient querying and analysis.
 
     Examples:
         mcpm usage                    # Show all usage for last 30 days
@@ -114,164 +54,248 @@ def usage(days, server, profile):
     console.print(f"[bold green]📊 MCPM Usage Analytics[/] [dim](last {days} days)[/]")
     console.print()
 
-    # Load usage data
-    data = load_usage_data()
+    try:
+        # Run async function in event loop
+        if server:
+            stats = asyncio.run(get_usage_stats_async(days, server_name=server))
+            show_server_usage(stats, server)
+        elif profile:
+            stats = asyncio.run(get_usage_stats_async(days, profile_name=profile))
+            show_profile_usage(stats, profile)
+        else:
+            stats = asyncio.run(get_usage_stats_async(days))
+            show_usage_overview(stats, days)
 
-    if not data["servers"] and not data["profiles"]:
-        console.print("[yellow]No usage data available yet.[/]")
+    except Exception as e:
+        console.print(f"[red]Error retrieving usage data: {e}[/]")
+        console.print("[dim]Make sure the SQLite database is accessible.[/]")
+
+
+def show_server_usage(stats, server_name: str):
+    """Show detailed usage for a specific server."""
+    if not stats:
+        console.print(f"[yellow]No usage data found for server '[bold]{server_name}[/]'[/]")
         console.print("[dim]Usage data is collected when servers are run via 'mcpm run'[/]")
         return
 
-    # Calculate date threshold
-    threshold = datetime.now() - timedelta(days=days)
+    # Create origin breakdown text
+    origin_text = ""
+    if stats.origin_breakdown:
+        origin_items = []
+        for origin, count in stats.origin_breakdown.items():
+            origin_items.append(f"{origin}: {count}")
+        origin_text = f"\n[green]Request Origins:[/] {', '.join(origin_items)}"
 
-    # Filter sessions by date
-    recent_sessions = []
-    for session in data["sessions"]:
-        try:
-            session_date = datetime.fromisoformat(session["timestamp"])
-            if session_date >= threshold:
-                recent_sessions.append(session)
-        except ValueError:
-            continue
-
-    # Show server-specific usage
-    if server:
-        show_server_usage(data, server, recent_sessions)
-        return
-
-    # Show profile-specific usage
-    if profile:
-        show_profile_usage(data, profile, recent_sessions)
-        return
-
-    # Show overview
-    show_usage_overview(data, recent_sessions, days)
-
-
-def show_server_usage(data, server_name, recent_sessions):
-    """Show detailed usage for a specific server."""
-    if server_name not in data["servers"]:
-        console.print(f"[yellow]No usage data found for server '[bold]{server_name}[/]'[/]")
-        return
-
-    server_data = data["servers"][server_name]
-
-    console.print(f"[bold cyan]Server: {server_name}[/]")
-    console.print()
-
-    # Basic stats
-    console.print(f"[green]Total runs:[/] {server_data['total_runs']}")
-
-    if server_data["last_used"]:
-        last_used = datetime.fromisoformat(server_data["last_used"])
-        console.print(f"[green]Last used:[/] {last_used.strftime('%Y-%m-%d %H:%M:%S')}")
-
-    if server_data["first_used"]:
-        first_used = datetime.fromisoformat(server_data["first_used"])
-        console.print(f"[green]First used:[/] {first_used.strftime('%Y-%m-%d %H:%M:%S')}")
-
-    # Recent activity
-    server_sessions = [s for s in recent_sessions if s["server"] == server_name]
-    if server_sessions:
-        console.print()
-        console.print(f"[green]Recent activity:[/] {len(server_sessions)} sessions")
+    # Create server info panel
+    server_panel = Panel(
+        f"[bold cyan]Server:[/] {stats.server_name}\n\n"
+        f"[green]Total Sessions:[/] {stats.total_sessions:,}\n"
+        f"[green]Total Runs:[/] {stats.total_runs:,}\n"
+        f"[green]Primary Transport:[/] {stats.primary_transport}\n"
+        f"[green]Success Rate:[/] {stats.success_rate:.1f}%\n"
+        f"[green]Total Runtime:[/] {format_duration(stats.total_duration_ms)}\n\n"
+        f"[green]First Used:[/] {format_timestamp(stats.first_used)}\n"
+        f"[green]Last Used:[/] {format_timestamp(stats.last_used)}"
+        f"{origin_text}",
+        title="📈 Server Statistics",
+        title_align="left",
+        border_style="cyan",
+        padding=(1, 2),
+    )
+    console.print(server_panel)
 
 
-def show_profile_usage(data, profile_name, recent_sessions):
+def show_profile_usage(stats, profile_name: str):
     """Show detailed usage for a specific profile."""
-    if profile_name not in data["profiles"]:
+    if not stats:
         console.print(f"[yellow]No usage data found for profile '[bold]{profile_name}[/]'[/]")
+        console.print("[dim]Usage data is collected when profiles are run via 'mcpm profile run'[/]")
         return
 
-    profile_data = data["profiles"][profile_name]
+    # Create profile info panel
+    profile_panel = Panel(
+        f"[bold cyan]Profile:[/] {stats.profile_name}\n\n"
+        f"[green]Total Sessions:[/] {stats.total_sessions:,}\n"
+        f"[green]Total Runs:[/] {stats.total_runs:,}\n"
+        f"[green]Server Count:[/] {stats.server_count}\n\n"
+        f"[green]First Used:[/] {format_timestamp(stats.first_used)}\n"
+        f"[green]Last Used:[/] {format_timestamp(stats.last_used)}",
+        title="📁 Profile Statistics",
+        title_align="left",
+        border_style="cyan",
+        padding=(1, 2),
+    )
+    console.print(profile_panel)
 
-    console.print(f"[bold cyan]Profile: {profile_name}[/]")
+
+def show_usage_overview(stats, days: int):
+    """Show comprehensive usage overview."""
+    if not stats.servers and not stats.profiles and not stats.recent_sessions:
+        console.print("[yellow]No usage data available yet.[/]")
+        console.print("[dim]Usage data is collected automatically when servers are used via MCPM.[/]")
+        console.print("[dim]Try running: [cyan]mcpm run <server-name>[/] to generate some data.[/]")
+        return
+
+    # Summary panel
+    summary_panel = Panel(
+        f"[bold green]📊 Summary[/]\n\n"
+        f"[cyan]Active Servers:[/] {stats.total_servers:,}\n"
+        f"[cyan]Active Profiles:[/] {stats.total_profiles:,}\n"
+        f"[cyan]Total Sessions:[/] {stats.total_sessions:,}\n"
+        f"[cyan]Analysis Period:[/] {stats.date_range_days} days",
+        title="🎯 Overview",
+        title_align="left",
+        border_style="green",
+        padding=(1, 2),
+    )
+    console.print(summary_panel)
     console.print()
 
-    # Basic stats
-    console.print(f"[green]Total runs:[/] {profile_data['total_runs']}")
-
-    if profile_data["last_used"]:
-        last_used = datetime.fromisoformat(profile_data["last_used"])
-        console.print(f"[green]Last used:[/] {last_used.strftime('%Y-%m-%d %H:%M:%S')}")
-
-
-def show_usage_overview(data, recent_sessions, days):
-    """Show overall usage overview."""
     # Server usage table
-    if data["servers"]:
+    if stats.servers:
         console.print("[bold cyan]📈 Server Usage[/]")
 
         server_table = Table()
         server_table.add_column("Server", style="cyan")
-        server_table.add_column("Total Runs", justify="right")
+        server_table.add_column("Sessions", justify="right")
+        server_table.add_column("Transport", style="green")
+        server_table.add_column("Success Rate", justify="right")
+        server_table.add_column("Runtime", justify="right")
         server_table.add_column("Last Used", style="dim")
 
-        # Sort servers by total runs
-        sorted_servers = sorted(data["servers"].items(), key=lambda x: x[1]["total_runs"], reverse=True)
+        for server in stats.servers:
+            # Get transport info from metadata (we'll add this to server stats)
+            transport = getattr(server, "primary_transport", "unknown")
 
-        for server_name, server_data in sorted_servers:
-            last_used = "Never"
-            if server_data["last_used"]:
-                try:
-                    last_used_dt = datetime.fromisoformat(server_data["last_used"])
-                    last_used = last_used_dt.strftime("%Y-%m-%d")
-                except ValueError:
-                    pass
-
-            server_table.add_row(server_name, str(server_data["total_runs"]), last_used)
+            server_table.add_row(
+                server.server_name,
+                f"{server.total_sessions:,}",
+                transport,
+                f"{server.success_rate:.1f}%",
+                format_duration(server.total_duration_ms),
+                format_timestamp(server.last_used, short=True),
+            )
 
         console.print(server_table)
         console.print()
 
     # Profile usage table
-    if data["profiles"]:
+    if stats.profiles:
         console.print("[bold cyan]📁 Profile Usage[/]")
 
         profile_table = Table()
         profile_table.add_column("Profile", style="cyan")
-        profile_table.add_column("Total Runs", justify="right")
+        profile_table.add_column("Sessions", justify="right")
+        profile_table.add_column("Runs", justify="right")
+        profile_table.add_column("Servers", justify="right")
         profile_table.add_column("Last Used", style="dim")
 
-        # Sort profiles by total runs
-        sorted_profiles = sorted(data["profiles"].items(), key=lambda x: x[1]["total_runs"], reverse=True)
-
-        for profile_name, profile_data in sorted_profiles:
-            last_used = "Never"
-            if profile_data["last_used"]:
-                try:
-                    last_used_dt = datetime.fromisoformat(profile_data["last_used"])
-                    last_used = last_used_dt.strftime("%Y-%m-%d")
-                except ValueError:
-                    pass
-
-            profile_table.add_row(profile_name, str(profile_data["total_runs"]), last_used)
+        for profile in stats.profiles:
+            profile_table.add_row(
+                profile.profile_name,
+                f"{profile.total_sessions:,}",
+                f"{profile.total_runs:,}",
+                f"{profile.server_count}",
+                format_timestamp(profile.last_used, short=True),
+            )
 
         console.print(profile_table)
         console.print()
 
-    # Recent activity summary
-    if recent_sessions:
+    # Recent activity
+    if stats.recent_sessions:
         console.print("[bold cyan]🕒 Recent Activity[/]")
-        console.print(f"  {len(recent_sessions)} sessions in last {days} days")
 
-        # Group by action
-        actions = {}
-        for session in recent_sessions:
-            action = session.get("action", "run")
-            actions[action] = actions.get(action, 0) + 1
+        activity_table = Table()
+        activity_table.add_column("Time", style="dim")
+        activity_table.add_column("Action", style="green")
+        activity_table.add_column("Target", style="cyan")
+        activity_table.add_column("Duration", justify="right")
+        activity_table.add_column("Status")
 
-        for action, count in actions.items():
-            console.print(f"  {count} {action} operations")
+        for session in stats.recent_sessions[:10]:  # Show last 10 sessions
+            target = session.server_name or session.profile_name or "Unknown"
+            status = "✅" if session.success else "❌"
 
+            activity_table.add_row(
+                format_timestamp(session.timestamp, short=True),
+                session.action,
+                target,
+                format_duration(session.duration_ms),
+                status,
+            )
+
+        console.print(activity_table)
         console.print()
 
-    # Summary
-    total_servers = len([s for s in data["servers"].values() if s["total_runs"] > 0])
-    total_profiles = len([p for p in data["profiles"].values() if p["total_runs"] > 0])
-    total_runs = sum(s["total_runs"] for s in data["servers"].values())
+    # Usage patterns summary
+    if stats.recent_sessions:
+        action_counts = {}
+        origin_counts = {}
+        transport_counts = {}
 
-    console.print(
-        f"[bold green]Summary:[/] {total_servers} servers, {total_profiles} profiles, {total_runs} total runs"
-    )
+        for session in stats.recent_sessions:
+            action = session.action
+            action_counts[action] = action_counts.get(action, 0) + 1
+
+            # Extract origin and transport from metadata if available
+            if session.metadata:
+                # Handle both legacy format (nested) and new computed format (direct)
+                if "computed_from_events" in session.metadata:
+                    # New computed format - data is directly in metadata
+                    origin = session.metadata.get("source", "unknown")
+                    transport = session.metadata.get("transport", "unknown")
+                else:
+                    # Legacy format - data is nested in client_info/server_info
+                    client_info = session.metadata.get("client_info", {})
+                    server_info = session.metadata.get("server_info", {})
+                    origin = client_info.get("origin", "unknown")
+                    transport = server_info.get("transport") or client_info.get("transport", "unknown")
+                
+                origin_counts[origin] = origin_counts.get(origin, 0) + 1
+                transport_counts[transport] = transport_counts.get(transport, 0) + 1
+
+        console.print("[bold cyan]📋 Activity Breakdown[/]")
+        for action, count in sorted(action_counts.items(), key=lambda x: x[1], reverse=True):
+            console.print(f"  [green]{action}:[/] {count} operations")
+
+        if origin_counts:
+            console.print("\n[bold cyan]🌐 Request Origins[/]")
+            for origin, count in sorted(origin_counts.items(), key=lambda x: x[1], reverse=True):
+                console.print(f"  [blue]{origin}:[/] {count} requests")
+
+        if transport_counts:
+            console.print("\n[bold cyan]🚀 Transport Types[/]")
+            for transport, count in sorted(transport_counts.items(), key=lambda x: x[1], reverse=True):
+                console.print(f"  [magenta]{transport}:[/] {count} sessions")
+
+
+def format_duration(duration_ms):
+    """Format duration in milliseconds to human readable format"""
+    if not duration_ms:
+        return "N/A"
+
+    if duration_ms < 1000:
+        return f"{duration_ms}ms"
+    elif duration_ms < 60000:
+        return f"{duration_ms/1000:.1f}s"
+    elif duration_ms < 3600000:
+        return f"{duration_ms/60000:.1f}m"
+    else:
+        return f"{duration_ms/3600000:.1f}h"
+
+
+def format_timestamp(timestamp_str, short=False):
+    """Format timestamp string to human readable format"""
+    if not timestamp_str:
+        return "Never"
+
+    try:
+        dt = datetime.fromisoformat(timestamp_str.replace("Z", "+00:00"))
+        if short:
+            return dt.strftime("%m-%d %H:%M")
+        else:
+            return dt.strftime("%Y-%m-%d %H:%M:%S")
+    except (ValueError, AttributeError):
+        return timestamp_str
+

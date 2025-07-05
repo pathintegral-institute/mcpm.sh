@@ -8,6 +8,7 @@ from rich.console import Console
 from rich.panel import Panel
 
 from mcpm.fastmcp_integration.proxy import create_mcpm_proxy
+# Removed SessionAction import - using strings directly
 from mcpm.profile.profile_config import ProfileConfigManager
 from mcpm.utils.config import DEFAULT_PORT
 from mcpm.utils.logging_config import (
@@ -52,6 +53,8 @@ async def run_profile_fastmcp(profile_servers, profile_name, http_mode=False, po
             servers=profile_servers,
             name=f"profile-{profile_name}",
             stdio_mode=not http_mode,  # stdio_mode=False for HTTP
+            action="profile_run",
+            profile_name=profile_name,
         )
 
         logger.debug(f"FastMCP proxy initialized with: {[s.name for s in profile_servers]}")
@@ -62,10 +65,7 @@ async def run_profile_fastmcp(profile_servers, profile_name, http_mode=False, po
         # Re-suppress library logging after FastMCP initialization
         ensure_dependency_logging_suppressed()
 
-        # Record profile usage
-        from mcpm.commands.usage import record_profile_usage
-
-        record_profile_usage(profile_name, "run" + ("_http" if http_mode else ""))
+        # Note: Usage tracking is handled by proxy middleware
 
         if http_mode:
             # Try to find an available port if the requested one is taken

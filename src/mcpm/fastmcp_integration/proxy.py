@@ -12,12 +12,12 @@ from fastmcp.utilities.mcp_config import (
 )
 
 from mcpm.core.schema import CustomServerConfig, RemoteServerConfig, ServerConfig, STDIOServerConfig
-from mcpm.monitor.base import AccessMonitor
-from mcpm.monitor.duckdb import DuckDBAccessMonitor
+from mcpm.monitor.base import AccessMonitor, SessionTransport
+from mcpm.monitor.sqlite import SQLiteAccessMonitor
 
 # FastMCP config models are available if needed in the future
 # from .config import create_mcp_config, create_stdio_server_config, create_remote_server_config
-from .middleware import MCPMAuthMiddleware, MCPMMonitoringMiddleware, MCPMUsageTrackingMiddleware
+from .middleware import MCPMAuthMiddleware, MCPMUnifiedTrackingMiddleware
 
 
 class MCPMProxyFactory:
@@ -41,11 +41,11 @@ class MCPMProxyFactory:
         self.api_key = api_key
 
         if access_monitor is None:
-            access_monitor = DuckDBAccessMonitor()
+            access_monitor = SQLiteAccessMonitor()
         self.access_monitor = access_monitor
 
     async def create_proxy_for_servers(
-        self, servers: List[ServerConfig], name: Optional[str] = None, stdio_mode: bool = True
+        self, servers: List[ServerConfig], name: Optional[str] = None, stdio_mode: bool = True, action: str = "proxy", profile_name: Optional[str] = None
     ) -> FastMCP:
         """
         Create a FastMCP proxy that aggregates multiple MCPM servers.
@@ -115,7 +115,9 @@ class MCPMProxyFactory:
         proxy = FastMCP.as_proxy(proxy_config, name=name or "mcpm-aggregated")
 
         # Add MCPM middleware
-        self._add_mcpm_middleware(proxy, stdio_mode=stdio_mode)
+        # For single server proxies, use the server name for tracking
+        server_name = servers[0].name if len(servers) == 1 else None
+        self._add_mcpm_middleware(proxy, stdio_mode=stdio_mode, server_name=server_name, action=action, profile_name=profile_name)
 
         return proxy
 
@@ -137,18 +139,26 @@ class MCPMProxyFactory:
             profile_servers, name=f"mcpm-profile-{profile_name}", stdio_mode=stdio_mode
         )
 
-    def _add_mcpm_middleware(self, proxy: FastMCP, stdio_mode: bool = True) -> None:
+    def _add_mcpm_middleware(self, proxy: FastMCP, stdio_mode: bool = True, server_name: str = None, action: str = "proxy", profile_name: str = None) -> None:
         """Add MCPM-specific middleware to the proxy."""
-        # Add monitoring middleware
+        # Add unified tracking middleware (replaces both monitoring and usage tracking)
         if self.access_monitor:
-            proxy.add_middleware(MCPMMonitoringMiddleware(self.access_monitor))
+            transport = SessionTransport.STDIO if stdio_mode else SessionTransport.HTTP
+            unified_middleware = MCPMUnifiedTrackingMiddleware(
+                access_monitor=self.access_monitor,
+                server_name=server_name,
+                action=action,
+                profile_name=profile_name,
+                transport=transport
+            )
+            proxy.add_middleware(unified_middleware)
+            
+            # Store reference for cleanup
+            proxy._mcpm_unified_middleware = unified_middleware
 
         # Add authentication middleware (only for HTTP/network operations, not stdio)
         if self.auth_enabled and not stdio_mode:
             proxy.add_middleware(MCPMAuthMiddleware(self.api_key))
-
-        # Add usage tracking middleware
-        proxy.add_middleware(MCPMUsageTrackingMiddleware())
 
 
 async def create_mcpm_proxy(
@@ -158,6 +168,8 @@ async def create_mcpm_proxy(
     api_key: Optional[str] = None,
     access_monitor: Optional[AccessMonitor] = None,
     stdio_mode: bool = True,
+    action: str = "proxy",
+    profile_name: Optional[str] = None,
 ) -> FastMCP:
     """
     Convenience function to create a FastMCP proxy with MCPM integration.
@@ -174,7 +186,7 @@ async def create_mcpm_proxy(
         Configured FastMCP proxy instance
     """
     factory = MCPMProxyFactory(auth_enabled=auth_enabled, api_key=api_key, access_monitor=access_monitor)
-    proxy = await factory.create_proxy_for_servers(servers, name, stdio_mode=stdio_mode)
+    proxy = await factory.create_proxy_for_servers(servers, name, stdio_mode=stdio_mode, action=action, profile_name=profile_name)
 
     # Initialize the access monitor if provided
     if access_monitor:

@@ -2,8 +2,6 @@
 
 import asyncio
 import logging
-import os
-import subprocess
 import sys
 
 import click
@@ -12,6 +10,7 @@ from rich.panel import Panel
 
 from mcpm.fastmcp_integration.proxy import create_mcpm_proxy
 from mcpm.global_config import GlobalConfigManager
+# Removed SessionAction import - using strings directly
 from mcpm.utils.config import DEFAULT_PORT
 from mcpm.utils.logging_config import (
     ensure_dependency_logging_suppressed,
@@ -32,59 +31,6 @@ def find_installed_server(server_name):
     return None, None
 
 
-def execute_server_command(server_config, server_name):
-    """Execute a server command with proper environment setup."""
-    if not server_config:
-        logger.error(f"Invalid server configuration for '{server_name}'")
-        sys.exit(1)
-
-    # Get command and args from the server config
-    command = server_config.command
-    args = server_config.args or []
-
-    if not command:
-        logger.error(f"Invalid command format for server '{server_name}'")
-        sys.exit(1)
-
-    # Build the full command list
-    full_command = [command] + args
-
-    # Set up environment
-    env = os.environ.copy()
-
-    # Add any environment variables from server config
-    if hasattr(server_config, "env") and server_config.env:
-        for key, value in server_config.env.items():
-            env[key] = str(value)
-
-    # Set working directory if specified
-    cwd = getattr(server_config, "cwd", None)
-    if cwd:
-        cwd = os.path.expanduser(cwd)
-
-    try:
-        # Record usage
-        from mcpm.commands.usage import record_server_usage
-
-        record_server_usage(server_name, "run")
-
-        # Execute the command
-        result = subprocess.run(full_command, env=env, cwd=cwd, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr)
-
-        return result.returncode
-
-    except FileNotFoundError:
-        logger.error(f"Command not found: {full_command[0]}")
-        logger.warning("Make sure the required runtime is installed")
-        sys.exit(1)
-    except KeyboardInterrupt:
-        logger.info("Server execution interrupted")
-        logger.warning("\nServer execution interrupted")
-        sys.exit(130)
-    except Exception as e:
-        logger.error(f"Error running server '{server_name}': {e}")
-        sys.exit(1)
-
 
 async def run_server_with_fastmcp(server_config, server_name, http_mode=False, port=None):
     """Run server using FastMCP proxy (stdio or HTTP)."""
@@ -92,16 +38,15 @@ async def run_server_with_fastmcp(server_config, server_name, http_mode=False, p
         # Use default port if none specified
         if port is None:
             port = DEFAULT_PORT
-        # Record usage
-        from mcpm.commands.usage import record_server_usage
-
-        record_server_usage(server_name, "run" + ("_http" if http_mode else ""))
+        # Note: Usage tracking is handled by proxy middleware
 
         # Create FastMCP proxy for single server
+        action = "run_http" if http_mode else "run"
         proxy = await create_mcpm_proxy(
             servers=[server_config],
             name=f"mcpm-run-{server_name}",
             stdio_mode=not http_mode,  # stdio_mode=False for HTTP
+            action=action,
         )
 
         # Set up dependency logging for FastMCP/MCP libraries
@@ -216,7 +161,7 @@ def run(server_name, http, port):
         # Use FastMCP proxy for HTTP mode
         exit_code = asyncio.run(run_server_with_fastmcp(server_config, server_name, http_mode=True, port=port))
     else:
-        # Use direct execution for stdio mode (maintains backwards compatibility)
-        exit_code = execute_server_command(server_config, server_name)
+        # Use FastMCP proxy for stdio mode (enables middleware and usage tracking)
+        exit_code = asyncio.run(run_server_with_fastmcp(server_config, server_name, http_mode=False, port=port))
 
     sys.exit(exit_code)
