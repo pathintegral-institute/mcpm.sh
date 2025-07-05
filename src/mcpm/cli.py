@@ -19,6 +19,7 @@ from mcpm.commands import (
     inspect,
     inspector,
     list,
+    migrate,
     profile,
     remove,
     run,
@@ -26,6 +27,7 @@ from mcpm.commands import (
     usage,
 )
 from mcpm.commands.share import share
+from mcpm.migration import V1ConfigDetector, V1ToV2Migrator
 from mcpm.utils.logging_config import setup_logging
 
 console = Console()
@@ -146,6 +148,19 @@ def main(ctx, help_flag, version):
         print_logo()
         return
 
+    # Check for v1 configuration and offer migration (even with subcommands)
+    detector = V1ConfigDetector()
+    if detector.has_v1_config():
+        migrator = V1ToV2Migrator()
+        migration_choice = migrator.show_migration_prompt()
+        if migration_choice == "migrate":
+            migrator.migrate_config()
+            return
+        elif migration_choice == "start_fresh":
+            migrator.start_fresh()
+            # Continue to execute the subcommand
+        # If "ignore", continue to subcommand without migration
+
     # v2.0 simplified model - no active target system
     # If no command was invoked or help is requested, show our custom help
     if ctx.invoked_subcommand is None or help_flag:
@@ -239,6 +254,7 @@ main.add_command(profile.profile, name="profile")
 main.add_command(doctor.doctor)
 main.add_command(usage.usage)
 main.add_command(config.config)
+main.add_command(migrate.migrate)
 main.add_command(share)
 
 # Legacy command aliases that still work
