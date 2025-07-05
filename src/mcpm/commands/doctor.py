@@ -5,13 +5,13 @@ import subprocess
 import sys
 from pathlib import Path
 
-import click
 from rich.console import Console
 
 from mcpm.clients.client_registry import ClientRegistry
 from mcpm.profile.profile_config import ProfileConfigManager
 from mcpm.utils.config import ConfigManager
 from mcpm.utils.repository import RepositoryManager
+from mcpm.utils.rich_click_config import click
 
 console = Console()
 

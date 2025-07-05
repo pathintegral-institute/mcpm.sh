@@ -47,23 +47,23 @@ class AccessEventType(Enum):
     TOOL_INVOCATION = auto()  # Tool was invoked (modifying content)
     RESOURCE_ACCESS = auto()  # Resource was accessed (reading content)
     PROMPT_EXECUTION = auto()  # Prompt was executed (generating content)
-    
+
     # Session-level events (new for unified tracking)
     SESSION_START = auto()  # Session/proxy started
-    SESSION_END = auto()    # Session/proxy ended
+    SESSION_END = auto()  # Session/proxy ended
 
 
 class SessionTransport(Enum):
     """Transport mechanism for client connections"""
 
     STDIO = "stdio"  # Standard input/output
-    HTTP = "http"    # HTTP server
+    HTTP = "http"  # HTTP server
 
 
 class SessionSource(Enum):
     """Origin of the session request"""
 
-    LOCAL = "local"    # Local machine request
+    LOCAL = "local"  # Local machine request
     REMOTE = "remote"  # Remote network request
 
 
@@ -78,7 +78,7 @@ class UsageSession(BaseModel):
     duration_ms: Optional[int] = Field(description="Session duration in milliseconds")
     success: bool = Field(description="Session success status", default=True)
     metadata: Optional[Dict[str, Any]] = Field(description="Session metadata")
-    
+
     @property
     def transport(self) -> SessionTransport:
         """Extract transport from metadata or infer from action"""
@@ -87,7 +87,7 @@ class UsageSession(BaseModel):
             return SessionTransport.HTTP if transport_str == "http" else SessionTransport.STDIO
         # Fallback based on action
         return SessionTransport.HTTP if "http" in self.action else SessionTransport.STDIO
-    
+
     @property
     def source(self) -> SessionSource:
         """Extract source from metadata"""
@@ -214,7 +214,7 @@ class AccessMonitor(ABC):
         """
         pass
 
-# track_session method removed - use track_event with SESSION_START/SESSION_END instead
+    # track_session method removed - use track_event with SESSION_START/SESSION_END instead
 
     @abstractmethod
     async def get_usage_stats(self, days: int = 30) -> UsageStats:

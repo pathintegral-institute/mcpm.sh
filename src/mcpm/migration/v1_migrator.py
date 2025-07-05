@@ -104,9 +104,7 @@ class V1ToV2Migrator:
 
         while True:
             choice = Prompt.ask(
-                "Choose your option",
-                choices=["y", "n", "i", "Y", "N", "I"],
-                show_choices=False
+                "Choose your option", choices=["y", "n", "i", "Y", "N", "I"], show_choices=False
             ).lower()
 
             if choice == "y":
@@ -115,7 +113,9 @@ class V1ToV2Migrator:
                 console.print("\n[blue]Starting fresh with v2 - your v1 configs will be safely backed up.[/]")
                 return "start_fresh"
             elif choice == "i":
-                console.print("\n[yellow]Continuing with current command. You can migrate later with 'mcpm migrate'.[/]")
+                console.print(
+                    "\n[yellow]Continuing with current command. You can migrate later with 'mcpm migrate'.[/]"
+                )
                 console.print("[dim]Note: Some v2 features may not work properly with v1 configs.[/]")
                 return "ignore"
 
@@ -159,7 +159,7 @@ class V1ToV2Migrator:
                 title="🆕 Fresh v2 Start",
                 title_align="left",
                 border_style="green",
-                padding=(1, 2)
+                padding=(1, 2),
             )
             console.print(fresh_start_panel)
 

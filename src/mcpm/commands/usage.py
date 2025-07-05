@@ -3,12 +3,12 @@
 import asyncio
 from datetime import datetime
 
-import click
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 
 from mcpm.monitor import get_monitor
+from mcpm.utils.rich_click_config import click
 
 console = Console()
 
@@ -251,7 +251,7 @@ def show_usage_overview(stats, days: int):
                     server_info = session.metadata.get("server_info", {})
                     origin = client_info.get("origin", "unknown")
                     transport = server_info.get("transport") or client_info.get("transport", "unknown")
-                
+
                 origin_counts[origin] = origin_counts.get(origin, 0) + 1
                 transport_counts[transport] = transport_counts.get(transport, 0) + 1
 
@@ -278,11 +278,11 @@ def format_duration(duration_ms):
     if duration_ms < 1000:
         return f"{duration_ms}ms"
     elif duration_ms < 60000:
-        return f"{duration_ms/1000:.1f}s"
+        return f"{duration_ms / 1000:.1f}s"
     elif duration_ms < 3600000:
-        return f"{duration_ms/60000:.1f}m"
+        return f"{duration_ms / 60000:.1f}m"
     else:
-        return f"{duration_ms/3600000:.1f}h"
+        return f"{duration_ms / 3600000:.1f}h"
 
 
 def format_timestamp(timestamp_str, short=False):
@@ -298,4 +298,3 @@ def format_timestamp(timestamp_str, short=False):
             return dt.strftime("%Y-%m-%d %H:%M:%S")
     except (ValueError, AttributeError):
         return timestamp_str
-

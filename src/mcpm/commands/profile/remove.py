@@ -1,10 +1,10 @@
 """Profile remove command."""
 
-import click
 from rich.console import Console
 from rich.prompt import Confirm
 
 from mcpm.profile.profile_config import ProfileConfigManager
+from mcpm.utils.rich_click_config import click
 
 console = Console()
 profile_config_manager = ProfileConfigManager()

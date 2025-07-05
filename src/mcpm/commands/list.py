@@ -2,12 +2,12 @@
 List command for MCP v2.0 - Global Configuration Model
 """
 
-import click
 from rich.console import Console
 
 from mcpm.commands.target_operations.common import global_list_servers
 from mcpm.profile.profile_config import ProfileConfigManager
 from mcpm.utils.display import print_server_config
+from mcpm.utils.rich_click_config import click
 
 console = Console()
 profile_manager = ProfileConfigManager()

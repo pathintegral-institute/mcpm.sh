@@ -2,7 +2,7 @@
 MCPM CLI - Main entry point for the Model Context Protocol Manager CLI
 """
 
-import click
+# Import rich-click configuration before anything else
 from rich.console import Console
 from rich.table import Table
 from rich.traceback import Traceback
@@ -29,6 +29,7 @@ from mcpm.commands import (
 from mcpm.commands.share import share
 from mcpm.migration import V1ConfigDetector, V1ToV2Migrator
 from mcpm.utils.logging_config import setup_logging
+from mcpm.utils.rich_click_config import click
 
 console = Console()
 client_config_manager = ClientConfigManager()

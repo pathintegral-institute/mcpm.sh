@@ -9,7 +9,6 @@ from fastmcp.server.middleware import Middleware
 
 from mcpm.monitor.base import AccessEventType, AccessMonitor, SessionSource, SessionTransport
 
-
 # MCPMMonitoringMiddleware removed - functionality moved to MCPMUnifiedTrackingMiddleware
 
 
@@ -84,7 +83,14 @@ class MCPMAuthMiddleware(Middleware):
 class MCPMUnifiedTrackingMiddleware(Middleware):
     """Unified FastMCP middleware that tracks both individual operations and session-level analytics."""
 
-    def __init__(self, access_monitor: AccessMonitor, server_name: str = None, action: str = "proxy", profile_name: str = None, transport: SessionTransport = SessionTransport.HTTP):
+    def __init__(
+        self,
+        access_monitor: AccessMonitor,
+        server_name: str = None,
+        action: str = "proxy",
+        profile_name: str = None,
+        transport: SessionTransport = SessionTransport.HTTP,
+    ):
         self.monitor = access_monitor
         self.server_name = server_name
         self.action = action
@@ -101,20 +107,8 @@ class MCPMUnifiedTrackingMiddleware(Middleware):
             await self._track_session_start(context)
             self.session_started = True
 
-        # Track individual operation
-        start_time = time.time()
-        server_id = getattr(context, "server_id", None) or self.server_name
-        
-        success = True
-        try:
-            result = await call_next(context)
-            return result
-        except Exception:
-            success = False
-            raise
-        finally:
-            # Track session end will be handled by proxy cleanup
-            pass
+        # Simply pass through the request - tracking happens in specific methods
+        return await call_next(context)
 
     async def on_call_tool(self, context, call_next):
         """Track tool invocation events with session linking."""
@@ -248,7 +242,7 @@ class MCPMUnifiedTrackingMiddleware(Middleware):
             return  # No session to end
 
         duration_ms = int((time.time() - self.session_start_time) * 1000)
-        
+
         metadata = {
             "middleware": "mcpm",
             "action": self.action,
@@ -311,6 +305,7 @@ class MCPMUnifiedTrackingMiddleware(Middleware):
         # Method 1: Try FastMCP's built-in helper
         try:
             from fastmcp.server.dependencies import get_http_headers
+
             headers = get_http_headers()
         except (RuntimeError, ImportError):
             pass
@@ -378,12 +373,24 @@ class MCPMUnifiedTrackingMiddleware(Middleware):
 
         # Private network ranges (RFC 1918)
         private_ranges = [
-            "10.",           # 10.0.0.0/8
-            "172.16.", "172.17.", "172.18.", "172.19.",  # 172.16.0.0/12 (partial)
-            "172.20.", "172.21.", "172.22.", "172.23.",
-            "172.24.", "172.25.", "172.26.", "172.27.",
-            "172.28.", "172.29.", "172.30.", "172.31.",
-            "192.168.",      # 192.168.0.0/16
+            "10.",  # 10.0.0.0/8
+            "172.16.",
+            "172.17.",
+            "172.18.",
+            "172.19.",  # 172.16.0.0/12 (partial)
+            "172.20.",
+            "172.21.",
+            "172.22.",
+            "172.23.",
+            "172.24.",
+            "172.25.",
+            "172.26.",
+            "172.27.",
+            "172.28.",
+            "172.29.",
+            "172.30.",
+            "172.31.",
+            "192.168.",  # 192.168.0.0/16
         ]
 
         for private_range in private_ranges:

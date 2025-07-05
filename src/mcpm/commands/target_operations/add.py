@@ -7,7 +7,6 @@ import os
 import re
 from enum import Enum
 
-import click
 from prompt_toolkit import PromptSession
 from prompt_toolkit.formatted_text import HTML
 from prompt_toolkit.key_binding import KeyBindings
@@ -22,6 +21,7 @@ from mcpm.commands.target_operations.common import (
 from mcpm.profile.profile_config import ProfileConfigManager
 from mcpm.schemas.full_server_config import FullServerConfig
 from mcpm.utils.repository import RepositoryManager
+from mcpm.utils.rich_click_config import click
 
 console = Console()
 repo_manager = RepositoryManager()

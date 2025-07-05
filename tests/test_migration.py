@@ -134,7 +134,9 @@ def test_migration_without_interaction(temp_config_dir, v1_config_files):
     """Test migration logic without user interaction"""
     # Mock user interactions to avoid prompts during testing
     with (
-        patch("mcpm.migration.v1_migrator.Prompt.ask", side_effect=["y", "document"]),  # First for migration choice, second for stashed servers
+        patch(
+            "mcpm.migration.v1_migrator.Prompt.ask", side_effect=["y", "document"]
+        ),  # First for migration choice, second for stashed servers
         patch("mcpm.migration.v1_migrator.console.print"),
         patch("mcpm.migration.v1_migrator.V1ToV2Migrator._wait_for_keypress"),  # Mock keypress waits
     ):

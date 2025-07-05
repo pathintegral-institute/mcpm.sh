@@ -2,12 +2,12 @@
 
 import os
 
-import click
 from rich.console import Console
 from rich.prompt import Prompt
 
 from mcpm.utils.config import NODE_EXECUTABLES, ConfigManager
 from mcpm.utils.repository import RepositoryManager
+from mcpm.utils.rich_click_config import click
 
 console = Console()
 repo_manager = RepositoryManager()

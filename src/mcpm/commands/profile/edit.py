@@ -1,10 +1,10 @@
 """Profile edit command."""
 
-import click
 from rich.console import Console
 
 from mcpm.global_config import GlobalConfigManager
 from mcpm.profile.profile_config import ProfileConfigManager
+from mcpm.utils.rich_click_config import click
 
 from .interactive import interactive_profile_edit
 

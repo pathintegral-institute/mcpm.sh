@@ -4,12 +4,12 @@ import shlex
 import subprocess
 import sys
 
-import click
 from rich.console import Console
 from rich.panel import Panel
 
 from mcpm.profile.profile_config import ProfileConfigManager
 from mcpm.utils.platform import NPX_CMD
+from mcpm.utils.rich_click_config import click
 
 console = Console()
 profile_config_manager = ProfileConfigManager()

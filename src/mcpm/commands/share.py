@@ -8,13 +8,13 @@ import secrets
 import sys
 from typing import Optional
 
-import click
 from rich.console import Console
 from rich.panel import Panel
 
 from mcpm.core.tunnel import Tunnel
 from mcpm.fastmcp_integration.proxy import create_mcpm_proxy
 from mcpm.global_config import GlobalConfigManager
+
 # Removed SessionAction import - using strings directly
 from mcpm.utils.config import DEFAULT_PORT, DEFAULT_SHARE_ADDRESS
 from mcpm.utils.logging_config import (
@@ -22,6 +22,7 @@ from mcpm.utils.logging_config import (
     get_uvicorn_log_level,
     setup_dependency_logging,
 )
+from mcpm.utils.rich_click_config import click
 
 console = Console()
 global_config_manager = GlobalConfigManager()

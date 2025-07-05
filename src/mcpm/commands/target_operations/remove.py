@@ -2,7 +2,6 @@
 Remove command for MCPM
 """
 
-import click
 from rich.console import Console
 from rich.prompt import Confirm
 
@@ -12,6 +11,7 @@ from mcpm.commands.target_operations.common import (
     global_remove_server,
 )
 from mcpm.utils.display import print_server_config
+from mcpm.utils.rich_click_config import click
 
 console = Console()
 

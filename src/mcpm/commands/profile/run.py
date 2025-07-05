@@ -3,11 +3,11 @@
 import asyncio
 import logging
 
-import click
 from rich.console import Console
 from rich.panel import Panel
 
 from mcpm.fastmcp_integration.proxy import create_mcpm_proxy
+
 # Removed SessionAction import - using strings directly
 from mcpm.profile.profile_config import ProfileConfigManager
 from mcpm.utils.config import DEFAULT_PORT
@@ -16,6 +16,7 @@ from mcpm.utils.logging_config import (
     get_uvicorn_log_level,
     setup_dependency_logging,
 )
+from mcpm.utils.rich_click_config import click
 
 profile_config_manager = ProfileConfigManager()
 logger = logging.getLogger(__name__)

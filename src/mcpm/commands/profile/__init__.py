@@ -1,6 +1,6 @@
 """Profile management commands."""
 
-import click
+from mcpm.utils.rich_click_config import click
 
 from .create import create_profile
 from .edit import edit_profile

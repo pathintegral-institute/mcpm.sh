@@ -17,8 +17,6 @@ from mcpm.monitor.base import (
     ProfileStats,
     QueryEventResponse,
     ServerStats,
-    SessionSource,
-    SessionTransport,
     UsageSession,
     UsageStats,
 )
@@ -373,7 +371,7 @@ class SQLiteAccessMonitor(AccessMonitor):
             print(f"Error querying events: {e}")
             return QueryEventResponse(pagination=Pagination(total=0, page=0, limit=0, total_pages=0), events=[])
 
-# track_session method removed - use track_event with SESSION_START/SESSION_END instead
+    # track_session method removed - use track_event with SESSION_START/SESSION_END instead
 
     async def get_computed_usage_stats(self, days: int = 30) -> UsageStats:
         """Get comprehensive usage statistics computed from events."""
@@ -402,7 +400,7 @@ class SQLiteAccessMonitor(AccessMonitor):
 
             # Get session data from session_start events
             sessions_query = """
-                SELECT 
+                SELECT
                     session_id,
                     server_id,
                     json_extract(metadata, '$.action') as action,
@@ -410,11 +408,11 @@ class SQLiteAccessMonitor(AccessMonitor):
                     json_extract(metadata, '$.transport') as transport,
                     json_extract(metadata, '$.source') as source,
                     timestamp as start_time,
-                    (SELECT e2.timestamp FROM monitor_events e2 
-                     WHERE e2.session_id = e1.session_id AND e2.event_type = 'SESSION_END' 
+                    (SELECT e2.timestamp FROM monitor_events e2
+                     WHERE e2.session_id = e1.session_id AND e2.event_type = 'SESSION_END'
                      LIMIT 1) as end_time,
-                    (SELECT e2.success FROM monitor_events e2 
-                     WHERE e2.session_id = e1.session_id AND e2.event_type = 'SESSION_END' 
+                    (SELECT e2.success FROM monitor_events e2
+                     WHERE e2.session_id = e1.session_id AND e2.event_type = 'SESSION_END'
                      LIMIT 1) as session_success
                 FROM monitor_events e1
                 WHERE e1.event_type = 'SESSION_START'
@@ -428,8 +426,18 @@ class SQLiteAccessMonitor(AccessMonitor):
             # Build sessions list
             recent_sessions = []
             for row in session_results:
-                session_id, server_id, action, profile_name, transport, source, start_time, end_time, session_success = row
-                
+                (
+                    session_id,
+                    server_id,
+                    action,
+                    profile_name,
+                    transport,
+                    source,
+                    start_time,
+                    end_time,
+                    session_success,
+                ) = row
+
                 # Calculate duration
                 duration_ms = None
                 if start_time and end_time:
@@ -441,30 +449,32 @@ class SQLiteAccessMonitor(AccessMonitor):
                         pass
 
                 # Create session object
-                recent_sessions.append(UsageSession(
-                    id=None,  # No separate session ID in events
-                    server_name=server_id,
-                    profile_name=profile_name,
-                    action=action or "unknown",
-                    timestamp=start_time,
-                    duration_ms=duration_ms,
-                    success=bool(session_success) if session_success is not None else True,
-                    metadata={
-                        "session_id": session_id,
-                        "transport": transport,
-                        "source": source,
-                        "computed_from_events": True
-                    }
-                ))
+                recent_sessions.append(
+                    UsageSession(
+                        id=None,  # No separate session ID in events
+                        server_name=server_id,
+                        profile_name=profile_name,
+                        action=action or "unknown",
+                        timestamp=start_time,
+                        duration_ms=duration_ms,
+                        success=bool(session_success) if session_success is not None else True,
+                        metadata={
+                            "session_id": session_id,
+                            "transport": transport,
+                            "source": source,
+                            "computed_from_events": True,
+                        },
+                    )
+                )
 
             # Compute server statistics
             server_stats_query = """
-                SELECT 
+                SELECT
                     server_id,
                     COUNT(DISTINCT session_id) as total_sessions,
-                    COUNT(DISTINCT CASE 
-                        WHEN json_extract(metadata, '$.action') IN ('run', 'run_http', 'profile_run') 
-                        THEN session_id 
+                    COUNT(DISTINCT CASE
+                        WHEN json_extract(metadata, '$.action') IN ('run', 'run_http', 'profile_run')
+                        THEN session_id
                     END) as total_runs,
                     MIN(datetime(timestamp)) as first_used,
                     MAX(datetime(timestamp)) as last_used,
@@ -483,22 +493,24 @@ class SQLiteAccessMonitor(AccessMonitor):
             servers = []
             for row in server_results:
                 server_id, total_sessions, total_runs, first_used, last_used, success_rate, primary_transport = row
-                
-                servers.append(ServerStats(
-                    server_name=server_id,
-                    total_sessions=total_sessions or 0,
-                    total_runs=total_runs or 0,
-                    first_used=first_used,
-                    last_used=last_used,
-                    total_duration_ms=0,  # Would need to compute from session pairs
-                    success_rate=success_rate or 0.0,
-                    primary_transport=primary_transport or "unknown",
-                    origin_breakdown=None,  # Would need additional computation
-                ))
+
+                servers.append(
+                    ServerStats(
+                        server_name=server_id,
+                        total_sessions=total_sessions or 0,
+                        total_runs=total_runs or 0,
+                        first_used=first_used,
+                        last_used=last_used,
+                        total_duration_ms=0,  # Would need to compute from session pairs
+                        success_rate=success_rate or 0.0,
+                        primary_transport=primary_transport or "unknown",
+                        origin_breakdown=None,  # Would need additional computation
+                    )
+                )
 
             # Compute profile statistics
             profile_stats_query = """
-                SELECT 
+                SELECT
                     json_extract(metadata, '$.profile_name') as profile_name,
                     COUNT(DISTINCT session_id) as total_sessions,
                     COUNT(DISTINCT session_id) as total_runs,
@@ -518,16 +530,18 @@ class SQLiteAccessMonitor(AccessMonitor):
             profiles = []
             for row in profile_results:
                 profile_name, total_sessions, total_runs, first_used, last_used, server_count = row
-                
+
                 if profile_name:  # Skip null profile names
-                    profiles.append(ProfileStats(
-                        profile_name=profile_name,
-                        total_sessions=total_sessions or 0,
-                        total_runs=total_runs or 0,
-                        first_used=first_used,
-                        last_used=last_used,
-                        server_count=server_count or 0,
-                    ))
+                    profiles.append(
+                        ProfileStats(
+                            profile_name=profile_name,
+                            total_sessions=total_sessions or 0,
+                            total_runs=total_runs or 0,
+                            first_used=first_used,
+                            last_used=last_used,
+                            server_count=server_count or 0,
+                        )
+                    )
 
             # Get totals
             totals_query = """

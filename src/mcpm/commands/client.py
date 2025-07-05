@@ -6,7 +6,6 @@ import json
 import os
 import subprocess
 
-import click
 from InquirerPy import inquirer
 from InquirerPy.base.control import Choice
 from rich.console import Console
@@ -17,6 +16,7 @@ from mcpm.clients.client_registry import ClientRegistry
 from mcpm.global_config import GlobalConfigManager
 from mcpm.profile.profile_config import ProfileConfigManager
 from mcpm.utils.display import print_error
+from mcpm.utils.rich_click_config import click
 
 console = Console()
 client_config_manager = ClientConfigManager()

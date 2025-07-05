@@ -38,7 +38,7 @@ class V1ConfigDetector:
                     config.get("active_target"),
                     config.get("stashed_servers"),
                     config.get("router"),
-                    config.get("share")
+                    config.get("share"),
                 ]
 
                 # Return True if any v1 indicator has actual content (not None/empty)

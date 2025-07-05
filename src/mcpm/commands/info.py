@@ -2,11 +2,11 @@
 Info command for MCPM - Show detailed information about a specific MCP server
 """
 
-import click
 from rich.console import Console
 
 from mcpm.utils.display import print_error
 from mcpm.utils.repository import RepositoryManager
+from mcpm.utils.rich_click_config import click
 
 console = Console()
 repo_manager = RepositoryManager()

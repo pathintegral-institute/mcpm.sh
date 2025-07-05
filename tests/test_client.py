@@ -404,6 +404,7 @@ def test_main_client_command_help():
     # Check the result
     assert result.exit_code == 0
     assert "Manage MCP client configurations" in result.output
-    assert "Commands:" in result.output
+    # With rich-click, the commands are shown differently
     assert "ls" in result.output
     assert "edit" in result.output
+    assert "import" in result.output

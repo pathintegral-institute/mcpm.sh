@@ -4,7 +4,6 @@ import asyncio
 import logging
 import secrets
 
-import click
 from rich.console import Console
 from rich.panel import Panel
 
@@ -17,6 +16,7 @@ from mcpm.utils.logging_config import (
     get_uvicorn_log_level,
     setup_dependency_logging,
 )
+from mcpm.utils.rich_click_config import click
 
 console = Console()
 profile_config_manager = ProfileConfigManager()

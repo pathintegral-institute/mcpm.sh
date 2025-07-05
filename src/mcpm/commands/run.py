@@ -4,12 +4,12 @@ import asyncio
 import logging
 import sys
 
-import click
 from rich.console import Console
 from rich.panel import Panel
 
 from mcpm.fastmcp_integration.proxy import create_mcpm_proxy
 from mcpm.global_config import GlobalConfigManager
+
 # Removed SessionAction import - using strings directly
 from mcpm.utils.config import DEFAULT_PORT
 from mcpm.utils.logging_config import (
@@ -17,6 +17,7 @@ from mcpm.utils.logging_config import (
     get_uvicorn_log_level,
     setup_dependency_logging,
 )
+from mcpm.utils.rich_click_config import click
 
 global_config_manager = GlobalConfigManager()
 logger = logging.getLogger(__name__)
@@ -29,7 +30,6 @@ def find_installed_server(server_name):
     if server_config:
         return server_config, "global"
     return None, None
-
 
 
 async def run_server_with_fastmcp(server_config, server_name, http_mode=False, port=None):

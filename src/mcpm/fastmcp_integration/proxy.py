@@ -45,7 +45,12 @@ class MCPMProxyFactory:
         self.access_monitor = access_monitor
 
     async def create_proxy_for_servers(
-        self, servers: List[ServerConfig], name: Optional[str] = None, stdio_mode: bool = True, action: str = "proxy", profile_name: Optional[str] = None
+        self,
+        servers: List[ServerConfig],
+        name: Optional[str] = None,
+        stdio_mode: bool = True,
+        action: str = "proxy",
+        profile_name: Optional[str] = None,
     ) -> FastMCP:
         """
         Create a FastMCP proxy that aggregates multiple MCPM servers.
@@ -117,7 +122,9 @@ class MCPMProxyFactory:
         # Add MCPM middleware
         # For single server proxies, use the server name for tracking
         server_name = servers[0].name if len(servers) == 1 else None
-        self._add_mcpm_middleware(proxy, stdio_mode=stdio_mode, server_name=server_name, action=action, profile_name=profile_name)
+        self._add_mcpm_middleware(
+            proxy, stdio_mode=stdio_mode, server_name=server_name, action=action, profile_name=profile_name
+        )
 
         return proxy
 
@@ -139,7 +146,14 @@ class MCPMProxyFactory:
             profile_servers, name=f"mcpm-profile-{profile_name}", stdio_mode=stdio_mode
         )
 
-    def _add_mcpm_middleware(self, proxy: FastMCP, stdio_mode: bool = True, server_name: str = None, action: str = "proxy", profile_name: str = None) -> None:
+    def _add_mcpm_middleware(
+        self,
+        proxy: FastMCP,
+        stdio_mode: bool = True,
+        server_name: str = None,
+        action: str = "proxy",
+        profile_name: str = None,
+    ) -> None:
         """Add MCPM-specific middleware to the proxy."""
         # Add unified tracking middleware (replaces both monitoring and usage tracking)
         if self.access_monitor:
@@ -149,10 +163,10 @@ class MCPMProxyFactory:
                 server_name=server_name,
                 action=action,
                 profile_name=profile_name,
-                transport=transport
+                transport=transport,
             )
             proxy.add_middleware(unified_middleware)
-            
+
             # Store reference for cleanup
             proxy._mcpm_unified_middleware = unified_middleware
 
@@ -186,7 +200,9 @@ async def create_mcpm_proxy(
         Configured FastMCP proxy instance
     """
     factory = MCPMProxyFactory(auth_enabled=auth_enabled, api_key=api_key, access_monitor=access_monitor)
-    proxy = await factory.create_proxy_for_servers(servers, name, stdio_mode=stdio_mode, action=action, profile_name=profile_name)
+    proxy = await factory.create_proxy_for_servers(
+        servers, name, stdio_mode=stdio_mode, action=action, profile_name=profile_name
+    )
 
     # Initialize the access monitor if provided
     if access_monitor:

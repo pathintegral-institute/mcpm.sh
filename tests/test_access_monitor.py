@@ -61,10 +61,10 @@ async def test_track_event(temp_db_path):
 
     # Query events using the monitor's query_events method
     response = await monitor.query_events("1d", 1, 10)
-    
+
     # Check that exactly one event was recorded
     assert len(response.events) == 1
-    
+
     # Check that the event has the correct data
     event = response.events[0]
     assert event.event_type == "TOOL_INVOCATION"
@@ -145,7 +145,7 @@ async def test_multiple_events(temp_db_path):
     assert response.events[2].event_type == "TOOL_INVOCATION"
     assert response.events[2].server_id == "server1"
     assert response.events[2].resource_id == "tool1"
-    
+
     # Check error details in the most recent event
     assert response.events[0].success is False
     assert response.events[0].error_message == "Test error"
@@ -193,7 +193,7 @@ async def test_raw_request_response(temp_db_path):
 
     # Query the database using the monitor's query_events method
     response = await monitor.query_events("1d", 1, 10)
-    
+
     # Check that the event was recorded
     assert len(response.events) == 1
     event = response.events[0]

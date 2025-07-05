@@ -8,7 +8,6 @@ from typing import Optional
 from .base import AccessEventType, AccessMonitor
 
 # session_tracker utilities removed - now handled by MCPMUnifiedTrackingMiddleware
-
 # Re-export implementations
 from .sqlite import SQLiteAccessMonitor
 

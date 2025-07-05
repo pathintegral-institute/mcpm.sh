@@ -7,7 +7,6 @@ import subprocess
 import sys
 from typing import Any, Dict, Optional
 
-import click
 from InquirerPy import inquirer
 from rich.console import Console
 from rich.table import Table
@@ -15,6 +14,7 @@ from rich.table import Table
 from mcpm.core.schema import RemoteServerConfig, STDIOServerConfig
 from mcpm.global_config import GlobalConfigManager
 from mcpm.utils.display import print_error
+from mcpm.utils.rich_click_config import click
 
 console = Console()
 global_config_manager = GlobalConfigManager()

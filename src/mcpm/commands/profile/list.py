@@ -1,11 +1,11 @@
 """Profile list command."""
 
-import click
 from rich.console import Console
 from rich.table import Table
 
 from mcpm.core.schema import CustomServerConfig, STDIOServerConfig
 from mcpm.profile.profile_config import ProfileConfigManager
+from mcpm.utils.rich_click_config import click
 
 console = Console()
 profile_config_manager = ProfileConfigManager()

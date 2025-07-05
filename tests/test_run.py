@@ -6,9 +6,9 @@ They need to be updated for the new FastMCP proxy architecture.
 """
 
 import logging
-import pytest
 from unittest.mock import patch
 
+import pytest
 from click.testing import CliRunner
 
 from mcpm.commands.run import run
