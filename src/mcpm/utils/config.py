@@ -13,13 +13,10 @@ logger = logging.getLogger(__name__)
 DEFAULT_CONFIG_DIR = os.path.expanduser("~/.config/mcpm")
 DEFAULT_CONFIG_FILE = os.path.join(DEFAULT_CONFIG_DIR, "config.json")
 DEFAULT_AUTH_FILE = os.path.join(DEFAULT_CONFIG_DIR, "auth.json")
-# default router config
-DEFAULT_HOST = "localhost"
+# Default port for HTTP mode
 DEFAULT_PORT = 6276  # 6276 represents MCPM on a T9 keypad (6=M, 2=C, 7=P, 6=M)
-# default splitor pattern
+# Default share address
 DEFAULT_SHARE_ADDRESS = f"share.mcpm.sh:{DEFAULT_PORT}"
-MCPM_AUTH_HEADER = "X-MCPM-SECRET"
-MCPM_PROFILE_HEADER = "X-MCPM-PROFILE"
 
 NODE_EXECUTABLES = ["npx", "bunx", "pnpm dlx", "yarn dlx"]
 
@@ -124,9 +121,3 @@ class ConfigManager:
         self._auth_config["api_key"] = api_key
         self._save_auth_config()
         return True
-
-    def save_share_config(self, share_url: str | None = None, share_pid: int | None = None):
-        return self.set_config("share", {"url": share_url, "pid": share_pid})
-
-    def read_share_config(self) -> Dict[str, Any]:
-        return self.get_config().get("share", {})

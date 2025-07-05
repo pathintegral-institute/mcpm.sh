@@ -50,7 +50,6 @@ def list_clients(verbose):
     # Get the list of supported clients
     supported_clients = ClientRegistry.get_supported_clients()
     installed_clients = ClientRegistry.detect_installed_clients()
-    active_client = ClientRegistry.get_active_client()
 
     # Count installed clients
     installed_count = sum(1 for c in supported_clients if installed_clients.get(c, False))
@@ -75,13 +74,8 @@ def list_clients(verbose):
         client_info = ClientRegistry.get_client_info(client_name)
         display_name = client_info.get("name", client_name)
 
-        # Build client name with code and status indicators
-        name_parts = [f"{display_name} [dim]({client_name})[/]"]
-
-        if client_name == active_client:
-            name_parts.append("[bold green]ACTIVE[/]")
-
-        client_display = " ".join(name_parts)
+        # Build client name with code
+        client_display = f"{display_name} [dim]({client_name})[/]"
 
         # Get the client manager to check MCPM servers
         client_manager = ClientRegistry.get_client_manager(client_name)

@@ -72,20 +72,18 @@ def config_manager(monkeypatch):
 @pytest.fixture
 def windsurf_manager(temp_config_file, monkeypatch, config_manager):
     """Create a WindsurfManager instance using the temp config file"""
-    windsurf_manager = WindsurfManager(config_path=temp_config_file)
-    monkeypatch.setattr(ClientRegistry, "get_active_client_manager", Mock(return_value=windsurf_manager))
+    windsurf_manager = WindsurfManager(config_path_override=temp_config_file)
     monkeypatch.setattr(ClientRegistry, "get_client_manager", Mock(return_value=windsurf_manager))
-    monkeypatch.setattr(ClientRegistry, "get_active_target", Mock(return_value="@windsurf"))
     return windsurf_manager
 
 
 @pytest.fixture
 def empty_windsurf_manager(empty_config_file):
     """Create a WindsurfManager instance with an empty config"""
-    return WindsurfManager(config_path=empty_config_file)
+    return WindsurfManager(config_path_override=empty_config_file)
 
 
 @pytest.fixture
 def claude_desktop_manager(temp_config_file):
     """Create a ClaudeDesktopManager instance with the temp config"""
-    return ClaudeDesktopManager(config_path=temp_config_file)
+    return ClaudeDesktopManager(config_path_override=temp_config_file)

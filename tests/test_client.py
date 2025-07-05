@@ -25,9 +25,6 @@ def test_client_ls_command(monkeypatch, tmp_path):
         "mcpm.commands.client.ClientRegistry.detect_installed_clients", Mock(return_value=installed_clients)
     )
 
-    # Mock active client
-    monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_active_client", Mock(return_value="claude-desktop"))
-
     # Mock client info
     def mock_get_client_info(client_name):
         return {"name": client_name.capitalize(), "download_url": f"https://example.com/{client_name}"}
@@ -56,7 +53,6 @@ def test_client_ls_command(monkeypatch, tmp_path):
     assert "Claude-desktop" in result.output
     assert "claude-desktop" in result.output  # Client code in parentheses
     assert "Cursor (cursor)" in result.output
-    assert "ACTIVE" in result.output
     assert "MCPM Profiles" in result.output
     assert "MCPM Servers" in result.output
     assert "Other Servers" in result.output
@@ -77,9 +73,6 @@ def test_client_ls_verbose_flag(monkeypatch):
     monkeypatch.setattr(
         "mcpm.commands.client.ClientRegistry.detect_installed_clients", Mock(return_value=installed_clients)
     )
-
-    # Mock active client
-    monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_active_client", Mock(return_value="claude-desktop"))
 
     # Mock client info
     def mock_get_client_info(client_name):
@@ -140,9 +133,6 @@ def test_client_ls_with_other_servers(monkeypatch):
     monkeypatch.setattr(
         "mcpm.commands.client.ClientRegistry.detect_installed_clients", Mock(return_value=installed_clients)
     )
-
-    # Mock active client
-    monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_active_client", Mock(return_value="claude-desktop"))
 
     # Mock client info
     def mock_get_client_info(client_name):
