@@ -14,10 +14,9 @@ profile_manager = ProfileConfigManager()
 
 
 @click.command()
-@click.option("--target", "-t", help="[DEPRECATED] Ignored in v2.0", hidden=True)
 @click.option("--verbose", "-v", is_flag=True, help="Show detailed server configuration")
 @click.help_option("-h", "--help")
-def list(target: str | None = None, verbose: bool = False):
+def list(verbose: bool = False):
     """List all installed MCP servers from global configuration.
 
     Examples:

@@ -90,9 +90,8 @@ def prompt_with_default(prompt_text, default="", hide_input=False, required=Fals
 @click.argument("server_name")
 @click.option("--force", is_flag=True, help="Force reinstall if server is already installed")
 @click.option("--alias", help="Alias for the server", required=False)
-@click.option("--target", "-t", help="[DEPRECATED] Ignored in v2.0", required=False, hidden=True)
 @click.help_option("-h", "--help")
-def add(server_name, force=False, alias=None, target: str | None = None):
+def add(server_name, force=False, alias=None):
     """Install an MCP server to the global configuration.
 
     Installs servers to the global MCPM configuration where they can be
@@ -106,7 +105,7 @@ def add(server_name, force=False, alias=None, target: str | None = None):
         mcpm add youtube --alias yt
     """
 
-    # v2.0: ignore target parameter - use global config
+    # v2.0: use global config
 
     # Check if this is a profile (starts with %)
     if server_name.startswith("%"):

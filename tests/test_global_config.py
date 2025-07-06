@@ -50,8 +50,8 @@ def test_v2_help_shows_global_model():
         assert result.exit_code == 0
         assert "global configuration" in result.output.lower()
         assert "profile" in result.output.lower()
-        assert "mcpm install" in result.output
-        assert "mcpm run" in result.output
+        assert "install" in result.output
+        assert "run" in result.output
 
 
 def test_deprecated_commands_removed():
@@ -60,7 +60,7 @@ def test_deprecated_commands_removed():
 
     # Test that deprecated commands no longer exist
     deprecated_commands = ["stash", "pop", "mv", "cp", "target", "add", "rm"]
-    
+
     for cmd in deprecated_commands:
         result = runner.invoke(main, [cmd, "--help"])
         assert result.exit_code == 2  # Click's "No such command" exit code

@@ -27,7 +27,7 @@ from mcpm.commands import (
 from mcpm.commands.share import share
 from mcpm.migration import V1ConfigDetector, V1ToV2Migrator
 from mcpm.utils.logging_config import setup_logging
-from mcpm.utils.rich_click_config import click, get_header_text, get_footer_text
+from mcpm.utils.rich_click_config import click, get_footer_text, get_header_text
 
 console = Console()
 client_config_manager = ClientConfigManager()
@@ -60,25 +60,22 @@ def print_logo():
 
     # Purple-to-pink gradient palette
     primary_colors = ["#8F87F1", "#C68EFD", "#E9A5F1", "#FED2E2"]
-    accent_colors = ["#3B82F6", "#EF4444"]  # Blue to red
-    warm_colors = ["#10B981", "#F59E0B"]  # Green to orange
-    tagline_colors = ["#06B6D4", "#EF4444"]  # Cyan to red
 
     # Create gradient using rich-gradient with narrow console for better gradient distribution
     temp_console = Console(width=50)  # Close to ASCII art width
     logo_gradient_obj = Gradient(logo_text, colors=primary_colors)
-    
+
     # Capture the rendered gradient
     with temp_console.capture() as capture:
         temp_console.print(logo_gradient_obj, justify="center")
     logo_gradient = Text.from_ansi(capture.get())
 
-# Create solid color text for title and tagline - harmonized with gradient
+    # Create solid color text for title and tagline - harmonized with gradient
     title_text = Text()
     title_text.append("Model Context Protocol Manager", style="#8F87F1 bold")
     title_text.append(" v", style="#C68EFD")
     title_text.append(__version__, style="#E9A5F1 bold")
-    
+
     tagline_text = Text()
     tagline_text.append("Open Source with ", style="#FED2E2")
     tagline_text.append("♥", style="#E9A5F1")
@@ -131,7 +128,7 @@ def handle_exceptions(func):
     help="""
 Centralized MCP server management - discover, install, run, and share servers.
 
-Manage servers globally, organize with profiles, monitor usage, and integrate 
+Manage servers globally, organize with profiles, monitor usage, and integrate
 with all MCP clients.
 """,
 )
@@ -144,7 +141,7 @@ def main(ctx, version, help_flag):
     if version:
         print_logo()
         return
-    
+
     if help_flag:
         # Show custom help with header and footer for main command only
         console.print(get_header_text())
