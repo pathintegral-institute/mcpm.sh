@@ -54,25 +54,14 @@ def test_v2_help_shows_global_model():
         assert "mcpm run" in result.output
 
 
-def test_legacy_commands_exist_but_deprecated():
-    """Test that legacy commands exist but show deprecation"""
+def test_deprecated_commands_removed():
+    """Test that deprecated commands have been completely removed"""
     runner = CliRunner()
 
-    # Test that legacy add/rm still work (aliases)
-    result = runner.invoke(main, ["add", "--help"])
-    assert result.exit_code == 0
-
-    result = runner.invoke(main, ["rm", "--help"])
-    assert result.exit_code == 0
-
-    # Test that deprecated commands show errors
-    deprecated_commands = ["stash", "pop", "mv", "cp", "target"]
-
+    # Test that deprecated commands no longer exist
+    deprecated_commands = ["stash", "pop", "mv", "cp", "target", "add", "rm"]
+    
     for cmd in deprecated_commands:
         result = runner.invoke(main, [cmd, "--help"])
-        # Deprecated commands should either fail or show error
-        if result.exit_code == 0:
-            # If help works, the actual command should fail
-            result = runner.invoke(main, [cmd, "test"])
-            assert result.exit_code == 1
-            assert "removed in MCPM v2.0" in result.output
+        assert result.exit_code == 2  # Click's "No such command" exit code
+        assert f"No such command '{cmd}'" in result.output

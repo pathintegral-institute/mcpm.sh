@@ -466,7 +466,7 @@ class V1ToV2Migrator:
             "3️⃣  [bold]Explore New Features[/]\n"
             "   • Try HTTP mode: [cyan]mcpm run --http <server>[/]\n"
             "   • Share publicly: [cyan]mcpm share <server>[/]\n"
-            "   • Use inspector: [cyan]mcpm inspect <server>[/]\n\n"
+            "   • Inspect servers: [cyan]mcpm inspect <server>[/]\n\n"
             "4️⃣  [bold]Access v1 Backups (If Needed)[/]\n"
             "   • v1 configs saved in [cyan]~/.config/mcpm/backups/[/]\n"
             "   • Review README.md in backup folder for guidance\n"

@@ -4,7 +4,6 @@ MCPM CLI - Main entry point for the Model Context Protocol Manager CLI
 
 # Import rich-click configuration before anything else
 from rich.console import Console
-from rich.table import Table
 from rich.traceback import Traceback
 
 from mcpm import __version__
@@ -17,7 +16,6 @@ from mcpm.commands import (
     edit,
     info,
     inspect,
-    inspector,
     list,
     migrate,
     profile,
@@ -37,84 +35,76 @@ client_config_manager = ClientConfigManager()
 # Setup Rich logging early - this runs when the module is imported
 setup_logging()
 
-# Set -h as an alias for --help but we'll handle it ourselves
-CONTEXT_SETTINGS = dict(help_option_names=[])
-
-
-def create_deprecated_command(command_name: str, replacement_suggestions=None):
-    """Create a deprecated command that shows v2.0 migration guidance."""
-    if replacement_suggestions is None:
-        replacement_suggestions = [
-            "mcpm install <server>                    # Install servers globally",
-            "mcpm profile add <profile> <server>      # Tag servers with profiles",
-            "mcpm run <server>                        # Run servers directly",
-        ]
-
-    @click.command(context_settings=dict(ignore_unknown_options=True, help_option_names=[]))
-    @click.option("--help", "-h", "help_requested", is_flag=True, help="Show deprecation message.")
-    @click.argument("args", nargs=-1, type=click.UNPROCESSED)
-    def deprecated_command(help_requested, args):
-        f"""The '{command_name}' command has been removed in MCPM v2.0."""
-        console.print(f"[bold red]Error:[/] The 'mcpm {command_name}' command has been removed in MCPM v2.0.")
-        console.print("[yellow]Use the new global configuration model instead:[/]")
-        console.print()
-        console.print("[cyan]New approach:[/]")
-        for suggestion in replacement_suggestions:
-            console.print(f"  [dim]{suggestion}[/]")
-        console.print()
-        raise click.ClickException("Command has been removed in v2.0")
-
-    # Set the name properly on the command
-    deprecated_command.name = command_name
-    return deprecated_command
+# Let rich-click handle help display
+CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
 
 def print_logo():
-    # Create bold ASCII art with thicker characters for a more striking appearance
-    logo = [
-        " ███╗   ███╗ ██████╗██████╗ ███╗   ███╗ ",
-        " ████╗ ████║██╔════╝██╔══██╗████╗ ████║ ",
-        " ██╔████╔██║██║     ██████╔╝██╔████╔██║ ",
-        " ██║╚██╔╝██║██║     ██╔═══╝ ██║╚██╔╝██║ ",
-        " ██║ ╚═╝ ██║╚██████╗██║     ██║ ╚═╝ ██║ ",
-        " ╚═╝     ╚═╝ ╚═════╝╚═╝     ╚═╝     ╚═╝ ",
+    """Print an elegant gradient logo with invisible Panel for width control"""
+    from rich import box
+    from rich.console import Group
+    from rich.panel import Panel
+    from rich.text import Text
+    from rich_gradient import Gradient
+
+    # Clean ASCII art design - simplified with light shades
+    logo_text = """
+ ███░   ███░  ██████░ ██████░ ███░   ███░
+ ████░ ████░ ██░░░░░░ ██░░░██░████░ ████░
+ ██░████░██░ ██░      ██████░░██░████░██░
+ ██░░██░░██░ ██░      ██░░░░░ ██░░██░░██░
+ ██░ ░░░ ██░ ░██████░ ██░     ██░ ░░░ ██░
+ ░░░     ░░░  ░░░░░░░ ░░░     ░░░     ░░░
+
+"""
+
+    # Purple-to-pink gradient palette
+    primary_colors = ["#8F87F1", "#C68EFD", "#E9A5F1", "#FED2E2"]
+    accent_colors = ["#3B82F6", "#EF4444"]  # Blue to red
+    warm_colors = ["#10B981", "#F59E0B"]  # Green to orange
+    tagline_colors = ["#06B6D4", "#EF4444"]  # Cyan to red
+
+    # Create gradient using rich-gradient with narrow console for better gradient distribution
+    temp_console = Console(width=50)  # Close to ASCII art width
+    logo_gradient_obj = Gradient(logo_text, colors=primary_colors)
+    
+    # Capture the rendered gradient
+    with temp_console.capture() as capture:
+        temp_console.print(logo_gradient_obj, justify="center")
+    logo_gradient = Text.from_ansi(capture.get())
+
+# Create solid color text for title and tagline - harmonized with gradient
+    title_text = Text()
+    title_text.append("Model Context Protocol Manager", style="#8F87F1 bold")
+    title_text.append(" v", style="#C68EFD")
+    title_text.append(__version__, style="#E9A5F1 bold")
+    
+    tagline_text = Text()
+    tagline_text.append("Open Source with ", style="#FED2E2")
+    tagline_text.append("♥", style="#E9A5F1")
+    tagline_text.append(" by Path Integral Institute", style="#FED2E2")
+
+    # Create content group with proper spacing - all left aligned for consistency
+    content = Group(
+        "",  # Empty line at top
+        logo_gradient,
         "",
-        f"v{__version__}",
-        "Open Source. Forever Free.",
-        "Built with ❤️ by Path Integral Institute",
-    ]
+        title_text,
+        "",
+        tagline_text,
+        "",  # Empty line at bottom
+    )
 
-    # Define terminal width for centering
-    terminal_width = 80  # Standard terminal width
+    # Create invisible panel for width constraint only
+    invisible_panel = Panel(
+        content,
+        width=120,
+        box=box.SIMPLE,  # Simple box style
+        border_style="dim",  # Very dim border
+        padding=(0, 1),
+    )
 
-    # Print separator line
-    console.print("[bold cyan]" + "=" * terminal_width + "[/]")
-
-    # Calculate base padding for ASCII art
-    base_padding = " " * ((terminal_width - len(logo[0])) // 2)
-
-    # Center the ASCII art (except last line)
-    for i in range(5):  # First 5 lines of the ASCII art
-        console.print(f"{base_padding}[bold green]{logo[i]}[/]")
-
-    # Print last line with version, using the same base padding
-    version_text = f"v{__version__}"
-    console.print(f"{base_padding}[bold green]{logo[5]}[/] [bold yellow]{version_text}[/]")
-
-    # Center the taglines
-    tagline1 = logo[8]  # "Open Source. Forever Free."
-    tagline2 = logo[9]  # "Built with ❤️ by Path Integral Institute"
-
-    # Calculate center padding for each tagline
-    tagline1_padding = " " * ((terminal_width - len(tagline1)) // 2)
-    tagline2_padding = " " * ((terminal_width - len(tagline2)) // 2)
-
-    # Print centered taglines
-    console.print(tagline1_padding + "[bold magenta]" + tagline1 + "[/]")
-    console.print(tagline2_padding + "[bold cyan]" + tagline2 + "[/]")
-
-    # Print separator line
-    console.print("[bold cyan]" + "=" * terminal_width + "[/]")
+    console.print(invisible_panel)
 
 
 def handle_exceptions(func):
@@ -134,17 +124,20 @@ def handle_exceptions(func):
     return wrapper
 
 
-@click.group(context_settings=CONTEXT_SETTINGS, invoke_without_command=True)
-@click.option("-h", "--help", "help_flag", is_flag=True, help="Show this message and exit.")
+@click.group(
+    name="mcpm",
+    context_settings=CONTEXT_SETTINGS,
+    invoke_without_command=True,
+    help="""
+A simplified tool for managing MCP servers in a global configuration.
+Install servers, organize them with profiles, and run them directly.
+""",
+)
 @click.option("-v", "--version", is_flag=True, help="Show version and exit.")
 @click.pass_context
 @handle_exceptions
-def main(ctx, help_flag, version):
-    """MCPM - Model Context Protocol Manager.
-
-    A simplified tool for managing MCP servers in a global configuration.
-    Install servers, organize them with profiles, and run them directly.
-    """
+def main(ctx, version):
+    """Main entry point for MCPM CLI."""
     if version:
         print_logo()
         return
@@ -162,84 +155,9 @@ def main(ctx, help_flag, version):
             # Continue to execute the subcommand
         # If "ignore", continue to subcommand without migration
 
-    # v2.0 simplified model - no active target system
-    # If no command was invoked or help is requested, show our custom help
-    if ctx.invoked_subcommand is None or help_flag:
-        print_logo()
-
-        # Display usage info for new simplified model
-        console.print("[bold green]Usage:[/] [white]mcpm [OPTIONS] COMMAND [ARGS]...[/]")
-        console.print("")
-        console.print(
-            "[bold green]Description:[/] [white]Manage MCP servers in a global configuration with profile organization.[/]"
-        )
-        console.print("")
-
-        # Show quick start examples
-        console.print("[bold cyan]Quick Start:[/]")
-        console.print("  [dim]mcpm search browser          # Find available servers[/]")
-        console.print("  [dim]mcpm install mcp-server-browse  # Install a server[/]")
-        console.print("  [dim]mcpm run mcp-server-browse      # Run server directly[/]")
-        console.print("  [dim]mcpm profile create web-dev     # Create a profile[/]")
-        console.print("  [dim]mcpm profile add web-dev mcp-server-browse  # Tag server[/]")
-        console.print("")
-
-        # Display options
-        console.print("[bold]Options:[/]")
-        console.print("  --version   Show the version and exit.")
-        console.print("  -h, --help  Show this message and exit.")
-        console.print("")
-
-        # Display available commands in a table
-        console.print("[bold]Commands:[/]")
-        commands_table = Table(show_header=False, box=None, padding=(0, 2, 0, 0))
-
-        commands_table.add_row("[yellow]Server Management[/]")
-        commands_table.add_row("  [cyan]search[/]", "Search available MCP servers from registry.")
-        commands_table.add_row("  [cyan]info[/]", "Show detailed registry information for a server.")
-        commands_table.add_row("  [cyan]install[/]", "Install a server from registry, local file, or URL.")
-        commands_table.add_row("  [cyan]uninstall[/]", "Remove a server from configuration.")
-        commands_table.add_row("  [cyan]ls[/]", "List all installed servers and profile assignments.")
-        commands_table.add_row("  [cyan]edit[/]", "Edit server configuration properties.")
-        commands_table.add_row("  [cyan]inspect[/]", "Launch MCP Inspector to test/debug a server.")
-
-        commands_table.add_row("[yellow]Server Execution[/]")
-        commands_table.add_row("  [cyan]run[/]", "Execute a single server over stdio.")
-
-        commands_table.add_row("[yellow]Profile Management[/]")
-        commands_table.add_row("  [cyan]profile[/]", "Manage server profiles and tags.")
-
-        commands_table.add_row("[yellow]Server Sharing[/]")
-        commands_table.add_row("  [cyan]share[/]", "Share a single server through secure tunnel.")
-
-        commands_table.add_row("[yellow]System & Configuration[/]")
-        commands_table.add_row("  [cyan]doctor[/]", "Check system health and server status.")
-        commands_table.add_row("  [cyan]usage[/]", "Display analytics and usage data.")
-        commands_table.add_row("  [cyan]config[/]", "Manage MCPM configuration and settings.")
-
-        commands_table.add_row("[yellow]Client Management[/]")
-        commands_table.add_row("  [cyan]client[/]", "Manage MCP client configurations and import server configs.")
-
-        commands_table.add_row("[yellow]Legacy Aliases[/]")
-        commands_table.add_row("  [cyan]add[/]", "Alias for 'install'.")
-        commands_table.add_row("  [cyan]rm[/]", "Alias for 'uninstall'.")
-        console.print(commands_table)
-
-        # Additional helpful information
-        console.print("")
-        console.print("[italic]Run [bold]mcpm COMMAND -h[/] for more information on a command.[/]")
-        console.print("")
-
-        # Add links for feedback and support
-        console.print("[bold]Feedback and Support:[/]")
-        console.print(
-            "  [dim]🐛 Report a bug or request a feature: "
-            "[link=https://github.com/pathintegral-institute/mcpm.sh/issues]https://github.com/pathintegral-institute/mcpm.sh/issues[/link]"
-        )
-        console.print(
-            "  [dim]💬 Join the discussion: "
-            "[link=https://github.com/pathintegral-institute/mcpm.sh/discussions]https://github.com/pathintegral-institute/mcpm.sh/discussions[/link]"
-        )
+    # If no command was invoked, show help
+    if ctx.invoked_subcommand is None:
+        click.echo(ctx.get_help())
 
 
 # Register v2.0 commands
@@ -258,38 +176,9 @@ main.add_command(config.config)
 main.add_command(migrate.migrate)
 main.add_command(share)
 
-# Legacy command aliases that still work
-main.add_command(add.add, name="add")  # Legacy alias for install
-main.add_command(remove.remove, name="rm")  # Legacy alias for uninstall
-
-# Deprecated v1 commands - show migration guidance
-main.add_command(create_deprecated_command("stash"), name="stash")
-main.add_command(create_deprecated_command("pop"), name="pop")
-main.add_command(
-    create_deprecated_command(
-        "mv",
-        [
-            "mcpm profile add <profile> <server>      # Tag servers with profiles",
-            "mcpm profile remove <profile> <server>   # Remove tags from servers",
-        ],
-    ),
-    name="mv",
-)
-main.add_command(
-    create_deprecated_command(
-        "cp",
-        [
-            "mcpm profile add <profile> <server>      # Tag servers with profiles",
-            "mcpm profile remove <profile> <server>   # Remove tags from servers",
-        ],
-    ),
-    name="cp",
-)
-main.add_command(create_deprecated_command("target"), name="target")
 
 # Keep these for now but they could be simplified later
 main.add_command(client.client)
-main.add_command(inspector.inspector, name="inspector")
 
 if __name__ == "__main__":
     main()
