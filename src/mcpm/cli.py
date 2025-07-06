@@ -27,7 +27,7 @@ from mcpm.commands import (
 from mcpm.commands.share import share
 from mcpm.migration import V1ConfigDetector, V1ToV2Migrator
 from mcpm.utils.logging_config import setup_logging
-from mcpm.utils.rich_click_config import click
+from mcpm.utils.rich_click_config import click, get_header_text, get_footer_text
 
 console = Console()
 client_config_manager = ClientConfigManager()
@@ -35,8 +35,8 @@ client_config_manager = ClientConfigManager()
 # Setup Rich logging early - this runs when the module is imported
 setup_logging()
 
-# Let rich-click handle help display
-CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
+# Custom context settings to handle main command help specially
+CONTEXT_SETTINGS = dict(help_option_names=[])
 
 
 def print_logo():
@@ -129,17 +129,31 @@ def handle_exceptions(func):
     context_settings=CONTEXT_SETTINGS,
     invoke_without_command=True,
     help="""
-A simplified tool for managing MCP servers in a global configuration.
-Install servers, organize them with profiles, and run them directly.
+Centralized MCP server management - discover, install, run, and share servers.
+
+Manage servers globally, organize with profiles, monitor usage, and integrate 
+with all MCP clients.
 """,
 )
 @click.option("-v", "--version", is_flag=True, help="Show version and exit.")
+@click.option("-h", "--help", "help_flag", is_flag=True, help="Show this message and exit.")
 @click.pass_context
 @handle_exceptions
-def main(ctx, version):
+def main(ctx, version, help_flag):
     """Main entry point for MCPM CLI."""
     if version:
         print_logo()
+        return
+    
+    if help_flag:
+        # Show custom help with header and footer for main command only
+        console.print(get_header_text())
+        # Temporarily disable global footer to avoid duplication
+        original_footer = click.rich_click.FOOTER_TEXT
+        click.rich_click.FOOTER_TEXT = None
+        click.echo(ctx.get_help())
+        click.rich_click.FOOTER_TEXT = original_footer
+        console.print(get_footer_text())
         return
 
     # Check for v1 configuration and offer migration (even with subcommands)
@@ -155,9 +169,15 @@ def main(ctx, version):
             # Continue to execute the subcommand
         # If "ignore", continue to subcommand without migration
 
-    # If no command was invoked, show help
+    # If no command was invoked, show help with header and footer
     if ctx.invoked_subcommand is None:
+        console.print(get_header_text())
+        # Temporarily disable global footer to avoid duplication
+        original_footer = click.rich_click.FOOTER_TEXT
+        click.rich_click.FOOTER_TEXT = None
         click.echo(ctx.get_help())
+        click.rich_click.FOOTER_TEXT = original_footer
+        console.print(get_footer_text())
 
 
 # Register v2.0 commands

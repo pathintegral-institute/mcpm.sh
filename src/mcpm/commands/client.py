@@ -25,11 +25,13 @@ global_config_manager = GlobalConfigManager()
 
 @click.group(context_settings=dict(help_option_names=["-h", "--help"]))
 def client():
-    """Manage MCP client configurations and MCPM server integrations.
+    """Manage MCP client configurations (Claude Desktop, Cursor, Windsurf, etc.).
 
-    Commands for listing clients, managing which MCPM servers are enabled
-    in specific MCP client configurations, and importing server configurations
-    from clients into MCPM.
+    MCP clients are applications that can connect to MCP servers. This command helps you
+    view installed clients, edit their configurations to enable/disable MCPM servers,
+    and import existing server configurations into MCPM's global configuration.
+
+    Supported clients: Claude Desktop, Cursor, Windsurf, Continue, Zed, and more.
 
     Examples:
 

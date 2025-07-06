@@ -63,17 +63,21 @@ header_text.append("♥", style="#E9A5F1")
 header_text.append(" by Path Integral Institute", style="#FED2E2")
 
 footer_text = Text()
-footer_text.append("\n")
-footer_text.append("◈ Feedback and Support:", style="#8F87F1 bold")
-footer_text.append("\n  ")
-footer_text.append("🐛 Report a bug:", style="#C68EFD bold")
-footer_text.append(" https://github.com/pathintegral-institute/mcpm.sh/issues", style="#E9A5F1")
-footer_text.append("\n  ")
-footer_text.append("💬 Join discussion:", style="#E9A5F1 bold")
-footer_text.append(" https://github.com/pathintegral-institute/mcpm.sh/discussions", style="#FED2E2")
+footer_text.append("")
 
-click.rich_click.HEADER_TEXT = header_text
-click.rich_click.FOOTER_TEXT = footer_text
+# Export header and footer for use in main command
+def get_header_text():
+    return header_text
+
+def get_footer_text():
+    return footer_text
+
+# Add subtle footer to all commands using Text object to avoid literal markup
+global_footer_text = Text()
+global_footer_text.append("💬 Report bugs or request features: ", style="#8B7DB8")
+global_footer_text.append("https://github.com/pathintegral-institute/mcpm.sh/issues", style="#8B7DB8")
+
+click.rich_click.FOOTER_TEXT = global_footer_text
 
 # Enable custom formatting 
 click.rich_click.GROUP_ARGUMENTS_OPTIONS = True

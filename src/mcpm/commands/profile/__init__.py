@@ -14,7 +14,13 @@ from .share import share_profile
 @click.group()
 @click.help_option("-h", "--help")
 def profile():
-    """Manage MCPM profiles."""
+    """Manage MCPM profiles - collections of servers for different workflows.
+
+    Profiles are named groups of MCP servers that work together for specific tasks or
+    projects. They allow you to organize servers by purpose (e.g., 'web-dev', 'data-analysis')
+    and run multiple related servers simultaneously through FastMCP proxy aggregation.
+
+    Examples: 'frontend' profile with browser + github servers, 'research' with filesystem + web tools."""
     pass
 
 
