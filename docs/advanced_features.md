@@ -179,57 +179,6 @@ export MCPM_DEBUG=1
 export MCPM_REGISTRY_URL="https://custom-registry.example.com"
 ```
 
-## Advanced Workflows
-
-### Development Workflow
-
-```bash
-# 1. Create development profile
-mcpm profile create dev-setup
-mcpm profile edit dev-setup
-
-# 2. Test locally
-mcpm profile run dev-setup --http --port 8080
-
-# 3. Share for collaboration
-mcpm profile share dev-setup --auth
-
-# 4. Configure in clients
-mcpm client edit claude-desktop  # Select dev-setup profile
-```
-
-### Production Deployment
-
-```bash
-# 1. Install production servers
-mcpm install production-server-1
-mcpm install production-server-2
-
-# 2. Create production profile
-mcpm profile create production
-mcpm profile edit production
-
-# 3. Configure monitoring
-mcpm usage --profile production --export metrics.json
-
-# 4. Health checks
-mcpm doctor --profile production
-```
-
-### Client Migration
-
-```bash
-# 1. Import from old client
-mcpm client import old-client
-
-# 2. Organize into profiles
-mcpm profile create imported-servers
-mcpm profile edit imported-servers
-
-# 3. Configure new client
-mcpm client edit new-client
-```
-
 ## Performance Optimization
 
 ### Server Caching
