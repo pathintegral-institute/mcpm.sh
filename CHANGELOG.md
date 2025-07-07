@@ -1,3 +1,27 @@
+# [2.0.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.14.2...v2.0.0) (2025-07-07)
+
+
+* feat!: release MCPM v2.0 with major architectural changes ([c86ec16](https://github.com/pathintegral-institute/mcpm.sh/commit/c86ec1668b554477522b7d68648e48555aa1a912))
+
+
+### BREAKING CHANGES
+
+* MCPM v2.0 introduces a completely new architecture that
+  eliminates the target-based system in favor of a simplified global
+  configuration model with virtual profiles.
+
+  Major changes:
+  - Removed target-based commands (mcpm target, mcpm stash, mcpm pop, etc.)
+  - Replaced with global server management (mcpm install/uninstall)
+  - Virtual profiles replace separate profile configurations
+  - Direct server execution replaces router daemon
+  - New client integration commands (mcpm client edit/import)
+  - FastMCP-based sharing instead of router sharing
+  - Automatic v1 to v2 migration with user confirmation
+
+  This release requires migration from v1 configurations and changes
+  command syntax. See MIGRATION_GUIDE.md for complete migration instructions.
+
 ## [1.14.2](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.14.1...v1.14.2) (2025-07-01)
 
 
