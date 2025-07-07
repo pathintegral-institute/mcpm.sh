@@ -6,26 +6,17 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to fill out this bug report!
-        
-        Please search existing issues before creating a new one to avoid duplicates.
         For questions, please use [Discussions](https://github.com/pathintegral-institute/mcpm.sh/discussions) instead.
 
   - type: textarea
     id: description
     attributes:
-      label: Bug Description
-      description: A clear and concise description of what the bug is.
-      placeholder: Tell us what happened!
-    validations:
-      required: true
-
-  - type: textarea
-    id: reproduction
-    attributes:
-      label: Steps to Reproduce
-      description: Steps to reproduce the behavior.
+      label: What happened?
+      description: A clear and concise description of the bug and steps to reproduce it.
       placeholder: |
+        When I run `mcpm add ...`, I get the following error...
+        
+        Steps to reproduce:
         1. Run command '...'
         2. See error
     validations:
@@ -34,23 +25,24 @@ body:
   - type: textarea
     id: expected
     attributes:
-      label: Expected Behavior
-      description: A clear and concise description of what you expected to happen.
+      label: What did you expect?
+      placeholder: I expected the command to...
     validations:
       required: true
 
-  - type: textarea
-    id: actual
+  - type: input
+    id: version
     attributes:
-      label: Actual Behavior
-      description: What actually happened instead.
+      label: MCPM Version
+      description: Run `mcpm --version`
+      placeholder: e.g., 2.0.0
     validations:
       required: true
 
   - type: dropdown
     id: os
     attributes:
-      label: Operating System
+      label: OS
       options:
         - macOS
         - Linux
@@ -59,24 +51,9 @@ body:
     validations:
       required: true
 
-  - type: input
-    id: version
-    attributes:
-      label: MCPM Version
-      description: What version of MCPM are you using? (run `mcpm --version`)
-      placeholder: e.g., 2.0.0
-    validations:
-      required: true
-
   - type: textarea
     id: logs
     attributes:
-      label: Relevant Log Output
-      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
+      label: Logs
+      description: Any relevant error messages or logs
       render: shell
-
-  - type: textarea
-    id: additional
-    attributes:
-      label: Additional Context
-      description: Add any other context about the problem here (screenshots, configuration, etc.).
