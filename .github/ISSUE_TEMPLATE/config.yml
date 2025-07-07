@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Ask a Question
+    url: https://github.com/pathintegral-institute/mcpm.sh/discussions/new?category=q-a
+    about: Please ask and answer questions in our GitHub Discussions forum
+  - name: Show and Tell
+    url: https://github.com/pathintegral-institute/mcpm.sh/discussions/new?category=show-and-tell
+    about: Share your MCPM setups, configurations, and use cases
+  - name: General Discussion
+    url: https://github.com/pathintegral-institute/mcpm.sh/discussions/new?category=general
+    about: Discuss ideas, suggestions, and general topics about MCPM
+  - name: Documentation
+    url: https://github.com/pathintegral-institute/mcpm.sh#readme
+    about: Check out the README for setup instructions and usage examples

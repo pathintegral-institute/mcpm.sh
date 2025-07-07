@@ -1,0 +1,70 @@
+name: MCP Server Submission
+description: Submit your MCP server to the Marketplace
+title: "[Server Submission]: "
+labels: ["server submission"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for submitting your MCP server to the Marketplace! Please fill out the information below.
+        
+        We'll automatically extract additional information (license, installation instructions, tools/resources/prompts) from your repository.
+  
+  - type: input
+    id: repository
+    attributes:
+      label: GitHub Repository URL
+      description: Direct link to your MCP server's repository
+      placeholder: https://github.com/username/repo
+    validations:
+      required: true
+  
+  - type: input
+    id: name
+    attributes:
+      label: Server Name (kebab-case)
+      description: Technical name in kebab-case format (e.g., "my-awesome-server" or "@scope/server-name")
+      placeholder: my-awesome-server
+    validations:
+      required: true
+  
+  - type: input
+    id: display_name
+    attributes:
+      label: Display Name
+      description: Human-readable name for your server
+      placeholder: My Awesome Server
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Brief description of your server's functionality (1-2 sentences)
+      placeholder: Describe what your server does, its main features, and use cases
+    validations:
+      required: false
+  
+  - type: textarea
+    id: arguments
+    attributes:
+      label: Configuration Arguments
+      description: |
+        List any configuration arguments your server requires or accepts.
+        For each argument, specify:
+        - Name
+        - Description
+        - Whether it's required
+        - Example value
+      placeholder: |
+        - `api_key` (required): Your API key for the service. Example: "sk-1234567890"
+        - `base_url` (optional): Custom API endpoint. Example: "https://api.example.com"
+    validations:
+      required: false
+  
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Information
+      description: Any other relevant information about your server (special requirements, notes for reviewers, etc.)
