@@ -1,9 +1,6 @@
-import json
 import logging
 import os
 from typing import Dict, List, Optional
-
-from pydantic import TypeAdapter
 
 from mcpm.core.schema import ProfileMetadata, ServerConfig
 from mcpm.global_config import GlobalConfigManager
@@ -30,47 +27,8 @@ class ProfileConfigManager:
         self.profile_path = os.path.expanduser(profile_path)
         self.global_config = global_config_manager or GlobalConfigManager()
 
-        # For backward compatibility, attempt migration if old profiles.json exists
-        self._migrate_legacy_profiles_if_needed()
-
-    def _migrate_legacy_profiles_if_needed(self) -> None:
-        """Migrate old profiles.json to virtual profile system if it exists."""
-        if os.path.exists(self.profile_path):
-            logger.info(f"Migrating legacy profiles from {self.profile_path}")
-            try:
-                self._migrate_legacy_profiles()
-                # Backup the old file
-                backup_path = self.profile_path + ".backup"
-                os.rename(self.profile_path, backup_path)
-                logger.info(f"Legacy profiles migrated successfully. Backup saved to {backup_path}")
-            except Exception as e:
-                logger.error(f"Failed to migrate legacy profiles: {e}")
-
-    def _migrate_legacy_profiles(self) -> None:
-        """Migrate profiles from old profiles.json format to virtual profiles."""
-        try:
-            with open(self.profile_path, "r", encoding="utf-8") as f:
-                legacy_profiles = json.load(f) or {}
-        except (json.JSONDecodeError, FileNotFoundError):
-            return
-
-        for profile_name, configs in legacy_profiles.items():
-            # Create profile metadata
-            self.global_config.create_profile_metadata(profile_name)
-
-            # Add servers to global config and tag them with profile
-            for config_data in configs:
-                try:
-                    server_config = TypeAdapter(ServerConfig).validate_python(config_data)
-
-                    # Add server to global config if not exists
-                    if not self.global_config.server_exists(server_config.name):
-                        self.global_config.add_server(server_config)
-
-                    # Tag server with profile
-                    self.global_config.add_profile_tag_to_server(server_config.name, profile_name)
-                except Exception as e:
-                    logger.error(f"Failed to migrate server {config_data.get('name', 'unknown')}: {e}")
+        # Note: Legacy profile migration is now handled by V1ToV2Migrator
+        # to ensure it only happens after user confirms migration
 
     def _load_profiles(self) -> Dict[str, List[ServerConfig]]:
         """Legacy method - now returns virtual profiles from global config."""
@@ -224,6 +182,18 @@ class ProfileConfigManager:
     def get_complete_profile(self, profile_name: str) -> Optional[Dict]:
         """Get complete profile info including metadata and servers."""
         return self.global_config.get_complete_profile(profile_name)
+
+    def create_profile(self, profile_name: str, description: str = "") -> bool:
+        """Create a new profile with optional description."""
+        # Check if profile already exists
+        if self.global_config.get_profile_metadata(profile_name) or self.global_config.virtual_profile_exists(
+            profile_name
+        ):
+            return False
+
+        # Create profile metadata with description
+        metadata = ProfileMetadata(name=profile_name, description=description)
+        return self.global_config.update_profile_metadata(metadata)
 
     def add_server_to_profile(self, profile_name: str, server_name: str) -> bool:
         """Add an existing global server to a profile by tagging it."""

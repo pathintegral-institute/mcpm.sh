@@ -71,22 +71,19 @@ def test_profile_manager_init_custom_path(profile_manager_clean, temp_dirs):
 
 
 def test_legacy_migration(profile_manager_with_legacy, temp_dirs):
-    """Test that legacy profiles.json is migrated to virtual profiles"""
+    """Test that legacy profiles.json is NOT automatically migrated"""
     temp_dir, servers_path, metadata_path, legacy_path = temp_dirs
     manager = profile_manager_with_legacy
 
-    # Check that legacy file was moved to backup
-    assert os.path.exists(legacy_path + ".backup")
+    # Check that legacy file still exists (no auto-migration)
+    assert os.path.exists(legacy_path)
+    assert not os.path.exists(legacy_path + ".backup")
 
-    # Check that profiles were migrated
+    # Check that profiles were NOT migrated automatically
     profiles = manager.list_profiles()
-    assert "test_profile" in profiles
-    assert "empty_profile" in profiles
+    assert len(profiles) == 0  # No profiles should exist yet
 
-    # Check that server was migrated to global config
-    test_profile_servers = manager.get_profile("test_profile")
-    assert len(test_profile_servers) == 1
-    assert test_profile_servers[0].name == "test-server"
+    # Legacy migration is now handled by V1ToV2Migrator, not ProfileConfigManager
 
 
 def test_new_profile(profile_manager_clean):

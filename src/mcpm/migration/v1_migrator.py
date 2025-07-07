@@ -430,6 +430,14 @@ class V1ToV2Migrator:
             except Exception as e:
                 console.print(f"  ⚠️  Failed to remove config.json: {e}")
 
+        # Remove v1 profiles.json file after migration
+        if self.detector.profiles_file.exists():
+            try:
+                self.detector.profiles_file.unlink()
+                console.print("  🧹 Removed v1 profiles.json file")
+            except Exception as e:
+                console.print(f"  ⚠️  Failed to remove profiles.json: {e}")
+
     def _show_migration_summary(self, migrated_profiles: Dict[str, int]):
         """Show migration completion summary"""
         summary_panel = Panel(
@@ -437,7 +445,7 @@ class V1ToV2Migrator:
             f"📊 [bold]Migration Results[/]\n"
             f"   • {len(migrated_profiles)} profiles migrated\n"
             f"   • {sum(migrated_profiles.values())} servers migrated\n"
-            f"   • v1 config.json removed\n"
+            f"   • v1 config.json and profiles.json removed\n"
             f"   • v1 configs backed up in [cyan]~/.config/mcpm/backups/[/]\n\n"
             f"🎯 [bold]What's Different Now[/]\n"
             f"   • All servers are in global configuration\n"
