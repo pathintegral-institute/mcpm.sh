@@ -400,6 +400,7 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
+            gap: 1rem;
             margin-bottom: 0.5rem;
         }
 
@@ -477,10 +478,6 @@
             padding-top: 1rem;
             margin-top: auto;
         }
-
-        .server-card .meta-lucien .category {
-            margin-right: auto;
-        }
         
         .install-button {
             background: var(--gradient-primary);
@@ -496,10 +493,6 @@
             gap: 0.5rem;
             transition: all 0.2s ease;
             text-decoration: none;
-            position: absolute;
-            bottom: 1.5rem;
-            right: 2rem;
-            z-index: 10;
             box-shadow: 0 4px 12px rgba(0, 217, 255, 0.3);
         }
         
@@ -1693,74 +1686,6 @@
 
                 serverHeader.appendChild(heading);
 
-                // Add placeholder for GitHub stars in the header
-                const starCount = document.createElement('span');
-                starCount.className = 'stars stars-placeholder';
-                starCount.textContent = 'Loading stars...';
-                starCount.style.opacity = '0';
-                serverHeader.appendChild(starCount);
-
-                serverContent.appendChild(serverHeader);
-
-                const description = document.createElement('p');
-                description.className = 'description';
-                description.textContent = server.description;
-                serverContent.appendChild(description);
-
-                // Create tags container
-                const tagsContainer = document.createElement('div');
-                tagsContainer.className = 'tags';
-
-                // Add regular tags (if any)
-                if (server.tags && server.tags.length > 0) {
-                    server.tags.slice(0, 4).forEach(tag => {
-                        const tagSpan = document.createElement('span');
-                        tagSpan.className = 'tag';
-                        tagSpan.textContent = tag;
-                        tagsContainer.appendChild(tagSpan);
-                    });
-                }
-
-                // Append tags container to server content
-                serverContent.appendChild(tagsContainer);
-
-                const meta = document.createElement('div');
-                meta.className = 'meta';
-
-                if (isLucien) {
-                    meta.classList.add('meta-lucien');
-                }
-
-                // Add placeholder for author that will be populated later
-                const authorMeta = document.createElement('span');
-                authorMeta.className = 'author author-placeholder';
-                authorMeta.textContent = 'Loading author...';
-                authorMeta.style.opacity = '0';
-                meta.appendChild(authorMeta);
-
-                // Add categories if they exist
-                if (server.categories && server.categories.length > 0) {
-                    const categorySpan = document.createElement('span');
-                    categorySpan.className = 'category';
-                    categorySpan.textContent = server.categories[0]; // Display first category
-                    meta.appendChild(categorySpan);
-                }
-
-                // Update author information directly from server data (no need to fetch)
-                if (server.author && server.author.name) {
-                    // Add user icon before author name
-                    authorMeta.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>' + server.author.name;
-                    authorMeta.classList.remove('author-placeholder');
-                    authorMeta.style.opacity = '1';
-                } else {
-                    // Remove placeholder if no author found
-                    authorMeta.remove();
-                }
-
-                // Use the star count element created in the header
-
-                serverContent.appendChild(meta);
-                
                 // Add install button with click function for deeplink
                 if (isLucien) {
                     const installButton = document.createElement('button');
@@ -1800,9 +1725,73 @@
                         window.location.href = deeplink;
                     });
                     
-                    serverContent.appendChild(installButton);
+                    serverHeader.appendChild(installButton);
                 }
 
+                // Add placeholder for GitHub stars in the header
+                const starCount = document.createElement('span');
+                starCount.className = 'stars stars-placeholder';
+                starCount.textContent = 'Loading stars...';
+                starCount.style.opacity = '0';
+                serverHeader.appendChild(starCount);
+
+                serverContent.appendChild(serverHeader);
+
+                const description = document.createElement('p');
+                description.className = 'description';
+                description.textContent = server.description;
+                serverContent.appendChild(description);
+
+                // Create tags container
+                const tagsContainer = document.createElement('div');
+                tagsContainer.className = 'tags';
+
+                // Add regular tags (if any)
+                if (server.tags && server.tags.length > 0) {
+                    server.tags.slice(0, 4).forEach(tag => {
+                        const tagSpan = document.createElement('span');
+                        tagSpan.className = 'tag';
+                        tagSpan.textContent = tag;
+                        tagsContainer.appendChild(tagSpan);
+                    });
+                }
+
+                // Append tags container to server content
+                serverContent.appendChild(tagsContainer);
+
+                const meta = document.createElement('div');
+                meta.className = 'meta';
+
+                // Add placeholder for author that will be populated later
+                const authorMeta = document.createElement('span');
+                authorMeta.className = 'author author-placeholder';
+                authorMeta.textContent = 'Loading author...';
+                authorMeta.style.opacity = '0';
+                meta.appendChild(authorMeta);
+
+                // Add categories if they exist
+                if (server.categories && server.categories.length > 0) {
+                    const categorySpan = document.createElement('span');
+                    categorySpan.className = 'category';
+                    categorySpan.textContent = server.categories[0]; // Display first category
+                    meta.appendChild(categorySpan);
+                }
+
+                // Update author information directly from server data (no need to fetch)
+                if (server.author && server.author.name) {
+                    // Add user icon before author name
+                    authorMeta.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>' + server.author.name;
+                    authorMeta.classList.remove('author-placeholder');
+                    authorMeta.style.opacity = '1';
+                } else {
+                    // Remove placeholder if no author found
+                    authorMeta.remove();
+                }
+
+                // Use the star count element created in the header
+
+                serverContent.appendChild(meta);
+                
                 const linksContainer = document.createElement('div');
                 linksContainer.className = 'server-links';
 

@@ -149,7 +149,7 @@ The MCP Registry is a central repository of available MCP servers that can be in
 ### ✅ v2.0 Complete
 - [x] Global server configuration model
 - [x] Profile-based server tagging and organization  
-- [x] Interactive command interfaces (InquirerPy)
+- [x] Interactive command interfaces
 - [x] Client integration management (`mcpm client edit`)
 - [x] Modern CLI with consistent UX
 - [x] Registry integration and server discovery
@@ -157,12 +157,9 @@ The MCP Registry is a central repository of available MCP servers that can be in
 - [x] Import from existing client configurations
 
 ### 🔮 Future Enhancements
-- [ ] Enhanced router capabilities with profile switching
-- [ ] Server access monitoring and analytics
-- [ ] Additional client support (VS Code extensions, etc.)
-- [ ] Advanced server configuration templates
-- [ ] Server dependency management
-- [ ] Plugin system for custom server types
+- [ ] Advanced Server access monitoring and analytics
+- [ ] Additional client support (gemini-cli, codex, etc.)
+- [ ] Execution in docker
 
 
 ## 📦 Other Installation Methods
