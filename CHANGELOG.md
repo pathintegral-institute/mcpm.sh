@@ -1,3 +1,10 @@
+# [2.1.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.0.0...v2.1.0) (2025-07-07)
+
+
+### Features
+
+* improve GitHub issue templates ([942689e](https://github.com/pathintegral-institute/mcpm.sh/commit/942689ee85e2ea72fc55e7eb8b077c50086029da))
+
 # [2.0.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v1.14.2...v2.0.0) (2025-07-07)
 
 
