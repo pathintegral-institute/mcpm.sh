@@ -19,6 +19,7 @@ Built with ❤️ by Path Integral Institute
 
 MCPM is an open source CLI tool for managing MCP servers. It provides a simplified global configuration approach where you install servers once and organize them with profiles, then integrate them into any MCP client. Features include server discovery through a central registry, direct execution, sharing capabilities, and client integration tools.
 
+Demo is showing outdated v1 commands, new demo is baking ...
 ![Demo of MCPM in action](.github/readme/demo.gif)
 
 ## 🤝 Community Contributions
