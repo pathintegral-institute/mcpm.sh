@@ -13,6 +13,7 @@ from mcpm.commands import (
     client,
     config,
     custom,
+    docker,
     info,
     inspector,
     list,
@@ -178,6 +179,9 @@ def main(ctx, help_flag, version):
         commands_table.add_row("[yellow]router[/]")
         commands_table.add_row("  [cyan]router[/]", "Manage MCP router service.")
 
+        commands_table.add_row("[yellow]docker[/]")
+        commands_table.add_row("  [cyan]docker[/]", "Docker integration and orchestration.")
+
         commands_table.add_row("[yellow]util[/]")
         commands_table.add_row("  [cyan]config[/]", "Manage MCPM configuration.")
         commands_table.add_row("  [cyan]inspector[/]", "Launch the MCPM Inspector UI to examine servers.")
@@ -207,6 +211,7 @@ main.add_command(transfer.move, name="mv")
 main.add_command(transfer.copy, name="cp")
 main.add_command(router.router, name="router")
 main.add_command(custom.import_server, name="import")
+main.add_command(docker.docker, name="docker")
 main.add_command(share)
 
 if __name__ == "__main__":
