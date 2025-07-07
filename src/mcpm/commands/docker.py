@@ -37,8 +37,8 @@ class DockerIntegration:
             'postgresql': {
                 'image': 'postgres:16-alpine',
                 'environment': [
-                    'POSTGRES_USER=${POSTGRES_USER:-mcpuser}',
-                    'POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-password}',
+                    'POSTGRES_USER=${POSTGRES_USER}',
+                    'POSTGRES_PASSWORD=${POSTGRES_PASSWORD}',
                     'POSTGRES_DB=${POSTGRES_DB:-mcpdb}'
                 ],
                 'ports': ['5432:5432'],
@@ -47,7 +47,7 @@ class DockerIntegration:
                 ],
                 'networks': ['mcp-network'],
                 'healthcheck': {
-                    'test': ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-mcpuser}'],
+                    'test': ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER}'],
                     'interval': '10s',
                     'timeout': '5s',
                     'retries': 3,
@@ -104,6 +104,13 @@ class DockerIntegration:
         self.standard_volumes = {
             'postgres-data': {}
         }
+        
+        # Required environment variables for security
+        self.required_env_vars = {
+            'postgresql': ['POSTGRES_USER', 'POSTGRES_PASSWORD'],
+            'github': ['GITHUB_PERSONAL_ACCESS_TOKEN'],
+            'obsidian': ['OBSIDIAN_API_KEY']
+        }
 
     def detect_server_type(self, server_config: ServerConfig) -> Optional[str]:
         """Detect Docker service type from MCP server configuration."""
@@ -128,6 +135,17 @@ class DockerIntegration:
                 return 'obsidian'
                 
         return None
+
+    def validate_environment_variables(self, server_type: str) -> List[str]:
+        """Validate required environment variables for server type."""
+        missing_vars = []
+        required_vars = self.required_env_vars.get(server_type, [])
+        
+        for var in required_vars:
+            if not os.getenv(var):
+                missing_vars.append(var)
+                
+        return missing_vars
 
     def generate_docker_service(self, server_config: ServerConfig) -> Optional[Dict[str, Any]]:
         """Generate Docker service definition from MCP server config."""
@@ -163,16 +181,30 @@ class DockerIntegration:
         
         # Generate services
         services_added = []
+        warnings = []
         for server_config in profile_servers:
+            server_type = self.detect_server_type(server_config)
+            if server_type:
+                # Validate environment variables
+                missing_vars = self.validate_environment_variables(server_type)
+                if missing_vars:
+                    warnings.append(f"{server_config.name}: Missing environment variables: {', '.join(missing_vars)}")
+                
             docker_service = self.generate_docker_service(server_config)
             if docker_service:
                 service_name = server_config.name
                 compose_data['services'][service_name] = docker_service
                 services_added.append(service_name)
                 
+        # Show warnings for missing environment variables
+        for warning in warnings:
+            console.print(f"[yellow]⚠️  {warning}[/]")
+            
         if services_added:
             self.save_compose_file(compose_data)
             console.print(f"[green]✅ Added services:[/] {', '.join(services_added)}")
+            if warnings:
+                console.print("[yellow]💡 Set missing environment variables before deployment[/]")
             return True
         else:
             console.print("[yellow]No compatible services found in profile.[/]")
@@ -221,7 +253,11 @@ class DockerIntegration:
             if result.stdout.strip():
                 for line in result.stdout.strip().split('\n'):
                     if line.strip():
-                        services.append(json.loads(line))
+                        try:
+                            services.append(json.loads(line))
+                        except json.JSONDecodeError:
+                            console.print(f"[yellow]⚠️  Failed to parse JSON line: {line}[/]")
+                            continue
                         
             return {'status': 'success', 'services': services}
         except subprocess.CalledProcessError as e:
@@ -248,8 +284,17 @@ class DockerIntegration:
 
 
 @click.group()
+@click.help_option("-h", "--help")
 def docker():
-    """Docker integration commands for MCPM."""
+    """Docker integration commands for MCPM.
+    
+    Example:
+    
+    \b
+        mcpm docker sync my-profile
+        mcpm docker status
+        mcpm docker deploy postgresql
+    """
     pass
 
 

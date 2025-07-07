@@ -3,6 +3,7 @@ Tests for Docker integration functionality.
 """
 
 import json
+import os
 import tempfile
 import pytest
 from pathlib import Path
@@ -337,6 +338,110 @@ def sample_docker_compose():
             "postgres-data": {}
         }
     }
+
+
+class TestSecurityAndValidation:
+    """Test security and validation features."""
+    
+    def setup_method(self):
+        """Set up test fixtures."""
+        self.temp_dir = Path(tempfile.mkdtemp())
+        self.compose_file = self.temp_dir / "docker-compose.yml"
+        self.integration = DockerIntegration(str(self.compose_file))
+        
+    @patch.dict(os.environ, {}, clear=True)
+    def test_validate_environment_variables_missing(self):
+        """Test validation when environment variables are missing."""
+        missing_vars = self.integration.validate_environment_variables('postgresql')
+        
+        assert 'POSTGRES_USER' in missing_vars
+        assert 'POSTGRES_PASSWORD' in missing_vars
+        
+    @patch.dict(os.environ, {'POSTGRES_USER': 'test', 'POSTGRES_PASSWORD': 'secret'})
+    def test_validate_environment_variables_present(self):
+        """Test validation when environment variables are present."""
+        missing_vars = self.integration.validate_environment_variables('postgresql')
+        
+        assert len(missing_vars) == 0
+        
+    def test_validate_environment_variables_unknown_server(self):
+        """Test validation for unknown server type."""
+        missing_vars = self.integration.validate_environment_variables('unknown')
+        
+        assert len(missing_vars) == 0  # No requirements for unknown servers
+
+
+class TestErrorHandling:
+    """Test error handling and edge cases."""
+    
+    def setup_method(self):
+        """Set up test fixtures.""" 
+        self.temp_dir = Path(tempfile.mkdtemp())
+        self.compose_file = self.temp_dir / "docker-compose.yml"
+        self.integration = DockerIntegration(str(self.compose_file))
+        
+    @patch('mcpm.commands.docker.subprocess.run')
+    def test_get_docker_status_malformed_json(self, mock_run):
+        """Test JSON parsing error handling."""
+        mock_run.return_value = MagicMock(
+            returncode=0,
+            stdout='{"valid": "json"}\n{invalid json\n{"another": "valid"}\n'
+        )
+        
+        with patch('mcpm.commands.docker.console') as mock_console:
+            status = self.integration.get_docker_status()
+            
+            assert status["status"] == "success"
+            assert len(status["services"]) == 2  # Only valid JSON entries
+            mock_console.print.assert_called_once()  # Warning printed for malformed JSON
+
+
+class TestChangeDetection:
+    """Test change detection functionality."""
+    
+    def setup_method(self):
+        """Set up test fixtures."""
+        self.temp_dir = Path(tempfile.mkdtemp())
+        self.compose_file = self.temp_dir / "docker-compose.yml"
+        self.sync_ops = DockerSyncOperations()
+        
+    def test_get_file_hash_existing_file(self):
+        """Test file hash calculation for existing file."""
+        test_content = "test content"
+        with open(self.compose_file, 'w') as f:
+            f.write(test_content)
+            
+        hash1 = self.sync_ops._get_file_hash(self.compose_file)
+        hash2 = self.sync_ops._get_file_hash(self.compose_file)
+        
+        assert hash1 == hash2  # Same content = same hash
+        assert len(hash1) == 32  # MD5 hash length
+        
+    def test_get_file_hash_nonexistent_file(self):
+        """Test file hash calculation for non-existent file."""
+        nonexistent_file = self.temp_dir / "nonexistent.yml"
+        
+        hash_result = self.sync_ops._get_file_hash(nonexistent_file)
+        
+        assert hash_result == ""
+        
+    @patch('mcpm.commands.target_operations.docker_sync.ProfileConfigManager')
+    def test_get_profile_hash(self, mock_profile_manager):
+        """Test profile hash calculation."""
+        mock_servers = [
+            STDIOServerConfig(name="server1", command="cmd1", args=["arg1"], env={}),
+            STDIOServerConfig(name="server2", command="cmd2", args=["arg2"], env={})
+        ]
+        mock_profile_manager.return_value.get_profile.return_value = mock_servers
+        
+        sync_ops = DockerSyncOperations()
+        sync_ops.profile_manager = mock_profile_manager.return_value
+        
+        hash1 = sync_ops._get_profile_hash("test-profile")
+        hash2 = sync_ops._get_profile_hash("test-profile")
+        
+        assert hash1 == hash2  # Same profile = same hash
+        assert len(hash1) == 32  # MD5 hash length
 
 
 class TestIntegrationWorkflows:

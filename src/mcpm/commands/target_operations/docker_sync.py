@@ -225,10 +225,27 @@ class DockerSyncOperations:
             
         # Create base server config
         if server_type == 'postgresql':
+            # Extract connection details from Docker service
+            env_vars = service_config.get('environment', [])
+            user = 'mcpuser'
+            password = 'password'
+            db = 'mcpdb'
+            host = service_name  # Use service name as hostname in Docker network
+            
+            for env_var in env_vars:
+                if isinstance(env_var, str):
+                    if env_var.startswith('POSTGRES_USER='):
+                        user = env_var.split('=', 1)[1].replace('${POSTGRES_USER}', 'mcpuser').replace('${POSTGRES_USER:-', '').replace('}', '')
+                    elif env_var.startswith('POSTGRES_PASSWORD='):
+                        password = env_var.split('=', 1)[1].replace('${POSTGRES_PASSWORD}', 'password').replace('${POSTGRES_PASSWORD:-', '').replace('}', '')
+                    elif env_var.startswith('POSTGRES_DB='):
+                        db = env_var.split('=', 1)[1].replace('${POSTGRES_DB:-', '').replace('}', '')
+            
+            connection_string = f'postgresql://{user}:{password}@{host}:5432/{db}'
             return STDIOServerConfig(
                 name=service_name,
                 command='npx',
-                args=['-y', '@modelcontextprotocol/server-postgres', 'postgresql://mcpuser:password@localhost:5432/mcpdb'],
+                args=['-y', '@modelcontextprotocol/server-postgres', connection_string],
                 env={}
             )
         elif server_type == 'context7':
@@ -340,9 +357,10 @@ class DockerSyncOperations:
             cmd = ['docker-compose', '-f', str(compose_file), 'up', '-d']
             if services:
                 cmd.extend(services)
-            subprocess.run(cmd, check=True, capture_output=True)
+            subprocess.run(cmd, check=True, capture_output=True, text=True)
         except subprocess.CalledProcessError as e:
-            console.print(f"[red]❌ Error deploying services: {e}[/]")
+            stderr_output = e.stderr if e.stderr else "No error output"
+            console.print(f"[red]❌ Error deploying services: {stderr_output}[/]")
 
     def _restart_mcpm_router(self):
         """Restart MCPM router."""
@@ -353,10 +371,38 @@ class DockerSyncOperations:
 
     def _has_profile_changed(self, profile_name: str) -> bool:
         """Check if profile has changed since last sync."""
-        # Simplified change detection - in real implementation would use hashes/timestamps
-        return True
+        current_hash = self._get_profile_hash(profile_name)
+        last_hash = self.last_state.get('profiles_hash', '')
+        return current_hash != last_hash
 
     def _has_docker_changed(self, compose_file: Path) -> bool:
         """Check if Docker compose has changed since last sync."""
-        # Simplified change detection - in real implementation would use hashes/timestamps
-        return compose_file.exists()
+        if not compose_file.exists():
+            return False
+            
+        current_hash = self._get_file_hash(compose_file)
+        last_hash = self.last_state.get('compose_hashes', {}).get(str(compose_file), '')
+        return current_hash != last_hash
+        
+    def _get_profile_hash(self, profile_name: str) -> str:
+        """Get hash of profile configuration."""
+        profile_servers = self.profile_manager.get_profile(profile_name)
+        if not profile_servers:
+            return ""
+        
+        # Create deterministic string representation
+        profile_data = []
+        for server in profile_servers:
+            profile_data.append(f"{server.name}:{server.command}:{':'.join(server.args)}")
+        
+        import hashlib
+        return hashlib.md5("|".join(sorted(profile_data)).encode()).hexdigest()
+        
+    def _get_file_hash(self, file_path: Path) -> str:
+        """Get hash of file contents."""
+        if not file_path.exists():
+            return ""
+        
+        import hashlib
+        with open(file_path, 'rb') as f:
+            return hashlib.md5(f.read()).hexdigest()
