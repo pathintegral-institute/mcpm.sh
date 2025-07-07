@@ -17,7 +17,7 @@ Built with ❤️ by Path Integral Institute
 
 # 🌟 MCPM - Model Context Protocol Manager
 
-MCPM is an open source service and a CLI package management tool for MCP servers. It simplifies managing server configurations across various supported clients, allows grouping servers into profiles, helps discover new servers via a registry, and includes a powerful router that aggregates multiple MCP servers behind a single endpoint with shared sessions.
+MCPM is an open source CLI tool for managing MCP servers. It provides a simplified global configuration approach where you install servers once and organize them with profiles, then integrate them into any MCP client. Features include server discovery through a central registry, direct execution, sharing capabilities, and client integration tools.
 
 ![Demo of MCPM in action](.github/readme/demo.gif)
 
@@ -37,15 +37,18 @@ Or choose [other installation methods](#-other-installation-methods) like `brew`
 
 ## 🔎 Overview
 
-MCPM simplifies the installation, configuration, and management of Model Context Protocol servers and their configurations across different applications (clients). Key features include:
+MCPM v2.0 provides a simplified approach to managing MCP servers with a global configuration model. Key features include:
 
-- ✨ Easy addition and removal of MCP server configurations for supported clients.
-- 📋 Centralized management using profiles: group server configurations together and add/remove them to client easily.
-- 🔍 Discovery of available MCP servers through a central registry.
-- 🔌 MCPM Router for aggregating multiple MCP servers behind a single endpoint with shared sessions.
-- 💻 A command-line interface (CLI) for all management tasks.
+- ✨ **Global Server Management**: Install servers once, use everywhere
+- 📋 **Virtual Profiles**: Organize servers with tags for different workflows  
+- 🔍 **Server Discovery**: Browse and install from the MCP Registry
+- 🚀 **Direct Execution**: Run servers over stdio or HTTP for testing
+- 🌐 **Public Sharing**: Share servers through secure tunnels
+- 🎛️ **Client Integration**: Manage configurations for Claude Desktop, Cursor, Windsurf, and more
+- 💻 **Beautiful CLI**: Rich formatting and interactive interfaces
+- 📊 **Usage Analytics**: Monitor server usage and performance
 
-See [Advanced Features](docs/advanced_features.md) for more capabilities like shared server sessions and the MCPM Router.
+MCPM v2.0 eliminates the complexity of v1's target-based system in favor of a clean global workspace model.
 
 ## 🖥️ Supported MCP Clients
 
@@ -64,9 +67,7 @@ MCPM will support managing MCP servers for the following clients:
 
 ## 🔥 Command Line Interface (CLI)
 
-MCPM provides a comprehensive CLI built with Python's Click framework. Commands generally operate on the currently **active client**. You can view/set the active client using `mcpm client`. Many commands also support scope modifiers like `@CLIENT_NAME/SERVER_NAME` or `%PROFILE_NAME/SERVER_NAME` to target specific clients or profiles directly.
-
-Below are the available commands, grouped by functionality:
+MCPM provides a comprehensive CLI with a clean, organized interface. The v2.0 architecture uses a global configuration model where servers are installed once and can be organized with profiles, then integrated into specific MCP clients as needed.
 
 ### ℹ️ General
 
@@ -75,109 +76,68 @@ mcpm --help          # Display help information and available commands
 mcpm --version       # Display the current version of MCPM
 ```
 
-### 🖥️ Client Management (`client`)
+### 🌐 Server Management
+
+Global server installation and management commands:
 
 ```bash
-mcpm client ls        # List all supported MCP clients, detect installed ones, and show active client
-mcpm client edit      # Open the active client's MCP configuration file in an external editor
+# 🔍 Search and Install
+mcpm search [QUERY]           # Search the MCP Registry for available servers
+mcpm info SERVER_NAME         # Display detailed information about a server
+mcpm install SERVER_NAME      # Install a server from registry to global configuration
+mcpm uninstall SERVER_NAME    # Remove a server from global configuration
+
+# 📋 List and Inspect
+mcpm ls                       # List all installed servers and their profile assignments
+mcpm edit SERVER_NAME         # Edit a server configuration
+mcpm inspect SERVER_NAME      # Launch MCP Inspector to test/debug a server
 ```
 
-### 🌐 Server Management (`server`)
+### 🚀 Server Execution
 
-These commands operate on the active client unless a specific scope (`@CLIENT` or `%PROFILE`) is provided.
+Execute servers directly for testing or integration:
 
 ```bash
-# 🔍 Search and Add
-mcpm search [QUERY]       # Search the MCP Registry for available servers
-mcpm add SERVER_URL       # Add an MCP server configuration (from URL or registry name)
-mcpm add SERVER_URL --alias ALIAS # Add with a custom alias
-
-# 🛠️ Add custom server
-mcpm import stdio SERVER_NAME --command COMMAND --args ARGS --env ENV # Add a stdio MCP server to a client
-mcpm import remote SERVER_NAME --url URL # Add a remote MCP server to a client
-mcpm import interact # Add a server by configuring it interactively
-
-# 📋 List and Remove
-mcpm ls                   # List server configurations for the active client/profile
-mcpm rm SERVER_NAME       # Remove a server configuration
-
-# 🔄 Modify and Organize
-mcpm cp SOURCE TARGET     # Copy a server config (e.g., @client1/serverA %profileB)
-mcpm mv SOURCE TARGET     # Move a server config (e.g., %profileA/serverX @client2)
-
-# 📦 Stashing (Temporarily disable/enable)
-mcpm stash SERVER_NAME    # Temporarily disable/store a server configuration aside
-mcpm pop [SERVER_NAME]    # Restore the last stashed server, or a specific one by name
+mcpm run SERVER_NAME          # Execute a server directly over stdio
+mcpm run SERVER_NAME --http   # Execute a server over HTTP for testing
+mcpm share SERVER_NAME        # Share a server through secure tunnel for remote access
+mcpm usage                    # Display comprehensive analytics and usage data
 ```
 
-### 📂 Profile Management (`profile`)
+### 📂 Profile Management
 
-Profiles are named collections of server configurations. They allow you to easily switch between different sets of MCP servers. For example, you might have a `work` profile and a `personal` profile, each containing different servers. Or you might have a `production` profile and a `development` profile, each containing different configurations for the same servers.
-
-The currently *active* profile's servers are typically used by features like the MCPM Router. Use `mcpm target set %profile_name` to set the active profile.
+Profiles are virtual tags that organize servers into logical groups for different workflows:
 
 ```bash
-# 🔄 Profile Lifecycle
-mcpm profile ls              # List all available MCPM profiles
-mcpm profile add PROFILE_NAME  # Add a new, empty profile
-mcpm profile rm PROFILE_NAME   # Remove a profile (does not delete servers within it)
-mcpm profile rename OLD_NAME NEW_NAME # Rename a profile
-mcpm add %profile_name    # Add a profile to the active client
+# 🔄 Profile Operations
+mcpm profile ls               # List all profiles and their tagged servers
+mcpm profile create PROFILE   # Create a new profile
+mcpm profile rm PROFILE       # Remove a profile (servers remain installed)
+mcpm profile edit PROFILE     # Interactive server selection for profile
+
+# 🚀 Profile Execution
+mcpm profile run PROFILE      # Execute all servers in a profile over stdio or HTTP
+mcpm profile share PROFILE    # Share all servers in a profile through secure tunnel
+mcpm profile inspect PROFILE  # Launch MCP Inspector for all servers in profile
 ```
 
-### 🔌 Router Management (`router`)
+### 🖥️ Client Integration
 
-The MCPM Router runs as a background daemon process, acting as a stable endpoint (e.g., `http://localhost:6276`) that intelligently routes incoming MCP requests to the appropriate server based on the currently **active profile**.
-
-This allows you to change the underlying servers (by switching profiles with `mcpm target set %profile_name`) without reconfiguring your client applications. They can always point to the MCPM Router's address.
-
-The Router also maintains persistent connections to MCP servers, enabling multiple clients to share these server sessions. This eliminates the need to start separate server instances for each client, significantly reducing resource usage and startup time. Learn more about these advanced capabilities in [Advanced Features](docs/advanced_features.md).
-
-For more technical details on the router's implementation and namespacing, see [`docs/router_tech_design.md`](docs/router_tech_design.md).
-
-The Router can be shared in public network by `mcpm router share`. Be aware that the share link will be exposed to the public, make sure the generated secret is secure and only share to trusted users. See [MCPM Router Share](docs/router_share.md) for more details about how it works.
+Manage MCP client configurations (Claude Desktop, Cursor, Windsurf, etc.):
 
 ```bash
-mcpm router status                # Check if the router daemon is running
-mcpm router on                    # Start the MCP router daemon
-mcpm router off                   # Stop the MCP router daemon
-mcpm router set --host HOST --port PORT --address ADDRESS  # Set the MCP router daemon's host port and the remote share address
-mcpm router share                 # Share the router to public
-mcpm router unshare               # Unshare the router
+mcpm client ls                 # List all supported MCP clients and their status
+mcpm client edit CLIENT_NAME   # Interactive server enable/disable for a client
+mcpm client edit CLIENT_NAME -e # Open client config in external editor
+mcpm client import CLIENT_NAME  # Import server configurations from a client
 ```
 
-### 🤝 Share Management (`share`)
-
-The `mcpm share` command allows you to take any shell command that starts an MCP server and instantly expose it as an SSE (Server-Sent Events) server. It uses `mcp-proxy` to handle the server transformation and then creates a secure tunnel for remote access, making your local MCP server accessible from anywhere.
-
-This is particularly useful for quickly sharing a development server, a custom MCP server, or even a standard server with specific configurations without needing to deploy it publicly.
+### 🛠️ System & Configuration
 
 ```bash
-# 🚀 Share a local MCP server
-mcpm share "COMMAND" # Replace COMMAND with your actual server start command
-
-# ⚙️ Options
-# COMMAND: The shell command that starts your MCP server (e.g., "uvx mcp-server-fetch", "npx mcp-server"). This must be enclosed in quotes if it contains spaces.
-# --port PORT: Specify a local port for the mcp-proxy to listen on. Defaults to a random available port.
-# --address ADDRESS: Specify a public address for the tunnel (e.g., yourdomain.com:7000). If not provided, a random tunnel URL will be generated.
-# --http: If set, the tunnel will use HTTP instead of HTTPS. Use with caution.
-# --timeout TIMEOUT: Timeout in seconds for the mcp-proxy to wait for the server to start. Defaults to 60.
-# --retry RETRY: Number of times to retry starting the server if it fails. Defaults to 0.
-
-# 💡 Usage Examples
-mcpm share "uvx mcp-server-fetch"
-mcpm share "npx mcp-server" --port 5000
-mcpm share "uv run my-mcp-server" --address myserver.com:7000
-mcpm share "npx -y @modelcontextprotocol/server-everything" --retry 3
-```
-
-### 🛠️ Utilities (`util`)
-
-```bash
-mcpm config clear-cache          # Clear MCPM's registry cache. Cache defaults to refresh every 1 hour.
-mcpm config set                  # Set global MCPM configuration, currently only support node_executable 
-mcpm config get <name>           # Get global MCPM configuration
-mcpm inspector                   # Launch the MCPM Inspector UI to examine server configs
+mcpm doctor                   # Check system health and server status
+mcpm config                   # Manage MCPM configuration and settings
+mcpm migrate                  # Migrate from v1 to v2 configuration
 ```
 
 ### 📚 Registry
@@ -186,20 +146,20 @@ The MCP Registry is a central repository of available MCP servers that can be in
 
 ## 🗺️ Roadmap
 
-- [x] Landing page setup (`mcpm.sh`)
-- [x] Core CLI foundation (Click)
-- [x] Client detection and management (`mcpm client`)
-- [x] Basic server management (`mcpm add`, `mcpm ls`, `mcpm rm`)
-- [x] Registry integration (`mcpm search`, adding by name)
-- [x] Router functionality (`mcpm router`)
-- [x] MCP Profiles (`mcpm profile`)
-- [x] Server copying/moving (`mcpm cp`, `mcpm mv`)
-- [x] Server stashing (`mcpm stash`, `mcpm pop`)
-- [x] Router remote share (`mcpm router share`) remotely access local router and mcp servers
-- [ ] MCP Server Access Monitoring for MCPM Router (local only, absolutely no data leaving local machine)
-- [ ] MCPM Router over STDIO (same powerful feature set with profile and monitoring, but single client/tenant)
-- [ ] MCP Server for MCPM Router (experimental, allow MCP clients to dynamically switch between profiles, suggest new MCP servers from registry, etc.)
-- [ ] Additional client support
+### ✅ v2.0 Complete
+- [x] Global server configuration model
+- [x] Profile-based server tagging and organization  
+- [x] Interactive command interfaces
+- [x] Client integration management (`mcpm client edit`)
+- [x] Modern CLI with consistent UX
+- [x] Registry integration and server discovery
+- [x] Direct server execution and sharing
+- [x] Import from existing client configurations
+
+### 🔮 Future Enhancements
+- [ ] Advanced Server access monitoring and analytics
+- [ ] Additional client support (gemini-cli, codex, etc.)
+- [ ] Execution in docker
 
 
 ## 📦 Other Installation Methods

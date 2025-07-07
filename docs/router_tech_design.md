@@ -1,216 +1,207 @@
+# MCPM v2.0 Technical Architecture
 
-# MCPM Router Technical Overview
+## Overview
+
+MCPM v2.0 adopts a simplified architecture that eliminates the separate router daemon in favor of direct execution and FastMCP-based aggregation. This design provides better performance, reliability, and ease of use.
 
 ## Architecture
 
 ```mermaid
 flowchart TB
-    subgraph clients[Upstream Clients]
-        c1[MCP Client 1]
-        c2[MCP Client 2]
-        cn[MCP Client N]
+    subgraph clients[MCP Clients]
+        c1[Claude Desktop]
+        c2[Cursor]
+        c3[Windsurf]
     end
     
-    subgraph router[MCPM Router]
-        r[MCPRouter]
-        rt[RouterSseTransport]
-        sc[ServerConnection]
-        pw[ProfileManager]
-        cw[ConfigWatcher]
-        r --> rt
-        r --> sc
-        r --> pw
-        r --> cw
+    subgraph mcpm[MCPM v2.0]
+        gc[Global Configuration]
+        pm[Profile Manager]
+        cm[Client Manager]
+        sm[Server Manager]
+        gc --> pm
+        gc --> cm
+        gc --> sm
     end
     
-    subgraph servers[Downstream Servers]
-        s1[MCP Server 1]
-        s2[MCP Server 2]
-        sm[MCP Server M]
+    subgraph execution[Execution Layer]
+        fe[FastMCP Engine]
+        sh[Sharing System]
+        ht[HTTP Transport]
+        st[STDIO Transport]
+        fe --> sh
+        fe --> ht
+        fe --> st
     end
     
-    c1 <--SSE--> rt
-    c2 <--SSE--> rt
-    cn <--SSE--> rt
+    subgraph servers[MCP Servers]
+        s1[Server 1]
+        s2[Server 2]
+        s3[Server N]
+    end
     
-    sc <--STDIO/SSE--> s1
-    sc <--STDIO/SSE--> s2
-    sc <--STDIO/SSE--> sm
+    c1 --> cm
+    c2 --> cm
+    c3 --> cm
+    
+    pm --> fe
+    sm --> fe
+    
+    st --> s1
+    st --> s2
+    ht --> s3
     
     classDef default fill:#f9f9f9,stroke:#333,stroke-width:1px;
-    classDef routerClass fill:#e1f5fe,stroke:#0277bd,stroke-width:2px;
-    class router routerClass;
+    classDef mcpmClass fill:#e1f5fe,stroke:#0277bd,stroke-width:2px;
+    classDef executionClass fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px;
+    class mcpm mcpmClass;
+    class execution executionClass;
 ```
-
-## Usage
-
-### Basic Usage
-
-```python
-import asyncio
-from mcpm.router import MCPRouter
-from mcpm.core.schema import STDIOServerConfig, RemoteServerConfig
-
-async def main():
-    # Create a router
-    router = MCPRouter()
-
-    # Add a STDIO server
-    await router.add_server(
-        "example1",
-        STDIOServerConfig(
-            command="python",
-            args=["-m", "mcp.examples.simple_server"]
-        )
-    )
-
-    # Add an Remote server
-    await router.add_server(
-        "example2",
-        RemoteServerConfig(
-            url="http://localhost:3000/"
-        )
-    )
-
-    # Start the Remote server
-    await router.start_remote_server(host="localhost", port=8080)
-
-if __name__ == "__main__":
-    asyncio.run(main())
-```
-
-### Configuration File
-
-By default, the router uses the configuration from file `~/.config/mcpm/profile.json` to manage the servers and profiles.
 
 ## Key Components
 
-### `MCPRouter`
+### Global Configuration Manager
 
-The main orchestrator class that provides a unified API for the application:
-- Initializes and coordinates all internal components
-- Manages connections to downstream servers (add/remove/update)
-- Maintains mappings of capabilities, tools, prompts, and resources from downstream servers
-- Handles namespacing of capabilities across different servers
-- Provides a unified server interface for clients
-- Controls profile-based access to downstream servers
+Manages all servers in a single global configuration:
 
-### `ServerConnection`
+```python
+from mcpm.global_config import GlobalConfigManager
 
-Manages individual connections to downstream MCP servers:
-- Handles connection lifecycle for a single server
-- Supports different transport types (STDIO, Remote)
-- Provides methods to initialize, check health, and gracefully shut down connections
-- Exposes the server's capabilities to the router
-
-### `RouterSseTransport` (deprecated)
-
-Extends the SSE server transport to handle client connections:
-- Provides an SSE server endpoint for clients to connect
-- Maintains mappings between session IDs and client profiles
-- Handles message routing between clients and the router
-- Manages connection lifecycle events
-
-### `ProfileConfigManager`
-
-Manages server profiles:
-- Loads and updates profile configurations
-- Associates clients with specific sets of available servers
-- Controls which servers are visible to which clients
-
-### `ConfigWatcher`
-
-Monitors configuration changes:
-- Watches for changes to the profile configuration files
-- Triggers router updates when configurations change
-- Enables dynamic reconfiguration without router restart
-
-### `ServerConfig` and Derivatives
-
-Defines the configuration for connecting to downstream servers:
-- Base `ServerConfig` class with common properties
-- `STDIOServerConfig` for command-line based servers
-- `RemoteServerConfig` for HTTP/SSE based servers
-- Stores necessary connection parameters (command, args, env, URL)
-
-## Namespacing
-
-The router uses the following namespacing conventions:
-
-- Tools: `{server_id}_t_{tool_name}`
-- Prompts: `{server_id}_p_{prompt_name}`
-- Resources: `{server_id}:{resource_uri}`
-- Resource Templates: `{server_id}:{template_uri}`
-
-This allows the router to route requests to the appropriate server based on the namespaced identifier.
-
-## Communication Flow
-
-### Downstream Connections (Router as Client)
-
-1. Router creates persistent connections to downstream MCP servers using STDIO or remote (Streamable HTTP/SSE)
-2. Connections are maintained regardless of upstream client presence
-3. Server capabilities are fetched and aggregated with namespacing
-4. Connections are managed through the `ServerConnection` class
-5. Notifications from servers are routed to appropriate upstream clients
-
-### Upstream Connections (Router as Server)
-
-1. Router provides an streamable HTTP server interface for upstream clients
-2. Clients connect with a profile identifier to determine server visibility
-3. Client requests are routed to appropriate downstream servers based on profile
-4. Responses and notifications are delivered back to clients
-5. Session management is handled by `RouterSseTransport`(deprecated)
-
-## Request Routing and Namespacing
-
-```mermaid
-sequenceDiagram
-    participant Client as MCP Client
-    participant Router as MCPRouter
-    participant SC as ServerConnection
-    participant Server as MCP Server
-    
-    Client->>Router: Request (with profile)
-    Router->>Router: Determine available servers based on profile
-    Router->>Router: Parse namespaced ID (server_id + separator + original_id)
-    Router->>SC: Forward request to appropriate server
-    SC->>Server: Forward request with denormalized ID
-    Server->>SC: Response
-    SC->>Router: Forward response
-    Router->>Client: Deliver response
+config = GlobalConfigManager()
+config.add_server(server_config)
+servers = config.list_servers()
 ```
 
-## Profile Management
+### Profile Manager (Virtual Profiles)
 
-1. Profiles define collections of servers that should be accessible together
-2. Clients connect with a profile parameter
-3. Router filters available servers based on the client's profile
-4. Profile configurations can be updated dynamically
-5. Changes to profiles are detected by the ConfigWatcher
+Manages virtual profiles as tags on servers:
 
-## Error Handling
+```python
+from mcpm.profile.profile_config import ProfileConfigManager
 
-1. Connection errors are isolated to affected servers
-2. Failed server connections don't prevent other servers from functioning
-3. Proper error propagation from downstream servers to clients
-4. Graceful handling of client and server disconnections
-5. Pipe errors and other connection issues are properly caught and logged
+profiles = ProfileConfigManager()
+profiles.create_profile("web-dev")
+profiles.add_server_to_profile("web-dev", "mcp-server-browse")
+```
 
-## Benefits of This Design
+### Client Manager
 
-1. **Decoupling**: Upstream clients are decoupled from downstream servers
-2. **Resilience**: Client disconnections don't affect server connections
-3. **Aggregation**: Multiple capabilities from different servers appear as one
-4. **Flexibility**: Supports different transport protocols (STDIO, Remote)
-5. **Scalability**: Can manage multiple clients and servers simultaneously
-6. **Profile-based Access**: Controls which servers are available to which clients
-7. **Dynamic Configuration**: Supports runtime changes to server configurations
+Handles MCP client integration and configuration:
 
-## Implementation Notes
+```python
+from mcpm.clients.client_config import ClientConfigManager
 
-- All communication follows the MCP protocol specification
-- Asynchronous operation using Python's asyncio
-- Type-safe interfaces using Python type hints
-- Clean separation of concerns between components
-- Support for hot reloading of configurations
+clients = ClientConfigManager()
+clients.edit_client_config("claude-desktop", selected_servers)
+```
+
+### FastMCP Integration
+
+Uses FastMCP for server execution and aggregation:
+
+```python
+# Direct server execution
+mcpm run server-name
+
+# Profile aggregation
+mcpm profile run web-dev --http --port 8080
+
+# Server sharing
+mcpm share server-name
+mcpm profile share web-dev
+```
+
+## Execution Models
+
+### Direct STDIO Execution
+
+Servers run directly via stdio for client integration:
+
+```bash
+# Client configuration
+{
+  "mcpServers": {
+    "browse": {
+      "command": ["mcpm", "run", "mcp-server-browse"]
+    }
+  }
+}
+```
+
+### HTTP Mode for Testing
+
+Servers can run in HTTP mode for development:
+
+```bash
+mcpm run server-name --http --port 8080
+```
+
+### Profile Aggregation
+
+Multiple servers can be aggregated into a single endpoint:
+
+```bash
+mcpm profile run web-dev --http --port 8080
+```
+
+## Data Flow
+
+### Server Installation
+1. User runs `mcpm install server-name`
+2. Server metadata fetched from registry
+3. Server configuration stored in global config
+4. Server ready for execution or profiling
+
+### Profile Creation
+1. User runs `mcpm profile create profile-name`
+2. Profile metadata created in global config
+3. User adds servers with `mcpm profile edit profile-name`
+4. Servers tagged with profile name
+
+### Client Integration
+1. User runs `mcpm client edit client-name`
+2. MCPM detects client configuration
+3. Interactive server selection presented
+4. Client config updated with selected servers
+
+### Server Execution
+1. Client executes `mcpm run server-name`
+2. MCPM loads server config from global storage
+3. FastMCP starts server process
+4. Stdio/HTTP communication established
+
+## Performance Characteristics
+
+### Advantages of v2.0 Architecture
+
+1. **No Daemon Overhead**: Eliminates router daemon startup and maintenance
+2. **Direct Execution**: Reduces latency and complexity
+3. **Process Isolation**: Each server runs independently
+4. **Resource Efficiency**: Servers only run when needed
+5. **Simplified Debugging**: Direct process model easier to troubleshoot
+
+### Resource Management
+
+- **On-Demand Execution**: Servers start only when invoked
+- **Process Lifecycle**: Servers terminate with client sessions
+- **Memory Efficiency**: No persistent router process
+- **Connection Pooling**: FastMCP manages connections efficiently
+
+## Security Model
+
+### Process Isolation
+- Each server runs in its own process
+- No shared state between servers
+- Client-server communication isolated
+
+### Authentication
+- Optional authentication for shared servers
+- Token-based access control
+- Local-only execution for development
+
+### Network Security
+- HTTPS for shared servers
+- Configurable tunnel endpoints
+- Optional authentication for public shares
+
+For more technical details, see the source code documentation and inline comments.

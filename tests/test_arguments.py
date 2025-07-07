@@ -45,7 +45,12 @@ def test_arguments_in_installations():
     assert result3["args"] == ["some-package", "--API_KEY=${API_KEY}", "--DB_PASSWORD=${DB_PASSWORD}"]
 
     # case 5: cli command with KEY=value parameters
-    installation5 = {"type": "cli", "command": "cli-tool", "args": ["@user/command", "API_KEY=value", "DB_PASSWORD=secret"], "env": {}}
+    installation5 = {
+        "type": "cli",
+        "command": "cli-tool",
+        "args": ["@user/command", "API_KEY=value", "DB_PASSWORD=secret"],
+        "env": {},
+    }
     arguments5 = {"API_KEY": "value", "DB_PASSWORD": "secret"}
     result5, replaced5 = validate_arguments_in_installation(installation5, arguments5)
     assert replaced5 is True
@@ -64,7 +69,12 @@ def test_arguments_in_installations():
     assert result6["args"] == ["path/to/script.py", "--API_KEY", "${API_KEY}", "--DB_PASSWORD", "${DB_PASSWORD}"]
 
     # case 7: no arguments
-    installation7 = {"type": "python", "command": "python", "args": ["path/to/script.py", "--argument", "value", "--argument2", "value2"], "env": {}}
+    installation7 = {
+        "type": "python",
+        "command": "python",
+        "args": ["path/to/script.py", "--argument", "value", "--argument2", "value2"],
+        "env": {},
+    }
     arguments7 = {"API_KEY": "value"}
     result7, replaced7 = validate_arguments_in_installation(installation7, arguments7)
     assert replaced7 is False

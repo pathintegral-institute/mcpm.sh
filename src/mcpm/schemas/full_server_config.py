@@ -1,6 +1,6 @@
 """Server configuration utilities for MCPM"""
 
-from typing import ClassVar, Dict, List, Optional
+from typing import Dict, List, Optional
 
 from pydantic import BaseModel, Field, model_validator
 
@@ -25,10 +25,6 @@ class FullServerConfig(BaseModel):
     display_name: Optional[str] = None
     description: str = ""
     installation: Optional[str] = None
-
-    # Lists of field names for compatibility with existing code
-    REQUIRED_FIELDS: ClassVar[List[str]] = ["name", "command", "args", "env_vars"]
-    OPTIONAL_FIELDS: ClassVar[List[str]] = ["display_name", "description", "installation"]
 
     model_config = {
         "populate_by_name": True,

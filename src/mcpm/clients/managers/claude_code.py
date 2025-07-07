@@ -20,16 +20,16 @@ class ClaudeCodeManager(JSONClientManager):
     display_name = "Claude Code"
     download_url = "https://docs.anthropic.com/en/docs/claude-code"
 
-    def __init__(self, config_path=None):
+    def __init__(self, config_path_override: str | None = None):
         """Initialize the Claude Code client manager
 
         Args:
-            config_path: Optional path to the config file. If not provided, uses default path.
+            config_path_override: Optional path to override the default config file location
         """
-        super().__init__()
+        super().__init__(config_path_override=config_path_override)
 
-        if config_path:
-            self.config_path = config_path
+        if config_path_override:
+            self.config_path = config_path_override
         else:
             self.config_path = os.path.expanduser("~/.claude.json")
 
@@ -55,5 +55,5 @@ class ClaudeCodeManager(JSONClientManager):
             "name": self.display_name,
             "download_url": self.download_url,
             "config_file": self.config_path,
-            "description": "Anthropic's Claude Code CLI tool"
+            "description": "Anthropic's Claude Code CLI tool",
         }

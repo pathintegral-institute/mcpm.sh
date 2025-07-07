@@ -2,212 +2,139 @@
 MCPM CLI - Main entry point for the Model Context Protocol Manager CLI
 """
 
-import click
-from rich.console import Console
-from rich.table import Table
+# Import rich-click configuration before anything else
+from typing import Any, Dict
 
-from mcpm import __version__
+from rich.console import Console
+from rich.traceback import Traceback
+
 from mcpm.clients.client_config import ClientConfigManager
 from mcpm.commands import (
     add,
     client,
     config,
-    custom,
+    doctor,
+    edit,
     info,
-    inspector,
+    inspect,
     list,
-    pop,
+    migrate,
     profile,
     remove,
-    router,
+    run,
     search,
-    stash,
-    target,
-    transfer,
+    usage,
 )
 from mcpm.commands.share import share
+from mcpm.migration import V1ConfigDetector, V1ToV2Migrator
+from mcpm.utils.logging_config import setup_logging
+from mcpm.utils.rich_click_config import click, get_header_text
 
 console = Console()
 client_config_manager = ClientConfigManager()
 
-# Set -h as an alias for --help but we'll handle it ourselves
-CONTEXT_SETTINGS = dict(help_option_names=[])
+# Setup Rich logging early - this runs when the module is imported
+setup_logging()
+
+# Custom context settings to handle main command help specially
+CONTEXT_SETTINGS: Dict[str, Any] = dict(help_option_names=[])
 
 
 def print_logo():
-    # Create bold ASCII art with thicker characters for a more striking appearance
-    logo = [
-        " ███╗   ███╗ ██████╗██████╗ ███╗   ███╗ ",
-        " ████╗ ████║██╔════╝██╔══██╗████╗ ████║ ",
-        " ██╔████╔██║██║     ██████╔╝██╔████╔██║ ",
-        " ██║╚██╔╝██║██║     ██╔═══╝ ██║╚██╔╝██║ ",
-        " ██║ ╚═╝ ██║╚██████╗██║     ██║ ╚═╝ ██║ ",
-        " ╚═╝     ╚═╝ ╚═════╝╚═╝     ╚═╝     ╚═╝ ",
-        "",
-        f"v{__version__}",
-        "Open Source. Forever Free.",
-        "Built with ❤️ by Path Integral Institute",
-    ]
-
-    # Define terminal width for centering
-    terminal_width = 80  # Standard terminal width
-
-    # Print separator line
-    console.print("[bold cyan]" + "=" * terminal_width + "[/]")
-
-    # Calculate base padding for ASCII art
-    base_padding = " " * ((terminal_width - len(logo[0])) // 2)
-
-    # Center the ASCII art (except last line)
-    for i in range(5):  # First 5 lines of the ASCII art
-        console.print(f"{base_padding}[bold green]{logo[i]}[/]")
-
-    # Print last line with version, using the same base padding
-    version_text = f"v{__version__}"
-    console.print(f"{base_padding}[bold green]{logo[5]}[/] [bold yellow]{version_text}[/]")
-
-    # Center the taglines
-    tagline1 = logo[8]  # "Open Source. Forever Free."
-    tagline2 = logo[9]  # "Built with ❤️ by Path Integral Institute"
-
-    # Calculate center padding for each tagline
-    tagline1_padding = " " * ((terminal_width - len(tagline1)) // 2)
-    tagline2_padding = " " * ((terminal_width - len(tagline2)) // 2)
-
-    # Print centered taglines
-    console.print(tagline1_padding + "[bold magenta]" + tagline1 + "[/]")
-    console.print(tagline2_padding + "[bold cyan]" + tagline2 + "[/]")
-
-    # Print separator line
-    console.print("[bold cyan]" + "=" * terminal_width + "[/]")
+    """Print an elegant gradient logo with invisible Panel for width control"""
+    console.print(get_header_text())
 
 
-@click.group(context_settings=CONTEXT_SETTINGS, invoke_without_command=True)
-@click.option("-h", "--help", "help_flag", is_flag=True, help="Show this message and exit.")
+def handle_exceptions(func):
+    """Decorator to catch unhandled exceptions and provide a helpful error message."""
+
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception:
+            console.print(Traceback(show_locals=True))
+            console.print("[bold red]An unexpected error occurred.[/bold red]")
+            console.print(
+                "Please report this issue on our GitHub repository: "
+                "[link=https://github.com/pathintegral-institute/mcpm.sh/issues]https://github.com/pathintegral-institute/mcpm.sh/issues[/link]"
+            )
+
+    return wrapper
+
+
+@click.group(
+    name="mcpm",
+    context_settings=CONTEXT_SETTINGS,
+    invoke_without_command=True,
+    help="""
+Centralized MCP server management - discover, install, run, and share servers.
+
+Manage servers globally, organize with profiles, monitor usage, and integrate
+with all MCP clients.
+""",
+)
 @click.option("-v", "--version", is_flag=True, help="Show version and exit.")
+@click.option("-h", "--help", "help_flag", is_flag=True, help="Show this message and exit.")
 @click.pass_context
-def main(ctx, help_flag, version):
-    """MCPM - Model Context Protocol Manager.
-
-    A tool for managing MCP servers across various clients.
-    """
+@handle_exceptions
+def main(ctx, version, help_flag):
+    """Main entry point for MCPM CLI."""
     if version:
         print_logo()
         return
 
-    # Check if a command is being executed (and it's not help, no command, or the client command)
-    if (
-        ctx.invoked_subcommand
-        and ctx.invoked_subcommand not in ["target", "client", "profile", "router", "share", "inspector"]
-        and not help_flag
-    ):
-        # Check if active client is set
-        active_target = client_config_manager.get_active_target()
-        if not active_target:
-            console.print("[bold red]Error:[/] No active target set.")
-            console.print("Please run 'mcpm target set <target>' to set an active target\n")
+    if help_flag:
+        # Show custom help with header and footer for main command only
+        console.print(get_header_text())
+        # Temporarily disable global footer to avoid duplication
+        original_footer = click.rich_click.FOOTER_TEXT
+        click.rich_click.FOOTER_TEXT = None
+        click.echo(ctx.get_help())
+        click.rich_click.FOOTER_TEXT = original_footer
+        return
 
-            # Show available clients
-            from mcpm.clients.client_registry import ClientRegistry
+    # Check for v1 configuration and offer migration (even with subcommands)
+    detector = V1ConfigDetector()
+    if detector.has_v1_config():
+        migrator = V1ToV2Migrator()
+        migration_choice = migrator.show_migration_prompt()
+        if migration_choice == "migrate":
+            migrator.migrate_config()
+            return
+        elif migration_choice == "start_fresh":
+            migrator.start_fresh()
+            # Continue to execute the subcommand
+        # If "ignore", continue to subcommand without migration
 
-            console.print("[bold green]Available Clients, set one with 'mcpm target set @<client>':[/]")
-            for client in ClientRegistry.get_supported_clients():
-                console.print(f"  - {client}")
-
-            from mcpm.profile.profile_config import ProfileConfigManager
-
-            # Show available profiles
-            console.print("[bold green]Available Profiles, set one with 'mcpm target set %<profile>':[/]")
-            profile_manager = ProfileConfigManager()
-            for profile in profile_manager.list_profiles():
-                console.print(f"  - {profile}")
-
-            # Exit with error
-            ctx.exit(1)
-    # If no command was invoked or help is requested, show our custom help
-    if ctx.invoked_subcommand is None or help_flag:
-        # Get active client
-        active_target = client_config_manager.get_active_target()
-
-        print_logo()
-        # Display active client information and main help
-        if active_target:
-            console.print(f"[bold magenta]Active target:[/] [yellow]{active_target}[/]")
-        else:
-            console.print("[bold red]No active target set![/] Please run 'mcpm target set <target>' to set one.")
-        console.print("")
-
-        # Display usage info
-        console.print("[bold green]Usage:[/] [white]mcpm [OPTIONS] COMMAND [ARGS]...[/]")
-        console.print("")
-        console.print("[bold green]Description:[/] [white]A tool for managing MCP servers across various clients.[/]")
-        console.print("")
-
-        # Display options
-        console.print("[bold]Options:[/]")
-        console.print("  --version   Show the version and exit.")
-        console.print("  -h, --help  Show this message and exit.")
-        console.print("")
-
-        # Display available commands in a table
-        console.print("[bold]Commands:[/]")
-        commands_table = Table(show_header=False, box=None, padding=(0, 2, 0, 0))
-
-        commands_table.add_row("[yellow]work target[/]")
-        commands_table.add_row("  [cyan]target[/]", "Manage the active MCPM target.")
-
-        commands_table.add_row("[yellow]client[/]")
-        commands_table.add_row("  [cyan]client[/]", "Manage supported MCPM clients.")
-
-        commands_table.add_row("[yellow]server[/]")
-        commands_table.add_row("  [cyan]search[/]", "Search available MCP servers.")
-        commands_table.add_row("  [cyan]info[/]", "Show detailed information about a specific MCP server.")
-        commands_table.add_row("  [cyan]add[/]", "Add an MCP server directly to a client/profile.")
-        commands_table.add_row("  [cyan]import[/]", "Import a custom MCP server to a client/profile.")
-        commands_table.add_row("  [cyan]cp[/]", "Copy a server from one client/profile to another.")
-        commands_table.add_row("  [cyan]mv[/]", "Move a server from one client/profile to another.")
-        commands_table.add_row("  [cyan]rm[/]", "Remove an installed MCP server.")
-        commands_table.add_row("  [cyan]ls[/]", "List all installed MCP servers.")
-        commands_table.add_row("  [cyan]stash[/]", "Temporarily store a server configuration aside.")
-        commands_table.add_row("  [cyan]pop[/]", "Restore a previously stashed server configuration.")
-        commands_table.add_row("  [cyan]share[/]", "Share a single MCP server through a tunnel.")
-
-        commands_table.add_row("[yellow]profile[/]")
-        commands_table.add_row("  [cyan]profile[/]", "Manage MCPM profiles.")
-
-        commands_table.add_row("[yellow]router[/]")
-        commands_table.add_row("  [cyan]router[/]", "Manage MCP router service.")
-
-        commands_table.add_row("[yellow]util[/]")
-        commands_table.add_row("  [cyan]config[/]", "Manage MCPM configuration.")
-        commands_table.add_row("  [cyan]inspector[/]", "Launch the MCPM Inspector UI to examine servers.")
-        console.print(commands_table)
-
-        # Additional helpful information
-        console.print("")
-        console.print("[italic]Run [bold]mcpm COMMAND -h[/] for more information on a command.[/]")
+    # If no command was invoked, show help with header and footer
+    if ctx.invoked_subcommand is None:
+        console.print(get_header_text())
+        # Temporarily disable global footer to avoid duplication
+        original_footer = click.rich_click.FOOTER_TEXT
+        click.rich_click.FOOTER_TEXT = None
+        click.echo(ctx.get_help())
+        click.rich_click.FOOTER_TEXT = original_footer
 
 
-# Register commands
+# Register v2.0 commands
 main.add_command(search.search)
 main.add_command(info.info)
-main.add_command(remove.remove, name="rm")
-main.add_command(add.add)
 main.add_command(list.list, name="ls")
-
-main.add_command(stash.stash)
-main.add_command(pop.pop)
-
-main.add_command(target.target)
-main.add_command(client.client)
-main.add_command(config.config)
-main.add_command(inspector.inspector, name="inspector")
+main.add_command(add.add, name="install")
+main.add_command(remove.remove, name="uninstall")
+main.add_command(edit.edit)
+main.add_command(run.run)
+main.add_command(inspect.inspect)
 main.add_command(profile.profile, name="profile")
-main.add_command(transfer.move, name="mv")
-main.add_command(transfer.copy, name="cp")
-main.add_command(router.router, name="router")
-main.add_command(custom.import_server, name="import")
+main.add_command(doctor.doctor)
+main.add_command(usage.usage)
+main.add_command(config.config)
+main.add_command(migrate.migrate)
 main.add_command(share)
+
+
+# Keep these for now but they could be simplified later
+main.add_command(client.client)
 
 if __name__ == "__main__":
     main()

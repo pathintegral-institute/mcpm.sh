@@ -28,561 +28,200 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     {% include favicon.html %}
     <style>
         {% include colors.css %}
         {% include common.css %}
         
-        /* Page-specific styles */
-        .container {
-            max-width: 900px; /* Override for homepage */
-        }
-        
-        .terminal-animation {
-            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
-            margin: 2rem auto;
-            max-width: 350px;
-            width: 90%;
-        }
-        
-        .coming-soon {
-            border: 1px solid rgba(92, 217, 81, 0.2);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-            margin: 1.5rem 0;
-            padding: 1.25rem;
-            background: rgba(30, 35, 41, 0.7);
-            border-radius: 4px;
-            position: relative;
-            overflow: hidden;
+        /* Modern redesign styles */
+        :root {
+            --primary-bg: #0a0e13;
+            --secondary-bg: #151b22;
+            --surface-bg: #1e2429;
+            --surface-elevated: #252d34;
+            --accent-primary: #00d9ff;
+            --accent-secondary: #00b8d4;
+            --accent-tertiary: #0097b3;
+            --text-primary: #ffffff;
+            --text-secondary: #b3bac1;
+            --text-muted: #6b7280;
+            --border-subtle: rgba(255, 255, 255, 0.06);
+            --border-accent: rgba(0, 217, 255, 0.2);
+            --gradient-primary: linear-gradient(135deg, #00d9ff 0%, #0097b3 100%);
+            --gradient-secondary: linear-gradient(135deg, #1e2429 0%, #252d34 100%);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+            --animation-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
 
-        .coming-soon::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, var(--accent-color), var(--accent-highlight));
+        * {
+            box-sizing: border-box;
         }
 
-        header {
-            text-align: center;
-        }
-
-        h1 {
-            font-size: 3.5rem;
-            background: linear-gradient(90deg, var(--accent-color), var(--accent-highlight));
-            -webkit-background-clip: text;
-            background-clip: text;
-        }
-        
-        .tagline {
-            font-size: 1.5rem;
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-            font-weight: 300;
-        }
-        
-        h2 {
-            font-size: 1.8rem;
-            margin-bottom: 1.5rem;
-            color: var(--text-primary);
-            position: relative;
-            display: inline-block;
-        }
-        
-        h2::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 0;
-            height: 2px;
-            width: 60px;
-            background: var(--accent-color);
-            border-radius: 0; /* Sharp corners */
-        }
-        
-        .features {
-            margin: 1.5rem 0;
-            gap: 0.75rem;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        }
-        
-        .feature {
-            background: rgba(30, 35, 41, 0.7);
-            border-left: 3px solid var(--accent-color);
-            border-radius: 4px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 1rem;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .feature:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-            border-left: 3px solid var(--accent-light);
-        }
-        
-        h3 {
-            font-weight: 600;
-            color: var(--accent-highlight);
-            margin-bottom: 0.6rem;
-            font-size: 1.1rem;
-        }
-        
-        h3 span {
-            margin-right: 0.5rem;
-            opacity: 0.9;
-        }
-        
-        .code-block {
-            position: relative;
-            margin: 0.5rem 0;
-            box-shadow: none;
-            border-radius: 0; /* Sharp corners */
-            overflow: hidden;
-            border-left: 3px solid var(--accent-color);
-        }
-        
-        code {
-            background-color: var(--code-bg);
-            padding: 0.75rem 1rem;
-            border-radius: 0 4px 4px 0;
-            font-family: 'Fira Code', monospace;
-            display: block;
-            overflow-x: auto;
-            border-left: none; /* Removed since parent has border */
-            padding-right: 45px; /* Space for the copy button */
-            font-size: 0.95rem;
-            line-height: 1.5;
-        }
-        
-        .copy-button {
-            position: absolute;
-            top: 50%;
-            right: 10px;
-            transform: translateY(-50%);
-            background-color: var(--accent-dark);
-            color: var(--text-primary);
-            border: none;
-            border-radius: 0; /* Sharp corners */
-            padding: 6px 10px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            opacity: 0.8;
-            transition: all 0.2s ease;
-        }
-        
-        .copy-button:hover {
-            opacity: 1;
-            background-color: var(--accent-color);
-        }
-        
-        .copy-success {
-            background-color: var(--success) !important;
-        }
-        
-        .clients {
-            background: var(--bg-accent);
-            border: 1px solid var(--card-border);
-            border-radius: 0; /* Sharp corners */
-            padding: 2rem;
-            margin: 2rem 0;
-            box-shadow: none;
-        }
-        
-        ul {
-            list-style-type: none;
-            margin: 0.5rem 0;
-        }
-        
-        li {
-            padding: 0.35rem 0;
-            display: flex;
-            align-items: center;
-        }
-        
-        li::before {
-            content: '▹';
-            color: var(--accent-color);
-            margin-right: 1rem;
-        }
-        
-        footer {
-            margin-top: 3rem;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            text-align: center;
-            padding: 1.5rem 0;
-            border-top: 1px solid var(--card-border);
-            background: var(--bg-accent);
-        }
-        
-        a {
-            color: var(--accent-highlight);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-        
-        a:hover {
-            color: var(--accent-light);
-            text-decoration: underline;
-        }
-        
-        .command-prompt {
-            color: var(--warning);
-            font-weight: 600;
-        }
-        
-        @media (max-width: 768px) {
-            .features {
-                grid-template-columns: 1fr;
-            }
-            
-            h1 {
-                font-size: 2.5rem;
-            }
-            
-            .tagline {
-                font-size: 1.2rem;
-            }
-        }
-        
-        .install-tabs {
-            margin: 1rem 0 0.5rem;
-        }
-        
-        .install-tabs .tabs {
-            display: flex;
-            margin-bottom: 0;
-            position: relative;
-            align-items: stretch;
-            border-bottom: 1px solid rgba(92, 217, 81, 0.3);
-        }
-        
-        .install-tabs .tab-button {
-            padding: 0.5rem 1.5rem;
-            background-color: transparent;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            margin-right: 1px;
-            font-weight: 500;
-            border: none;
-            position: relative;
-            letter-spacing: 0.5px;
-            font-size: 0.95rem;
-        }
-        
-        .install-tabs .tab-button::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--accent-color);
-            transition: width 0.2s ease;
-        }
-        
-        .install-tabs .tab-button:hover::after {
-            width: 100%;
-        }
-        
-        .install-tabs .tab-button.active {
-            color: var(--accent-highlight);
-            font-weight: 600;
-        }
-        
-        .install-tabs .tab-button.active::after {
-            width: 100%;
-            height: 2px;
-            background: var(--accent-highlight);
-        }
-        
-        .install-tabs .tab-content {
-            display: none;
-            padding: 1.25rem 0 0.25rem;
-            background-color: transparent;
-            border: none;
-        }
-        
-        .install-tabs .tab-content.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        /* Enhanced visual styling */
         body {
-            background: linear-gradient(135deg, #1a1e23 0%, #2c313a 100%);
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
         }
 
-        header {
-            margin-bottom: 2.5rem;
-            padding-top: 1rem;
-            position: relative;
-        }
-        
-        header::after {
+        /* Background gradient and particle effect */
+        body::before {
             content: '';
-            position: absolute;
-            bottom: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
-        }
-
-        h1 {
-            margin-bottom: 0.5rem;
-            letter-spacing: -1px;
-            text-shadow: 0 0 25px rgba(92, 217, 81, 0.2);
-            animation: glow 3s ease-in-out infinite alternate;
-        }
-
-        @keyframes glow {
-            from {
-                text-shadow: 0 0 5px rgba(92, 217, 81, 0.2);
-            }
-            to {
-                text-shadow: 0 0 20px rgba(92, 217, 81, 0.4);
-            }
-        }
-        
-        .terminal-animation {
-            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
-            margin: 2rem auto;
-        }
-
-        .coming-soon {
-            border: 1px solid rgba(92, 217, 81, 0.2);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-            margin: 1.5rem 0;
-            padding: 1.25rem;
-        }
-
-        p {
-            line-height: 1.5;
-            margin-bottom: 0.75rem;
-            font-size: 0.95rem;
-        }
-
-        h2 {
-            font-weight: 700;
-            margin-top: 2rem;
-            margin-bottom: 1rem;
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-        }
-        
-        h2::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 60px;
-            height: 3px;
-            background: var(--accent-color);
-            transition: width 0.3s ease;
-        }
-        
-        h2:hover::after {
-            width: 100%;
-        }
-
-        .features {
-            margin: 1.5rem 0;
-            gap: 0.75rem;
-        }
-        
-        .feature {
-            background: rgba(30, 35, 41, 0.7);
-            border-left: 3px solid var(--accent-color);
-            border-radius: 4px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 1rem;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .feature::before {
-            content: '';
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, rgba(92, 217, 81, 0.05) 0%, transparent 100%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .feature:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-            border-left: 3px solid var(--accent-highlight);
-        }
-        
-        .feature:hover::before {
-            opacity: 1;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(0, 217, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 184, 212, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(0, 151, 179, 0.08) 0%, transparent 50%);
+            z-index: -1;
+            pointer-events: none;
         }
 
-        h3 {
-            font-weight: 600;
-            color: var(--accent-highlight);
-            margin-bottom: 0.6rem;
-        }
-        
-        h3 span {
-            margin-right: 0.5rem;
-            opacity: 0.9;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
         }
 
-        .code-block {
-            border-radius: 4px;
-            border-left: 3px solid var(--accent-color);
-            margin: 0.5rem 0;
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
-        
-        .code-block:hover {
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-            border-left: 3px solid var(--accent-highlight);
-        }
-
-        code {
-            padding: 0.75rem 1rem;
-            border-radius: 0 4px 4px 0;
-            font-size: 0.95rem;
-        }
-
-        .copy-button {
-            background-color: var(--accent-dark);
-            border-radius: 3px;
-            padding: 8px 12px;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        
-        .copy-button:hover {
-            background-color: var(--accent-color);
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
-        }
-
-        .clients {
-            border-radius: 4px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            position: relative;
-            overflow: hidden;
-            background: rgba(30, 35, 41, 0.7);
-            margin: 1.5rem 0;
-            padding: 1.25rem;
-        }
-        
-        .clients::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, var(--accent-color), var(--accent-highlight));
-        }
-
-        li {
-            transition: transform 0.2s ease;
-            padding: 0.35rem 0;
-        }
-        
-        li:hover {
-            transform: translateX(5px);
-        }
-        
-        li::before {
-            content: '▹';
-            color: var(--accent-highlight);
-            font-size: 1.1rem;
-        }
-        
-        .install-tabs .tabs {
-            display: flex;
-            border-bottom: none;
-            gap: 2px;
-            margin-bottom: 0;
+        /* Hero section */
+        .hero {
+            text-align: center;
+            padding: 4rem 0 6rem;
             position: relative;
         }
-        
-        .install-tabs .tabs::after {
+
+        .hero::after {
             content: '';
             position: absolute;
             bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: rgba(92, 217, 81, 0.3);
-        }
-        
-        .install-tabs .tab-button {
-            padding: 0.5rem 1.25rem;
-            border-radius: 4px 4px 0 0;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            position: relative;
-            z-index: 1;
-            background-color: rgba(30, 35, 41, 0.7);
-            border: 1px solid transparent;
-            border-bottom: none;
-        }
-        
-        .install-tabs .tab-button.active {
-            background-color: rgba(92, 217, 81, 0.15);
-            color: var(--accent-highlight);
-            border-color: rgba(92, 217, 81, 0.3);
-            border-bottom: 2px solid var(--bg-accent);
-        }
-        
-        .install-tabs .tab-button:hover:not(.active) {
-            background-color: rgba(92, 217, 81, 0.1);
-        }
-        
-        .install-tabs .tab-content {
-            border-radius: 0 4px 4px 4px;
-            padding: 1rem;
-            border: 1px solid rgba(92, 217, 81, 0.3);
-            background-color: rgba(30, 35, 41, 0.7);
-        }
-        
-        .coming-soon .tab-content.active {
-            animation: fadeIn 0.3s ease-in-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* Container padding for better readability */
-        .container {
-            padding: 0 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
         }
 
-        /* Completely redesigned installation section */
-        .install-section {
-            position: relative;
-            margin: 1.5rem 0;
-            border-radius: 6px;
+        .hero-title {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 800;
+            margin: 0 0 1rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+            color: var(--text-secondary);
+            margin: 0 0 2rem;
+            font-weight: 400;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-description {
+            font-size: 1.125rem;
+            color: var(--text-muted);
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            line-height: 1.6;
+        }
+
+        /* Terminal demo */
+        .terminal-demo {
+            max-width: 600px;
+            margin: 0 auto 4rem;
+            background: var(--surface-bg);
+            border-radius: 12px;
             overflow: hidden;
-            background: rgba(30, 35, 41, 0.7);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .terminal-header {
+            background: var(--surface-elevated);
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .terminal-button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-button.close { background: #ff5f57; }
+        .terminal-button.minimize { background: #febc2e; }
+        .terminal-button.maximize { background: #28ca42; }
+
+        .terminal-title {
+            margin-left: 1rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .terminal-content {
+            padding: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+
+        .terminal-line {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .terminal-prompt {
+            color: var(--accent-primary);
+            margin-right: 0.5rem;
+        }
+
+        .terminal-command {
+            color: var(--text-primary);
+        }
+
+        .terminal-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background: var(--accent-primary);
+            margin-left: 2px;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* Installation section */
+        .install-section {
+            background: var(--surface-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 4rem 0;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-subtle);
+            position: relative;
+            overflow: hidden;
         }
 
         .install-section::before {
@@ -590,611 +229,670 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, var(--accent-color), var(--accent-highlight));
-            z-index: 2;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+
+        .install-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin: 0 0 2rem;
+            text-align: center;
+            color: var(--text-primary);
         }
 
         .install-tabs {
-            margin: 0;
-            position: relative;
-        }
-
-        .install-tabs .tabs {
             display: flex;
-            margin: 0;
-            padding: 0;
-            list-style: none;
-            background: rgba(20, 25, 30, 0.5);
-            border-bottom: 1px solid rgba(92, 217, 81, 0.15);
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            background: var(--surface-elevated);
+            padding: 0.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-subtle);
         }
 
-        .install-tabs .tab-button {
+        .install-tab {
             flex: 1;
-            padding: 0.8rem 0.5rem;
-            background-color: transparent;
+            padding: 0.75rem 1rem;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .install-tab:hover {
+            background: rgba(0, 217, 255, 0.1);
+            color: var(--accent-primary);
+        }
+
+        .install-tab.active {
+            background: var(--accent-primary);
+            color: var(--primary-bg);
+            box-shadow: 0 4px 12px rgba(0, 217, 255, 0.3);
+        }
+
+        .install-content {
+            display: none;
+        }
+
+        .install-content.active {
+            display: block;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .code-snippet {
+            background: var(--primary-bg);
+            border: 1px solid var(--border-accent);
+            border-radius: 12px;
+            padding: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            color: var(--text-primary);
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .code-snippet::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gradient-primary);
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--surface-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            padding: 0.5rem;
             color: var(--text-secondary);
             cursor: pointer;
             transition: all 0.2s ease;
-            font-weight: 500;
-            border: none;
+            font-size: 0.75rem;
+        }
+
+        .copy-btn:hover {
+            background: var(--accent-primary);
+            color: var(--primary-bg);
+            border-color: var(--accent-primary);
+        }
+
+        /* Features grid */
+        .features-section {
+            padding: 6rem 0;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
             text-align: center;
+            margin: 0 0 3rem;
+            color: var(--text-primary);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .feature-card {
+            background: var(--surface-bg);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s var(--animation-bounce);
             position: relative;
-            font-size: 0.9rem;
-            letter-spacing: 0.5px;
             overflow: hidden;
         }
 
-        .install-tabs .tab-button::after {
+        .feature-card::before {
             content: '';
             position: absolute;
-            bottom: 0;
+            top: 0;
             left: 0;
-            width: 100%;
+            right: 0;
             height: 3px;
-            background: var(--accent-color);
+            background: var(--gradient-primary);
             transform: scaleX(0);
-            transition: transform 0.25s ease;
+            transition: transform 0.3s ease;
         }
 
-        .install-tabs .tab-button:hover {
-            background-color: rgba(92, 217, 81, 0.05);
-            color: var(--accent-highlight);
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--border-accent);
         }
 
-        .install-tabs .tab-button:hover::after {
-            transform: scaleX(0.5);
-        }
-
-        .install-tabs .tab-button.active {
-            background-color: rgba(92, 217, 81, 0.1);
-            color: var(--accent-highlight);
-            font-weight: 600;
-        }
-
-        .install-tabs .tab-button.active::after {
+        .feature-card:hover::before {
             transform: scaleX(1);
-            background: linear-gradient(90deg, var(--accent-color), var(--accent-highlight));
         }
 
-        .install-tabs .tab-content {
-            display: none;
-            padding: 1.5rem;
-            background-color: transparent;
-            border: none;
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: var(--primary-bg);
+            font-size: 1.5rem;
         }
 
-        .install-tabs .tab-content p {
-            margin-top: 0;
-            margin-bottom: 0.75rem;
+        .feature-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0 0 1rem;
+            color: var(--text-primary);
+        }
+
+        .feature-description {
             color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
         }
 
-        .install-tabs .tab-content.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
+        .feature-code {
+            background: var(--primary-bg);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--accent-primary);
+            position: relative;
         }
 
-        .install-section .code-block {
+        /* Clients section */
+        .clients-section {
+            background: var(--surface-bg);
+            border-radius: 24px;
+            padding: 3rem;
+            margin: 4rem 0;
+            border: 1px solid var(--border-subtle);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .clients-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+
+        .clients-title {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            margin: 0 0 2rem;
+            color: var(--text-primary);
+        }
+
+        .clients-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .client-item {
+            background: var(--surface-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .client-item:hover {
+            transform: translateY(-4px);
+            border-color: var(--border-accent);
+            box-shadow: 0 8px 25px rgba(0, 217, 255, 0.1);
+        }
+
+        .client-name {
+            font-weight: 600;
+            color: var(--text-primary);
             margin-bottom: 0.5rem;
         }
 
-        .router-diagram {
-            margin: 2rem auto;
-            max-width: 600px;
-            width: 100%;
-        }
-        
-        .router-svg {
-            width: 100%;
-            height: auto;
-            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
-        }
-        
-        .router-node {
-            animation: pulse 3s ease-in-out infinite;
-        }
-        
-        .client-node, .server-node {
-            transition: transform 0.3s ease;
-        }
-        
-        .client-node:hover, .server-node:hover {
-            transform: scale(1.05);
-        }
-        
-        .data-particle {
-            opacity: 0.8;
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.03); }
-            100% { transform: scale(1); }
-        }
-        
-        .router-caption {
-            text-align: center;
-            font-size: 0.9rem;
+        .client-description {
+            font-size: 0.875rem;
             color: var(--text-secondary);
-            margin-top: 1rem;
+        }
+
+        /* CTA section */
+        .cta-section {
+            text-align: center;
+            padding: 6rem 0;
+            background: var(--surface-bg);
+            border-radius: 24px;
+            margin: 4rem 0;
+            border: 1px solid var(--border-subtle);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+
+        .cta-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0 0 1rem;
+            color: var(--text-primary);
+        }
+
+        .cta-description {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            margin: 0 0 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: var(--primary-bg);
+            box-shadow: 0 4px 15px rgba(0, 217, 255, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 217, 255, 0.6);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--accent-primary);
+            border: 2px solid var(--accent-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent-primary);
+            color: var(--primary-bg);
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .hero {
+                padding: 2rem 0 4rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .install-tabs {
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+            
+            .clients-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        /* Scroll animations */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
 </head>
 <body>
     {% include nav.html %}
     <main>
-    <div class="container">
-        <header>
-            <h1>MCP Manager</h1>
-            <div class="tagline">Open source, community-driven, forever free.</div>
-            <div class="terminal-animation">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 100">
-                    <!-- Terminal background -->
-                    <rect x="10" y="10" width="330" height="80" rx="3" ry="3" fill="#2e3238" />
-                    
-                    <!-- Terminal header -->
-                    <rect x="10" y="10" width="330" height="20" rx="3" ry="3" fill="#242830" />
-                    
-                    <!-- Window buttons, kept round for recognizability -->
-                    <circle cx="28" cy="20" r="3.5" fill="#FF5F57"/>
-                    <circle cx="40" cy="20" r="3.5" fill="#FEBC2E"/>
-                    <circle cx="52" cy="20" r="3.5" fill="#28C840"/>
-                    
-                    <!-- Static command prompt - properly aligned with cursor -->
-                    <text x="30" y="55" font-family="monospace" font-size="16" fill="#e2e8f0">$</text>
-                    <text x="48" y="55" font-family="monospace" font-size="16" fill="#5CD951">mcpm</text>
-                    
-                    <!-- Animated command text - properly aligned with cursor -->
-                    <text id="commandText" x="100" y="55" font-family="monospace" font-size="16" fill="#FF84BD"></text>
-                    
-                    <!-- Cursor -->
-                    <rect id="cursor" x="100" y="43" width="1.5" height="16" fill="#FEBF00">
-                        <animate attributeName="opacity" values="1;0;1" dur="0.8s" repeatCount="indefinite" />
-                    </rect>
-                </svg>
-            </div>
-        </header>
-
-        <p>MCPM is a CLI package management tool for MCP servers. It simplifies configuration management, enables profile grouping, provides server discovery via registry, and features a powerful router for intelligently share servers with multiple clients.</p>
-
-        <h2>Quick Installation</h2>
-        <div class="install-section">
-            <div class="install-tabs">
-                <div class="tabs">
-                    <button class="tab-button active" data-tab="brew">homebrew</button>
-                    <button class="tab-button" data-tab="pipx">pipx</button>
-                    <button class="tab-button" data-tab="pip">pip</button>
-                    <button class="tab-button" data-tab="script">shell</button>
+        <div class="container">
+            <!-- Hero Section -->
+            <section class="hero">
+                <h1 class="hero-title">MCPM</h1>
+                <p class="hero-subtitle">The Modern MCP Server Manager</p>
+                <p class="hero-description">
+                    Open source, community-driven, forever free. A powerful CLI tool for managing 
+                    Model Context Protocol servers with global configuration, profile-based organization, 
+                    and seamless client integration.
+                </p>
+                
+                <!-- Terminal Demo -->
+                <div class="terminal-demo">
+                    <div class="terminal-header">
+                        <div class="terminal-button close"></div>
+                        <div class="terminal-button minimize"></div>
+                        <div class="terminal-button maximize"></div>
+                        <div class="terminal-title">Terminal</div>
+                    </div>
+                    <div class="terminal-content">
+                        <div class="terminal-line">
+                            <span class="terminal-prompt">$</span>
+                            <span class="terminal-command">mcpm search</span>
+                        </div>
+                        <div class="terminal-line">
+                            <span class="terminal-prompt">$</span>
+                            <span class="terminal-command">mcpm install mcp-server-browse</span>
+                        </div>
+                        <div class="terminal-line">
+                            <span class="terminal-prompt">$</span>
+                            <span class="terminal-command">mcpm profile create work</span>
+                        </div>
+                        <div class="terminal-line">
+                            <span class="terminal-prompt">$</span>
+                            <span class="terminal-command" id="typing-command"></span>
+                            <span class="terminal-cursor"></span>
+                        </div>
+                    </div>
                 </div>
+            </section>
 
-                <div class="tab-content active" id="brew-tab">
-                    <p>Install with Homebrew:</p>
-                    <div class="code-block">
-                        <code><span class="command-prompt">$</span> brew install mcpm</code>
-                        <button class="copy-button" data-command="brew install mcpm"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+            <!-- Installation Section -->
+            <section class="install-section animate-on-scroll">
+                <h2 class="install-title">Quick Installation</h2>
+                <div class="install-tabs">
+                    <button class="install-tab active" data-tab="script">Shell Script</button>
+                    <button class="install-tab" data-tab="brew">Homebrew</button>
+                    <button class="install-tab" data-tab="pipx">pipx</button>
+                    <button class="install-tab" data-tab="pip">pip</button>
+                </div>
+                
+                <div class="install-content active" id="script-content">
+                    <div class="code-snippet">
+                        <button class="copy-btn" data-copy="curl -sSL https://mcpm.sh/install | bash">Copy</button>
+                        <code>$ curl -sSL https://mcpm.sh/install | bash</code>
                     </div>
                 </div>
                 
-                <div class="tab-content" id="pipx-tab">
-                    <p>Install with pipx:</p>
-                    <div class="code-block">
-                        <code><span class="command-prompt">$</span> pipx install mcpm</code>
-                        <button class="copy-button" data-command="pipx install mcpm"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                <div class="install-content" id="brew-content">
+                    <div class="code-snippet">
+                        <button class="copy-btn" data-copy="brew install mcpm">Copy</button>
+                        <code>$ brew install mcpm</code>
                     </div>
                 </div>
                 
-                <div class="tab-content" id="pip-tab">
-                    <p>Install with pip:</p>
-                    <div class="code-block">
-                        <code><span class="command-prompt">$</span> pip install mcpm</code>
-                        <button class="copy-button" data-command="pip install mcpm"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                <div class="install-content" id="pipx-content">
+                    <div class="code-snippet">
+                        <button class="copy-btn" data-copy="pipx install mcpm">Copy</button>
+                        <code>$ pipx install mcpm</code>
                     </div>
                 </div>
                 
-                <div class="tab-content" id="script-tab">
-                    <p>Install with a single command:</p>
-                    <div class="code-block">
-                        <code><span class="command-prompt">$</span> curl -sSL https://mcpm.sh/install | bash</code>
-                        <button class="copy-button" data-command="curl -sSL https://mcpm.sh/install | bash"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                <div class="install-content" id="pip-content">
+                    <div class="code-snippet">
+                        <button class="copy-btn" data-copy="pip install mcpm">Copy</button>
+                        <code>$ pip install mcpm</code>
                     </div>
                 </div>
-            </div>
-        </div>
+            </section>
 
-        <h2>Server Management</h2>
-        <div class="features">
-            <div class="feature">
-                <h3><span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></span> Server Discovery</h3>
-                <p>Find available Model Context Protocol servers:</p>
-                <div class="code-block">
-                    <code><span class="command-prompt">$</span> mcpm search</code>
-                    <button class="copy-button" data-command="mcpm search"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+            <!-- Features Section -->
+            <section class="features-section animate-on-scroll">
+                <h2 class="section-title">Core Features</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🔍</div>
+                        <h3 class="feature-title">Server Discovery</h3>
+                        <p class="feature-description">Search and discover MCP servers from our curated registry</p>
+                        <div class="feature-code">$ mcpm search [query]</div>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">📦</div>
+                        <h3 class="feature-title">Global Installation</h3>
+                        <p class="feature-description">Install servers once, use everywhere with global configuration</p>
+                        <div class="feature-code">$ mcpm install server-name</div>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">🏷️</div>
+                        <h3 class="feature-title">Profile Management</h3>
+                        <p class="feature-description">Organize servers with profiles for different workflows</p>
+                        <div class="feature-code">$ mcpm profile create work</div>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">🔧</div>
+                        <h3 class="feature-title">Client Integration</h3>
+                        <p class="feature-description">Seamless integration with popular MCP clients</p>
+                        <div class="feature-code">$ mcpm client edit cursor</div>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">▶️</div>
+                        <h3 class="feature-title">Direct Execution</h3>
+                        <p class="feature-description">Run servers directly for testing and debugging</p>
+                        <div class="feature-code">$ mcpm run server-name</div>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">🌐</div>
+                        <h3 class="feature-title">Server Sharing</h3>
+                        <p class="feature-description">Share servers securely with remote access tunnels</p>
+                        <div class="feature-code">$ mcpm share server-name</div>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="feature">
-                <h3><span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span> Add Servers</h3>
-                <p>Add MCP servers directly to your client:</p>
-                <div class="code-block">
-                    <code><span class="command-prompt">$</span> mcpm add my-server</code>
-                    <button class="copy-button" data-command="mcpm add my-server"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-            </div>
+            </section>
 
-            <div class="feature">
-                <h3><span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg></span> List Servers</h3>
-                <p>View all your installed MCP servers:</p>
-                <div class="code-block">
-                    <code><span class="command-prompt">$</span> mcpm ls</code>
-                    <button class="copy-button" data-command="mcpm ls"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+            <!-- Supported Clients -->
+            <section class="clients-section animate-on-scroll">
+                <h2 class="clients-title">Supported Clients</h2>
+                <p style="text-align: center; color: var(--text-secondary); margin-bottom: 2rem; font-size: 1.1rem;">
+                    MCPM works with <strong>any MCP client</strong> by configuring servers to use <code style="background: var(--primary-bg); padding: 0.2rem 0.5rem; border-radius: 4px; color: var(--accent-primary);">mcpm run server-name</code>
+                </p>
+                <div class="clients-grid">
+                    <div class="client-item">
+                        <div class="client-name">Claude Desktop</div>
+                        <div class="client-description">Anthropic's AI assistant</div>
+                    </div>
+                    <div class="client-item">
+                        <div class="client-name">Cursor</div>
+                        <div class="client-description">AI-enhanced code editor</div>
+                    </div>
+                    <div class="client-item">
+                        <div class="client-name">Windsurf</div>
+                        <div class="client-description">Agentic IDE</div>
+                    </div>
+                    <div class="client-item">
+                        <div class="client-name">Continue</div>
+                        <div class="client-description">AI coding assistant</div>
+                    </div>
+                    <div class="client-item">
+                        <div class="client-name">Cline</div>
+                        <div class="client-description">Terminal-based client</div>
+                    </div>
+                    <div class="client-item">
+                        <div class="client-name">Any MCP Client</div>
+                        <div class="client-description">Universal compatibility via <code>mcpm run</code></div>
+                    </div>
                 </div>
-            </div>
+            </section>
 
-            <div class="feature">
-                <h3><span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></span> Remove Servers</h3>
-                <p>Remove installed MCP servers when no longer needed:</p>
-                <div class="code-block">
-                    <code><span class="command-prompt">$</span> mcpm rm my-server</code>
-                    <button class="copy-button" data-command="mcpm rm my-server"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+            <!-- Call to Action -->
+            <section class="cta-section animate-on-scroll">
+                <h2 class="cta-title">Ready to Get Started?</h2>
+                <p class="cta-description">
+                    Join thousands of developers already using MCPM to manage their MCP servers efficiently.
+                </p>
+                <div class="cta-buttons">
+                    <a href="https://github.com/pathintegral-institute/mcpm.sh" class="btn btn-primary">
+                        📖 View Documentation
+                    </a>
+                    <a href="https://github.com/pathintegral-institute/mcpm.sh" class="btn btn-secondary">
+                        ⭐ Star on GitHub
+                    </a>
                 </div>
-            </div>
-
-            <div class="feature">
-                <h3><span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg></span> Stash Servers</h3>
-                <p>Temporarily store server configurations:</p>
-                <div class="code-block">
-                    <code><span class="command-prompt">$</span> mcpm stash my-server</code>
-                    <button class="copy-button" data-command="mcpm stash my-server"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-            </div>
-            
-            <div class="feature">
-                <h3><span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path></svg></span> Pop Stashed Servers</h3>
-                <p>Restore previously stashed configurations:</p>
-                <div class="code-block">
-                    <code><span class="command-prompt">$</span> mcpm pop my-server</code>
-                    <button class="copy-button" data-command="mcpm pop my-server"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-            </div>
+            </section>
         </div>
-
-        <h2>Profile Management</h2>
-        <div class="features">
-            <div class="feature">
-                <h3><span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg></span> Create Profiles</h3>
-                <p>Create named collections of server configurations:</p>
-                <div class="code-block">
-                    <code><span class="command-prompt">$</span> mcpm profile add work</code>
-                    <button class="copy-button" data-command="mcpm profile add work"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-            </div>
-            
-
-            <div class="feature">
-                <h3><span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg></span> List Profiles</h3>
-                <p>View all available MCPM profiles:</p>
-                <div class="code-block">
-                    <code><span class="command-prompt">$</span> mcpm profile ls</code>
-                    <button class="copy-button" data-command="mcpm profile ls"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-            </div>
-        </div>
-        
-        <h2>Router Management</h2>
-        <div class="coming-soon">
-            <p>The MCPM Router aggregates multiple MCP servers behind a single endpoint and enables shared sessions. It connects to servers as a client while providing a unified interface to upstream clients. Key benefits include resource efficiency (only one server instance runs regardless of client count), profile-based access control, and persistent connections. <a href="https://github.com/pathintegral-institute/mcpm.sh/blob/main/docs/advanced_features.md" target="_blank">Learn more →</a></p>
-            
-            <div class="router-diagram">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300" class="router-svg">
-                    <!-- Background -->
-                    <rect width="600" height="300" fill="transparent"/>
-                    
-                    <!-- Central Router - Made larger -->
-                    <g class="router-node">
-                        <circle cx="300" cy="150" r="60" fill="#2e3238" stroke="#5CD951" stroke-width="3"/>
-                        <text x="300" y="150" text-anchor="middle" fill="#5CD951" font-weight="bold" font-size="16">MCPM Router</text>
-                    </g>
-                    
-                    <!-- Client Nodes -->
-                    <g class="client-node">
-                        <circle cx="120" cy="80" r="35" fill="#2e3238" stroke="#FF84BD" stroke-width="2"/>
-                        <text x="120" y="85" text-anchor="middle" fill="#FF84BD" font-size="12">Claude</text>
-                    </g>
-                    
-                    <g class="client-node">
-                        <circle cx="120" cy="220" r="35" fill="#2e3238" stroke="#FF84BD" stroke-width="2"/>
-                        <text x="120" y="225" text-anchor="middle" fill="#FF84BD" font-size="12">Cursor</text>
-                    </g>
-                    
-                    <g class="client-node">
-                        <circle cx="170" cy="150" r="35" fill="#2e3238" stroke="#FF84BD" stroke-width="2"/>
-                        <text x="170" y="155" text-anchor="middle" fill="#FF84BD" font-size="12">Windsurf</text>
-                    </g>
-                    
-                    <!-- Server Nodes -->
-                    <g class="server-node">
-                        <circle cx="500" cy="50" r="35" fill="#2e3238" stroke="#FEBC2E" stroke-width="2"/>
-                        <text x="500" y="55" text-anchor="middle" fill="#FEBC2E" font-size="12">Slack</text>
-                    </g>
-                    
-                    <g class="server-node">
-                        <circle cx="520" cy="150" r="35" fill="#2e3238" stroke="#FEBC2E" stroke-width="2"/>
-                        <text x="520" y="155" text-anchor="middle" fill="#FEBC2E" font-size="12">GitHub</text>
-                    </g>
-                    
-                    <g class="server-node">
-                        <circle cx="500" cy="250" r="35" fill="#2e3238" stroke="#FEBC2E" stroke-width="2"/>
-                        <text x="500" y="255" text-anchor="middle" fill="#FEBC2E" font-size="12">Notion</text>
-                    </g>
-                    
-                    <g class="server-node">
-                        <circle cx="400" cy="70" r="35" fill="#2e3238" stroke="#FEBC2E" stroke-width="2"/>
-                        <text x="400" y="75" text-anchor="middle" fill="#FEBC2E" font-size="12">AWS</text>
-                    </g>
-                    
-                    <g class="server-node">
-                        <circle cx="400" cy="230" r="35" fill="#2e3238" stroke="#FEBC2E" stroke-width="2"/>
-                        <text x="400" y="235" text-anchor="middle" fill="#FEBC2E" font-size="12">MySQL</text>
-                    </g>
-                    
-                    <!-- Animation for data flow - keeping these to suggest connections -->
-                    <!-- Client to Router particles -->
-                    <circle class="data-particle client-particle" r="3" fill="#FF84BD">
-                        <animateMotion path="M152,90 Q220,120 260,140" dur="2.5s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle class="data-particle client-particle" r="3" fill="#FF84BD">
-                        <animateMotion path="M152,210 Q220,180 260,160" dur="2.8s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle class="data-particle client-particle" r="3" fill="#FF84BD">
-                        <animateMotion path="M205,150 L250,150" dur="2s" repeatCount="indefinite"/>
-                    </circle>
-                    
-                    <!-- Router to Server particles -->
-                    <circle class="data-particle server-particle" r="3" fill="#FEBC2E">
-                        <animateMotion path="M470,60 Q385,90 340,120" dur="3s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle class="data-particle server-particle" r="3" fill="#FEBC2E">
-                        <animateMotion path="M370,85 L350,130" dur="2.2s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle class="data-particle server-particle" r="3" fill="#FEBC2E">
-                        <animateMotion path="M485,150 L350,150" dur="2.8s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle class="data-particle server-particle" r="3" fill="#FEBC2E">
-                        <animateMotion path="M370,215 L350,170" dur="2.3s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle class="data-particle server-particle" r="3" fill="#FEBC2E">
-                        <animateMotion path="M470,240 Q385,200 340,170" dur="3.2s" repeatCount="indefinite"/>
-                    </circle>
-                </svg>
-            </div>
-            <p class="router-caption">The MCPM Router acts as a central hub connecting all your clients to your MCP servers, enabling shared sessions and simplified management.</p>
-        </div>
-        
-        <div class="features">
-            <div class="feature">
-                <h3><span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg></span> Start Router</h3>
-                <p>Start the MCPM router daemon:</p>
-                <div class="code-block">
-                    <code><span class="command-prompt">$</span> mcpm router on</code>
-                    <button class="copy-button" data-command="mcpm router on"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-            </div>
-            
-            <div class="feature">
-                <h3><span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M8 12h8"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg></span> Stop Router</h3>
-                <p>Stop the MCPM router daemon:</p>
-                <div class="code-block">
-                    <code><span class="command-prompt">$</span> mcpm router off</code>
-                    <button class="copy-button" data-command="mcpm router off"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-            </div>
-
-            <div class="feature">
-                <h3><span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></span> Router Status</h3>
-                <p>Check if the router daemon is running:</p>
-                <div class="code-block">
-                    <code><span class="command-prompt">$</span> mcpm router status</code>
-                    <button class="copy-button" data-command="mcpm router status"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-            </div>
-        </div>
-        
-        <h2><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-share-2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg> Share MCP Servers (<code>mcpm share</code>)</h2>
-        <p>Share a local MCP server with a public URL. MCPM uses mcp-proxy to expose a stdio MCP server as an SSE server and then creates a tunnel to make it accessible remotely.</p>
-        <div class="features">
-            <div class="feature">
-                <h3><span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-terminal"><polyline points="4 17 10 17 10 7"></polyline><line x1="20" y1="17" x2="4" y2="17"></line></svg></span> Share a Server</h3>
-                <p>Share a server using a specific command:</p>
-                <div class="code-block">
-                    <code><span class="command-prompt">$</span> mcpm share "uvx mcp-server-fetch"</code>
-                    <button class="copy-button" data-command='mcpm share "uvx mcp-server-fetch"'><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-            </div>
-            <div class="feature">
-                <h3><span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-zap"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></span> Share with Options</h3>
-                <p>Share a server and specify a port:</p>
-                <div class="code-block">
-                    <code><span class="command-prompt">$</span> mcpm share "npx mcp-server" --port 5000</code>
-                    <button class="copy-button" data-command='mcpm share "npx mcp-server" --port 5000'><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-            </div>
-        </div>
-
-        <h2>Client Management</h2>
-        <div class="features">
-            <div class="feature">
-                <h3><span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span> Set Active Client</h3>
-                <p>Easily switch between and manage MCP clients/profiles:</p>
-                <div class="code-block">
-                    <code><span class="command-prompt">$</span> mcpm target set @claude-desktop</code>
-                    <button class="copy-button" data-command="mcpm target set @claude-desktop"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-            </div>
-            
-            <div class="feature">
-                <h3><span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></span> Edit Client Configuration</h3>
-                <p>View or edit your client's configuration:</p>
-                <div class="code-block">
-                    <code><span class="command-prompt">$</span> mcpm client edit</code>
-                    <button class="copy-button" data-command="mcpm client edit"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                </div>
-            </div>
-        </div>
-        
-        <div class="clients">
-            <h2>Supported Clients</h2>
-            <p>MCPM currently supports these AI clients:</p>
-            <ul>
-                <li><strong>Claude Desktop</strong> - Anthropic's AI assistant</li>
-                <li><strong>Windsurf</strong> - The world's first agentic IDE</li>
-                <li><strong>Cursor</strong> - AI-enhanced code editor</li>
-                <li><strong>Cline</strong> - Terminal-based client</li>
-                <li><strong>Continue</strong> - AI coding assistant</li>
-                <li><strong>Goose</strong> - LLM interface</li>
-                <li><strong>5ire</strong> - AI assistant</li>
-                <li><strong>Roo Code</strong> - Coding companion</li>
-                <li><em>More clients coming soon...</em></li>
-            </ul>
-        </div>
-    </div>
     </main>
     
     {% include footer.html %}
     {% include github-corner.html %}
     
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add click event listeners to all copy buttons
-            const copyButtons = document.querySelectorAll('.copy-button');
+        // Typing animation for terminal
+        const commands = [
+            "mcpm profile add work server",
+            "mcpm client edit cursor", 
+            "mcpm run server-name",
+            "mcpm share server-name"
+        ];
+        
+        let commandIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        
+        function typeCommand() {
+            const currentCommand = commands[commandIndex];
+            const typingElement = document.getElementById('typing-command');
             
-            copyButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    // Get the command to copy from the data attribute
-                    const command = this.getAttribute('data-command');
-                    
-                    // Create a temporary textarea element to copy from
-                    const textarea = document.createElement('textarea');
-                    textarea.value = command;
-                    textarea.setAttribute('readonly', '');
-                    textarea.style.position = 'absolute';
-                    textarea.style.left = '-9999px';
-                    document.body.appendChild(textarea);
-                    
-                    // Select and copy the text
-                    textarea.select();
-                    document.execCommand('copy');
-                    
-                    // Remove the temporary textarea
-                    document.body.removeChild(textarea);
-                    
-                    // Visual feedback that copy was successful
+            if (isDeleting) {
+                typingElement.textContent = currentCommand.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                typingElement.textContent = currentCommand.substring(0, charIndex + 1);
+                charIndex++;
+            }
+            
+            let typeSpeed = isDeleting ? 50 : 100;
+            
+            if (!isDeleting && charIndex === currentCommand.length) {
+                typeSpeed = 2000;
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                commandIndex = (commandIndex + 1) % commands.length;
+                typeSpeed = 500;
+            }
+            
+            setTimeout(typeCommand, typeSpeed);
+        }
+        
+        // Installation tabs
+        document.querySelectorAll('.install-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabName = this.dataset.tab;
+                
+                // Update active tab
+                document.querySelectorAll('.install-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Update active content
+                document.querySelectorAll('.install-content').forEach(c => c.classList.remove('active'));
+                document.getElementById(tabName + '-content').classList.add('active');
+            });
+        });
+        
+        // Copy functionality
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const textToCopy = this.dataset.copy;
+                navigator.clipboard.writeText(textToCopy).then(() => {
                     const originalText = this.textContent;
-                    const iconHTML = this.innerHTML;
                     this.textContent = 'Copied!';
-                    this.classList.add('copy-success');
+                    this.style.background = 'var(--accent-primary)';
+                    this.style.color = 'var(--primary-bg)';
                     
-                    // Reset button after a delay
                     setTimeout(() => {
-                        this.innerHTML = iconHTML;
-                        this.classList.remove('copy-success');
+                        this.textContent = originalText;
+                        this.style.background = '';
+                        this.style.color = '';
                     }, 2000);
                 });
             });
-            
-            // Terminal animation script
-            const commandText = document.getElementById('commandText');
-            const cursor = document.getElementById('cursor');
-            
-            if (commandText && cursor) {
-                // Commands to type - updated to match actual CLI commands
-                const commands = [
-                    " add my-server", 
-                    " ls", 
-                    " profile add work", 
-                    " target set %work", 
-                    " router on", 
-                    " stash my-server",
-                    " target set @claude-desktop"
-                ];
-                let currentCommand = 0;
-                let charIndex = 0;
-                let isTyping = true;
-                const typingSpeed = 200;
-                const deleteSpeed = 150;
-                const pauseDuration = 1000;
-                
-                function updateCursor() {
-                    // Position cursor after the text
-                    if (commandText.getComputedTextLength) {
-                        cursor.setAttribute('x', 100 + commandText.getComputedTextLength());
-                    }
-                }
-                
-                function animateText() {
-                    const cmd = commands[currentCommand];
-                    
-                    if (isTyping) {
-                        // Typing forward
-                        charIndex++;
-                        commandText.textContent = cmd.substring(0, charIndex);
-                        
-                        if (charIndex >= cmd.length) {
-                            // Reached end of command, pause then start deleting
-                            isTyping = false;
-                            charIndex = cmd.length;
-                            setTimeout(animateText, pauseDuration);
-                            return;
-                        }
-                        
-                        setTimeout(animateText, typingSpeed);
-                    } else {
-                        // Deleting backward
-                        charIndex--;
-                        commandText.textContent = cmd.substring(0, charIndex);
-                        
-                        if (charIndex <= 0) {
-                            // Finished deleting, move to next command
-                            isTyping = true;
-                            charIndex = 0;
-                            currentCommand = (currentCommand + 1) % commands.length;
-                            setTimeout(animateText, typingSpeed);
-                            return;
-                        }
-                        
-                        setTimeout(animateText, deleteSpeed);
-                    }
-                    
-                    updateCursor();
-                }
-                
-                // Start animation
-                animateText();
-                
-                // Fix for SVG animation in some browsers
-                setInterval(updateCursor, 100);
-            }
-            
-            // Tabbed installation section
-            const tabButtons = document.querySelectorAll('.tab-button');
-            const tabContents = document.querySelectorAll('.tab-content');
-            
-            tabButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const tabId = this.getAttribute('data-tab');
-                    const tabContent = document.getElementById(`${tabId}-tab`);
-                    
-                    // Remove active class from all buttons and contents
-                    tabButtons.forEach(button => button.classList.remove('active'));
-                    tabContents.forEach(content => content.classList.remove('active'));
-                    
-                    // Add active class to the selected button and content
-                    this.classList.add('active');
-                    tabContent.classList.add('active');
-                });
-            });
         });
+        
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+        
+        // Start typing animation
+        setTimeout(typeCommand, 1000);
     </script>
 </body>
 </html>

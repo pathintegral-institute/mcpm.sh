@@ -22,15 +22,19 @@ keywords = [
 dependencies = [
     "click>=8.1.3",
     "rich>=12.0.0",
+    "rich-click>=1.8.0",
     "requests>=2.28.0",
     "pydantic>=2.5.1",
     "mcp>=1.8.0",
+    "fastmcp>=2.0.0",
     "ruamel-yaml>=0.18.10",
     "watchfiles>=1.0.4",
     "duckdb>=1.2.2",
     "psutil>=7.0.0",
     "prompt-toolkit>=3.0.0",
     "deprecated>=1.2.18",
+    "inquirerpy>=0.3.4",
+    "rich-gradient>=0.3.2",
 ]
 
 [project.urls]

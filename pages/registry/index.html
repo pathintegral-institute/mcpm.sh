@@ -32,7 +32,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <!-- Highlight.js for JSON syntax highlighting -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
@@ -44,18 +44,25 @@
         {% include colors.css %}
         {% include common.css %}
 
-        /* Override colors with blue and pink theme */
+        /* Modern redesign with consistent theme */
         :root {
-            --accent-color: #3b82f6;
-            --accent-light: #60a5fa;
-            --accent-dark: #2563eb;
-            --accent-highlight: #ec4899;
-            --highlight: var(--accent-highlight);
-            --highlight-light: #ec489933;
-            --success: #60a5fa;
-            --warning: #FEBF00;
-            --button-bg: var(--accent-color);
-            --button-hover: var(--accent-dark);
+            --primary-bg: #0a0e13;
+            --secondary-bg: #151b22;
+            --surface-bg: #1e2429;
+            --surface-elevated: #252d34;
+            --accent-primary: #00d9ff;
+            --accent-secondary: #00b8d4;
+            --accent-tertiary: #0097b3;
+            --text-primary: #ffffff;
+            --text-secondary: #b3bac1;
+            --text-muted: #6b7280;
+            --border-subtle: rgba(255, 255, 255, 0.06);
+            --border-accent: rgba(0, 217, 255, 0.2);
+            --gradient-primary: linear-gradient(135deg, #00d9ff 0%, #0097b3 100%);
+            --gradient-secondary: linear-gradient(135deg, #1e2429 0%, #252d34 100%);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+            --animation-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
 
         * {
@@ -65,478 +72,118 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            line-height: 1.6;
-            color: var(--text);
-            background-color: var(--background);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.7;
+            color: var(--text-primary);
+            background: var(--primary-bg);
+            overflow-x: hidden;
+        }
+
+        /* Background gradient and particle effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(0, 217, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 184, 212, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(0, 151, 179, 0.08) 0%, transparent 50%);
+            z-index: -1;
+            pointer-events: none;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 0 2rem;
         }
 
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--accent-highlight);
-            text-decoration: none;
-        }
-
-        .github-corner {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 80px;
-            height: 80px;
-            opacity: 0.8;
-            color: var(--text);
-        }
-
-        .github-corner:hover {
-            opacity: 1;
-        }
-
-        .nav a {
-            /* Remove all nav link styles */
-        }
-
-        .nav a:hover {
-            /* Remove all nav link styles */
-        }
-
         main {
-            padding: 1.5rem 0;
-            /* Remove margin-top as it's handled by nav.html */
+            padding: 2rem 0 4rem;
+        }
+
+        /* Header Section */
+        .header-section {
+            text-align: center;
+            padding: 3rem 0 4rem;
+            position: relative;
+        }
+
+        .header-section::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
         }
 
         h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(90deg, var(--accent-color), var(--accent-highlight));
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 800;
+            margin: 0 0 1rem;
+            background: var(--gradient-primary);
             -webkit-background-clip: text;
             background-clip: text;
-            color: transparent;
-            letter-spacing: -0.05em;
-        }
-
-        .highlight {
-            display: inline-block;
-            position: relative;
-            color: var(--primary);
-            padding: 0 0.25rem;
-        }
-
-        .highlight::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            right: 0;
-            bottom: 0.1em;
-            height: 0.3em;
-            background-color: var(--highlight);
-            opacity: 0.3;
-            z-index: -1;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
         }
 
         .subtitle {
-            font-size: 1.25rem;
-            color: var(--secondary);
-            margin-bottom: 0.75rem;
-            line-height: 1.6;
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            color: var(--text-secondary);
+            margin: 0 0 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        .community-note {
-            font-size: 0.95rem;
-            color: var(--light-text);
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-
-        .search-container {
-            margin: 1.5rem 0 1rem;
-            display: flex;
-            gap: 1rem;
-        }
-
-        .search-input {
-            flex: 1;
-            padding: 0.6rem 0.75rem;
-            border: 1px solid var(--border);
-            border-radius: 0.4rem;
-            font-size: 0.9rem;
-            font-family: inherit;
-            background-color: var(--bg-accent);
-            color: var(--text-primary);
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: var(--secondary);
-            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
-        }
-
-        .tag-filters-container {
-            margin-bottom: 1.5rem;
-        }
-
-        .tag-filters-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.5rem;
-        }
-
-        .tag-filters-title {
-            font-weight: 500;
-            color: var(--text-primary);
-            font-size: 0.9rem;
-        }
-
-        .toggle-tags-btn {
-            background: none;
-            border: none;
-            color: var(--accent-highlight);
-            cursor: pointer;
-            font-size: 0.8rem;
-            padding: 0.2rem 0.4rem;
-            border-radius: 0.25rem;
-            transition: background-color 0.2s;
-        }
-
-        .toggle-tags-btn:hover {
-            background-color: var(--accent);
-        }
-
-        .tag-filters {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.4rem;
-            max-height: 2.2rem;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-        }
-
-        .tag-filters.expanded {
-            max-height: 200px;
-            /* Limit height to show scrollbar */
-            overflow-y: auto;
-            /* Add vertical scrollbar when needed */
-            padding-right: 5px;
-            /* Add some padding for the scrollbar */
-        }
-
-        /* Custom scrollbar styling for better appearance */
-        .tag-filters.expanded::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .tag-filters.expanded::-webkit-scrollbar-track {
-            background: var(--accent);
-            border-radius: 10px;
-        }
-
-        .tag-filters.expanded::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 10px;
-        }
-
-        .tag-filters.expanded::-webkit-scrollbar-thumb:hover {
-            background: var(--secondary);
-        }
-
-        .tag-filter {
-            background-color: var(--bg-accent);
-            color: var(--text-primary);
-            padding: 0.2rem 0.5rem;
-            border-radius: 0.75rem;
-            font-size: 0.8rem;
-            font-weight: 500;
-            cursor: pointer;
-            border: 1px solid var(--border);
-            transition: all 0.2s ease;
-            line-height: 1.2;
-        }
-
-        .tag-filter:hover,
-        .tag-filter.active {
-            background-color: var(--accent-highlight);
-            border-color: var(--accent-highlight);
-            color: white;
-        }
-
-        .servers-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 1.5rem;
-            margin-top: 1.5rem;
-        }
-
-        .server-card {
-            background-color: var(--bg-accent);
-            border-radius: 0.6rem;
-            overflow: hidden;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            border: 1px solid var(--border);
-            cursor: pointer;
-            position: relative;
-        }
-
-        .server-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 0 0 1px var(--accent-highlight);
-            border-color: var(--accent-highlight);
-        }
-
-        .server-content {
-            padding: 1.25rem;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-
-        .server-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 0.5rem;
-        }
-
-        .server-card h3 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--accent-color);
-            line-height: 1.2;
-            margin: 0;
-            background: linear-gradient(90deg, var(--accent-color), var(--accent-highlight));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .server-card .description {
-            color: var(--secondary);
-            font-size: 0.85rem;
-            margin-bottom: 0.5rem;
-            flex: 1;
-            line-height: 1.35;
-            display: -webkit-box;
-            -webkit-line-clamp: 4;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            min-height: 5.4rem;
-        }
-
-        .server-card .tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.35rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .server-card .tag {
-            background-color: var(--bg-accent);
-            color: var(--text-primary);
-            padding: 0.2rem 0.45rem;
-            border-radius: 0.75rem;
-            font-size: 0.65rem;
-            font-weight: 500;
-            border: 1px solid var(--border);
-            transition: all 0.2s ease;
-            line-height: 1;
-        }
-
-        .server-card .tag:hover {
-            background-color: var(--accent-highlight);
-            border-color: var(--accent-highlight);
-            color: white;
-            transform: translateY(-1px);
-        }
-
-        /* Category styles */
-        .server-card .category {
-            background-color: transparent;
-            color: var(--accent-color);
-            padding: 0.2rem 0.45rem;
-            border-radius: 0.75rem;
-            font-size: 0.65rem;
-            font-weight: 600;
-            border: 1px solid var(--accent-color);
-            transition: all 0.2s ease;
-            line-height: 1;
-            display: inline-flex;
-            align-items: center;
-            margin: 0;
-        }
-
-        .server-card .category:hover {
-            background-color: var(--accent-color);
-            color: white;
-            transform: translateY(-1px);
-        }
-
-        .server-card .meta {
-            font-size: 0.7rem;
-            color: var(--light-text);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-top: 1px solid var(--border);
-            padding-top: 0.5rem;
-            margin-top: auto;
-            margin-bottom: 0;
-        }
-        
-        .install-button {
-            background-color: var(--button-bg);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 6px 12px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            transition: background-color 0.2s;
-            text-decoration: none;
-            width: fit-content;
-            position: absolute;
-            bottom: 10px;
-            right: 1.25rem;
-            z-index: 10;
-        }
-        
-        .install-button:hover {
-            background-color: var(--button-hover);
-        }
-        
-        .install-button svg {
-            width: 14px;
-            height: 14px;
-        }
-
-        .server-card .meta .author {
-            color: var(--accent-highlight);
-            font-weight: 600;
-            font-size: 0.7rem;
-            display: flex;
-            align-items: center;
-        }
-
-        .server-card .meta .stars {
-            display: flex;
-            align-items: center;
-            font-size: 0.7rem;
-        }
-
-        .server-card .meta .author svg {
-            margin-right: 0.25rem;
-            width: 10px;
-            height: 10px;
-        }
-
-        .server-card .meta .stars svg {
-            margin-right: 0.25rem;
-            width: 10px;
-            height: 10px;
-        }
-
-        .author-placeholder,
-        .stars-placeholder,
-        .author-tag.author-placeholder {
-            transition: opacity 0.3s ease;
-        }
-
-        .server-links {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1.25rem;
-        }
-
-        .server-link {
-            padding: 0.4rem 0.75rem;
-            border-radius: 0.375rem;
-            font-size: 0.75rem;
-            font-weight: 500;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-        }
-
-        .primary-link {
-            background-color: var(--accent-highlight);
-            color: white;
-            border: 1px solid var(--accent-highlight);
-            font-weight: 600;
-        }
-
-        .primary-link:hover {
-            background-color: var(--accent-dark);
-            transform: translateY(-1px);
-        }
-
-        .secondary-link {
-            background-color: var(--accent);
-            color: var(--text-primary);
-            border: 1px solid var(--border);
-        }
-
-        .secondary-link:hover {
-            background-color: var(--border);
-            transform: translateY(-1px);
-            color: var(--text-primary);
-        }
-
-        /* Tab Styles */
+        /* Tab Navigation */
         .tabs {
             display: flex;
-            margin: 1.5rem 0 1rem;
-            border-bottom: 1px solid var(--border);
+            gap: 0.5rem;
+            margin: 2rem 0;
+            background: var(--surface-elevated);
+            padding: 0.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-subtle);
+            max-width: 400px;
         }
 
         .tab-button {
-            background: none;
+            flex: 1;
+            padding: 0.75rem 1rem;
+            background: transparent;
             border: none;
-            padding: 0.6rem 1.25rem;
-            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-size: 0.875rem;
             font-weight: 500;
-            color: var(--light-text);
+            border-radius: 8px;
             cursor: pointer;
-            position: relative;
-            margin-right: 1rem;
-            font-family: 'Inter', sans-serif;
+            transition: all 0.2s ease;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
 
         .tab-button:hover {
-            color: var(--text);
+            background: rgba(0, 217, 255, 0.1);
+            color: var(--accent-primary);
         }
 
         .tab-button.active {
-            color: var(--text-primary);
-            font-weight: 600;
-        }
-
-        .tab-button.active::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background-color: var(--accent-highlight);
+            background: var(--accent-primary);
+            color: var(--primary-bg);
+            box-shadow: 0 4px 12px rgba(0, 217, 255, 0.3);
         }
 
         .tab-content {
@@ -545,392 +192,497 @@
 
         .tab-content.active {
             display: block;
+            animation: fadeInUp 0.3s ease;
         }
 
-        /* JSON view styles */
-        .json-container {
-            background-color: var(--code-bg);
-            border-radius: 0.5rem;
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Search and Filter Section */
+        .search-filter-section {
+            background: var(--surface-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-subtle);
+            position: relative;
             overflow: hidden;
-            margin: 1.5rem 0;
-            border: 1px solid var(--border);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
         }
 
-        .json-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem 1rem;
-            background-color: var(--bg-accent);
-            border-bottom: 1px solid var(--border);
+        .search-filter-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-primary);
         }
 
-        .json-title {
+        .search-container {
+            margin-bottom: 2rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            background-color: var(--surface-elevated);
             color: var(--text-primary);
-            font-size: 0.875rem;
-            font-weight: 600;
-        }
-
-        .json-header-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .json-action-btn {
-            color: var(--text-primary);
-            background-color: var(--bg-accent);
-            padding: 6px 10px;
-            border-radius: 4px;
-            border: 1px solid var(--border);
-            font-weight: 500;
-            cursor: pointer;
             transition: all 0.2s ease;
         }
 
-        .json-action-btn:hover {
-            background-color: var(--accent-highlight);
-            color: white;
-            border-color: var(--accent-highlight);
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.1);
+            background-color: var(--primary-bg);
         }
 
-        .json-content {
-            overflow-x: auto;
-            color: var(--text-primary);
-            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
-            font-size: 0.875rem;
-            line-height: 1.5;
+        .search-input::placeholder {
+            color: var(--text-muted);
         }
 
-        /* Container background for JSON formatter */
-        #jsonFormatterContainer {
-            background-color: var(--code-bg);
-            border-radius: 0.5rem;
-            padding: 1rem;
-            color: var(--text-primary);
+        .tag-filters-container {
+            margin-bottom: 0;
         }
 
-        /* API URL container styling */
-        .api-url-container {
-            border-bottom: 1px solid var(--border);
-            background-color: var(--bg-accent);
-            margin-bottom: 1rem;
-            border-radius: 0.375rem;
-        }
-
-        .api-url-container h3 {
-            margin-top: 0;
-            margin-bottom: 0.5rem;
-            font-size: 1rem;
-            font-weight: 500;
-            color: var(--text-primary);
-        }
-
-        .api-url {
+        .tag-filters-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            margin: 0.5rem 0 1.5rem;
-            background-color: var(--code-bg);
-            padding: 0.75rem;
-            border-radius: 0.375rem;
-            overflow-x: auto;
-            border: 1px solid var(--border);
+            margin-bottom: 1rem;
         }
 
-        .api-url code {
-            font-family: monospace;
-            word-break: break-all;
-            flex: 1;
-            color: #e2e8f0;
-        }
-
-        /* Syntax highlighting adjustments for dark theme */
-        .hljs {
-            color: #e2e8f0 !important;
-            /* Override highlight.js base text color */
-            background: var(--code-bg) !important;
-        }
-
-        .hljs-attr {
-            color: #60a5fa !important;
-            /* Light blue for attributes */
-            font-weight: bold;
-        }
-
-        .hljs-string {
-            color: #fca5a5 !important;
-            /* Light red for strings */
-        }
-
-        .hljs-number {
-            color: #c4b5fd !important;
-            /* Light purple for numbers */
-        }
-
-        .hljs-boolean {
-            color: #f9a8d4 !important;
-            /* Light pink for booleans */
-            font-weight: bold;
-        }
-
-        .hljs-null {
-            color: #9ca3af !important;
-            /* Grey for null values */
-        }
-
-        /* JSON formatter overrides for better visibility */
-        .json-formatter-row,
-        .json-formatter-row a,
-        .json-formatter-row a:hover {
-            color: #e2e8f0 !important;
-            /* Light gray for base text */
-        }
-
-        .json-formatter-row .json-formatter-row {
-            margin-left: 1rem;
-        }
-
-        .json-formatter-row .json-formatter-key {
-            color: #60a5fa !important;
-            /* Light blue for keys */
+        .tag-filters-title {
             font-weight: 600;
+            color: var(--text-primary);
+            font-size: 1rem;
         }
 
-        .json-formatter-row .json-formatter-string {
-            color: #fca5a5 !important;
-            /* Light red for strings */
+        .toggle-tags-btn {
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            color: var(--accent-primary);
+            cursor: pointer;
+            font-size: 0.875rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            font-weight: 500;
         }
 
-        .json-formatter-row .json-formatter-number {
-            color: #c4b5fd !important;
-            /* Light purple for numbers */
+        .toggle-tags-btn:hover {
+            background-color: var(--accent-primary);
+            color: var(--primary-bg);
+            border-color: var(--accent-primary);
         }
 
-        .json-formatter-row .json-formatter-boolean {
-            color: #f9a8d4 !important;
-            /* Light pink for booleans */
+        .tag-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            max-height: 3rem;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
         }
 
-        .json-formatter-row .json-formatter-null {
-            color: #9ca3af !important;
-            /* Grey for null values */
+        .tag-filters.expanded {
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 5px;
         }
 
-        .json-formatter-row .json-formatter-bracket {
-            color: #e2e8f0 !important;
-            /* Light gray for brackets */
+        .tag-filters.expanded::-webkit-scrollbar {
+            width: 6px;
         }
 
-        .json-formatter-row .json-formatter-comma {
-            color: #e2e8f0 !important;
-            /* Light gray for commas */
+        .tag-filters.expanded::-webkit-scrollbar-track {
+            background: var(--surface-elevated);
+            border-radius: 10px;
         }
 
-        /* Override JSON formatter default styling */
-        .json-formatter-dark.json-formatter-row,
-        .json-formatter-dark.json-formatter-row .json-formatter-row {
-            background: none !important;
-            color: #e2e8f0 !important;
+        .tag-filters.expanded::-webkit-scrollbar-thumb {
+            background: var(--border-subtle);
+            border-radius: 10px;
         }
 
-        .json-formatter-dark.json-formatter-row .toggler:after {
-            color: #e2e8f0 !important;
+        .tag-filters.expanded::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
         }
 
-        /* Fix JSON formatter toggler (expand/collapse arrow) */
-        .json-formatter-row .toggler {
-            font-size: 0.8em;
-            margin-right: 0.2em;
-            opacity: 0.8;
-            color: #e2e8f0 !important;
+        .tag-filter {
+            background-color: var(--surface-elevated);
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid var(--border-subtle);
+            transition: all 0.2s ease;
+            line-height: 1.2;
         }
 
-        .json-formatter-row .toggler:hover {
-            opacity: 1;
-            color: white !important;
+        .tag-filter:hover,
+        .tag-filter.active {
+            background-color: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: var(--primary-bg);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 217, 255, 0.2);
         }
 
-        /* Installation options styling */
-        .installation-options {
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 1.5rem;
+        /* Server Grid */
+        .servers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
         }
 
-        .installation-tabs {
+        .server-card {
+            background: var(--surface-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s var(--animation-bounce);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border-subtle);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .server-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .server-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--border-accent);
+        }
+
+        .server-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .server-content {
+            padding: 2rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .server-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .server-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.3;
+            margin: 0;
+            flex: 1;
+        }
+
+        .server-card .description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            flex: 1;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-height: 4.5rem;
+        }
+
+        .server-card .tags {
             display: flex;
             flex-wrap: wrap;
             gap: 0.5rem;
             margin-bottom: 1rem;
         }
 
-        .installation-tab {
-            padding: 0.5rem 1rem;
-            background-color: var(--bg-accent);
-            border: 1px solid var(--border);
-            border-radius: 0.375rem;
-            cursor: pointer;
-            font-size: 0.875rem;
+        .server-card .tag {
+            background-color: var(--surface-elevated);
+            color: var(--text-primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
             font-weight: 500;
+            border: 1px solid var(--border-subtle);
+            transition: all 0.2s ease;
+        }
+
+        .server-card .tag:hover {
+            background-color: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: var(--primary-bg);
+            transform: translateY(-1px);
+        }
+
+        .server-card .category {
+            background: transparent;
+            color: var(--accent-primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid var(--accent-primary);
+            transition: all 0.2s ease;
+        }
+
+        .server-card .category:hover {
+            background-color: var(--accent-primary);
+            color: var(--primary-bg);
+            transform: translateY(-1px);
+        }
+
+        .server-card .meta {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border-subtle);
+            padding-top: 1rem;
+            margin-top: auto;
+        }
+        
+        .install-button {
+            background: var(--gradient-primary);
+            color: var(--primary-bg);
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
             display: flex;
             align-items: center;
             gap: 0.5rem;
             transition: all 0.2s ease;
-            color: var(--text-primary);
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0, 217, 255, 0.3);
+        }
+        
+        .install-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 217, 255, 0.4);
+        }
+        
+        .install-button svg {
+            width: 16px;
+            height: 16px;
         }
 
-        .installation-tab.active {
-            background-color: var(--accent-highlight);
-            color: white;
-            border-color: var(--accent-highlight);
+        .server-card .meta .author {
+            color: var(--accent-primary);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
         }
 
-        .installation-tab:hover:not(.active) {
-            background-color: var(--accent-highlight);
-            color: white;
+        .server-card .meta .stars {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: color 0.2s ease;
         }
 
-        .installation-tab svg {
-            width: 14px;
-            height: 14px;
+        .server-card .meta .stars:hover {
+            color: var(--accent-primary);
         }
 
-        .installation-tab .recommended {
-            font-size: 0.75rem;
-            font-weight: 400;
+        .author-placeholder,
+        .stars-placeholder {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Badges */
+        .official-badge {
+            display: inline-block;
+            background: var(--gradient-primary);
+            color: var(--primary-bg);
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .archived-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            background-color: #60491a;
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            font-weight: 600;
+            border-radius: 6px;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .docker-icon {
+            display: inline-block;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+            color: #2496ed;
+            transition: opacity 0.2s ease;
+        }
+
+        .docker-icon:hover {
             opacity: 0.8;
         }
 
-        .installation-panel {
-            display: none;
-            padding: 1rem;
-            border: 1px solid var(--border);
-            border-radius: 0.375rem;
-            background-color: var(--accent);
-        }
-
-        .installation-panel.active {
-            display: block;
-        }
-
-        .installation-command h4,
-        .installation-env h4 {
-            margin-top: 0;
-            margin-bottom: 0.5rem;
-            font-size: 0.875rem;
-            font-weight: 600;
-        }
-
-        .command-box {
-            display: flex;
-            align-items: stretch;
-            background-color: var(--bg-accent);
-            border: 1px solid var(--border);
-            border-radius: 0.375rem;
+        /* API Tab Styles */
+        .json-container {
+            background: var(--surface-bg);
+            border-radius: 16px;
             overflow: hidden;
+            margin: 2rem 0;
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-lg);
         }
 
-        .command-box pre {
-            margin: 0;
-            padding: 0.75rem;
-            flex-grow: 1;
-            font-family: monospace;
-            font-size: 0.875rem;
-            overflow-x: auto;
-            color: var(--text);
-        }
-
-        .command-box .copy-button {
-            border-radius: 0;
-            margin: 0;
-            height: auto;
-            border-left: 1px solid var(--border);
-        }
-
-        .env-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 0.5rem;
-            font-size: 0.875rem;
-        }
-
-        .env-table th,
-        .env-table td {
-            border: 1px solid var(--border);
-            padding: 0.5rem 0.75rem;
-            text-align: left;
-        }
-
-        .env-table th {
-            background-color: var(--bg-accent);
-            font-weight: 600;
-        }
-
-        .env-table td code {
-            background-color: var(--accent);
-            padding: 0.125rem 0.25rem;
-            border-radius: 0.25rem;
-            font-family: monospace;
-            font-size: 0.8125rem;
-            color: var(--text);
-        }
-
-        .installation-env {
-            margin-top: 1.5rem;
-        }
-
-        .json-content {
-            margin-top: 1.5rem;
-        }
-
-        .json-header-row {
+        .json-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 0.5rem;
+            padding: 1.5rem 2rem;
+            background: var(--surface-elevated);
+            border-bottom: 1px solid var(--border-subtle);
         }
 
-        .json-header-row h3 {
-            margin: 0;
+        .json-title {
+            color: var(--text-primary);
+            font-size: 1.125rem;
+            font-weight: 600;
         }
 
-        .json-content pre {
-            background-color: var(--code-bg);
-            padding: 0.75rem;
-            border-radius: 0.375rem;
+        .json-header-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .json-action-btn {
+            color: var(--text-primary);
+            background: var(--surface-bg);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-subtle);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.875rem;
+        }
+
+        .json-action-btn:hover {
+            background: var(--accent-primary);
+            color: var(--primary-bg);
+            border-color: var(--accent-primary);
+        }
+
+        .json-content {
             overflow-x: auto;
-            font-family: monospace;
-            margin: 0.5rem 0;
-            max-height: 400px;
-            overflow-y: auto;
-            white-space: pre-wrap;
-            border: 1px solid var(--border);
-            color: #e2e8f0;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            padding: 2rem;
         }
 
-        /* Footer styling moved to footer.html include */
+        .api-url-container {
+            background: var(--surface-bg);
+            border-radius: 12px;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            border: 1px solid var(--border-subtle);
+        }
 
-        @media (max-width: 768px) {
-            main {
-                padding-top: calc(80px + 1.5rem) !important;
-                /* Adjust for taller mobile nav */
-            }
+        .api-url-container h3 {
+            margin: 0 0 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
 
-            .header-content {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
+        .api-url {
+            display: flex;
+            align-items: center;
+            background: var(--primary-bg);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-accent);
+            overflow-x: auto;
+        }
 
-            .nav {
-                margin-top: 1rem;
-            }
+        .api-url code {
+            font-family: 'JetBrains Mono', monospace;
+            word-break: break-all;
+            flex: 1;
+            color: var(--accent-primary);
+            font-size: 0.875rem;
+        }
 
-            .nav a {
-                margin-left: 0;
-                margin-right: 1.5rem;
-            }
+        .copy-button {
+            background: var(--surface-elevated);
+            color: var(--text-primary);
+            border: 1px solid var(--border-subtle);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            white-space: nowrap;
+            margin-left: 1rem;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
 
+        .copy-button:hover {
+            background: var(--accent-primary);
+            transform: translateY(-1px);
+            color: var(--primary-bg);
+            border-color: var(--accent-primary);
         }
 
         /* Modal Styles */
@@ -941,191 +693,83 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: rgba(0, 0, 0, 0.8);
             z-index: 1000;
             justify-content: center;
             align-items: center;
-            padding: 1rem;
+            padding: 2rem;
         }
 
         .modal-content {
-            background-color: var(--bg-accent);
-            border-radius: 0.5rem;
-            max-width: 800px;
+            background: var(--surface-bg);
+            border-radius: 16px;
+            max-width: 900px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
-            padding: 1.5rem;
+            padding: 2rem;
             position: relative;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-            border: 1px solid var(--border);
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-subtle);
         }
 
         #modalTitle {
-            background: linear-gradient(90deg, var(--accent-color), var(--accent-highlight));
+            background: var(--gradient-primary);
             -webkit-background-clip: text;
             background-clip: text;
-            color: transparent;
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .manifest-info h3 {
-            color: var(--accent-color);
-            font-size: 1.1rem;
-            margin-top: 1.5rem;
-            margin-bottom: 0.5rem;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
         }
 
         .close-button {
             position: absolute;
-            top: 1rem;
-            right: 1.5rem;
+            top: 1.5rem;
+            right: 2rem;
             font-size: 1.5rem;
             cursor: pointer;
-            color: var(--light-text);
+            color: var(--text-muted);
+            transition: color 0.2s ease;
+        }
+
+        .close-button:hover {
+            color: var(--text-primary);
         }
 
         .manifest-info {
-            margin-top: 1.5rem;
+            margin: 1.5rem 0;
         }
 
-        .copy-button {
-            background-color: var(--bg-accent);
-            color: var(--text-primary);
-            border: 1px solid var(--border);
-            padding: 0.375rem 0.75rem;
-            border-radius: 0.25rem;
-            font-size: 0.875rem;
-            cursor: pointer;
-            white-space: nowrap;
-            margin-left: 0.75rem;
-            transition: all 0.2s ease;
+        .manifest-info h3 {
+            color: var(--accent-primary);
+            font-size: 1.1rem;
+            margin: 1.5rem 0 1rem;
             font-weight: 600;
-        }
-
-        .copy-button:hover {
-            background-color: var(--accent-highlight);
-            transform: translateY(-1px);
-            color: white;
-            border-color: var(--accent-highlight);
-        }
-
-        .modal-content .api-url {
-            border-left: 3px solid var(--accent-highlight);
-            margin: 0.5rem 0 1.5rem;
-        }
-
-        .modal-content .json-content pre {
-            border-left: 3px solid var(--accent-highlight);
-        }
-
-        .modal-content .category {
-            background-color: transparent;
-            color: var(--accent-color);
-            padding: 0.3rem 0.6rem;
-            border-radius: 0.75rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            border: 1px solid var(--accent-color);
-            display: inline-block;
-            margin-bottom: 1rem;
-        }
-
-        /* Server Details Styling */
-        .server-details {
-            margin: 0.75rem 0;
         }
 
         .details-section {
-            margin-bottom: 0.75rem;
-            padding: 0.5rem;
-            background-color: var(--bg-accent);
-            border-radius: 0.5rem;
-            border: 1px solid var(--border);
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: var(--surface-elevated);
+            border-radius: 12px;
+            border: 1px solid var(--border-subtle);
         }
 
         .details-section h3 {
-            color: var(--accent-color);
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
-            padding-bottom: 0.25rem;
-            border-bottom: 1px solid var(--border);
+            color: var(--accent-primary);
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-subtle);
         }
 
-        .details-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 0.25rem;
-        }
-
-        .detail-item {
-            display: flex;
-            flex-direction: row;
-            align-items: baseline;
-            gap: 0.5rem;
-            font-size: 0.8rem;
-        }
-
-        .description-item {
-            grid-column: 1 / -1;
-            margin-top: 0.25rem;
-        }
-
-        .detail-label {
-            font-weight: 600;
-            color: var(--text-primary);
-            min-width: 80px;
-            flex-shrink: 0;
-        }
-
-        .detail-value {
-            color: var(--secondary);
-            word-break: break-word;
-            flex: 1;
-        }
-
-        /* Meta Information Styling */
-        .meta-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 0.25rem;
-        }
-
-        .meta-column {
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
-        }
-
-        .meta-item {
-            display: flex;
-            flex-direction: row;
-            align-items: baseline;
-            gap: 0.5rem;
-            font-size: 0.8rem;
-        }
-
-        .meta-label {
-            font-weight: 600;
-            color: var(--text-primary);
-            min-width: 70px;
-            flex-shrink: 0;
-        }
-
-        .meta-value {
-            color: var(--secondary);
-            word-break: break-word;
-            flex: 1;
-        }
-
-        /* Collapsible Sections */
         .collapsible .section-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
-            padding: 0.25rem 0;
+            padding: 0.5rem 0;
         }
 
         .collapsible .section-header h3 {
@@ -1136,7 +780,7 @@
 
         .toggle-icon {
             font-size: 0.8rem;
-            color: var(--secondary);
+            color: var(--text-secondary);
             transition: transform 0.2s ease;
         }
 
@@ -1146,171 +790,190 @@
 
         .section-content {
             display: none;
-            padding-top: 0.5rem;
+            padding: 1rem;
+            background: var(--primary-bg);
+            border-radius: 8px;
+            margin-top: 0.75rem;
+            border: 1px solid var(--border-subtle);
         }
 
         .collapsible:not(.collapsed) .section-content {
             display: block;
         }
 
-        /* Lists Styling */
-        .argument-list,
-        .tool-list,
-        .resource-list,
-        .prompt-list {
-            font-size: 0.8rem;
-            color: var(--secondary);
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
         }
 
-        .argument-list ul,
-        .tool-list ul,
-        .resource-list ul,
-        .prompt-list ul {
-            margin: 0;
-            padding-left: 1.5rem;
-            list-style-type: none;
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            font-size: 0.875rem;
         }
 
-        .argument-list li,
-        .tool-list li,
-        .resource-list li,
-        .prompt-list li {
-            margin-bottom: 0.25rem;
-        }
-
-        /* Details/Summary Styling */
-        details {
-            margin: 0.5rem 0;
-        }
-
-        details>summary {
-            cursor: pointer;
-            color: var(--accent-color);
+        .meta-label {
             font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        details>summary:hover {
-            color: var(--accent-highlight);
-        }
-
-        details>ul {
-            margin-left: 1rem !important;
-            padding: 0.5rem 0 0.5rem 1rem !important;
-            border-left: 2px solid var(--border);
-        }
-
-        details pre {
-            margin: 0.5rem 0;
-            padding: 0.5rem;
-            background-color: var(--code-bg);
-            border-radius: 0.25rem;
-            font-family: monospace;
-            font-size: 0.85em;
-            white-space: pre-wrap;
             color: var(--text-primary);
         }
 
-        .section-content {
-            padding: 0.75rem;
-            background: var(--code-bg);
-            border-radius: 0.25rem;
-            margin-top: 0.5rem;
+        .meta-value {
+            color: var(--text-secondary);
+            word-break: break-word;
         }
 
-        /* Links */
-        .detail-value a,
         .meta-value a {
-            color: var(--accent-color);
+            color: var(--accent-primary);
             text-decoration: none;
+            transition: color 0.2s ease;
         }
 
-        .detail-value a:hover,
         .meta-value a:hover {
+            color: var(--accent-secondary);
             text-decoration: underline;
         }
 
-        /* Tags and Categories */
         #detailCategories,
         #detailTags {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.25rem;
+            gap: 0.5rem;
         }
 
         #detailCategories .category,
         #detailTags .tag {
             display: inline-flex;
             align-items: center;
-            padding: 0.1rem 0.3rem;
-            border-radius: 0.375rem;
-            font-size: 0.7rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
             font-weight: 500;
         }
 
         #detailCategories .category {
-            background-color: transparent;
-            color: var(--accent-color);
-            border: 1px solid var(--accent-color);
+            background: transparent;
+            color: var(--accent-primary);
+            border: 1px solid var(--accent-primary);
         }
 
         #detailTags .tag {
-            background-color: var(--bg-accent);
+            background: var(--surface-elevated);
             color: var(--text-primary);
-            border: 1px solid var(--border);
+            border: 1px solid var(--border-subtle);
         }
 
-        .server-card .meta .category {
-            background-color: var(--accent-color);
-            color: white;
-            padding: 0.1rem 0.5rem;
-            border-radius: 3px;
-            font-size: 0.7rem;
-            margin-left: 0.5rem;
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .header-section {
+                padding: 2rem 0 3rem;
+            }
+            
+            .servers-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .tabs {
+                flex-direction: column;
+                max-width: none;
+            }
+            
+            .search-filter-section {
+                padding: 1.5rem;
+            }
+            
+            .tag-filters {
+                gap: 0.5rem;
+            }
+            
+            .modal {
+                padding: 1rem;
+            }
+            
+            .modal-content {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Animations */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* JSON Formatter Overrides */
+        #jsonFormatterContainer {
+            background: var(--primary-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .json-formatter-row,
+        .json-formatter-row a,
+        .json-formatter-row a:hover {
+            color: var(--text-primary) !important;
+        }
+
+        .json-formatter-row .json-formatter-key {
+            color: var(--accent-primary) !important;
             font-weight: 600;
         }
 
-        .official-badge {
-            display: inline-block;
-            background-color: var(--accent-color);
-            color: var(--text-secondary);
-            font-size: 0.7rem;
-            font-weight: 600;
-            padding: 2px 6px;
-            border-radius: 2px;
-            margin-left: 8px;
-            vertical-align: middle;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .json-formatter-row .json-formatter-string {
+            color: #fca5a5 !important;
         }
 
-        .archived-badge {
-            display: inline-block;
-            padding: 2px 6px;
-            background-color: #60491a;
-            color: var(--text-secondary);
-            font-size: 0.7rem;
-            font-weight: 600;
-            border-radius: 2px;
-            margin-left: 8px;
-            vertical-align: middle;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .json-formatter-row .json-formatter-number {
+            color: #c4b5fd !important;
         }
 
-        .docker-icon {
-            display: inline-block;
-            margin-left: 8px;
-            vertical-align: middle;
-            color: #2496ed;
+        .json-formatter-row .json-formatter-boolean {
+            color: #f9a8d4 !important;
         }
 
-        .docker-icon svg {
-            vertical-align: middle;
+        .json-formatter-row .json-formatter-null {
+            color: var(--text-muted) !important;
         }
 
-        .docker-icon:hover {
-            opacity: 0.8;
+        /* Syntax highlighting adjustments */
+        .hljs {
+            color: var(--text-primary) !important;
+            background: var(--primary-bg) !important;
+        }
+
+        .hljs-attr {
+            color: var(--accent-primary) !important;
+            font-weight: bold;
+        }
+
+        .hljs-string {
+            color: #fca5a5 !important;
+        }
+
+        .hljs-number {
+            color: #c4b5fd !important;
+        }
+
+        .hljs-boolean {
+            color: #f9a8d4 !important;
+            font-weight: bold;
+        }
+
+        .hljs-null {
+            color: var(--text-muted) !important;
         }
     </style>
 </head>
@@ -1320,49 +983,60 @@
 
     <main>
         <div class="container">
-            <h1>MCP Server Registry</h1>
+            <!-- Header Section -->
+            <section class="header-section">
+                <h1>MCP Server Registry</h1>
+                <p class="subtitle">The single open source MCP registry we all need. Discover and explore MCP servers for your projects.</p>
+            </section>
 
-            <p class="subtitle">The single open source MCP registry we all need.</p>
-
+            <!-- Tab Navigation -->
             <div class="tabs">
-                <button class="tab-button active" data-tab="registry"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" style="margin-right: 5px; vertical-align: -3px;">
+                <button class="tab-button active" data-tab="registry">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="7" r="4"></circle>
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                    </svg> GUI</button>
-                <button class="tab-button" data-tab="json"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" style="margin-right: 5px; vertical-align: -3px;">
+                    </svg>
+                    Registry
+                </button>
+                <button class="tab-button" data-tab="json">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="3" y="11" width="18" height="10" rx="2" ry="2"></rect>
                         <circle cx="12" cy="5" r="2"></circle>
                         <path d="M12 7v4"></path>
                         <line x1="8" y1="16" x2="8" y2="16"></line>
                         <line x1="16" y1="16" x2="16" y2="16"></line>
                         <line x1="12" y1="15" x2="12" y2="17"></line>
-                    </svg> API</button>
+                    </svg>
+                    API
+                </button>
             </div>
 
+            <!-- Registry Tab -->
             <div id="registryTab" class="tab-content active">
-                <div class="search-container">
-                    <input type="text" id="searchInput" class="search-input" placeholder="Search servers...">
-                </div>
-
-                <div class="tag-filters-container">
-                    <div class="tag-filters-header">
-                        <span class="tag-filters-title">Filter by tag:</span>
-                        <button id="toggleTagsBtn" class="toggle-tags-btn">Show more</button>
+                <!-- Search and Filter Section -->
+                <section class="search-filter-section">
+                    <div class="search-container">
+                        <input type="text" id="searchInput" class="search-input" placeholder="Search servers by name, description, or tags...">
                     </div>
-                    <div class="tag-filters" id="tagFilters">
-                        <span class="tag-filter active" data-tag="all">All</span>
-                    </div>
-                </div>
 
+                    <div class="tag-filters-container">
+                        <div class="tag-filters-header">
+                            <span class="tag-filters-title">Filter by tag:</span>
+                            <button id="toggleTagsBtn" class="toggle-tags-btn">Show more</button>
+                        </div>
+                        <div class="tag-filters" id="tagFilters">
+                            <span class="tag-filter active" data-tag="all">All</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Server Grid -->
                 <div class="servers-grid" id="serversGrid">
                     <!-- Server cards are populated dynamically -->
                 </div>
             </div>
 
+            <!-- API Tab -->
             <div id="jsonTab" class="tab-content">
                 <div class="json-container">
                     <div class="json-header">
@@ -1391,6 +1065,7 @@
     {% include footer.html %}
     {% include github-corner.html %}
 
+    <!-- Server Detail Modal -->
     <div id="serverModal" class="modal">
         <div class="modal-content">
             <span class="close-button">&times;</span>
@@ -1398,50 +1073,46 @@
             <div class="manifest-info">
                 <h3>Server Information</h3>
                 <div class="meta-grid">
-                    <div class="meta-column">
-                        <div class="meta-item">
-                            <span class="meta-label">Name:</span>
-                            <span class="meta-value" id="detailName"></span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="meta-label">Display Name:</span>
-                            <span class="meta-value" id="detailDisplayName"></span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="meta-label">Version:</span>
-                            <span class="meta-value" id="detailVersion"></span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="meta-label">License:</span>
-                            <span class="meta-value" id="detailLicense"></span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="meta-label">Categories:</span>
-                            <div class="meta-value" id="detailCategories"></div>
-                        </div>
-                        <div class="meta-item">
-                            <span class="meta-label">Tags:</span>
-                            <div class="meta-value" id="detailTags"></div>
-                        </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Name:</span>
+                        <span class="meta-value" id="detailName"></span>
                     </div>
-                    <div class="meta-column">
-                        <div class="meta-item">
-                            <span class="meta-label">Author:</span>
-                            <span class="meta-value" id="detailAuthorName"></span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="meta-label">Repository:</span>
-                            <span class="meta-value" id="detailRepoUrl"></span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="meta-label">Homepage:</span>
-                            <span class="meta-value" id="detailHomepage"></span>
-                        </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Display Name:</span>
+                        <span class="meta-value" id="detailDisplayName"></span>
                     </div>
-                </div>
-                <div class="meta-item description-item">
-                    <span class="meta-label">Description:</span>
-                    <span class="meta-value" id="detailDescription"></span>
+                    <div class="meta-item">
+                        <span class="meta-label">Version:</span>
+                        <span class="meta-value" id="detailVersion"></span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">License:</span>
+                        <span class="meta-value" id="detailLicense"></span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Author:</span>
+                        <span class="meta-value" id="detailAuthorName"></span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Repository:</span>
+                        <span class="meta-value" id="detailRepoUrl"></span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Homepage:</span>
+                        <span class="meta-value" id="detailHomepage"></span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Description:</span>
+                        <span class="meta-value" id="detailDescription"></span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Categories:</span>
+                        <div class="meta-value" id="detailCategories"></div>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Tags:</span>
+                        <div class="meta-value" id="detailTags"></div>
+                    </div>
                 </div>
             </div>
 
@@ -1494,8 +1165,8 @@
             </div>
 
             <div class="json-content">
-                <div class="json-header-row">
-                    <h3>Raw Manifest:</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3 style="margin: 0;">Raw Manifest:</h3>
                     <button id="copyContent" class="copy-button">Copy JSON</button>
                 </div>
                 <pre id="jsonContent"></pre>
@@ -1518,6 +1189,7 @@
             'isPinned': 0,
             'isOfficial': 1,
             'others': 2,
+            'archived': 3,
         }
         const isLucien = searchParams.get('source') === 'lucien'
         const sourceProtocol = searchParams.get('protocol') || 'lucien'
@@ -1532,6 +1204,10 @@
         function serverSortRule(serverA, serverB) {
 
             function determineServerType(server) {
+                // Archived servers get lowest priority regardless of other factors
+                if (server.is_archived) {
+                    return 'archived';
+                }
                 if (defaultSpecifiedServers.includes(server.name)) {
                     return 'isPinned';
                 }
@@ -1609,7 +1285,7 @@
             const starCount = githubStarCounts[serverName];
             if (starCount !== undefined) {
                 // Add star icon and count
-                starCountElement.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>${formatNumber(starCount)}`;
+                starCountElement.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>${formatNumber(starCount)}`;
                 starCountElement.classList.remove('stars-placeholder');
                 starCountElement.style.opacity = '1';
                 starCountElement.classList.add('stars');
@@ -2010,6 +1686,48 @@
 
                 serverHeader.appendChild(heading);
 
+                // Add install button with click function for deeplink
+                if (isLucien) {
+                    const installButton = document.createElement('button');
+                    installButton.className = 'install-button';
+                    installButton.type = 'button';
+                    
+                    // Add download icon
+                    installButton.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Install
+                    `;
+
+                    // Handle click event to build search params and trigger deeplink
+                    installButton.addEventListener('click', (event) => {
+                        // Prevent the modal from opening
+                        event.stopPropagation();
+                        
+                        // Build search params with server install info
+                        const params = new URLSearchParams();
+                        params.append('name', server.name);
+                        params.append('action', 'install');
+                        
+                        const installInfo = Object.values(server.installations)[0];
+                        // No remote for now, only stdio
+                        params.append('command', installInfo.command);
+                        params.append('args', encodeURIComponent(installInfo.args.join(' ')));
+                        if (installInfo.env) {
+                            params.append('env', JSON.stringify(installInfo.env));
+                        }
+
+                        // Create and trigger the deeplink
+                        const deeplink = `${sourceProtocol}://mcpm?${params.toString()}`;
+                        window.location.href = deeplink;
+                    });
+                    
+                    serverHeader.appendChild(installButton);
+                }
+
                 // Add placeholder for GitHub stars in the header
                 const starCount = document.createElement('span');
                 starCount.className = 'stars stars-placeholder';
@@ -2062,7 +1780,7 @@
                 // Update author information directly from server data (no need to fetch)
                 if (server.author && server.author.name) {
                     // Add user icon before author name
-                    authorMeta.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>' + server.author.name;
+                    authorMeta.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>' + server.author.name;
                     authorMeta.classList.remove('author-placeholder');
                     authorMeta.style.opacity = '1';
                 } else {
@@ -2074,48 +1792,6 @@
 
                 serverContent.appendChild(meta);
                 
-                // Add install button with click function for deeplink
-                if (isLucien) {
-                    const installButton = document.createElement('button');
-                    installButton.className = 'install-button';
-                    installButton.type = 'button';
-                    
-                    // Add download icon
-                    installButton.innerHTML = `
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="7 10 12 15 17 10"></polyline>
-                            <line x1="12" y1="15" x2="12" y2="3"></line>
-                        </svg>
-                        Install
-                    `;
-
-                    // Handle click event to build search params and trigger deeplink
-                    installButton.addEventListener('click', (event) => {
-                        // Prevent the modal from opening
-                        event.stopPropagation();
-                        
-                        // Build search params with server install info
-                        const params = new URLSearchParams();
-                        params.append('name', server.name);
-                        params.append('action', 'install');
-                        
-                        const installInfo = Object.values(server.installations)[0];
-                        // No remote for now, only stdio
-                        params.append('command', installInfo.command);
-                        params.append('args', encodeURIComponent(installInfo.args.join(' ')));
-                        if (installInfo.env) {
-                            params.append('env', JSON.stringify(installInfo.env));
-                        }
-
-                        // Create and trigger the deeplink
-                        const deeplink = `${sourceProtocol}://mcpm?${params.toString()}`;
-                        window.location.href = deeplink;
-                    });
-                    
-                    serverContent.appendChild(installButton);
-                }
-
                 const linksContainer = document.createElement('div');
                 linksContainer.className = 'server-links';
 

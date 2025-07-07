@@ -172,7 +172,7 @@ class TestBaseClientManagerViaWindsurf:
             temp_path = f.name
 
         try:
-            manager = WindsurfManager(config_path=temp_path)
+            manager = WindsurfManager(config_path_override=temp_path)
             # Should get an empty config, not error
             config = manager._load_config()
             assert config == {"mcpServers": {}}
@@ -195,12 +195,6 @@ class TestBaseClientManagerViaWindsurf:
         # Make sure Windsurf is in supported clients
         supported_clients = config_manager.get_supported_clients()
         assert "windsurf" in supported_clients
-
-        # Test setting Windsurf as active client
-        success = config_manager.set_active_target("windsurf")
-        assert success
-        assert config_manager.get_active_target() == "windsurf"
-        assert config_manager.get_active_client() == "windsurf"
 
         # In the distributed architecture, each client manages its own servers
         # using the base client manager functionality

@@ -17,7 +17,7 @@ Built with ❤️ by Path Integral Institute
 
 # 🌟 MCPM - Model Context Protocol Manager
 
-MCPM 是一个开源的服务和命令行界面(CLI)，用于管理模型上下文协议（MCP）服务器。它简化了跨各种支持的客户端管理服务器配置、允许将服务器分组到配置文件中、通过注册表帮助发现新服务器，并包含一个强大的路由器，该路由器在单个端点后聚合多个 MCP 服务器并共享会话。
+MCPM 是一个开源的 CLI 工具，用于管理 MCP 服务器。它提供了简化的全局配置方法，让您一次安装服务器并使用配置文件进行组织，然后将它们集成到任何 MCP 客户端中。功能包括通过中央注册表发现服务器、直接执行、分享功能和客户端集成工具。
 
 ![MCPM 运行演示](.github/readme/demo.gif)
 
@@ -27,13 +27,15 @@ MCPM 是一个开源的服务和命令行界面(CLI)，用于管理模型上下�
 
 ## 🚀 快速安装
 
-### 🔄 Shell 脚本（一行命令）
+### 推荐：
 
 ```bash
 curl -sSL https://mcpm.sh/install | bash
 ```
 
-或选择您喜欢的安装方式：
+或选择其他安装方式，如 [其他安装方式](#-其他安装方式) 中的 `brew`、`pipx`、`uv` 等。
+
+## 📦 其他安装方式
 
 ### 🍺 Homebrew
 
@@ -53,7 +55,7 @@ pipx install mcpm
 uv tool install mcpm
 ```
 
-## 其他安装方式
+## 更多安装方式
 
 ### 🐍 pip
 
@@ -71,15 +73,18 @@ x install mcpm.sh
 
 ## 🔎 概述
 
-MCPM 简化了 MCP 服务器的安装、配置和管理，以及它们在不同应用程序（客户端）中的配置。主要功能包括：
+MCPM v2.0 采用全局配置模型提供了管理 MCP 服务器的简化方法。主要功能包括：
 
-- ✨ 轻松添加和删除支持的客户端的 MCP 服务器配置。
-- 📋 使用配置文件进行集中管理：将服务器配置分组并轻松激活/停用它们。
-- 🔍 通过中央注册表发现可用的 MCP 服务器。
-- 🔌 MCPM 路由器，用于在单个端点后聚合多个 MCP 服务器并共享会话。
-- 💻 用于所有管理任务的命令行界面 (CLI)。
+- ✨ **全局服务器管理**：一次安装，到处使用
+- 📋 **虚拟配置文件**：使用标签为不同工作流组织服务器
+- 🔍 **服务器发现**：从 MCP 注册表浏览和安装
+- 🚀 **直接执行**：通过 stdio 或 HTTP 运行服务器进行测试
+- 🌐 **公共分享**：通过安全隧道分享服务器
+- 🎛️ **客户端集成**：管理 Claude Desktop、Cursor、Windsurf 等的配置
+- 💻 **精美的 CLI**：丰富的格式化和交互式界面
+- 📊 **使用分析**：监控服务器使用情况和性能
 
-有关共享服务器会话和 MCPM 路由器等更多功能，请参阅 [高级功能](docs/advanced_features.md)。
+MCPM v2.0 摆脱了 v1 基于目标系统的复杂性，转而采用清晰的全局工作空间模型。
 
 ## 🖥️ 支持的 MCP 客户端
 
@@ -98,9 +103,7 @@ MCPM 将支持为以下客户端管理 MCP 服务器：
 
 ## 🔥 命令行界面 (CLI)
 
-MCPM 提供了一个使用 Python 的 Click 框架构建的全面 CLI。命令通常在当前**活动客户端**上操作。您可以使用 `mcpm client` 查看/设置活动客户端。许多命令还支持作用域修饰符，如 `@CLIENT_NAME/SERVER_NAME` 或 `%PROFILE_NAME/SERVER_NAME`，以直接针对特定客户端或配置文件。
-
-以下是按功能分组的可用命令：
+MCPM 提供了一个具有清晰、有组织界面的全面 CLI。v2.0 架构使用全局配置模型，其中服务器安装一次，可以使用配置文件进行组织，然后根据需要集成到特定的 MCP 客户端中。
 
 ### ℹ️ 一般
 
@@ -109,108 +112,68 @@ mcpm --help          # 显示帮助信息和可用命令
 mcpm --version       # 显示 MCPM 的当前版本
 ```
 
-### 🖥️ 客户端管理 (`client`)
+### 🌐 服务器管理
+
+全局服务器安装和管理命令：
 
 ```bash
-mcpm client ls        # 列出所有支持的 MCP 客户端，检测已安装的客户端，并显示活动客户端
-mcpm client edit      # 在外部编辑器中打开活动客户端的 MCP 配置文件
+# 🔍 搜索和安装
+mcpm search [QUERY]           # 在 MCP 注册表中搜索可用服务器
+mcpm info SERVER_NAME         # 显示服务器的详细信息
+mcpm install SERVER_NAME      # 从注册表安装服务器到全局配置
+mcpm uninstall SERVER_NAME    # 从全局配置中删除服务器
+
+# 📋 列出和检查
+mcpm ls                       # 列出所有已安装的服务器及其配置文件分配
+mcpm edit SERVER_NAME         # 编辑服务器配置
+mcpm inspect SERVER_NAME      # 启动 MCP Inspector 来测试/调试服务器
 ```
 
-### 🌐 服务器管理 (`server`)
+### 🚀 服务器执行
 
-这些命令在活动客户端上操作，除非提供了特定作用域（`@CLIENT` 或 `%PROFILE`）。
+直接执行服务器进行测试或集成：
 
 ```bash
-# 🔍 搜索和添加
-mcpm search [QUERY]       # 在 MCP 注册表中搜索可用服务器
-mcpm add SERVER_URL       # 添加 MCP 服务器配置（从 URL 或注册表名称）
-mcpm add SERVER_URL --alias ALIAS # 添加并使用自定义别名
-
-# 🛠️ 自定义添加
-mcpm import stdio SERVER_NAME --command COMMAND --args ARGS --env ENV # 手动添加一个 stdio MCP 服务器
-mcpm import remote SERVER_NAME --url URL # 手动添加一个 remote MCP 服务器
-mcpm import interact # 通过交互式添加一个服务器
-
-# 📋 列出和删除
-mcpm ls                   # 列出活动客户端/配置文件的服务器配置
-mcpm rm SERVER_NAME       # 删除服务器配置
-
-# 🔄 修改和组织
-mcpm cp SOURCE TARGET     # 复制服务器配置（例如，@client1/serverA %profileB）
-mcpm mv SOURCE TARGET     # 移动服务器配置（例如，%profileA/serverX @client2）
-
-# 📦 暂存（临时禁用/启用）
-mcpm stash SERVER_NAME    # 临时禁用/存储服务器配置
-mcpm pop [SERVER_NAME]    # 恢复最后暂存的服务器，或按名称恢复特定服务器
+mcpm run SERVER_NAME          # 通过 stdio 直接执行服务器
+mcpm run SERVER_NAME --http   # 通过 HTTP 执行服务器进行测试
+mcpm share SERVER_NAME        # 通过安全隧道分享服务器进行远程访问
+mcpm usage                    # 显示全面的分析和使用数据
 ```
 
-### 📂 配置文件管理 (`profile`)
+### 📂 配置文件管理
 
-配置文件是服务器配置的命名集合。它们允许您轻松切换不同的 MCP 服务器集。例如，您可能有一个 `work` 配置文件和一个 `personal` 配置文件，每个都包含不同的服务器。或者，您可能有一个 `production` 配置文件和一个 `development` 配置文件，每个都包含同一服务器的不同配置。
-
-当前*活动*配置文件的服务器通常由 MCPM 路由器等功能使用。使用 `mcpm target set %profile_name` 设置活动配置文件。
+配置文件是将服务器组织成不同工作流的逻辑组的虚拟标签：
 
 ```bash
-# 🔄 配置文件生命周期
-mcpm profile ls              # 列出所有可用的 MCPM 配置文件
-mcpm profile add PROFILE_NAME  # 添加新的空配置文件
-mcpm profile rm PROFILE_NAME   # 删除配置文件（不删除其中的服务器）
-mcpm profile rename OLD_NAME NEW_NAME # 重命名配置文件
+# 🔄 配置文件操作
+mcpm profile ls               # 列出所有配置文件及其标记的服务器
+mcpm profile create PROFILE   # 创建新配置文件
+mcpm profile rm PROFILE       # 删除配置文件（服务器保持安装）
+mcpm profile edit PROFILE     # 为配置文件进行交互式服务器选择
+
+# 🚀 配置文件执行
+mcpm profile run PROFILE      # 通过 stdio 或 HTTP 执行配置文件中的所有服务器
+mcpm profile share PROFILE    # 通过安全隧道分享配置文件中的所有服务器
+mcpm profile inspect PROFILE  # 为配置文件中的所有服务器启动 MCP Inspector
 ```
 
-### 🔌 路由器管理 (`router`)
+### 🖥️ 客户端集成
 
-MCPM 路由器作为后台守护进程运行，充当稳定端点（例如 `http://localhost:6276`），根据当前**活动配置文件**智能地将传入的 MCP 请求路由到适当的服务器。
-
-这允许您通过切换配置文件（使用 `mcpm target set %profile_name`）来更改底层服务器，而无需重新配置客户端应用程序。它们可以始终指向 MCPM 路由器的地址。
-
-路由器还维护与 MCP 服务器的持久连接，使多个客户端能够共享这些服务器会话。这消除了为每个客户端启动单独服务器实例的需要，显著减少资源使用和启动时间。在 [高级功能](docs/advanced_features.md) 中了解有关这些高级功能的更多信息。
-
-有关路由器实现和命名空间的更多技术细节，请参阅 [`docs/router_tech_design.md`](docs/router_tech_design.md)。
-
-Router可以通过命令`mcpm router share`来将router分享到公网。注意确保生成的密钥没有暴露，并只分享给可信用户。有关分享的更多细节，请参阅[分享](docs/router_share.md)。
+管理 MCP 客户端配置（Claude Desktop、Cursor、Windsurf 等）：
 
 ```bash
-mcpm router status                # 检查路由器守护进程是否正在运行
-mcpm router on                    # 启动 MCP 路由器守护进程
-mcpm router off                   # 停止 MCP 路由器守护进程
-mcpm router set --host HOST --port PORT --address ADDRESS  # 设置 MCP 路由器守护进程的主机,端口和分享的远程服务器
-mcpm router share                 # 将router分享到公网
-mcpm router unshare               # 取消分享
+mcpm client ls                 # 列出所有支持的 MCP 客户端及其状态
+mcpm client edit CLIENT_NAME   # 为客户端交互式启用/禁用服务器
+mcpm client edit CLIENT_NAME -e # 在外部编辑器中打开客户端配置
+mcpm client import CLIENT_NAME  # 从客户端导入服务器配置
 ```
 
-### 🤝 共享管理 (`share`)
-
-`mcpm share` 命令允许您将任何启动 MCP 服务器的 shell 命令，并立即将其公开为 SSE (Server-Sent Events) 服务器。它使用 `mcp-proxy` 处理服务器转换，然后创建一个安全隧道进行远程访问，使您的本地 MCP 服务器可以从任何地方访问。
-
-这对于快速共享开发服务器、自定义 MCP 服务器，甚至具有特定配置的标准服务器（无需公开部署）特别有用。
+### 🛠️ 系统与配置
 
 ```bash
-# 🚀 共享本地 MCP 服务器
-mcpm share "COMMAND" # 将 COMMAND 替换为您的实际服务器启动命令
-
-# ⚙️ 选项
-# COMMAND: 启动 MCP 服务器的 shell 命令 (例如 "uvx mcp-server-fetch", "npx mcp-server")。如果包含空格，则必须用引号括起来。
-# --port PORT: 指定 mcp-proxy 监听的本地端口。默认为随机可用端口。
-# --address ADDRESS: 指定隧道的公共地址 (例如 yourdomain.com:7000)。如果未提供，将生成随机隧道 URL。
-# --http: 如果设置，隧道将使用 HTTP 而不是 HTTPS。请谨慎使用。
-# --timeout TIMEOUT: mcp-proxy 等待服务器启动的超时时间（秒）。默认为 60。
-# --retry RETRY: 如果服务器启动失败，重试启动服务器的次数。默认为 0。
-
-# 💡 使用示例
-mcpm share "uvx mcp-server-fetch"
-mcpm share "npx mcp-server" --port 5000
-mcpm share "uv run my-mcp-server" --address myserver.com:7000
-mcpm share "npx -y @modelcontextprotocol/server-everything" --retry 3
-```
-
-### 🛠️ 实用工具 (`util`)
-
-```bash
-mcpm config clear-cache          # 清除 MCPM 的注册表缓存。缓存默认每 1 小时刷新一次。
-mcpm config set                  # 设置 MCPM 的全局配置，目前仅支持 node_executable
-mcpm config get <name>           # 获取 MCPM 的全局配置
-mcpm inspector                   # 启动 MCPM 检查器 UI 以检查服务器配置
+mcpm doctor                   # 检查系统健康状况和服务器状态
+mcpm config                   # 管理 MCPM 配置和设置
+mcpm migrate                  # 从 v1 迁移到 v2 配置
 ```
 
 ### 📚 注册表
@@ -219,20 +182,20 @@ MCP 注册表是可使用 MCPM 安装的可用 MCP 服务器的中央存储库�
 
 ## 🗺️ 路线图
 
-- [x] 登陆页面设置 (`mcpm.sh`)
-- [x] 核心 CLI 基础 (Click)
-- [x] 客户端检测和管理 (`mcpm client`)
-- [x] 基本服务器管理 (`mcpm add`, `mcpm ls`, `mcpm rm`)
-- [x] 注册表集成 (`mcpm search`, 按名称添加)
-- [x] 路由器功能 (`mcpm router`)
-- [x] MCP 配置文件 (`mcpm profile`)
-- [x] 服务器复制/移动 (`mcpm cp`, `mcpm mv`)
-- [x] 服务器暂存 (`mcpm stash`, `mcpm pop`)
-- [x] 路由器远程分享 (`mcpm router share`) 远程访问本地路由器和 MCP 服务器
-- [x] MCPM 路由器的 MCP 服务器访问监控（仅限本地，绝对不会有数据离开本地机器）
-- [ ] 通过 STDIO 的 MCPM 路由器（相同的强大功能集，具有配置文件和监控，但单客户端/租户）
-- [ ] MCPM 路由器的 MCP 服务器（实验性，允许 MCP 客户端动态切换配置文件，从注册表建议新的 MCP 服务器等）
-- [ ] 附加客户端支持（扩展注册表）
+### ✅ v2.0 已完成
+- [x] 全局服务器配置模型
+- [x] 基于配置文件的服务器标记和组织
+- [x] 交互式命令界面
+- [x] 客户端集成管理 (`mcpm client edit`)
+- [x] 具有一致 UX 的现代 CLI
+- [x] 注册表集成和服务器发现
+- [x] 直接服务器执行和分享
+- [x] 从现有客户端配置导入
+
+### 🔮 未来增强
+- [ ] 高级服务器访问监控和分析
+- [ ] 额外的客户端支持（gemini-cli、codex 等）
+- [ ] 在 docker 中执行
 
 ## 👨‍💻 开发
 

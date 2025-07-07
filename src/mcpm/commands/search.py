@@ -2,11 +2,11 @@
 Search command for MCPM - Search and display available MCP servers from the registry
 """
 
-import click
 from rich.console import Console
 
 from mcpm.utils.display import print_error, print_servers_table, print_simple_servers_list
 from mcpm.utils.repository import RepositoryManager
+from mcpm.utils.rich_click_config import click
 
 console = Console()
 repo_manager = RepositoryManager()

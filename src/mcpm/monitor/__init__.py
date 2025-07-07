@@ -7,8 +7,9 @@ from typing import Optional
 # Re-export base interfaces
 from .base import AccessEventType, AccessMonitor
 
+# session_tracker utilities removed - now handled by MCPMUnifiedTrackingMiddleware
 # Re-export implementations
-from .duckdb import DuckDBAccessMonitor
+from .sqlite import SQLiteAccessMonitor
 
 
 # Convenience function
@@ -23,7 +24,7 @@ async def get_monitor(db_path: Optional[str] = None) -> AccessMonitor:
     Returns:
         Configured AccessMonitor instance
     """
-    monitor = DuckDBAccessMonitor(db_path)
+    monitor = SQLiteAccessMonitor(db_path)
     await monitor.initialize_storage()
     return monitor
 
@@ -32,6 +33,6 @@ async def get_monitor(db_path: Optional[str] = None) -> AccessMonitor:
 __all__ = [
     "AccessEventType",
     "AccessMonitor",
-    "DuckDBAccessMonitor",
+    "SQLiteAccessMonitor",
     "get_monitor",
 ]

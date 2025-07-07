@@ -1,90 +1,77 @@
 """
-List command for MCP
+List command for MCP v2.0 - Global Configuration Model
 """
 
-import click
-from pydantic import TypeAdapter
 from rich.console import Console
 
-from mcpm.clients.client_config import ClientConfigManager
-from mcpm.clients.client_registry import ClientRegistry
-from mcpm.commands.target_operations.common import determine_scope
-from mcpm.core.schema import ServerConfig
+from mcpm.commands.target_operations.common import global_list_servers
 from mcpm.profile.profile_config import ProfileConfigManager
-from mcpm.utils.display import print_client_error, print_server_config
-from mcpm.utils.scope import ScopeType, format_scope
+from mcpm.utils.display import print_server_config
+from mcpm.utils.rich_click_config import click
 
 console = Console()
-client_config_manager = ClientConfigManager()
+profile_manager = ProfileConfigManager()
 
 
 @click.command()
-@click.option("--target", "-t", help="Target to list servers from")
+@click.option("--verbose", "-v", is_flag=True, help="Show detailed server configuration")
 @click.help_option("-h", "--help")
-def list(target: str | None = None):
-    """List all installed MCP servers.
+def list(verbose: bool = False):
+    """List all installed MCP servers from global configuration.
 
     Examples:
 
     \b
-        mcpm ls
-        mcpm ls -t @cursor
+        mcpm ls                    # List server names and profiles
+        mcpm ls -v                 # List servers with detailed configuration
+        mcpm profile ls            # List profiles and their included servers
     """
-    scope_type, scope = determine_scope(target)
-    if not scope:
+
+    # v2.0: Use global configuration model
+    console.print("[bold green]MCPM Global Configuration:[/]")
+
+    # Get all servers from global configuration
+    servers = global_list_servers()
+
+    if not servers:
+        console.print("\n[yellow]No MCP servers found in global configuration.[/]")
+        console.print("Use 'mcpm install <server>' to install a server.")
+        console.print()
         return
 
-    if scope_type == ScopeType.CLIENT:
-        # Get the active client manager and information
-        client_manager = ClientRegistry.get_client_manager(scope)
-        if client_manager is None:
-            print_client_error()
-            return
-        client_info = ClientRegistry.get_client_info(scope)
-        client_name = client_info.get("name", scope)
+    # Get all profiles to show which servers are tagged
+    profiles = profile_manager.list_profiles()
 
-        console.print(f"[bold green]MCP servers installed in {scope}:[/]")
+    # Create a mapping of server names to their profile tags
+    server_profiles = {}
+    for profile_name, profile_servers in profiles.items():
+        for server in profile_servers:
+            if server.name not in server_profiles:
+                server_profiles[server.name] = []
+            server_profiles[server.name].append(profile_name)
 
-        # Get all servers from active client config
-        servers = client_manager.get_servers()
+    console.print(f"\n[bold]Found {len(servers)} server(s) in global configuration:[/]")
+    console.print()
 
-        # Get stashed servers
-        formatted_scope = format_scope(scope_type, scope)
-        stashed_servers = client_config_manager.get_stashed_servers(formatted_scope)
+    # Display servers with their profiles
+    for server_name, server_config in servers.items():
+        # Show profiles if any
+        profiles_list = server_profiles.get(server_name, [])
+        if profiles_list:
+            highlighted_profiles = [f"[yellow]{profile}[/]" for profile in profiles_list]
+            profile_display = f" [dim](profiles:[/] {', '.join(highlighted_profiles)}[dim])[/]"
+        else:
+            profile_display = " [dim](no profiles)[/]"
 
-        if not servers and not stashed_servers:
-            console.print(f"[yellow]No MCP servers found in {client_name}.[/]")
-            console.print("Use 'mcpm add <server>' to add a server.")
-            return
+        console.print(f"[bold cyan]{server_name}[/]{profile_display}")
 
-        # Print active servers
-        if servers:
-            console.print("\n[bold]Active Servers:[/]")
-            for server_name, server_info in servers.items():
-                print_server_config(client_manager.from_client_format(server_name, server_info))
+        # Only show detailed config in verbose mode
+        if verbose:
+            print_server_config(server_config, show_name=False)
 
-        # Print stashed servers
-        if stashed_servers:
-            console.print("\n[bold]Stashed Servers:[/]")
-            for server_name, server_info in stashed_servers.items():
-                print_server_config(client_manager.from_client_format(server_name, server_info), is_stashed=True)
-    else:
-        # Get the active profile manager and information
-        profile = scope
-        profile_manager = ProfileConfigManager()
-        servers = profile_manager.get_profile(profile)
-        if servers is None:
-            console.print(f"[bold red]Error:[/] Profile '{profile}' not found.")
-            return
-        # Get all servers from active profile config
-        for server in servers:
-            print_server_config(server)
+    console.print()
 
-        # Get stashed servers
-        formatted_scope = format_scope(scope_type, scope)
-        stashed_servers = client_config_manager.get_stashed_servers(formatted_scope)
-        if stashed_servers:
-            console.print("\n[bold]Stashed Servers:[/]")
-            for server_name, server_info in stashed_servers.items():
-                print_server_config(TypeAdapter(ServerConfig).validate_python(server_info), is_stashed=True)
-    console.print("\n")
+    # Add hint about verbose mode if not specified
+    if not verbose:
+        console.print("[dim]Tip: Use 'mcpm ls -v' to see detailed server configurations[/]")
+        console.print()
