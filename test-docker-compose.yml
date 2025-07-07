@@ -1,0 +1,46 @@
+networks:
+  mcp-network:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 10.200.0.0/16
+services:
+  context7:
+    command: sh -c "npm install -g @upstash/context7-mcp@latest && npx @upstash/context7-mcp@latest"
+    container_name: mcp-context7
+    environment:
+    - MCP_SERVER_NAME=context7
+    - MCP_SERVER_PORT=3000
+    image: node:20-alpine
+    networks:
+    - mcp-network
+    ports:
+    - 3000:3000
+    restart: unless-stopped
+    volumes:
+    - ./volumes/context7:/data
+    working_dir: /app
+  postgresql:
+    container_name: mcp-postgresql
+    environment:
+    - POSTGRES_USER=${POSTGRES_USER:-mcpuser}
+    - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-password}
+    - POSTGRES_DB=${POSTGRES_DB:-mcpdb}
+    healthcheck:
+      interval: 10s
+      retries: 3
+      start_period: 30s
+      test:
+      - CMD-SHELL
+      - pg_isready -U ${POSTGRES_USER:-mcpuser}
+      timeout: 5s
+    image: postgres:16-alpine
+    networks:
+    - mcp-network
+    ports:
+    - 5432:5432
+    restart: unless-stopped
+    volumes:
+    - postgres-data:/var/lib/postgresql/data
+volumes:
+  postgres-data: {}
