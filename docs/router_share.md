@@ -1,46 +1,142 @@
-
-# MCPM Router Share
+# MCPM v2.0 Server Sharing
 
 ## Introduction
-Your local MCPM Router can be shared in public network and others can connect to your router by the share link and use your configured MCPM Profile. In this document, we will explain how to use it and how it works.
 
-## Create a share link
+MCPM v2.0 provides simplified server sharing through secure tunnels. You can share individual servers or entire profiles, allowing others to access your MCP servers remotely through public URLs.
+
+## Share Individual Servers
+
+Share a single server from your global configuration:
 
 ```bash
-mcpm router share
-mcpm router share --profile <PROFILE_NAME> --address <ADDRESS>
+mcpm share SERVER_NAME
+mcpm share SERVER_NAME --port 8080
+mcpm share SERVER_NAME --subdomain myserver
 ```
-There will be a share link and a secret. The final share link will be `http://<ADDRESS>?s=<SECRET>&profile=<PROFILE_NAME>`. You can share this link with others and by adding this share link to mcpm client, they can connect to your router.
 
-If address is not specified, the share link will be proxied by our server `share.mcpm.sh`. You can also specify a custom address to share.
+This creates a secure tunnel to your server, generating a public URL that others can use to connect.
 
-If profile is not specified, the share link will use the current active profile. If no active profile found, the user need to specify the profile manually.
+## Share Profiles
 
-To be noted that if your router is not on or your system sleeps, the shared link will not be accessible.
+Share all servers in a profile simultaneously:
 
-## How it works
-
-We use a fork version of frp from [huggingface/frp](https://github.com/huggingface/frp) to create a tunnel to your local MCPM Router. You can also check the [original frp](https://github.com/fatedier/frp) for more details about frp.
-
-If you want to set up your own frp tunnel, you can either build our docker image from scratch or use our published docker images for frps(server) and frpc(client) by following the instructions below.
-
-In your public server, you can create a frps config following the guide [here](https://github.com/huggingface/frp?tab=readme-ov-file#setting-up-a-share-server). Then start the frps container by:
 ```bash
-docker run -d --name frps -p 7000:7000 -p 7001:7001 -v /path/to/frps.ini:/frp/frps.ini ghcr.io/pathintegral-institute/frps:latest
+mcpm profile share PROFILE_NAME
+mcpm profile share web-dev --port 8080
 ```
 
-Then you can share the router with your own frp server by specifying the address:
-```bash
-mcpm router share --address <YOUR_ADDRESS>
-```
+This aggregates all servers in the profile and makes them available through a single endpoint.
+
+## How It Works
+
+MCPM v2.0 uses FastMCP for server aggregation and secure tunneling:
+
+1. **Server Execution**: Servers run directly via stdio or HTTP
+2. **Aggregation**: Multiple servers can be combined into a single endpoint
+3. **Tunneling**: Secure tunnels expose local servers to the internet
+4. **Authentication**: Optional authentication for secure access
 
 ## Authentication
-There will be a secret token generated for authentication. The user MUST specify the secret token as a query parameter `s=<SECRET>` when connecting to your router. Make sure to keep the secret token secure and only share it with trusted users.
 
-## Unshare
+Protect shared servers with authentication:
 
 ```bash
-mcpm router unshare
+mcpm share SERVER_NAME --auth
+mcpm profile share PROFILE_NAME --auth
 ```
 
-This will stop the tunnel and remove the share link.
+This generates authentication tokens that must be included when connecting to shared servers.
+
+## Local-Only Sharing
+
+For development and testing, share servers locally without public tunnels:
+
+```bash
+mcpm share SERVER_NAME --local-only
+mcpm run SERVER_NAME --http --port 8080
+```
+
+## Examples
+
+### Basic Server Sharing
+```bash
+# Install and share a server
+mcpm install mcp-server-browse
+mcpm share mcp-server-browse
+
+# Share with custom settings
+mcpm share mcp-server-browse --port 9000 --subdomain browse
+```
+
+### Profile Sharing
+```bash
+# Create a profile and share it
+mcpm profile create web-dev
+mcpm profile edit web-dev  # Add servers interactively
+mcpm profile share web-dev
+```
+
+### Development Workflow
+```bash
+# Test locally first
+mcpm run my-server --http --port 8080
+
+# Share publicly when ready
+mcpm share my-server --port 8080
+```
+
+## Client Connection
+
+Clients can connect to shared servers using the provided URL:
+
+```json
+{
+  "mcpServers": {
+    "shared-server": {
+      "command": ["curl"],
+      "args": ["-X", "POST", "https://shared-url.example.com"]
+    }
+  }
+}
+```
+
+## Security Considerations
+
+- **Authentication**: Use `--auth` for sensitive servers
+- **Network Access**: Shared servers are publicly accessible
+- **Resource Usage**: Monitor server resource consumption
+- **Access Control**: Only share servers with trusted users
+
+## Troubleshooting
+
+**Share command fails**
+- Check that the server exists: `mcpm ls`
+- Verify server configuration: `mcpm inspect SERVER_NAME`
+- Test local execution: `mcpm run SERVER_NAME`
+
+**Connection issues**
+- Verify the shared URL is accessible
+- Check authentication tokens if using `--auth`
+- Ensure the server is still running locally
+
+**Profile sharing problems**
+- Check profile exists: `mcpm profile ls`
+- Verify profile has servers: `mcpm profile ls PROFILE_NAME`
+- Test profile execution: `mcpm profile run PROFILE_NAME`
+
+## Migration from v1 Router
+
+If you were using the v1 router system:
+
+### Before (v1)
+```bash
+mcpm router start
+mcpm router share --profile web-dev
+```
+
+### After (v2)
+```bash
+mcpm profile share web-dev
+```
+
+The v2.0 sharing system eliminates the need for a separate router daemon, providing direct and more reliable sharing capabilities.

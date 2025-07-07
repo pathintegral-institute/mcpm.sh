@@ -1,86 +1,160 @@
 # MCPM v2.0 Migration Guide
 
-This guide helps existing MCPM users transition from the target-based system to the new simplified global configuration model.
+This guide helps existing MCPM v1 users transition to the new simplified global configuration model.
 
-## What Changed
+## What's New in v2.0
 
-### New Architecture
-- **Global Configuration Model**: All servers managed in a single global configuration
-- **Profile Tagging**: Profiles are now virtual tags, not separate configurations
-- **Direct Execution**: Run servers directly without target management
-- **Simplified Commands**: Cleaner command structure with logical grouping
+### Simplified Architecture
+- **Global Server Configuration**: All servers managed in a single global configuration
+- **Virtual Profiles**: Profiles are now tags on servers, not separate configurations
+- **Direct Execution**: Run servers directly without complex router setup
+- **Beautiful CLI**: Enhanced interface with rich formatting and better organization
+- **Client Integration**: Manage multiple MCP clients from one place
 
-### Removed Features
-- **Active Target System**: No more `mcpm target set` requirement
-- **Client-Specific Management**: No more `--target @client` flags
-- **Complex Target Routing**: Simplified to direct specification
+### Key Improvements
+- **Faster Startup**: No daemon dependencies, direct stdio execution
+- **Better Performance**: Direct execution eliminates router complexity
+- **Enhanced Usability**: Centralized server management, easy profile organization
+- **Developer Tools**: Built-in inspector, HTTP testing, public sharing
+- **Usage Analytics**: Track and analyze server usage patterns
 
-## Command Migration
+## Automatic Migration
 
-### Server Management
+MCPM v2.0 includes an automatic migration system that detects v1 configurations and guides you through the upgrade process.
 
-| **Old Command** | **New Command** | **Notes** |
+### Migration Process
+
+When you run any MCPM command with v1 configuration present, you'll see:
+
+1. **Welcome Screen**: Introduction to v2.0 with migration options
+2. **Configuration Analysis**: Review of your current v1 setup
+3. **v2.0 Features**: Overview of new capabilities and improvements
+4. **Breaking Changes**: Important changes that affect your workflow
+5. **Migration Choice**: Three options for proceeding
+
+### Migration Options
+
+#### Option 1: Migrate (Recommended)
+```
+Y - Migrate to v2 (recommended)
+```
+- Converts your v1 profiles to v2 virtual profiles
+- Migrates all servers to global configuration
+- Preserves your existing setup while upgrading to v2
+- Creates backup of v1 configuration files
+
+#### Option 2: Start Fresh
+```
+N - Start fresh with v2 (backup v1 configs)
+```
+- Backs up your v1 configuration safely
+- Starts with a clean v2 installation
+- Removes v1 files after backup
+- Good option if you want to reorganize from scratch
+
+#### Option 3: Ignore for Now
+```
+I - Ignore for now (continue with current command)
+```
+- Continues with your current command
+- Keeps v1 configuration unchanged
+- Can migrate later with `mcpm migrate`
+- Some v2 features may not work properly
+
+### Manual Migration
+
+You can also trigger migration manually:
+
+```bash
+mcpm migrate
+```
+
+This shows the same migration assistant as the automatic detection.
+
+## Command Changes
+
+### Main Commands
+
+| **v1 Command** | **v2 Command** | **Notes** |
 |----------------|----------------|-----------|
-| `mcpm add SERVER` | `mcpm install SERVER` | `add` still works as alias |
-| `mcpm add SERVER --target @client` | `mcpm install SERVER` | Install to global config |
-| `mcpm rm SERVER` | `mcpm uninstall SERVER` | `rm` still works as alias |
-| `mcpm ls --target @client` | `mcpm ls` | Single global view |
-| `mcpm target set @client` | *Removed* | No longer needed |
+| `mcpm add SERVER` | `mcpm install SERVER` | Cleaner naming |
+| `mcpm rm SERVER` | `mcpm uninstall SERVER` | Cleaner naming |
+| `mcpm ls` | `mcpm ls` | Same command, enhanced output |
+| `mcpm target set` | *Removed* | No longer needed |
+| `mcpm router start` | `mcpm run --http` | Direct HTTP execution |
+| `mcpm share` | `mcpm share` | Simplified sharing |
 
-### Profile Management
+### Profile Commands
 
-| **Old Command** | **New Command** | **Notes** |
+| **v1 Command** | **v2 Command** | **Notes** |
 |----------------|----------------|-----------|
-| `mcpm profile add NAME` | `mcpm profile create NAME` | Consistent naming |
-| `mcpm add SERVER --target %profile` | `mcpm profile add PROFILE SERVER` | Tag-based approach |
-| `N/A` | `mcpm profile remove PROFILE SERVER` | Remove profile tag |
-| `N/A` | `mcpm profile run PROFILE` | Execute profile servers |
+| `mcpm target create %profile` | `mcpm profile create PROFILE` | Virtual profiles |
+| `mcpm add SERVER --target %profile` | `mcpm profile edit PROFILE` | Interactive management |
+| `mcpm target use %profile` | `mcpm profile run PROFILE` | Execute profile servers |
+| `N/A` | `mcpm profile share PROFILE` | New: Share entire profiles |
 
 ### New Commands
 
 | **Command** | **Description** |
 |------------|----------------|
 | `mcpm doctor` | System health check and diagnostics |
-| `mcpm usage` | Analytics and usage data |
-| `mcpm run SERVER` | Execute server directly over stdio |
-| `mcpm inspect SERVER` | Launch MCP Inspector for specific server |
-| `mcpm import CLIENT` | Import configurations from supported clients |
-| `mcpm profile share PROFILE` | Share entire profile via tunnel |
+| `mcpm usage` | Comprehensive analytics and usage data |
+| `mcpm inspect SERVER` | Launch MCP Inspector for server testing |
+| `mcpm client ls` | List and manage MCP clients |
+| `mcpm client edit CLIENT` | Configure client server selections |
+| `mcpm client import CLIENT` | Import configurations from clients |
+| `mcpm config` | Manage MCPM configuration settings |
 
-## Migration Steps
+## Migration Examples
 
-### 1. Update Your Workflow
-
-**Before (v1.x):**
+### Before v2.0 (v1 workflow)
 ```bash
-# Set active target
+# Complex target-based workflow
+mcpm target create @cursor
 mcpm target set @cursor
-
-# Add servers to specific client
 mcpm add mcp-server-browse
 mcpm add mcp-server-git
 
-# Create and populate profile
-mcpm profile add web-dev
+mcpm target create %web-dev
 mcpm add mcp-server-browse --target %web-dev
+mcpm add mcp-server-git --target %web-dev
+
+mcpm router start
+mcpm share mcp-server-browse
 ```
 
-**After (v2.0):**
+### After v2.0 (simplified workflow)
 ```bash
-# Install servers globally
+# Simple global configuration
 mcpm install mcp-server-browse
 mcpm install mcp-server-git
 
-# Create and tag with profile
+# Create and organize with profiles
 mcpm profile create web-dev
-mcpm profile add web-dev mcp-server-browse
-mcpm profile add web-dev mcp-server-git
+mcpm profile edit web-dev  # Interactive server selection
+
+# Direct execution and sharing
+mcpm run mcp-server-browse
+mcpm share mcp-server-browse
+mcpm profile run web-dev
+mcpm profile share web-dev
 ```
 
-### 2. Client Configuration
+## Client Integration
 
-**Update your MCP client configurations to use direct execution:**
+### Before: Complex Router Setup
+```json
+{
+  "mcpServers": {
+    "mcpm-router": {
+      "command": ["mcpm", "router", "run"],
+      "args": ["--port", "3000"]
+    }
+  }
+}
+```
 
+### After: Direct Execution
 ```json
 {
   "mcpServers": {
@@ -94,94 +168,103 @@ mcpm profile add web-dev mcp-server-git
 }
 ```
 
-### 3. Import Existing Configurations
-
-**Import from existing clients:**
+Or use MCPM's client management:
 ```bash
-# Import servers from Cursor to a profile
-mcpm import cursor --profile development
-
-# Import from Claude Desktop to global config
-mcpm import claude-desktop
+mcpm client edit claude-desktop  # Interactive configuration
+mcpm client edit cursor         # Select servers for Cursor
 ```
 
-### 4. Organize with Profiles
+## Post-Migration Workflow
 
-**Create organized profiles:**
+### 1. Verify Migration
 ```bash
-# Create profiles for different contexts
-mcpm profile create web-dev
+mcpm ls                    # See all migrated servers
+mcpm profile ls           # See migrated profiles
+mcpm run SERVER-NAME      # Test server execution
+```
+
+### 2. Explore New Features
+```bash
+mcpm client ls            # See detected MCP clients
+mcpm doctor              # Check system health
+mcpm usage               # View usage analytics
+mcpm inspect SERVER      # Debug server with inspector
+```
+
+### 3. Organize with Profiles
+```bash
+mcpm profile create frontend
+mcpm profile create backend
 mcpm profile create ai-tools
-mcpm profile create data-analysis
 
-# Tag servers with profiles
-mcpm profile add web-dev mcp-server-browse
-mcpm profile add web-dev mcp-server-git
-mcpm profile add ai-tools mcp-server-anthropic
-mcpm profile add data-analysis mcp-server-pandas
+# Use interactive editor to assign servers
+mcpm profile edit frontend
 ```
 
-## Benefits of v2.0
+### 4. Client Integration
+```bash
+# Configure clients interactively
+mcpm client edit claude-desktop
+mcpm client edit cursor
 
-### Simplified Management
-- **No Active Target**: Commands work immediately without setup
-- **Global Workspace**: All servers in one place, easy to discover
-- **Flexible Organization**: Tag servers with multiple profiles
-
-### Better Developer Experience
-- **Direct Execution**: `mcpm run server-name` for instant testing
-- **Health Monitoring**: `mcpm doctor` for system diagnostics
-- **Usage Analytics**: `mcpm usage` for insights
-- **Easy Import**: `mcpm import client-name` for migrations
-
-### Enhanced Workflows
-- **Profile Execution**: `mcpm profile run web-dev` for environment setup
-- **Profile Sharing**: `mcpm profile share web-dev` for collaboration
-- **Comprehensive Testing**: `mcpm inspect server-name` for debugging
+# Or import existing configurations
+mcpm client import claude-desktop
+```
 
 ## Troubleshooting
 
-### Common Issues
+### Migration Issues
 
-**Issue**: `mcpm add` not working
-- **Solution**: Use `mcpm install` or update to new command structure
+**Migration fails with profile errors**
+- Check that profile servers exist in global config
+- Verify server configurations are valid
+- Run `mcpm doctor` for diagnostic information
 
-**Issue**: "No active target set" error
-- **Solution**: Update to v2.0 commands that don't require targets
+**"No v1 config found" when you have v1 files**
+- Ensure files are in `~/.config/mcpm/`
+- Check file permissions and format
+- Try `mcpm migrate` to trigger manual migration
 
-**Issue**: Can't find installed servers
-- **Solution**: Use `mcpm ls` to see all servers, no target required
+**Stashed servers not migrated**
+- Migration asks what to do with stashed servers
+- Choose "restore" to add them to global config
+- Choose "document" to save them for manual review
 
-**Issue**: Profile commands not working as expected
-- **Solution**: Profiles are now tags, use `mcpm profile add PROFILE SERVER`
+### Post-Migration Issues
 
-### Getting Help
+**Servers not working in clients**
+- Update client configurations to use `mcpm run SERVER`
+- Use `mcpm client edit CLIENT` for interactive setup
+- Check server status with `mcpm ls`
+
+**Profile commands not working**
+- Profiles are now virtual tags, not separate configurations
+- Use `mcpm profile edit PROFILE` to manage server assignments
+- Check profile status with `mcpm profile ls`
+
+**Command not found errors**
+- Some v1 commands have been removed or renamed
+- Use `mcpm --help` to see all available commands
+- Check this guide for command equivalents
+
+## Getting Help
 
 - **Health Check**: `mcpm doctor` - Diagnose system issues
-- **Command Help**: `mcpm COMMAND --help` - Detailed command information
-- **List Available**: `mcpm --help` - See all available commands
-- **Import Options**: `mcpm import --list-clients` - See supported clients
+- **Command Help**: `mcpm COMMAND --help` - Detailed command information  
+- **Migration Help**: `mcpm migrate --help` - Migration-specific options
+- **Support**: https://github.com/pathintegral-institute/mcpm.sh/issues
 
-## Legacy Support
+## Backup Information
 
-### Backward Compatibility
-- **`mcpm add`** still works (alias for `install`)
-- **`mcpm rm`** still works (alias for `uninstall`)
-- **Existing profiles** continue to work with new tagging system
-- **Client configurations** work with `mcpm run` approach
+During migration, MCPM creates comprehensive backups:
 
-### Deprecation Timeline
-- **v2.0**: Legacy commands work with deprecation warnings
-- **v2.1**: Legacy commands show migration suggestions
-- **v3.0**: Legacy commands removed (target system, client management)
+- **Location**: `~/.config/mcpm/backups/`
+- **Contents**: Original v1 `config.json` and `profiles.json`
+- **README**: Detailed backup information and recovery instructions
+- **Timestamp**: Each backup includes creation timestamp
 
-## Support
-
-For questions or issues during migration:
-- **Documentation**: https://github.com/pathintegral-institute/mcpm.sh
-- **Issues**: https://github.com/pathintegral-institute/mcpm.sh/issues
-- **Help Command**: `mcpm --help` for quick reference
+Your original v1 configuration is never modified until you confirm migration.
 
 ---
 
-*This migration preserves all your existing functionality while providing a cleaner, more intuitive interface for managing MCP servers.*
+*MCPM v2.0 provides a cleaner, more powerful interface while preserving all your existing functionality. The migration process is designed to be safe and reversible.*

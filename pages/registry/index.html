@@ -477,6 +477,10 @@
             padding-top: 1rem;
             margin-top: auto;
         }
+
+        .server-card .meta-lucien .category {
+            margin-right: auto;
+        }
         
         .install-button {
             background: var(--gradient-primary);
@@ -1722,6 +1726,10 @@
 
                 const meta = document.createElement('div');
                 meta.className = 'meta';
+
+                if (isLucien) {
+                    meta.classList.add('meta-lucien');
+                }
 
                 // Add placeholder for author that will be populated later
                 const authorMeta = document.createElement('span');
