@@ -72,8 +72,9 @@ class FullServerConfig(BaseModel):
     def to_server_config(self) -> ServerConfig:
         """Convert FullServerConfig to a common server configuration format"""
         # Check if this is an HTTP server
-        if self.installation == "http" and self.url:
-            # For HTTP servers, use the headers field directly
+        if self.installation == "http":
+            if not self.url:
+                raise ValueError(f"URL is required for HTTP server '{self.name}'")
             return RemoteServerConfig(name=self.name, url=self.url, headers=self.headers)
         else:
             # Default to STDIO for all other cases
