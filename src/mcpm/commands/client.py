@@ -194,13 +194,14 @@ def list_clients(verbose):
     console.print(table)
     console.print()
 
-    # Show uninstalled clients in compact format
+    # Show uninstalled clients in compact format with client codes
     if uninstalled_client_names:
         uninstalled_display_names = []
         for client_name in sorted(uninstalled_client_names):
             client_info = ClientRegistry.get_client_info(client_name)
             display_name = client_info.get("name", client_name)
-            uninstalled_display_names.append(display_name)
+            # Include client code for undetected clients
+            uninstalled_display_names.append(f"{display_name} ({client_name})")
 
         console.print(f"[dim]Additional supported clients (not detected): {', '.join(uninstalled_display_names)}[/]")
         console.print()
@@ -242,9 +243,11 @@ def edit_client(client_name, external, config_path_override):
     display_name = client_info.get("name", client_name)
 
     # Check if the client is installed
-    if not client_manager.is_client_installed():
-        print_error(f"{display_name} installation not detected.")
-        return
+    client_is_installed = client_manager.is_client_installed()
+    if not client_is_installed:
+        console.print(f"[yellow]⚠️  {display_name} installation not detected.[/]")
+        console.print(f"[yellow]Config file will be created at: {client_manager.config_path}[/]")
+        console.print(f"[dim]You can still configure servers, but make sure to install {display_name} later.[/]\n")
 
     # Get the client config file path
     config_path = client_manager.config_path

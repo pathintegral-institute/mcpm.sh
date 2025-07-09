@@ -4,13 +4,19 @@ List command for MCP v2.0 - Global Configuration Model
 
 from rich.console import Console
 
-from mcpm.commands.target_operations.common import global_list_servers
+from mcpm.global_config import GlobalConfigManager
 from mcpm.profile.profile_config import ProfileConfigManager
 from mcpm.utils.display import print_server_config
 from mcpm.utils.rich_click_config import click
 
 console = Console()
 profile_manager = ProfileConfigManager()
+global_config_manager = GlobalConfigManager()
+
+
+def global_list_servers():
+    """List all servers in the global MCPM configuration."""
+    return global_config_manager.list_servers()
 
 
 @click.command()

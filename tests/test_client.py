@@ -294,15 +294,15 @@ def test_client_edit_command_client_not_installed(monkeypatch):
     monkeypatch.setattr(ClientRegistry, "get_client_manager", Mock(return_value=mock_client_manager))
     monkeypatch.setattr(ClientRegistry, "get_client_info", Mock(return_value={"name": "Windsurf"}))
 
-    # Mock print_error
-    with patch("mcpm.commands.client.print_error") as mock_print_error:
-        # Run the command
-        runner = CliRunner()
-        result = runner.invoke(edit_client, ["windsurf"])
+    # Run the command
+    runner = CliRunner()
+    result = runner.invoke(edit_client, ["windsurf"])
 
-        # Check the result
-        assert result.exit_code == 0
-        mock_print_error.assert_called_once_with("Windsurf installation not detected.")
+    # Check the result - should show warning but continue with interactive selection
+    assert result.exit_code == 0
+    assert "⚠️  Windsurf installation not detected." in result.output
+    assert "Config file will be created at: /path/to/config.json" in result.output
+    assert "You can still configure servers, but make sure to install Windsurf later." in result.output
 
 
 def test_client_edit_command_config_exists(monkeypatch, tmp_path):

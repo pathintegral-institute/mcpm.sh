@@ -1,3 +1,10 @@
+# [2.2.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.1.0...v2.2.0) (2025-07-09)
+
+
+### Features
+
+* refactor commands to v2 structure and add HTTP server support ([#211](https://github.com/pathintegral-institute/mcpm.sh/issues/211)) ([6ebca95](https://github.com/pathintegral-institute/mcpm.sh/commit/6ebca959e631309f6f61db55e87bf8582f44d648))
+
 # [2.1.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.0.0...v2.1.0) (2025-07-07)
 
 

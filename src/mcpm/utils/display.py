@@ -8,7 +8,7 @@ from rich.console import Console
 from rich.markup import escape
 from rich.table import Table
 
-from mcpm.core.schema import CustomServerConfig, RemoteServerConfig, ServerConfig
+from mcpm.core.schema import CustomServerConfig, RemoteServerConfig, ServerConfig, STDIOServerConfig
 from mcpm.utils.scope import CLIENT_PREFIX, PROFILE_PREFIX
 
 console = Console()
@@ -45,6 +45,13 @@ def print_server_config(server_config: ServerConfig, is_stashed=False, show_name
         console.print(json.dumps(server_config.config, indent=2))
         console.print("  " + "-" * 50)
         return
+
+    # Handle STDIOServerConfig - all remaining configs should be STDIO
+    if not isinstance(server_config, STDIOServerConfig):
+        console.print("  Type: [red]Unknown server type[/]")
+        console.print("  " + "-" * 50)
+        return
+
     command = server_config.command
     console.print(f"  Command: [green]{command}[/]")
 

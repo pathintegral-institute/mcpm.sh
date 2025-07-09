@@ -2,14 +2,138 @@
 FastMCP middleware adapters for MCPM monitoring and authentication.
 """
 
+import logging
 import time
 import uuid
+from typing import Any
 
-from fastmcp.server.middleware import Middleware
+import mcp.types as mt
+from fastmcp.server.middleware import CallNext, Middleware, MiddlewareContext
 
 from mcpm.monitor.base import AccessEventType, AccessMonitor, SessionSource, SessionTransport
 
 # MCPMMonitoringMiddleware removed - functionality moved to MCPMUnifiedTrackingMiddleware
+
+
+class MCPMDebugMiddleware(Middleware):
+    """Debug middleware that logs all proxy activity including notifications when debug is enabled.
+
+    Note: This middleware intercepts messages flowing FROM clients TO servers through the proxy.
+    Progress notifications that flow FROM servers TO clients are handled differently and will
+    not appear in the middleware logs. To debug progress notifications, check the FastMCP
+    proxy logs and the Context.report_progress debug messages.
+    """
+
+    def __init__(self):
+        self.logger = logging.getLogger(__name__)
+
+    async def on_message(
+        self,
+        context: MiddlewareContext[Any],
+        call_next: CallNext[Any, Any],
+    ) -> Any:
+        """Log all messages (requests and notifications) with basic information."""
+        message_type = context.type
+        method = context.method or "unknown"
+        source = context.source
+
+        self.logger.debug(f"[PROXY DEBUG] {message_type.upper()} - {method} from {source}")
+
+        try:
+            result = await call_next(context)
+            return result
+
+        except Exception as e:
+            self.logger.debug(f"[PROXY DEBUG] Error in {method}: {type(e).__name__}: {e}")
+            raise
+
+    async def on_notification(
+        self,
+        context: MiddlewareContext[mt.Notification],
+        call_next: CallNext[mt.Notification, Any],
+    ) -> Any:
+        """Log notification details including progress notifications."""
+        notification = context.message
+        method = notification.method if hasattr(notification, "method") else "unknown"
+
+        # Only log progress notifications with details, others just basic info
+        if method == "notifications/progress":
+            params = getattr(notification, "params", None)
+            if params:
+                progress = getattr(params, "progress", "unknown")
+                total = getattr(params, "total", "unknown")
+                self.logger.debug(f"[PROXY DEBUG] Progress notification: {progress}/{total}")
+
+        return await call_next(context)
+
+    async def on_call_tool(
+        self,
+        context: MiddlewareContext[mt.CallToolRequestParams],
+        call_next: CallNext[mt.CallToolRequestParams, mt.CallToolResult],
+    ) -> mt.CallToolResult:
+        """Log tool invocations with timing information."""
+        params = context.message
+        tool_name = params.name if hasattr(params, "name") else "unknown"
+
+        start_time = time.time()
+        self.logger.debug(f"[PROXY DEBUG] TOOL CALL: {tool_name}")
+
+        try:
+            result = await call_next(context)
+            duration = (time.time() - start_time) * 1000
+            self.logger.debug(f"[PROXY DEBUG] Tool {tool_name} completed in {duration:.2f}ms")
+            return result
+
+        except Exception as e:
+            duration = (time.time() - start_time) * 1000
+            self.logger.debug(f"[PROXY DEBUG] Tool {tool_name} failed after {duration:.2f}ms: {e}")
+            raise
+
+    async def on_read_resource(
+        self,
+        context: MiddlewareContext[mt.ReadResourceRequestParams],
+        call_next: CallNext[mt.ReadResourceRequestParams, mt.ReadResourceResult],
+    ) -> mt.ReadResourceResult:
+        """Log resource access with timing information."""
+        params = context.message
+        uri = params.uri if hasattr(params, "uri") else "unknown"
+
+        start_time = time.time()
+        self.logger.debug(f"[PROXY DEBUG] RESOURCE READ: {uri}")
+
+        try:
+            result = await call_next(context)
+            duration = (time.time() - start_time) * 1000
+            self.logger.debug(f"[PROXY DEBUG] Resource {uri} read in {duration:.2f}ms")
+            return result
+
+        except Exception as e:
+            duration = (time.time() - start_time) * 1000
+            self.logger.debug(f"[PROXY DEBUG] Resource {uri} failed after {duration:.2f}ms: {e}")
+            raise
+
+    async def on_get_prompt(
+        self,
+        context: MiddlewareContext[mt.GetPromptRequestParams],
+        call_next: CallNext[mt.GetPromptRequestParams, mt.GetPromptResult],
+    ) -> mt.GetPromptResult:
+        """Log prompt execution with timing information."""
+        params = context.message
+        prompt_name = params.name if hasattr(params, "name") else "unknown"
+
+        start_time = time.time()
+        self.logger.debug(f"[PROXY DEBUG] PROMPT GET: {prompt_name}")
+
+        try:
+            result = await call_next(context)
+            duration = (time.time() - start_time) * 1000
+            self.logger.debug(f"[PROXY DEBUG] Prompt {prompt_name} executed in {duration:.2f}ms")
+            return result
+
+        except Exception as e:
+            duration = (time.time() - start_time) * 1000
+            self.logger.debug(f"[PROXY DEBUG] Prompt {prompt_name} failed after {duration:.2f}ms: {e}")
+            raise
 
 
 class MCPMAuthMiddleware(Middleware):
@@ -86,9 +210,9 @@ class MCPMUnifiedTrackingMiddleware(Middleware):
     def __init__(
         self,
         access_monitor: AccessMonitor,
-        server_name: str = None,
+        server_name: str | None = None,
         action: str = "proxy",
-        profile_name: str = None,
+        profile_name: str | None = None,
         transport: SessionTransport = SessionTransport.HTTP,
     ):
         self.monitor = access_monitor

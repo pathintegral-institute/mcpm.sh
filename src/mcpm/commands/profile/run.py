@@ -42,7 +42,7 @@ async def find_available_port(preferred_port, max_attempts=10):
     return preferred_port
 
 
-async def run_profile_fastmcp(profile_servers, profile_name, http_mode=False, port=DEFAULT_PORT):
+async def run_profile_fastmcp(profile_servers, profile_name, http_mode=False, port=DEFAULT_PORT, host="127.0.0.1"):
     """Run profile servers using FastMCP proxy for proper aggregation."""
     server_count = len(profile_servers)
     logger.debug(f"Using FastMCP proxy to aggregate {server_count} server(s)")
@@ -75,7 +75,7 @@ async def run_profile_fastmcp(profile_servers, profile_name, http_mode=False, po
                 logger.debug(f"Port {port} is busy, using port {actual_port} instead")
 
             # Display profile information in a nice panel
-            http_url = f"http://127.0.0.1:{actual_port}/mcp/"
+            http_url = f"http://{host}:{actual_port}/mcp/"
 
             # Build server list
             server_list = "\n".join([f"  • [cyan]{server.name}[/]" for server in profile_servers])
@@ -91,11 +91,11 @@ async def run_profile_fastmcp(profile_servers, profile_name, http_mode=False, po
             )
             console.print(panel)
 
-            logger.debug(f"Starting FastMCP proxy for profile '{profile_name}' on port {actual_port}")
+            logger.debug(f"Starting FastMCP proxy for profile '{profile_name}' on {host}:{actual_port}")
 
             # Run the aggregated proxy over HTTP with uvicorn logging control
             await proxy.run_http_async(
-                host="127.0.0.1", port=actual_port, uvicorn_config={"log_level": get_uvicorn_log_level()}
+                host=host, port=actual_port, uvicorn_config={"log_level": get_uvicorn_log_level()}
             )
         else:
             # Run the aggregated proxy over stdio (default)
@@ -116,8 +116,9 @@ async def run_profile_fastmcp(profile_servers, profile_name, http_mode=False, po
 @click.argument("profile_name")
 @click.option("--http", is_flag=True, help="Run profile over HTTP instead of stdio")
 @click.option("--port", type=int, default=DEFAULT_PORT, help=f"Port for HTTP mode (default: {DEFAULT_PORT})")
+@click.option("--host", type=str, default="127.0.0.1", help="Host address for HTTP mode (default: 127.0.0.1)")
 @click.help_option("-h", "--help")
-def run(profile_name, http, port):
+def run(profile_name, http, port, host):
     """Execute all servers in a profile over stdio or HTTP.
 
     Uses FastMCP proxy to aggregate servers into a unified MCP interface
@@ -126,9 +127,10 @@ def run(profile_name, http, port):
     Examples:
 
     \b
-        mcpm profile run web-dev                    # Run over stdio (default)
-        mcpm profile run --http web-dev             # Run over HTTP on port 6276
-        mcpm profile run --http --port 9000 ai      # Run over HTTP on port 9000
+        mcpm profile run web-dev                          # Run over stdio (default)
+        mcpm profile run --http web-dev                   # Run over HTTP on 127.0.0.1:6276
+        mcpm profile run --http --port 9000 ai            # Run over HTTP on 127.0.0.1:9000
+        mcpm profile run --http --host 0.0.0.0 web-dev    # Run over HTTP on 0.0.0.0:6276
 
     Debug logging: Set MCPM_DEBUG=1 for verbose output
     """
@@ -171,4 +173,4 @@ def run(profile_name, http, port):
         logger.debug(f"HTTP mode on port {port}")
 
     # Run the async function
-    return asyncio.run(run_profile_fastmcp(profile_servers, profile_name, http_mode=http, port=port))
+    return asyncio.run(run_profile_fastmcp(profile_servers, profile_name, http_mode=http, port=port, host=host))

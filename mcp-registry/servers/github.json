@@ -11,9 +11,7 @@
     "name": "GitHub"
   },
   "license": "MIT",
-  "categories": [
-    "Dev Tools"
-  ],
+  "categories": ["Dev Tools"],
   "tags": [
     "github",
     "code",
@@ -24,36 +22,18 @@
     "api"
   ],
   "arguments": {
-    "GITHUB_API_TOKEN": {
-      "description": "GitHub Personal Access Token for authentication",
+    "GITHUB_PERSONAL_ACCESS_TOKEN": {
+      "description": "GitHub Personal Access Token for authentication. Not required for http installation.",
       "required": true,
       "example": "ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-    },
-    "GITHUB_BASE_URL": {
-      "description": "GitHub API base URL (for GitHub Enterprise Server)",
-      "required": false,
-      "example": "https://github.example.com/api/v3"
     }
   },
   "installations": {
     "http": {
       "type": "http",
-      "url": "https://github.com/github/github-mcp-server/releases/latest/download/github-mcp-server",
-      "description": "Download and run binary from GitHub releases",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "description": "Run github mcp directly with OAuth",
       "recommended": true
-    },
-    "custom": {
-      "type": "custom",
-      "command": "go",
-      "args": [
-        "run",
-        "github.com/github/github-mcp-server@latest"
-      ],
-      "env": {
-        "GITHUB_API_TOKEN": "${GITHUB_API_TOKEN}",
-        "GITHUB_BASE_URL": "${GITHUB_BASE_URL}"
-      },
-      "description": "Run directly with Go"
     },
     "docker": {
       "type": "docker",
@@ -63,14 +43,11 @@
         "-i",
         "--rm",
         "-e",
-        "GITHUB_API_TOKEN",
-        "-e",
-        "GITHUB_BASE_URL",
-        "ghcr.io/github/github-mcp-server:latest"
+        "${GITHUB_PERSONAL_ACCESS_TOKEN}",
+        "ghcr.io/github/github-mcp-server"
       ],
       "env": {
-        "GITHUB_API_TOKEN": "${GITHUB_API_TOKEN}",
-        "GITHUB_BASE_URL": "${GITHUB_BASE_URL}"
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
       },
       "description": "Run with Docker"
     }

@@ -1,26 +1,42 @@
 """
-Remove command for MCPM
+Uninstall command for removing MCP servers from global configuration
 """
 
 from rich.console import Console
 from rich.prompt import Confirm
 
-from mcpm.commands.target_operations.common import (
-    determine_target,
-    global_get_server,
-    global_remove_server,
-)
+from mcpm.global_config import GlobalConfigManager
 from mcpm.utils.display import print_server_config
 from mcpm.utils.rich_click_config import click
 
 console = Console()
+global_config_manager = GlobalConfigManager()
+
+
+def global_get_server(server_name: str):
+    """Get a server from the global MCPM configuration."""
+    server = global_config_manager.get_server(server_name)
+    if not server:
+        console.print(f"[bold red]Error:[/] Server '{server_name}' not found in global configuration.")
+    return server
+
+
+def global_remove_server(server_name: str) -> bool:
+    """Remove a server from the global MCPM configuration and clean up profile tags."""
+    if not global_config_manager.server_exists(server_name):
+        console.print(f"[bold red]Error:[/] Server '{server_name}' not found in global configuration.")
+        return False
+
+    # Remove from global config (this automatically removes all profile tags)
+    success = global_config_manager.remove_server(server_name)
+    return success
 
 
 @click.command()
 @click.argument("server_name")
 @click.option("--force", "-f", is_flag=True, help="Force removal without confirmation")
 @click.help_option("-h", "--help")
-def remove(server_name, force):
+def uninstall(server_name, force):
     """Remove an installed MCP server from global configuration.
 
     Removes servers from the global MCPM configuration and clears
@@ -29,17 +45,11 @@ def remove(server_name, force):
     Examples:
 
     \b
-        mcpm rm filesystem
-        mcpm rm filesystem --force
+        mcpm uninstall filesystem
+        mcpm uninstall filesystem --force
     """
-    # v2.0: Extract server name and use global configuration
-    scope_type, scope, extracted_server_name = determine_target(server_name)
-
-    # In v2.0, we use the extracted server name, or the original if no extraction occurred
-    actual_server_name = extracted_server_name if extracted_server_name else server_name
-
     # Get server from global configuration
-    server_info = global_get_server(actual_server_name)
+    server_info = global_get_server(server_name)
     if not server_info:
         return  # Error message already printed by global_get_server
 
@@ -59,13 +69,13 @@ def remove(server_name, force):
             return
 
     # Log the removal action
-    console.print(f"[bold red]Removing MCP server from global configuration:[/] {actual_server_name}")
+    console.print(f"[bold red]Removing MCP server from global configuration:[/] {server_name}")
 
-    # v2.0: Remove from global configuration
-    success = global_remove_server(actual_server_name)
+    # Remove from global configuration
+    success = global_remove_server(server_name)
 
     if success:
-        console.print(f"[green]Successfully removed server:[/] {actual_server_name}")
+        console.print(f"[green]Successfully removed server:[/] {server_name}")
         console.print("[dim]Note: Server has been removed from global config. Profile tags are also cleared.[/]")
     else:
-        console.print(f"[bold red]Error:[/] Failed to remove server '{actual_server_name}'.")
+        console.print(f"[bold red]Error:[/] Failed to remove server '{server_name}'.")
