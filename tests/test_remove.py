@@ -8,7 +8,7 @@ from unittest.mock import patch
 
 from click.testing import CliRunner
 
-from mcpm.commands.target_operations.remove import remove
+from mcpm.commands.uninstall import uninstall
 from mcpm.core.schema import STDIOServerConfig
 from mcpm.global_config import GlobalConfigManager
 
@@ -30,9 +30,9 @@ def test_remove_server_success():
         global_config_manager.add_server(test_server)
 
         # Mock the global config manager in the remove command
-        with patch("mcpm.commands.target_operations.common.global_config_manager", global_config_manager):
+        with patch("mcpm.commands.uninstall.global_config_manager", global_config_manager):
             runner = CliRunner()
-            result = runner.invoke(remove, ["test-server", "--force"])
+            result = runner.invoke(uninstall, ["test-server", "--force"])
 
         assert result.exit_code == 0
         assert "Successfully removed server: test-server" in result.output
@@ -47,9 +47,9 @@ def test_remove_server_not_found():
         global_config_manager = GlobalConfigManager(config_path=str(global_config_path))
 
         # Mock the global config manager
-        with patch("mcpm.commands.target_operations.common.global_config_manager", global_config_manager):
+        with patch("mcpm.commands.uninstall.global_config_manager", global_config_manager):
             runner = CliRunner()
-            result = runner.invoke(remove, ["non-existent-server", "--force"])
+            result = runner.invoke(uninstall, ["non-existent-server", "--force"])
 
         assert result.exit_code == 0
         assert "Server 'non-existent-server' not found in global configuration" in result.output
@@ -73,11 +73,11 @@ def test_remove_server_cancelled():
 
         # Mock the global config manager and user input
         with (
-            patch("mcpm.commands.target_operations.common.global_config_manager", global_config_manager),
+            patch("mcpm.commands.uninstall.global_config_manager", global_config_manager),
             patch("rich.prompt.Confirm.ask", return_value=False),
         ):
             runner = CliRunner()
-            result = runner.invoke(remove, ["test-server"])
+            result = runner.invoke(uninstall, ["test-server"])
 
         assert result.exit_code == 0
         assert "Removal cancelled" in result.output
@@ -103,11 +103,11 @@ def test_remove_server_with_confirmation():
 
         # Mock the global config manager and user input
         with (
-            patch("mcpm.commands.target_operations.common.global_config_manager", global_config_manager),
+            patch("mcpm.commands.uninstall.global_config_manager", global_config_manager),
             patch("rich.prompt.Confirm.ask", return_value=True),
         ):
             runner = CliRunner()
-            result = runner.invoke(remove, ["test-server"])
+            result = runner.invoke(uninstall, ["test-server"])
 
         assert result.exit_code == 0
         assert "Successfully removed server: test-server" in result.output

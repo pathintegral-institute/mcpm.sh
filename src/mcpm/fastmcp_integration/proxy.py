@@ -2,7 +2,8 @@
 FastMCP proxy factory for MCPM server aggregation.
 """
 
-from typing import Any, Dict, List, Optional
+import logging
+from typing import Dict, List, Optional
 
 from fastmcp import FastMCP
 from fastmcp.utilities.mcp_config import (
@@ -18,6 +19,8 @@ from mcpm.monitor.sqlite import SQLiteAccessMonitor
 # FastMCP config models are available if needed in the future
 # from .config import create_mcp_config, create_stdio_server_config, create_remote_server_config
 from .middleware import MCPMAuthMiddleware, MCPMUnifiedTrackingMiddleware
+
+logger = logging.getLogger(__name__)
 
 
 class MCPMProxyFactory:
@@ -85,7 +88,6 @@ class MCPMProxyFactory:
                     # Ensure all environment values are strings (server.env is Dict[str, str])
                     env_config.update(server.env)
 
-                config: Dict[str, Any] = {"command": command_parts, "env": env_config}
                 server_configs[server.name] = StdioMCPServer(
                     command=server.command,
                     args=server.args or [],
@@ -93,14 +95,11 @@ class MCPMProxyFactory:
                 )
             elif isinstance(server, RemoteServerConfig):
                 # RemoteServerConfig - HTTP/SSE transport
-                config: Dict[str, Any] = {"url": server.url}
-                if server.headers:
-                    # Convert all header values to strings (FastMCP expects Dict[str, str])
-                    string_headers = {k: str(v) for k, v in server.headers.items()}
-                    config["headers"] = string_headers
+                # Convert all header values to strings (FastMCP expects Dict[str, str])
+                string_headers = {k: str(v) for k, v in server.headers.items()} if server.headers else {}
                 server_configs[server.name] = RemoteMCPServer(
                     url=server.url,
-                    headers=server.headers or {},
+                    headers=string_headers,
                 )
             elif isinstance(server, CustomServerConfig):
                 # CustomServerConfig is for non-standard client configs - skip it
@@ -150,11 +149,12 @@ class MCPMProxyFactory:
         self,
         proxy: FastMCP,
         stdio_mode: bool = True,
-        server_name: str = None,
+        server_name: Optional[str] = None,
         action: str = "proxy",
-        profile_name: str = None,
+        profile_name: Optional[str] = None,
     ) -> None:
         """Add MCPM-specific middleware to the proxy."""
+
         # Add unified tracking middleware (replaces both monitoring and usage tracking)
         if self.access_monitor:
             transport = SessionTransport.STDIO if stdio_mode else SessionTransport.HTTP
@@ -168,10 +168,10 @@ class MCPMProxyFactory:
             proxy.add_middleware(unified_middleware)
 
             # Store reference for cleanup
-            proxy._mcpm_unified_middleware = unified_middleware
+            setattr(proxy, "_mcpm_unified_middleware", unified_middleware)
 
         # Add authentication middleware (only for HTTP/network operations, not stdio)
-        if self.auth_enabled and not stdio_mode:
+        if self.auth_enabled and not stdio_mode and self.api_key:
             proxy.add_middleware(MCPMAuthMiddleware(self.api_key))
 
 

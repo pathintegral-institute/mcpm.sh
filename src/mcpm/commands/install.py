@@ -15,17 +15,18 @@ from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.prompt import Confirm
 
-from mcpm.commands.target_operations.common import (
-    global_add_server,
-)
+from mcpm.core.schema import ServerConfig, STDIOServerConfig
+from mcpm.global_config import GlobalConfigManager
 from mcpm.profile.profile_config import ProfileConfigManager
 from mcpm.schemas.full_server_config import FullServerConfig
+from mcpm.utils.config import NODE_EXECUTABLES, ConfigManager
 from mcpm.utils.repository import RepositoryManager
 from mcpm.utils.rich_click_config import click
 
 console = Console()
 repo_manager = RepositoryManager()
 profile_config_manager = ProfileConfigManager()
+global_config_manager = GlobalConfigManager()
 
 # Create a prompt session with custom styling
 prompt_session = PromptSession()
@@ -41,6 +42,34 @@ style = Style.from_dict(
 
 # Create key bindings
 kb = KeyBindings()
+
+
+def _replace_node_executable(server_config: ServerConfig) -> ServerConfig:
+    """Replace node executable with configured alternative if applicable."""
+    if not isinstance(server_config, STDIOServerConfig):
+        return server_config
+    command = server_config.command.strip()
+    if command not in NODE_EXECUTABLES:
+        return server_config
+    config = ConfigManager().get_config()
+    config_node_executable = config.get("node_executable")
+    if not config_node_executable:
+        return server_config
+    if config_node_executable != command:
+        console.print(f"[bold cyan]Replace node executable {command} with {config_node_executable}[/]")
+        server_config.command = config_node_executable
+    return server_config
+
+
+def global_add_server(server_config: ServerConfig, force: bool = False) -> bool:
+    """Add a server to the global MCPM configuration."""
+    if global_config_manager.server_exists(server_config.name) and not force:
+        console.print(f"[bold red]Error:[/] Server '{server_config.name}' already exists in global configuration.")
+        console.print("Use --force to override.")
+        return False
+
+    server_config = _replace_node_executable(server_config)
+    return global_config_manager.add_server(server_config, force)
 
 
 def prompt_with_default(prompt_text, default="", hide_input=False, required=False):
@@ -91,7 +120,7 @@ def prompt_with_default(prompt_text, default="", hide_input=False, required=Fals
 @click.option("--force", is_flag=True, help="Force reinstall if server is already installed")
 @click.option("--alias", help="Alias for the server", required=False)
 @click.help_option("-h", "--help")
-def add(server_name, force=False, alias=None):
+def install(server_name, force=False, alias=None):
     """Install an MCP server to the global configuration.
 
     Installs servers to the global MCPM configuration where they can be
@@ -100,22 +129,14 @@ def add(server_name, force=False, alias=None):
     Examples:
 
     \b
-        mcpm add time
-        mcpm add everything --force
-        mcpm add youtube --alias yt
+        mcpm install time
+        mcpm install everything --force
+        mcpm install youtube --alias yt
     """
-
-    # v2.0: use global config
-
-    # Check if this is a profile (starts with %)
-    if server_name.startswith("%"):
-        profile_name = server_name[1:]  # Remove % prefix
-        add_profile_to_client(profile_name, "global", alias, force)
-        return
 
     config_name = alias or server_name
 
-    # v2.0: All servers are installed to global configuration
+    # All servers are installed to global configuration
     console.print("[yellow]Installing server to global configuration...[/]")
 
     # Get server metadata from repository
@@ -240,12 +261,30 @@ def add(server_name, force=False, alias=None):
         # Process variables to store in config
         processed_variables = {}
 
-        # First, prompt for all defined arguments even if they're not in env_vars
-        progress.stop()
+        # Extract which arguments are actually referenced in the selected installation method
+        referenced_vars = _extract_referenced_variables(selected_method) if selected_method else set()
+
+        # Filter arguments to only those that are referenced
+        relevant_arguments = {}
         if all_arguments:
+            if referenced_vars:
+                # Only include arguments that are referenced
+                for arg_name, arg_info in all_arguments.items():
+                    if arg_name in referenced_vars:
+                        relevant_arguments[arg_name] = arg_info
+            elif selected_method:
+                # If we have a selected method but no referenced vars, don't prompt for any
+                relevant_arguments = {}
+            else:
+                # No selected method - use all arguments (backward compatibility)
+                relevant_arguments = all_arguments
+
+        # First, prompt for relevant arguments
+        progress.stop()
+        if relevant_arguments:
             console.print("\n[bold]Configure server arguments:[/]")
 
-            for arg_name, arg_info in all_arguments.items():
+            for arg_name, arg_info in relevant_arguments.items():
                 description = arg_info.get("description", "")
                 is_required = arg_info.get("required", False)
                 example = arg_info.get("example", "")
@@ -328,6 +367,21 @@ def add(server_name, force=False, alias=None):
         if key in processed_variables and replacement_status == ReplacementStatus.NON_STANDARD_REPLACE:
             has_non_standard_argument_define = True
 
+    # For HTTP servers, headers should be extracted from the installation method
+    # not from processed variables
+    processed_headers = {}
+    if installation_method == "http" and selected_method:
+        # Extract headers from the installation method if defined
+        headers_template = selected_method.get("headers", {})
+        for key, value in headers_template.items():
+            # Replace variables in header values
+            header_replaced, _ = _replace_variables(value, processed_variables)
+            if header_replaced:
+                processed_headers[key] = header_replaced
+            else:
+                # If no replacement, use the original value
+                processed_headers[key] = value
+
     if has_non_standard_argument_define:
         # no matter in argument / env
         console.print(
@@ -338,11 +392,22 @@ def add(server_name, force=False, alias=None):
 
     # Get actual MCP execution command, args, and env from the selected installation method
     # This ensures we use the actual server command information instead of placeholders
+    mcp_url = None
+    mcp_command = None
+    mcp_args = []
+
     if selected_method:
-        mcp_command = selected_method.get("command", install_command)
-        mcp_args = processed_args
+        # For HTTP servers, extract the URL and don't set command/args
+        if installation_method == "http":
+            mcp_url = selected_method.get("url")
+            # HTTP servers don't have command/args
+        else:
+            # For non-HTTP servers, get command and args
+            mcp_command = selected_method.get("command", install_command)
+            mcp_args = processed_args
         # Env vars are already processed above
     else:
+        # Fallback for when no selected method
         mcp_command = install_command
         mcp_args = processed_args
 
@@ -356,9 +421,11 @@ def add(server_name, force=False, alias=None):
         env=processed_env,
         # Use the simplified installation method
         installation=installation_method,
+        url=mcp_url,  # Include URL for HTTP servers
+        headers=processed_headers,  # Include headers for HTTP servers
     )
 
-    # v2.0: Add server to global configuration
+    # Add server to global configuration
     success = global_add_server(full_server_config.to_server_config(), force)
 
     if success:
@@ -391,6 +458,41 @@ def _should_hide_input(arg_name: str) -> bool:
         bool: True if input should be hidden, False otherwise
     """
     return "token" in arg_name.lower() or "key" in arg_name.lower() or "secret" in arg_name.lower()
+
+
+def _extract_referenced_variables(installation_method: dict) -> set:
+    """Extract all variable names referenced in an installation method.
+
+    Scans through all fields in the installation method (command, args, env, url, etc.)
+    looking for ${VARIABLE_NAME} patterns.
+
+    Args:
+        installation_method: The installation method configuration dict
+
+    Returns:
+        Set of variable names that are referenced
+    """
+    referenced = set()
+
+    def extract_from_value(value):
+        """Recursively extract variables from a value."""
+        if isinstance(value, str):
+            # Find all ${VAR_NAME} patterns
+            matches = re.findall(r"\$\{([^}]+)\}", value)
+            referenced.update(matches)
+        elif isinstance(value, list):
+            for item in value:
+                extract_from_value(item)
+        elif isinstance(value, dict):
+            for v in value.values():
+                extract_from_value(v)
+
+    # Check all fields in the installation method
+    for key, value in installation_method.items():
+        if key not in ["type", "description", "recommended"]:  # Skip metadata fields
+            extract_from_value(value)
+
+    return referenced
 
 
 class ReplacementStatus(str, Enum):
@@ -473,18 +575,3 @@ def _replace_argument_variables(value: str, prev_value: str, variables: dict) ->
 
     # nothing to replace
     return value, ReplacementStatus.NOT_REPLACED
-
-
-def add_profile_to_client(profile_name: str, client: str, alias: str | None = None, force: bool = False):
-    if not force and not Confirm.ask(f"Add this profile {profile_name} to {client}{' as ' + alias if alias else ''}?"):
-        console.print("[yellow]Operation cancelled.[/]")
-        raise click.ClickException("Operation cancelled")
-
-    console.print("[bold red]Error:[/] Profile activation has been removed in MCPM v2.0.")
-    console.print("[yellow]Use 'mcpm profile share' to share profiles instead.[/]")
-    success = False
-    if success:
-        console.print(f"[bold green]Successfully added profile {profile_name} to {client}![/]")
-    else:
-        console.print(f"[bold red]Failed to add profile {profile_name} to {client}.[/]")
-        raise click.ClickException(f"Failed to add profile {profile_name} to {client}")

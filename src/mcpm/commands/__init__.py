@@ -3,18 +3,18 @@ MCPM commands package
 """
 
 __all__ = [
-    "add",
     "client",
     "config",
     "doctor",
     "info",
     "inspect",
+    "install",
     "list",
     "migrate",
     "profile",
-    "remove",
     "run",
     "search",
+    "uninstall",
     "usage",
 ]
 
@@ -27,11 +27,12 @@ from . import (
     doctor,
     info,
     inspect,
+    install,
     list,
     migrate,
     profile,
     run,
     search,
+    uninstall,
     usage,
 )
-from .target_operations import add, remove

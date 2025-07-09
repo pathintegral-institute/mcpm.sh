@@ -186,7 +186,7 @@ class JSONClientManager(BaseClientManager):
         empty_config = {self.configure_key_name: {}}
 
         if not os.path.exists(self.config_path):
-            logger.warning(f"Client config file not found at: {self.config_path}")
+            logger.debug(f"Client config file not found at: {self.config_path}")
             return empty_config
 
         try:
@@ -403,7 +403,7 @@ class YAMLClientManager(BaseClientManager):
         empty_config = self._get_empty_config()
 
         if not os.path.exists(self.config_path):
-            logger.warning(f"Client config file not found at: {self.config_path}")
+            logger.debug(f"Client config file not found at: {self.config_path}")
             return empty_config
 
         try:
