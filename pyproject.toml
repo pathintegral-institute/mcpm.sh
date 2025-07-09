@@ -35,6 +35,8 @@ dependencies = [
     "deprecated>=1.2.18",
     "inquirerpy>=0.3.4",
     "rich-gradient>=0.3.2",
+    "tomli>=2.2.1",
+    "tomli-w>=1.2.0",
 ]
 
 [project.urls]
