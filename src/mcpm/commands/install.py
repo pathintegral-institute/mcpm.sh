@@ -15,11 +15,11 @@ from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.prompt import Confirm
 
-from mcpm.global_config import GlobalConfigManager
 from mcpm.core.schema import ServerConfig, STDIOServerConfig
-from mcpm.utils.config import NODE_EXECUTABLES, ConfigManager
+from mcpm.global_config import GlobalConfigManager
 from mcpm.profile.profile_config import ProfileConfigManager
 from mcpm.schemas.full_server_config import FullServerConfig
+from mcpm.utils.config import NODE_EXECUTABLES, ConfigManager
 from mcpm.utils.repository import RepositoryManager
 from mcpm.utils.rich_click_config import click
 

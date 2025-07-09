@@ -2,7 +2,6 @@
 FastMCP middleware adapters for MCPM monitoring and authentication.
 """
 
-import json
 import logging
 import time
 import uuid

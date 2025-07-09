@@ -32,9 +32,7 @@ def find_installed_server(server_name):
     return None, None
 
 
-async def run_server_with_fastmcp(
-    server_config, server_name, http_mode=False, port=None, host="127.0.0.1"
-):
+async def run_server_with_fastmcp(server_config, server_name, http_mode=False, port=None, host="127.0.0.1"):
     """Run server using FastMCP proxy (stdio or HTTP)."""
     try:
         # Use default port if none specified

@@ -42,9 +42,7 @@ async def find_available_port(preferred_port, max_attempts=10):
     return preferred_port
 
 
-async def run_profile_fastmcp(
-    profile_servers, profile_name, http_mode=False, port=DEFAULT_PORT, host="127.0.0.1"
-):
+async def run_profile_fastmcp(profile_servers, profile_name, http_mode=False, port=DEFAULT_PORT, host="127.0.0.1"):
     """Run profile servers using FastMCP proxy for proper aggregation."""
     server_count = len(profile_servers)
     logger.debug(f"Using FastMCP proxy to aggregate {server_count} server(s)")
@@ -175,6 +173,4 @@ def run(profile_name, http, port, host):
         logger.debug(f"HTTP mode on port {port}")
 
     # Run the async function
-    return asyncio.run(
-        run_profile_fastmcp(profile_servers, profile_name, http_mode=http, port=port, host=host)
-    )
+    return asyncio.run(run_profile_fastmcp(profile_servers, profile_name, http_mode=http, port=port, host=host))

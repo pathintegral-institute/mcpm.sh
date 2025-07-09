@@ -3,7 +3,7 @@ FastMCP proxy factory for MCPM server aggregation.
 """
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 
 from fastmcp import FastMCP
 from fastmcp.utilities.mcp_config import (
