@@ -32,7 +32,9 @@ def find_installed_server(server_name):
     return None, None
 
 
-async def run_server_with_fastmcp(server_config, server_name, http_mode=False, port=None):
+async def run_server_with_fastmcp(
+    server_config, server_name, http_mode=False, port=None, host="127.0.0.1"
+):
     """Run server using FastMCP proxy (stdio or HTTP)."""
     try:
         # Use default port if none specified
@@ -62,18 +64,18 @@ async def run_server_with_fastmcp(server_config, server_name, http_mode=False, p
                 logger.debug(f"Port {port} is busy, using port {actual_port} instead")
 
             # Display server information in a nice panel
-            http_url = f"http://127.0.0.1:{actual_port}/mcp/"
+            http_url = f"http://{host}:{actual_port}/mcp/"
             panel_content = f"[bold]Server:[/] {server_name}\n[bold]URL:[/] [cyan]{http_url}[/cyan]\n\n[dim]Press Ctrl+C to stop the server[/]"
             panel = Panel(
                 panel_content, title="🌐 Local Server Running", title_align="left", border_style="green", padding=(1, 2)
             )
             console.print(panel)
 
-            logger.debug(f"Starting FastMCP proxy for server '{server_name}' on port {actual_port}")
+            logger.debug(f"Starting FastMCP proxy for server '{server_name}' on {host}:{actual_port}")
 
             # Run FastMCP proxy in HTTP mode with uvicorn logging control
             await proxy.run_http_async(
-                host="127.0.0.1", port=actual_port, show_banner=False, uvicorn_config={"log_level": get_uvicorn_log_level()}
+                host=host, port=actual_port, show_banner=False, uvicorn_config={"log_level": get_uvicorn_log_level()}
             )
         else:
             # Run FastMCP proxy in stdio mode (default)
@@ -115,17 +117,19 @@ async def find_available_port(preferred_port, max_attempts=10):
 @click.argument("server_name")
 @click.option("--http", is_flag=True, help="Run server over HTTP instead of stdio")
 @click.option("--port", type=int, default=DEFAULT_PORT, help=f"Port for HTTP mode (default: {DEFAULT_PORT})")
+@click.option("--host", type=str, default="127.0.0.1", help="Host address for HTTP mode (default: 127.0.0.1)")
 @click.help_option("-h", "--help")
-def run(server_name, http, port):
+def run(server_name, http, port, host):
     """Execute a server from global configuration over stdio or HTTP.
 
     Runs an installed MCP server from the global configuration. By default
     runs over stdio for client communication, but can run over HTTP with --http.
 
     Examples:
-        mcpm run mcp-server-browse              # Run over stdio (default)
-        mcpm run --http mcp-server-browse       # Run over HTTP on port 6276
-        mcpm run --http --port 9000 filesystem # Run over HTTP on port 9000
+        mcpm run mcp-server-browse                    # Run over stdio (default)
+        mcpm run --http mcp-server-browse             # Run over HTTP on 127.0.0.1:6276
+        mcpm run --http --port 9000 filesystem       # Run over HTTP on 127.0.0.1:9000
+        mcpm run --http --host 0.0.0.0 filesystem    # Run over HTTP on 0.0.0.0:6276
 
     Note: stdio mode is typically used in MCP client configurations:
         {"command": ["mcpm", "run", "mcp-server-browse"]}
@@ -169,9 +173,13 @@ def run(server_name, http, port):
     # Choose execution method
     if http:
         # Use FastMCP proxy for HTTP mode
-        exit_code = asyncio.run(run_server_with_fastmcp(server_config, server_name, http_mode=True, port=port))
+        exit_code = asyncio.run(
+            run_server_with_fastmcp(server_config, server_name, http_mode=True, port=port, host=host)
+        )
     else:
         # Use FastMCP proxy for stdio mode (enables middleware and usage tracking)
-        exit_code = asyncio.run(run_server_with_fastmcp(server_config, server_name, http_mode=False, port=port))
+        exit_code = asyncio.run(
+            run_server_with_fastmcp(server_config, server_name, http_mode=False, port=port, host=host)
+        )
 
     sys.exit(exit_code)
