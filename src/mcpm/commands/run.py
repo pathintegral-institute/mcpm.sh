@@ -151,7 +151,17 @@ def run(server_name, http, port):
     # Debug logging is now handled by the Rich logging setup in CLI
     # Just log debug info - the level is controlled centrally
     logger.debug(f"Running server '{server_name}' from {location} configuration")
-    logger.debug(f"Command: {server_config.command} {' '.join(server_config.args or [])}")
+
+    # Log command details based on server type
+    from mcpm.core.schema import RemoteServerConfig, STDIOServerConfig
+
+    if isinstance(server_config, STDIOServerConfig):
+        logger.debug(f"Command: {server_config.command} {' '.join(server_config.args or [])}")
+    elif isinstance(server_config, RemoteServerConfig):
+        logger.debug(f"URL: {server_config.url}")
+        if server_config.headers:
+            logger.debug(f"Headers: {list(server_config.headers.keys())}")
+
     logger.debug(f"Mode: {'HTTP' if http else 'stdio'}")
     if http:
         logger.debug(f"Port: {port}")

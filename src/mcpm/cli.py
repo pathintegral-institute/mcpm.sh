@@ -10,19 +10,19 @@ from rich.traceback import Traceback
 
 from mcpm.clients.client_config import ClientConfigManager
 from mcpm.commands import (
-    add,
     client,
     config,
     doctor,
     edit,
     info,
     inspect,
+    install,
     list,
     migrate,
     profile,
-    remove,
     run,
     search,
+    uninstall,
     usage,
 )
 from mcpm.commands.share import share
@@ -120,8 +120,8 @@ def main(ctx, version, help_flag):
 main.add_command(search.search)
 main.add_command(info.info)
 main.add_command(list.list, name="ls")
-main.add_command(add.add, name="install")
-main.add_command(remove.remove, name="uninstall")
+main.add_command(install.install)
+main.add_command(uninstall.uninstall)
 main.add_command(edit.edit)
 main.add_command(run.run)
 main.add_command(inspect.inspect)
