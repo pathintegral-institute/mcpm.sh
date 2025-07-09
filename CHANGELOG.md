@@ -1,3 +1,10 @@
+# [2.3.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.2.0...v2.3.0) (2025-07-09)
+
+
+### Features
+
+* support more cli-client ([#210](https://github.com/pathintegral-institute/mcpm.sh/issues/210)) ([17ec81e](https://github.com/pathintegral-institute/mcpm.sh/commit/17ec81e05b94af482a39664ddb12208312433def))
+
 # [2.2.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.1.0...v2.2.0) (2025-07-09)
 
 
