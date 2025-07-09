@@ -73,12 +73,12 @@ async def run_server_with_fastmcp(server_config, server_name, http_mode=False, p
 
             # Run FastMCP proxy in HTTP mode with uvicorn logging control
             await proxy.run_http_async(
-                host="127.0.0.1", port=actual_port, uvicorn_config={"log_level": get_uvicorn_log_level()}
+                host="127.0.0.1", port=actual_port, show_banner=False, uvicorn_config={"log_level": get_uvicorn_log_level()}
             )
         else:
             # Run FastMCP proxy in stdio mode (default)
             logger.info(f"Starting server '{server_name}' over stdio")
-            await proxy.run_stdio_async()
+            await proxy.run_stdio_async(show_banner=False)
 
         return 0
 
