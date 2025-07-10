@@ -1,3 +1,10 @@
+# [2.4.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.3.0...v2.4.0) (2025-07-10)
+
+
+### Features
+
+* change mcpm edit arguments from CSV to space-separated format ([#213](https://github.com/pathintegral-institute/mcpm.sh/issues/213)) ([85a3492](https://github.com/pathintegral-institute/mcpm.sh/commit/85a3492bb7c13812e41415d6c0bf7b467e7a32f4)), closes [#212](https://github.com/pathintegral-institute/mcpm.sh/issues/212)
+
 # [2.3.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.2.0...v2.3.0) (2025-07-09)
 
 
