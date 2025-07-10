@@ -44,7 +44,7 @@ def test_edit_server_interactive_fallback(monkeypatch):
     assert result.exit_code == 0  # CliRunner may not properly handle our return codes
     assert "Current Configuration for 'test-server'" in result.output
     assert "test-cmd" in result.output
-    assert "arg1, arg2" in result.output
+    assert "arg1 arg2" in result.output
     assert "KEY=value" in result.output
     assert "test-profile" in result.output
     assert "Interactive editing not available" in result.output
