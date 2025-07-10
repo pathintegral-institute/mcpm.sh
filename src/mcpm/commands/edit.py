@@ -3,6 +3,7 @@ Edit command for modifying server configurations
 """
 
 import os
+import shlex
 import subprocess
 import sys
 from typing import Any, Dict, Optional
@@ -190,9 +191,9 @@ def interactive_server_edit(server_config) -> Optional[Dict[str, Any]]:
                 # Arguments as space-separated string
                 current_args = " ".join(server_config.args) if server_config.args else ""
                 answers["args"] = inquirer.text(
-                    message="Arguments (space-separated):",
+                    message="Arguments (space-separated, quotes supported):",
                     default=current_args,
-                    instruction="(Leave empty for no arguments)",
+                    instruction="(Leave empty for no arguments, use quotes for args with spaces)",
                     keybindings={"interrupt": [{"key": "escape"}]},
                 ).execute()
 
@@ -237,7 +238,7 @@ def interactive_server_edit(server_config) -> Optional[Dict[str, Any]]:
 
             if isinstance(server_config, STDIOServerConfig):
                 console.print(f"Command: [cyan]{server_config.command}[/] → [cyan]{answers['command']}[/]")
-                new_args = answers["args"].split() if answers["args"] else []
+                new_args = shlex.split(answers["args"]) if answers["args"] else []
                 console.print(f"Arguments: [cyan]{server_config.args}[/] → [cyan]{new_args}[/]")
 
                 new_env = {}
@@ -298,7 +299,7 @@ def apply_interactive_changes(server_config, interactive_result):
 
         # Parse arguments
         if answers["args"].strip():
-            server_config.args = answers["args"].split()
+            server_config.args = shlex.split(answers["args"])
         else:
             server_config.args = []
 
@@ -381,7 +382,7 @@ def _create_new_server():
             server_config = STDIOServerConfig(
                 name=server_name,
                 command=result["answers"]["command"],
-                args=result["answers"]["args"].split() if result["answers"]["args"] else [],
+                args=shlex.split(result["answers"]["args"]) if result["answers"]["args"] else [],
                 env={},
             )
 
@@ -460,8 +461,8 @@ def _interactive_new_server_form() -> Optional[Dict[str, Any]]:
                 ).execute()
 
                 answers["args"] = inquirer.text(
-                    message="Arguments (space-separated):",
-                    instruction="(Leave empty for no arguments)",
+                    message="Arguments (space-separated, quotes supported):",
+                    instruction="(Leave empty for no arguments, use quotes for args with spaces)",
                     keybindings={"interrupt": [{"key": "escape"}]},
                 ).execute()
 
@@ -495,7 +496,7 @@ def _interactive_new_server_form() -> Optional[Dict[str, Any]]:
 
             if answers["type"] == "stdio":
                 console.print(f"Command: [cyan]{answers['command']}[/]")
-                new_args = answers["args"].split() if answers["args"] else []
+                new_args = shlex.split(answers["args"]) if answers["args"] else []
                 console.print(f"Arguments: [cyan]{new_args}[/]")
 
                 new_env = {}
