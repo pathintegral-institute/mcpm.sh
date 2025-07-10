@@ -3,6 +3,7 @@ Edit command for modifying server configurations
 """
 
 import os
+import shlex
 import subprocess
 import sys
 from typing import Any, Dict, Optional
@@ -80,7 +81,7 @@ def edit(server_name, new, editor):
 
     if isinstance(server_config, STDIOServerConfig):
         table.add_row("Command", server_config.command)
-        table.add_row("Arguments", ", ".join(server_config.args) if server_config.args else "[dim]None[/]")
+        table.add_row("Arguments", " ".join(server_config.args) if server_config.args else "[dim]None[/]")
         table.add_row(
             "Environment",
             ", ".join(f"{k}={v}" for k, v in server_config.env.items()) if server_config.env else "[dim]None[/]",
@@ -187,12 +188,12 @@ def interactive_server_edit(server_config) -> Optional[Dict[str, Any]]:
                     keybindings={"interrupt": [{"key": "escape"}]},
                 ).execute()
 
-                # Arguments as comma-separated string
-                current_args = ", ".join(server_config.args) if server_config.args else ""
+                # Arguments as space-separated string
+                current_args = " ".join(server_config.args) if server_config.args else ""
                 answers["args"] = inquirer.text(
-                    message="Arguments (comma-separated):",
+                    message="Arguments (space-separated, quotes supported):",
                     default=current_args,
-                    instruction="(Leave empty for no arguments)",
+                    instruction="(Leave empty for no arguments, use quotes for args with spaces)",
                     keybindings={"interrupt": [{"key": "escape"}]},
                 ).execute()
 
@@ -237,7 +238,7 @@ def interactive_server_edit(server_config) -> Optional[Dict[str, Any]]:
 
             if isinstance(server_config, STDIOServerConfig):
                 console.print(f"Command: [cyan]{server_config.command}[/] → [cyan]{answers['command']}[/]")
-                new_args = [arg.strip() for arg in answers["args"].split(",") if arg.strip()] if answers["args"] else []
+                new_args = shlex.split(answers["args"]) if answers["args"] else []
                 console.print(f"Arguments: [cyan]{server_config.args}[/] → [cyan]{new_args}[/]")
 
                 new_env = {}
@@ -298,7 +299,7 @@ def apply_interactive_changes(server_config, interactive_result):
 
         # Parse arguments
         if answers["args"].strip():
-            server_config.args = [arg.strip() for arg in answers["args"].split(",") if arg.strip()]
+            server_config.args = shlex.split(answers["args"])
         else:
             server_config.args = []
 
@@ -381,9 +382,7 @@ def _create_new_server():
             server_config = STDIOServerConfig(
                 name=server_name,
                 command=result["answers"]["command"],
-                args=[arg.strip() for arg in result["answers"]["args"].split(",") if arg.strip()]
-                if result["answers"]["args"]
-                else [],
+                args=shlex.split(result["answers"]["args"]) if result["answers"]["args"] else [],
                 env={},
             )
 
@@ -462,8 +461,8 @@ def _interactive_new_server_form() -> Optional[Dict[str, Any]]:
                 ).execute()
 
                 answers["args"] = inquirer.text(
-                    message="Arguments (comma-separated):",
-                    instruction="(Leave empty for no arguments)",
+                    message="Arguments (space-separated, quotes supported):",
+                    instruction="(Leave empty for no arguments, use quotes for args with spaces)",
                     keybindings={"interrupt": [{"key": "escape"}]},
                 ).execute()
 
@@ -497,7 +496,7 @@ def _interactive_new_server_form() -> Optional[Dict[str, Any]]:
 
             if answers["type"] == "stdio":
                 console.print(f"Command: [cyan]{answers['command']}[/]")
-                new_args = [arg.strip() for arg in answers["args"].split(",") if arg.strip()] if answers["args"] else []
+                new_args = shlex.split(answers["args"]) if answers["args"] else []
                 console.print(f"Arguments: [cyan]{new_args}[/]")
 
                 new_env = {}
