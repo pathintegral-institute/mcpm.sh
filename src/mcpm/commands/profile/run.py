@@ -42,19 +42,29 @@ async def find_available_port(preferred_port, max_attempts=10):
     return preferred_port
 
 
-async def run_profile_fastmcp(profile_servers, profile_name, http_mode=False, port=DEFAULT_PORT, host="127.0.0.1"):
+async def run_profile_fastmcp(
+    profile_servers, profile_name, http_mode=False, sse_mode=False, port=DEFAULT_PORT, host="127.0.0.1"
+):
     """Run profile servers using FastMCP proxy for proper aggregation."""
     server_count = len(profile_servers)
     logger.debug(f"Using FastMCP proxy to aggregate {server_count} server(s)")
-    logger.debug(f"Mode: {'HTTP' if http_mode else 'stdio'}")
+    mode = "SSE" if sse_mode else "HTTP" if http_mode else "stdio"
+    logger.debug(f"Mode: {mode}")
 
     try:
         # Create FastMCP proxy for profile servers
+        if sse_mode:
+            action = "profile_run_sse"
+        elif http_mode:
+            action = "profile_run_http"
+        else:
+            action = "profile_run"
+
         proxy = await create_mcpm_proxy(
             servers=profile_servers,
             name=f"profile-{profile_name}",
-            stdio_mode=not http_mode,  # stdio_mode=False for HTTP
-            action="profile_run",
+            stdio_mode=not (http_mode or sse_mode),  # stdio_mode=False for HTTP/SSE
+            action=action,
             profile_name=profile_name,
         )
 
@@ -68,34 +78,41 @@ async def run_profile_fastmcp(profile_servers, profile_name, http_mode=False, po
 
         # Note: Usage tracking is handled by proxy middleware
 
-        if http_mode:
+        if http_mode or sse_mode:
             # Try to find an available port if the requested one is taken
             actual_port = await find_available_port(port)
             if actual_port != port:
                 logger.debug(f"Port {port} is busy, using port {actual_port} instead")
 
             # Display profile information in a nice panel
-            http_url = f"http://{host}:{actual_port}/mcp/"
+            if sse_mode:
+                server_url = f"http://{host}:{actual_port}/sse/"
+                title = "📡 SSE Profile Running"
+            else:
+                server_url = f"http://{host}:{actual_port}/mcp/"
+                title = "📁 Profile Running Locally"
 
             # Build server list
             server_list = "\n".join([f"  • [cyan]{server.name}[/]" for server in profile_servers])
 
-            panel_content = f"[bold]Profile:[/] {profile_name}\n[bold]URL:[/] [cyan]{http_url}[/cyan]\n\n[bold]Servers:[/]\n{server_list}\n\n[dim]Press Ctrl+C to stop the profile[/]"
+            panel_content = f"[bold]Profile:[/] {profile_name}\n[bold]URL:[/] [cyan]{server_url}[/cyan]\n\n[bold]Servers:[/]\n{server_list}\n\n[dim]Press Ctrl+C to stop the profile[/]"
 
             panel = Panel(
                 panel_content,
-                title="📁 Profile Running Locally",
+                title=title,
                 title_align="left",
                 border_style="green",
                 padding=(1, 2),
             )
             console.print(panel)
 
-            logger.debug(f"Starting FastMCP proxy for profile '{profile_name}' on {host}:{actual_port}")
+            mode = "SSE" if sse_mode else "HTTP"
+            logger.debug(f"Starting FastMCP proxy for profile '{profile_name}' in {mode} mode on {host}:{actual_port}")
 
-            # Run the aggregated proxy over HTTP with uvicorn logging control
+            # Run the aggregated proxy over HTTP/SSE with uvicorn logging control
+            transport = "sse" if sse_mode else "http"
             await proxy.run_http_async(
-                host=host, port=actual_port, uvicorn_config={"log_level": get_uvicorn_log_level()}
+                host=host, port=actual_port, transport=transport, uvicorn_config={"log_level": get_uvicorn_log_level()}
             )
         else:
             # Run the aggregated proxy over stdio (default)
@@ -106,6 +123,8 @@ async def run_profile_fastmcp(profile_servers, profile_name, http_mode=False, po
 
     except KeyboardInterrupt:
         logger.info("Profile execution interrupted")
+        if http_mode or sse_mode:
+            logger.warning("\nProfile execution interrupted")
         return 130
     except Exception as e:
         logger.error(f"Error running profile '{profile_name}': {e}")
@@ -115,11 +134,12 @@ async def run_profile_fastmcp(profile_servers, profile_name, http_mode=False, po
 @click.command()
 @click.argument("profile_name")
 @click.option("--http", is_flag=True, help="Run profile over HTTP instead of stdio")
-@click.option("--port", type=int, default=DEFAULT_PORT, help=f"Port for HTTP mode (default: {DEFAULT_PORT})")
-@click.option("--host", type=str, default="127.0.0.1", help="Host address for HTTP mode (default: 127.0.0.1)")
+@click.option("--sse", is_flag=True, help="Run profile over SSE instead of stdio")
+@click.option("--port", type=int, default=DEFAULT_PORT, help=f"Port for HTTP / SSE mode (default: {DEFAULT_PORT})")
+@click.option("--host", type=str, default="127.0.0.1", help="Host address for HTTP / SSE mode (default: 127.0.0.1)")
 @click.help_option("-h", "--help")
-def run(profile_name, http, port, host):
-    """Execute all servers in a profile over stdio or HTTP.
+def run(profile_name, http, sse, port, host):
+    """Execute all servers in a profile over stdio, HTTP, or SSE.
 
     Uses FastMCP proxy to aggregate servers into a unified MCP interface
     with proper capability namespacing. By default runs over stdio.
@@ -129,7 +149,9 @@ def run(profile_name, http, port, host):
     \b
         mcpm profile run web-dev                          # Run over stdio (default)
         mcpm profile run --http web-dev                   # Run over HTTP on 127.0.0.1:6276
+        mcpm profile run --sse web-dev                    # Run over SSE on 127.0.0.1:6276
         mcpm profile run --http --port 9000 ai            # Run over HTTP on 127.0.0.1:9000
+        mcpm profile run --sse --port 9000 ai             # Run over SSE on 127.0.0.1:9000
         mcpm profile run --http --host 0.0.0.0 web-dev    # Run over HTTP on 0.0.0.0:6276
 
     Debug logging: Set MCPM_DEBUG=1 for verbose output
@@ -140,6 +162,11 @@ def run(profile_name, http, port, host):
         return 1
 
     profile_name = profile_name.strip()
+
+    # Validate mutually exclusive options
+    if http and sse:
+        logger.error("Error: Cannot use both --http and --sse flags together")
+        return 1
 
     # Check if profile exists
     try:
@@ -169,8 +196,12 @@ def run(profile_name, http, port, host):
 
     # Use FastMCP proxy for all cases (single or multiple servers)
     logger.debug(f"Using FastMCP proxy for {len(profile_servers)} server(s)")
-    if http:
-        logger.debug(f"HTTP mode on port {port}")
+    mode = "SSE" if sse else "HTTP" if http else "stdio"
+    logger.debug(f"Mode: {mode}")
+    if http or sse:
+        logger.debug(f"Port: {port}")
 
     # Run the async function
-    return asyncio.run(run_profile_fastmcp(profile_servers, profile_name, http_mode=http, port=port, host=host))
+    return asyncio.run(
+        run_profile_fastmcp(profile_servers, profile_name, http_mode=http, sse_mode=sse, port=port, host=host)
+    )
