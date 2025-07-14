@@ -1,3 +1,10 @@
+# [2.5.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.4.0...v2.5.0) (2025-07-14)
+
+
+### Features
+
+* trigger release for previous SSE support addition ([8131f8b](https://github.com/pathintegral-institute/mcpm.sh/commit/8131f8b9fb5d46000065a8e37ebffdd3ecd66179))
+
 # [2.4.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.3.0...v2.4.0) (2025-07-10)
 
 
