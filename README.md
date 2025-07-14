@@ -156,11 +156,14 @@ The MCP Registry is a central repository of available MCP servers that can be in
 - [x] Registry integration and server discovery
 - [x] Direct server execution and sharing
 - [x] Import from existing client configurations
+- [x] Additional client support (gemini-cli, codex, etc.)
 
 ### 🔮 Future Enhancements
 - [ ] Advanced Server access monitoring and analytics
-- [ ] Additional client support (gemini-cli, codex, etc.)
 - [ ] Execution in docker
+- [ ] Expose MCPM functionality as an MCP server (search, install, profile management etc.)
+- [ ] TUI interface for MCP inspect
+- [ ] TUI interface for MCP & profile management
 
 
 ## 📦 Other Installation Methods
