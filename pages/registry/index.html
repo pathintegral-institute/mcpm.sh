@@ -1709,7 +1709,7 @@
                         
                         // Build search params with server install info
                         const params = new URLSearchParams();
-                        params.append('name', server.name);
+                        params.append('name', server.name.replace(/-/g, '_'));
                         params.append('action', 'install');
                         
                         const installInfo = Object.values(server.installations)[0];
