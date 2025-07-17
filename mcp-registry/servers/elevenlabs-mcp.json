@@ -24,7 +24,7 @@
       "audio"
     ],
     "arguments": {
-      "ELEVEN_API_KEY": {
+      "ELEVENLABS_API_KEY": {
         "description": "Your ElevenLabs API key obtained from the ElevenLabs website.",
         "required": true,
         "example": "your-elevenlabs-api-key"
@@ -38,7 +38,7 @@
           "elevenlabs-mcp"
         ],
         "env": {
-          "ELEVEN_API_KEY": "${ELEVEN_API_KEY}"
+          "ELEVENLABS_API_KEY": "${ELEVENLABS_API_KEY}"
         }
       },
       "docker": {
