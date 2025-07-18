@@ -41,7 +41,7 @@ class GeminiCliManager(JSONClientManager):
             # Include other default settings that Gemini CLI expects
             "contextFileName": "GEMINI.md",
             "autoAccept": False,
-            "theme": "Default"
+            "theme": "Default",
         }
 
     def is_client_installed(self) -> bool:

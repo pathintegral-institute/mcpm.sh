@@ -92,7 +92,7 @@ click.rich_click.COMMAND_GROUPS = {
     "main": [  # This matches the function name
         {
             "name": "Server Management",
-            "commands": ["search", "info", "install", "uninstall", "ls", "edit", "inspect"],
+            "commands": ["search", "info", "install", "uninstall", "ls", "edit", "new", "inspect"],
         },
         {
             "name": "Server Execution",
@@ -114,7 +114,7 @@ click.rich_click.COMMAND_GROUPS = {
     "mcpm": [  # Also support this context name
         {
             "name": "Server Management",
-            "commands": ["search", "info", "install", "uninstall", "ls", "edit", "inspect"],
+            "commands": ["search", "info", "install", "uninstall", "ls", "edit", "new", "inspect"],
         },
         {
             "name": "Server Execution",

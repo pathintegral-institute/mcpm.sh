@@ -19,6 +19,7 @@ from mcpm.commands import (
     install,
     list,
     migrate,
+    new,
     profile,
     run,
     search,
@@ -123,6 +124,7 @@ main.add_command(list.list, name="ls")
 main.add_command(install.install)
 main.add_command(uninstall.uninstall)
 main.add_command(edit.edit)
+main.add_command(new.new)
 main.add_command(run.run)
 main.add_command(inspect.inspect)
 main.add_command(profile.profile, name="profile")
