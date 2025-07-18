@@ -1,3 +1,10 @@
+# [2.6.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.5.0...v2.6.0) (2025-07-18)
+
+
+### Features
+
+* add 'new' command as alias for creating server configs ([f8115e0](https://github.com/pathintegral-institute/mcpm.sh/commit/f8115e05690fafedb7e4b586a802a073a79c7c51))
+
 # [2.5.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.4.0...v2.5.0) (2025-07-14)
 
 
