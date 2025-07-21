@@ -40,28 +40,8 @@ global_config_manager = GlobalConfigManager()
 def edit(server_name, new, editor, name, command, args, env, url, headers, force):
     """Edit a server configuration.
 
-    You can edit servers interactively or with CLI parameters for automation.
-    
-    Interactive mode (default):
-    
-        mcpm edit time                                    # Edit existing server interactively
-        mcpm edit -N                                      # Create new server interactively
-        mcpm edit -e                                      # Open global config in editor
-        
-    Non-interactive mode:
-    
-        mcpm edit myserver --name "new-name"              # Update server name
-        mcpm edit myserver --command "new-command"        # Update command
-        mcpm edit myserver --args "--port 8080"           # Update arguments
-        mcpm edit myserver --env "API_KEY=new-value"      # Update environment
-        mcpm edit myserver --url "https://new-url.com"    # Update URL (remote)
-        mcpm edit myserver --headers "Auth=Bearer token"  # Update headers (remote)
-        mcpm edit myserver --force                        # Skip confirmations
-
-    Environment variables:
-    
-        MCPM_FORCE=true                                   # Skip confirmations
-        MCPM_NON_INTERACTIVE=true                         # Force non-interactive mode
+    Interactive by default, or use CLI parameters for automation.
+    Use -e to open config in external editor, -N to create new server.
     """
     # Handle editor mode
     if editor:

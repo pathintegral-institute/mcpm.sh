@@ -228,27 +228,8 @@ def list_clients(verbose):
 def edit_client(client_name, external, config_path_override, add_server, remove_server, set_servers, add_profile, remove_profile, set_profiles, force):
     """Enable/disable MCPM-managed servers in the specified client configuration.
 
-    You can manage client servers interactively or with CLI parameters for automation.
-    
-    Interactive mode (default):
-    
-        mcpm client edit cursor                         # Interactive server/profile selection
-        mcpm client edit cursor -e                     # Open config in external editor
-        
-    Non-interactive mode:
-    
-        mcpm client edit cursor --add-server time      # Add server to client
-        mcpm client edit cursor --remove-server time   # Remove server from client
-        mcpm client edit cursor --set-servers time,weather  # Set servers (replaces all)
-        mcpm client edit cursor --add-profile web-dev  # Add profile to client
-        mcpm client edit cursor --remove-profile old   # Remove profile from client
-        mcpm client edit cursor --set-profiles web-dev,ai  # Set profiles (replaces all)
-        mcpm client edit cursor --force                # Skip confirmations
-        
-    Environment variables:
-    
-        MCPM_FORCE=true                                 # Skip confirmations
-        MCPM_NON_INTERACTIVE=true                       # Force non-interactive mode
+    Interactive by default, or use CLI parameters for automation.
+    Use -e to open config in external editor. Use --add/--remove for incremental changes.
 
     CLIENT_NAME is the name of the MCP client to configure (e.g., cursor, claude-desktop, windsurf).
     """

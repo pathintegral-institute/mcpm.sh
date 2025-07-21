@@ -42,24 +42,8 @@ def new(
 ):
     """Create a new server configuration.
 
-    You can create servers interactively or with CLI parameters for automation.
-    
-    Interactive mode (default):
-    
-        mcpm new                                      # Interactive form
-        
-    Non-interactive mode:
-    
-        mcpm new myserver --type stdio --command "python -m myserver"
-        mcpm new apiserver --type remote --url "https://api.example.com"
-        mcpm new myserver --type stdio --command "python -m myserver" --args "--port 8080" --env "API_KEY=secret"
-        
-    Environment variables:
-    
-        MCPM_FORCE=true                               # Skip confirmations
-        MCPM_NON_INTERACTIVE=true                     # Force non-interactive mode
-        MCPM_ARG_API_KEY=secret                       # Set argument values
-        MCPM_SERVER_MYSERVER_API_KEY=secret           # Server-specific values
+    Interactive by default, or use CLI parameters for automation.
+    Set MCPM_NON_INTERACTIVE=true to disable prompts.
     """
     # Check if we have enough parameters for non-interactive mode
     has_cli_params = bool(server_name and server_type)

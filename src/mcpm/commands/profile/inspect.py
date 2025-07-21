@@ -47,16 +47,8 @@ def build_profile_inspector_command(profile_name, port=None, host=None, http=Fal
 def inspect_profile(profile_name, server, port, host, http, sse):
     """Launch MCP Inspector to test and debug servers in a profile.
 
-    Creates a FastMCP proxy that aggregates servers in the specified profile
-    and launches the MCP Inspector to interact with the combined capabilities.
-
-    Examples:
-        mcpm profile inspect web-dev                    # Inspect all servers in profile
-        mcpm profile inspect web-dev --server sqlite   # Inspect only sqlite server
-        mcpm profile inspect web-dev --server sqlite,time  # Inspect specific servers
-        mcpm profile inspect web-dev --port 8080       # Use custom port
-        mcpm profile inspect web-dev --http            # Use HTTP transport
-        mcpm profile inspect web-dev --sse             # Use SSE transport
+    Creates a FastMCP proxy that aggregates servers and launches the Inspector.
+    Use --port, --http, --sse to customize transport options.
     """
     # Validate profile name
     if not profile_name or not profile_name.strip():

@@ -26,26 +26,8 @@ global_config_manager = GlobalConfigManager()
 def edit_profile(profile_name, name, servers, add_server, remove_server, set_servers, force):
     """Edit a profile's name and server selection.
 
-    You can edit profiles interactively or with CLI parameters for automation.
-    
-    Interactive mode (default):
-    
-        mcpm profile edit web-dev                           # Interactive form
-        
-    Non-interactive mode:
-    
-        mcpm profile edit web-dev --name frontend-tools    # Rename only
-        mcpm profile edit web-dev --servers time,sqlite    # Set servers (replaces all)
-        mcpm profile edit web-dev --add-server weather     # Add server to existing
-        mcpm profile edit web-dev --remove-server time     # Remove server from existing
-        mcpm profile edit web-dev --set-servers time,weather  # Set servers (alias for --servers)
-        mcpm profile edit web-dev --name new-name --add-server api  # Rename + add server
-        mcpm profile edit web-dev --force                  # Skip confirmations
-        
-    Environment variables:
-    
-        MCPM_FORCE=true                                     # Skip confirmations
-        MCPM_NON_INTERACTIVE=true                           # Force non-interactive mode
+    Interactive by default, or use CLI parameters for automation.
+    Use --add-server/--remove-server for incremental changes.
     """
     # Check if profile exists
     existing_servers = profile_config_manager.get_profile(profile_name)
