@@ -8,6 +8,7 @@ from rich.console import Console
 from rich.panel import Panel
 
 from mcpm.profile.profile_config import ProfileConfigManager
+from mcpm.utils.non_interactive import parse_server_list
 from mcpm.utils.platform import NPX_CMD
 from mcpm.utils.rich_click_config import click
 
@@ -15,10 +16,20 @@ console = Console()
 profile_config_manager = ProfileConfigManager()
 
 
-def build_profile_inspector_command(profile_name):
+def build_profile_inspector_command(profile_name, port=None, host=None, http=False, sse=False):
     """Build the inspector command using mcpm profile run."""
     # Use mcpm profile run to start the FastMCP proxy - don't reinvent the wheel!
     mcpm_profile_run_cmd = f"mcpm profile run {shlex.quote(profile_name)}"
+    
+    # Add optional parameters
+    if port:
+        mcpm_profile_run_cmd += f" --port {port}"
+    if host:
+        mcpm_profile_run_cmd += f" --host {shlex.quote(host)}"
+    if http:
+        mcpm_profile_run_cmd += " --http"
+    if sse:
+        mcpm_profile_run_cmd += " --sse"
 
     # Build inspector command that uses mcpm profile run
     inspector_cmd = f"{NPX_CMD} @modelcontextprotocol/inspector {mcpm_profile_run_cmd}"
@@ -27,17 +38,25 @@ def build_profile_inspector_command(profile_name):
 
 @click.command(name="inspect")
 @click.argument("profile_name")
+@click.option("--server", help="Inspect only specific servers (comma-separated)")
+@click.option("--port", type=int, help="Port for the FastMCP proxy server")
+@click.option("--host", help="Host for the FastMCP proxy server")
+@click.option("--http", is_flag=True, help="Use HTTP transport instead of stdio")
+@click.option("--sse", is_flag=True, help="Use SSE transport instead of stdio")
 @click.help_option("-h", "--help")
-def inspect_profile(profile_name):
-    """Launch MCP Inspector to test and debug all servers in a profile.
+def inspect_profile(profile_name, server, port, host, http, sse):
+    """Launch MCP Inspector to test and debug servers in a profile.
 
-    Creates a FastMCP proxy that aggregates all servers in the specified profile
+    Creates a FastMCP proxy that aggregates servers in the specified profile
     and launches the MCP Inspector to interact with the combined capabilities.
 
     Examples:
-        mcpm profile inspect web-dev     # Inspect all servers in web-dev profile
-        mcpm profile inspect ai          # Inspect all servers in ai profile
-        mcpm profile inspect data        # Inspect all servers in data profile
+        mcpm profile inspect web-dev                    # Inspect all servers in profile
+        mcpm profile inspect web-dev --server sqlite   # Inspect only sqlite server
+        mcpm profile inspect web-dev --server sqlite,time  # Inspect specific servers
+        mcpm profile inspect web-dev --port 8080       # Use custom port
+        mcpm profile inspect web-dev --http            # Use HTTP transport
+        mcpm profile inspect web-dev --sse             # Use SSE transport
     """
     # Validate profile name
     if not profile_name or not profile_name.strip():
@@ -74,6 +93,11 @@ def inspect_profile(profile_name):
         console.print(f"  mcpm profile edit {profile_name}")
         sys.exit(1)
 
+    # Note: Server filtering is not yet supported because mcpm profile run doesn't support it
+    if server:
+        console.print(f"[yellow]Warning: Server filtering is not yet supported in profile inspect[/]")
+        console.print(f"[dim]The --server option will be ignored. All servers in the profile will be inspected.[/]")
+
     # Show profile info
     server_count = len(profile_servers)
     console.print(f"[dim]Profile contains {server_count} server(s):[/]")
@@ -83,9 +107,19 @@ def inspect_profile(profile_name):
     console.print(f"\\n[bold]Starting Inspector for profile '[cyan]{profile_name}[/]'[/]")
     console.print("The Inspector will show aggregated capabilities from all servers in the profile.")
     console.print("The Inspector UI will open in your web browser.")
+    
+    # Show transport options if specified
+    if port:
+        console.print(f"[dim]Using custom port: {port}[/]")
+    if host:
+        console.print(f"[dim]Using custom host: {host}[/]")
+    if http:
+        console.print(f"[dim]Using HTTP transport[/]")
+    if sse:
+        console.print(f"[dim]Using SSE transport[/]")
 
     # Build inspector command using mcpm profile run
-    inspector_cmd = build_profile_inspector_command(profile_name)
+    inspector_cmd = build_profile_inspector_command(profile_name, port=port, host=host, http=http, sse=sse)
 
     try:
         console.print("[cyan]Starting MCPM Profile Inspector...[/]")

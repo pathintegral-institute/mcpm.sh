@@ -46,6 +46,7 @@ MCPM v2.0 provides a simplified approach to managing MCP servers with a global c
 - 🚀 **Direct Execution**: Run servers over stdio or HTTP for testing
 - 🌐 **Public Sharing**: Share servers through secure tunnels
 - 🎛️ **Client Integration**: Manage configurations for Claude Desktop, Cursor, Windsurf, and more
+- 🤖 **AI Agent Friendly**: Non-interactive CLI with comprehensive automation support and [llm.txt](llm.txt) guide
 - 💻 **Beautiful CLI**: Rich formatting and interactive interfaces
 - 📊 **Usage Analytics**: Monitor server usage and performance
 
@@ -144,6 +145,47 @@ mcpm migrate                  # Migrate from v1 to v2 configuration
 ### 📚 Registry
 
 The MCP Registry is a central repository of available MCP servers that can be installed using MCPM. The registry is available at [mcpm.sh/registry](https://mcpm.sh/registry).
+
+## 🤖 AI Agent Integration
+
+MCPM is designed to be AI agent friendly with comprehensive automation support. Every interactive command has a non-interactive alternative using CLI parameters and environment variables.
+
+### 🔧 Non-Interactive Mode
+
+Set environment variables to enable full automation:
+
+```bash
+export MCPM_NON_INTERACTIVE=true  # Disable all interactive prompts
+export MCPM_FORCE=true            # Skip confirmations
+export MCPM_JSON_OUTPUT=true      # JSON output for parsing
+```
+
+### 📋 LLM.txt Guide
+
+The [llm.txt](llm.txt) file provides comprehensive documentation specifically designed for AI agents, including:
+
+- Complete command reference with parameters and examples
+- Environment variable usage patterns
+- Best practices for automation
+- Error handling and troubleshooting
+- Batch operation patterns
+
+The llm.txt file is automatically generated from the CLI structure and kept up-to-date with each release.
+
+### ⚡ Example Usage
+
+```bash
+# Server management
+mcpm new myserver --type stdio --command "python -m server" --force
+mcpm edit myserver --env "API_KEY=secret" --force
+
+# Profile management  
+mcpm profile edit web-dev --add-server myserver --force
+mcpm profile run web-dev --port 8080
+
+# Client integration
+mcpm client edit cursor --add-profile web-dev --force
+```
 
 ## 🗺️ Roadmap
 
