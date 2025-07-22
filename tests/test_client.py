@@ -443,8 +443,13 @@ def test_client_edit_non_interactive_remove_server(monkeypatch):
     mock_client_manager = Mock()
     mock_client_manager.is_client_installed = Mock(return_value=True)
     mock_client_manager.config_path = "/path/to/config.json"
-    mock_client_manager.get_servers.return_value = {"existing-server": Mock()}
+    # Mock an MCPM-managed server in client config
+    existing_mcpm_server = Mock()
+    existing_mcpm_server.command = "mcpm"
+    existing_mcpm_server.args = ["run", "existing-server"]
+    mock_client_manager.get_servers.return_value = {"mcpm_existing-server": existing_mcpm_server}
     mock_client_manager.update_servers.return_value = None
+    mock_client_manager.remove_server.return_value = None
 
     monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_client_manager", Mock(return_value=mock_client_manager))
     monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_client_info", Mock(return_value={"name": "Cursor"}))
@@ -463,9 +468,12 @@ def test_client_edit_non_interactive_remove_server(monkeypatch):
         "--remove-server", "existing-server"
     ])
 
-    # The command runs without crashing, even if the server wasn't in the client
+    # The command runs without crashing and removes the server
     assert result.exit_code == 0
     assert "Cursor Configuration Management" in result.output
+    
+    # Verify that remove_server was called with the prefixed server name
+    mock_client_manager.remove_server.assert_called_with("mcpm_existing-server")
 
 
 def test_client_edit_non_interactive_set_servers(monkeypatch):

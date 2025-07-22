@@ -61,7 +61,7 @@ def test_profile_edit_non_interactive_remove_server(monkeypatch):
     # Mock GlobalConfigManager (needed for server validation)
     mock_global_config = Mock()
     mock_global_config.list_servers.return_value = {
-        "server1": server1, 
+        "server1": server1,
         "server2": server2
     }
     monkeypatch.setattr("mcpm.commands.profile.edit.global_config_manager", mock_global_config)
@@ -246,7 +246,7 @@ def test_profile_edit_interactive_fallback(monkeypatch):
     mock_profile_config.get_profile.return_value = [existing_server]
     monkeypatch.setattr("mcpm.commands.profile.edit.profile_config_manager", mock_profile_config)
 
-    # Mock GlobalConfigManager 
+    # Mock GlobalConfigManager
     mock_global_config = Mock()
     mock_global_config.list_servers.return_value = {"existing-server": existing_server}
     monkeypatch.setattr("mcpm.commands.profile.edit.global_config_manager", mock_global_config)
@@ -281,7 +281,7 @@ def test_profile_inspect_non_interactive(monkeypatch):
     class MockCompletedProcess:
         def __init__(self, returncode=0):
             self.returncode = returncode
-            
+
     mock_subprocess = Mock()
     mock_subprocess.run.return_value = MockCompletedProcess(0)
     monkeypatch.setattr("mcpm.commands.profile.inspect.subprocess", mock_subprocess)
