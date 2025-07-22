@@ -2,6 +2,7 @@
 New command - Create new server configurations with interactive and non-interactive modes
 """
 
+import sys
 from typing import Optional
 
 from rich.console import Console
@@ -50,7 +51,7 @@ def new(
     force_non_interactive = is_non_interactive() or should_force_operation() or force
 
     if has_cli_params or force_non_interactive:
-        return _create_new_server_non_interactive(
+        exit_code = _create_new_server_non_interactive(
             server_name=server_name,
             server_type=server_type,
             command=command,
@@ -60,6 +61,7 @@ def new(
             headers=headers,
             force=force,
         )
+        sys.exit(exit_code)
     else:
         # Fall back to interactive mode
         return _create_new_server()
@@ -120,7 +122,6 @@ def _create_new_server_non_interactive(
                 name=config_dict["name"],
                 url=config_dict["url"],
                 headers=config_dict.get("headers", {}),
-                env=config_dict.get("env", {}),
             )
 
         # Display configuration summary
@@ -137,7 +138,7 @@ def _create_new_server_non_interactive(
                 headers_str = ", ".join(f"{k}={v}" for k, v in server_config.headers.items())
                 console.print(f"Headers: [cyan]{headers_str}[/]")
 
-        if server_config.env:
+        if hasattr(server_config, "env") and server_config.env:
             env_str = ", ".join(f"{k}={v}" for k, v in server_config.env.items())
             console.print(f"Environment: [cyan]{env_str}[/]")
 

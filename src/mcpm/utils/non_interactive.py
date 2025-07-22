@@ -238,14 +238,16 @@ def create_server_config_from_params(
         config["command"] = command
         if args:
             config["args"] = args.split()
+        # Add environment variables if provided (stdio servers only)
+        if env:
+            config["env"] = parse_key_value_pairs(env)
     elif server_type == "remote":
         config["url"] = url
         if headers:
             config["headers"] = parse_header_pairs(headers)
-
-    # Add environment variables if provided
-    if env:
-        config["env"] = parse_key_value_pairs(env)
+        # Remote servers don't support environment variables
+        if env:
+            raise ValueError("Environment variables are not supported for remote servers")
 
     return config
 

@@ -1,6 +1,6 @@
 # MCPM (Model Context Protocol Manager) - AI Agent Guide
 
-Generated: 2025-07-21 19:18:51 UTC
+Generated: 2025-07-22 11:32:59 UTC
 Version: 2.5.0
 
 ## Overview
@@ -151,14 +151,21 @@ mcpm config <arguments>
 
 Set MCPM configuration.
 
-Example:
+Interactive by default, or use CLI parameters for automation.
+Use --key and --value to set configuration non-interactively.
+
+Examples:
 
 
-    mcpm config set
+    mcpm config set                                    # Interactive mode
+    mcpm config set --key node_executable --value npx # Non-interactive mode
 
 
 **Parameters:**
 
+- `--key`: Configuration key to set
+- `--value`: Configuration value to set
+- `--force`: Skip confirmation prompts (flag)
 - `-h`, `--help`: Show this message and exit. (flag)
 
 **Examples:**

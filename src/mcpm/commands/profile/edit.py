@@ -1,5 +1,7 @@
 """Profile edit command."""
 
+import sys
+
 from rich.console import Console
 
 from mcpm.global_config import GlobalConfigManager
@@ -37,14 +39,14 @@ def edit_profile(profile_name, name, servers, add_server, remove_server, set_ser
         console.print("[yellow]Available options:[/]")
         console.print("  • Run 'mcpm profile ls' to see available profiles")
         console.print("  • Run 'mcpm profile create {name}' to create a profile")
-        return 1
+        sys.exit(1)
 
     # Detect if this is non-interactive mode
     has_cli_params = any([name, servers, add_server, remove_server, set_servers])
     force_non_interactive = is_non_interactive() or should_force_operation() or force
 
     if has_cli_params or force_non_interactive:
-        return _edit_profile_non_interactive(
+        exit_code = _edit_profile_non_interactive(
             profile_name=profile_name,
             new_name=name,
             servers=servers,
@@ -53,6 +55,7 @@ def edit_profile(profile_name, name, servers, add_server, remove_server, set_ser
             set_servers=set_servers,
             force=force,
         )
+        sys.exit(exit_code)
 
     else:
         # Interactive mode using InquirerPy

@@ -5,6 +5,7 @@ Client command for MCPM
 import json
 import os
 import subprocess
+import sys
 
 from InquirerPy import inquirer
 from InquirerPy.base.control import Choice
@@ -265,7 +266,7 @@ def edit_client(client_name, external, config_path_override, add_server, remove_
     force_non_interactive = is_non_interactive() or should_force_operation() or force
 
     if has_cli_params or force_non_interactive:
-        return _edit_client_non_interactive(
+        exit_code = _edit_client_non_interactive(
             client_manager=client_manager,
             client_name=client_name,
             display_name=display_name,
@@ -278,6 +279,7 @@ def edit_client(client_name, external, config_path_override, add_server, remove_
             set_profiles=set_profiles,
             force=force,
         )
+        sys.exit(exit_code)
 
     # If external editor requested, handle that directly
     if external:
