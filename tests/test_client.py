@@ -382,6 +382,10 @@ def test_client_edit_command_open_editor(monkeypatch, tmp_path):
     mock_global_config = Mock()
     mock_global_config.list_servers = Mock(return_value={"test-server": Mock(description="Test server")})
     monkeypatch.setattr("mcpm.commands.client.global_config_manager", mock_global_config)
+    
+    # Force interactive mode to ensure external editor path is taken
+    monkeypatch.setattr("mcpm.commands.client.is_non_interactive", lambda: False)
+    monkeypatch.setattr("mcpm.commands.client.should_force_operation", lambda: False)
 
     # Mock the _open_in_editor function to prevent actual editor launching
     with patch("mcpm.commands.client._open_in_editor") as mock_open_editor:

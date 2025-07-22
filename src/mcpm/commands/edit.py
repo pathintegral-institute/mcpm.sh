@@ -66,9 +66,9 @@ def edit(server_name, new, editor, name, command, args, env, url, headers, force
     # Check if we have CLI parameters for non-interactive mode
     has_cli_params = any([name, command, args, env, url, headers])
     force_non_interactive = is_non_interactive() or should_force_operation() or force
-    
+
     if has_cli_params or force_non_interactive:
-        return _edit_server_non_interactive(
+        exit_code = _edit_server_non_interactive(
             server_name=server_name,
             new_name=name,
             command=command,
@@ -78,6 +78,7 @@ def edit(server_name, new, editor, name, command, args, env, url, headers, force
             headers=headers,
             force=force,
         )
+        sys.exit(exit_code)
 
     # Get the existing server
     server_config = global_config_manager.get_server(server_name)
@@ -322,7 +323,7 @@ def _edit_server_non_interactive(
                 "Run 'mcpm ls' to see available servers"
             )
             return 1
-        
+
         # Convert server config to dict for easier manipulation
         if isinstance(server_config, STDIOServerConfig):
             current_config = {
@@ -343,7 +344,7 @@ def _edit_server_non_interactive(
         else:
             print_error("Unknown server type", f"Server '{server_name}' has unknown type")
             return 1
-        
+
         # Merge updates
         updated_config = merge_server_config_updates(
             current_config=current_config,
@@ -354,7 +355,7 @@ def _edit_server_non_interactive(
             url=url,
             headers=headers,
         )
-        
+
         # Validate updates make sense for server type
         server_type = updated_config["type"]
         if server_type == "stdio":
@@ -371,41 +372,41 @@ def _edit_server_non_interactive(
                     "--command and --args are only valid for stdio servers"
                 )
                 return 1
-        
+
         # Display changes
         console.print(f"\n[bold green]Updating server '{server_name}':[/]")
-        
+
         # Show what's changing
         changes_made = False
         if new_name and new_name != current_config["name"]:
             console.print(f"Name: [dim]{current_config['name']}[/] → [cyan]{new_name}[/]")
             changes_made = True
-        
+
         if command and command != current_config.get("command"):
             console.print(f"Command: [dim]{current_config.get('command', 'None')}[/] → [cyan]{command}[/]")
             changes_made = True
-        
+
         if args and args != " ".join(current_config.get("args", [])):
             current_args = " ".join(current_config.get("args", []))
             console.print(f"Arguments: [dim]{current_args or 'None'}[/] → [cyan]{args}[/]")
             changes_made = True
-        
+
         if env:
-            console.print(f"Environment: [cyan]Adding/updating variables[/]")
+            console.print("Environment: [cyan]Adding/updating variables[/]")
             changes_made = True
-        
+
         if url and url != current_config.get("url"):
             console.print(f"URL: [dim]{current_config.get('url', 'None')}[/] → [cyan]{url}[/]")
             changes_made = True
-        
+
         if headers:
-            console.print(f"Headers: [cyan]Adding/updating headers[/]")
+            console.print("Headers: [cyan]Adding/updating headers[/]")
             changes_made = True
-        
+
         if not changes_made:
             console.print("[yellow]No changes specified[/]")
             return 0
-        
+
         # Create the updated server config object
         if server_type == "stdio":
             updated_server_config = STDIOServerConfig(
@@ -423,15 +424,15 @@ def _edit_server_non_interactive(
                 env=updated_config.get("env", {}),
                 profile_tags=server_config.profile_tags,
             )
-        
+
         # Save the updated server
         global_config_manager.remove_server(server_name)
         global_config_manager.add_server(updated_server_config)
-        
+
         console.print(f"[green]✅ Successfully updated server '[cyan]{server_name}[/]'[/]")
-        
+
         return 0
-        
+
     except ValueError as e:
         print_error("Invalid parameter", str(e))
         return 1
@@ -721,7 +722,7 @@ def _edit_server_non_interactive(
                 "Run 'mcpm ls' to see available servers"
             )
             return 1
-        
+
         # Convert server config to dict for easier manipulation
         if isinstance(server_config, STDIOServerConfig):
             current_config = {
@@ -742,7 +743,7 @@ def _edit_server_non_interactive(
         else:
             print_error("Unknown server type", f"Server '{server_name}' has unknown type")
             return 1
-        
+
         # Merge updates
         updated_config = merge_server_config_updates(
             current_config=current_config,
@@ -753,7 +754,7 @@ def _edit_server_non_interactive(
             url=url,
             headers=headers,
         )
-        
+
         # Validate updates make sense for server type
         server_type = updated_config["type"]
         if server_type == "stdio":
@@ -770,41 +771,41 @@ def _edit_server_non_interactive(
                     "--command and --args are only valid for stdio servers"
                 )
                 return 1
-        
+
         # Display changes
         console.print(f"\n[bold green]Updating server '{server_name}':[/]")
-        
+
         # Show what's changing
         changes_made = False
         if new_name and new_name != current_config["name"]:
             console.print(f"Name: [dim]{current_config['name']}[/] → [cyan]{new_name}[/]")
             changes_made = True
-        
+
         if command and command != current_config.get("command"):
             console.print(f"Command: [dim]{current_config.get('command', 'None')}[/] → [cyan]{command}[/]")
             changes_made = True
-        
+
         if args and args != " ".join(current_config.get("args", [])):
             current_args = " ".join(current_config.get("args", []))
             console.print(f"Arguments: [dim]{current_args or 'None'}[/] → [cyan]{args}[/]")
             changes_made = True
-        
+
         if env:
-            console.print(f"Environment: [cyan]Adding/updating variables[/]")
+            console.print("Environment: [cyan]Adding/updating variables[/]")
             changes_made = True
-        
+
         if url and url != current_config.get("url"):
             console.print(f"URL: [dim]{current_config.get('url', 'None')}[/] → [cyan]{url}[/]")
             changes_made = True
-        
+
         if headers:
-            console.print(f"Headers: [cyan]Adding/updating headers[/]")
+            console.print("Headers: [cyan]Adding/updating headers[/]")
             changes_made = True
-        
+
         if not changes_made:
             console.print("[yellow]No changes specified[/]")
             return 0
-        
+
         # Create the updated server config object
         if server_type == "stdio":
             updated_server_config = STDIOServerConfig(
@@ -822,15 +823,15 @@ def _edit_server_non_interactive(
                 env=updated_config.get("env", {}),
                 profile_tags=server_config.profile_tags,
             )
-        
+
         # Save the updated server
         global_config_manager.remove_server(server_name)
         global_config_manager.add_server(updated_server_config)
-        
+
         console.print(f"[green]✅ Successfully updated server '[cyan]{server_name}[/]'[/]")
-        
+
         return 0
-        
+
     except ValueError as e:
         print_error("Invalid parameter", str(e))
         return 1

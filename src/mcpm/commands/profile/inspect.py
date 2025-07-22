@@ -8,7 +8,6 @@ from rich.console import Console
 from rich.panel import Panel
 
 from mcpm.profile.profile_config import ProfileConfigManager
-from mcpm.utils.non_interactive import parse_server_list
 from mcpm.utils.platform import NPX_CMD
 from mcpm.utils.rich_click_config import click
 
@@ -20,7 +19,7 @@ def build_profile_inspector_command(profile_name, port=None, host=None, http=Fal
     """Build the inspector command using mcpm profile run."""
     # Use mcpm profile run to start the FastMCP proxy - don't reinvent the wheel!
     mcpm_profile_run_cmd = f"mcpm profile run {shlex.quote(profile_name)}"
-    
+
     # Add optional parameters
     if port:
         mcpm_profile_run_cmd += f" --port {port}"
@@ -87,8 +86,8 @@ def inspect_profile(profile_name, server, port, host, http, sse):
 
     # Note: Server filtering is not yet supported because mcpm profile run doesn't support it
     if server:
-        console.print(f"[yellow]Warning: Server filtering is not yet supported in profile inspect[/]")
-        console.print(f"[dim]The --server option will be ignored. All servers in the profile will be inspected.[/]")
+        console.print("[yellow]Warning: Server filtering is not yet supported in profile inspect[/]")
+        console.print("[dim]The --server option will be ignored. All servers in the profile will be inspected.[/]")
 
     # Show profile info
     server_count = len(profile_servers)
@@ -99,16 +98,16 @@ def inspect_profile(profile_name, server, port, host, http, sse):
     console.print(f"\\n[bold]Starting Inspector for profile '[cyan]{profile_name}[/]'[/]")
     console.print("The Inspector will show aggregated capabilities from all servers in the profile.")
     console.print("The Inspector UI will open in your web browser.")
-    
+
     # Show transport options if specified
     if port:
         console.print(f"[dim]Using custom port: {port}[/]")
     if host:
         console.print(f"[dim]Using custom host: {host}[/]")
     if http:
-        console.print(f"[dim]Using HTTP transport[/]")
+        console.print("[dim]Using HTTP transport[/]")
     if sse:
-        console.print(f"[dim]Using SSE transport[/]")
+        console.print("[dim]Using SSE transport[/]")
 
     # Build inspector command using mcpm profile run
     inspector_cmd = build_profile_inspector_command(profile_name, port=port, host=host, http=http, sse=sse)

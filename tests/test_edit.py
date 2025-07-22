@@ -16,9 +16,12 @@ def test_edit_server_not_found(monkeypatch):
     mock_global_config = Mock()
     mock_global_config.get_server.return_value = None
     monkeypatch.setattr("mcpm.commands.edit.global_config_manager", mock_global_config)
+    
+    # Force non-interactive mode to trigger the return code behavior
+    monkeypatch.setattr("mcpm.commands.edit.is_non_interactive", lambda: True)
 
     runner = CliRunner()
-    result = runner.invoke(edit, ["nonexistent"])
+    result = runner.invoke(edit, ["nonexistent", "--name", "newname"])  # Add CLI param to trigger non-interactive
 
     assert result.exit_code == 1
     assert "Server 'nonexistent' not found" in result.output
@@ -37,6 +40,10 @@ def test_edit_server_interactive_fallback(monkeypatch):
     mock_global_config = Mock()
     mock_global_config.get_server.return_value = test_server
     monkeypatch.setattr("mcpm.commands.edit.global_config_manager", mock_global_config)
+    
+    # Force interactive mode
+    monkeypatch.setattr("mcpm.commands.edit.is_non_interactive", lambda: False)
+    monkeypatch.setattr("mcpm.commands.edit.should_force_operation", lambda: False)
 
     runner = CliRunner()
     result = runner.invoke(edit, ["test-server"])
@@ -65,6 +72,10 @@ def test_edit_server_with_spaces_in_args(monkeypatch):
     mock_global_config = Mock()
     mock_global_config.get_server.return_value = test_server
     monkeypatch.setattr("mcpm.commands.edit.global_config_manager", mock_global_config)
+    
+    # Force interactive mode
+    monkeypatch.setattr("mcpm.commands.edit.is_non_interactive", lambda: False)
+    monkeypatch.setattr("mcpm.commands.edit.should_force_operation", lambda: False)
 
     runner = CliRunner()
     result = runner.invoke(edit, ["test-server"])
@@ -85,12 +96,12 @@ def test_edit_command_help():
 
     assert result.exit_code == 0
     assert "Edit a server configuration" in result.output
-    assert "Opens an interactive form editor" in result.output
-    assert "mcpm edit time" in result.output
-    assert "mcpm edit -N" in result.output
-    assert "mcpm edit -e" in result.output
+    assert "Interactive by default, or use CLI parameters for automation" in result.output
     assert "--new" in result.output
     assert "--editor" in result.output
+    assert "--name" in result.output
+    assert "--command" in result.output
+    assert "--force" in result.output
 
 
 def test_edit_editor_flag(monkeypatch):

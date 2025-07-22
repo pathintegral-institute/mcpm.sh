@@ -48,7 +48,7 @@ def new(
     # Check if we have enough parameters for non-interactive mode
     has_cli_params = bool(server_name and server_type)
     force_non_interactive = is_non_interactive() or should_force_operation() or force
-    
+
     if has_cli_params or force_non_interactive:
         return _create_new_server_non_interactive(
             server_name=server_name,
@@ -81,11 +81,11 @@ def _create_new_server_non_interactive(
         if not server_name:
             print_error("Server name is required", "Use: mcpm new <server_name> --type <stdio|remote>")
             return 1
-        
+
         if not server_type:
             print_error("Server type is required", "Use: --type stdio or --type remote")
             return 1
-        
+
         # Check if server already exists
         if global_config_manager.get_server(server_name):
             if not force and not should_force_operation():
@@ -95,7 +95,7 @@ def _create_new_server_non_interactive(
                 )
                 return 1
             console.print(f"[yellow]Overwriting existing server '{server_name}'[/]")
-        
+
         # Create server configuration from parameters
         config_dict = create_server_config_from_params(
             name=server_name,
@@ -106,7 +106,7 @@ def _create_new_server_non_interactive(
             url=url,
             headers=headers,
         )
-        
+
         # Create the appropriate server config object
         if server_type == "stdio":
             server_config = STDIOServerConfig(
@@ -122,11 +122,11 @@ def _create_new_server_non_interactive(
                 headers=config_dict.get("headers", {}),
                 env=config_dict.get("env", {}),
             )
-        
+
         # Display configuration summary
         console.print(f"\n[bold green]Creating server '{server_name}':[/]")
         console.print(f"Type: [cyan]{server_type.upper()}[/]")
-        
+
         if server_type == "stdio":
             console.print(f"Command: [cyan]{server_config.command}[/]")
             if server_config.args:
@@ -136,17 +136,17 @@ def _create_new_server_non_interactive(
             if server_config.headers:
                 headers_str = ", ".join(f"{k}={v}" for k, v in server_config.headers.items())
                 console.print(f"Headers: [cyan]{headers_str}[/]")
-        
+
         if server_config.env:
             env_str = ", ".join(f"{k}={v}" for k, v in server_config.env.items())
             console.print(f"Environment: [cyan]{env_str}[/]")
-        
+
         # Save the server
         global_config_manager.add_server(server_config)
         console.print(f"[green]✅ Successfully created server '[cyan]{server_name}[/]'[/]")
-        
+
         return 0
-        
+
     except ValueError as e:
         print_error("Invalid parameter", str(e))
         return 1

@@ -263,7 +263,7 @@ def edit_client(client_name, external, config_path_override, add_server, remove_
     # Check if we have CLI parameters for non-interactive mode
     has_cli_params = any([add_server, remove_server, set_servers, add_profile, remove_profile, set_profiles])
     force_non_interactive = is_non_interactive() or should_force_operation() or force
-    
+
     if has_cli_params or force_non_interactive:
         return _edit_client_non_interactive(
             client_manager=client_manager,
@@ -1157,144 +1157,144 @@ def _edit_client_non_interactive(
         # Validate conflicting options
         server_options = [add_server, remove_server, set_servers]
         profile_options = [add_profile, remove_profile, set_profiles]
-        
+
         if sum(1 for opt in server_options if opt is not None) > 1:
             console.print("[red]Error: Cannot use multiple server options simultaneously[/]")
             console.print("[dim]Use either --add-server, --remove-server, or --set-servers[/]")
             return 1
-        
+
         if sum(1 for opt in profile_options if opt is not None) > 1:
             console.print("[red]Error: Cannot use multiple profile options simultaneously[/]")
             console.print("[dim]Use either --add-profile, --remove-profile, or --set-profiles[/]")
             return 1
-        
+
         # Get available servers and profiles
         global_servers = global_config_manager.list_servers()
         if not global_servers:
             console.print("[yellow]No servers found in MCPM global configuration[/]")
             console.print("[dim]Install servers first using: mcpm install <server>[/]")
             return 1
-        
+
         from mcpm.profile.profile_config import ProfileConfigManager
         profile_manager = ProfileConfigManager()
         available_profiles = profile_manager.list_profiles()
-        
+
         # Get current client state
         current_profiles, current_individual_servers = _get_current_client_mcpm_state(client_manager)
-        
+
         # Start with current state
         final_profiles = set(current_profiles)
         final_servers = set(current_individual_servers)
-        
+
         # Handle server operations
         if add_server:
             servers_to_add = parse_server_list(add_server)
-            
+
             # Validate servers exist
             invalid_servers = [s for s in servers_to_add if s not in global_servers]
             if invalid_servers:
                 console.print(f"[red]Error: Server(s) not found: {', '.join(invalid_servers)}[/]")
                 return 1
-            
+
             final_servers.update(servers_to_add)
-            
+
         elif remove_server:
             servers_to_remove = parse_server_list(remove_server)
-            
+
             # Validate servers are currently in client
             not_in_client = [s for s in servers_to_remove if s not in current_individual_servers]
             if not_in_client:
                 console.print(f"[yellow]Warning: Server(s) not in client: {', '.join(not_in_client)}[/]")
-            
+
             final_servers.difference_update(servers_to_remove)
-            
+
         elif set_servers:
             servers_to_set = parse_server_list(set_servers)
-            
+
             # Validate servers exist
             invalid_servers = [s for s in servers_to_set if s not in global_servers]
             if invalid_servers:
                 console.print(f"[red]Error: Server(s) not found: {', '.join(invalid_servers)}[/]")
                 return 1
-            
+
             final_servers = set(servers_to_set)
-        
+
         # Handle profile operations
         if add_profile:
             profiles_to_add = parse_server_list(add_profile)  # reuse server list parser
-            
+
             # Validate profiles exist
             invalid_profiles = [p for p in profiles_to_add if p not in available_profiles]
             if invalid_profiles:
                 console.print(f"[red]Error: Profile(s) not found: {', '.join(invalid_profiles)}[/]")
                 return 1
-            
+
             final_profiles.update(profiles_to_add)
-            
+
         elif remove_profile:
             profiles_to_remove = parse_server_list(remove_profile)  # reuse server list parser
-            
+
             # Validate profiles are currently in client
             not_in_client = [p for p in profiles_to_remove if p not in current_profiles]
             if not_in_client:
                 console.print(f"[yellow]Warning: Profile(s) not in client: {', '.join(not_in_client)}[/]")
-            
+
             final_profiles.difference_update(profiles_to_remove)
-            
+
         elif set_profiles:
             profiles_to_set = parse_server_list(set_profiles)  # reuse server list parser
-            
+
             # Validate profiles exist
             invalid_profiles = [p for p in profiles_to_set if p not in available_profiles]
             if invalid_profiles:
                 console.print(f"[red]Error: Profile(s) not found: {', '.join(invalid_profiles)}[/]")
                 return 1
-            
+
             final_profiles = set(profiles_to_set)
-        
+
         # Display changes
         console.print(f"\n[bold green]Updating {display_name} configuration:[/]")
-        
+
         changes_made = False
-        
+
         # Show profile changes
         if final_profiles != set(current_profiles):
             console.print(f"Profiles: [dim]{len(current_profiles)} profiles[/] → [cyan]{len(final_profiles)} profiles[/]")
-            
+
             added_profiles = final_profiles - set(current_profiles)
             if added_profiles:
                 console.print(f"  [green]+ Added: {', '.join(sorted(added_profiles))}[/]")
-            
+
             removed_profiles = set(current_profiles) - final_profiles
             if removed_profiles:
                 console.print(f"  [red]- Removed: {', '.join(sorted(removed_profiles))}[/]")
-            
+
             changes_made = True
-        
+
         # Show server changes
         if final_servers != set(current_individual_servers):
             console.print(f"Servers: [dim]{len(current_individual_servers)} servers[/] → [cyan]{len(final_servers)} servers[/]")
-            
+
             added_servers = final_servers - set(current_individual_servers)
             if added_servers:
                 console.print(f"  [green]+ Added: {', '.join(sorted(added_servers))}[/]")
-            
+
             removed_servers = set(current_individual_servers) - final_servers
             if removed_servers:
                 console.print(f"  [red]- Removed: {', '.join(sorted(removed_servers))}[/]")
-            
+
             changes_made = True
-        
+
         if not changes_made:
             console.print("[yellow]No changes specified[/]")
             return 0
-        
+
         # Apply changes
         console.print("\n[bold green]Applying changes...[/]")
-        
+
         # Apply profile changes
         from mcpm.core.schema import STDIOServerConfig
-        
+
         # Remove old profile configurations
         for profile_name in set(current_profiles) - final_profiles:
             try:
@@ -1302,20 +1302,20 @@ def _edit_client_non_interactive(
                 client_manager.remove_server(profile_server_name)
             except Exception:
                 pass  # Profile might not exist
-        
+
         # Add new profile configurations
         for profile_name in final_profiles - set(current_profiles):
             try:
                 profile_server_name = f"mcpm_profile_{profile_name}"
                 server_config = STDIOServerConfig(
-                    name=profile_server_name, 
-                    command="mcpm", 
+                    name=profile_server_name,
+                    command="mcpm",
                     args=["profile", "run", profile_name]
                 )
                 client_manager.add_server(server_config)
             except Exception as e:
                 console.print(f"[red]Error adding profile {profile_name}: {e}[/]")
-        
+
         # Apply server changes
         # Remove old server configurations
         for server_name in set(current_individual_servers) - final_servers:
@@ -1324,26 +1324,26 @@ def _edit_client_non_interactive(
                 client_manager.remove_server(prefixed_name)
             except Exception:
                 pass  # Server might not exist
-        
+
         # Add new server configurations
         for server_name in final_servers - set(current_individual_servers):
             try:
                 prefixed_name = f"mcpm_{server_name}"
                 server_config = STDIOServerConfig(
-                    name=prefixed_name, 
-                    command="mcpm", 
+                    name=prefixed_name,
+                    command="mcpm",
                     args=["run", server_name]
                 )
                 client_manager.add_server(server_config)
             except Exception as e:
                 console.print(f"[red]Error adding server {server_name}: {e}[/]")
-        
+
         console.print(f"[green]✅ Successfully updated {display_name} configuration[/]")
         console.print(f"[green]✅ {len(final_profiles)} profiles and {len(final_servers)} servers configured[/]")
         console.print(f"[italic]Restart {display_name} for changes to take effect.[/]")
-        
+
         return 0
-        
+
     except Exception as e:
         console.print(f"[red]Error updating client configuration: {e}[/]")
         return 1
