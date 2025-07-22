@@ -413,6 +413,7 @@ def test_client_edit_non_interactive_add_server(monkeypatch):
     mock_client_manager.config_path = "/path/to/config.json"
     mock_client_manager.get_servers.return_value = {}
     mock_client_manager.update_servers.return_value = None
+    mock_client_manager.add_server.return_value = None
 
     monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_client_manager", Mock(return_value=mock_client_manager))
     monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_client_info", Mock(return_value={"name": "Cursor"}))
@@ -434,7 +435,16 @@ def test_client_edit_non_interactive_add_server(monkeypatch):
 
     assert result.exit_code == 0
     assert "Successfully updated" in result.output
-    # We can see from the output that the operation was successful
+    
+    # Verify that add_server was called with the prefixed server name
+    mock_client_manager.add_server.assert_called()
+    # Check that add_server was called with a server config for the prefixed server name
+    call_args = mock_client_manager.add_server.call_args
+    assert call_args is not None
+    server_config = call_args[0][0]  # First positional argument
+    assert server_config.name == "mcpm_test-server"
+    assert server_config.command == "mcpm"
+    assert server_config.args == ["run", "test-server"]
 
 
 def test_client_edit_non_interactive_remove_server(monkeypatch):
