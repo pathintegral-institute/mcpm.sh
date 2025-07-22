@@ -24,7 +24,10 @@ def test_profile_edit_non_interactive_add_server(monkeypatch):
 
     # Mock GlobalConfigManager
     mock_global_config = Mock()
-    mock_global_config.get_server.return_value = STDIOServerConfig(name="new-server", command="echo new")
+    mock_global_config.list_servers.return_value = {
+        "new-server": STDIOServerConfig(name="new-server", command="echo new"),
+        "another-server": STDIOServerConfig(name="another-server", command="echo another")
+    }
     monkeypatch.setattr("mcpm.commands.profile.edit.global_config_manager", mock_global_config)
 
     # Force non-interactive mode
@@ -37,7 +40,7 @@ def test_profile_edit_non_interactive_add_server(monkeypatch):
     ])
 
     assert result.exit_code == 0
-    assert "Successfully updated profile" in result.output
+    assert "Profile 'test-profile' updated" in result.output
     # Should be called for each server being added
     assert mock_profile_config.add_server_to_profile.call_count >= 1
 
@@ -64,7 +67,7 @@ def test_profile_edit_non_interactive_remove_server(monkeypatch):
     ])
 
     assert result.exit_code == 0
-    assert "Successfully updated profile" in result.output
+    assert "Profile 'test-profile' updated" in result.output
     mock_profile_config.remove_server.assert_called_with("test-profile", "server1")
 
 
@@ -95,7 +98,7 @@ def test_profile_edit_non_interactive_set_servers(monkeypatch):
     ])
 
     assert result.exit_code == 0
-    assert "Successfully updated profile" in result.output
+    assert "Profile 'test-profile' updated" in result.output
     # Should clear existing servers then add new ones
     mock_profile_config.clear_profile.assert_called_with("test-profile")
 
@@ -121,7 +124,7 @@ def test_profile_edit_non_interactive_rename(monkeypatch):
     ])
 
     assert result.exit_code == 0
-    assert "Successfully updated profile" in result.output
+    assert "Profile 'test-profile' updated" in result.output
     mock_profile_config.rename_profile.assert_called_with("old-profile-name", "new-profile-name")
 
 
@@ -194,7 +197,7 @@ def test_profile_edit_with_force_flag(monkeypatch):
     ])
 
     assert result.exit_code == 0
-    assert "Successfully updated profile" in result.output
+    assert "Profile 'test-profile' updated" in result.output
 
 
 def test_profile_edit_interactive_fallback(monkeypatch):

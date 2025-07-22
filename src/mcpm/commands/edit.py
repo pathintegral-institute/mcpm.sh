@@ -339,7 +339,6 @@ def _edit_server_non_interactive(
                 "type": "remote",
                 "url": server_config.url,
                 "headers": server_config.headers,
-                "env": server_config.env,
             }
         else:
             print_error("Unknown server type", f"Server '{server_name}' has unknown type")
@@ -421,7 +420,6 @@ def _edit_server_non_interactive(
                 name=updated_config["name"],
                 url=updated_config["url"],
                 headers=updated_config.get("headers", {}),
-                env=updated_config.get("env", {}),
                 profile_tags=server_config.profile_tags,
             )
 
@@ -738,7 +736,6 @@ def _edit_server_non_interactive(
                 "type": "remote",
                 "url": server_config.url,
                 "headers": server_config.headers,
-                "env": server_config.env,
             }
         else:
             print_error("Unknown server type", f"Server '{server_name}' has unknown type")
@@ -820,7 +817,6 @@ def _edit_server_non_interactive(
                 name=updated_config["name"],
                 url=updated_config["url"],
                 headers=updated_config.get("headers", {}),
-                env=updated_config.get("env", {}),
                 profile_tags=server_config.profile_tags,
             )
 

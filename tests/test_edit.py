@@ -146,7 +146,8 @@ def test_edit_stdio_server_non_interactive(monkeypatch):
 
     mock_global_config = Mock()
     mock_global_config.get_server.return_value = test_server
-    mock_global_config.update_server.return_value = None
+    mock_global_config.remove_server.return_value = None
+    mock_global_config.add_server.return_value = None
     monkeypatch.setattr("mcpm.commands.edit.global_config_manager", mock_global_config)
 
     # Force non-interactive mode
@@ -163,7 +164,8 @@ def test_edit_stdio_server_non_interactive(monkeypatch):
 
     assert result.exit_code == 0
     assert "Successfully updated server" in result.output
-    mock_global_config.update_server.assert_called_once()
+    mock_global_config.remove_server.assert_called_once_with("test-server")
+    mock_global_config.add_server.assert_called_once()
 
 
 def test_edit_remote_server_non_interactive(monkeypatch):
@@ -178,7 +180,8 @@ def test_edit_remote_server_non_interactive(monkeypatch):
 
     mock_global_config = Mock()
     mock_global_config.get_server.return_value = test_server
-    mock_global_config.update_server.return_value = None
+    mock_global_config.remove_server.return_value = None
+    mock_global_config.add_server.return_value = None
     monkeypatch.setattr("mcpm.commands.edit.global_config_manager", mock_global_config)
 
     # Force non-interactive mode
@@ -194,7 +197,8 @@ def test_edit_remote_server_non_interactive(monkeypatch):
 
     assert result.exit_code == 0
     assert "Successfully updated server" in result.output
-    mock_global_config.update_server.assert_called_once()
+    mock_global_config.remove_server.assert_called_once_with("api-server")
+    mock_global_config.add_server.assert_called_once()
 
 
 def test_edit_server_partial_update_non_interactive(monkeypatch):
@@ -209,7 +213,8 @@ def test_edit_server_partial_update_non_interactive(monkeypatch):
 
     mock_global_config = Mock()
     mock_global_config.get_server.return_value = test_server
-    mock_global_config.update_server.return_value = None
+    mock_global_config.remove_server.return_value = None
+    mock_global_config.add_server.return_value = None
     monkeypatch.setattr("mcpm.commands.edit.global_config_manager", mock_global_config)
 
     # Force non-interactive mode
@@ -224,7 +229,8 @@ def test_edit_server_partial_update_non_interactive(monkeypatch):
 
     assert result.exit_code == 0
     assert "Successfully updated server" in result.output
-    mock_global_config.update_server.assert_called_once()
+    mock_global_config.remove_server.assert_called_once_with("test-server")
+    mock_global_config.add_server.assert_called_once()
 
 
 def test_edit_server_invalid_env_format(monkeypatch):
@@ -264,7 +270,8 @@ def test_edit_server_with_force_flag(monkeypatch):
 
     mock_global_config = Mock()
     mock_global_config.get_server.return_value = test_server
-    mock_global_config.update_server.return_value = None
+    mock_global_config.remove_server.return_value = None
+    mock_global_config.add_server.return_value = None
     monkeypatch.setattr("mcpm.commands.edit.global_config_manager", mock_global_config)
 
     runner = CliRunner()
@@ -276,7 +283,8 @@ def test_edit_server_with_force_flag(monkeypatch):
 
     assert result.exit_code == 0
     assert "Successfully updated server" in result.output
-    mock_global_config.update_server.assert_called_once()
+    mock_global_config.remove_server.assert_called_once_with("test-server")
+    mock_global_config.add_server.assert_called_once()
 
 
 def test_shlex_argument_parsing():

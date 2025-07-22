@@ -470,7 +470,8 @@ def test_client_edit_non_interactive_set_servers(monkeypatch):
     mock_client_manager.is_client_installed = Mock(return_value=True)
     mock_client_manager.config_path = "/path/to/config.json"
     mock_client_manager.get_servers.return_value = {"old-server": Mock()}
-    mock_client_manager.update_servers.return_value = None
+    mock_client_manager.add_server.return_value = None
+    mock_client_manager.remove_server.return_value = None
 
     monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_client_manager", Mock(return_value=mock_client_manager))
     monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_client_info", Mock(return_value={"name": "Cursor"}))
@@ -495,7 +496,8 @@ def test_client_edit_non_interactive_set_servers(monkeypatch):
 
     assert result.exit_code == 0
     assert "Successfully updated" in result.output
-    mock_client_manager.update_servers.assert_called_once()
+    # Verify that add_server was called for the new servers
+    assert mock_client_manager.add_server.call_count == 2
 
 
 def test_client_edit_non_interactive_add_profile(monkeypatch):
@@ -505,7 +507,7 @@ def test_client_edit_non_interactive_add_profile(monkeypatch):
     mock_client_manager.is_client_installed = Mock(return_value=True)
     mock_client_manager.config_path = "/path/to/config.json"
     mock_client_manager.get_servers.return_value = {}
-    mock_client_manager.update_servers.return_value = None
+    mock_client_manager.add_server.return_value = None
 
     monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_client_manager", Mock(return_value=mock_client_manager))
     monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_client_info", Mock(return_value={"name": "Cursor"}))
@@ -519,7 +521,7 @@ def test_client_edit_non_interactive_add_profile(monkeypatch):
     mock_profile_config = Mock()
     mock_profile_config.list_profiles.return_value = {"test-profile": [Mock(name="test-server")]}
     mock_profile_config.get_profile.return_value = [Mock(name="test-server")]
-    monkeypatch.setattr("mcpm.commands.client.profile_config_manager", mock_profile_config)
+    monkeypatch.setattr("mcpm.profile.profile_config.ProfileConfigManager", lambda: mock_profile_config)
 
     # Force non-interactive mode
     monkeypatch.setattr("mcpm.commands.client.is_non_interactive", lambda: True)
@@ -532,7 +534,8 @@ def test_client_edit_non_interactive_add_profile(monkeypatch):
 
     assert result.exit_code == 0
     assert "Successfully updated" in result.output
-    mock_client_manager.update_servers.assert_called_once()
+    # Verify that add_server was called for the profile
+    assert mock_client_manager.add_server.called
 
 
 def test_client_edit_non_interactive_server_not_found(monkeypatch):
@@ -571,7 +574,7 @@ def test_client_edit_with_force_flag(monkeypatch):
     mock_client_manager.is_client_installed = Mock(return_value=True)
     mock_client_manager.config_path = "/path/to/config.json"
     mock_client_manager.get_servers.return_value = {}
-    mock_client_manager.update_servers.return_value = None
+    mock_client_manager.add_server.return_value = None
 
     monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_client_manager", Mock(return_value=mock_client_manager))
     monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_client_info", Mock(return_value={"name": "Cursor"}))
@@ -591,7 +594,8 @@ def test_client_edit_with_force_flag(monkeypatch):
 
     assert result.exit_code == 0
     assert "Successfully updated" in result.output
-    mock_client_manager.update_servers.assert_called_once()
+    # Verify add_server was called for the new server
+    assert mock_client_manager.add_server.called
 
 
 def test_client_edit_command_help():
