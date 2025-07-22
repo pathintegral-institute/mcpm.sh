@@ -6,7 +6,7 @@ import os
 import shlex
 import subprocess
 import sys
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Union
 
 from InquirerPy import inquirer
 from rich.console import Console
@@ -407,6 +407,7 @@ def _edit_server_non_interactive(
             return 0
 
         # Create the updated server config object
+        updated_server_config: Union[STDIOServerConfig, RemoteServerConfig]
         if server_type == "stdio":
             updated_server_config = STDIOServerConfig(
                 name=updated_config["name"],
@@ -700,137 +701,3 @@ def _interactive_new_server_form() -> Optional[Dict[str, Any]]:
         return None
 
 
-def _edit_server_non_interactive(
-    server_name: str,
-    new_name: Optional[str] = None,
-    command: Optional[str] = None,
-    args: Optional[str] = None,
-    env: Optional[str] = None,
-    url: Optional[str] = None,
-    headers: Optional[str] = None,
-    force: bool = False,
-) -> int:
-    """Edit a server configuration non-interactively."""
-    try:
-        # Get the existing server
-        server_config = global_config_manager.get_server(server_name)
-        if not server_config:
-            print_error(
-                f"Server '{server_name}' not found",
-                "Run 'mcpm ls' to see available servers"
-            )
-            return 1
-
-        # Convert server config to dict for easier manipulation
-        if isinstance(server_config, STDIOServerConfig):
-            current_config = {
-                "name": server_config.name,
-                "type": "stdio",
-                "command": server_config.command,
-                "args": server_config.args,
-                "env": server_config.env,
-            }
-        elif isinstance(server_config, RemoteServerConfig):
-            current_config = {
-                "name": server_config.name,
-                "type": "remote",
-                "url": server_config.url,
-                "headers": server_config.headers,
-            }
-        else:
-            print_error("Unknown server type", f"Server '{server_name}' has unknown type")
-            return 1
-
-        # Merge updates
-        updated_config = merge_server_config_updates(
-            current_config=current_config,
-            name=new_name,
-            command=command,
-            args=args,
-            env=env,
-            url=url,
-            headers=headers,
-        )
-
-        # Validate updates make sense for server type
-        server_type = updated_config["type"]
-        if server_type == "stdio":
-            if url or headers:
-                print_error(
-                    "Invalid parameters for stdio server",
-                    "--url and --headers are only valid for remote servers"
-                )
-                return 1
-        elif server_type == "remote":
-            if command or args:
-                print_error(
-                    "Invalid parameters for remote server",
-                    "--command and --args are only valid for stdio servers"
-                )
-                return 1
-
-        # Display changes
-        console.print(f"\n[bold green]Updating server '{server_name}':[/]")
-
-        # Show what's changing
-        changes_made = False
-        if new_name and new_name != current_config["name"]:
-            console.print(f"Name: [dim]{current_config['name']}[/] → [cyan]{new_name}[/]")
-            changes_made = True
-
-        if command and command != current_config.get("command"):
-            console.print(f"Command: [dim]{current_config.get('command', 'None')}[/] → [cyan]{command}[/]")
-            changes_made = True
-
-        if args and args != " ".join(current_config.get("args", [])):
-            current_args = " ".join(current_config.get("args", []))
-            console.print(f"Arguments: [dim]{current_args or 'None'}[/] → [cyan]{args}[/]")
-            changes_made = True
-
-        if env:
-            console.print("Environment: [cyan]Adding/updating variables[/]")
-            changes_made = True
-
-        if url and url != current_config.get("url"):
-            console.print(f"URL: [dim]{current_config.get('url', 'None')}[/] → [cyan]{url}[/]")
-            changes_made = True
-
-        if headers:
-            console.print("Headers: [cyan]Adding/updating headers[/]")
-            changes_made = True
-
-        if not changes_made:
-            console.print("[yellow]No changes specified[/]")
-            return 0
-
-        # Create the updated server config object
-        if server_type == "stdio":
-            updated_server_config = STDIOServerConfig(
-                name=updated_config["name"],
-                command=updated_config["command"],
-                args=updated_config.get("args", []),
-                env=updated_config.get("env", {}),
-                profile_tags=server_config.profile_tags,
-            )
-        else:  # remote
-            updated_server_config = RemoteServerConfig(
-                name=updated_config["name"],
-                url=updated_config["url"],
-                headers=updated_config.get("headers", {}),
-                profile_tags=server_config.profile_tags,
-            )
-
-        # Save the updated server
-        global_config_manager.remove_server(server_name)
-        global_config_manager.add_server(updated_server_config)
-
-        console.print(f"[green]✅ Successfully updated server '[cyan]{server_name}[/]'[/]")
-
-        return 0
-
-    except ValueError as e:
-        print_error("Invalid parameter", str(e))
-        return 1
-    except Exception as e:
-        print_error("Failed to update server", str(e))
-        return 1
