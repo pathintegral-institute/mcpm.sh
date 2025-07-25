@@ -6,7 +6,7 @@ import os
 import shlex
 import subprocess
 import sys
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Union
 
 from InquirerPy import inquirer
 from rich.console import Console
@@ -15,6 +15,11 @@ from rich.table import Table
 from mcpm.core.schema import RemoteServerConfig, STDIOServerConfig
 from mcpm.global_config import GlobalConfigManager
 from mcpm.utils.display import print_error
+from mcpm.utils.non_interactive import (
+    is_non_interactive,
+    merge_server_config_updates,
+    should_force_operation,
+)
 from mcpm.utils.rich_click_config import click
 
 console = Console()
@@ -25,20 +30,18 @@ global_config_manager = GlobalConfigManager()
 @click.argument("server_name", required=False)
 @click.option("-N", "--new", is_flag=True, help="Create a new server configuration")
 @click.option("-e", "--editor", is_flag=True, help="Open global config in external editor")
-def edit(server_name, new, editor):
+@click.option("--name", help="Update server name")
+@click.option("--command", help="Update command (for stdio servers)")
+@click.option("--args", help="Update command arguments (space-separated)")
+@click.option("--env", help="Update environment variables (KEY1=value1,KEY2=value2)")
+@click.option("--url", help="Update server URL (for remote servers)")
+@click.option("--headers", help="Update HTTP headers (KEY1=value1,KEY2=value2)")
+@click.option("--force", is_flag=True, help="Skip confirmation prompts")
+def edit(server_name, new, editor, name, command, args, env, url, headers, force):
     """Edit a server configuration.
 
-    Opens an interactive form editor that allows you to:
-    - Change the server name with real-time validation
-    - Modify server-specific properties (command, args, env for STDIO; URL, headers for remote)
-    - Step through each field, press Enter to confirm, ESC to cancel
-
-    Examples:
-
-        mcpm edit time                                    # Edit existing server
-        mcpm edit agentkit                                # Edit agentkit server
-        mcpm edit -N                                      # Create new server
-        mcpm edit -e                                      # Open global config in editor
+    Interactive by default, or use CLI parameters for automation.
+    Use -e to open config in external editor, -N to create new server.
     """
     # Handle editor mode
     if editor:
@@ -59,6 +62,23 @@ def edit(server_name, new, editor):
     if not server_name:
         print_error("Server name is required", "Use 'mcpm edit <server>', 'mcpm edit --new', or 'mcpm edit --editor'")
         raise click.ClickException("Server name is required")
+
+    # Check if we have CLI parameters for non-interactive mode
+    has_cli_params = any([name, command, args, env, url, headers])
+    force_non_interactive = is_non_interactive() or should_force_operation() or force
+
+    if has_cli_params or force_non_interactive:
+        exit_code = _edit_server_non_interactive(
+            server_name=server_name,
+            new_name=name,
+            command=command,
+            args=args,
+            env=env,
+            url=url,
+            headers=headers,
+            force=force,
+        )
+        sys.exit(exit_code)
 
     # Get the existing server
     server_config = global_config_manager.get_server(server_name)
@@ -281,6 +301,143 @@ def interactive_server_edit(server_config) -> Optional[Dict[str, Any]]:
     except Exception as e:
         console.print(f"[red]Error running interactive form: {e}[/]")
         return None
+
+
+def _edit_server_non_interactive(
+    server_name: str,
+    new_name: Optional[str] = None,
+    command: Optional[str] = None,
+    args: Optional[str] = None,
+    env: Optional[str] = None,
+    url: Optional[str] = None,
+    headers: Optional[str] = None,
+    force: bool = False,
+) -> int:
+    """Edit a server configuration non-interactively."""
+    try:
+        # Get the existing server
+        server_config = global_config_manager.get_server(server_name)
+        if not server_config:
+            print_error(
+                f"Server '{server_name}' not found",
+                "Run 'mcpm ls' to see available servers"
+            )
+            return 1
+
+        # Convert server config to dict for easier manipulation
+        if isinstance(server_config, STDIOServerConfig):
+            current_config = {
+                "name": server_config.name,
+                "type": "stdio",
+                "command": server_config.command,
+                "args": server_config.args,
+                "env": server_config.env,
+            }
+        elif isinstance(server_config, RemoteServerConfig):
+            current_config = {
+                "name": server_config.name,
+                "type": "remote",
+                "url": server_config.url,
+                "headers": server_config.headers,
+            }
+        else:
+            print_error("Unknown server type", f"Server '{server_name}' has unknown type")
+            return 1
+
+        # Merge updates
+        updated_config = merge_server_config_updates(
+            current_config=current_config,
+            name=new_name,
+            command=command,
+            args=args,
+            env=env,
+            url=url,
+            headers=headers,
+        )
+
+        # Validate updates make sense for server type
+        server_type = updated_config["type"]
+        if server_type == "stdio":
+            if url or headers:
+                print_error(
+                    "Invalid parameters for stdio server",
+                    "--url and --headers are only valid for remote servers"
+                )
+                return 1
+        elif server_type == "remote":
+            if command or args:
+                print_error(
+                    "Invalid parameters for remote server",
+                    "--command and --args are only valid for stdio servers"
+                )
+                return 1
+
+        # Display changes
+        console.print(f"\n[bold green]Updating server '{server_name}':[/]")
+
+        # Show what's changing
+        changes_made = False
+        if new_name and new_name != current_config["name"]:
+            console.print(f"Name: [dim]{current_config['name']}[/] → [cyan]{new_name}[/]")
+            changes_made = True
+
+        if command and command != current_config.get("command"):
+            console.print(f"Command: [dim]{current_config.get('command', 'None')}[/] → [cyan]{command}[/]")
+            changes_made = True
+
+        if args and args != " ".join(current_config.get("args", [])):
+            current_args = " ".join(current_config.get("args", []))
+            console.print(f"Arguments: [dim]{current_args or 'None'}[/] → [cyan]{args}[/]")
+            changes_made = True
+
+        if env:
+            console.print("Environment: [cyan]Adding/updating variables[/]")
+            changes_made = True
+
+        if url and url != current_config.get("url"):
+            console.print(f"URL: [dim]{current_config.get('url', 'None')}[/] → [cyan]{url}[/]")
+            changes_made = True
+
+        if headers:
+            console.print("Headers: [cyan]Adding/updating headers[/]")
+            changes_made = True
+
+        if not changes_made:
+            console.print("[yellow]No changes specified[/]")
+            return 0
+
+        # Create the updated server config object
+        updated_server_config: Union[STDIOServerConfig, RemoteServerConfig]
+        if server_type == "stdio":
+            updated_server_config = STDIOServerConfig(
+                name=updated_config["name"],
+                command=updated_config["command"],
+                args=updated_config.get("args", []),
+                env=updated_config.get("env", {}),
+                profile_tags=server_config.profile_tags,
+            )
+        else:  # remote
+            updated_server_config = RemoteServerConfig(
+                name=updated_config["name"],
+                url=updated_config["url"],
+                headers=updated_config.get("headers", {}),
+                profile_tags=server_config.profile_tags,
+            )
+
+        # Save the updated server
+        global_config_manager.remove_server(server_name)
+        global_config_manager.add_server(updated_server_config)
+
+        console.print(f"[green]✅ Successfully updated server '[cyan]{server_name}[/]'[/]")
+
+        return 0
+
+    except ValueError as e:
+        print_error("Invalid parameter", str(e))
+        return 1
+    except Exception as e:
+        print_error("Failed to update server", str(e))
+        return 1
 
 
 def apply_interactive_changes(server_config, interactive_result):
@@ -542,3 +699,5 @@ def _interactive_new_server_form() -> Optional[Dict[str, Any]]:
     except Exception as e:
         console.print(f"[red]Error running interactive form: {e}[/]")
         return None
+
+

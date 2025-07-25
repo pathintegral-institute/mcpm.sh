@@ -1,0 +1,972 @@
+# MCPM (Model Context Protocol Manager) - AI Agent Guide
+
+Generated: 2025-07-22 11:32:59 UTC
+Version: 2.5.0
+
+## Overview
+
+MCPM is a command-line tool for managing Model Context Protocol (MCP) servers. This guide is specifically designed for AI agents to understand how to interact with MCPM programmatically.
+
+## Key Concepts
+
+- **Servers**: MCP servers that provide tools, resources, and prompts to AI assistants
+- **Profiles**: Named groups of servers that can be run together
+- **Clients**: Applications that connect to MCP servers (Claude Desktop, Cursor, etc.)
+
+## Environment Variables for AI Agents
+
+```bash
+# Force non-interactive mode (no prompts)
+export MCPM_NON_INTERACTIVE=true
+
+# Skip all confirmations
+export MCPM_FORCE=true
+
+# Output in JSON format (where supported)
+export MCPM_JSON_OUTPUT=true
+
+# Server-specific environment variables
+export MCPM_SERVER_MYSERVER_API_KEY=secret
+export MCPM_ARG_API_KEY=secret  # Generic for all servers
+```
+
+## Command Reference
+
+## mcpm client
+
+Manage MCP client configurations (Claude Desktop, Cursor, Windsurf, etc.).
+
+MCP clients are applications that can connect to MCP servers. This command helps you
+view installed clients, edit their configurations to enable/disable MCPM servers,
+and import existing server configurations into MCPM's global configuration.
+
+Supported clients: Claude Desktop, Cursor, Windsurf, Continue, Zed, and more.
+
+Examples:
+
+
+    mcpm client ls                    # List all supported MCP clients and their status
+    mcpm client edit cursor           # Interactive server selection for Cursor
+    mcpm client edit claude-desktop   # Interactive server selection for Claude Desktop
+    mcpm client edit cursor -e        # Open Cursor config in external editor
+    mcpm client import cursor         # Import server configurations from Cursor
+
+
+### mcpm client ls
+
+List all supported MCP clients and their enabled MCPM servers.
+
+**Parameters:**
+
+- `--verbose`, `-v`: Show detailed server information (flag)
+
+**Examples:**
+
+```bash
+# Basic usage
+mcpm client ls <arguments>
+```
+
+### mcpm client edit
+
+Enable/disable MCPM-managed servers in the specified client configuration.
+
+Interactive by default, or use CLI parameters for automation.
+Use -e to open config in external editor. Use --add/--remove for incremental changes.
+
+CLIENT_NAME is the name of the MCP client to configure (e.g., cursor, claude-desktop, windsurf).
+
+
+**Parameters:**
+
+- `client_name` (REQUIRED): 
+
+- `-e`, `--external`: Open config file in external editor instead of interactive mode (flag)
+- `-f`, `--file`: Specify a custom path to the client's config file.
+- `--add-server`: Comma-separated list of server names to add
+- `--remove-server`: Comma-separated list of server names to remove
+- `--set-servers`: Comma-separated list of server names to set (replaces all)
+- `--add-profile`: Comma-separated list of profile names to add
+- `--remove-profile`: Comma-separated list of profile names to remove
+- `--set-profiles`: Comma-separated list of profile names to set (replaces all)
+- `--force`: Skip confirmation prompts (flag)
+
+**Examples:**
+
+```bash
+# Add server to client
+mcpm client edit cursor --add-server sqlite
+
+# Add profile to client
+mcpm client edit cursor --add-profile web-dev
+
+# Set all servers for client
+mcpm client edit claude-desktop --set-servers "sqlite,filesystem"
+
+# Remove profile from client
+mcpm client edit cursor --remove-profile old-profile
+```
+
+### mcpm client import
+
+Import and manage MCP server configurations from a client.
+
+This command imports server configurations from a supported MCP client,
+shows non-MCPM servers as a selection list, and offers to create profiles
+and replace client config with MCPM managed servers.
+
+CLIENT_NAME is the name of the MCP client to import from (e.g., cursor, claude-desktop, windsurf).
+
+
+**Parameters:**
+
+- `client_name` (REQUIRED): 
+
+**Examples:**
+
+```bash
+# Basic usage
+mcpm client import <arguments>
+```
+
+## mcpm config
+
+Manage MCPM configuration.
+
+Commands for managing MCPM configuration and cache.
+
+
+**Parameters:**
+
+- `-h`, `--help`: Show this message and exit. (flag)
+
+**Examples:**
+
+```bash
+# Basic usage
+mcpm config <arguments>
+```
+
+### mcpm config set
+
+Set MCPM configuration.
+
+Interactive by default, or use CLI parameters for automation.
+Use --key and --value to set configuration non-interactively.
+
+Examples:
+
+
+    mcpm config set                                    # Interactive mode
+    mcpm config set --key node_executable --value npx # Non-interactive mode
+
+
+**Parameters:**
+
+- `--key`: Configuration key to set
+- `--value`: Configuration value to set
+- `--force`: Skip confirmation prompts (flag)
+- `-h`, `--help`: Show this message and exit. (flag)
+
+**Examples:**
+
+```bash
+# Basic usage
+mcpm config set <arguments>
+```
+
+### mcpm config ls
+
+List all MCPM configuration settings.
+
+Example:
+
+
+    mcpm config ls
+
+
+**Parameters:**
+
+- `-h`, `--help`: Show this message and exit. (flag)
+
+**Examples:**
+
+```bash
+# Basic usage
+mcpm config ls <arguments>
+```
+
+### mcpm config unset
+
+Remove a configuration setting.
+
+Example:
+
+
+    mcpm config unset node_executable
+
+
+**Parameters:**
+
+- `name` (REQUIRED): 
+
+- `-h`, `--help`: Show this message and exit. (flag)
+
+**Examples:**
+
+```bash
+# Basic usage
+mcpm config unset <arguments>
+```
+
+### mcpm config clear-cache
+
+Clear the local repository cache.
+
+Removes the cached server information, forcing a fresh download on next search.
+
+Examples:
+    mcpm config clear-cache    # Clear the local repository cache
+
+
+**Parameters:**
+
+- `-h`, `--help`: Show this message and exit. (flag)
+
+**Examples:**
+
+```bash
+# Basic usage
+mcpm config clear-cache <arguments>
+```
+
+## mcpm doctor
+
+Check system health and installed server status.
+
+Performs comprehensive diagnostics of MCPM installation, configuration,
+and installed servers.
+
+Examples:
+    mcpm doctor    # Run complete system health check
+
+
+**Parameters:**
+
+- `-h`, `--help`: Show this message and exit. (flag)
+
+**Examples:**
+
+```bash
+# Basic usage
+mcpm doctor <arguments>
+```
+
+## mcpm edit
+
+Edit a server configuration.
+
+Interactive by default, or use CLI parameters for automation.
+Use -e to open config in external editor, -N to create new server.
+
+
+**Parameters:**
+
+- `server_name` (OPTIONAL): 
+
+- `-N`, `--new`: Create a new server configuration (flag)
+- `-e`, `--editor`: Open global config in external editor (flag)
+- `--name`: Update server name
+- `--command`: Update command (for stdio servers)
+- `--args`: Update command arguments (space-separated)
+- `--env`: Update environment variables (KEY1=value1,KEY2=value2)
+- `--url`: Update server URL (for remote servers)
+- `--headers`: Update HTTP headers (KEY1=value1,KEY2=value2)
+- `--force`: Skip confirmation prompts (flag)
+
+**Examples:**
+
+```bash
+# Update server name
+mcpm edit myserver --name "new-name"
+
+# Update command and arguments
+mcpm edit myserver --command "python -m updated_server" --args "--port 8080"
+
+# Update environment variables
+mcpm edit myserver --env "API_KEY=new-secret,DEBUG=true"
+```
+
+## mcpm info
+
+Display detailed information about a specific MCP server.
+
+Provides comprehensive details about a single MCP server, including installation instructions,
+dependencies, environment variables, and examples.
+
+Examples:
+
+
+    mcpm info github            # Show details for the GitHub server
+    mcpm info pinecone          # Show details for the Pinecone server
+
+
+**Parameters:**
+
+- `server_name` (REQUIRED): 
+
+- `-h`, `--help`: Show this message and exit. (flag)
+
+**Examples:**
+
+```bash
+# Basic usage
+mcpm info <arguments>
+```
+
+## mcpm inspect
+
+Launch MCP Inspector to test and debug a server from global configuration.
+
+If SERVER_NAME is provided, finds the specified server in the global configuration
+and launches the MCP Inspector with the correct configuration to connect to and test the server.
+
+If no SERVER_NAME is provided, launches the raw MCP Inspector for manual configuration.
+
+Examples:
+    mcpm inspect                     # Launch raw inspector (manual setup)
+    mcpm inspect mcp-server-browse   # Inspect the browse server
+    mcpm inspect filesystem          # Inspect filesystem server
+    mcpm inspect time                # Inspect the time server
+
+
+**Parameters:**
+
+- `server_name` (OPTIONAL): 
+
+- `-h`, `--help`: Show this message and exit. (flag)
+
+**Examples:**
+
+```bash
+# Basic usage
+mcpm inspect <arguments>
+```
+
+## mcpm install
+
+Install an MCP server to the global configuration.
+
+Installs servers to the global MCPM configuration where they can be
+used across all MCP clients and organized into profiles.
+
+Examples:
+
+
+    mcpm install time
+    mcpm install everything --force
+    mcpm install youtube --alias yt
+
+
+**Parameters:**
+
+- `server_name` (REQUIRED): 
+
+- `--force`: Force reinstall if server is already installed (flag)
+- `--alias`: Alias for the server
+- `-h`, `--help`: Show this message and exit. (flag)
+
+**Examples:**
+
+```bash
+# Install a server
+mcpm install sqlite
+
+# Install with environment variables
+ANTHROPIC_API_KEY=sk-ant-... mcpm install claude
+
+# Force installation
+mcpm install filesystem --force
+```
+
+## mcpm list
+
+List all installed MCP servers from global configuration.
+
+Examples:
+
+
+    mcpm ls                    # List server names and profiles
+    mcpm ls -v                 # List servers with detailed configuration
+    mcpm profile ls            # List profiles and their included servers
+
+
+**Parameters:**
+
+- `--verbose`, `-v`: Show detailed server configuration (flag)
+- `-h`, `--help`: Show this message and exit. (flag)
+
+**Examples:**
+
+```bash
+# Basic usage
+mcpm list <arguments>
+```
+
+## mcpm migrate
+
+Migrate v1 configuration to v2.
+
+This command helps you migrate from MCPM v1 to v2, converting your
+profiles, servers, and configuration to the new simplified format.
+
+Examples:
+    mcpm migrate              # Check for v1 config and migrate if found
+    mcpm migrate --force      # Force migration check
+
+
+**Parameters:**
+
+- `--force`: Force migration even if v1 config not detected (flag)
+- `-h`, `--help`: Show this message and exit. (flag)
+
+**Examples:**
+
+```bash
+# Basic usage
+mcpm migrate <arguments>
+```
+
+## mcpm new
+
+Create a new server configuration.
+
+Interactive by default, or use CLI parameters for automation.
+Set MCPM_NON_INTERACTIVE=true to disable prompts.
+
+
+**Parameters:**
+
+- `server_name` (OPTIONAL): 
+
+- `--type`: Server type
+- `--command`: Command to execute (required for stdio servers)
+- `--args`: Command arguments (space-separated)
+- `--env`: Environment variables (KEY1=value1,KEY2=value2)
+- `--url`: Server URL (required for remote servers)
+- `--headers`: HTTP headers (KEY1=value1,KEY2=value2)
+- `--force`: Skip confirmation prompts (flag)
+
+**Examples:**
+
+```bash
+# Create a stdio server
+mcpm new myserver --type stdio --command "python -m myserver"
+
+# Create a remote server
+mcpm new apiserver --type remote --url "https://api.example.com"
+
+# Create server with environment variables
+mcpm new myserver --type stdio --command "python server.py" --env "API_KEY=secret,PORT=8080"
+```
+
+## mcpm profile
+
+Manage MCPM profiles - collections of servers for different workflows.
+
+Profiles are named groups of MCP servers that work together for specific tasks or
+projects. They allow you to organize servers by purpose (e.g., 'web-dev', 'data-analysis')
+and run multiple related servers simultaneously through FastMCP proxy aggregation.
+
+Examples: 'frontend' profile with browser + github servers, 'research' with filesystem + web tools.
+
+**Parameters:**
+
+- `-h`, `--help`: Show this message and exit. (flag)
+
+**Examples:**
+
+```bash
+# Basic usage
+mcpm profile <arguments>
+```
+
+### mcpm profile ls
+
+List all MCPM profiles.
+
+**Parameters:**
+
+- `--verbose`, `-v`: Show detailed server information (flag)
+- `-h`, `--help`: Show this message and exit. (flag)
+
+**Examples:**
+
+```bash
+# Basic usage
+mcpm profile ls <arguments>
+```
+
+### mcpm profile create
+
+Create a new MCPM profile.
+
+**Parameters:**
+
+- `profile` (REQUIRED): 
+
+- `--force`: Force add even if profile already exists (flag)
+- `-h`, `--help`: Show this message and exit. (flag)
+
+**Examples:**
+
+```bash
+# Basic usage
+mcpm profile create <arguments>
+```
+
+### mcpm profile edit
+
+Edit a profile's name and server selection.
+
+Interactive by default, or use CLI parameters for automation.
+Use --add-server/--remove-server for incremental changes.
+
+
+**Parameters:**
+
+- `profile_name` (REQUIRED): 
+
+- `--name`: New profile name
+- `--servers`: Comma-separated list of server names to include (replaces all)
+- `--add-server`: Comma-separated list of server names to add
+- `--remove-server`: Comma-separated list of server names to remove
+- `--set-servers`: Comma-separated list of server names to set (alias for --servers)
+- `--force`: Skip confirmation prompts (flag)
+- `-h`, `--help`: Show this message and exit. (flag)
+
+**Examples:**
+
+```bash
+# Add server to profile
+mcpm profile edit web-dev --add-server sqlite
+
+# Remove server from profile
+mcpm profile edit web-dev --remove-server old-server
+
+# Set profile servers (replaces all)
+mcpm profile edit web-dev --set-servers "sqlite,filesystem,git"
+
+# Rename profile
+mcpm profile edit old-name --name new-name
+```
+
+### mcpm profile inspect
+
+Launch MCP Inspector to test and debug servers in a profile.
+
+Creates a FastMCP proxy that aggregates servers and launches the Inspector.
+Use --port, --http, --sse to customize transport options.
+
+
+**Parameters:**
+
+- `profile_name` (REQUIRED): 
+
+- `--server`: Inspect only specific servers (comma-separated)
+- `--port`: Port for the FastMCP proxy server
+- `--host`: Host for the FastMCP proxy server
+- `--http`: Use HTTP transport instead of stdio (flag)
+- `--sse`: Use SSE transport instead of stdio (flag)
+- `-h`, `--help`: Show this message and exit. (flag)
+
+**Examples:**
+
+```bash
+# Basic usage
+mcpm profile inspect <arguments>
+```
+
+### mcpm profile share
+
+Create a secure public tunnel to all servers in a profile.
+
+This command runs all servers in a profile and creates a shared tunnel
+to make them accessible remotely. Each server gets its own endpoint.
+
+Examples:
+
+
+    mcpm profile share web-dev           # Share all servers in web-dev profile
+    mcpm profile share ai --port 5000    # Share ai profile on specific port
+
+
+**Parameters:**
+
+- `profile_name` (REQUIRED): 
+
+- `--port`: Port for the SSE server (random if not specified)
+- `--address`: Remote address for tunnel, use share.mcpm.sh if not specified
+- `--http`: Use HTTP instead of HTTPS. NOT recommended to use on public networks. (flag)
+- `--no-auth`: Disable authentication for the shared profile. (flag)
+- `-h`, `--help`: Show this message and exit. (flag)
+
+**Examples:**
+
+```bash
+# Basic usage
+mcpm profile share <arguments>
+```
+
+### mcpm profile rm
+
+Remove a profile.
+
+Deletes the specified profile and all its server associations.
+The servers themselves remain in the global configuration.
+
+Examples:
+
+\b
+    mcpm profile rm old-profile         # Remove with confirmation
+    mcpm profile rm old-profile --force # Remove without confirmation
+
+
+**Parameters:**
+
+- `profile_name` (REQUIRED): 
+
+- `--force`, `-f`: Force removal without confirmation (flag)
+- `-h`, `--help`: Show this message and exit. (flag)
+
+**Examples:**
+
+```bash
+# Basic usage
+mcpm profile rm <arguments>
+```
+
+### mcpm profile run
+
+Execute all servers in a profile over stdio, HTTP, or SSE.
+
+Uses FastMCP proxy to aggregate servers into a unified MCP interface
+with proper capability namespacing. By default runs over stdio.
+
+Examples:
+
+
+    mcpm profile run web-dev                          # Run over stdio (default)
+    mcpm profile run --http web-dev                   # Run over HTTP on 127.0.0.1:6276
+    mcpm profile run --sse web-dev                    # Run over SSE on 127.0.0.1:6276
+    mcpm profile run --http --port 9000 ai            # Run over HTTP on 127.0.0.1:9000
+    mcpm profile run --sse --port 9000 ai             # Run over SSE on 127.0.0.1:9000
+    mcpm profile run --http --host 0.0.0.0 web-dev    # Run over HTTP on 0.0.0.0:6276
+
+Debug logging: Set MCPM_DEBUG=1 for verbose output
+
+
+**Parameters:**
+
+- `profile_name` (REQUIRED): 
+
+- `--http`: Run profile over HTTP instead of stdio (flag)
+- `--sse`: Run profile over SSE instead of stdio (flag)
+- `--port`: Port for HTTP / SSE mode (default: 6276) (default: 6276)
+- `--host`: Host address for HTTP / SSE mode (default: 127.0.0.1) (default: 127.0.0.1)
+- `-h`, `--help`: Show this message and exit. (flag)
+
+**Examples:**
+
+```bash
+# Run all servers in a profile
+mcpm profile run web-dev
+
+# Run profile with custom port
+mcpm profile run web-dev --port 8080 --http
+```
+
+## mcpm run
+
+Execute a server from global configuration over stdio, HTTP, or SSE.
+
+Runs an installed MCP server from the global configuration. By default
+runs over stdio for client communication, but can run over HTTP with --http
+or over SSE with --sse.
+
+Examples:
+    mcpm run mcp-server-browse                    # Run over stdio (default)
+    mcpm run --http mcp-server-browse             # Run over HTTP on 127.0.0.1:6276
+    mcpm run --sse mcp-server-browse              # Run over SSE on 127.0.0.1:6276
+    mcpm run --http --port 9000 filesystem       # Run over HTTP on 127.0.0.1:9000
+    mcpm run --sse --port 9000 filesystem        # Run over SSE on 127.0.0.1:9000
+    mcpm run --http --host 0.0.0.0 filesystem    # Run over HTTP on 0.0.0.0:6276
+
+Note: stdio mode is typically used in MCP client configurations:
+    {"command": ["mcpm", "run", "mcp-server-browse"]}
+
+
+**Parameters:**
+
+- `server_name` (REQUIRED): 
+
+- `--http`: Run server over HTTP instead of stdio (flag)
+- `--sse`: Run server over SSE instead of stdio (flag)
+- `--port`: Port for HTTP / SSE mode (default: 6276) (default: 6276)
+- `--host`: Host address for HTTP / SSE mode (default: 127.0.0.1) (default: 127.0.0.1)
+- `-h`, `--help`: Show this message and exit. (flag)
+
+**Examples:**
+
+```bash
+# Run a server
+mcpm run sqlite
+
+# Run with HTTP transport
+mcpm run myserver --http --port 8080
+```
+
+## mcpm search
+
+Search available MCP servers.
+
+Searches the MCP registry for available servers. Without arguments, lists all available servers.
+By default, only shows server names. Use --table for more details.
+
+Examples:
+
+
+    mcpm search                  # List all available servers (names only)
+    mcpm search github           # Search for github server
+    mcpm search --table          # Show results in a table with descriptions
+
+
+**Parameters:**
+
+- `query` (OPTIONAL): 
+
+- `--table`: Display results in table format with descriptions (flag)
+- `-h`, `--help`: Show this message and exit. (flag)
+
+**Examples:**
+
+```bash
+# Basic usage
+mcpm search <arguments>
+```
+
+## mcpm share
+
+Share a server from global configuration through a tunnel.
+
+This command finds an installed server in the global configuration,
+uses FastMCP proxy to expose it as an HTTP server, then creates a tunnel
+to make it accessible remotely.
+
+SERVER_NAME is the name of an installed server from your global configuration.
+
+Examples:
+
+
+    mcpm share time                    # Share the time server
+    mcpm share mcp-server-browse       # Share the browse server
+    mcpm share filesystem --port 5000  # Share filesystem server on specific port
+    mcpm share sqlite --retry 3        # Share with auto-retry on errors
+
+
+**Parameters:**
+
+- `server_name` (REQUIRED): 
+
+- `--port`: Port for the SSE server (random if not specified)
+- `--address`: Remote address for tunnel, use share.mcpm.sh if not specified
+- `--http`: Use HTTP instead of HTTPS. NOT recommended to use on public networks. (flag)
+- `--timeout`: Timeout in seconds to wait for server requests before considering the server inactive (default: 30)
+- `--retry`: Number of times to automatically retry on error (default: 0) (default: 0)
+- `--no-auth`: Disable authentication for the shared server. (flag)
+- `-h`, `--help`: Show this message and exit. (flag)
+
+**Examples:**
+
+```bash
+# Basic usage
+mcpm share <arguments>
+```
+
+## mcpm uninstall
+
+Remove an installed MCP server from global configuration.
+
+Removes servers from the global MCPM configuration and clears
+any profile tags associated with the server.
+
+Examples:
+
+
+    mcpm uninstall filesystem
+    mcpm uninstall filesystem --force
+
+
+**Parameters:**
+
+- `server_name` (REQUIRED): 
+
+- `--force`, `-f`: Force removal without confirmation (flag)
+- `-h`, `--help`: Show this message and exit. (flag)
+
+**Examples:**
+
+```bash
+# Basic usage
+mcpm uninstall <arguments>
+```
+
+## mcpm usage
+
+Display comprehensive analytics and usage data.
+
+Shows detailed usage statistics including run counts, session data,
+performance metrics, and activity patterns for servers and profiles.
+Data is stored in SQLite for efficient querying and analysis.
+
+Examples:
+    mcpm usage                    # Show all usage for last 30 days
+    mcpm usage --days 7           # Show usage for last 7 days
+    mcpm usage --server browse    # Show usage for specific server
+    mcpm usage --profile web-dev  # Show usage for specific profile
+
+
+**Parameters:**
+
+- `--days`, `-d`: Show usage for last N days (default: 30)
+- `--server`, `-s`: Show usage for specific server
+- `--profile`, `-p`: Show usage for specific profile
+- `-h`, `--help`: Show this message and exit. (flag)
+
+**Examples:**
+
+```bash
+# Basic usage
+mcpm usage <arguments>
+```
+
+## Best Practices for AI Agents
+
+### 1. Always Use Non-Interactive Mode
+
+```bash
+export MCPM_NON_INTERACTIVE=true
+export MCPM_FORCE=true
+```
+
+### 2. Error Handling
+
+- Check exit codes: 0 = success, 1 = error, 2 = validation error
+- Parse error messages from stderr
+- Implement retry logic for transient failures
+
+### 3. Server Management Workflow
+
+```bash
+# 1. Search for available servers
+mcpm search sqlite
+
+# 2. Get server information
+mcpm info sqlite
+
+# 3. Install server
+mcpm install sqlite --force
+
+# 4. Create custom server if needed
+mcpm new custom-db --type stdio --command "python db_server.py" --force
+
+# 5. Run server
+mcpm run sqlite
+```
+
+### 4. Profile Management Workflow
+
+```bash
+# 1. Create profile
+mcpm profile create web-stack --force
+
+# 2. Add servers to profile
+mcpm profile edit web-stack --add-server sqlite,filesystem
+
+# 3. Run all servers in profile
+mcpm profile run web-stack
+```
+
+### 5. Client Configuration Workflow
+
+```bash
+# 1. List available clients
+mcpm client ls
+
+# 2. Configure client with servers
+mcpm client edit cursor --add-server sqlite --add-profile web-stack
+
+# 3. Import existing client configuration
+mcpm client import cursor --all
+```
+
+## Common Patterns
+
+### Batch Operations
+
+```bash
+# Add multiple servers at once
+mcpm profile edit myprofile --add-server "server1,server2,server3"
+
+# Remove multiple servers
+mcpm client edit cursor --remove-server "old1,old2"
+```
+
+### Using Environment Variables for Secrets
+
+```bash
+# Set API keys via environment
+export ANTHROPIC_API_KEY=sk-ant-...
+export OPENAI_API_KEY=sk-...
+
+# Install servers that will use these keys
+mcpm install claude --force
+mcpm install openai --force
+```
+
+### Automation-Friendly Commands
+
+```bash
+# List all servers in machine-readable format
+mcpm ls --json
+
+# Get detailed server information
+mcpm info myserver --json
+
+# Check system health
+mcpm doctor
+```
+
+## Exit Codes
+
+- `0`: Success
+- `1`: General error
+- `2`: Validation error (invalid parameters)
+- `130`: Interrupted by user (Ctrl+C)
+
+## Notes for AI Implementation
+
+1. **Always specify all required parameters** - Never rely on interactive prompts
+2. **Use --force flag** to skip confirmations in automation
+3. **Parse JSON output** when available for structured data
+4. **Set environment variables** before running commands that need secrets
+5. **Check server compatibility** with `mcpm info` before installation
+6. **Use profiles** for managing groups of related servers
+7. **Validate operations** succeeded by checking exit codes and output
+
+## Troubleshooting
+
+- If a command hangs, ensure `MCPM_NON_INTERACTIVE=true` is set
+- For permission errors, check file system permissions on config directories
+- For server failures, check logs with `mcpm run <server> --verbose`
+- Use `mcpm doctor` to diagnose system issues
