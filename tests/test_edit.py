@@ -21,7 +21,7 @@ def test_edit_server_not_found(monkeypatch):
     monkeypatch.setattr("mcpm.commands.edit.is_non_interactive", lambda: True)
 
     runner = CliRunner()
-    result = runner.invoke(edit, ["nonexistent", "--name", "newname"])  # Add CLI param to trigger non-interactive
+    result = runner.invoke(edit, ["nonexistent"])  # Remove CLI parameters to match non-interactive mode
 
     assert result.exit_code == 1
     assert "Server 'nonexistent' not found" in result.output
