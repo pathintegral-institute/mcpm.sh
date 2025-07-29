@@ -492,7 +492,13 @@ def test_client_edit_non_interactive_set_servers(monkeypatch):
     mock_client_manager = Mock()
     mock_client_manager.is_client_installed = Mock(return_value=True)
     mock_client_manager.config_path = "/path/to/config.json"
-    mock_client_manager.get_servers.return_value = {"old-server": Mock()}
+    # Return a proper MCPM server configuration that will be recognized
+    mock_client_manager.get_servers.return_value = {
+        "mcpm_old-server": {
+            "command": "mcpm",
+            "args": ["run", "old-server"]
+        }
+    }
     mock_client_manager.add_server.return_value = None
     mock_client_manager.remove_server.return_value = None
 
@@ -521,6 +527,8 @@ def test_client_edit_non_interactive_set_servers(monkeypatch):
     assert "Successfully updated" in result.output
     # Verify that add_server was called for the new servers
     assert mock_client_manager.add_server.call_count == 2
+    # Verify that remove_server was called for the old server
+    mock_client_manager.remove_server.assert_called_with("mcpm_old-server")
 
 
 def test_client_edit_non_interactive_add_profile(monkeypatch):
