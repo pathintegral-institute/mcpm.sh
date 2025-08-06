@@ -294,6 +294,11 @@ def test_client_edit_command_client_not_installed(monkeypatch):
     monkeypatch.setattr(ClientRegistry, "get_client_manager", Mock(return_value=mock_client_manager))
     monkeypatch.setattr(ClientRegistry, "get_client_info", Mock(return_value={"name": "Windsurf"}))
 
+    # Mock GlobalConfigManager - need servers to avoid early exit
+    mock_global_config = Mock()
+    mock_global_config.list_servers.return_value = {"test-server": Mock(description="Test server")}
+    monkeypatch.setattr("mcpm.commands.client.global_config_manager", mock_global_config)
+
     # Run the command
     runner = CliRunner()
     result = runner.invoke(edit_client, ["windsurf"])
@@ -329,8 +334,8 @@ def test_client_edit_command_config_exists(monkeypatch, tmp_path):
     runner = CliRunner()
     result = runner.invoke(edit_client, ["windsurf"])
 
-    # Check the result - should exit early due to no servers
-    assert result.exit_code == 0
+    # Check the result - should exit with error due to no servers
+    assert result.exit_code == 1
     assert "Windsurf Configuration Management" in result.output
     assert "No servers found in MCPM global configuration" in result.output
 
@@ -357,8 +362,8 @@ def test_client_edit_command_config_not_exists(monkeypatch, tmp_path):
     runner = CliRunner()
     result = runner.invoke(edit_client, ["windsurf"])
 
-    # Check the result - should exit early due to no servers
-    assert result.exit_code == 0
+    # Check the result - should exit with error due to no servers
+    assert result.exit_code == 1
     assert "Windsurf Configuration Management" in result.output
     assert "No servers found in MCPM global configuration" in result.output
 
@@ -383,6 +388,10 @@ def test_client_edit_command_open_editor(monkeypatch, tmp_path):
     mock_global_config.list_servers = Mock(return_value={"test-server": Mock(description="Test server")})
     monkeypatch.setattr("mcpm.commands.client.global_config_manager", mock_global_config)
 
+    # Force interactive mode to ensure external editor path is taken
+    monkeypatch.setattr("mcpm.commands.client.is_non_interactive", lambda: False)
+    monkeypatch.setattr("mcpm.commands.client.should_force_operation", lambda: False)
+
     # Mock the _open_in_editor function to prevent actual editor launching
     with patch("mcpm.commands.client._open_in_editor") as mock_open_editor:
         # Run the command with external editor flag
@@ -394,6 +403,245 @@ def test_client_edit_command_open_editor(monkeypatch, tmp_path):
         assert "Windsurf Configuration Management" in result.output
         # Verify that _open_in_editor was called instead of actually opening an editor
         mock_open_editor.assert_called_once_with(str(config_path), "Windsurf")
+
+
+def test_client_edit_non_interactive_add_server(monkeypatch):
+    """Test adding servers to a client non-interactively."""
+    # Mock client manager
+    mock_client_manager = Mock()
+    mock_client_manager.is_client_installed = Mock(return_value=True)
+    mock_client_manager.config_path = "/path/to/config.json"
+    mock_client_manager.get_servers.return_value = {}
+    mock_client_manager.update_servers.return_value = None
+    mock_client_manager.add_server.return_value = None
+
+    monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_client_manager", Mock(return_value=mock_client_manager))
+    monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_client_info", Mock(return_value={"name": "Cursor"}))
+
+    # Mock GlobalConfigManager
+    mock_global_config = Mock()
+    mock_global_config.list_servers.return_value = {"test-server": Mock(description="Test server")}
+    mock_global_config.get_server.return_value = Mock(name="test-server")
+    monkeypatch.setattr("mcpm.commands.client.global_config_manager", mock_global_config)
+
+    # Force non-interactive mode
+    monkeypatch.setattr("mcpm.commands.client.is_non_interactive", lambda: True)
+
+    runner = CliRunner()
+    result = runner.invoke(edit_client, [
+        "cursor",
+        "--add-server", "test-server"  # Only add test-server which exists
+    ])
+
+    assert result.exit_code == 0
+    assert "Successfully updated" in result.output
+    
+    # Verify that add_server was called with the prefixed server name
+    mock_client_manager.add_server.assert_called()
+    # Check that add_server was called with a server config for the prefixed server name
+    call_args = mock_client_manager.add_server.call_args
+    assert call_args is not None
+    server_config = call_args[0][0]  # First positional argument
+    assert server_config.name == "mcpm_test-server"
+    assert server_config.command == "mcpm"
+    assert server_config.args == ["run", "test-server"]
+
+
+def test_client_edit_non_interactive_remove_server(monkeypatch):
+    """Test removing servers from a client non-interactively."""
+    # Mock client manager with existing server
+    mock_client_manager = Mock()
+    mock_client_manager.is_client_installed = Mock(return_value=True)
+    mock_client_manager.config_path = "/path/to/config.json"
+    # Mock an MCPM-managed server in client config
+    existing_mcpm_server = Mock()
+    existing_mcpm_server.command = "mcpm"
+    existing_mcpm_server.args = ["run", "existing-server"]
+    mock_client_manager.get_servers.return_value = {"mcpm_existing-server": existing_mcpm_server}
+    mock_client_manager.update_servers.return_value = None
+    mock_client_manager.remove_server.return_value = None
+
+    monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_client_manager", Mock(return_value=mock_client_manager))
+    monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_client_info", Mock(return_value={"name": "Cursor"}))
+
+    # Mock GlobalConfigManager
+    mock_global_config = Mock()
+    mock_global_config.list_servers.return_value = {"existing-server": Mock(description="Existing server")}
+    monkeypatch.setattr("mcpm.commands.client.global_config_manager", mock_global_config)
+
+    # Force non-interactive mode
+    monkeypatch.setattr("mcpm.commands.client.is_non_interactive", lambda: True)
+
+    runner = CliRunner()
+    result = runner.invoke(edit_client, [
+        "cursor",
+        "--remove-server", "existing-server"
+    ])
+
+    # The command runs without crashing and removes the server
+    assert result.exit_code == 0
+    assert "Cursor Configuration Management" in result.output
+    
+    # Verify that remove_server was called with the prefixed server name
+    mock_client_manager.remove_server.assert_called_with("mcpm_existing-server")
+
+
+def test_client_edit_non_interactive_set_servers(monkeypatch):
+    """Test setting all servers for a client non-interactively."""
+    # Mock client manager
+    mock_client_manager = Mock()
+    mock_client_manager.is_client_installed = Mock(return_value=True)
+    mock_client_manager.config_path = "/path/to/config.json"
+    # Return a proper MCPM server configuration that will be recognized
+    mock_client_manager.get_servers.return_value = {
+        "mcpm_old-server": {
+            "command": "mcpm",
+            "args": ["run", "old-server"]
+        }
+    }
+    mock_client_manager.add_server.return_value = None
+    mock_client_manager.remove_server.return_value = None
+
+    monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_client_manager", Mock(return_value=mock_client_manager))
+    monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_client_info", Mock(return_value={"name": "Cursor"}))
+
+    # Mock GlobalConfigManager
+    mock_global_config = Mock()
+    mock_global_config.list_servers.return_value = {
+        "server1": Mock(description="Server 1"),
+        "server2": Mock(description="Server 2")
+    }
+    mock_global_config.get_server.return_value = Mock()
+    monkeypatch.setattr("mcpm.commands.client.global_config_manager", mock_global_config)
+
+    # Force non-interactive mode
+    monkeypatch.setattr("mcpm.commands.client.is_non_interactive", lambda: True)
+
+    runner = CliRunner()
+    result = runner.invoke(edit_client, [
+        "cursor",
+        "--set-servers", "server1,server2"
+    ])
+
+    assert result.exit_code == 0
+    assert "Successfully updated" in result.output
+    # Verify that add_server was called for the new servers
+    assert mock_client_manager.add_server.call_count == 2
+    # Verify that remove_server was called for the old server
+    mock_client_manager.remove_server.assert_called_with("mcpm_old-server")
+
+
+def test_client_edit_non_interactive_add_profile(monkeypatch):
+    """Test adding profiles to a client non-interactively."""
+    # Mock client manager
+    mock_client_manager = Mock()
+    mock_client_manager.is_client_installed = Mock(return_value=True)
+    mock_client_manager.config_path = "/path/to/config.json"
+    mock_client_manager.get_servers.return_value = {}
+    mock_client_manager.add_server.return_value = None
+
+    monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_client_manager", Mock(return_value=mock_client_manager))
+    monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_client_info", Mock(return_value={"name": "Cursor"}))
+
+    # Mock GlobalConfigManager
+    mock_global_config = Mock()
+    mock_global_config.list_servers.return_value = {"test-server": Mock(description="Test server")}
+    monkeypatch.setattr("mcpm.commands.client.global_config_manager", mock_global_config)
+
+    # Mock ProfileConfigManager
+    mock_profile_config = Mock()
+    mock_profile_config.list_profiles.return_value = {"test-profile": [Mock(name="test-server")]}
+    mock_profile_config.get_profile.return_value = [Mock(name="test-server")]
+    monkeypatch.setattr("mcpm.profile.profile_config.ProfileConfigManager", lambda: mock_profile_config)
+
+    # Force non-interactive mode
+    monkeypatch.setattr("mcpm.commands.client.is_non_interactive", lambda: True)
+
+    runner = CliRunner()
+    result = runner.invoke(edit_client, [
+        "cursor",
+        "--add-profile", "test-profile"
+    ])
+
+    assert result.exit_code == 0
+    assert "Successfully updated" in result.output
+    # Verify that add_server was called for the profile
+    assert mock_client_manager.add_server.called
+
+
+def test_client_edit_non_interactive_server_not_found(monkeypatch):
+    """Test error handling when server doesn't exist."""
+    # Mock client manager
+    mock_client_manager = Mock()
+    mock_client_manager.is_client_installed = Mock(return_value=True)
+    mock_client_manager.config_path = "/path/to/config.json"
+    mock_client_manager.get_servers.return_value = {}
+
+    monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_client_manager", Mock(return_value=mock_client_manager))
+    monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_client_info", Mock(return_value={"name": "Cursor"}))
+
+    # Mock GlobalConfigManager with some servers but not the one we're looking for
+    mock_global_config = Mock()
+    mock_global_config.list_servers.return_value = {"existing-server": Mock(description="Existing server")}
+    monkeypatch.setattr("mcpm.commands.client.global_config_manager", mock_global_config)
+
+    # Force non-interactive mode
+    monkeypatch.setattr("mcpm.commands.client.is_non_interactive", lambda: True)
+
+    runner = CliRunner()
+    result = runner.invoke(edit_client, [
+        "cursor",
+        "--add-server", "nonexistent-server"
+    ])
+
+    assert result.exit_code == 1
+    assert "Server(s) not found: nonexistent-server" in result.output
+
+
+def test_client_edit_with_force_flag(monkeypatch):
+    """Test client edit with --force flag."""
+    # Mock client manager
+    mock_client_manager = Mock()
+    mock_client_manager.is_client_installed = Mock(return_value=True)
+    mock_client_manager.config_path = "/path/to/config.json"
+    mock_client_manager.get_servers.return_value = {}
+    mock_client_manager.add_server.return_value = None
+
+    monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_client_manager", Mock(return_value=mock_client_manager))
+    monkeypatch.setattr("mcpm.commands.client.ClientRegistry.get_client_info", Mock(return_value={"name": "Cursor"}))
+
+    # Mock GlobalConfigManager
+    mock_global_config = Mock()
+    mock_global_config.list_servers.return_value = {"test-server": Mock(description="Test server")}
+    mock_global_config.get_server.return_value = Mock(name="test-server")
+    monkeypatch.setattr("mcpm.commands.client.global_config_manager", mock_global_config)
+
+    runner = CliRunner()
+    result = runner.invoke(edit_client, [
+        "cursor",
+        "--add-server", "test-server",
+        "--force"
+    ])
+
+    assert result.exit_code == 0
+    assert "Successfully updated" in result.output
+    # Verify add_server was called for the new server
+    assert mock_client_manager.add_server.called
+
+
+def test_client_edit_command_help():
+    """Test the client edit command help output."""
+    runner = CliRunner()
+    result = runner.invoke(edit_client, ["--help"])
+
+    assert result.exit_code == 0
+    assert "Enable/disable MCPM-managed servers" in result.output
+    assert "Interactive by default, or use CLI parameters for automation" in result.output
+    assert "--add-server" in result.output
+    assert "--remove-server" in result.output
+    assert "--set-servers" in result.output
+    assert "--add-profile" in result.output
+    assert "--force" in result.output
 
 
 def test_main_client_command_help():

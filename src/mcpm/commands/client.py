@@ -5,6 +5,7 @@ Client command for MCPM
 import json
 import os
 import subprocess
+import sys
 
 from InquirerPy import inquirer
 from InquirerPy.base.control import Choice
@@ -16,6 +17,7 @@ from mcpm.clients.client_registry import ClientRegistry
 from mcpm.global_config import GlobalConfigManager
 from mcpm.profile.profile_config import ProfileConfigManager
 from mcpm.utils.display import print_error
+from mcpm.utils.non_interactive import is_non_interactive, parse_server_list, should_force_operation
 from mcpm.utils.rich_click_config import click
 
 console = Console()
@@ -217,15 +219,18 @@ def list_clients(verbose):
 @click.option(
     "-f", "--file", "config_path_override", type=click.Path(), help="Specify a custom path to the client's config file."
 )
-def edit_client(client_name, external, config_path_override):
+@click.option("--add-server", help="Comma-separated list of server names to add")
+@click.option("--remove-server", help="Comma-separated list of server names to remove")
+@click.option("--set-servers", help="Comma-separated list of server names to set (replaces all)")
+@click.option("--add-profile", help="Comma-separated list of profile names to add")
+@click.option("--remove-profile", help="Comma-separated list of profile names to remove")
+@click.option("--set-profiles", help="Comma-separated list of profile names to set (replaces all)")
+@click.option("--force", is_flag=True, help="Skip confirmation prompts")
+def edit_client(client_name, external, config_path_override, add_server, remove_server, set_servers, add_profile, remove_profile, set_profiles, force):
     """Enable/disable MCPM-managed servers in the specified client configuration.
 
-    This command provides an interactive interface to integrate MCPM-managed
-    servers into your MCP client by adding or removing 'mcpm run {server}'
-    entries in the client config. Uses checkbox selection for easy management.
-
-    Use --external/-e to open the config file directly in your default editor
-    instead of using the interactive interface.
+    Interactive by default, or use CLI parameters for automation.
+    Use -e to open config in external editor. Use --add/--remove for incremental changes.
 
     CLIENT_NAME is the name of the MCP client to configure (e.g., cursor, claude-desktop, windsurf).
     """
@@ -255,6 +260,26 @@ def edit_client(client_name, external, config_path_override):
 
     console.print(f"[bold]{display_name} Configuration Management[/]")
     console.print(f"[dim]Config file: {config_path}[/]\n")
+
+    # Check if we have CLI parameters for non-interactive mode
+    has_cli_params = any([add_server, remove_server, set_servers, add_profile, remove_profile, set_profiles])
+    force_non_interactive = is_non_interactive() or should_force_operation() or force
+
+    if has_cli_params or force_non_interactive:
+        exit_code = _edit_client_non_interactive(
+            client_manager=client_manager,
+            client_name=client_name,
+            display_name=display_name,
+            config_path=config_path,
+            add_server=add_server,
+            remove_server=remove_server,
+            set_servers=set_servers,
+            add_profile=add_profile,
+            remove_profile=remove_profile,
+            set_profiles=set_profiles,
+            force=force,
+        )
+        sys.exit(exit_code)
 
     # If external editor requested, handle that directly
     if external:
@@ -1114,3 +1139,213 @@ def _replace_client_config_with_mcpm(client_manager, selected_servers, client_na
 
     except Exception as e:
         print_error("Error replacing client config", str(e))
+
+
+def _edit_client_non_interactive(
+    client_manager,
+    client_name: str,
+    display_name: str,
+    config_path: str,
+    add_server: str = None,
+    remove_server: str = None,
+    set_servers: str = None,
+    add_profile: str = None,
+    remove_profile: str = None,
+    set_profiles: str = None,
+    force: bool = False,
+) -> int:
+    """Edit client configuration non-interactively."""
+    try:
+        # Validate conflicting options
+        server_options = [add_server, remove_server, set_servers]
+        profile_options = [add_profile, remove_profile, set_profiles]
+
+        if sum(1 for opt in server_options if opt is not None) > 1:
+            console.print("[red]Error: Cannot use multiple server options simultaneously[/]")
+            console.print("[dim]Use either --add-server, --remove-server, or --set-servers[/]")
+            return 1
+
+        if sum(1 for opt in profile_options if opt is not None) > 1:
+            console.print("[red]Error: Cannot use multiple profile options simultaneously[/]")
+            console.print("[dim]Use either --add-profile, --remove-profile, or --set-profiles[/]")
+            return 1
+
+        # Get available servers and profiles
+        global_servers = global_config_manager.list_servers()
+        if not global_servers:
+            console.print("[yellow]No servers found in MCPM global configuration[/]")
+            console.print("[dim]Install servers first using: mcpm install <server>[/]")
+            return 1
+
+        from mcpm.profile.profile_config import ProfileConfigManager
+        profile_manager = ProfileConfigManager()
+        available_profiles = profile_manager.list_profiles()
+
+        # Get current client state
+        current_profiles, current_individual_servers = _get_current_client_mcpm_state(client_manager)
+
+        # Start with current state
+        final_profiles = set(current_profiles)
+        final_servers = set(current_individual_servers)
+
+        # Handle server operations
+        if add_server:
+            servers_to_add = parse_server_list(add_server)
+
+            # Validate servers exist
+            invalid_servers = [s for s in servers_to_add if s not in global_servers]
+            if invalid_servers:
+                console.print(f"[red]Error: Server(s) not found: {', '.join(invalid_servers)}[/]")
+                return 1
+
+            final_servers.update(servers_to_add)
+
+        elif remove_server:
+            servers_to_remove = parse_server_list(remove_server)
+
+            # Validate servers are currently in client
+            not_in_client = [s for s in servers_to_remove if s not in current_individual_servers]
+            if not_in_client:
+                console.print(f"[yellow]Warning: Server(s) not in client: {', '.join(not_in_client)}[/]")
+
+            final_servers.difference_update(servers_to_remove)
+
+        elif set_servers:
+            servers_to_set = parse_server_list(set_servers)
+
+            # Validate servers exist
+            invalid_servers = [s for s in servers_to_set if s not in global_servers]
+            if invalid_servers:
+                console.print(f"[red]Error: Server(s) not found: {', '.join(invalid_servers)}[/]")
+                return 1
+
+            final_servers = set(servers_to_set)
+
+        # Handle profile operations
+        if add_profile:
+            profiles_to_add = parse_server_list(add_profile)  # reuse server list parser
+
+            # Validate profiles exist
+            invalid_profiles = [p for p in profiles_to_add if p not in available_profiles]
+            if invalid_profiles:
+                console.print(f"[red]Error: Profile(s) not found: {', '.join(invalid_profiles)}[/]")
+                return 1
+
+            final_profiles.update(profiles_to_add)
+
+        elif remove_profile:
+            profiles_to_remove = parse_server_list(remove_profile)  # reuse server list parser
+
+            # Validate profiles are currently in client
+            not_in_client = [p for p in profiles_to_remove if p not in current_profiles]
+            if not_in_client:
+                console.print(f"[yellow]Warning: Profile(s) not in client: {', '.join(not_in_client)}[/]")
+
+            final_profiles.difference_update(profiles_to_remove)
+
+        elif set_profiles:
+            profiles_to_set = parse_server_list(set_profiles)  # reuse server list parser
+
+            # Validate profiles exist
+            invalid_profiles = [p for p in profiles_to_set if p not in available_profiles]
+            if invalid_profiles:
+                console.print(f"[red]Error: Profile(s) not found: {', '.join(invalid_profiles)}[/]")
+                return 1
+
+            final_profiles = set(profiles_to_set)
+
+        # Display changes
+        console.print(f"\n[bold green]Updating {display_name} configuration:[/]")
+
+        changes_made = False
+
+        # Show profile changes
+        if final_profiles != set(current_profiles):
+            console.print(f"Profiles: [dim]{len(current_profiles)} profiles[/] → [cyan]{len(final_profiles)} profiles[/]")
+
+            added_profiles = final_profiles - set(current_profiles)
+            if added_profiles:
+                console.print(f"  [green]+ Added: {', '.join(sorted(added_profiles))}[/]")
+
+            removed_profiles = set(current_profiles) - final_profiles
+            if removed_profiles:
+                console.print(f"  [red]- Removed: {', '.join(sorted(removed_profiles))}[/]")
+
+            changes_made = True
+
+        # Show server changes
+        if final_servers != set(current_individual_servers):
+            console.print(f"Servers: [dim]{len(current_individual_servers)} servers[/] → [cyan]{len(final_servers)} servers[/]")
+
+            added_servers = final_servers - set(current_individual_servers)
+            if added_servers:
+                console.print(f"  [green]+ Added: {', '.join(sorted(added_servers))}[/]")
+
+            removed_servers = set(current_individual_servers) - final_servers
+            if removed_servers:
+                console.print(f"  [red]- Removed: {', '.join(sorted(removed_servers))}[/]")
+
+            changes_made = True
+
+        if not changes_made:
+            console.print("[yellow]No changes specified[/]")
+            return 0
+
+        # Apply changes
+        console.print("\n[bold green]Applying changes...[/]")
+
+        # Apply profile changes
+        from mcpm.core.schema import STDIOServerConfig
+
+        # Remove old profile configurations
+        for profile_name in set(current_profiles) - final_profiles:
+            try:
+                profile_server_name = f"mcpm_profile_{profile_name}"
+                client_manager.remove_server(profile_server_name)
+            except Exception:
+                pass  # Profile might not exist
+
+        # Add new profile configurations
+        for profile_name in final_profiles - set(current_profiles):
+            try:
+                profile_server_name = f"mcpm_profile_{profile_name}"
+                server_config = STDIOServerConfig(
+                    name=profile_server_name,
+                    command="mcpm",
+                    args=["profile", "run", profile_name]
+                )
+                client_manager.add_server(server_config)
+            except Exception as e:
+                console.print(f"[red]Error adding profile {profile_name}: {e}[/]")
+
+        # Apply server changes
+        # Remove old server configurations
+        for server_name in set(current_individual_servers) - final_servers:
+            try:
+                prefixed_name = f"mcpm_{server_name}"
+                client_manager.remove_server(prefixed_name)
+            except Exception:
+                pass  # Server might not exist
+
+        # Add new server configurations
+        for server_name in final_servers - set(current_individual_servers):
+            try:
+                prefixed_name = f"mcpm_{server_name}"
+                server_config = STDIOServerConfig(
+                    name=prefixed_name,
+                    command="mcpm",
+                    args=["run", server_name]
+                )
+                client_manager.add_server(server_config)
+            except Exception as e:
+                console.print(f"[red]Error adding server {server_name}: {e}[/]")
+
+        console.print(f"[green]✅ Successfully updated {display_name} configuration[/]")
+        console.print(f"[green]✅ {len(final_profiles)} profiles and {len(final_servers)} servers configured[/]")
+        console.print(f"[italic]Restart {display_name} for changes to take effect.[/]")
+
+        return 0
+
+    except Exception as e:
+        console.print(f"[red]Error updating client configuration: {e}[/]")
+        return 1
