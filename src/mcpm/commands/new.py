@@ -92,8 +92,7 @@ def _create_new_server_non_interactive(
         if global_config_manager.get_server(server_name):
             if not force and not should_force_operation():
                 print_error(
-                    f"Server '{server_name}' already exists",
-                    "Use --force to overwrite or choose a different name"
+                    f"Server '{server_name}' already exists", "Use --force to overwrite or choose a different name"
                 )
                 return 1
             console.print(f"[yellow]Overwriting existing server '{server_name}'[/]")
@@ -143,7 +142,7 @@ def _create_new_server_non_interactive(
             console.print(f"Environment: [cyan]{env_str}[/]")
 
         # Save the server
-        global_config_manager.add_server(server_config)
+        global_config_manager.add_server(server_config, force=force)
         console.print(f"[green]✅ Successfully created server '[cyan]{server_name}[/]'[/]")
 
         return 0
