@@ -19,6 +19,9 @@ on:
 jobs:
   generate-llm-txt:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     
     steps:
     - name: Checkout code
@@ -28,7 +31,7 @@ jobs:
         fetch-depth: 0
     
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
     
@@ -63,7 +66,7 @@ jobs:
     
     - name: Create Pull Request (for releases)
       if: github.event_name == 'release' && steps.check_changes.outputs.no_changes == 'false'
-      uses: peter-evans/create-pull-request@v5
+      uses: peter-evans/create-pull-request@v7
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         commit-message: "docs: update llm.txt for release ${{ github.event.release.tag_name }}"
