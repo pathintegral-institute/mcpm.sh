@@ -1,3 +1,10 @@
+## [2.6.1](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.6.0...v2.6.1) (2025-08-07)
+
+
+### Bug Fixes
+
+* use GitHub App token for generate-llm-txt workflow to bypass branch protection ([53b795a](https://github.com/pathintegral-institute/mcpm.sh/commit/53b795a9811650962cd121d0d3d7c572c083a25d))
+
 # [2.6.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.5.0...v2.6.0) (2025-07-18)
 
 
