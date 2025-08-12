@@ -1,0 +1,66 @@
+{
+  "name": "timer",
+  "display_name": "Timer MCP Server",
+  "description": "A minimal MCP server that functions as a countdown timer with progress notifications. Demonstrates streaming incremental updates for long-running tasks.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pathintegral-institute/mcp.science"
+  },
+  "homepage": "https://github.com/pathintegral-institute/mcp.science/tree/main/servers/timer",
+  "author": {
+    "name": "Path Integral Institute"
+  },
+  "license": "MIT",
+  "categories": ["Dev Tools"],
+  "tags": [
+    "timer",
+    "streaming"
+  ],
+  "tools": [
+    {
+      "name": "wait",
+      "description": "Wait for a specified time with progress notifications",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "time_to_wait": {
+            "type": "integer",
+            "description": "Total duration to wait in milliseconds"
+          },
+          "notif_interval": {
+            "type": "integer", 
+            "description": "Interval between progress updates in milliseconds"
+          }
+        },
+        "required": ["time_to_wait", "notif_interval"]
+      }
+    }
+  ],
+  "installations": {
+    "python": {
+      "type": "python",
+      "command": "uvx",
+      "args": ["mcp-science", "timer"],
+      "description": "Install from GitHub using uvx",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Basic countdown timer",
+      "description": "Wait for 5 seconds with updates every second",
+      "prompt": "Wait for 5 seconds and notify me every second"
+    },
+    {
+      "title": "Long timer with frequent updates",
+      "description": "Demonstrate streaming updates with a longer wait",
+      "prompt": "Set a 30-second timer with updates every 2 seconds"
+    },
+    {
+      "title": "Short timer for testing",
+      "description": "Quick test of timer functionality",
+      "prompt": "Wait for 2 seconds with updates every 500 milliseconds"
+    }
+  ],
+  "is_official": true
+}

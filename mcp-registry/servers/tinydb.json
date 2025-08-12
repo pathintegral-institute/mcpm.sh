@@ -1,0 +1,88 @@
+{
+  "name": "tinydb",
+  "display_name": "TinyDB MCP Server",
+  "description": "MCP server that uses TinyDB to store and retrieve data. Provides a simple NoSQL database interface with operations for creating tables, inserting documents, querying, updating, and deleting records.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pathintegral-institute/mcp.science"
+  },
+  "homepage": "https://github.com/pathintegral-institute/mcp.science/tree/main/servers/tinydb",
+  "author": {
+    "name": "Path Integral Institute"
+  },
+  "license": "MIT",
+  "categories": ["Databases"],
+  "tags": [
+    "database",
+    "nosql"
+  ],
+  "arguments": {
+    "DB_FILE": {
+      "description": "Path to the TinyDB database file (optional, defaults to database.json)",
+      "required": false,
+      "example": "/path/to/custom_database.json"
+    }
+  },
+  "tools": [
+    {
+      "name": "create_table",
+      "description": "Create a new table in the database"
+    },
+    {
+      "name": "insert_document",
+      "description": "Insert a document into a table"
+    },
+    {
+      "name": "query_documents",
+      "description": "Query documents from a table with optional filters"
+    },
+    {
+      "name": "update_documents", 
+      "description": "Update documents in a table"
+    },
+    {
+      "name": "delete_documents",
+      "description": "Delete documents from a table"
+    },
+    {
+      "name": "purge_table",
+      "description": "Remove all documents from a table"
+    },
+    {
+      "name": "drop_table",
+      "description": "Drop a table from the database"
+    }
+  ],
+  "installations": {
+    "python": {
+      "type": "python",
+      "command": "uvx",
+      "args": ["mcp-science", "tinydb"],
+      "description": "Install from GitHub using uvx",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Create and populate a users table",
+      "description": "Create a users table and insert user records",
+      "prompt": "Create a users table and insert a user with name 'John Doe', email 'john@example.com', and age 30"
+    },
+    {
+      "title": "Query database records",
+      "description": "Search for records matching specific criteria",
+      "prompt": "Find all users with age greater than 25"
+    },
+    {
+      "title": "Update existing records",
+      "description": "Update user information in the database",
+      "prompt": "Update the email address for user John Doe to 'john.doe@newdomain.com'"
+    },
+    {
+      "title": "Database maintenance",
+      "description": "Clean up and manage database tables",
+      "prompt": "Remove all users older than 65 and then purge the inactive_users table"
+    }
+  ],
+  "is_official": true
+}
