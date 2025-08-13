@@ -1,0 +1,73 @@
+{
+  "display_name": "Boikot MCP Server",
+  "license": "GPL v3",
+  "tags": [
+    "ethics",
+    "corporate ethics",
+    "company information",
+    "MCP",
+    "lookup tool"
+  ],
+  "examples": [
+    {
+      "title": "",
+      "description": "",
+      "prompt": "What can you tell me about the ethics of Amazon?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Is Nestl\u00e9 considered ethical?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Look up information about Apple's corporate practices"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "What ethical issues are associated with Facebook?"
+    },
+    {
+      "title": "",
+      "description": "",
+      "prompt": "Tell me about the ethics record of McDonald's"
+    }
+  ],
+  "name": "boikot-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/boikot-xyz/boikot"
+  },
+  "homepage": "https://github.com/boikot-xyz/boikot",
+  "author": {
+    "name": "boikot-xyz"
+  },
+  "description": "boikot is a community-led initiative to make data on company ethics transparent and accessible.",
+  "categories": [
+    "Analytics"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://mcp.boikot.xyz/mcp"
+    }
+  },
+  "tools": [
+    {
+      "name": "lookup_company_information",
+      "description": "Lookup information about a company's ethics.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "company_name": {
+            "type": "string",
+            "description": "The name of the company to look up."
+          }
+        }
+      }
+    }
+  ],
+  "is_official": false
+}
