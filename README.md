@@ -36,6 +36,32 @@ curl -sSL https://mcpm.sh/install | bash
 
 Or choose [other installation methods](#-other-installation-methods) like `brew`, `pipx`, `uv` etc.
 
+> 🛠️ **Using GUI clients like Claude Desktop?**  
+> Electron-based applications often start with a *minimal* environment that
+> does **not** include user-level install locations such as `~/.local/bin` on
+> Linux or `%USERPROFILE%\.local\bin` on Windows.  If the `mcpm` executable
+> lives in one of those directories (common when installing with `pipx`, `uv`,
+> or Homebrew), the client will fail to launch the process and show a
+> `spawn mcpm ENOENT` error.  Two easy fixes:
+>
+> 1. Add the directory that contains `mcpm` to the *system* `PATH` and restart
+>    the application, **or**
+> 2. Refer to the executable by its absolute path in
+>    `claude_desktop_config.json`, e.g.
+>
+>    ```json
+>    {
+>      "mcpServers": {
+>        "mcpm_profile_base-tools": {
+>          "command": "/home/youruser/.local/bin/mcpm",
+>          "args": ["profile", "run", "base-tools"]
+>        }
+>      }
+>    }
+>    ```
+>
+> After the executable is discoverable, Claude Desktop will connect normally.
+
 ## 🔎 Overview
 
 MCPM v2.0 provides a simplified approach to managing MCP servers with a global configuration model. Key features include:
