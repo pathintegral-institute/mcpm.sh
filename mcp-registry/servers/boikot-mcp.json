@@ -46,10 +46,11 @@
   },
   "description": "boikot is a community-led initiative to make data on company ethics transparent and accessible.",
   "categories": [
-    "Error"
+    "Analytics"
   ],
   "installations": {
     "http": {
+      "type": "http",
       "url": "https://mcp.boikot.xyz/mcp"
     }
   },
