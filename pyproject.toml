@@ -37,6 +37,7 @@ dependencies = [
     "rich-gradient>=0.3.2",
     "tomli>=2.2.1",
     "tomli-w>=1.2.0",
+    "jsonschema>=4.24.0",
 ]
 
 [project.urls]

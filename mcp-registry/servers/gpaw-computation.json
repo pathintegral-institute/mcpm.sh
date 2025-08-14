@@ -1,0 +1,49 @@
+{
+  "name": "gpaw-computation",
+  "display_name": "GPAW Computation Server",
+  "description": "MCP server for running GPAW (Grid-based Projector Augmented Wave) computational calculations for materials science and quantum mechanics simulations.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pathintegral-institute/mcp.science"
+  },
+  "homepage": "https://github.com/pathintegral-institute/mcp.science/tree/main/servers/gpaw-computation",
+  "author": {
+    "name": "Path Integral Institute",
+    "email": "info@pathintegral.xyz"
+  },
+  "license": "MIT",
+  "categories": ["AI Systems"],
+  "tags": [
+    "quantum",
+    "computation"
+  ],
+  "arguments": {},
+  "installations": {
+    "python": {
+      "type": "python",
+      "command": "uvx",
+      "args": ["mcp-science", "gpaw-computation"],
+      "env": {},
+      "description": "Install from GitHub using uvx",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Run GPAW calculation",
+      "description": "Perform quantum mechanics calculations on materials structures",
+      "prompt": "Run a GPAW DFT calculation on a silicon crystal structure"
+    },
+    {
+      "title": "Electronic structure analysis",
+      "description": "Analyze electronic properties of materials using GPAW",
+      "prompt": "Calculate the band structure and density of states for graphene"
+    },
+    {
+      "title": "Materials optimization",
+      "description": "Optimize atomic structures using GPAW calculations",
+      "prompt": "Optimize the geometry of a perovskite structure using GPAW"
+    }
+  ],
+  "is_official": true
+}

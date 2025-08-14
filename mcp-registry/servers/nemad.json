@@ -1,0 +1,70 @@
+{
+  "name": "nemad",
+  "display_name": "NEMAD Materials Database",
+  "description": "MCP server for accessing the North East Materials Database (NEMAD) API to search materials by elements and chemical formulas in magnetic, thermoelectric, and superconductor databases.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pathintegral-institute/mcp.science"
+  },
+  "homepage": "https://github.com/pathintegral-institute/mcp.science/tree/main/servers/nemad",
+  "author": {
+    "name": "Path Integral Institute"
+  },
+  "license": "MIT",
+  "categories": ["Knowledge Base"],
+  "tags": [
+    "materials",
+    "database"
+  ],
+  "arguments": {
+    "NEMAD_API_KEY": {
+      "description": "API key for accessing NEMAD database from nemad.org",
+      "required": true,
+      "example": "your-nemad-api-key"
+    }
+  },
+  "tools": [
+    {
+      "name": "nemad_search",
+      "description": "Search materials by elements in magnetic, thermoelectric, and superconductor databases"
+    },
+    {
+      "name": "nemad_formula_search", 
+      "description": "Search materials by exact chemical formula"
+    },
+    {
+      "name": "nemad_read_results",
+      "description": "Read specific ranges of search results from previous queries"
+    }
+  ],
+  "installations": {
+    "python": {
+      "type": "python",
+      "command": "uvx",
+      "args": ["mcp-science", "nemad"],
+      "env": {
+        "NEMAD_API_KEY": "${NEMAD_API_KEY}"
+      },
+      "description": "Install from GitHub using uvx",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Search magnetic materials by elements",
+      "description": "Find magnetic materials containing iron and oxygen",
+      "prompt": "Search for magnetic materials containing iron and oxygen"
+    },
+    {
+      "title": "Search by chemical formula",
+      "description": "Find materials with exact chemical formula",
+      "prompt": "Find materials with chemical formula Fe2O3"
+    },
+    {
+      "title": "Search thermoelectric materials", 
+      "description": "Find thermoelectric materials with specific elements",
+      "prompt": "Search thermoelectric materials containing bismuth and tellurium"
+    }
+  ],
+  "is_official": true
+}
