@@ -1,0 +1,51 @@
+{
+  "name": "netket",
+  "display_name": "NetKet Quantum Physics",
+  "description": "MCP server for NetKet quantum many-body physics analysis. Create, analyze, and visualize quantum systems using natural language interfaces. Supports multiple lattice geometries and Hamiltonian models.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pathintegral-institute/mcp.science"
+  },
+  "homepage": "https://github.com/pathintegral-institute/mcp.science/tree/main/servers/netket",
+  "author": {
+    "name": "Path Integral Institute"
+  },
+  "license": "MIT",
+  "categories": ["AI Systems"],
+  "tags": [
+    "quantum",
+    "physics"
+  ],
+  "installations": {
+    "python": {
+      "type": "python", 
+      "command": "uvx",
+      "args": ["mcp-science", "netket"],
+      "description": "Install from GitHub using uvx",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "SSH Model Analysis",
+      "description": "Analyze the SSH model for a chain with specific parameters",
+      "prompt": "Analyze the SSH model for a 24-site chain with t1=1.0 and t2=0.2"
+    },
+    {
+      "title": "Heisenberg Model",
+      "description": "Study the Heisenberg model on a 2D lattice",
+      "prompt": "Create and analyze a 2D Heisenberg model on a 4x4 square lattice"
+    },
+    {
+      "title": "Energy Spectrum Calculation",
+      "description": "Calculate and visualize energy spectra of quantum systems",
+      "prompt": "Calculate the energy spectrum of a 1D Hubbard model with 10 sites"
+    },
+    {
+      "title": "Ground State Properties",
+      "description": "Analyze ground state properties of quantum systems",
+      "prompt": "Find the ground state properties of a spin-1/2 Heisenberg chain with 12 sites"
+    }
+  ],
+  "is_official": true
+}
