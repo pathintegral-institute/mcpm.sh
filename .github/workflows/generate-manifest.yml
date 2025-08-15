@@ -1,0 +1,81 @@
+name: (TESTING) Generate MCP Manifest
+
+on:
+  workflow_dispatch:
+    inputs:
+      repo_url:
+        description: 'Repository URL to generate manifest for'
+        required: true
+        type: string
+
+jobs:
+  generate-manifest:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      - name: Generate manifest
+        env:
+          ANYON_API_KEY: ${{ secrets.ANYON_API_KEY }}
+        run: |
+          python scripts/get_manifest.py "${{ github.event.inputs.repo_url }}"
+
+      - name: Extract repo name for branch
+        id: repo-info
+        run: |
+          REPO_URL="${{ github.event.inputs.repo_url }}"
+          REPO_NAME=$(echo "$REPO_URL" | sed 's/.*github\.com[:/]//' | sed 's/\.git$//' | tr '/' '-')
+          echo "repo_name=$REPO_NAME" >> $GITHUB_OUTPUT
+          echo "branch_name=add-manifest-$REPO_NAME" >> $GITHUB_OUTPUT
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: |
+            feat: add manifest for ${{ steps.repo-info.outputs.repo_name }}
+            
+            Generated manifest JSON for repository: ${{ github.event.inputs.repo_url }}
+            
+            🤖 Generated with [Claude Code](https://claude.ai/code)
+            
+            Co-Authored-By: Claude <noreply@anthropic.com>
+          title: "feat: Add MCP manifest for ${{ steps.repo-info.outputs.repo_name }}"
+          body: |
+            ## Summary
+            
+            This PR adds a new MCP server manifest generated from the repository: ${{ github.event.inputs.repo_url }}
+            
+            ## Changes
+            
+            - Added new manifest JSON file in `mcp-registry/servers/`
+            - Manifest was automatically generated using the chatxiv.org API
+            
+            ## Test plan
+            
+            - [ ] Verify the generated JSON is valid
+            - [ ] Check that all required fields are present
+            - [ ] Validate installation instructions work correctly
+            
+            ---
+            
+            🤖 Generated with [Claude Code](https://claude.ai/code)
+          branch: ${{ steps.repo-info.outputs.branch_name }}
+          delete-branch: true
