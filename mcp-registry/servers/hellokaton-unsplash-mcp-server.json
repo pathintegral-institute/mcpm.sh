@@ -1,0 +1,114 @@
+{
+  "name": "unsplash-mcp-server",
+  "display_name": "Unsplash MCP Server",
+  "description": "🔎 A MCP server for Unsplash image search.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hellokaton/unsplash-mcp-server"
+  },
+  "author": {
+    "name": "hellokaton"
+  },
+  "license": "MIT",
+  "categories": [
+    "Web Services",
+    "Media Creation"
+  ],
+  "tags": [
+    "mcp-server",
+    "python3",
+    "unsplash-mcp"
+  ],
+  "arguments": {
+    "UNSPLASH_ACCESS_KEY": {
+      "description": "Your Unsplash Application access key.",
+      "required": true,
+      "example": "YOUR_ACCESS_KEY"
+    },
+    "PORT": {
+      "description": "The port for the server to listen on.",
+      "required": false,
+      "example": "8080"
+    }
+  },
+  "tools": [
+    {
+      "name": "search_photos",
+      "description": "Search for photos on Unsplash.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The search query."
+          },
+          "page": {
+            "type": "integer",
+            "description": "The page number to retrieve."
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "The number of items per page."
+          },
+          "order_by": {
+            "type": "string",
+            "description": "How to sort the photos."
+          }
+        }
+      },
+      "required": [
+        "query"
+      ]
+    }
+  ],
+  "resources": [],
+  "prompts": [],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--header",
+        "Authorization: Bearer $(mcp-cli keygen)",
+        "--env",
+        "UNSPLASH_ACCESS_KEY",
+        "https://github.com/hellokaton/unsplash-mcp-server/archive/refs/tags/v0.0.1.zip"
+      ],
+      "description": "Run the server from a remote zip file using uvx.",
+      "recommended": true
+    },
+    "npx": {
+      "type": "npm",
+      "command": "npx",
+      "package": "@hellokaton/unsplash-mcp-server",
+      "args": [
+        "-y",
+        "@hellokaton/unsplash-mcp-server"
+      ],
+      "description": "Run the server from npm using npx."
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-p",
+        "8080:8080",
+        "-e",
+        "UNSPLASH_ACCESS_KEY=${UNSPLASH_ACCESS_KEY}",
+        "ghcr.io/hellokaton/unsplash-mcp-server:latest"
+      ],
+      "description": "Run the server using Docker."
+    }
+  },
+  "examples": [
+    {
+      "title": "Search for Photos",
+      "description": "An example of how to search for photos of 'cats'.",
+      "prompt": "mcp-cli tool use hellokaton/unsplash-mcp-server/search_photos --query \"cats\""
+    }
+  ],
+  "is_official": false,
+  "is_archived": false,
+  "docker_url": "ghcr.io/hellokaton/unsplash-mcp-server"
+}
