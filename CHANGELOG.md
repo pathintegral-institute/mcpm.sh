@@ -1,3 +1,10 @@
+# [2.7.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.6.1...v2.7.0) (2025-08-15)
+
+
+### Features
+
+* add script and workflow for contributing registry ([#233](https://github.com/pathintegral-institute/mcpm.sh/issues/233)) ([ec67763](https://github.com/pathintegral-institute/mcpm.sh/commit/ec677639621662d32fe7bfdbe01e33de8d24f79f))
+
 ## [2.6.1](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.6.0...v2.6.1) (2025-08-07)
 
 
