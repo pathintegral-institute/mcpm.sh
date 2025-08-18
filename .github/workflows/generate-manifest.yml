@@ -7,6 +7,8 @@ on:
         description: 'Repository URL to generate manifest for'
         required: true
         type: string
+  repository_dispatch:
+    types: [generate-manifest]
 
 jobs:
   generate-manifest:
@@ -35,12 +37,13 @@ jobs:
         env:
           ANYON_API_KEY: ${{ secrets.ANYON_API_KEY }}
         run: |
-          python scripts/get_manifest.py "${{ github.event.inputs.repo_url }}"
+          REPO_URL="${{ github.event.inputs.repo_url || github.event.client_payload.repo_url }}"
+          python scripts/get_manifest.py "$REPO_URL"
 
       - name: Extract repo name for branch
         id: repo-info
         run: |
-          REPO_URL="${{ github.event.inputs.repo_url }}"
+          REPO_URL="${{ github.event.inputs.repo_url || github.event.client_payload.repo_url }}"
           REPO_NAME=$(echo "$REPO_URL" | sed 's/.*github\.com[:/]//' | sed 's/\.git$//' | tr '/' '-')
           echo "repo_name=$REPO_NAME" >> $GITHUB_OUTPUT
           echo "branch_name=add-manifest-$REPO_NAME" >> $GITHUB_OUTPUT
@@ -48,11 +51,11 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.MCPM_PERSONAL_ACCESS_TOKEN }}
           commit-message: |
             feat: add manifest for ${{ steps.repo-info.outputs.repo_name }}
             
-            Generated manifest JSON for repository: ${{ github.event.inputs.repo_url }}
+            Generated manifest JSON for repository: ${{ github.event.inputs.repo_url || github.event.client_payload.repo_url }}
             
             🤖 Generated with [Claude Code](https://claude.ai/code)
             
@@ -61,7 +64,7 @@ jobs:
           body: |
             ## Summary
             
-            This PR adds a new MCP server manifest generated from the repository: ${{ github.event.inputs.repo_url }}
+            This PR adds a new MCP server manifest generated from the repository: ${{ github.event.inputs.repo_url || github.event.client_payload.repo_url }}
             
             ## Changes
             
