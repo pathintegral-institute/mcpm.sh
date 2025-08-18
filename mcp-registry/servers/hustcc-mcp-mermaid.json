@@ -1,0 +1,89 @@
+{
+  "name": "@mcp/mermaid",
+  "display_name": "MCP Mermaid",
+  "description": "❤️ Generate mermaid diagram and chart with AI MCP dynamically.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hustcc/mcp-mermaid"
+  },
+  "homepage": "https://github.com/hustcc/mcp-mermaid",
+  "author": {
+    "name": "hustcc",
+    "email": "i@hust.cc",
+    "url": "https://github.com/hustcc"
+  },
+  "license": "MIT",
+  "categories": [
+    "Dev Tools",
+    "Media Creation"
+  ],
+  "tags": [
+    "mcp",
+    "mcp-server",
+    "mermaid"
+  ],
+  "arguments": {
+    "OPENAI_API_KEY": {
+      "description": "Your OpenAI API Key is required to generate diagrams from natural language.",
+      "required": true,
+      "example": "sk-..."
+    }
+  },
+  "tools": [
+    {
+      "name": "mermaid",
+      "description": "generate flowchart, sequence diagram, class diagram, state diagram, gantt, pie chart, git graph, user journey, etc. by giving natural language.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "input": {
+            "type": "string",
+            "description": "The natural language description of the diagram to be generated."
+          }
+        },
+        "required": [
+          "input"
+        ]
+      }
+    }
+  ],
+  "resources": [],
+  "prompts": [],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@mcp/mermaid"
+      ],
+      "package": "@mcp/mermaid",
+      "env": {
+        "OPENAI_API_KEY": "sk-..."
+      },
+      "description": "Run the server using npx. Requires Node.js.",
+      "recommended": true
+    },
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "@mcp/mermaid"
+      ],
+      "package": "@mcp/mermaid",
+      "env": {
+        "OPENAI_API_KEY": "sk-..."
+      },
+      "description": "Run the server using uvx."
+    }
+  },
+  "examples": [
+    {
+      "title": "Generate a Flowchart",
+      "description": "An example of generating a simple flowchart using the mermaid tool.",
+      "prompt": "draw a flowchart: a->b->c"
+    }
+  ],
+  "is_official": false,
+  "is_archived": false
+}
