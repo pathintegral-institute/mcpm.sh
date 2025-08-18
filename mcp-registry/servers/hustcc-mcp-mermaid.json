@@ -1,0 +1,94 @@
+{
+  "name": "@mcp/mermaid-server",
+  "display_name": "MCP Mermaid Server",
+  "description": "Generate mermaid diagram and chart with AI MCP dynamically.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hustcc/mcp-mermaid"
+  },
+  "author": {
+    "name": "hustcc",
+    "email": "i@hust.cc"
+  },
+  "license": "MIT",
+  "categories": [
+    "Dev Tools",
+    "Media Creation"
+  ],
+  "tags": [
+    "mcp",
+    "mcp-server",
+    "mermaid"
+  ],
+  "arguments": {
+    "API_KEY": {
+      "description": "OpenAI API Key.",
+      "required": true,
+      "example": "sk-xxx"
+    },
+    "BASE_URL": {
+      "description": "OpenAI API base url. Default: https://api.openai.com/v1.",
+      "required": false,
+      "example": "https://api.openai.com/v1"
+    },
+    "MODEL": {
+      "description": "Model name. Default: gpt-4-turbo.",
+      "required": false,
+      "example": "gpt-4-turbo"
+    }
+  },
+  "tools": [
+    {
+      "name": "Diagram",
+      "description": "Generate mermaid diagram and chart."
+    }
+  ],
+  "resources": [],
+  "prompts": [],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "@mcp/mermaid-server",
+        "--port",
+        "8000"
+      ],
+      "description": "Run with uvx"
+    },
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@mcp/mermaid-server",
+        "--port",
+        "8000"
+      ],
+      "description": "Run with npx",
+      "recommended": true
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-p",
+        "8000:8000",
+        "-e",
+        "API_KEY=sk-xxx",
+        "hustcc/mcp-mermaid-server:latest"
+      ],
+      "description": "Run with docker"
+    }
+  },
+  "examples": [
+    {
+      "title": "Flowchart Example",
+      "description": "An example of generating a flowchart.",
+      "prompt": "Please draw a flowchart about the process of making a cup of coffee."
+    }
+  ],
+  "is_official": false,
+  "is_archived": false
+}
