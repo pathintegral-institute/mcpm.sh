@@ -51,15 +51,13 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
-          token: ${{ secrets.MCPM_PERSONAL_ACCESS_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: |
             feat: add manifest for ${{ steps.repo-info.outputs.repo_name }}
             
             Generated manifest JSON for repository: ${{ github.event.inputs.repo_url || github.event.client_payload.repo_url }}
             
-            🤖 Generated with [Claude Code](https://claude.ai/code)
-            
-            Co-Authored-By: Claude <noreply@anthropic.com>
+            Co-Authored-By: Lucien
           title: "feat: Add MCP manifest for ${{ steps.repo-info.outputs.repo_name }}"
           body: |
             ## Summary
