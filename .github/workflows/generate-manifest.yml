@@ -46,13 +46,15 @@ jobs:
       - name: Extract repository URL from issue
         id: extract-url
         if: github.event_name == 'issues'
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
         run: |
           # Extract the repository URL from the GitHub issue form
           # The form renders the repository field as a URL line after the label
-          REPO_URL=$(echo '${{ github.event.issue.body }}' | grep -oP 'https://github\.com/[^\s]+' | head -1)
+          REPO_URL=$(echo "$ISSUE_BODY" | grep -oP 'https://github\.com/[^\s]+' | head -1)
           if [ -z "$REPO_URL" ]; then
             echo "No GitHub repository URL found in issue body"
-            echo "Issue body: ${{ github.event.issue.body }}"
+            echo "Issue body: $ISSUE_BODY"
             exit 1
           fi
           echo "Found repository URL: $REPO_URL"
