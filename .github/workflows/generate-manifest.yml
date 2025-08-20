@@ -9,10 +9,13 @@ on:
         type: string
   repository_dispatch:
     types: [generate-manifest]
+  issues:
+    types: [opened, labeled]
 
 jobs:
   generate-manifest:
     runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'issues' || contains(github.event.issue.labels.*.name, 'server submission') }}
     permissions:
       contents: write
       pull-requests: write
@@ -40,17 +43,32 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests
 
+      - name: Extract repository URL from issue
+        id: extract-url
+        if: github.event_name == 'issues'
+        run: |
+          # Extract the repository URL from the GitHub issue form
+          # The form renders the repository field as a URL line after the label
+          REPO_URL=$(echo '${{ github.event.issue.body }}' | grep -oP 'https://github\.com/[^\s]+' | head -1)
+          if [ -z "$REPO_URL" ]; then
+            echo "No GitHub repository URL found in issue body"
+            echo "Issue body: ${{ github.event.issue.body }}"
+            exit 1
+          fi
+          echo "Found repository URL: $REPO_URL"
+          echo "repo_url=$REPO_URL" >> $GITHUB_OUTPUT
+
       - name: Generate manifest
         env:
           ANYON_API_KEY: ${{ secrets.ANYON_API_KEY }}
         run: |
-          REPO_URL="${{ github.event.inputs.repo_url || github.event.client_payload.repo_url }}"
+          REPO_URL="${{ github.event.inputs.repo_url || github.event.client_payload.repo_url || steps.extract-url.outputs.repo_url }}"
           python scripts/get_manifest.py "$REPO_URL"
 
       - name: Extract repo name for branch
         id: repo-info
         run: |
-          REPO_URL="${{ github.event.inputs.repo_url || github.event.client_payload.repo_url }}"
+          REPO_URL="${{ github.event.inputs.repo_url || github.event.client_payload.repo_url || steps.extract-url.outputs.repo_url }}"
           REPO_NAME=$(echo "$REPO_URL" | sed 's/.*github\.com[:/]//' | sed 's/\.git$//' | tr '/' '-')
           echo "repo_name=$REPO_NAME" >> $GITHUB_OUTPUT
           echo "branch_name=add-manifest-$REPO_NAME" >> $GITHUB_OUTPUT
@@ -62,14 +80,14 @@ jobs:
           commit-message: |
             feat: add manifest for ${{ steps.repo-info.outputs.repo_name }}
             
-            Generated manifest JSON for repository: ${{ github.event.inputs.repo_url || github.event.client_payload.repo_url }}
+            Generated manifest JSON for repository: ${{ github.event.inputs.repo_url || github.event.client_payload.repo_url || steps.extract-url.outputs.repo_url }}
             
             Co-Authored-By: Lucien
           title: "feat: Add MCP manifest for ${{ steps.repo-info.outputs.repo_name }}"
           body: |
             ## Summary
             
-            This PR adds a new MCP server manifest generated from the repository: ${{ github.event.inputs.repo_url || github.event.client_payload.repo_url }}
+            This PR adds a new MCP server manifest generated from the repository: ${{ github.event.inputs.repo_url || github.event.client_payload.repo_url || steps.extract-url.outputs.repo_url }}
             
             ## Changes
             
