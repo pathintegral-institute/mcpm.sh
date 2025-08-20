@@ -1,4 +1,4 @@
-name: (TESTING) Generate MCP Manifest
+name: Generate MCP Manifest
 
 on:
   workflow_dispatch:
