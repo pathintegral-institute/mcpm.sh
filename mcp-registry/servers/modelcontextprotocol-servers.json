@@ -1,0 +1,64 @@
+{
+  "name": "@mcp/memory",
+  "display_name": "Memory Server",
+  "description": "A server for storing and retrieving memories.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/modelcontextprotocol/servers/tree/main/src/memory"
+  },
+  "author": {
+    "name": "Model Context Protocol"
+  },
+  "license": "MIT",
+  "categories": [
+    "Databases",
+    "Dev Tools"
+  ],
+  "tags": [
+    "memory",
+    "key-value",
+    "mcp"
+  ],
+  "arguments": {
+    "port": {
+      "description": "The port to run the server on.",
+      "required": false,
+      "example": "3000"
+    },
+    "host": {
+      "description": "The host to run the server on.",
+      "required": false,
+      "example": "localhost"
+    }
+  },
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "run",
+        "@mcp/memory"
+      ],
+      "package": "@mcp/memory",
+      "description": "Run the memory server using uvx.",
+      "recommended": true
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "mcp/memory"
+      ],
+      "description": "Run the memory server using docker."
+    }
+  },
+  "tools": [],
+  "resources": [],
+  "prompts": [],
+  "examples": [],
+  "is_official": true,
+  "is_archived": false
+}
