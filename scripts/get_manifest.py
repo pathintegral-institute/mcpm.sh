@@ -154,45 +154,72 @@ Current installations:
 TASK: Find installation instructions in the README and convert them to the exact schema format used in the MCP registry.
 
 INSTALLATION SCHEMA EXAMPLES:
-
-1. NPX INSTALLATIONS (most common):
-```json
-"npm": {{
-  "type": "npm", 
-  "command": "npx",
-  "args": ["-y", "@package/name"],
-  "description": "Install with npx"
+<README> Docker
+{{
+  "mcpServers": {{
+    "brave-search": {{
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "BRAVE_API_KEY",
+        "mcp/brave-search"
+      ],
+      "env": {{
+        "BRAVE_API_KEY": "YOUR_API_KEY_HERE"
+      }}
+    }}
+  }}
 }}
-```
-
-2. UVX INSTALLATIONS:
-```json
-"uvx": {{
-  "type": "uvx",
-  "command": "uvx", 
-  "args": ["package-name"],
-  "description": "Run with Claude Desktop"
+NPX
+{{
+  "mcpServers": {{
+    "brave-search": {{
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-brave-search"
+      ],
+      "env": {{
+        "BRAVE_API_KEY": "YOUR_API_KEY_HERE"
+      }}
+    }}
+  }}
 }}
-```
-OR with git URL:
-```json
-"uvx": {{
-  "type": "uvx",
-  "command": "uvx",
-  "args": ["--from", "git+https://github.com/user/repo", "command-name"],
-  "description": "Install from git"
+</README>
+From the example README, you should get:
+{{
+  "installations": [
+    {{
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "BRAVE_API_KEY",
+        "mcp/brave-search"
+      ],
+      "env": {{
+        "BRAVE_API_KEY": "${{YOUR_API_KEY_HERE}}"
+      }}
+    }},
+    {{
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-brave-search"
+      ],
+      "env": {{
+        "BRAVE_API_KEY": "${{YOUR_API_KEY_HERE}}"
+      }}
+    }}
+  ]
 }}
-```
-
-3. DOCKER INSTALLATIONS:
-```json
-"docker": {{
-  "type": "docker",
-  "command": "docker",
-  "args": ["run", "-i", "--rm", "image-name"],
-  "description": "Run using Docker"
-}}
-```
 
 PROCESS:
 1. Read the README.md from {repo_url}
@@ -204,8 +231,8 @@ PROCESS:
    - Copy the EXACT package names and arguments from README
 
 CRITICAL RULES:
-- Use exact package names from README (don't guess or modify)
-- Match the schema format exactly as shown in examples
+- Use exact argument from README (don't guess or modify)
+- Match the schema format as shown in examples
 - Include ALL installation methods mentioned in README
 - Remove installation methods NOT mentioned in README
 - For npx: always use type "npm" with command "npx" and args ["-y", "package-name"]
@@ -288,7 +315,9 @@ def main():
 
     # Step 2: Validate and correct installations
     print("Step 2: Validating installations against README...")
+    print(f"Before: {json.dumps(manifest, indent=2)}")
     manifest = validate_installations(manifest, args.repo_url)
+    print(f"After: {json.dumps(manifest, indent=2)}")
 
     # Step 3: Save manifest
     print("Step 3: Saving manifest...")
