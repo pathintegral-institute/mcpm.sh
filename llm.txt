@@ -1,7 +1,7 @@
 # MCPM (Model Context Protocol Manager) - AI Agent Guide
 
-Generated: 2025-07-22 11:32:59 UTC
-Version: 2.5.0
+Generated: 2025-08-23 08:40:28 UTC
+Version: 2.7.0
 
 ## Overview
 
@@ -36,21 +36,21 @@ export MCPM_ARG_API_KEY=secret  # Generic for all servers
 
 Manage MCP client configurations (Claude Desktop, Cursor, Windsurf, etc.).
 
-MCP clients are applications that can connect to MCP servers. This command helps you
-view installed clients, edit their configurations to enable/disable MCPM servers,
-and import existing server configurations into MCPM's global configuration.
+    MCP clients are applications that can connect to MCP servers. This command helps you
+    view installed clients, edit their configurations to enable/disable MCPM servers,
+    and import existing server configurations into MCPM's global configuration.
 
-Supported clients: Claude Desktop, Cursor, Windsurf, Continue, Zed, and more.
+    Supported clients: Claude Desktop, Cursor, Windsurf, Continue, Zed, and more.
 
-Examples:
+    Examples:
 
-
-    mcpm client ls                    # List all supported MCP clients and their status
-    mcpm client edit cursor           # Interactive server selection for Cursor
-    mcpm client edit claude-desktop   # Interactive server selection for Claude Desktop
-    mcpm client edit cursor -e        # Open Cursor config in external editor
-    mcpm client import cursor         # Import server configurations from Cursor
-
+    
+        mcpm client ls                    # List all supported MCP clients and their status
+        mcpm client edit cursor           # Interactive server selection for Cursor
+        mcpm client edit claude-desktop   # Interactive server selection for Claude Desktop
+        mcpm client edit cursor -e        # Open Cursor config in external editor
+        mcpm client import cursor         # Import server configurations from Cursor
+    
 
 ### mcpm client ls
 
@@ -71,11 +71,11 @@ mcpm client ls <arguments>
 
 Enable/disable MCPM-managed servers in the specified client configuration.
 
-Interactive by default, or use CLI parameters for automation.
-Use -e to open config in external editor. Use --add/--remove for incremental changes.
+    Interactive by default, or use CLI parameters for automation.
+    Use -e to open config in external editor. Use --add/--remove for incremental changes.
 
-CLIENT_NAME is the name of the MCP client to configure (e.g., cursor, claude-desktop, windsurf).
-
+    CLIENT_NAME is the name of the MCP client to configure (e.g., cursor, claude-desktop, windsurf).
+    
 
 **Parameters:**
 
@@ -111,12 +111,12 @@ mcpm client edit cursor --remove-profile old-profile
 
 Import and manage MCP server configurations from a client.
 
-This command imports server configurations from a supported MCP client,
-shows non-MCPM servers as a selection list, and offers to create profiles
-and replace client config with MCPM managed servers.
+    This command imports server configurations from a supported MCP client,
+    shows non-MCPM servers as a selection list, and offers to create profiles
+    and replace client config with MCPM managed servers.
 
-CLIENT_NAME is the name of the MCP client to import from (e.g., cursor, claude-desktop, windsurf).
-
+    CLIENT_NAME is the name of the MCP client to import from (e.g., cursor, claude-desktop, windsurf).
+    
 
 **Parameters:**
 
@@ -133,8 +133,8 @@ mcpm client import <arguments>
 
 Manage MCPM configuration.
 
-Commands for managing MCPM configuration and cache.
-
+    Commands for managing MCPM configuration and cache.
+    
 
 **Parameters:**
 
@@ -151,15 +151,15 @@ mcpm config <arguments>
 
 Set MCPM configuration.
 
-Interactive by default, or use CLI parameters for automation.
-Use --key and --value to set configuration non-interactively.
+    Interactive by default, or use CLI parameters for automation.
+    Use --key and --value to set configuration non-interactively.
 
-Examples:
+    Examples:
 
-
-    mcpm config set                                    # Interactive mode
-    mcpm config set --key node_executable --value npx # Non-interactive mode
-
+    
+        mcpm config set                                    # Interactive mode
+        mcpm config set --key node_executable --value npx # Non-interactive mode
+    
 
 **Parameters:**
 
@@ -179,11 +179,11 @@ mcpm config set <arguments>
 
 List all MCPM configuration settings.
 
-Example:
+    Example:
 
-
-    mcpm config ls
-
+    
+        mcpm config ls
+    
 
 **Parameters:**
 
@@ -200,11 +200,11 @@ mcpm config ls <arguments>
 
 Remove a configuration setting.
 
-Example:
+    Example:
 
-
-    mcpm config unset node_executable
-
+    
+        mcpm config unset node_executable
+    
 
 **Parameters:**
 
@@ -223,11 +223,11 @@ mcpm config unset <arguments>
 
 Clear the local repository cache.
 
-Removes the cached server information, forcing a fresh download on next search.
+    Removes the cached server information, forcing a fresh download on next search.
 
-Examples:
-    mcpm config clear-cache    # Clear the local repository cache
-
+    Examples:
+        mcpm config clear-cache    # Clear the local repository cache
+    
 
 **Parameters:**
 
@@ -244,12 +244,12 @@ mcpm config clear-cache <arguments>
 
 Check system health and installed server status.
 
-Performs comprehensive diagnostics of MCPM installation, configuration,
-and installed servers.
+    Performs comprehensive diagnostics of MCPM installation, configuration,
+    and installed servers.
 
-Examples:
-    mcpm doctor    # Run complete system health check
-
+    Examples:
+        mcpm doctor    # Run complete system health check
+    
 
 **Parameters:**
 
@@ -266,9 +266,9 @@ mcpm doctor <arguments>
 
 Edit a server configuration.
 
-Interactive by default, or use CLI parameters for automation.
-Use -e to open config in external editor, -N to create new server.
-
+    Interactive by default, or use CLI parameters for automation.
+    Use -e to open config in external editor, -N to create new server.
+    
 
 **Parameters:**
 
@@ -301,15 +301,15 @@ mcpm edit myserver --env "API_KEY=new-secret,DEBUG=true"
 
 Display detailed information about a specific MCP server.
 
-Provides comprehensive details about a single MCP server, including installation instructions,
-dependencies, environment variables, and examples.
+    Provides comprehensive details about a single MCP server, including installation instructions,
+    dependencies, environment variables, and examples.
 
-Examples:
+    Examples:
 
-
-    mcpm info github            # Show details for the GitHub server
-    mcpm info pinecone          # Show details for the Pinecone server
-
+    
+        mcpm info github            # Show details for the GitHub server
+        mcpm info pinecone          # Show details for the Pinecone server
+    
 
 **Parameters:**
 
@@ -328,17 +328,17 @@ mcpm info <arguments>
 
 Launch MCP Inspector to test and debug a server from global configuration.
 
-If SERVER_NAME is provided, finds the specified server in the global configuration
-and launches the MCP Inspector with the correct configuration to connect to and test the server.
+    If SERVER_NAME is provided, finds the specified server in the global configuration
+    and launches the MCP Inspector with the correct configuration to connect to and test the server.
 
-If no SERVER_NAME is provided, launches the raw MCP Inspector for manual configuration.
+    If no SERVER_NAME is provided, launches the raw MCP Inspector for manual configuration.
 
-Examples:
-    mcpm inspect                     # Launch raw inspector (manual setup)
-    mcpm inspect mcp-server-browse   # Inspect the browse server
-    mcpm inspect filesystem          # Inspect filesystem server
-    mcpm inspect time                # Inspect the time server
-
+    Examples:
+        mcpm inspect                     # Launch raw inspector (manual setup)
+        mcpm inspect mcp-server-browse   # Inspect the browse server
+        mcpm inspect filesystem          # Inspect filesystem server
+        mcpm inspect time                # Inspect the time server
+    
 
 **Parameters:**
 
@@ -357,16 +357,16 @@ mcpm inspect <arguments>
 
 Install an MCP server to the global configuration.
 
-Installs servers to the global MCPM configuration where they can be
-used across all MCP clients and organized into profiles.
+    Installs servers to the global MCPM configuration where they can be
+    used across all MCP clients and organized into profiles.
 
-Examples:
+    Examples:
 
-
-    mcpm install time
-    mcpm install everything --force
-    mcpm install youtube --alias yt
-
+    
+        mcpm install time
+        mcpm install everything --force
+        mcpm install youtube --alias yt
+    
 
 **Parameters:**
 
@@ -393,13 +393,13 @@ mcpm install filesystem --force
 
 List all installed MCP servers from global configuration.
 
-Examples:
+    Examples:
 
-
-    mcpm ls                    # List server names and profiles
-    mcpm ls -v                 # List servers with detailed configuration
-    mcpm profile ls            # List profiles and their included servers
-
+    
+        mcpm ls                    # List server names and profiles
+        mcpm ls -v                 # List servers with detailed configuration
+        mcpm profile ls            # List profiles and their included servers
+    
 
 **Parameters:**
 
@@ -417,13 +417,13 @@ mcpm list <arguments>
 
 Migrate v1 configuration to v2.
 
-This command helps you migrate from MCPM v1 to v2, converting your
-profiles, servers, and configuration to the new simplified format.
+    This command helps you migrate from MCPM v1 to v2, converting your
+    profiles, servers, and configuration to the new simplified format.
 
-Examples:
-    mcpm migrate              # Check for v1 config and migrate if found
-    mcpm migrate --force      # Force migration check
-
+    Examples:
+        mcpm migrate              # Check for v1 config and migrate if found
+        mcpm migrate --force      # Force migration check
+    
 
 **Parameters:**
 
@@ -441,9 +441,9 @@ mcpm migrate <arguments>
 
 Create a new server configuration.
 
-Interactive by default, or use CLI parameters for automation.
-Set MCPM_NON_INTERACTIVE=true to disable prompts.
-
+    Interactive by default, or use CLI parameters for automation.
+    Set MCPM_NON_INTERACTIVE=true to disable prompts.
+    
 
 **Parameters:**
 
@@ -474,11 +474,11 @@ mcpm new myserver --type stdio --command "python server.py" --env "API_KEY=secre
 
 Manage MCPM profiles - collections of servers for different workflows.
 
-Profiles are named groups of MCP servers that work together for specific tasks or
-projects. They allow you to organize servers by purpose (e.g., 'web-dev', 'data-analysis')
-and run multiple related servers simultaneously through FastMCP proxy aggregation.
+    Profiles are named groups of MCP servers that work together for specific tasks or
+    projects. They allow you to organize servers by purpose (e.g., 'web-dev', 'data-analysis')
+    and run multiple related servers simultaneously through FastMCP proxy aggregation.
 
-Examples: 'frontend' profile with browser + github servers, 'research' with filesystem + web tools.
+    Examples: 'frontend' profile with browser + github servers, 'research' with filesystem + web tools.
 
 **Parameters:**
 
@@ -529,9 +529,9 @@ mcpm profile create <arguments>
 
 Edit a profile's name and server selection.
 
-Interactive by default, or use CLI parameters for automation.
-Use --add-server/--remove-server for incremental changes.
-
+    Interactive by default, or use CLI parameters for automation.
+    Use --add-server/--remove-server for incremental changes.
+    
 
 **Parameters:**
 
@@ -565,9 +565,9 @@ mcpm profile edit old-name --name new-name
 
 Launch MCP Inspector to test and debug servers in a profile.
 
-Creates a FastMCP proxy that aggregates servers and launches the Inspector.
-Use --port, --http, --sse to customize transport options.
-
+    Creates a FastMCP proxy that aggregates servers and launches the Inspector.
+    Use --port, --http, --sse to customize transport options.
+    
 
 **Parameters:**
 
@@ -591,15 +591,15 @@ mcpm profile inspect <arguments>
 
 Create a secure public tunnel to all servers in a profile.
 
-This command runs all servers in a profile and creates a shared tunnel
-to make them accessible remotely. Each server gets its own endpoint.
+    This command runs all servers in a profile and creates a shared tunnel
+    to make them accessible remotely. Each server gets its own endpoint.
 
-Examples:
+    Examples:
 
-
-    mcpm profile share web-dev           # Share all servers in web-dev profile
-    mcpm profile share ai --port 5000    # Share ai profile on specific port
-
+    
+        mcpm profile share web-dev           # Share all servers in web-dev profile
+        mcpm profile share ai --port 5000    # Share ai profile on specific port
+    
 
 **Parameters:**
 
@@ -622,15 +622,15 @@ mcpm profile share <arguments>
 
 Remove a profile.
 
-Deletes the specified profile and all its server associations.
-The servers themselves remain in the global configuration.
+    Deletes the specified profile and all its server associations.
+    The servers themselves remain in the global configuration.
 
-Examples:
+    Examples:
 
-\b
-    mcpm profile rm old-profile         # Remove with confirmation
-    mcpm profile rm old-profile --force # Remove without confirmation
-
+    \b
+        mcpm profile rm old-profile         # Remove with confirmation
+        mcpm profile rm old-profile --force # Remove without confirmation
+    
 
 **Parameters:**
 
@@ -650,21 +650,21 @@ mcpm profile rm <arguments>
 
 Execute all servers in a profile over stdio, HTTP, or SSE.
 
-Uses FastMCP proxy to aggregate servers into a unified MCP interface
-with proper capability namespacing. By default runs over stdio.
+    Uses FastMCP proxy to aggregate servers into a unified MCP interface
+    with proper capability namespacing. By default runs over stdio.
 
-Examples:
+    Examples:
 
-
-    mcpm profile run web-dev                          # Run over stdio (default)
-    mcpm profile run --http web-dev                   # Run over HTTP on 127.0.0.1:6276
-    mcpm profile run --sse web-dev                    # Run over SSE on 127.0.0.1:6276
-    mcpm profile run --http --port 9000 ai            # Run over HTTP on 127.0.0.1:9000
-    mcpm profile run --sse --port 9000 ai             # Run over SSE on 127.0.0.1:9000
-    mcpm profile run --http --host 0.0.0.0 web-dev    # Run over HTTP on 0.0.0.0:6276
+    
+        mcpm profile run web-dev                          # Run over stdio (default)
+        mcpm profile run --http web-dev                   # Run over HTTP on 127.0.0.1:6276
+        mcpm profile run --sse web-dev                    # Run over SSE on 127.0.0.1:6276
+        mcpm profile run --http --port 9000 ai            # Run over HTTP on 127.0.0.1:9000
+        mcpm profile run --sse --port 9000 ai             # Run over SSE on 127.0.0.1:9000
+        mcpm profile run --http --host 0.0.0.0 web-dev    # Run over HTTP on 0.0.0.0:6276
 
-Debug logging: Set MCPM_DEBUG=1 for verbose output
-
+    Debug logging: Set MCPM_DEBUG=1 for verbose output
+    
 
 **Parameters:**
 
@@ -690,21 +690,21 @@ mcpm profile run web-dev --port 8080 --http
 
 Execute a server from global configuration over stdio, HTTP, or SSE.
 
-Runs an installed MCP server from the global configuration. By default
-runs over stdio for client communication, but can run over HTTP with --http
-or over SSE with --sse.
+    Runs an installed MCP server from the global configuration. By default
+    runs over stdio for client communication, but can run over HTTP with --http
+    or over SSE with --sse.
 
-Examples:
-    mcpm run mcp-server-browse                    # Run over stdio (default)
-    mcpm run --http mcp-server-browse             # Run over HTTP on 127.0.0.1:6276
-    mcpm run --sse mcp-server-browse              # Run over SSE on 127.0.0.1:6276
-    mcpm run --http --port 9000 filesystem       # Run over HTTP on 127.0.0.1:9000
-    mcpm run --sse --port 9000 filesystem        # Run over SSE on 127.0.0.1:9000
-    mcpm run --http --host 0.0.0.0 filesystem    # Run over HTTP on 0.0.0.0:6276
+    Examples:
+        mcpm run mcp-server-browse                    # Run over stdio (default)
+        mcpm run --http mcp-server-browse             # Run over HTTP on 127.0.0.1:6276
+        mcpm run --sse mcp-server-browse              # Run over SSE on 127.0.0.1:6276
+        mcpm run --http --port 9000 filesystem       # Run over HTTP on 127.0.0.1:9000
+        mcpm run --sse --port 9000 filesystem        # Run over SSE on 127.0.0.1:9000
+        mcpm run --http --host 0.0.0.0 filesystem    # Run over HTTP on 0.0.0.0:6276
 
-Note: stdio mode is typically used in MCP client configurations:
-    {"command": ["mcpm", "run", "mcp-server-browse"]}
-
+    Note: stdio mode is typically used in MCP client configurations:
+        {"command": ["mcpm", "run", "mcp-server-browse"]}
+    
 
 **Parameters:**
 
@@ -730,16 +730,16 @@ mcpm run myserver --http --port 8080
 
 Search available MCP servers.
 
-Searches the MCP registry for available servers. Without arguments, lists all available servers.
-By default, only shows server names. Use --table for more details.
+    Searches the MCP registry for available servers. Without arguments, lists all available servers.
+    By default, only shows server names. Use --table for more details.
 
-Examples:
+    Examples:
 
-
-    mcpm search                  # List all available servers (names only)
-    mcpm search github           # Search for github server
-    mcpm search --table          # Show results in a table with descriptions
-
+    
+        mcpm search                  # List all available servers (names only)
+        mcpm search github           # Search for github server
+        mcpm search --table          # Show results in a table with descriptions
+    
 
 **Parameters:**
 
@@ -759,20 +759,20 @@ mcpm search <arguments>
 
 Share a server from global configuration through a tunnel.
 
-This command finds an installed server in the global configuration,
-uses FastMCP proxy to expose it as an HTTP server, then creates a tunnel
-to make it accessible remotely.
+    This command finds an installed server in the global configuration,
+    uses FastMCP proxy to expose it as an HTTP server, then creates a tunnel
+    to make it accessible remotely.
 
-SERVER_NAME is the name of an installed server from your global configuration.
+    SERVER_NAME is the name of an installed server from your global configuration.
 
-Examples:
+    Examples:
 
-
-    mcpm share time                    # Share the time server
-    mcpm share mcp-server-browse       # Share the browse server
-    mcpm share filesystem --port 5000  # Share filesystem server on specific port
-    mcpm share sqlite --retry 3        # Share with auto-retry on errors
-
+    
+        mcpm share time                    # Share the time server
+        mcpm share mcp-server-browse       # Share the browse server
+        mcpm share filesystem --port 5000  # Share filesystem server on specific port
+        mcpm share sqlite --retry 3        # Share with auto-retry on errors
+    
 
 **Parameters:**
 
@@ -797,15 +797,15 @@ mcpm share <arguments>
 
 Remove an installed MCP server from global configuration.
 
-Removes servers from the global MCPM configuration and clears
-any profile tags associated with the server.
+    Removes servers from the global MCPM configuration and clears
+    any profile tags associated with the server.
 
-Examples:
+    Examples:
 
-
-    mcpm uninstall filesystem
-    mcpm uninstall filesystem --force
-
+    
+        mcpm uninstall filesystem
+        mcpm uninstall filesystem --force
+    
 
 **Parameters:**
 
@@ -825,16 +825,16 @@ mcpm uninstall <arguments>
 
 Display comprehensive analytics and usage data.
 
-Shows detailed usage statistics including run counts, session data,
-performance metrics, and activity patterns for servers and profiles.
-Data is stored in SQLite for efficient querying and analysis.
+    Shows detailed usage statistics including run counts, session data,
+    performance metrics, and activity patterns for servers and profiles.
+    Data is stored in SQLite for efficient querying and analysis.
 
-Examples:
-    mcpm usage                    # Show all usage for last 30 days
-    mcpm usage --days 7           # Show usage for last 7 days
-    mcpm usage --server browse    # Show usage for specific server
-    mcpm usage --profile web-dev  # Show usage for specific profile
-
+    Examples:
+        mcpm usage                    # Show all usage for last 30 days
+        mcpm usage --days 7           # Show usage for last 7 days
+        mcpm usage --server browse    # Show usage for specific server
+        mcpm usage --profile web-dev  # Show usage for specific profile
+    
 
 **Parameters:**
 
