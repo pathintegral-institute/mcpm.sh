@@ -117,7 +117,7 @@ async def run_profile_fastmcp(
         else:
             # Run the aggregated proxy over stdio (default)
             logger.info(f"Starting profile '{profile_name}' over stdio")
-            await proxy.run_stdio_async()
+            await proxy.run_stdio_async(show_banner=False)
 
         return 0
 
