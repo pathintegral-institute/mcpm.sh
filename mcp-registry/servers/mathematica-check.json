@@ -20,9 +20,8 @@
       "type": "uvx",
       "command": "uvx",
       "args": [
-        "--from",
-        "git+https://github.com/pathintegral-institute/mcp.science#subdirectory=servers/mathematica-check",
-        "mcp-mathematica-check"
+        "mcp-science",
+        "mathematica-check"
       ],
       "env": {},
       "description": "Run server using uv"

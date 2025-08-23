@@ -21,9 +21,8 @@
       "type": "uvx",
       "command": "uvx",
       "args": [
-        "--from",
-        "git+https://github.com/pathintegral-institute/mcp.science@main#subdirectory=servers/python-code-execution",
-        "mcp-python-code-execution"
+        "mcp-science",
+        "python-code-execution"
       ],
       "description": "Run using uv (recommended)"
     }

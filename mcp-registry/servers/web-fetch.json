@@ -30,9 +30,8 @@
       "type": "uvx",
       "command": "uvx",
       "args": [
-        "--from",
-        "git+https://github.com/pathintegral-institute/mcp.science#subdirectory=servers/web-fetch",
-        "mcp-web-fetch"
+        "mcp-science",
+        "web-fetch"
       ],
       "description": "Run using uv (recommended)"
     },
