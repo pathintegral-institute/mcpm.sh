@@ -180,9 +180,7 @@
       "type": "uvx",
       "command": "uv",
       "args": [
-        "--from",
-        "git+https://github.com/pathintegral-institute/mcp.science#subdirectory=servers/materials-project",
-        "mcp-materials-project"
+        "mcp_materials_project"
       ],
       "env": {
         "MP_API_KEY": "${MP_API_KEY}"
