@@ -9,6 +9,7 @@ on:
 
 jobs:
   codex:
+    if: github.event_name == 'workflow_dispatch' || github.event.label.name == 'codex-review' || github.event.label.name == 'codex-attempt' || github.event.label.name == 'codex-triage'
     runs-on: ubuntu-latest
     permissions:
       contents: write
