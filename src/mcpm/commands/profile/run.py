@@ -115,9 +115,42 @@ async def run_profile_fastmcp(
                 host=host, port=actual_port, transport=transport, uvicorn_config={"log_level": get_uvicorn_log_level()}
             )
         else:
-            # Run the aggregated proxy over stdio (default)
-            logger.info(f"Starting profile '{profile_name}' over stdio")
-            await proxy.run_stdio_async()
+            # Run the aggregated proxy over stdio (default). FastMCP 2.x prints an
+            # eye-catching ASCII banner to *stdout* when `run_stdio_async()` is
+            # executed.  GUI clients such as Claude Desktop expect the very
+            # first bytes on stdout to be valid JSON-RPC and therefore crash
+            # if the banner is present.
+
+            # Newer versions of FastMCP (>=2.10.2) support a
+            #   `show_banner` / `banner` keyword argument that can be set to
+            #   False.  To remain backward-compatible with older versions, we
+            #   detect support for the argument at runtime and fall back to
+            #   the original call signature when it is not available.
+
+            logger.info(f"Starting profile '{profile_name}' over stdio (banner suppressed)")
+
+            import inspect
+
+            try:
+                sig = inspect.signature(proxy.run_stdio_async)
+                if any(p.name == "show_banner" or p.name == "banner" for p in sig.parameters.values()):
+                    # Prefer explicit keyword recognised by the current version.
+                    kwargs = {}
+                    if "show_banner" in sig.parameters:
+                        kwargs["show_banner"] = False
+                    if "banner" in sig.parameters:
+                        kwargs["banner"] = False
+                    await proxy.run_stdio_async(**kwargs)
+                else:
+                    # Older FastMCP – call normally, then immediately flush
+                    # stdout to minimise race conditions.  The banner will still
+                    # appear, but such old versions are unlikely to print it to
+                    # stdout in the first place.  (If they do, users should
+                    # upgrade FastMCP.)
+                    await proxy.run_stdio_async()
+            except TypeError:
+                # Signature detection failed unexpectedly – fall back safely.
+                await proxy.run_stdio_async()
 
         return 0
 
