@@ -178,9 +178,11 @@
   "installations": {
     "uvx": {
       "type": "uvx",
-      "command": "uvx",
+      "command": "uv",
       "args": [
-        "mcp_materials_project"
+        "--from",
+        "git+https://github.com/pathintegral-institute/mcp.science#subdirectory=servers/materials-project",
+        "mcp-materials-project"
       ],
       "env": {
         "MP_API_KEY": "${MP_API_KEY}"
