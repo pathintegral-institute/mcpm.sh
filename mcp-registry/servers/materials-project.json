@@ -178,7 +178,7 @@
   "installations": {
     "uvx": {
       "type": "uvx",
-      "command": "uv",
+      "command": "uvx",
       "args": [
         "mcp_materials_project"
       ],
