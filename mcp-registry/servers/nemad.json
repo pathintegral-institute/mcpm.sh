@@ -38,8 +38,8 @@
     }
   ],
   "installations": {
-    "python": {
-      "type": "python",
+    "uvx": {
+      "type": "uvx",
       "command": "uvx",
       "args": ["mcp-science", "nemad"],
       "env": {

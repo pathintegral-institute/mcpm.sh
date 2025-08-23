@@ -46,7 +46,8 @@
       "type": "uvx",
       "command": "uvx",
       "args": [
-        "mcp-txyz-search" 
+        "mcp-science",
+        "txyz-search"
       ],
       "env": {
         "TXYZ_API_KEY": "${TXYZ_API_KEY}"

@@ -30,7 +30,8 @@
       "type": "uvx",
       "command": "uvx",
       "args": [
-        "mcp-web-fetch"
+        "mcp-science",
+        "web-fetch"
       ],
       "description": "Run using uv (recommended)"
     },
