@@ -68,9 +68,8 @@
       "type": "uvx",
       "command": "uvx",
       "args": [
-        "--from",
-        "git+https://github.com/pathintegral-institute/mcp.science#subdirectory=servers/ssh-exec",
-        "mcp-ssh-exec"
+        "mcp-science",
+        "ssh-exec"
       ],
       "env": {
         "SSH_HOST": "${SSH_HOST}",
