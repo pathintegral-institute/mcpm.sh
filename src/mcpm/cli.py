@@ -7,6 +7,7 @@ from typing import Any, Dict
 
 from rich.console import Console
 from rich.traceback import Traceback
+from rich.traceback import install as install_rich_traceback
 
 from mcpm.clients.client_config import ClientConfigManager
 from mcpm.commands import (
@@ -37,6 +38,10 @@ client_config_manager = ClientConfigManager()
 
 # Setup Rich logging early - this runs when the module is imported
 setup_logging()
+
+# Install Rich's global exception handler to use stderr instead of stdout
+# This prevents Rich/rich-gradient from routing tracebacks to stdout
+install_rich_traceback(console=err_console, show_locals=True)
 
 # Custom context settings to handle main command help specially
 CONTEXT_SETTINGS: Dict[str, Any] = dict(help_option_names=[])
