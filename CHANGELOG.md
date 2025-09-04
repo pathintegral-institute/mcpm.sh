@@ -1,3 +1,10 @@
+## [2.7.1](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.7.0...v2.7.1) (2025-09-04)
+
+
+### Bug Fixes
+
+* no banner when run profile in stdio mode ([#251](https://github.com/pathintegral-institute/mcpm.sh/issues/251)) ([7e243fc](https://github.com/pathintegral-institute/mcpm.sh/commit/7e243fca403c13508ed61079c30f3a8404950534))
+
 # [2.7.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.6.1...v2.7.0) (2025-08-15)
 
 
