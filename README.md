@@ -174,6 +174,74 @@ The llm.txt file is automatically generated from the CLI structure and kept up-t
 
 ### ⚡ Example Usage
 
+#### Use case 1: expose a local stdio server over HTTP
+
+1) Add the server to MCPM
+```bash
+mcpm new [MY_SERVER_NAME] --type stdio --command "[COMMAND]" --args "[ARG_1] [ARG_2] ..."
+```
+(Add `--force` arg to bypass the confirmation interaction)
+Verify it appears in your installed servers:
+```bash
+mcpm ls
+```
+You should see `[MY_SERVER_NAME]` in the list.
+
+2) Serve it over HTTP
+```bash
+mcpm run [MY_SERVER_NAME] --http
+```
+MCPM prints the server URL, for example:
+```
+URL: http://127.0.0.1:6276/mcp/
+```
+
+3) Expose it on your network (optional)
+```bash
+mcpm run [MY_SERVER_NAME] --http --host 0.0.0.0
+```
+Tip: add `--port <PORT>` to choose a different port.
+
+
+#### Use case 2: combine multiple servers and serve them as one profile
+
+1) Add the servers to MCPM
+```bash
+# Stdio server
+mcpm new [SERVER_A] --type stdio --command "[COMMAND]" --args "[ARG_1] [ARG_2] ..." --force
+
+# Remote HTTP/SSE server
+mcpm new [SERVER_B] --type remote --url "http://SERVER_ADDR/mcp/" --force
+```
+
+2) Create a profile and add the servers
+Interactive:
+```bash
+mcpm profile create [PROFILE_NAME]
+mcpm profile edit [PROFILE_NAME]
+```
+MCPM would list out all installed servers, you can use arrows to navigate, space to select/deselect, type to search, and Enter to confirm.
+
+Verify:
+```bash
+mcpm profile ls
+```
+You should see your profile with the selected servers.
+
+3) Run the profile
+```bash
+# Stdio
+mcpm profile run [PROFILE_NAME]
+
+# HTTP
+mcpm profile run [PROFILE_NAME] --http
+
+# Optional: host and port
+mcpm profile run [PROFILE_NAME] --http --host 0.0.0.0 --port 8080
+```
+
+
+#### Other common usage
 ```bash
 # Server management
 mcpm new myserver --type stdio --command "python -m server" --force
