@@ -31,7 +31,8 @@ from mcpm.migration import V1ConfigDetector, V1ToV2Migrator
 from mcpm.utils.logging_config import setup_logging
 from mcpm.utils.rich_click_config import click, get_header_text
 
-console = Console()
+console = Console()          # stdout for regular CLI output
+err_console = Console(stderr=True)  # stderr for errors/tracebacks
 client_config_manager = ClientConfigManager()
 
 # Setup Rich logging early - this runs when the module is imported
@@ -53,9 +54,9 @@ def handle_exceptions(func):
         try:
             return func(*args, **kwargs)
         except Exception:
-            console.print(Traceback(show_locals=True))
-            console.print("[bold red]An unexpected error occurred.[/bold red]")
-            console.print(
+            err_console.print(Traceback(show_locals=True))
+            err_console.print("[bold red]An unexpected error occurred.[/bold red]")
+            err_console.print(
                 "Please report this issue on our GitHub repository: "
                 "[link=https://github.com/pathintegral-institute/mcpm.sh/issues]https://github.com/pathintegral-institute/mcpm.sh/issues[/link]"
             )
