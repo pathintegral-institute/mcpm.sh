@@ -1,4 +1,4 @@
-name: [DEPRECATED] MCP Server Info Bot
+name: MCP Server Info Bot (DEPRECATED)
 
 permissions:
   contents: write
@@ -6,13 +6,17 @@ permissions:
   issues: write
 
 on:
-  issues:
-    types: [labeled]
+  workflow_dispatch:
+    inputs:
+      force_run:
+        description: 'Force run this deprecated workflow (not recommended)'
+        required: true
+        default: 'false'
 
 jobs:
   scrape-and-update:
     runs-on: ubuntu-latest
-    if: github.event.label.name == 'mcp-server-info-bot'  # Trigger only on 'mcp-server-info-bot' label
+    if: github.event.inputs.force_run == 'true' && false  # Disable this deprecated workflow
     steps:
       - name: Check if user is a maintainer
         uses: actions/github-script@v6
