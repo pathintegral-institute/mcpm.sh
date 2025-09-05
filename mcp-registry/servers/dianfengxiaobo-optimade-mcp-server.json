@@ -1,0 +1,103 @@
+{
+  "name": "optimade-mcp-server",
+  "display_name": "Optimade MCP Server",
+  "description": "A Model Context Protocol (MCP) tool for querying Optimade-compatible material databases, fully configurable custom filter presets and provider endpoints.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dianfengxiaobo/optimade-mcp-server"
+  },
+  "author": {
+    "name": "dianfengxiaobo",
+    "email": "dianfengxiaobo@gmail.com"
+  },
+  "license": "MIT",
+  "categories": [
+    "Databases",
+    "Dev Tools"
+  ],
+  "tags": [
+    "optimade",
+    "mcp",
+    "materials-science"
+  ],
+  "arguments": {
+    "OPTIMADE_PROVIDERS_URL": {
+      "description": "URL to a custom optimade providers json file.",
+      "required": false
+    },
+    "OPTIMADE_PRESETS_URL": {
+      "description": "URL to a custom optimade presets json file.",
+      "required": false
+    },
+    "OPTIMADE_DEFAULT_PROVIDER": {
+      "description": "Default provider to use.",
+      "required": false
+    },
+    "OPTIMADE_DEFAULT_PRESET": {
+      "description": "Default preset to use.",
+      "required": false
+    },
+    "MCP_SERVER_PORT": {
+      "description": "Port to run the server on. Defaults to 8000.",
+      "required": false,
+      "example": "8000"
+    },
+    "MCP_SERVER_HOST": {
+      "description": "Host to run the server on. Defaults to 127.0.0.1.",
+      "required": false,
+      "example": "127.0.0.1"
+    }
+  },
+  "tools": [
+    {
+      "name": "query",
+      "description": "Query the optimade database with a given provider and preset.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "type": "string",
+            "description": "The provider to query."
+          },
+          "preset": {
+            "type": "string",
+            "description": "The preset to use for the query."
+          },
+          "filter": {
+            "type": "string",
+            "description": "Custom filter to apply to the query."
+          }
+        },
+        "required": [
+          "provider",
+          "preset"
+        ]
+      }
+    }
+  ],
+  "installations": {
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-p",
+        "8000:8000",
+        "ghcr.io/dianfengxiaobo/optimade-mcp-server:latest"
+      ],
+      "description": "Run the server using Docker.",
+      "recommended": true
+    },
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "dianfengxiaobo/optimade-mcp-server"
+      ],
+      "description": "Run the server using uvx."
+    }
+  },
+  "is_official": false,
+  "is_archived": false,
+  "docker_url": "https://ghcr.io/dianfengxiaobo/optimade-mcp-server"
+}
