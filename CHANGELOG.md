@@ -1,3 +1,15 @@
+# [2.8.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.7.1...v2.8.0) (2025-09-11)
+
+
+### Bug Fixes
+
+* separate console streams for proper stdout/stderr routing ([#255](https://github.com/pathintegral-institute/mcpm.sh/issues/255)) ([38b04ff](https://github.com/pathintegral-institute/mcpm.sh/commit/38b04ffa3d353537e8ad750a2a40ba9b4bf0fe61))
+
+
+### Features
+
+* add manifest for hustcc-mcp-mermaid ([#240](https://github.com/pathintegral-institute/mcpm.sh/issues/240)) ([793e160](https://github.com/pathintegral-institute/mcpm.sh/commit/793e1608dbf3409877d11d32766daa280fda96d0))
+
 ## [2.7.1](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.7.0...v2.7.1) (2025-09-04)
 
 
