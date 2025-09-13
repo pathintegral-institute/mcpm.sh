@@ -31,6 +31,8 @@ from mcpm.commands.share import share
 from mcpm.migration import V1ConfigDetector, V1ToV2Migrator
 from mcpm.utils.logging_config import setup_logging
 from mcpm.utils.rich_click_config import click, get_header_text
+import os
+from pathlib import Path
 
 console = Console()          # stdout for regular CLI output
 err_console = Console(stderr=True)  # stderr for errors/tracebacks
@@ -86,6 +88,21 @@ with all MCP clients.
 @handle_exceptions
 def main(ctx, version, help_flag):
     """Main entry point for MCPM CLI."""
+
+    try:
+        # Check if the current working directory is valid.
+        os.getcwd()
+    except OSError:
+        # If getcwd() fails, it means the directory doesn't exist.
+        # This can happen when mcpm is called from certain environments
+        # like some Electron apps that don't set a valid cwd.
+        home_dir = str(Path.home())
+        err_console.print(
+            f"Current working directory is invalid. Changing to home directory: {home_dir}",
+            style="bold yellow"
+        )
+        os.chdir(home_dir)
+
     if version:
         print_logo()
         return
