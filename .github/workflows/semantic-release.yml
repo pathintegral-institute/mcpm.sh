@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'src/mcpm/**'
+      - 'pyproject.toml'
 
 permissions:
   contents: write
