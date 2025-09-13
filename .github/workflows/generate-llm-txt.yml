@@ -1,20 +1,7 @@
 name: Generate LLM.txt
 
 on:
-  # Trigger on releases
-  release:
-    types: [published]
-  
-  # Trigger on pushes to main branch
-  push:
-    branches: [main]
-    paths:
-      - 'src/mcpm/commands/**'
-      - 'src/mcpm/cli.py'
-      - 'scripts/generate_llm_txt.py'
-  
-  # Allow manual trigger
-  workflow_dispatch:
+  workflow_call:
 
 jobs:
   generate-llm-txt:
