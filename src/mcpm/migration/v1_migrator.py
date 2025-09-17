@@ -60,10 +60,12 @@ class V1ToV2Migrator:
         else:
             try:
                 import msvcrt
+                try:
+                    msvcrt.getch()
+                except OSError:
+                    input()
             except ImportError:
                 input()
-            else:
-                msvcrt.getch()
 
         console.print()  # Add newline after keypress
 
