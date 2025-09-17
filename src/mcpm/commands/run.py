@@ -131,28 +131,49 @@ async def find_available_port(preferred_port, max_attempts=10):
 
 @click.command()
 @click.argument("server_name")
-@click.option("--http", is_flag=True, help="Run server over HTTP instead of stdio")
-@click.option("--sse", is_flag=True, help="Run server over SSE instead of stdio")
-@click.option("--port", type=int, default=DEFAULT_PORT, help=f"Port for HTTP / SSE mode (default: {DEFAULT_PORT})")
-@click.option("--host", type=str, default="127.0.0.1", help="Host address for HTTP / SSE mode (default: 127.0.0.1)")
+@click.option("--http", is_flag=True, help="Run server in HTTP mode (mutually exclusive with --sse)")
+@click.option("--sse", is_flag=True, help="Run server in SSE mode (mutually exclusive with --http)")
+@click.option(
+    "--port",
+    type=int,
+    default=DEFAULT_PORT,
+    help=f"Port for HTTP/SSE mode (default: {DEFAULT_PORT}, auto-finds available)",
+)
+@click.option("--host", type=str, default="127.0.0.1", help="Host for HTTP/SSE mode (use 0.0.0.0 for all interfaces)")
 @click.help_option("-h", "--help")
 def run(server_name, http, sse, port, host):
-    """Execute a server from global configuration over stdio, HTTP, or SSE.
+    """Execute an installed MCP server in stdio (default), HTTP, or SSE mode.
 
-    Runs an installed MCP server from the global configuration. By default
-    runs over stdio for client communication, but can run over HTTP with --http
-    or over SSE with --sse.
+    By default, servers run over **stdio** for direct client communication.
 
-    Examples:
-        mcpm run mcp-server-browse                    # Run over stdio (default)
-        mcpm run --http mcp-server-browse             # Run over HTTP on 127.0.0.1:6276
-        mcpm run --sse mcp-server-browse              # Run over SSE on 127.0.0.1:6276
-        mcpm run --http --port 9000 filesystem       # Run over HTTP on 127.0.0.1:9000
-        mcpm run --sse --port 9000 filesystem        # Run over SSE on 127.0.0.1:9000
-        mcpm run --http --host 0.0.0.0 filesystem    # Run over HTTP on 0.0.0.0:6276
+    **Examples:**
 
-    Note: stdio mode is typically used in MCP client configurations:
+    STDIO Mode (default):
+
+    \b
+        mcpm run server-name
+
+    HTTP Mode:
+
+    \b
+        mcpm run --http server-name
+        mcpm run --http --port 9000 server-name
+        mcpm run --http --host 0.0.0.0 server-name
+
+    SSE Mode:
+
+    \b
+        mcpm run --sse server-name
+        mcpm run --sse --port 9000 server-name
+        mcpm run --sse --host 0.0.0.0 server-name
+
+    Client Config Example:
         {"command": ["mcpm", "run", "mcp-server-browse"]}
+
+    **Tips:**
+    • Port defaults to **6276**, auto-finds if busy
+    • Host defaults to **127.0.0.1**
+    • Use `mcpm ls` to see installed servers
     """
     # Validate server name
     if not server_name or not server_name.strip():

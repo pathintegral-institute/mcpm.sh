@@ -165,7 +165,7 @@ click.rich_click.OPTION_GROUPS = {
     "mcpm run": [
         {
             "name": "Execution Mode",
-            "options": ["--http", "--port"],
+            "options": ["--http", "--sse", "--port", "--host"],
         },
         {
             "name": "Help",
