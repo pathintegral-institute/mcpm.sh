@@ -44,6 +44,17 @@ class V1ToV2Migrator:
             tty = None
 
         console.print(message, end="")
+        console.file.flush()
+
+        if not sys.stdin.isatty():
+            console.print()
+            return
+
+        def _fallback_wait():
+            try:
+                input()
+            except (EOFError, OSError):
+                pass
 
         if termios and tty:
             try:
@@ -55,17 +66,17 @@ class V1ToV2Migrator:
                     sys.stdin.read(1)
                 finally:
                     termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-            except (AttributeError, termios.error, ValueError, OSError):
-                input()
+            except (AttributeError, termios.error, ValueError, OSError, EOFError):
+                _fallback_wait()
         else:
             try:
                 import msvcrt
                 try:
                     msvcrt.getch()
-                except OSError:
-                    input()
+                except (OSError, EOFError):
+                    _fallback_wait()
             except ImportError:
-                input()
+                _fallback_wait()
 
         console.print()  # Add newline after keypress
 
