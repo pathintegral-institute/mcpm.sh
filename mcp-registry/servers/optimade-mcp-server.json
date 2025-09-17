@@ -1,0 +1,94 @@
+{
+  "name": "optimade-mcp-server",
+  "display_name": "OPTIMADE MCP Server",
+  "description": "A Model Context Protocol (MCP) tool for querying Optimade-compatible material databases, fully configurable custom filter presets and provider endpoints.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dianfengxiaobo/optimade-mcp-server"
+  },
+  "author": {
+    "name": "dianfengxiaobo"
+  },
+  "license": "MIT",
+  "categories": [
+    "Dev Tools"
+  ],
+  "tags": [
+    "optimade",
+    "materials-science"
+  ],
+  "arguments": {
+    "HTTP_PROXY": {
+      "description": "Specify it if you need to use a http proxy.",
+      "required": false,
+      "example": "http://127.0.0.1:8080"
+    },
+    "HTTPS_PROXY": {
+      "description": "Specify it if you need to use a https proxy.",
+      "required": false,
+      "example": "https://127.0.0.1:8080"
+    }
+  },
+  "tools": [
+    {
+      "name": "query_optimade",
+      "description": "Query OPTIMADE providers with a custom filter.\n• If baseUrls omitted, falls back to default providers.\n• Runs lint first: syntax errors block query; non‑white‑list fields only warn.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "filter": {
+            "type": "string"
+          },
+          "baseUrls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "filter"
+        ]
+      }
+    },
+    {
+      "name": "lint_filter",
+      "description": "Return 'ok', 'warn: …', or 'syntax error: …' for a filter string.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "filter": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "filter"
+        ]
+      }
+    },
+    {
+      "name": "list_providers",
+      "description": "Fetch global public OPTIMADE provider URLs via OptimadeClient.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ],
+  "resources": [],
+  "prompts": [],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "run",
+        "optimade-mcp-server"
+      ],
+      "description": "Run the server using the uvx package manager.",
+      "recommended": true
+    }
+  },
+  "is_official": false,
+  "is_archived": false
+}

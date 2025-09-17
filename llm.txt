@@ -1,7 +1,7 @@
 # MCPM (Model Context Protocol Manager) - AI Agent Guide
 
-Generated: 2025-08-23 08:40:28 UTC
-Version: 2.7.0
+Generated: 2025-09-13 01:49:06 UTC
+Version: 2.8.0
 
 ## Overview
 

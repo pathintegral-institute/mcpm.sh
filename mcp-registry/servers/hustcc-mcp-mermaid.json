@@ -1,0 +1,96 @@
+{
+  "name": "mcp-mermaid",
+  "display_name": "MCP Mermaid Server",
+  "description": "Generate mermaid diagram and chart with AI MCP dynamically.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hustcc/mcp-mermaid"
+  },
+  "homepage": "https://github.com/hustcc/mcp-mermaid",
+  "author": {
+    "name": "hustcc"
+  },
+  "license": "MIT",
+  "categories": [
+    "Dev Tools"
+  ],
+  "tags": [
+    "mermaid"
+  ],
+  "arguments": {},
+  "tools": [
+    {
+      "name": "generate_mermaid_diagram",
+      "description": "Generate mermaid diagram and chart with mermaid syntax dynamically. Mermaid is a JavaScript based diagramming and charting tool that uses Markdown-inspired text definitions and a renderer to create and modify complex diagrams. The main purpose of Mermaid is to help documentation catch up with development.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mermaid": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The mermaid diagram syntax used to be generated, such as, graph TD;\nA-->B;\nA-->C;\nB-->D;\nC-->D;."
+          },
+          "theme": {
+            "type": "string",
+            "enum": [
+              "default",
+              "base",
+              "forest",
+              "dark",
+              "neutral"
+            ],
+            "description": "Theme for the diagram (optional). Default is 'default'.",
+            "default": "default"
+          },
+          "backgroundColor": {
+            "type": "string",
+            "description": "Background color for the diagram (optional). Default is 'white'.",
+            "default": "white"
+          },
+          "outputType": {
+            "type": "string",
+            "enum": [
+              "png",
+              "svg",
+              "mermaid"
+            ],
+            "description": "The output type of the diagram. Can be 'png', 'svg' or 'mermaid'. Default is 'png'.",
+            "default": "png"
+          }
+        },
+        "required": [
+          "mermaid"
+        ]
+      }
+    }
+  ],
+  "resources": [],
+  "prompts": [],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-mermaid"
+      ],
+      "description": "Run the server directly using npx.",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Flowchart Example",
+      "description": "Generate a flowchart for a login process with username and password.",
+      "prompt": "flowchart for login with username and password"
+    },
+    {
+      "title": "Sequence Diagram Example",
+      "description": "Generate a sequence diagram showing the interaction between a user, a browser, and a server.",
+      "prompt": "sequence diagram for user login in browser and server"
+    }
+  ],
+  "is_official": false,
+  "is_archived": false,
+  "docker_url": "https://hub.docker.com/r/hustcc/mcp-mermaid"
+}

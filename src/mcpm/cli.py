@@ -7,6 +7,7 @@ from typing import Any, Dict
 
 from rich.console import Console
 from rich.traceback import Traceback
+from rich.traceback import install as install_rich_traceback
 
 from mcpm.clients.client_config import ClientConfigManager
 from mcpm.commands import (
@@ -29,12 +30,19 @@ from mcpm.commands import (
 from mcpm.commands.share import share
 from mcpm.utils.logging_config import setup_logging
 from mcpm.utils.rich_click_config import click, get_header_text
+import os
+from pathlib import Path
 
-console = Console()
+console = Console()          # stdout for regular CLI output
+err_console = Console(stderr=True)  # stderr for errors/tracebacks
 client_config_manager = ClientConfigManager()
 
 # Setup Rich logging early - this runs when the module is imported
 setup_logging()
+
+# Install Rich's global exception handler to use stderr instead of stdout
+# This prevents Rich/rich-gradient from routing tracebacks to stdout
+install_rich_traceback(console=err_console, show_locals=True)
 
 # Custom context settings to handle main command help specially
 CONTEXT_SETTINGS: Dict[str, Any] = dict(help_option_names=[])
@@ -52,9 +60,9 @@ def handle_exceptions(func):
         try:
             return func(*args, **kwargs)
         except Exception:
-            console.print(Traceback(show_locals=True))
-            console.print("[bold red]An unexpected error occurred.[/bold red]")
-            console.print(
+            err_console.print(Traceback(show_locals=True))
+            err_console.print("[bold red]An unexpected error occurred.[/bold red]")
+            err_console.print(
                 "Please report this issue on our GitHub repository: "
                 "[link=https://github.com/pathintegral-institute/mcpm.sh/issues]https://github.com/pathintegral-institute/mcpm.sh/issues[/link]"
             )
@@ -79,6 +87,21 @@ with all MCP clients.
 @handle_exceptions
 def main(ctx, version, help_flag):
     """Main entry point for MCPM CLI."""
+
+    try:
+        # Check if the current working directory is valid.
+        os.getcwd()
+    except OSError:
+        # If getcwd() fails, it means the directory doesn't exist.
+        # This can happen when mcpm is called from certain environments
+        # like some Electron apps that don't set a valid cwd.
+        home_dir = str(Path.home())
+        err_console.print(
+            f"Current working directory is invalid. Changing to home directory: {home_dir}",
+            style="bold yellow"
+        )
+        os.chdir(home_dir)
+
     if version:
         print_logo()
         return

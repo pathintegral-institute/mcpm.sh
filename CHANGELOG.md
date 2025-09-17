@@ -1,3 +1,30 @@
+## [2.8.1](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.8.0...v2.8.1) (2025-09-13)
+
+
+### Bug Fixes
+
+* **ci:** only trigger release for mcpm update ([#262](https://github.com/pathintegral-institute/mcpm.sh/issues/262)) ([c1f02a3](https://github.com/pathintegral-institute/mcpm.sh/commit/c1f02a38c44b8993911d8f84d3b4b71c73ee6045))
+* set working directory if current is invalid ([#261](https://github.com/pathintegral-institute/mcpm.sh/issues/261)) ([d54acd3](https://github.com/pathintegral-institute/mcpm.sh/commit/d54acd3b4a1290ce9e795e73dab2913d11ac20d7))
+
+# [2.8.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.7.1...v2.8.0) (2025-09-11)
+
+
+### Bug Fixes
+
+* separate console streams for proper stdout/stderr routing ([#255](https://github.com/pathintegral-institute/mcpm.sh/issues/255)) ([38b04ff](https://github.com/pathintegral-institute/mcpm.sh/commit/38b04ffa3d353537e8ad750a2a40ba9b4bf0fe61))
+
+
+### Features
+
+* add manifest for hustcc-mcp-mermaid ([#240](https://github.com/pathintegral-institute/mcpm.sh/issues/240)) ([793e160](https://github.com/pathintegral-institute/mcpm.sh/commit/793e1608dbf3409877d11d32766daa280fda96d0))
+
+## [2.7.1](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.7.0...v2.7.1) (2025-09-04)
+
+
+### Bug Fixes
+
+* no banner when run profile in stdio mode ([#251](https://github.com/pathintegral-institute/mcpm.sh/issues/251)) ([7e243fc](https://github.com/pathintegral-institute/mcpm.sh/commit/7e243fca403c13508ed61079c30f3a8404950534))
+
 # [2.7.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.6.1...v2.7.0) (2025-08-15)
 
 
