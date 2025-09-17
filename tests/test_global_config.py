@@ -40,18 +40,14 @@ def test_list_shows_global_config():
 
 def test_v2_help_shows_global_model():
     """Test that help shows v2.0 global configuration messaging"""
-    from unittest.mock import patch
+    runner = CliRunner()
+    result = runner.invoke(main, ["--help"])
 
-    # Mock v1 config detection to avoid migration prompt
-    with patch("mcpm.cli.V1ConfigDetector.has_v1_config", return_value=False):
-        runner = CliRunner()
-        result = runner.invoke(main, ["--help"])
-
-        assert result.exit_code == 0
-        assert "global configuration" in result.output.lower()
-        assert "profile" in result.output.lower()
-        assert "install" in result.output
-        assert "run" in result.output
+    assert result.exit_code == 0
+    assert "global configuration" in result.output.lower()
+    assert "profile" in result.output.lower()
+    assert "install" in result.output
+    assert "run" in result.output
 
 
 def test_deprecated_commands_removed():

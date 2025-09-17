@@ -28,7 +28,6 @@ from mcpm.commands import (
     usage,
 )
 from mcpm.commands.share import share
-from mcpm.migration import V1ConfigDetector, V1ToV2Migrator
 from mcpm.utils.logging_config import setup_logging
 from mcpm.utils.rich_click_config import click, get_header_text
 import os
@@ -116,19 +115,6 @@ def main(ctx, version, help_flag):
         click.echo(ctx.get_help())
         click.rich_click.FOOTER_TEXT = original_footer
         return
-
-    # Check for v1 configuration and offer migration (even with subcommands)
-    detector = V1ConfigDetector()
-    if detector.has_v1_config():
-        migrator = V1ToV2Migrator()
-        migration_choice = migrator.show_migration_prompt()
-        if migration_choice == "migrate":
-            migrator.migrate_config()
-            return
-        elif migration_choice == "start_fresh":
-            migrator.start_fresh()
-            # Continue to execute the subcommand
-        # If "ignore", continue to subcommand without migration
 
     # If no command was invoked, show help with header and footer
     if ctx.invoked_subcommand is None:
