@@ -1,7 +1,7 @@
 # MCPM (Model Context Protocol Manager) - AI Agent Guide
 
-Generated: 2025-09-13 01:49:06 UTC
-Version: 2.8.0
+Generated: 2025-09-17 14:13:26 UTC
+Version: 2.8.1
 
 ## Overview
 
@@ -688,32 +688,48 @@ mcpm profile run web-dev --port 8080 --http
 
 ## mcpm run
 
-Execute a server from global configuration over stdio, HTTP, or SSE.
+Execute an installed MCP server in stdio (default), HTTP, or SSE mode.
 
-    Runs an installed MCP server from the global configuration. By default
-    runs over stdio for client communication, but can run over HTTP with --http
-    or over SSE with --sse.
+    By default, servers run over **stdio** for direct client communication.
 
-    Examples:
-        mcpm run mcp-server-browse                    # Run over stdio (default)
-        mcpm run --http mcp-server-browse             # Run over HTTP on 127.0.0.1:6276
-        mcpm run --sse mcp-server-browse              # Run over SSE on 127.0.0.1:6276
-        mcpm run --http --port 9000 filesystem       # Run over HTTP on 127.0.0.1:9000
-        mcpm run --sse --port 9000 filesystem        # Run over SSE on 127.0.0.1:9000
-        mcpm run --http --host 0.0.0.0 filesystem    # Run over HTTP on 0.0.0.0:6276
+    **Examples:**
 
-    Note: stdio mode is typically used in MCP client configurations:
+    STDIO Mode (default):
+
+    
+        mcpm run server-name
+
+    HTTP Mode:
+
+    
+        mcpm run --http server-name
+        mcpm run --http --port 9000 server-name
+        mcpm run --http --host 0.0.0.0 server-name
+
+    SSE Mode:
+
+    
+        mcpm run --sse server-name
+        mcpm run --sse --port 9000 server-name
+        mcpm run --sse --host 0.0.0.0 server-name
+
+    Client Config Example:
         {"command": ["mcpm", "run", "mcp-server-browse"]}
+
+    **Tips:**
+    • Port defaults to **6276**, auto-finds if busy
+    • Host defaults to **127.0.0.1**
+    • Use `mcpm ls` to see installed servers
     
 
 **Parameters:**
 
 - `server_name` (REQUIRED): 
 
-- `--http`: Run server over HTTP instead of stdio (flag)
-- `--sse`: Run server over SSE instead of stdio (flag)
-- `--port`: Port for HTTP / SSE mode (default: 6276) (default: 6276)
-- `--host`: Host address for HTTP / SSE mode (default: 127.0.0.1) (default: 127.0.0.1)
+- `--http`: Run server in HTTP mode (mutually exclusive with --sse) (flag)
+- `--sse`: Run server in SSE mode (mutually exclusive with --http) (flag)
+- `--port`: Port for HTTP/SSE mode (default: 6276, auto-finds available) (default: 6276)
+- `--host`: Host for HTTP/SSE mode (use 0.0.0.0 for all interfaces) (default: 127.0.0.1)
 - `-h`, `--help`: Show this message and exit. (flag)
 
 **Examples:**
