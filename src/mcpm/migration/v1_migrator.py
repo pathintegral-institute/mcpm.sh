@@ -35,23 +35,35 @@ class V1ToV2Migrator:
     def _wait_for_keypress(self, message: str):
         """Wait for any key press (cross-platform)"""
         import sys
-        import termios
-        import tty
+
+        try:
+            import termios
+            import tty
+        except ImportError:
+            termios = None
+            tty = None
 
         console.print(message, end="")
 
-        try:
-            # Unix/Linux/macOS
-            fd = sys.stdin.fileno()
-            old_settings = termios.tcgetattr(fd)
+        if termios and tty:
             try:
-                tty.setraw(sys.stdin.fileno())
-                sys.stdin.read(1)
-            finally:
-                termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-        except (ImportError, AttributeError):
-            # Windows fallback - use input() which requires Enter
-            input()
+                # Unix/Linux/macOS
+                fd = sys.stdin.fileno()
+                old_settings = termios.tcgetattr(fd)
+                try:
+                    tty.setraw(fd)
+                    sys.stdin.read(1)
+                finally:
+                    termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+            except (AttributeError, termios.error, ValueError, OSError):
+                input()
+        else:
+            try:
+                import msvcrt
+            except ImportError:
+                input()
+            else:
+                msvcrt.getch()
 
         console.print()  # Add newline after keypress
 
