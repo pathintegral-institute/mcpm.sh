@@ -1,13 +1,13 @@
 name: Semantic Release
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
     paths:
       - 'src/mcpm/**'
       - 'pyproject.toml'
-  workflow_dispatch:
 
 permissions:
   contents: write
@@ -16,17 +16,12 @@ permissions:
   id-token: write # Required for PyPI trusted publishing
 
 jobs:
-  update-llm-txt:
-    name: Update LLM.txt
-    uses: ./.github/workflows/generate-llm-txt.yml
-    secrets: inherit
-
   test:
     uses: ./.github/workflows/test.yml
 
   release:
     name: Release
-    needs: [test, update-llm-txt]
+    needs: test
     runs-on: ubuntu-latest
     environment:
       name: pypi
