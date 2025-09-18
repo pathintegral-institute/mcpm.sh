@@ -1,7 +1,12 @@
 name: Generate LLM.txt
 
 on:
-  workflow_call:
+  # Trigger on releases
+  release:
+    types: [published]
+
+  # Allow manual trigger
+  workflow_dispatch:
 
 jobs:
   generate-llm-txt:
