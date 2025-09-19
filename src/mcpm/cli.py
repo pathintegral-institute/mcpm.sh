@@ -1,39 +1,23 @@
-"""
-MCPM CLI - Main entry point for the Model Context Protocol Manager CLI
-"""
+"""MCPM CLI - Main entry point for the Model Context Protocol Manager CLI."""
+
+from __future__ import annotations
 
 # Import rich-click configuration before anything else
-from typing import Any, Dict
+import os
+from collections import OrderedDict
+from importlib import import_module
+from pathlib import Path
+from typing import Any, Dict, NamedTuple
 
 from rich.console import Console
 from rich.traceback import Traceback
 from rich.traceback import install as install_rich_traceback
 
 from mcpm.clients.client_config import ClientConfigManager
-from mcpm.commands import (
-    client,
-    config,
-    doctor,
-    edit,
-    info,
-    inspect,
-    install,
-    list,
-    migrate,
-    new,
-    profile,
-    run,
-    search,
-    uninstall,
-    usage,
-)
-from mcpm.commands.share import share
 from mcpm.utils.logging_config import setup_logging
 from mcpm.utils.rich_click_config import click, get_header_text
-import os
-from pathlib import Path
 
-console = Console()          # stdout for regular CLI output
+console = Console()  # stdout for regular CLI output
 err_console = Console(stderr=True)  # stderr for errors/tracebacks
 client_config_manager = ClientConfigManager()
 
@@ -69,9 +53,70 @@ def handle_exceptions(func):
 
     return wrapper
 
+class CommandSpec(NamedTuple):
+    module: str
+    attribute: str
+    hidden: bool = False
+
+
+class LazyCommandGroup(click.Group):
+    """Click group that imports commands on demand to avoid import side effects."""
+
+    def __init__(self, *args, command_specs: Dict[str, CommandSpec], **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        # Preserve insertion order for predictable help output
+        self._command_specs: OrderedDict[str, CommandSpec] = OrderedDict(command_specs)
+        self._command_cache: Dict[str, click.Command] = {}
+
+    def list_commands(self, ctx: click.Context) -> list[str]:
+        # Use insertion order (no sorting) to match the curated help layout
+        visible_commands = [
+            name for name, spec in self._command_specs.items() if not spec.hidden
+        ]
+        return visible_commands + super().list_commands(ctx)
+
+    def get_command(self, ctx: click.Context, cmd_name: str) -> click.Command | None:
+        if cmd_name in self._command_cache:
+            return self._command_cache[cmd_name]
+
+        spec = self._command_specs.get(cmd_name)
+        if spec is None:
+            return super().get_command(ctx, cmd_name)
+
+        module = import_module(spec.module)
+        command: click.Command = getattr(module, spec.attribute)
+
+        self._command_cache[cmd_name] = command
+        return command
+
+
+COMMAND_SPECS: OrderedDict[str, CommandSpec] = OrderedDict(
+    [
+        ("search", CommandSpec("mcpm.commands.search", "search")),
+        ("info", CommandSpec("mcpm.commands.info", "info")),
+        ("list", CommandSpec("mcpm.commands.list", "list")),
+        ("ls", CommandSpec("mcpm.commands.list", "list", hidden=True)),
+        ("install", CommandSpec("mcpm.commands.install", "install")),
+        ("uninstall", CommandSpec("mcpm.commands.uninstall", "uninstall")),
+        ("edit", CommandSpec("mcpm.commands.edit", "edit")),
+        ("new", CommandSpec("mcpm.commands.new", "new")),
+        ("run", CommandSpec("mcpm.commands.run", "run")),
+        ("inspect", CommandSpec("mcpm.commands.inspect", "inspect")),
+        ("profile", CommandSpec("mcpm.commands.profile", "profile")),
+        ("doctor", CommandSpec("mcpm.commands.doctor", "doctor")),
+        ("usage", CommandSpec("mcpm.commands.usage", "usage")),
+        ("config", CommandSpec("mcpm.commands.config", "config")),
+        ("migrate", CommandSpec("mcpm.commands.migrate", "migrate")),
+        ("share", CommandSpec("mcpm.commands.share", "share")),
+        ("client", CommandSpec("mcpm.commands.client", "client")),
+    ]
+)
+
 
 @click.group(
     name="mcpm",
+    cls=LazyCommandGroup,
+    command_specs=COMMAND_SPECS,
     context_settings=CONTEXT_SETTINGS,
     invoke_without_command=True,
     help="""
@@ -124,28 +169,6 @@ def main(ctx, version, help_flag):
         click.rich_click.FOOTER_TEXT = None
         click.echo(ctx.get_help())
         click.rich_click.FOOTER_TEXT = original_footer
-
-
-# Register v2.0 commands
-main.add_command(search.search)
-main.add_command(info.info)
-main.add_command(list.list, name="ls")
-main.add_command(install.install)
-main.add_command(uninstall.uninstall)
-main.add_command(edit.edit)
-main.add_command(new.new)
-main.add_command(run.run)
-main.add_command(inspect.inspect)
-main.add_command(profile.profile, name="profile")
-main.add_command(doctor.doctor)
-main.add_command(usage.usage)
-main.add_command(config.config)
-main.add_command(migrate.migrate)
-main.add_command(share)
-
-
-# Keep these for now but they could be simplified later
-main.add_command(client.client)
 
 if __name__ == "__main__":
     main()
