@@ -1,3 +1,10 @@
+## [2.8.2](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.8.1...v2.8.2) (2025-09-18)
+
+
+### Bug Fixes
+
+* remove auto v1 migration prompt ([#265](https://github.com/pathintegral-institute/mcpm.sh/issues/265)) ([8630fc8](https://github.com/pathintegral-institute/mcpm.sh/commit/8630fc88b74c9ce5b1a4ae24d2e8d0d355198787))
+
 ## [2.8.1](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.8.0...v2.8.1) (2025-09-13)
 
 
