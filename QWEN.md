@@ -1,0 +1,1 @@
+Reference `CLAUDE.md` for project conventions.
