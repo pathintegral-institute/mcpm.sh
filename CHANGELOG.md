@@ -1,3 +1,10 @@
+# [2.9.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.8.2...v2.9.0) (2025-10-09)
+
+
+### Features
+
+* add Qwen CLI client manager support ([#268](https://github.com/pathintegral-institute/mcpm.sh/issues/268)) ([a0e777c](https://github.com/pathintegral-institute/mcpm.sh/commit/a0e777c95267e35bbc27870182f9b4c44b335696))
+
 ## [2.8.2](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.8.1...v2.8.2) (2025-09-18)
 
 
