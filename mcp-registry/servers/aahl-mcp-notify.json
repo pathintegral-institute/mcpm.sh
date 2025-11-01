@@ -1,0 +1,68 @@
+{
+  "name": "mcp-notify",
+  "display_name": "MCP Notify",
+  "description": "MCP Notify is a server that sends notifications to the user.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aahl/mcp-notify"
+  },
+  "author": {
+    "name": "aahl"
+  },
+  "license": "MIT",
+  "categories": [
+    "Messaging",
+    "System Tools"
+  ],
+  "tags": [
+    "mcp",
+    "mcp-server",
+    "notifications"
+  ],
+  "arguments": {
+    "DISCORD_WEBHOOK_URL": {
+      "description": "Discord webhook URL",
+      "required": false,
+      "example": "https://discord.com/api/webhooks/..."
+    },
+    "NTFY_URL": {
+      "description": "Ntfy server URL",
+      "required": false,
+      "example": "https://ntfy.sh/your-topic"
+    }
+  },
+  "tools": [
+    {
+      "name": "notify",
+      "description": "Sends a notification to the user.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "The message to send."
+          },
+          "title": {
+            "type": "string",
+            "description": "The title of the notification."
+          }
+        },
+        "required": [
+          "message"
+        ]
+      }
+    }
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "@mcp/notify"
+      ],
+      "recommended": true
+    }
+  },
+  "is_official": false,
+  "is_archived": false
+}
