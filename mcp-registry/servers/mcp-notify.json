@@ -17,7 +17,6 @@
   "tags": [
     "mcp",
     "mcp-server",
-    "weixin",
     "telegram",
     "notifications"
   ],
@@ -36,6 +35,16 @@
       "description": "Telegram Default Chat ID",
       "required": false,
       "example": "-1234567890"
+    },
+    "DINGTALK_BOT_KEY": {
+      "description": "The default key for the DingTalk group robot can also be specified in the prompt",
+      "required": false,
+      "example": "aabbccdd-eeff-0000-1234-..."
+    },
+    "LARK_BOT_KEY": {
+      "description": "The default key for the Lark/Feishu group robot can also be specified in the prompt",
+      "required": false,
+      "example": "aabbccdd-eeff-0000-1234-..."
     }
   },
   "tools": [
