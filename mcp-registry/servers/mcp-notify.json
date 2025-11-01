@@ -1,7 +1,7 @@
 {
   "name": "mcp-notify",
   "display_name": "Notify MCP Server",
-  "description": "Provides an MCP (Model Context Protocol) server for message push, supporting Weixin, DingTalk, Telegram, Bark, Lark, Feishu, and Home Assistant.",
+  "description": "Provides an MCP (Model Context Protocol) server for message push, supporting WeWork, DingTalk, Telegram, Lark, Feishu.",
   "repository": {
     "type": "git",
     "url": "https://github.com/aahl/mcp-notify"
@@ -132,6 +132,62 @@
         },
         "required": [
           "photo"
+        ]
+      }
+    },
+    {
+      "name": "ding_send_text",
+      "description": "Send text or markdown message via DingTalk Robot",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "The message content to send."
+          },
+          "title": {
+            "type": "string",
+            "description": "The message title to send."
+          },
+          "msgtype": {
+            "type": "string",
+            "description": "The parse mode of content. [text/markdown]"
+          },
+          "bot_key": {
+            "type": "string",
+            "description": "Special robot key specified in the prompts."
+          }
+        },
+        "required": [
+          "text"
+        ]
+      }
+    },
+    {
+      "name": "lark_send_text",
+      "description": "Send text or markdown message via Lark/Feishu Robot",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "The message content to send."
+          },
+          "msgtype": {
+            "type": "string",
+            "description": "The parse mode of content. [text/markdown]"
+          },
+          "bot_key": {
+            "type": "string",
+            "description": "Special robot key specified in the prompts."
+          },
+          "is_lark": {
+            "type": "integer",
+            "description": "0: Feishu, 1: Lark"
+          }
+        },
+        "required": [
+          "text"
         ]
       }
     }
