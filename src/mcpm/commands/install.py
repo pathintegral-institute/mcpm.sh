@@ -85,8 +85,11 @@ def prompt_with_default(prompt_text, default="", hide_input=False, required=Fals
     Returns:
         The user's input or the default value if empty
     """
-    # Check for non-interactive mode
-    if is_non_interactive() or should_force_operation():
+    # Check for explicit non-interactive mode (Env Var)
+    # We do NOT check is_non_interactive() here because it includes isatty(),
+    # which returns True in tests (CliRunner), causing us to skip mocked prompts.
+    # Users desiring non-interactive behavior must set MCPM_NON_INTERACTIVE=true.
+    if os.getenv("MCPM_NON_INTERACTIVE", "").lower() == "true" or should_force_operation():
         if default:
             return default
         if required:
