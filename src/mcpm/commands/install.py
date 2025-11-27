@@ -20,6 +20,7 @@ from mcpm.global_config import GlobalConfigManager
 from mcpm.profile.profile_config import ProfileConfigManager
 from mcpm.schemas.full_server_config import FullServerConfig
 from mcpm.utils.config import NODE_EXECUTABLES, ConfigManager
+from mcpm.utils.non_interactive import should_force_operation, is_non_interactive
 from mcpm.utils.repository import RepositoryManager
 from mcpm.utils.rich_click_config import click
 
@@ -84,6 +85,15 @@ def prompt_with_default(prompt_text, default="", hide_input=False, required=Fals
     Returns:
         The user's input or the default value if empty
     """
+    # Check for non-interactive mode
+    if is_non_interactive() or should_force_operation():
+        if default:
+            return default
+        if required:
+            # Cannot fulfill required argument without default in non-interactive mode
+            raise click.Abort()
+        return ""
+
     # if default:
     #     console.print(f"Default: [yellow]{default}[/]")
 
@@ -161,7 +171,7 @@ def install(server_name, force=False, alias=None):
 
     # Confirm addition
     alias_text = f" as '{alias}'" if alias else ""
-    if not force and not Confirm.ask(f"Install this server to global configuration{alias_text}?"):
+    if not force and not should_force_operation() and not Confirm.ask(f"Install this server to global configuration{alias_text}?"):
         console.print("[yellow]Operation cancelled.[/]")
         return
 
@@ -206,7 +216,7 @@ def install(server_name, force=False, alias=None):
             selected_method = installations[method_id]
 
         # If multiple methods are available and not forced, offer selection
-        if len(installations) > 1 and not force:
+        if len(installations) > 1 and not force and not should_force_operation():
             console.print("\n[bold]Available installation methods:[/]")
             methods_list = []
 
@@ -426,7 +436,7 @@ def install(server_name, force=False, alias=None):
     )
 
     # Add server to global configuration
-    success = global_add_server(full_server_config.to_server_config(), force)
+    success = global_add_server(full_server_config.to_server_config(), force or should_force_operation())
 
     if success:
         # Server has been successfully added to the global configuration
