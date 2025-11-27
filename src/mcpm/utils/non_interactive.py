@@ -32,13 +32,17 @@ def is_non_interactive() -> bool:
     return False
 
 
-def should_force_operation() -> bool:
+def should_force_operation(cli_force_flag: bool = False) -> bool:
     """
     Check if operations should be forced (skip confirmations).
 
-    Returns True if MCPM_FORCE environment variable is set to 'true'.
+    Args:
+        cli_force_flag: Boolean flag from CLI args (e.g. --force)
+
+    Returns:
+        True if cli_force_flag is True OR MCPM_FORCE environment variable is set to 'true'.
     """
-    return os.getenv("MCPM_FORCE", "").lower() == "true"
+    return cli_force_flag or os.getenv("MCPM_FORCE", "").lower() == "true"
 
 
 def should_output_json() -> bool:

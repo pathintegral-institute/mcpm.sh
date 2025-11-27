@@ -94,7 +94,9 @@ def prompt_with_default(prompt_text, default="", hide_input=False, required=Fals
             return default
         if required:
             # Cannot fulfill required argument without default in non-interactive mode
-            raise click.Abort()
+            raise click.UsageError(
+                "A required value has no default and cannot be prompted in non-interactive mode."
+            )
         return ""
 
     # if default:
@@ -174,7 +176,7 @@ def install(server_name, force=False, alias=None):
 
     # Confirm addition
     alias_text = f" as '{alias}'" if alias else ""
-    if not force and not should_force_operation() and not Confirm.ask(f"Install this server to global configuration{alias_text}?"):
+    if not should_force_operation(force) and not Confirm.ask(f"Install this server to global configuration{alias_text}?"):
         console.print("[yellow]Operation cancelled.[/]")
         return
 
@@ -219,7 +221,7 @@ def install(server_name, force=False, alias=None):
             selected_method = installations[method_id]
 
         # If multiple methods are available and not forced, offer selection
-        if len(installations) > 1 and not force and not should_force_operation():
+        if len(installations) > 1 and not should_force_operation(force):
             console.print("\n[bold]Available installation methods:[/]")
             methods_list = []
 
@@ -439,7 +441,7 @@ def install(server_name, force=False, alias=None):
     )
 
     # Add server to global configuration
-    success = global_add_server(full_server_config.to_server_config(), force or should_force_operation())
+    success = global_add_server(full_server_config.to_server_config(), should_force_operation(force))
 
     if success:
         # Server has been successfully added to the global configuration
