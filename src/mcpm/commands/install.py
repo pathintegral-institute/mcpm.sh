@@ -20,7 +20,7 @@ from mcpm.global_config import GlobalConfigManager
 from mcpm.profile.profile_config import ProfileConfigManager
 from mcpm.schemas.full_server_config import FullServerConfig
 from mcpm.utils.config import NODE_EXECUTABLES, ConfigManager
-from mcpm.utils.non_interactive import should_force_operation, is_non_interactive
+from mcpm.utils.non_interactive import should_force_operation
 from mcpm.utils.repository import RepositoryManager
 from mcpm.utils.rich_click_config import click
 
@@ -153,7 +153,8 @@ def install(server_name, force=False, alias=None):
     config_name = alias or server_name
 
     # All servers are installed to global configuration
-    console.print("[yellow]Installing server to global configuration...[/]")
+    console_stderr = Console(stderr=True)
+    console_stderr.print("[yellow]Installing server to global configuration...[/]")
 
     # Get server metadata from repository
     server_metadata = repo_manager.get_server_metadata(server_name)
