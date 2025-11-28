@@ -20,7 +20,7 @@ from mcpm.global_config import GlobalConfigManager
 from mcpm.profile.profile_config import ProfileConfigManager
 from mcpm.schemas.full_server_config import FullServerConfig
 from mcpm.utils.config import NODE_EXECUTABLES, ConfigManager
-from mcpm.utils.non_interactive import should_force_operation, is_non_interactive
+from mcpm.utils.non_interactive import should_force_operation
 from mcpm.utils.repository import RepositoryManager
 from mcpm.utils.rich_click_config import click
 
@@ -73,7 +73,7 @@ def global_add_server(server_config: ServerConfig, force: bool = False) -> bool:
     return global_config_manager.add_server(server_config, force)
 
 
-def prompt_with_default(prompt_text, default="", hide_input=False, required=False):
+def prompt_with_default(prompt_text, default="", hide_input=False, required=False, force=False):
     """Prompt the user with a default value that can be edited directly.
 
     Args:
@@ -81,6 +81,7 @@ def prompt_with_default(prompt_text, default="", hide_input=False, required=Fals
         default: The default value to show in the prompt
         hide_input: Whether to hide the input (for passwords)
         required: Whether this is a required field
+        force: Whether to force non-interactive mode
 
     Returns:
         The user's input or the default value if empty
@@ -89,7 +90,7 @@ def prompt_with_default(prompt_text, default="", hide_input=False, required=Fals
     # We do NOT check is_non_interactive() here because it includes isatty(),
     # which returns True in tests (CliRunner), causing us to skip mocked prompts.
     # Users desiring non-interactive behavior must set MCPM_NON_INTERACTIVE=true.
-    if os.getenv("MCPM_NON_INTERACTIVE", "").lower() == "true" or should_force_operation():
+    if os.getenv("MCPM_NON_INTERACTIVE", "").lower() == "true" or should_force_operation(force):
         if default:
             return default
         if required:
@@ -152,7 +153,8 @@ def install(server_name, force=False, alias=None):
     config_name = alias or server_name
 
     # All servers are installed to global configuration
-    console.print("[yellow]Installing server to global configuration...[/]")
+    console_stderr = Console(stderr=True)
+    console_stderr.print("[yellow]Installing server to global configuration...[/]")
 
     # Get server metadata from repository
     server_metadata = repo_manager.get_server_metadata(server_name)
