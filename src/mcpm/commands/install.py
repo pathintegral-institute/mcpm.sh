@@ -577,8 +577,7 @@ def _replace_argument_variables(value: str, prev_value: str, variables: dict) ->
     if matched:
         original, var_name = matched.group(0), matched.group(1)
         # Use empty string as default when key not found
-        return (value.replace(original, variables.get(var_name, "")),)
-    ReplacementStatus.STANDARD_REPLACE
+        return value.replace(original, variables.get(var_name, "")), ReplacementStatus.STANDARD_REPLACE
 
     # arg: --VAR=your var value
     key_value_match = re.match(r"^([A-Z_]+)=(.+)$", value)
