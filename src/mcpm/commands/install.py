@@ -100,9 +100,7 @@ def prompt_with_default(prompt_text, default="", hide_input=False, required=Fals
             return default
         if required:
             # Cannot fulfill required argument without default in non-interactive mode
-            raise click.UsageError(
-                "A required value has no default and cannot be prompted in non-interactive mode."
-            )
+            raise click.UsageError("A required value has no default and cannot be prompted in non-interactive mode.")
         return ""
 
     # if default:
@@ -184,7 +182,9 @@ def install(server_name, force=False, alias=None):
     # Confirm addition
     alias_text = f" as '{alias}'" if alias else ""
     # Bypass confirmation if force flag is set OR explicit non-interactive mode is enabled
-    if not (should_force_operation(force) or is_explicit_non_interactive()) and not Confirm.ask(f"Install this server to global configuration{alias_text}?"):
+    if not (should_force_operation(force) or is_explicit_non_interactive()) and not Confirm.ask(
+        f"Install this server to global configuration{alias_text}?"
+    ):
         console.print("[yellow]Operation cancelled.[/]")
         return
 
@@ -577,12 +577,11 @@ def _replace_argument_variables(value: str, prev_value: str, variables: dict) ->
     if matched:
         original, var_name = matched.group(0), matched.group(1)
         # Use empty string as default when key not found
-        return value.replace(original, variables.get(var_name, "")),
+        return (value.replace(original, variables.get(var_name, "")),)
     ReplacementStatus.STANDARD_REPLACE
 
     # arg: --VAR=your var value
-    key_value_match = re.match(r"^([A-Z_]+)=(.+)$
-", value)
+    key_value_match = re.match(r"^([A-Z_]+)=(.+)$", value)
     if key_value_match:
         arg_key = key_value_match.group(1)
         if arg_key in variables:
