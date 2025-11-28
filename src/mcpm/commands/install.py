@@ -5,6 +5,7 @@ Install command for adding MCP servers to the global configuration
 import json
 import os
 import re
+import shutil
 from enum import Enum
 
 from prompt_toolkit import PromptSession
@@ -95,9 +96,7 @@ def prompt_with_default(prompt_text, default="", hide_input=False, required=Fals
             return default
         if required:
             # Cannot fulfill required argument without default in non-interactive mode
-            raise click.UsageError(
-                "A required value has no default and cannot be prompted in non-interactive mode."
-            )
+            raise click.UsageError("A required value has no default and cannot be prompted in non-interactive mode.")
         return ""
 
     # if default:
@@ -178,7 +177,9 @@ def install(server_name, force=False, alias=None):
 
     # Confirm addition
     alias_text = f" as '{alias}'" if alias else ""
-    if not should_force_operation(force) and not Confirm.ask(f"Install this server to global configuration{alias_text}?"):
+    if not should_force_operation(force) and not Confirm.ask(
+        f"Install this server to global configuration{alias_text}?"
+    ):
         console.print("[yellow]Operation cancelled.[/]")
         return
 
@@ -427,6 +428,40 @@ def install(server_name, force=False, alias=None):
         # Fallback for when no selected method
         mcp_command = install_command
         mcp_args = processed_args
+
+    # --- Auto-UVX Injection Logic ---
+    # If 'uv' is available and we are using python/pip, try to upgrade to 'uv run' for isolation.
+    # This solves the "Pydantic Versioning" dependency hell by isolating servers.
+    if mcp_command in ["python", "python3", "pip"] and shutil.which("uv"):
+        # We need to determine the package name to run 'uv run --with <package>'
+        # If package_name was defined in the installation method, use it.
+        # If not, check if we are running 'python -m <module>' and guess package name from module?
+        # Or default to the server name if reasonable?
+        target_package = package_name
+
+        # If args start with '-m', the next arg is the module.
+        # Often module == package (e.g. mcp_server_time -> mcp-server-time? No, dashes vs underscores).
+        # But 'uv run --with <module> python -m <module>' usually works if PyPI name matches.
+
+        if not target_package and mcp_args and mcp_args[0] == "-m" and len(mcp_args) > 1:
+            # Heuristic: Assume package name matches module name (with _ -> - maybe?)
+            # Ideally, the registry should provide 'package'.
+            # For now, we only auto-upgrade if we have a package name OR if we are brave.
+            # Let's rely on package_name variable extracted earlier from selected_method.get("package")
+            pass
+
+        if target_package:
+            console.print(f"[bold blue]🚀 Auto-upgrading to 'uv run' for isolation (package: {target_package})[/]")
+            # Old: python -m module ...
+            # New: uv run --with package python -m module ...
+
+            # We prepend 'run --with package' to the command execution
+            # mcp_command becomes 'uv'
+            # mcp_args becomes ['run', '--with', target_package, original_command] + mcp_args
+
+            new_args = ["run", "--with", target_package, mcp_command] + mcp_args
+            mcp_command = "uv"
+            mcp_args = new_args
 
     # Create server configuration using FullServerConfig
     full_server_config = FullServerConfig(
