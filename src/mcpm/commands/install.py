@@ -20,7 +20,7 @@ from mcpm.global_config import GlobalConfigManager
 from mcpm.profile.profile_config import ProfileConfigManager
 from mcpm.schemas.full_server_config import FullServerConfig
 from mcpm.utils.config import NODE_EXECUTABLES, ConfigManager
-from mcpm.utils.non_interactive import should_force_operation
+from mcpm.utils.non_interactive import is_explicit_non_interactive, should_force_operation
 from mcpm.utils.repository import RepositoryManager
 from mcpm.utils.rich_click_config import click
 
@@ -65,7 +65,7 @@ def _replace_node_executable(server_config: ServerConfig) -> ServerConfig:
 def global_add_server(server_config: ServerConfig, force: bool = False) -> bool:
     """Add a server to the global MCPM configuration."""
     if global_config_manager.server_exists(server_config.name) and not force:
-        console.print(f"[bold red]Error:[/] Server '{server_config.name}' already exists in global configuration.")
+        console.print(f"[bold red]Error:[/ ] Server '{server_config.name}' already exists in global configuration.")
         console.print("Use --force to override.")
         return False
 
@@ -75,6 +75,10 @@ def global_add_server(server_config: ServerConfig, force: bool = False) -> bool:
 
 def prompt_with_default(prompt_text, default="", hide_input=False, required=False, force=False):
     """Prompt the user with a default value that can be edited directly.
+
+    In non-interactive mode (via --force or MCPM_NON_INTERACTIVE), this function
+    returns the default value immediately. If a required value has no default
+    in non-interactive mode, it raises click.UsageError.
 
     Args:
         prompt_text: The prompt text to display
@@ -86,11 +90,12 @@ def prompt_with_default(prompt_text, default="", hide_input=False, required=Fals
     Returns:
         The user's input or the default value if empty
     """
-    # Check for explicit non-interactive mode (Env Var)
-    # We do NOT check is_non_interactive() here because it includes isatty(),
-    # which returns True in tests (CliRunner), causing us to skip mocked prompts.
-    # Users desiring non-interactive behavior must set MCPM_NON_INTERACTIVE=true.
-    if os.getenv("MCPM_NON_INTERACTIVE", "").lower() == "true" or should_force_operation(force):
+    # Check for explicit non-interactive mode (Env Var) or Force flag
+    # We use is_explicit_non_interactive() instead of the broader is_non_interactive()
+    # because the latter includes isatty() checks. In test environments using CliRunner,
+    # isatty() returns True, which would incorrectly skip our mocked prompts if we checked it here.
+    # We specifically want to allow interaction in tests unless the Env Var is set.
+    if is_explicit_non_interactive() or should_force_operation(force):
         if default:
             return default
         if required:
@@ -124,7 +129,7 @@ def prompt_with_default(prompt_text, default="", hide_input=False, required=Fals
         # Empty result for required field without default is not allowed
         if not result.strip() and required and not default:
             console.print("[yellow]Warning: Required value cannot be empty.[/]")
-            return prompt_with_default(prompt_text, default, hide_input, required)
+            return prompt_with_default(prompt_text, default, hide_input, required, force)
 
         return result
     except KeyboardInterrupt:
@@ -159,7 +164,7 @@ def install(server_name, force=False, alias=None):
     # Get server metadata from repository
     server_metadata = repo_manager.get_server_metadata(server_name)
     if not server_metadata:
-        console.print(f"[bold red]Error:[/] Server '{server_name}' not found in registry.")
+        console.print(f"[bold red]Error:[/ ] Server '{server_name}' not found in registry.")
         console.print(f"Available servers: {', '.join(repo_manager._fetch_servers().keys())}")
         return
 
@@ -178,7 +183,8 @@ def install(server_name, force=False, alias=None):
 
     # Confirm addition
     alias_text = f" as '{alias}'" if alias else ""
-    if not should_force_operation(force) and not Confirm.ask(f"Install this server to global configuration{alias_text}?"):
+    # Bypass confirmation if force flag is set OR explicit non-interactive mode is enabled
+    if not (should_force_operation(force) or is_explicit_non_interactive()) and not Confirm.ask(f"Install this server to global configuration{alias_text}?"):
         console.print("[yellow]Operation cancelled.[/]")
         return
 
@@ -222,8 +228,8 @@ def install(server_name, force=False, alias=None):
             method_id = next(iter(installations))
             selected_method = installations[method_id]
 
-        # If multiple methods are available and not forced, offer selection
-        if len(installations) > 1 and not should_force_operation(force):
+        # If multiple methods are available and not forced/non-interactive, offer selection
+        if len(installations) > 1 and not (should_force_operation(force) or is_explicit_non_interactive()):
             console.print("\n[bold]Available installation methods:[/]")
             methods_list = []
 
@@ -332,6 +338,7 @@ def install(server_name, force=False, alias=None):
                             default=env_value,
                             hide_input=_should_hide_input(arg_name),
                             required=is_required,
+                            force=force,
                         )
                         if user_value != env_value:
                             # User provided a different value
@@ -349,6 +356,7 @@ def install(server_name, force=False, alias=None):
                             default=example if example else "",
                             hide_input=_should_hide_input(arg_name),
                             required=is_required,
+                            force=force,
                         )
 
                         # Only add non-empty values to the environment
@@ -402,7 +410,7 @@ def install(server_name, force=False, alias=None):
     if has_non_standard_argument_define:
         # no matter in argument / env
         console.print(
-            "[bold yellow]WARNING:[/] [bold]Non-standard argument format detected in server configuration.[/]\n"
+            "[bold yellow]WARNING:[/ ] [bold]Non-standard argument format detected in server configuration.[/]\n"
             "[bold cyan]Future versions of MCPM will standardize all arguments in server configuration to use ${VARIABLE_NAME} format.[/]\n"
             "[bold]Please verify that your input arguments are correctly recognized.[/]\n"
         )
@@ -506,7 +514,7 @@ def _extract_referenced_variables(installation_method: dict) -> set:
 
     # Check all fields in the installation method
     for key, value in installation_method.items():
-        if key not in ["type", "description", "recommended"]:  # Skip metadata fields
+        if key not in ["type", "description", "recommended"]:
             extract_from_value(value)
 
     return referenced
@@ -569,10 +577,12 @@ def _replace_argument_variables(value: str, prev_value: str, variables: dict) ->
     if matched:
         original, var_name = matched.group(0), matched.group(1)
         # Use empty string as default when key not found
-        return value.replace(original, variables.get(var_name, "")), ReplacementStatus.STANDARD_REPLACE
+        return value.replace(original, variables.get(var_name, "")),
+    ReplacementStatus.STANDARD_REPLACE
 
     # arg: --VAR=your var value
-    key_value_match = re.match(r"^([A-Z_]+)=(.+)$", value)
+    key_value_match = re.match(r"^([A-Z_]+)=(.+)$
+", value)
     if key_value_match:
         arg_key = key_value_match.group(1)
         if arg_key in variables:

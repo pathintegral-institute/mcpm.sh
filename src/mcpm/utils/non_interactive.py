@@ -7,6 +7,19 @@ import sys
 from typing import Dict, List, Optional
 
 
+def is_explicit_non_interactive() -> bool:
+    """
+    Check if non-interactive mode is explicitly enabled via environment variable.
+
+    This excludes implicit detection (like isatty) to avoid issues in tests or
+    environments where TTY detection behaves unexpectedly but automation is not desired.
+
+    Returns:
+        True if MCPM_NON_INTERACTIVE environment variable is set to 'true'
+    """
+    return os.getenv("MCPM_NON_INTERACTIVE", "").lower() == "true"
+
+
 def is_non_interactive() -> bool:
     """
     Check if running in non-interactive mode.
@@ -17,7 +30,7 @@ def is_non_interactive() -> bool:
     - Running in a CI environment
     """
     # Check explicit non-interactive flag
-    if os.getenv("MCPM_NON_INTERACTIVE", "").lower() == "true":
+    if is_explicit_non_interactive():
         return True
 
     # Check if not connected to a TTY
