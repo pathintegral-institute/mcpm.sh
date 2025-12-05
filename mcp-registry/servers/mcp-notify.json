@@ -1,0 +1,216 @@
+{
+  "name": "mcp-notify",
+  "display_name": "Notify MCP Server",
+  "description": "Provides an MCP (Model Context Protocol) server for message push, supporting WeWork, DingTalk, Telegram, Lark, Feishu.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aahl/mcp-notify"
+  },
+  "author": {
+    "name": "aahl"
+  },
+  "license": "MIT",
+  "categories": [
+    "Messaging",
+    "System Tools"
+  ],
+  "tags": [
+    "mcp",
+    "mcp-server",
+    "telegram",
+    "notifications"
+  ],
+  "arguments": {
+    "WEWORK_BOT_KEY": {
+      "description": "The default key for the WeWork group robot can also be specified in the prompt",
+      "required": false,
+      "example": "aabbccdd-eeff-0000-1234-..."
+    },
+    "TELEGRAM_BOT_TOKEN": {
+      "description": "Telegram Bot Token",
+      "required": false,
+      "example": "123456789:abcdef"
+    },
+    "TELEGRAM_DEFAULT_CHAT": {
+      "description": "Telegram Default Chat ID",
+      "required": false,
+      "example": "-1234567890"
+    },
+    "DINGTALK_BOT_KEY": {
+      "description": "The default key for the DingTalk group robot can also be specified in the prompt",
+      "required": false,
+      "example": "aabbccdd-eeff-0000-1234-..."
+    },
+    "LARK_BOT_KEY": {
+      "description": "The default key for the Lark/Feishu group robot can also be specified in the prompt",
+      "required": false,
+      "example": "aabbccdd-eeff-0000-1234-..."
+    }
+  },
+  "tools": [
+    {
+      "name": "wework_send_text",
+      "description": "Send text or markdown message via WeWork Group Robot",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "The message content to send."
+          },
+          "msgtype": {
+            "type": "string",
+            "description": "The parse mode of content. [text/markdown_v2]"
+          },
+          "bot_key": {
+            "type": "string",
+            "description": "Special robot key specified in the prompts."
+          }
+        },
+        "required": [
+          "text"
+        ]
+      }
+    },
+    {
+      "name": "wework_send_image",
+      "description": "Send a photo message via WeWork Group Robot",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "The image url to send."
+          },
+          "bot_key": {
+            "type": "string",
+            "description": "Special robot key specified in the prompts."
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    },
+    {
+      "name": "tg_send_message",
+      "description": "Send text or markdown message via Telegram bot",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "The message content to send."
+          },
+          "parse_mode": {
+            "type": "string",
+            "description": "The parse mode of content. [text/MarkdownV2]"
+          },
+          "reply_to_message_id": {
+            "type": "string",
+            "description": "Identifier of the message that will be replied to."
+          }
+        },
+        "required": [
+          "text"
+        ]
+      }
+    },
+    {
+      "name": "tg_send_photo",
+      "description": "Send a photo message via Telegram bot",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "photo": {
+            "type": "string",
+            "description": "The photo url to send."
+          },
+          "caption": {
+            "type": "string",
+            "description": "The photo caption."
+          },
+          "parse_mode": {
+            "type": "string",
+            "description": "The parse mode of caption. [text/MarkdownV2]"
+          },
+          "reply_to_message_id": {
+            "type": "string",
+            "description": "Identifier of the message that will be replied to."
+          }
+        },
+        "required": [
+          "photo"
+        ]
+      }
+    },
+    {
+      "name": "ding_send_text",
+      "description": "Send text or markdown message via DingTalk Robot",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "The message content to send."
+          },
+          "title": {
+            "type": "string",
+            "description": "The message title to send."
+          },
+          "msgtype": {
+            "type": "string",
+            "description": "The parse mode of content. [text/markdown]"
+          },
+          "bot_key": {
+            "type": "string",
+            "description": "Special robot key specified in the prompts."
+          }
+        },
+        "required": [
+          "text"
+        ]
+      }
+    },
+    {
+      "name": "lark_send_text",
+      "description": "Send text or markdown message via Lark/Feishu Robot",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "The message content to send."
+          },
+          "msgtype": {
+            "type": "string",
+            "description": "The parse mode of content. [text/markdown]"
+          },
+          "bot_key": {
+            "type": "string",
+            "description": "Special robot key specified in the prompts."
+          },
+          "is_lark": {
+            "type": "integer",
+            "description": "0: Feishu, 1: Lark"
+          }
+        },
+        "required": [
+          "text"
+        ]
+      }
+    }
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "mcp-notify"
+      ],
+      "recommended": true
+    }
+  },
+  "is_official": false,
+  "is_archived": false
+}
