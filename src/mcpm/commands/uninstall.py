@@ -7,6 +7,7 @@ from rich.prompt import Confirm
 
 from mcpm.global_config import GlobalConfigManager
 from mcpm.utils.display import print_server_config
+from mcpm.utils.non_interactive import should_force_operation
 from mcpm.utils.rich_click_config import click
 
 console = Console()
@@ -59,7 +60,7 @@ def uninstall(server_name, force):
     print_server_config(server_info)
 
     # Get confirmation if --force is not used
-    if not force:
+    if not should_force_operation(force):
         console.print(f"\n[bold yellow]Are you sure you want to remove:[/] {server_name}")
         console.print("[italic]To bypass this confirmation, use --force[/]")
         # Use Rich's Confirm for a better user experience
