@@ -1,3 +1,11 @@
+# [2.10.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.9.0...v2.10.0) (2025-12-05)
+
+
+### Features
+
+* add manifest for makeplane-plane-mcp-server ([#286](https://github.com/pathintegral-institute/mcpm.sh/issues/286)) ([493356e](https://github.com/pathintegral-institute/mcpm.sh/commit/493356e4c1b23952e32c52b46573a2c333762368))
+* add manifest for nitansde-nitan-mcp ([#279](https://github.com/pathintegral-institute/mcpm.sh/issues/279)) ([08b9743](https://github.com/pathintegral-institute/mcpm.sh/commit/08b97439d2ef7ad830ee14e23195d709568aa1e7))
+
 # [2.9.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.8.2...v2.9.0) (2025-10-09)
 
 
