@@ -7,6 +7,19 @@ import sys
 from typing import Dict, List, Optional
 
 
+def is_explicit_non_interactive() -> bool:
+    """
+    Check if non-interactive mode is explicitly enabled via environment variable.
+
+    This excludes implicit detection (like isatty) to avoid issues in tests or
+    environments where TTY detection behaves unexpectedly but automation is not desired.
+
+    Returns:
+        True if MCPM_NON_INTERACTIVE environment variable is set to 'true'
+    """
+    return os.getenv("MCPM_NON_INTERACTIVE", "").lower() == "true"
+
+
 def is_non_interactive() -> bool:
     """
     Check if running in non-interactive mode.
@@ -17,7 +30,7 @@ def is_non_interactive() -> bool:
     - Running in a CI environment
     """
     # Check explicit non-interactive flag
-    if os.getenv("MCPM_NON_INTERACTIVE", "").lower() == "true":
+    if is_explicit_non_interactive():
         return True
 
     # Check if not connected to a TTY
@@ -32,13 +45,17 @@ def is_non_interactive() -> bool:
     return False
 
 
-def should_force_operation() -> bool:
+def should_force_operation(cli_force_flag: bool = False) -> bool:
     """
     Check if operations should be forced (skip confirmations).
 
-    Returns True if MCPM_FORCE environment variable is set to 'true'.
+    Args:
+        cli_force_flag: Boolean flag from CLI args (e.g. --force)
+
+    Returns:
+        True if cli_force_flag is True OR MCPM_FORCE environment variable is set to 'true'.
     """
-    return os.getenv("MCPM_FORCE", "").lower() == "true"
+    return cli_force_flag or os.getenv("MCPM_FORCE", "").lower() == "true"
 
 
 def should_output_json() -> bool:

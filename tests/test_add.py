@@ -41,10 +41,16 @@ def test_add_server(windsurf_manager, monkeypatch, tmp_path):
     )
 
     # Mock prompt_toolkit's prompt to return our test values
-    with patch("prompt_toolkit.PromptSession.prompt", side_effect=["json", "test-api-key"]):
+    # Note: With --force, the CLI will look for env vars for required args instead of prompting
+    monkeypatch.setenv("fmt", "json")
+    monkeypatch.setenv("API_KEY", "test-api-key")
+    
+    # We still patch PromptSession to ensure it's NOT called (or ignored if called incorrectly)
+    with patch("prompt_toolkit.PromptSession.prompt") as mock_prompt:
         runner = CliRunner()
         result = runner.invoke(install, ["server-test", "--force", "--alias", "test"])
         assert result.exit_code == 0
+        mock_prompt.assert_not_called()
 
     # Check that the server was added to global configuration with alias
     server = global_config_manager.get_server("test")
@@ -95,8 +101,13 @@ def test_add_server_with_missing_arg(windsurf_manager, monkeypatch, tmp_path):
 
     # Instead of mocking Console and Progress, we'll mock key methods directly
     # This is a simpler approach that avoids complex mock setup
+    
+    # Set environment variables for required arguments
+    monkeypatch.setenv("fmt", "json")
+    monkeypatch.setenv("API_KEY", "test-api-key")
+    
     with (
-        patch("prompt_toolkit.PromptSession.prompt", side_effect=["json", "test-api-key"]),
+        patch("prompt_toolkit.PromptSession.prompt") as mock_prompt,
         patch("rich.progress.Progress.start"),
         patch("rich.progress.Progress.stop"),
         patch("rich.progress.Progress.add_task"),
@@ -111,6 +122,7 @@ def test_add_server_with_missing_arg(windsurf_manager, monkeypatch, tmp_path):
             print(f"Output: {result.stdout}")
 
         assert result.exit_code == 0
+        mock_prompt.assert_not_called()
 
     # Check that the server was added with alias and the missing argument is replaced with empty string
     server = global_config_manager.get_server("test-missing-arg")
@@ -166,8 +178,12 @@ def test_add_server_with_empty_args(windsurf_manager, monkeypatch, tmp_path):
     )
 
     # Mock prompt responses for required arguments only
+    monkeypatch.setenv("fmt", "json")
+    monkeypatch.setenv("API_KEY", "test-api-key")
+    # OPTIONAL is not set, simulating empty/missing optional arg
+    
     with (
-        patch("prompt_toolkit.PromptSession.prompt", side_effect=["json", "test-api-key"]),
+        patch("prompt_toolkit.PromptSession.prompt") as mock_prompt,
         patch("rich.progress.Progress.start"),
         patch("rich.progress.Progress.stop"),
         patch("rich.progress.Progress.add_task"),
@@ -176,6 +192,7 @@ def test_add_server_with_empty_args(windsurf_manager, monkeypatch, tmp_path):
         result = runner.invoke(install, ["server-test", "--force", "--alias", "test-empty-args"])
 
         assert result.exit_code == 0
+        mock_prompt.assert_not_called()
 
     # Check that the server was added and optional arguments are empty
     server = global_config_manager.get_server("test-empty-args")
@@ -269,14 +286,18 @@ def test_add_server_with_configured_npx(windsurf_manager, monkeypatch, tmp_path)
     )
 
     # Mock Rich's progress display to prevent 'Only one live display may be active at once' error
+    monkeypatch.setenv("fmt", "json")
+    monkeypatch.setenv("API_KEY", "test-api-key")
+    
     with (
         patch("rich.progress.Progress.__enter__", return_value=Mock()),
         patch("rich.progress.Progress.__exit__"),
-        patch("prompt_toolkit.PromptSession.prompt", side_effect=["json", "test-api-key"]),
+        patch("prompt_toolkit.PromptSession.prompt") as mock_prompt,
     ):
         runner = CliRunner()
         result = runner.invoke(install, ["server-test", "--force", "--alias", "test"])
         assert result.exit_code == 0
+        mock_prompt.assert_not_called()
 
     # Check that the server was added with alias
     server = global_config_manager.get_server("test")
@@ -384,14 +405,11 @@ def test_add_server_with_filtered_arguments(windsurf_manager, monkeypatch, tmp_p
 
     # Mock prompt_toolkit's prompt to return our test values
     # Should only be called once for API_KEY since that's the only referenced variable
-    prompt_calls = []
-
-    def mock_prompt_func(*args, **kwargs):
-        prompt_calls.append(kwargs.get("message", ""))
-        return "test-api-key"
-
+    # With force=True, we use env vars
+    monkeypatch.setenv("API_KEY", "test-api-key")
+    
     with (
-        patch("prompt_toolkit.PromptSession.prompt", side_effect=mock_prompt_func),
+        patch("prompt_toolkit.PromptSession.prompt") as mock_prompt,
         patch("rich.progress.Progress.start"),
         patch("rich.progress.Progress.stop"),
         patch("rich.progress.Progress.add_task"),
@@ -399,12 +417,7 @@ def test_add_server_with_filtered_arguments(windsurf_manager, monkeypatch, tmp_p
         runner = CliRunner()
         result = runner.invoke(install, ["test-server", "--force"])
         assert result.exit_code == 0
-
-        # Check that only API_KEY was prompted for
-        assert len(prompt_calls) == 1
-        assert "API_KEY" in str(prompt_calls[0])
-        assert "DATABASE_URL" not in str(prompt_calls[0])
-        assert "UNUSED_VAR" not in str(prompt_calls[0])
+        mock_prompt.assert_not_called()
 
     # Check that the server was added correctly
     server = global_config_manager.get_server("test-server")
@@ -449,8 +462,10 @@ def test_add_http_server_with_headers(windsurf_manager, monkeypatch, tmp_path):
     )
 
     # Mock prompt_toolkit's prompt to return our test values
+    monkeypatch.setenv("API_TOKEN", "test-token-123")
+    
     with (
-        patch("prompt_toolkit.PromptSession.prompt", side_effect=["test-token-123"]),
+        patch("prompt_toolkit.PromptSession.prompt") as mock_prompt,
         patch("rich.progress.Progress.start"),
         patch("rich.progress.Progress.stop"),
         patch("rich.progress.Progress.add_task"),
@@ -458,6 +473,7 @@ def test_add_http_server_with_headers(windsurf_manager, monkeypatch, tmp_path):
         runner = CliRunner()
         result = runner.invoke(install, ["api-server", "--force"])
         assert result.exit_code == 0
+        mock_prompt.assert_not_called()
 
     # Check that the server was added to global configuration as RemoteServerConfig
     server = global_config_manager.get_server("api-server")
