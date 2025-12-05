@@ -1,0 +1,59 @@
+{
+  "name": "@nitansde/mcp",
+  "display_name": "Nitan MCP",
+  "description": "A dedicated MCP client for uscardforum.com, modified from Discourse MCP with an intelligent dual-method Cloudflare bypass.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nitansde/nitan-mcp"
+  },
+  "author": {
+    "name": "nitansde"
+  },
+  "license": "MIT",
+  "categories": [
+    "Web Services",
+    "Dev Tools"
+  ],
+  "tags": [
+    "mcp",
+    "discourse",
+    "cloudflare-bypass"
+  ],
+  "arguments": {
+    "NITAN_USERNAME": {
+      "description": "Your username for uscardforum.com.",
+      "required": true,
+      "example": "YOUR_USERNAME"
+    },
+    "NITAN_PASSWORD": {
+      "description": "Your password for uscardforum.com.",
+      "required": true,
+      "example": "YOUR_PASSWORD"
+    },
+    "TIME_ZONE": {
+      "description": "Optional timezone to use instead of your local clock.",
+      "required": false,
+      "example": "America/New_York"
+    },
+    "python_path": {
+      "description": "Command-line argument to specify the path to a Python executable, especially if it is installed in a virtual environment.",
+      "required": false,
+      "example": "/path/to/python_executable"
+    }
+  },
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "description": "Recommended installation method using npx.",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@nitansde/mcp@latest"
+      ],
+      "package": "@nitansde/mcp",
+      "recommended": true
+    }
+  },
+  "is_official": false,
+  "is_archived": false
+}
