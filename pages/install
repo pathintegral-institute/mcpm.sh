@@ -149,7 +149,7 @@ verify_installation() {
     else
         PATH_DIRS=$(echo $PATH | tr ':' '\n')
         USER_BIN_DIR="$HOME/.local/bin"
-        
+
         if ! echo "$PATH_DIRS" | grep -q "$USER_BIN_DIR"; then
             info "MCPM might be installed but not in your PATH."
             echo "Try adding this to your shell profile (~/.bashrc, ~/.zshrc, etc.):"
@@ -164,6 +164,65 @@ verify_installation() {
     fi
 }
 
+# Function to setup AI agent integration
+setup_ai_agent_docs() {
+    MCPM_CONFIG_DIR="$HOME/.config/mcpm"
+    MCPM_LLM_TXT="$MCPM_CONFIG_DIR/llm.txt"
+    LLM_TXT_URL="https://raw.githubusercontent.com/pathintegral-institute/mcpm.sh/main/llm.txt"
+
+    # Download llm.txt to config directory
+    info "Downloading MCPM documentation for AI agents..."
+    mkdir -p "$MCPM_CONFIG_DIR"
+    if curl -sSL "$LLM_TXT_URL" -o "$MCPM_LLM_TXT" 2>/dev/null; then
+        info "Saved AI agent documentation to $MCPM_LLM_TXT"
+    else
+        info "Could not download llm.txt (will use GitHub URL as fallback)"
+    fi
+
+    # Check for AI agent instruction files
+    AI_INSTRUCTION_FILES=(
+        "$HOME/CLAUDE.md"
+        "$HOME/.claude/CLAUDE.md"
+        "$HOME/agents.md"
+        "$HOME/.config/claude/CLAUDE.md"
+    )
+
+    MCPM_MARKER="<!-- MCPM-AI-AGENT-DOCS -->"
+
+    read -r -d '' MCPM_SECTION << 'MCPM_EOF'
+
+<!-- MCPM-AI-AGENT-DOCS -->
+## MCPM (Model Context Protocol Manager)
+
+MCPM is installed on this system for managing MCP servers. For comprehensive
+CLI documentation optimized for AI agents, see:
+
+- **Local**: ~/.config/mcpm/llm.txt
+- **Remote** (fallback): https://raw.githubusercontent.com/pathintegral-institute/mcpm.sh/main/llm.txt
+
+Key commands: `mcpm search`, `mcpm install`, `mcpm ls`, `mcpm run`
+<!-- END-MCPM-AI-AGENT-DOCS -->
+MCPM_EOF
+
+    for file in "${AI_INSTRUCTION_FILES[@]}"; do
+        if [ -f "$file" ]; then
+            # Check if MCPM section already exists
+            if grep -q "$MCPM_MARKER" "$file" 2>/dev/null; then
+                info "MCPM documentation already present in $file"
+            else
+                echo
+                echo -e "${CYAN}Found AI agent instruction file: $file${NC}"
+                read -p "Would you like to add MCPM documentation reference? [y/N] " -n 1 -r
+                echo
+                if [[ $REPLY =~ ^[Yy]$ ]]; then
+                    echo "$MCPM_SECTION" >> "$file"
+                    success "Added MCPM documentation reference to $file"
+                fi
+            fi
+        fi
+    done
+}
+
 # Main installation process
 main() {
     info "Starting MCPM installation..."
@@ -171,6 +230,7 @@ main() {
     ensure_pip
     install_mcp
     verify_installation
+    setup_ai_agent_docs
 }
 
 # Execute the installation
