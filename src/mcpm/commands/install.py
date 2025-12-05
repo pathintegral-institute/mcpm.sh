@@ -1,11 +1,11 @@
-"""
-Install command for adding MCP servers to the global configuration
-"""
+"""Install command for adding MCP servers to the global configuration"""
 
 import json
+import logging
 import os
 import re
 from enum import Enum
+from typing import Optional
 
 from prompt_toolkit import PromptSession
 from prompt_toolkit.formatted_text import HTML
@@ -24,12 +24,36 @@ from mcpm.utils.repository import RepositoryManager
 from mcpm.utils.rich_click_config import click
 
 console = Console()
+logger = logging.getLogger(__name__)
 repo_manager = RepositoryManager()
 profile_config_manager = ProfileConfigManager()
 global_config_manager = GlobalConfigManager()
 
-# Create a prompt session with custom styling
-prompt_session = PromptSession()
+# Create a prompt session with custom styling (lazy to support headless Windows runs)
+prompt_session: Optional[PromptSession] = None
+_prompt_session_error: Optional[Exception] = None
+
+
+def _get_prompt_session() -> Optional[PromptSession]:
+    """Lazily create a PromptSession, tolerating environments without a console."""
+
+    global prompt_session, _prompt_session_error  # noqa: PLW0603 - shared module state
+
+    if prompt_session is not None:
+        return prompt_session
+
+    if _prompt_session_error is not None:
+        return None
+
+    try:
+        prompt_session = PromptSession()
+    except Exception as exc:  # prompt_toolkit raises NoConsoleScreenBufferError on Windows
+        _prompt_session_error = exc
+        logger.debug("Falling back to basic input prompts: %s", exc)
+        prompt_session = None
+
+    return prompt_session
+
 style = Style.from_dict(
     {
         "prompt": "ansicyan bold",
@@ -88,14 +112,24 @@ def prompt_with_default(prompt_text, default="", hide_input=False, required=Fals
     #     console.print(f"Default: [yellow]{default}[/]")
 
     # Get user input
+    session = _get_prompt_session()
+
     try:
-        result = prompt_session.prompt(
-            message=HTML(f"<prompt>{prompt_text}</prompt> > "),
-            style=style,
-            default=default,
-            is_password=hide_input,
-            key_bindings=kb,
-        )
+        if session is not None:
+            result = session.prompt(
+                message=HTML(f"<prompt>{prompt_text}</prompt> > "),
+                style=style,
+                default=default,
+                is_password=hide_input,
+                key_bindings=kb,
+            )
+        else:
+            # Basic fallback for environments without an interactive console (e.g., headless Windows)
+            prompt_parts = [prompt_text]
+            if default:
+                prompt_parts.append(f"[{default}]")
+            prompt_display = " ".join(prompt_parts) + " > "
+            result = input(prompt_display)  # noqa: PLW1513 - suppressed by KeyboardInterrupt handling
 
         # Empty result for non-required field means leave it empty
         if not result.strip() and not required:
@@ -111,7 +145,7 @@ def prompt_with_default(prompt_text, default="", hide_input=False, required=Fals
             return prompt_with_default(prompt_text, default, hide_input, required)
 
         return result
-    except KeyboardInterrupt:
+    except (KeyboardInterrupt, EOFError):
         raise click.Abort()
 
 
