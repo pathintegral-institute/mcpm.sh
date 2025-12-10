@@ -1,3 +1,10 @@
+# [2.11.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.10.0...v2.11.0) (2025-12-10)
+
+
+### Features
+
+* Enhanced Non-Interactive Mode for Automation ([#283](https://github.com/pathintegral-institute/mcpm.sh/issues/283)) ([a4a7d45](https://github.com/pathintegral-institute/mcpm.sh/commit/a4a7d45d28aff72b484850761734a8e080aecce4))
+
 # [2.10.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.9.0...v2.10.0) (2025-12-05)
 
 
