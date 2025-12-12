@@ -4,11 +4,11 @@
   "description": "Advanced web scraping with JavaScript rendering, PDF support, and smart rate limiting",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mendableai/firecrawl-mcp-server"
+    "url": "https://github.com/firecrawl/firecrawl-mcp-server"
   },
-  "homepage": "https://github.com/mendableai/firecrawl-mcp-server",
+  "homepage": "https://github.com/firecrawl/firecrawl-mcp-server",
   "author": {
-    "name": "mendableai"
+    "name": "firecrawl"
   },
   "license": "MIT",
   "categories": [

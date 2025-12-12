@@ -70,6 +70,7 @@ class STDIOServerConfig(BaseServerConfig):
 
 class RemoteServerConfig(BaseServerConfig):
     url: str
+    transport: Optional[str] = None  # "sse" or "streamable-http"
     headers: Dict[str, Any] = {}
 
     def to_mcp_proxy_stdio(self) -> STDIOServerConfig:

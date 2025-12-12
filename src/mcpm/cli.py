@@ -3,6 +3,8 @@ MCPM CLI - Main entry point for the Model Context Protocol Manager CLI
 """
 
 # Import rich-click configuration before anything else
+import os
+from pathlib import Path
 from typing import Any, Dict
 
 from rich.console import Console
@@ -30,10 +32,8 @@ from mcpm.commands import (
 from mcpm.commands.share import share
 from mcpm.utils.logging_config import setup_logging
 from mcpm.utils.rich_click_config import click, get_header_text
-import os
-from pathlib import Path
 
-console = Console()          # stdout for regular CLI output
+console = Console()  # stdout for regular CLI output
 err_console = Console(stderr=True)  # stderr for errors/tracebacks
 client_config_manager = ClientConfigManager()
 
@@ -97,8 +97,7 @@ def main(ctx, version, help_flag):
         # like some Electron apps that don't set a valid cwd.
         home_dir = str(Path.home())
         err_console.print(
-            f"Current working directory is invalid. Changing to home directory: {home_dir}",
-            style="bold yellow"
+            f"Current working directory is invalid. Changing to home directory: {home_dir}", style="bold yellow"
         )
         os.chdir(home_dir)
 

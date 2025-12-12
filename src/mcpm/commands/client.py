@@ -39,12 +39,50 @@ def client():
 
     \b
         mcpm client ls                    # List all supported MCP clients and their status
+        mcpm client config cursor --set-path /path/to/settings.json  # Set custom config path
         mcpm client edit cursor           # Interactive server selection for Cursor
         mcpm client edit claude-desktop   # Interactive server selection for Claude Desktop
         mcpm client edit cursor -e        # Open Cursor config in external editor
         mcpm client import cursor         # Import server configurations from Cursor
     """
     pass
+
+
+@client.command(name="config", context_settings=dict(help_option_names=["-h", "--help"]))
+@click.argument("client_name")
+@click.option("--set-path", help="Set a custom configuration file path for the client")
+@click.option("--get-path", is_flag=True, help="Get the currently stored configuration path")
+@click.option("--clear-path", is_flag=True, help="Clear the stored custom configuration path")
+def config_client(client_name, set_path, get_path, clear_path):
+    """Configure client settings (e.g., custom config paths)."""
+    if not any([set_path, get_path, clear_path]):
+        console.print("[yellow]No action specified. Use --set-path, --get-path, or --clear-path.[/]")
+        return
+
+    # Check if client is supported
+    supported_clients = ClientRegistry.get_supported_clients()
+    if client_name not in supported_clients:
+        console.print(f"[red]Error: Client '{client_name}' is not supported.[/]")
+        return
+
+    if set_path:
+        if client_config_manager.set_client_path(client_name, set_path):
+            console.print(f"[green]Successfully set custom config path for {client_name}:[/] {set_path}")
+        else:
+            console.print(f"[red]Failed to set config path for {client_name}[/]")
+
+    if clear_path:
+        if client_config_manager.set_client_path(client_name, None):
+            console.print(f"[green]Successfully cleared custom config path for {client_name}[/]")
+        else:
+            console.print(f"[red]Failed to clear config path for {client_name}[/]")
+
+    if get_path or set_path or clear_path:  # Always show current path after modification or if requested
+        current_path = client_config_manager.get_client_path(client_name)
+        if current_path:
+            console.print(f"[bold]Current stored path for {client_name}:[/] {current_path}")
+        else:
+            console.print(f"[dim]No custom path stored for {client_name} (using default)[/]")
 
 
 @client.command(name="ls", context_settings=dict(help_option_names=["-h", "--help"]))
@@ -226,7 +264,18 @@ def list_clients(verbose):
 @click.option("--remove-profile", help="Comma-separated list of profile names to remove")
 @click.option("--set-profiles", help="Comma-separated list of profile names to set (replaces all)")
 @click.option("--force", is_flag=True, help="Skip confirmation prompts")
-def edit_client(client_name, external, config_path_override, add_server, remove_server, set_servers, add_profile, remove_profile, set_profiles, force):
+def edit_client(
+    client_name,
+    external,
+    config_path_override,
+    add_server,
+    remove_server,
+    set_servers,
+    add_profile,
+    remove_profile,
+    set_profiles,
+    force,
+):
     """Enable/disable MCPM-managed servers in the specified client configuration.
 
     Interactive by default, or use CLI parameters for automation.
@@ -1178,6 +1227,7 @@ def _edit_client_non_interactive(
             return 1
 
         from mcpm.profile.profile_config import ProfileConfigManager
+
         profile_manager = ProfileConfigManager()
         available_profiles = profile_manager.list_profiles()
 
@@ -1261,7 +1311,9 @@ def _edit_client_non_interactive(
 
         # Show profile changes
         if final_profiles != set(current_profiles):
-            console.print(f"Profiles: [dim]{len(current_profiles)} profiles[/] → [cyan]{len(final_profiles)} profiles[/]")
+            console.print(
+                f"Profiles: [dim]{len(current_profiles)} profiles[/] → [cyan]{len(final_profiles)} profiles[/]"
+            )
 
             added_profiles = final_profiles - set(current_profiles)
             if added_profiles:
@@ -1275,7 +1327,9 @@ def _edit_client_non_interactive(
 
         # Show server changes
         if final_servers != set(current_individual_servers):
-            console.print(f"Servers: [dim]{len(current_individual_servers)} servers[/] → [cyan]{len(final_servers)} servers[/]")
+            console.print(
+                f"Servers: [dim]{len(current_individual_servers)} servers[/] → [cyan]{len(final_servers)} servers[/]"
+            )
 
             added_servers = final_servers - set(current_individual_servers)
             if added_servers:
@@ -1310,9 +1364,7 @@ def _edit_client_non_interactive(
             try:
                 profile_server_name = f"mcpm_profile_{profile_name}"
                 server_config = STDIOServerConfig(
-                    name=profile_server_name,
-                    command="mcpm",
-                    args=["profile", "run", profile_name]
+                    name=profile_server_name, command="mcpm", args=["profile", "run", profile_name]
                 )
                 client_manager.add_server(server_config)
             except Exception as e:
@@ -1331,11 +1383,7 @@ def _edit_client_non_interactive(
         for server_name in final_servers - set(current_individual_servers):
             try:
                 prefixed_name = f"mcpm_{server_name}"
-                server_config = STDIOServerConfig(
-                    name=prefixed_name,
-                    command="mcpm",
-                    args=["run", server_name]
-                )
+                server_config = STDIOServerConfig(name=prefixed_name, command="mcpm", args=["run", server_name])
                 client_manager.add_server(server_config)
             except Exception as e:
                 console.print(f"[red]Error adding server {server_name}: {e}[/]")

@@ -170,7 +170,27 @@ def doctor():
         console.print(f"  ❌ Profile check error: {e}")
         issues_found += 1
 
-    # 8. Summary
+    # 8. Check Daemon Status
+    console.print("[bold cyan]🤖 Daemon Status[/]")
+    try:
+        import urllib.request
+
+        try:
+            with urllib.request.urlopen("http://localhost:6276/health", timeout=2) as response:
+                if response.status == 200:
+                    console.print("  ✅ MCPM Daemon is running (port 6276)")
+                else:
+                    console.print(f"  ⚠️  MCPM Daemon responded with status {response.status}")
+                    issues_found += 1
+        except Exception as e:
+            console.print(f"  ❌ MCPM Daemon not reachable: {e}")
+            console.print("     (Run 'mcpm-daemon' or 'docker compose up' to start it)")
+            issues_found += 1
+    except Exception as e:
+        console.print(f"  ❌ Error checking daemon: {e}")
+        issues_found += 1
+
+    # 9. Summary
     console.print()
     if issues_found == 0:
         console.print("[bold green]✅ All systems healthy! No issues found.[/]")

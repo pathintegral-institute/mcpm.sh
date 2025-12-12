@@ -118,6 +118,13 @@ class MCPMProxyFactory:
 
         proxy = FastMCP.as_proxy(proxy_config, name=name or "mcpm-aggregated")
 
+        # Add health check endpoint for Docker/System checks
+        @proxy.custom_route("/health", methods=["GET"])
+        async def health_check(request):
+            from starlette.responses import JSONResponse
+
+            return JSONResponse({"status": "healthy", "service": name or "mcpm-aggregated"})
+
         # Add MCPM middleware
         # For single server proxies, use the server name for tracking
         server_name = servers[0].name if len(servers) == 1 else None

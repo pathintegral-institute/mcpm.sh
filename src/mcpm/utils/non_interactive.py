@@ -136,7 +136,7 @@ def validate_server_type(server_type: str) -> str:
     Raises:
         ValueError: If server type is invalid
     """
-    valid_types = ["stdio", "remote"]
+    valid_types = ["stdio", "remote", "sse", "streamable-http"]
     if server_type not in valid_types:
         raise ValueError(f"Invalid server type: '{server_type}'. Must be one of: {', '.join(valid_types)}")
 
@@ -148,7 +148,7 @@ def validate_required_for_type(server_type: str, **kwargs) -> None:
     Validate required parameters for specific server types.
 
     Args:
-        server_type: Server type ("stdio" or "remote")
+        server_type: Server type ("stdio", "remote", "sse", or "streamable-http")
         **kwargs: Parameters to validate
 
     Raises:
@@ -157,9 +157,9 @@ def validate_required_for_type(server_type: str, **kwargs) -> None:
     if server_type == "stdio":
         if not kwargs.get("command"):
             raise ValueError("--command is required for stdio servers")
-    elif server_type == "remote":
+    elif server_type in ["remote", "sse", "streamable-http"]:
         if not kwargs.get("url"):
-            raise ValueError("--url is required for remote servers")
+            raise ValueError(f"--url is required for {server_type} servers")
 
 
 def format_validation_error(param_name: str, value: str, error: str) -> str:
@@ -245,13 +245,13 @@ def create_server_config_from_params(
         # Add environment variables if provided (stdio servers only)
         if env:
             config["env"] = parse_key_value_pairs(env)
-    elif server_type == "remote":
+    elif server_type in ["remote", "sse", "streamable-http"]:
         config["url"] = url
         if headers:
             config["headers"] = parse_header_pairs(headers)
         # Remote servers don't support environment variables
         if env:
-            raise ValueError("Environment variables are not supported for remote servers")
+            raise ValueError(f"Environment variables are not supported for {server_type} servers")
 
     return config
 

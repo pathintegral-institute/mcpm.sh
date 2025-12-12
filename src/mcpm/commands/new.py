@@ -24,7 +24,9 @@ global_config_manager = GlobalConfigManager()
 
 @click.command(name="new", context_settings=dict(help_option_names=["-h", "--help"]))
 @click.argument("server_name", required=False)
-@click.option("--type", "server_type", type=click.Choice(["stdio", "remote"]), help="Server type")
+@click.option(
+    "--type", "server_type", type=click.Choice(["stdio", "remote", "sse", "streamable-http"]), help="Server type"
+)
 @click.option("--command", help="Command to execute (required for stdio servers)")
 @click.option("--args", help="Command arguments (space-separated)")
 @click.option("--env", help="Environment variables (KEY1=value1,KEY2=value2)")
@@ -85,7 +87,9 @@ def _create_new_server_non_interactive(
             return 1
 
         if not server_type:
-            print_error("Server type is required", "Use: --type stdio or --type remote")
+            print_error(
+                "Server type is required", "Use: --type stdio, --type remote, --type sse, or --type streamable-http"
+            )
             return 1
 
         # Check if server already exists
@@ -116,11 +120,16 @@ def _create_new_server_non_interactive(
                 args=config_dict.get("args", []),
                 env=config_dict.get("env", {}),
             )
-        else:  # remote
+        else:  # remote, sse, streamable-http
+            transport = None
+            if server_type in ["sse", "streamable-http"]:
+                transport = server_type
+
             server_config = RemoteServerConfig(
                 name=config_dict["name"],
                 url=config_dict["url"],
                 headers=config_dict.get("headers", {}),
+                transport=transport,
             )
 
         # Display configuration summary
@@ -133,6 +142,8 @@ def _create_new_server_non_interactive(
                 console.print(f"Arguments: [cyan]{' '.join(server_config.args)}[/]")
         else:  # remote
             console.print(f"URL: [cyan]{server_config.url}[/]")
+            if server_config.transport:
+                console.print(f"Transport: [cyan]{server_config.transport}[/]")
             if server_config.headers:
                 headers_str = ", ".join(f"{k}={v}" for k, v in server_config.headers.items())
                 console.print(f"Headers: [cyan]{headers_str}[/]")

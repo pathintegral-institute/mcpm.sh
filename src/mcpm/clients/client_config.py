@@ -22,6 +22,19 @@ class ClientConfigManager:
         """Refresh the local config cache from the config manager"""
         self._config = self.config_manager.get_config()
 
+    def get_client_path(self, client_name: str) -> str | None:
+        """Get the stored configuration path for a client"""
+        self._refresh_config()
+        client_paths = self._config.get("client_paths", {})
+        return client_paths.get(client_name)
+
+    def set_client_path(self, client_name: str, path: str) -> bool:
+        """Set and persist a custom configuration path for a client"""
+        self._refresh_config()
+        client_paths = self._config.get("client_paths", {})
+        client_paths[client_name] = path
+        return self.config_manager.set_config("client_paths", client_paths)
+
     def get_supported_clients(self) -> List[str]:
         """Get a list of supported client names"""
         # Import here to avoid circular imports

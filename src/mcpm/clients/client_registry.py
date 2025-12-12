@@ -68,6 +68,12 @@ class ClientRegistry:
         Returns:
             BaseClientManager: Client manager instance or None if not found
         """
+        # Check if there's a stored custom path if no override provided
+        if not config_path_override:
+            stored_path = cls._client_config_manager.get_client_path(client_name)
+            if stored_path:
+                config_path_override = stored_path
+
         manager_class = cls._CLIENT_MANAGERS.get(client_name)
         if manager_class:
             return manager_class(config_path_override=config_path_override)
