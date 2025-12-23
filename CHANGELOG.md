@@ -1,3 +1,10 @@
+# [2.12.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.11.0...v2.12.0) (2025-12-23)
+
+
+### Features
+
+* add AI agent docs integration to install script ([#288](https://github.com/pathintegral-institute/mcpm.sh/issues/288)) ([a4e93ed](https://github.com/pathintegral-institute/mcpm.sh/commit/a4e93ed5eb0b8a1b3303b339ce4644cd09a31513))
+
 # [2.11.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.10.0...v2.11.0) (2025-12-10)
 
 
