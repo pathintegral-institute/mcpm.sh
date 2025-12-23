@@ -6,11 +6,7 @@ import logging
 from typing import Dict, List, Optional
 
 from fastmcp import FastMCP
-from fastmcp.utilities.mcp_config import (
-    MCPConfig,
-    RemoteMCPServer,
-    StdioMCPServer,
-)
+from fastmcp.mcp_config import MCPConfig, RemoteMCPServer, StdioMCPServer
 
 from mcpm.core.schema import CustomServerConfig, RemoteServerConfig, ServerConfig, STDIOServerConfig
 from mcpm.monitor.base import AccessMonitor, SessionTransport
