@@ -1,0 +1,93 @@
+{
+  "name": "mediawiki-mcp-server",
+  "display_name": "MCP Server for MediaWiki",
+  "description": "This server allows you to manage MediaWiki, the software that powers Wikipedia, using MCP.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ProfessionalWiki/MediaWiki-MCP-Server"
+  },
+  "author": {
+    "name": "ProfessionalWiki",
+    "url": "https://professional.wiki/"
+  },
+  "license": "MIT",
+  "categories": [
+    "Web Services",
+    "Knowledge Base",
+    "MCP Tools"
+  ],
+  "tags": [
+    "mediawiki",
+    "mcp",
+    "wiki"
+  ],
+  "arguments": {
+    "MCP_MEDIAWIKI_URL": {
+      "description": "URL of the MediaWiki API endpoint.",
+      "required": true,
+      "example": "https://www.mediawiki.org/w/api.php"
+    },
+    "MCP_MEDIAWIKI_USERNAME": {
+      "description": "Username of the MediaWiki bot user.",
+      "required": true,
+      "example": "MyBot"
+    },
+    "MCP_MEDIAWIKI_PASSWORD": {
+      "description": "Password of the MediaWiki bot user.",
+      "required": true,
+      "example": "MyPassword"
+    }
+  },
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "mcp-server-mediawiki.mjs"
+      ],
+      "recommended": true
+    }
+  },
+  "tools": [
+    {
+      "name": "mediawiki_edit",
+      "description": "Create or edit a MediaWiki page."
+    },
+    {
+      "name": "mediawiki_get",
+      "description": "Get the content of a MediaWiki page."
+    }
+  ],
+  "prompts": [
+    {
+      "name": "edit_page",
+      "description": "Edits a MediaWiki page.",
+      "arguments": [
+        {
+          "name": "page",
+          "description": "Title of the page to edit",
+          "required": true
+        },
+        {
+          "name": "content",
+          "description": "New content of the page",
+          "required": true
+        }
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "title": "Get a page",
+      "description": "Get the content of the 'Main Page' on mediawiki.org.",
+      "prompt": "Get the content of the 'Main Page' on mediawiki.org, then print it to the screen"
+    },
+    {
+      "title": "Summarize a page",
+      "description": "Get a page and then summarize it.",
+      "prompt": "Get the content of the 'Community portal' page on mediawiki.org, then summarize it."
+    }
+  ],
+  "is_archived": false,
+  "is_official": false
+}
