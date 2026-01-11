@@ -37,12 +37,12 @@ def test_qwen_cli_manager_get_empty_config():
 def test_qwen_cli_manager_is_client_installed():
     """Test QwenCliManager is_client_installed method"""
     manager = QwenCliManager()
-    
+
     # Mock shutil.which to return a path (simulating installed client)
     with patch("shutil.which", return_value="/usr/local/bin/qwen") as mock_which:
         assert manager.is_client_installed() is True
         mock_which.assert_called_with("qwen")
-    
+
     # Mock shutil.which to return None (simulating uninstalled client)
     with patch("shutil.which", return_value=None) as mock_which:
         assert manager.is_client_installed() is False
@@ -50,31 +50,35 @@ def test_qwen_cli_manager_is_client_installed():
 
 
 def test_qwen_cli_manager_is_client_installed_windows():
-    """Test QwenCliManager is_client_installed method on Windows"""
+    """Test QwenCliManager is_client_installed method on Windows
+
+    Note: shutil.which() handles Windows PATHEXT automatically, so we always
+    search for "qwen" without extension. This finds qwen.cmd, qwen.ps1, qwen.exe, etc.
+    """
     manager = QwenCliManager()
-    
+
     with patch.object(manager, "_system", "Windows"):
-        # Mock shutil.which to return a path (simulating installed client)
-        with patch("shutil.which", return_value="C:\\Program Files\\qwen\\qwen.exe") as mock_which:
+        # Mock shutil.which to return a path (simulating installed client via npm .cmd)
+        with patch("shutil.which", return_value="C:\\Users\\user\\AppData\\Roaming\\npm\\qwen.cmd") as mock_which:
             assert manager.is_client_installed() is True
-            mock_which.assert_called_with("qwen.exe")
-        
+            mock_which.assert_called_with("qwen")  # No .exe - shutil.which handles PATHEXT
+
         # Mock shutil.which to return None (simulating uninstalled client)
         with patch("shutil.which", return_value=None) as mock_which:
             assert manager.is_client_installed() is False
-            mock_which.assert_called_with("qwen.exe")
+            mock_which.assert_called_with("qwen")
 
 
 def test_qwen_cli_manager_get_empty_config_structure():
     """Test QwenCliManager _get_empty_config method returns expected structure"""
     manager = QwenCliManager()
     config = manager._get_empty_config()
-    
+
     # Check that required keys are present
     assert "mcpServers" in config
     assert "theme" in config
     assert "selectedAuthType" in config
-    
+
     # Check default values
     assert config["mcpServers"] == {}
     assert config["theme"] == "Qwen Dark"

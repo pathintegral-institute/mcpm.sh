@@ -44,8 +44,8 @@ class QwenCliManager(JSONClientManager):
         Returns:
             bool: True if qwen command is available, False otherwise
         """
-        qwen_executable = "qwen.exe" if self._system == "Windows" else "qwen"
-        return shutil.which(qwen_executable) is not None
+        # shutil.which() handles Windows PATHEXT automatically (.cmd, .bat, .exe, etc.)
+        return shutil.which("qwen") is not None
 
     def get_client_info(self) -> Dict[str, str]:
         """Get information about this client
