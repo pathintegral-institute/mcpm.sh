@@ -73,4 +73,36 @@ def get_frpc_directory(app_name: str = "mcpm") -> Path:
         return Path.home() / ".local" / "share" / app_name / "frpc"
 
 
+def get_config_directory(app_name: str = "mcpm") -> Path:
+    """
+    Return the configuration directory path.
+
+    Uses ~/.config/mcpm on all platforms for consistency.
+    Path is returned as a Path object with correct separators for the current OS.
+
+    Args:
+        app_name: The name of the application, used in the path
+
+    Returns:
+        Path object representing the configuration directory
+    """
+    return Path.home() / ".config" / app_name
+
+
+def get_data_directory(app_name: str = "mcpm") -> Path:
+    """
+    Return the data directory path.
+
+    Uses ~/.mcpm on all platforms for consistency (stores server metadata, etc.).
+    Path is returned as a Path object with correct separators for the current OS.
+
+    Args:
+        app_name: The name of the application, used in the path
+
+    Returns:
+        Path object representing the data directory
+    """
+    return Path.home() / f".{app_name}"
+
+
 NPX_CMD = "npx" if sys.platform != "win32" else "npx.cmd"

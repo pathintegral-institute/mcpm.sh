@@ -1,6 +1,7 @@
 """Doctor command for MCPM - System health check and diagnostics"""
 
 import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -49,18 +50,29 @@ def doctor():
     console.print(f"  ✅ Python executable: {sys.executable}")
 
     # 3. Check Node.js (for npx servers)
+    # Use shutil.which() to find executables - handles Windows .cmd/.bat files via PATHEXT
     console.print("[bold cyan]📊 Node.js Environment[/]")
-    try:
-        node_version = subprocess.check_output(["node", "--version"], stderr=subprocess.DEVNULL).decode().strip()
-        console.print(f"  ✅ Node.js version: {node_version}")
-    except (subprocess.CalledProcessError, FileNotFoundError):
+    node_path = shutil.which("node")
+    if node_path:
+        try:
+            node_version = subprocess.check_output([node_path, "--version"], stderr=subprocess.DEVNULL).decode().strip()
+            console.print(f"  ✅ Node.js version: {node_version}")
+        except (subprocess.CalledProcessError, OSError):
+            console.print("  ⚠️  Node.js found but failed to get version")
+            issues_found += 1
+    else:
         console.print("  ⚠️  Node.js not found - npx servers will not work")
         issues_found += 1
 
-    try:
-        npm_version = subprocess.check_output(["npm", "--version"], stderr=subprocess.DEVNULL).decode().strip()
-        console.print(f"  ✅ npm version: {npm_version}")
-    except (subprocess.CalledProcessError, FileNotFoundError):
+    npm_path = shutil.which("npm")
+    if npm_path:
+        try:
+            npm_version = subprocess.check_output([npm_path, "--version"], stderr=subprocess.DEVNULL).decode().strip()
+            console.print(f"  ✅ npm version: {npm_version}")
+        except (subprocess.CalledProcessError, OSError):
+            console.print("  ⚠️  npm found but failed to get version")
+            issues_found += 1
+    else:
         console.print("  ⚠️  npm not found - package installation may fail")
         issues_found += 1
 
