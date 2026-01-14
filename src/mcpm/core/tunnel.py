@@ -10,7 +10,6 @@ from pathlib import Path
 
 import httpx
 
-from mcpm.utils.config import DEFAULT_CONFIG_DIR
 from mcpm.utils.platform import get_frpc_directory
 
 VERSION = "0.3"
@@ -52,8 +51,6 @@ BINARY_PATH = str(BINARY_FOLDER / BINARY_FILENAME)
 
 TUNNEL_TIMEOUT_SECONDS = 30
 TUNNEL_ERROR_MESSAGE = "Could not create share URL. Please check the appended log from frpc for more information:"
-
-CERTIFICATE_PATH = DEFAULT_CONFIG_DIR / "certificate.pem"
 
 
 class Tunnel:

@@ -80,6 +80,10 @@ def get_config_directory(app_name: str = "mcpm") -> Path:
     Uses ~/.config/mcpm on all platforms for consistency.
     Path is returned as a Path object with correct separators for the current OS.
 
+    Note: This intentionally differs from get_pid_directory() and get_frpc_directory()
+    which use platform-specific paths. The config directory uses a unified location
+    to simplify user configuration and documentation across all platforms.
+
     Args:
         app_name: The name of the application, used in the path
 
@@ -95,6 +99,10 @@ def get_data_directory(app_name: str = "mcpm") -> Path:
 
     Uses ~/.mcpm on all platforms for consistency (stores server metadata, etc.).
     Path is returned as a Path object with correct separators for the current OS.
+
+    Note: This intentionally differs from get_pid_directory() and get_frpc_directory()
+    which use platform-specific paths. The data directory uses a unified location
+    to simplify user configuration and documentation across all platforms.
 
     Args:
         app_name: The name of the application, used in the path

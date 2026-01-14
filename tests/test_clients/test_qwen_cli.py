@@ -50,23 +50,23 @@ def test_qwen_cli_manager_is_client_installed():
 
 
 def test_qwen_cli_manager_is_client_installed_windows():
-    """Test QwenCliManager is_client_installed method on Windows
+    """Test QwenCliManager is_client_installed method
 
     Note: shutil.which() handles Windows PATHEXT automatically, so we always
     search for "qwen" without extension. This finds qwen.cmd, qwen.ps1, qwen.exe, etc.
+    The test is OS-agnostic as shutil.which handles platform differences.
     """
     manager = QwenCliManager()
 
-    with patch.object(manager, "_system", "Windows"):
-        # Mock shutil.which to return a path (simulating installed client via npm .cmd)
-        with patch("shutil.which", return_value="C:\\Users\\user\\AppData\\Roaming\\npm\\qwen.cmd") as mock_which:
-            assert manager.is_client_installed() is True
-            mock_which.assert_called_with("qwen")  # No .exe - shutil.which handles PATHEXT
+    # Mock shutil.which to return a path (simulating installed client via npm .cmd)
+    with patch("shutil.which", return_value="C:\\Users\\user\\AppData\\Roaming\\npm\\qwen.cmd") as mock_which:
+        assert manager.is_client_installed() is True
+        mock_which.assert_called_with("qwen")  # No .exe - shutil.which handles PATHEXT
 
-        # Mock shutil.which to return None (simulating uninstalled client)
-        with patch("shutil.which", return_value=None) as mock_which:
-            assert manager.is_client_installed() is False
-            mock_which.assert_called_with("qwen")
+    # Mock shutil.which to return None (simulating uninstalled client)
+    with patch("shutil.which", return_value=None) as mock_which:
+        assert manager.is_client_installed() is False
+        mock_which.assert_called_with("qwen")
 
 
 def test_qwen_cli_manager_get_empty_config_structure():

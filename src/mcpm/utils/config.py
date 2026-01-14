@@ -4,6 +4,7 @@ Configuration utilities for MCPM
 
 import json
 import logging
+from pathlib import Path
 from typing import Any, Dict
 
 from mcpm.utils.platform import get_config_directory
@@ -30,8 +31,6 @@ class ConfigManager:
     """
 
     def __init__(self, config_path=DEFAULT_CONFIG_FILE, auth_path=DEFAULT_AUTH_FILE):
-        from pathlib import Path
-
         # Normalize paths to Path objects for consistent handling
         self.config_path = Path(config_path)
         self.auth_path = Path(auth_path)

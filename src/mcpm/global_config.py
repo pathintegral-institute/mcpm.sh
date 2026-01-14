@@ -34,9 +34,9 @@ class GlobalConfigManager:
         self.config_path = Path(config_path)
         self.metadata_path = Path(metadata_path)
         self.config_dir = self.config_path.parent
+        self._ensure_dirs()
         self._servers: Dict[str, ServerConfig] = self._load_servers()
         self._profile_metadata: Dict[str, ProfileMetadata] = self._load_profile_metadata()
-        self._ensure_dirs()
 
     def _ensure_dirs(self) -> None:
         """Ensure all configuration directories exist"""
