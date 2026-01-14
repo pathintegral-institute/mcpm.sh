@@ -8,7 +8,7 @@ Profiles tag servers but don't own them - servers exist globally.
 import json
 import logging
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from pydantic import TypeAdapter
 
@@ -69,8 +69,11 @@ class GlobalConfigManager:
         self._ensure_dirs()
         servers_data = {name: config.model_dump() for name, config in self._servers.items()}
 
-        with open(self.config_path, "w", encoding="utf-8") as f:
-            json.dump(servers_data, f, indent=2)
+        try:
+            with open(self.config_path, "w", encoding="utf-8") as f:
+                json.dump(servers_data, f, indent=2)
+        except OSError as e:
+            logger.error(f"Error saving servers to {self.config_path}: {e}")
 
     def _load_profile_metadata(self) -> Dict[str, ProfileMetadata]:
         """Load profile metadata from the metadata configuration file."""
@@ -99,8 +102,11 @@ class GlobalConfigManager:
         self._ensure_dirs()
         metadata_data = {name: meta.model_dump() for name, meta in self._profile_metadata.items()}
 
-        with open(self.metadata_path, "w", encoding="utf-8") as f:
-            json.dump(metadata_data, f, indent=2)
+        try:
+            with open(self.metadata_path, "w", encoding="utf-8") as f:
+                json.dump(metadata_data, f, indent=2)
+        except OSError as e:
+            logger.error(f"Error saving profile metadata to {self.metadata_path}: {e}")
 
     def add_server(self, server_config: ServerConfig, force: bool = False) -> bool:
         """Add a server to the global configuration.
@@ -359,7 +365,7 @@ class GlobalConfigManager:
         """
         return self._profile_metadata.copy()
 
-    def get_complete_profile(self, name: str) -> Optional[Dict[str, any]]:
+    def get_complete_profile(self, name: str) -> Optional[Dict[str, Any]]:
         """Get complete profile information including metadata and servers.
 
         Args:

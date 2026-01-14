@@ -2,8 +2,8 @@
 Test for Qwen CLI manager
 """
 
-import os
 import tempfile
+from pathlib import Path
 from unittest.mock import patch
 
 from mcpm.clients.managers.qwen_cli import QwenCliManager
@@ -16,7 +16,7 @@ def test_qwen_cli_manager_initialization():
     assert manager.client_key == "qwen-cli"
     assert manager.display_name == "Qwen CLI"
     assert manager.download_url == "https://github.com/QwenLM/qwen-code"
-    assert manager.config_path == os.path.expanduser("~/.qwen/settings.json")
+    assert manager.config_path == str(Path.home() / ".qwen" / "settings.json")
 
     # Test with custom config path
     custom_path = "/tmp/custom_settings.json"
@@ -91,5 +91,5 @@ def test_qwen_cli_manager_get_client_info():
     info = manager.get_client_info()
     assert info["name"] == "Qwen CLI"
     assert info["download_url"] == "https://github.com/QwenLM/qwen-code"
-    assert info["config_file"] == os.path.expanduser("~/.qwen/settings.json")
+    assert info["config_file"] == str(Path.home() / ".qwen" / "settings.json")
     assert info["description"] == "Alibaba's Qwen CLI tool"

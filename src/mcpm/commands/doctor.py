@@ -49,32 +49,27 @@ def doctor():
     console.print(f"  ✅ Python version: {sys.version.split()[0]}")
     console.print(f"  ✅ Python executable: {sys.executable}")
 
+    # Helper function to check CLI tools
+    def _check_cli_tool(tool_name: str, display_name: str, not_found_msg: str) -> int:
+        """Checks for a CLI tool, prints status, and returns 1 if an issue is found."""
+        tool_path = shutil.which(tool_name)
+        if tool_path:
+            try:
+                version = subprocess.check_output([tool_path, "--version"], stderr=subprocess.DEVNULL).decode().strip()
+                console.print(f"  ✅ {display_name} version: {version}")
+                return 0
+            except (subprocess.CalledProcessError, OSError):
+                console.print(f"  ⚠️  {display_name} found but failed to get version")
+                return 1
+        else:
+            console.print(f"  ⚠️  {not_found_msg}")
+            return 1
+
     # 3. Check Node.js (for npx servers)
     # Use shutil.which() to find executables - handles Windows .cmd/.bat files via PATHEXT
     console.print("[bold cyan]📊 Node.js Environment[/]")
-    node_path = shutil.which("node")
-    if node_path:
-        try:
-            node_version = subprocess.check_output([node_path, "--version"], stderr=subprocess.DEVNULL).decode().strip()
-            console.print(f"  ✅ Node.js version: {node_version}")
-        except (subprocess.CalledProcessError, OSError):
-            console.print("  ⚠️  Node.js found but failed to get version")
-            issues_found += 1
-    else:
-        console.print("  ⚠️  Node.js not found - npx servers will not work")
-        issues_found += 1
-
-    npm_path = shutil.which("npm")
-    if npm_path:
-        try:
-            npm_version = subprocess.check_output([npm_path, "--version"], stderr=subprocess.DEVNULL).decode().strip()
-            console.print(f"  ✅ npm version: {npm_version}")
-        except (subprocess.CalledProcessError, OSError):
-            console.print("  ⚠️  npm found but failed to get version")
-            issues_found += 1
-    else:
-        console.print("  ⚠️  npm not found - package installation may fail")
-        issues_found += 1
+    issues_found += _check_cli_tool("node", "Node.js", "Node.js not found - npx servers will not work")
+    issues_found += _check_cli_tool("npm", "npm", "npm not found - package installation may fail")
 
     # 4. Check MCPM configuration
     console.print("[bold cyan]⚙️  MCPM Configuration[/]")

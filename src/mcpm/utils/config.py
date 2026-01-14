@@ -30,7 +30,7 @@ class ConfigManager:
     Client-specific configurations are managed by ClientConfigManager.
     """
 
-    def __init__(self, config_path=DEFAULT_CONFIG_FILE, auth_path=DEFAULT_AUTH_FILE):
+    def __init__(self, config_path: Path | str = DEFAULT_CONFIG_FILE, auth_path: Path | str = DEFAULT_AUTH_FILE):
         # Normalize paths to Path objects for consistent handling
         self.config_path = Path(config_path)
         self.auth_path = Path(auth_path)
@@ -78,13 +78,19 @@ class ConfigManager:
 
     def _save_config(self) -> None:
         """Save current configuration to file"""
-        with open(self.config_path, "w", encoding="utf-8") as f:
-            json.dump(self._config, f, indent=2)
+        try:
+            with open(self.config_path, "w", encoding="utf-8") as f:
+                json.dump(self._config, f, indent=2)
+        except OSError as e:
+            logger.error(f"Error saving config file: {self.config_path} - {e}")
 
     def _save_auth_config(self) -> None:
         """Save current auth configuration to file"""
-        with open(self.auth_path, "w", encoding="utf-8") as f:
-            json.dump(self._auth_config, f, indent=2)
+        try:
+            with open(self.auth_path, "w", encoding="utf-8") as f:
+                json.dump(self._auth_config, f, indent=2)
+        except OSError as e:
+            logger.error(f"Error saving auth file: {self.auth_path} - {e}")
 
     def get_config(self) -> Dict[str, Any]:
         """Get the complete configuration"""
