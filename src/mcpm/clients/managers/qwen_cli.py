@@ -3,8 +3,8 @@ Qwen CLI integration utilities for MCP
 """
 
 import logging
-import os
 import shutil
+from pathlib import Path
 from typing import Any, Dict
 
 from mcpm.clients.base import JSONClientManager
@@ -27,7 +27,7 @@ class QwenCliManager(JSONClientManager):
             config_path_override: Optional path to override the default config file location
         """
         # Qwen CLI stores its settings in ~/.qwen/settings.json
-        self.config_path = os.path.expanduser("~/.qwen/settings.json")
+        self.config_path = str(Path.home() / ".qwen" / "settings.json")
         super().__init__(config_path_override=config_path_override)
 
     def _get_empty_config(self) -> Dict[str, Any]:
@@ -44,8 +44,8 @@ class QwenCliManager(JSONClientManager):
         Returns:
             bool: True if qwen command is available, False otherwise
         """
-        qwen_executable = "qwen.exe" if self._system == "Windows" else "qwen"
-        return shutil.which(qwen_executable) is not None
+        # shutil.which() handles Windows PATHEXT automatically (.cmd, .bat, .exe, etc.)
+        return shutil.which("qwen") is not None
 
     def get_client_info(self) -> Dict[str, str]:
         """Get information about this client

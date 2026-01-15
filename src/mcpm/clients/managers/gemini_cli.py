@@ -49,8 +49,8 @@ class GeminiCliManager(JSONClientManager):
         Returns:
             bool: True if gemini command is available, False otherwise
         """
-        gemini_executable = "gemini.exe" if self._system == "Windows" else "gemini"
-        return shutil.which(gemini_executable) is not None
+        # shutil.which() handles Windows PATHEXT automatically (.cmd, .bat, .exe, etc.)
+        return shutil.which("gemini") is not None
 
     def get_client_info(self) -> Dict[str, str]:
         """Get information about this client

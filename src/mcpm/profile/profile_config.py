@@ -1,11 +1,12 @@
 import logging
-import os
+from pathlib import Path
 from typing import Dict, List, Optional
 
 from mcpm.core.schema import ProfileMetadata, ServerConfig
 from mcpm.global_config import GlobalConfigManager
+from mcpm.utils.platform import get_config_directory
 
-DEFAULT_PROFILE_PATH = os.path.expanduser("~/.config/mcpm/profiles.json")
+DEFAULT_PROFILE_PATH = get_config_directory() / "profiles.json"
 
 logger = logging.getLogger(__name__)
 
@@ -22,9 +23,9 @@ class ProfileConfigManager:
     """
 
     def __init__(
-        self, profile_path: str = DEFAULT_PROFILE_PATH, global_config_manager: Optional[GlobalConfigManager] = None
+        self, profile_path: Path = DEFAULT_PROFILE_PATH, global_config_manager: Optional[GlobalConfigManager] = None
     ):
-        self.profile_path = os.path.expanduser(profile_path)
+        self.profile_path = Path(profile_path)
         self.global_config = global_config_manager or GlobalConfigManager()
 
         # Note: Legacy profile migration is now handled by V1ToV2Migrator

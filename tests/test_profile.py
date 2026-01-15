@@ -5,13 +5,14 @@ Tests for the profile module - Updated for Virtual Profile System
 import json
 import os
 import tempfile
-from unittest.mock import patch
+from pathlib import Path
 
 import pytest
 
-from mcpm.core.schema import STDIOServerConfig
+from mcpm.core.schema import ProfileMetadata, STDIOServerConfig
 from mcpm.global_config import GlobalConfigManager
 from mcpm.profile.profile_config import ProfileConfigManager
+from mcpm.utils.platform import get_config_directory
 
 
 @pytest.fixture
@@ -58,16 +59,16 @@ def profile_manager_with_legacy(temp_dirs):
 
 def test_profile_manager_init_default_path():
     """Test that the profile manager initializes with default path"""
-    with patch("mcpm.profile.profile_config.os.path.exists", return_value=False):
-        manager = ProfileConfigManager()
-        assert manager.profile_path == os.path.expanduser("~/.config/mcpm/profiles.json")
+    manager = ProfileConfigManager()
+    expected_path = get_config_directory() / "profiles.json"
+    assert manager.profile_path == expected_path
 
 
 def test_profile_manager_init_custom_path(profile_manager_clean, temp_dirs):
     """Test that the profile manager initializes with a custom path"""
     temp_dir, servers_path, metadata_path, legacy_path = temp_dirs
     manager = profile_manager_clean
-    assert manager.profile_path == legacy_path
+    assert manager.profile_path == Path(legacy_path)
 
 
 def test_legacy_migration(profile_manager_with_legacy, temp_dirs):
@@ -338,8 +339,6 @@ def test_profile_metadata(profile_manager_clean):
     assert metadata.api_key is None
 
     # Update metadata
-    from mcpm.core.schema import ProfileMetadata
-
     new_metadata = ProfileMetadata(name="api_profile", api_key="sk-test-123", description="Test profile")
     manager.update_profile_metadata(new_metadata)
 
