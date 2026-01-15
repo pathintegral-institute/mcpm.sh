@@ -21,32 +21,22 @@
     "mcp",
     "wiki"
   ],
-  "arguments": {
-    "MCP_MEDIAWIKI_URL": {
-      "description": "URL of the MediaWiki API endpoint.",
+  "env": {
+    "CONFIG_PATH": {
+      "description": "PATH TO CONFIG",
       "required": true,
-      "example": "https://www.mediawiki.org/w/api.php"
-    },
-    "MCP_MEDIAWIKI_USERNAME": {
-      "description": "Username of the MediaWiki bot user.",
-      "required": true,
-      "example": "MyBot"
-    },
-    "MCP_MEDIAWIKI_PASSWORD": {
-      "description": "Password of the MediaWiki bot user.",
-      "required": true,
-      "example": "MyPassword"
+      "example": "path/to/config.json"
     }
   },
   "installations": {
-    "npx": {
-      "type": "npx",
+    "npm": {
+      "type": "npm",
       "command": "npx",
       "args": [
         "@professional-wiki/mediawiki-mcp-server@latest"
       ],
       "env": {
-        "CONFIG": "path/to/config.json"
+        "CONFIG_PATH": "path/to/config.json"
       },
       "recommended": true
     }
