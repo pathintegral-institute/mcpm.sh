@@ -1,21 +1,25 @@
 {
-  "name": "plane-mcp-server",
+  "name": "@makeplane/plane-mcp-server",
   "display_name": "Plane MCP Server",
   "description": "The Plane MCP Server brings the power of Model Context Protocol (MCP) to Plane, allowing AI agents and developer tools to interact programmatically with your Plane workspace.",
   "repository": {
     "type": "git",
     "url": "https://github.com/makeplane/plane-mcp-server"
   },
+  "homepage": "https://github.com/makeplane/plane-mcp-server#readme",
   "author": {
-    "name": "makeplane"
+    "name": "Plane",
+    "email": "engineering@plane.so"
   },
   "license": "MIT",
   "categories": [
+    "MCP Tools",
     "Dev Tools"
   ],
   "tags": [
-    "Node.js",
-    "Plane API"
+    "plane",
+    "mcp",
+    "ai"
   ],
   "arguments": {
     "PLANE_API_KEY": {
@@ -28,23 +32,8 @@
     },
     "PLANE_API_HOST_URL": {
       "description": "The host URL of the Plane API Server. Defaults to https://api.plane.so/",
-      "required": false
-    }
-  },
-  "installations": {
-    "npm": {
-      "type": "npm",
-      "command": "npx",
-      "args": [
-        "-y",
-        "@makeplane/plane-mcp-server"
-      ],
-      "env": {
-        "PLANE_API_KEY": "${YOUR_API_KEY}",
-        "PLANE_API_HOST_URL": "${HOST_URL_FOR_SELF_HOSTED}",
-        "PLANE_WORKSPACE_SLUG": "${YOUR_WORKSPACE_SLUG}"
-      },
-      "recommended": true
+      "required": false,
+      "example": "https://api.plane.so/"
     }
   },
   "tools": [
@@ -59,414 +48,43 @@
     {
       "name": "create_project",
       "description": "Create a new project",
+      "required": [
+        "name"
+      ],
       "inputSchema": {
         "type": "object",
         "properties": {
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "Project name"
           }
-        },
-        "required": [
-          "name"
-        ]
-      }
-    },
-    {
-      "name": "list_issue_types",
-      "description": "Get all issue types for a specific project",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "project_id"
-        ]
-      }
-    },
-    {
-      "name": "get_issue_type",
-      "description": "Get details of a specific issue type",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          },
-          "type_id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "project_id",
-          "type_id"
-        ]
-      }
-    },
-    {
-      "name": "create_issue_type",
-      "description": "Create a new issue type in a project",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          },
-          "issue_type_data": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string"
-              },
-              "description": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "name",
-              "description"
-            ]
-          }
-        },
-        "required": [
-          "project_id",
-          "issue_type_data"
-        ]
-      }
-    },
-    {
-      "name": "update_issue_type",
-      "description": "Update an existing issue type",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          },
-          "type_id": {
-            "type": "string"
-          },
-          "issue_type_data": {
-            "type": "object"
-          }
-        },
-        "required": [
-          "project_id",
-          "type_id"
-        ]
-      }
-    },
-    {
-      "name": "delete_issue_type",
-      "description": "Delete an issue type",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          },
-          "type_id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "project_id",
-          "type_id"
-        ]
-      }
-    },
-    {
-      "name": "list_states",
-      "description": "Get all states for a specific project",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "project_id"
-        ]
-      }
-    },
-    {
-      "name": "get_state",
-      "description": "Get details of a specific state",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          },
-          "state_id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "project_id",
-          "state_id"
-        ]
-      }
-    },
-    {
-      "name": "create_state",
-      "description": "Create a new state in a project",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          },
-          "state_data": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string"
-              },
-              "color": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "name",
-              "color"
-            ]
-          }
-        },
-        "required": [
-          "project_id",
-          "state_data"
-        ]
-      }
-    },
-    {
-      "name": "update_state",
-      "description": "Update an existing state",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          },
-          "state_id": {
-            "type": "string"
-          },
-          "state_data": {
-            "type": "object"
-          }
-        },
-        "required": [
-          "project_id",
-          "state_id"
-        ]
-      }
-    },
-    {
-      "name": "delete_state",
-      "description": "Delete a state",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          },
-          "state_id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "project_id",
-          "state_id"
-        ]
-      }
-    },
-    {
-      "name": "list_labels",
-      "description": "Get all labels for a specific project",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "project_id"
-        ]
-      }
-    },
-    {
-      "name": "get_label",
-      "description": "Get details of a specific label",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          },
-          "label_id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "project_id",
-          "label_id"
-        ]
-      }
-    },
-    {
-      "name": "create_label",
-      "description": "Create a new label in a project",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          },
-          "label_data": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string"
-              },
-              "color": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "name",
-              "color"
-            ]
-          }
-        },
-        "required": [
-          "project_id",
-          "label_data"
-        ]
-      }
-    },
-    {
-      "name": "update_label",
-      "description": "Update an existing label",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          },
-          "label_id": {
-            "type": "string"
-          },
-          "label_data": {
-            "type": "object"
-          }
-        },
-        "required": [
-          "project_id",
-          "label_id"
-        ]
-      }
-    },
-    {
-      "name": "delete_label",
-      "description": "Delete a label",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          },
-          "label_id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "project_id",
-          "label_id"
-        ]
-      }
-    },
-    {
-      "name": "get_issue_using_readable_identifier",
-      "description": "Get issue details using readable identifier (e.g., PROJ-123)",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_identifier": {
-            "type": "string"
-          },
-          "issue_identifier": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "project_identifier",
-          "issue_identifier"
-        ]
-      }
-    },
-    {
-      "name": "get_issue_comments",
-      "description": "Get all comments for a specific issue",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          },
-          "issue_id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "project_id",
-          "issue_id"
-        ]
-      }
-    },
-    {
-      "name": "add_issue_comment",
-      "description": "Add a comment to an issue",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          },
-          "issue_id": {
-            "type": "string"
-          },
-          "comment_html": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "project_id",
-          "issue_id",
-          "comment_html"
-        ]
+        }
       }
     },
     {
       "name": "create_issue",
       "description": "Create a new issue",
+      "required": [
+        "project_id",
+        "issue_data"
+      ],
       "inputSchema": {
         "type": "object",
         "properties": {
           "project_id": {
-            "type": "string"
+            "type": "string",
+            "description": "UUID of the project"
           },
           "issue_data": {
             "type": "object",
             "properties": {
               "name": {
-                "type": "string"
+                "type": "string",
+                "description": "Title of the issue"
               },
               "description_html": {
-                "type": "string"
+                "type": "string",
+                "description": "HTML description of the issue"
               }
             },
             "required": [
@@ -474,502 +92,27 @@
               "description_html"
             ]
           }
-        },
-        "required": [
-          "project_id",
-          "issue_data"
-        ]
-      }
-    },
-    {
-      "name": "update_issue",
-      "description": "Update an existing issue",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          },
-          "issue_id": {
-            "type": "string"
-          },
-          "issue_data": {
-            "type": "object"
-          }
-        },
-        "required": [
-          "project_id",
-          "issue_id"
-        ]
-      }
-    },
-    {
-      "name": "list_modules",
-      "description": "Get all modules for a specific project",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "project_id"
-        ]
-      }
-    },
-    {
-      "name": "get_module",
-      "description": "Get details of a specific module",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          },
-          "module_id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "project_id",
-          "module_id"
-        ]
-      }
-    },
-    {
-      "name": "create_module",
-      "description": "Create a new module in a project",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          },
-          "module_data": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "name"
-            ]
-          }
-        },
-        "required": [
-          "project_id",
-          "module_data"
-        ]
-      }
-    },
-    {
-      "name": "update_module",
-      "description": "Update an existing module",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          },
-          "module_id": {
-            "type": "string"
-          },
-          "module_data": {
-            "type": "object"
-          }
-        },
-        "required": [
-          "project_id",
-          "module_id"
-        ]
-      }
-    },
-    {
-      "name": "delete_module",
-      "description": "Delete a module",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          },
-          "module_id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "project_id",
-          "module_id"
-        ]
-      }
-    },
-    {
-      "name": "list_module_issues",
-      "description": "Get all issues for a specific module",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          },
-          "module_id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "project_id",
-          "module_id"
-        ]
-      }
-    },
-    {
-      "name": "add_module_issues",
-      "description": "Add issues to a module",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          },
-          "module_id": {
-            "type": "string"
-          },
-          "issues": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        },
-        "required": [
-          "project_id",
-          "module_id",
-          "issues"
-        ]
-      }
-    },
-    {
-      "name": "delete_module_issue",
-      "description": "Remove an issue from a module",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          },
-          "module_id": {
-            "type": "string"
-          },
-          "issue_id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "project_id",
-          "module_id",
-          "issue_id"
-        ]
-      }
-    },
-    {
-      "name": "list_cycles",
-      "description": "Get all cycles for a specific project",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "project_id"
-        ]
-      }
-    },
-    {
-      "name": "get_cycle",
-      "description": "Get details of a specific cycle",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          },
-          "cycle_id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "project_id",
-          "cycle_id"
-        ]
-      }
-    },
-    {
-      "name": "create_cycle",
-      "description": "Create a new cycle in a project",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          },
-          "cycle_data": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string"
-              },
-              "start_date": {
-                "type": "string"
-              },
-              "end_date": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "name",
-              "start_date",
-              "end_date"
-            ]
-          }
-        },
-        "required": [
-          "project_id",
-          "cycle_data"
-        ]
-      }
-    },
-    {
-      "name": "update_cycle",
-      "description": "Update an existing cycle",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          },
-          "cycle_id": {
-            "type": "string"
-          },
-          "cycle_data": {
-            "type": "object"
-          }
-        },
-        "required": [
-          "project_id",
-          "cycle_id"
-        ]
-      }
-    },
-    {
-      "name": "delete_cycle",
-      "description": "Delete a cycle",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          },
-          "cycle_id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "project_id",
-          "cycle_id"
-        ]
-      }
-    },
-    {
-      "name": "list_cycle_issues",
-      "description": "Get all issues for a specific cycle",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          },
-          "cycle_id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "project_id",
-          "cycle_id"
-        ]
-      }
-    },
-    {
-      "name": "add_cycle_issues",
-      "description": "Add issues to a cycle",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          },
-          "cycle_id": {
-            "type": "string"
-          },
-          "issues": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        },
-        "required": [
-          "project_id",
-          "cycle_id",
-          "issues"
-        ]
-      }
-    },
-    {
-      "name": "delete_cycle_issue",
-      "description": "Remove an issue from a cycle",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          },
-          "cycle_id": {
-            "type": "string"
-          },
-          "issue_id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "project_id",
-          "cycle_id",
-          "issue_id"
-        ]
-      }
-    },
-    {
-      "name": "get_issue_worklogs",
-      "description": "Get all worklogs for a specific issue",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          },
-          "issue_id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "project_id",
-          "issue_id"
-        ]
-      }
-    },
-    {
-      "name": "get_total_worklogs",
-      "description": "Get total logged time for a project",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "project_id"
-        ]
-      }
-    },
-    {
-      "name": "create_worklog",
-      "description": "Create a new worklog for an issue",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          },
-          "issue_id": {
-            "type": "string"
-          },
-          "worklog_data": {
-            "type": "object",
-            "properties": {
-              "description": {
-                "type": "string"
-              },
-              "duration": {
-                "type": "integer"
-              }
-            },
-            "required": [
-              "description",
-              "duration"
-            ]
-          }
-        },
-        "required": [
-          "project_id",
-          "issue_id",
-          "worklog_data"
-        ]
-      }
-    },
-    {
-      "name": "update_worklog",
-      "description": "Update an existing worklog",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          },
-          "issue_id": {
-            "type": "string"
-          },
-          "worklog_id": {
-            "type": "string"
-          },
-          "worklog_data": {
-            "type": "object"
-          }
-        },
-        "required": [
-          "project_id",
-          "issue_id",
-          "worklog_id"
-        ]
-      }
-    },
-    {
-      "name": "delete_worklog",
-      "description": "Delete a worklog",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string"
-          },
-          "issue_id": {
-            "type": "string"
-          },
-          "worklog_id": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "project_id",
-          "issue_id",
-          "worklog_id"
-        ]
+        }
       }
     }
   ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "plane-mcp-server",
+        "stdio"
+      ],
+      "env": {
+        "PLANE_API_KEY": "<your-api-key>",
+        "PLANE_WORKSPACE_SLUG": "<your-workspace-slug>",
+        "PLANE_BASE_URL": "https://api.plane.so"
+      },
+      "description": "Run the server using uvx for local development. This is the recommended method.",
+      "recommended": true
+    }
+  },
   "is_official": true,
   "is_archived": false
 }
