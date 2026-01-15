@@ -47,7 +47,7 @@
       ],
       "env": {
         "CONFIG": "path/to/config.json"
-      }
+      },
       "recommended": true
     }
   },
