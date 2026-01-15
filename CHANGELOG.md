@@ -1,3 +1,10 @@
+## [2.12.1](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.12.0...v2.12.1) (2026-01-15)
+
+
+### Bug Fixes
+
+* correct Windows CLI detection for npm-installed tools ([#294](https://github.com/pathintegral-institute/mcpm.sh/issues/294)) ([e2a41cb](https://github.com/pathintegral-institute/mcpm.sh/commit/e2a41cbbeb7570eb8214907790f15bed3a010443))
+
 # [2.12.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.11.0...v2.12.0) (2025-12-23)
 
 
