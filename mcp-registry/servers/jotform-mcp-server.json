@@ -1,0 +1,35 @@
+{
+  "name": "@jotform/mcp-server",
+  "display_name": "MCP Server",
+  "description": "MCP server that can be extended with custom tools and deployed anywhere.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jotform/mcp-server"
+  },
+  "author": {
+    "name": "Jotform"
+  },
+  "license": "MIT",
+  "categories": [
+    "Dev Tools",
+    "Web Services"
+  ],
+  "tags": [
+    "mcp",
+    "server",
+    "tools"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://mcp.jotform.com",
+      "recommended": true
+    }
+  },
+  "tools": [],
+  "resources": [],
+  "prompts": [],
+  "examples": [],
+  "is_official": true,
+  "is_archived": false
+}
