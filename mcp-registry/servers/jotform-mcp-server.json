@@ -19,25 +19,10 @@
     "server",
     "tools"
   ],
-  "arguments": {
-    "host": {
-      "description": "The host to listen on.",
-      "required": false,
-      "example": "0.0.0.0"
-    },
-    "port": {
-      "description": "The port to listen on.",
-      "required": false,
-      "example": "3000"
-    }
-  },
   "installations": {
-    "npm": {
-      "type": "npm",
-      "command": "npx",
-      "args": [
-        "@jotform/mcp-server"
-      ],
+    "http": {
+      "type": "http",
+      "url": "https://mcp.jotform.com",
       "recommended": true
     }
   },
