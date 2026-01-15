@@ -301,7 +301,10 @@ class TestVSCodeManager:
 
     def test_load_config_without_file(self):
         """Test loading config when file doesn't exist"""
-        manager = VSCodeManager(config_path_override="/tmp/nonexistent-vscode-config.json")
+        import tempfile
+
+        nonexistent_path = os.path.join(tempfile.gettempdir(), "nonexistent-vscode-config.json")
+        manager = VSCodeManager(config_path_override=nonexistent_path)
         config = manager._load_config()
 
         # Should return empty config structure
