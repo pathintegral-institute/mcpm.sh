@@ -39,12 +39,15 @@
     }
   },
   "installations": {
-    "uvx": {
-      "type": "uvx",
-      "command": "uvx",
+    "npx": {
+      "type": "npx",
+      "command": "npx",
       "args": [
-        "mcp-server-mediawiki.mjs"
+        "@professional-wiki/mediawiki-mcp-server@latest"
       ],
+      "env": {
+        "CONFIG": "path/to/config.json"
+      }
       "recommended": true
     }
   },
