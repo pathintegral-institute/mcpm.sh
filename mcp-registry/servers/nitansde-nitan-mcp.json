@@ -1,7 +1,7 @@
 {
   "name": "@nitansde/mcp",
   "display_name": "Nitan MCP",
-  "description": "A dedicated MCP client for uscardforum.com, modified from Discourse MCP with an intelligent dual-method Cloudflare bypass.",
+  "description": "The Nitan Master Control Program (MCP) is a versatile server that enhances the capabilities of Large Language Models (LLMs) by providing them with access to a wide range of tools and functionalities.",
   "repository": {
     "type": "git",
     "url": "https://github.com/nitansde/nitan-mcp"
@@ -9,34 +9,33 @@
   "author": {
     "name": "nitansde"
   },
-  "license": "MIT",
+  "license": "Apache-2.0",
   "categories": [
-    "Web Services",
-    "Dev Tools"
+    "AI Systems",
+    "Dev Tools",
+    "MCP Tools"
   ],
   "tags": [
     "mcp",
-    "discourse",
-    "cloudflare-bypass"
+    "ai",
+    "tools"
   ],
   "arguments": {
     "NITAN_USERNAME": {
-      "description": "Your username for uscardforum.com.",
-      "required": true,
-      "example": "YOUR_USERNAME"
+      "description": "Username for authentication.",
+      "required": true
     },
     "NITAN_PASSWORD": {
-      "description": "Your password for uscardforum.com.",
-      "required": true,
-      "example": "YOUR_PASSWORD"
+      "description": "Password for authentication.",
+      "required": true
     },
     "TIME_ZONE": {
-      "description": "Optional timezone to use instead of your local clock.",
+      "description": "Optional timezone to use, defaults to local clock.",
       "required": false,
       "example": "America/New_York"
     },
     "python_path": {
-      "description": "Command-line argument to specify the path to a Python executable, especially if it is installed in a virtual environment.",
+      "description": "Path to the python executable if it is installed in a virtual environment.",
       "required": false,
       "example": "/path/to/python_executable"
     }
@@ -44,16 +43,21 @@
   "installations": {
     "npm": {
       "type": "npm",
-      "description": "Recommended installation method using npx.",
+      "package": "@nitansde/mcp",
       "command": "npx",
       "args": [
         "-y",
         "@nitansde/mcp@latest"
       ],
-      "package": "@nitansde/mcp",
-      "recommended": true
+      "recommended": true,
+      "description": "Run the MCP server using npx, the recommended method for quick setup.",
+      "env": {
+        "NITAN_USERNAME": "YOUR_USERNAME",
+        "NITAN_PASSWORD": "YOUR_PASSWORD",
+        "TIME_ZONE": "America/New_York"
+      }
     }
   },
-  "is_official": false,
-  "is_archived": false
+  "is_archived": false,
+  "is_official": false
 }
