@@ -26,31 +26,30 @@ class VSCodeManager(JSONClientManager):
         else:
             # Set config path based on detected platform
             if self._system == "Windows":
-                self.config_path = os.path.join(os.environ.get("APPDATA", ""), "Code", "User", "settings.json")
+                self.config_path = os.path.join(os.environ.get("APPDATA", ""), "Code", "User", "mcp.json")
             elif self._system == "Darwin":
-                self.config_path = os.path.expanduser("~/Library/Application Support/Code/User/settings.json")
+                self.config_path = os.path.expanduser("~/Library/Application Support/Code/User/mcp.json")
             else:
-                # MacOS or Linux
-                self.config_path = os.path.expanduser("~/.config/Code/User/settings.json")
+                # Linux
+                self.config_path = os.path.expanduser("~/.config/Code/User/mcp.json")
 
     def _load_config(self) -> Dict[str, Any]:
         """Load client configuration file
 
         {
-            "mcp": {
-                "servers": {
-                    "server_name": {
-                        ...
-                    }
+            "servers": {
+                "server_name": {
+                    ...
                 }
-            }
+            },
+            "inputs": []
         }
 
         Returns:
-            Dict containing the client configuration with at least {"mcpServers": {}}
+            Dict containing the client configuration with at least {"servers": {}, "inputs": []}
         """
         # Create empty config with the correct structure
-        empty_config = {"mcp": {self.configure_key_name: {}}}
+        empty_config = {self.configure_key_name: {}, "inputs": []}
 
         if not os.path.exists(self.config_path):
             logger.warning(f"Client config file not found at: {self.config_path}")
@@ -59,23 +58,23 @@ class VSCodeManager(JSONClientManager):
         try:
             with open(self.config_path, "r", encoding="utf-8") as f:
                 config = json.load(f)
-                if "mcp" not in config:
-                    config["mcp"] = {}
-                # Ensure mcpServers section exists
-                if self.configure_key_name not in config["mcp"]:
-                    config["mcp"][self.configure_key_name] = {}
-                return config["mcp"]
+                # Ensure servers section exists
+                if self.configure_key_name not in config:
+                    config[self.configure_key_name] = {}
+                # Ensure inputs array exists
+                if "inputs" not in config:
+                    config["inputs"] = []
+                return config
         except json.JSONDecodeError:
             logger.error(f"Error parsing client config file: {self.config_path}")
 
-        # Vscode config includes other information, so we makes no change on it
         return empty_config
 
     def _save_config(self, config: Dict[str, Any]) -> bool:
         """Save configuration to client config file
 
         Args:
-            config: Configuration to save
+            config: Configuration to save (should include "servers" and optionally "inputs")
 
         Returns:
             bool: Success or failure
@@ -83,14 +82,13 @@ class VSCodeManager(JSONClientManager):
         try:
             # Create directory if it doesn't exist
             os.makedirs(os.path.dirname(self.config_path), exist_ok=True)
-            if not os.path.exists(self.config_path):
-                current_config = {}
-            else:
-                with open(self.config_path, "r", encoding="utf-8") as f:
-                    current_config = json.load(f)
-            current_config["mcp"] = config
+
+            # Ensure inputs array exists if not present
+            if "inputs" not in config:
+                config["inputs"] = []
+
             with open(self.config_path, "w", encoding="utf-8") as f:
-                json.dump(current_config, f, indent=2)
+                json.dump(config, f, indent=2)
             return True
         except Exception as e:
             logger.error(f"Error saving client config: {str(e)}")
