@@ -42,8 +42,8 @@ class ClaudeCodeManager(JSONClientManager):
         Returns:
             bool: True if claude command is available, False otherwise
         """
-        claude_executable = "claude.exe" if self._system == "Windows" else "claude"
-        return shutil.which(claude_executable) is not None
+        # shutil.which() handles Windows PATHEXT automatically (.cmd, .bat, .exe, etc.)
+        return shutil.which("claude") is not None
 
     def get_client_info(self) -> Dict[str, str]:
         """Get information about this client

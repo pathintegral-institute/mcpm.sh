@@ -7,15 +7,16 @@ Profiles tag servers but don't own them - servers exist globally.
 
 import json
 import logging
-import os
-from typing import Dict, List, Optional
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 from pydantic import TypeAdapter
 
 from mcpm.core.schema import ProfileMetadata, ServerConfig
+from mcpm.utils.platform import get_config_directory
 
-DEFAULT_GLOBAL_CONFIG_PATH = os.path.expanduser("~/.config/mcpm/servers.json")
-DEFAULT_PROFILE_METADATA_PATH = os.path.expanduser("~/.config/mcpm/profiles_metadata.json")
+DEFAULT_GLOBAL_CONFIG_PATH = get_config_directory() / "servers.json"
+DEFAULT_PROFILE_METADATA_PATH = get_config_directory() / "profiles_metadata.json"
 
 logger = logging.getLogger(__name__)
 
@@ -28,22 +29,22 @@ class GlobalConfigManager:
     """
 
     def __init__(
-        self, config_path: str = DEFAULT_GLOBAL_CONFIG_PATH, metadata_path: str = DEFAULT_PROFILE_METADATA_PATH
+        self, config_path: Path = DEFAULT_GLOBAL_CONFIG_PATH, metadata_path: Path = DEFAULT_PROFILE_METADATA_PATH
     ):
-        self.config_path = os.path.expanduser(config_path)
-        self.metadata_path = os.path.expanduser(metadata_path)
-        self.config_dir = os.path.dirname(self.config_path)
+        self.config_path = Path(config_path)
+        self.metadata_path = Path(metadata_path)
+        self.config_dir = self.config_path.parent
+        self._ensure_dirs()
         self._servers: Dict[str, ServerConfig] = self._load_servers()
         self._profile_metadata: Dict[str, ProfileMetadata] = self._load_profile_metadata()
-        self._ensure_dirs()
 
     def _ensure_dirs(self) -> None:
         """Ensure all configuration directories exist"""
-        os.makedirs(self.config_dir, exist_ok=True)
+        self.config_dir.mkdir(parents=True, exist_ok=True)
 
     def _load_servers(self) -> Dict[str, ServerConfig]:
         """Load servers from the global configuration file."""
-        if not os.path.exists(self.config_path):
+        if not self.config_path.exists():
             return {}
 
         try:
@@ -68,12 +69,15 @@ class GlobalConfigManager:
         self._ensure_dirs()
         servers_data = {name: config.model_dump() for name, config in self._servers.items()}
 
-        with open(self.config_path, "w", encoding="utf-8") as f:
-            json.dump(servers_data, f, indent=2)
+        try:
+            with open(self.config_path, "w", encoding="utf-8") as f:
+                json.dump(servers_data, f, indent=2)
+        except OSError as e:
+            logger.error(f"Error saving servers to {self.config_path}: {e}")
 
     def _load_profile_metadata(self) -> Dict[str, ProfileMetadata]:
         """Load profile metadata from the metadata configuration file."""
-        if not os.path.exists(self.metadata_path):
+        if not self.metadata_path.exists():
             return {}
 
         try:
@@ -98,8 +102,11 @@ class GlobalConfigManager:
         self._ensure_dirs()
         metadata_data = {name: meta.model_dump() for name, meta in self._profile_metadata.items()}
 
-        with open(self.metadata_path, "w", encoding="utf-8") as f:
-            json.dump(metadata_data, f, indent=2)
+        try:
+            with open(self.metadata_path, "w", encoding="utf-8") as f:
+                json.dump(metadata_data, f, indent=2)
+        except OSError as e:
+            logger.error(f"Error saving profile metadata to {self.metadata_path}: {e}")
 
     def add_server(self, server_config: ServerConfig, force: bool = False) -> bool:
         """Add a server to the global configuration.
@@ -358,7 +365,7 @@ class GlobalConfigManager:
         """
         return self._profile_metadata.copy()
 
-    def get_complete_profile(self, name: str) -> Optional[Dict[str, any]]:
+    def get_complete_profile(self, name: str) -> Optional[Dict[str, Any]]:
         """Get complete profile information including metadata and servers.
 
         Args:

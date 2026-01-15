@@ -47,8 +47,8 @@ class CodexCliManager(JSONClientManager):
         Returns:
             bool: True if codex command is available, False otherwise
         """
-        codex_executable = "codex.exe" if self._system == "Windows" else "codex"
-        return shutil.which(codex_executable) is not None
+        # shutil.which() handles Windows PATHEXT automatically (.cmd, .bat, .exe, etc.)
+        return shutil.which("codex") is not None
 
     def get_client_info(self) -> Dict[str, str]:
         """Get information about this client

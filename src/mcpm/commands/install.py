@@ -21,6 +21,7 @@ from mcpm.profile.profile_config import ProfileConfigManager
 from mcpm.schemas.full_server_config import FullServerConfig
 from mcpm.utils.config import NODE_EXECUTABLES, ConfigManager
 from mcpm.utils.non_interactive import is_explicit_non_interactive, should_force_operation
+from mcpm.utils.platform import get_data_directory
 from mcpm.utils.repository import RepositoryManager
 from mcpm.utils.rich_click_config import click
 
@@ -54,6 +55,7 @@ def _get_prompt_session() -> Optional[PromptSession]:
         prompt_session = None
 
     return prompt_session
+
 
 style = Style.from_dict(
     {
@@ -223,14 +225,14 @@ def install(server_name, force=False, alias=None):
         return
 
     # Create server directory in the MCP directory
-    base_dir = os.path.expanduser("~/.mcpm")
-    os.makedirs(base_dir, exist_ok=True)
+    base_dir = get_data_directory()
+    base_dir.mkdir(parents=True, exist_ok=True)
 
-    servers_dir = os.path.join(base_dir, "servers")
-    os.makedirs(servers_dir, exist_ok=True)
+    servers_dir = base_dir / "servers"
+    servers_dir.mkdir(parents=True, exist_ok=True)
 
-    server_dir = os.path.join(servers_dir, server_name)
-    os.makedirs(server_dir, exist_ok=True)
+    server_dir = servers_dir / server_name
+    server_dir.mkdir(parents=True, exist_ok=True)
 
     # Extract installation information
     installations = server_metadata.get("installations", {})
@@ -304,7 +306,7 @@ def install(server_name, force=False, alias=None):
     with Progress(SpinnerColumn(), TextColumn("[bold green]{task.description}[/]"), console=console) as progress:
         # Save metadata to server directory
         progress.add_task("Saving server metadata...", total=None)
-        metadata_path = os.path.join(server_dir, "metadata.json")
+        metadata_path = server_dir / "metadata.json"
         with open(metadata_path, "w", encoding="utf-8") as f:
             json.dump(server_metadata, f, indent=2)
 
