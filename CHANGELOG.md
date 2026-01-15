@@ -1,3 +1,16 @@
+# [2.13.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.12.1...v2.13.0) (2026-01-15)
+
+
+### Bug Fixes
+
+* Update VSCode manager to use mcp.json with correct structure ([#300](https://github.com/pathintegral-institute/mcpm.sh/issues/300)) ([a1adc20](https://github.com/pathintegral-institute/mcpm.sh/commit/a1adc20a4c5c8a938670a12809084db0a6bfbed5)), closes [#295](https://github.com/pathintegral-institute/mcpm.sh/issues/295)
+
+
+### Features
+
+* Add MCP manifest for jotform-mcp-server ([#297](https://github.com/pathintegral-institute/mcpm.sh/issues/297)) ([99564ab](https://github.com/pathintegral-institute/mcpm.sh/commit/99564ab6a68cb483511788d34153fb4a28646f8c))
+* Add MCP manifest for ProfessionalWiki-MediaWiki-MCP-Server ([#293](https://github.com/pathintegral-institute/mcpm.sh/issues/293)) ([eabf191](https://github.com/pathintegral-institute/mcpm.sh/commit/eabf191eb917840e68c8b8c8e35834a0660ad11b)), closes [#299](https://github.com/pathintegral-institute/mcpm.sh/issues/299)
+
 ## [2.12.1](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.12.0...v2.12.1) (2026-01-15)
 
 
