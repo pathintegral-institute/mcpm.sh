@@ -46,7 +46,7 @@ class VSCodeManager(JSONClientManager):
         }
 
         Returns:
-            Dict containing the client configuration with at least {"servers": {}}
+            Dict containing the client configuration with at least {"servers": {}, "inputs": []}
         """
         # Create empty config with the correct structure
         empty_config = {self.configure_key_name: {}, "inputs": []}

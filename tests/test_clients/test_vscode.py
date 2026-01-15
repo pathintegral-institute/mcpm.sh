@@ -109,7 +109,7 @@ class TestVSCodeManager:
         assert "inputs" in config
         assert isinstance(config["inputs"], list)
 
-        # Should NOT have mcp wrapper
+        # Should NOT have MCP wrapper
         assert "mcp" not in config
 
     def test_load_config_preserves_servers(self, vscode_manager):
@@ -147,7 +147,7 @@ class TestVSCodeManager:
         # Should have inputs array
         assert "inputs" in saved_config
 
-        # Should NOT have mcp wrapper
+        # Should NOT have MCP wrapper
         assert "mcp" not in saved_config
 
     def test_save_config_preserves_inputs(self, vscode_manager):
