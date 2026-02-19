@@ -129,6 +129,10 @@ def _display_server_info(server):
                 cmd_str = f"{cmd} {' '.join(args)}" if args else cmd
                 console.print(f"Command: [green]{cmd_str}[/]")
 
+            # Show URL for http installations
+            if method_type == "http" and "url" in method:
+                console.print(f"URL: [green]{method['url']}[/]")
+
             # Show dependencies if available
             dependencies = method.get("dependencies", [])
             if dependencies:

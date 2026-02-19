@@ -36,7 +36,7 @@
     "npm": {
       "type": "npm",
       "command": "npx",
-      "args": ["-y", "@khalidsaidi/ragmap-mcp@latest", "ragmap-mcp"],
+      "args": ["-y", "@khalidsaidi/ragmap-mcp@latest"],
       "recommended": true,
       "description": "Run RAGMap MCP locally via stdio (connects to hosted API)"
     },
