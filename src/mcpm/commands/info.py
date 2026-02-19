@@ -28,14 +28,14 @@ def info(server_name):
         mcpm info github            # Show details for the GitHub server
         mcpm info pinecone          # Show details for the Pinecone server
     """
-    console.print(f"[bold green]Showing information for MCP server:[/] [bold cyan]{server_name}[/]")
+    console.print(f"[bold green]Showing information for MCP server:[/] [bold cyan]{escape(server_name)}[/]")
 
     try:
         # Get the server information
         server = repo_manager.get_server_metadata(server_name)
 
         if not server:
-            console.print(f"[yellow]Server '[bold]{server_name}[/]' not found.[/]")
+            console.print(f"[yellow]Server '[bold]{escape(server_name)}[/]' not found.[/]")
             return
 
         # Display detailed information for this server
@@ -82,7 +82,8 @@ def _display_server_info(server):
         console.print(f"Tags: {', '.join(escape(str(t)) for t in tags)}")
     if package:
         console.print(f"Package: {escape(package)}")
-    console.print(f"Author: {escape(author_name)}" + (f" ({escape(author_email)})" if author_email else ""))
+    email_part = f" ({escape(author_email)})" if author_email else ""
+    console.print(f"Author: {escape(author_name)}{email_part}")
     console.print(f"License: {escape(str(license_info))}")
     console.print(f"Official: {is_official}")
     if is_archived:
@@ -137,7 +138,7 @@ def _display_server_info(server):
             # Show dependencies if available
             dependencies = method.get("dependencies", [])
             if dependencies:
-                console.print("Dependencies: " + ", ".join(escape(str(d)) for d in dependencies))
+                console.print(f"Dependencies: {', '.join(escape(str(d)) for d in dependencies)}")
 
             # Show environment variables if available
             env_vars = method.get("env", {})
