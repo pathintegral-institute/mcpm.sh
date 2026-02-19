@@ -3,6 +3,7 @@ Info command for MCPM - Show detailed information about a specific MCP server
 """
 
 from rich.console import Console
+from rich.markup import escape
 
 from mcpm.utils.display import print_error
 from mcpm.utils.repository import RepositoryManager
@@ -94,21 +95,21 @@ def _display_server_info(server):
     # Repository URL
     if "repository" in server and "url" in server["repository"]:
         repo_url = server["repository"]["url"]
-        console.print(f"Repository: [blue underline]{repo_url}[/]")
+        console.print(f"Repository: [blue underline]{escape(repo_url)}[/]")
 
     # Homepage URL
     if "homepage" in server:
         homepage_url = server["homepage"]
-        console.print(f"Homepage: [blue underline]{homepage_url}[/]")
+        console.print(f"Homepage: [blue underline]{escape(homepage_url)}[/]")
 
     # Documentation URL
     if "documentation" in server:
         doc_url = server["documentation"]
-        console.print(f"Documentation: [blue underline]{doc_url}[/]")
+        console.print(f"Documentation: [blue underline]{escape(doc_url)}[/]")
 
     # Author URL
     if author_url:
-        console.print(f"Author URL: [blue underline]{author_url}[/]")
+        console.print(f"Author URL: [blue underline]{escape(author_url)}[/]")
 
     console.print("")
 
@@ -131,7 +132,7 @@ def _display_server_info(server):
 
             # Show URL for http installations
             if method_type == "http" and "url" in method:
-                console.print(f"URL: [green]{method['url']}[/]")
+                console.print(f"URL: [green]{escape(method['url'])}[/]")
 
             # Show dependencies if available
             dependencies = method.get("dependencies", [])
