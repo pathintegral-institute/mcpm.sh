@@ -71,19 +71,19 @@ def _display_server_info(server):
     package = installation.get("package", "")
 
     # Print server header
-    console.print(f"[bold cyan]{display_name}[/] [dim]({name})[/]")
-    console.print(f"[italic]{description}[/]\n")
+    console.print(f"[bold cyan]{escape(display_name)}[/] [dim]({escape(name)})[/]")
+    console.print(f"[italic]{escape(description)}[/]\n")
 
     # Server information section
     console.print("[bold yellow]Server Information:[/]")
     if categories:
-        console.print(f"Categories: {', '.join(categories)}")
+        console.print(f"Categories: {', '.join(escape(str(c)) for c in categories)}")
     if tags:
-        console.print(f"Tags: {', '.join(tags)}")
+        console.print(f"Tags: {', '.join(escape(str(t)) for t in tags)}")
     if package:
-        console.print(f"Package: {package}")
-    console.print(f"Author: {author_name}" + (f" ({author_email})" if author_email else ""))
-    console.print(f"License: {license_info}")
+        console.print(f"Package: {escape(package)}")
+    console.print(f"Author: {escape(author_name)}" + (f" ({escape(author_email)})" if author_email else ""))
+    console.print(f"License: {escape(str(license_info))}")
     console.print(f"Official: {is_official}")
     if is_archived:
         console.print(f"Archived: {is_archived}")
@@ -121,7 +121,7 @@ def _display_server_info(server):
             description = method.get("description", f"{method_type} installation")
             recommended = " [green](recommended)[/]" if method.get("recommended", False) else ""
 
-            console.print(f"[cyan]{method_type}[/]: {description}{recommended}")
+            console.print(f"[cyan]{escape(method_type)}[/]: {escape(description)}{recommended}")
 
             # Show command if available
             if "command" in method:
@@ -137,7 +137,7 @@ def _display_server_info(server):
             # Show dependencies if available
             dependencies = method.get("dependencies", [])
             if dependencies:
-                console.print("Dependencies: " + ", ".join(dependencies))
+                console.print("Dependencies: " + ", ".join(escape(str(d)) for d in dependencies))
 
             # Show environment variables if available
             env_vars = method.get("env", {})
