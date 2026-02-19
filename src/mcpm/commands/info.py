@@ -128,7 +128,7 @@ def _display_server_info(server):
                 cmd = method["command"]
                 args = method.get("args", [])
                 cmd_str = f"{cmd} {' '.join(args)}" if args else cmd
-                console.print(f"Command: [green]{cmd_str}[/]")
+                console.print(f"Command: [green]{escape(cmd_str)}[/]")
 
             # Show URL for http installations
             if method_type == "http" and "url" in method:
@@ -144,7 +144,7 @@ def _display_server_info(server):
             if env_vars:
                 console.print("Environment Variables:")
                 for key, value in env_vars.items():
-                    console.print(f'  [bold blue]{key}[/] = [green]"{value}"[/]')
+                    console.print(f'  [bold blue]{escape(str(key))}[/] = [green]"{escape(str(value))}"[/]')
             console.print("")
 
     # Examples section
@@ -153,11 +153,11 @@ def _display_server_info(server):
         console.print("[bold yellow]Examples:[/]")
         for i, example in enumerate(examples):
             if "title" in example:
-                console.print(f"[bold]{i + 1}. {example['title']}[/]")
+                console.print(f"[bold]{i + 1}. {escape(str(example['title']))}[/]")
             if "description" in example:
-                console.print(f"   {example['description']}")
+                console.print(f"   {escape(str(example['description']))}")
             if "code" in example:
-                console.print(f"   Code: [green]{example['code']}[/]")
+                console.print(f"   Code: [green]{escape(str(example['code']))}[/]")
             if "prompt" in example:
-                console.print(f"   Prompt: [green]{example['prompt']}[/]")
+                console.print(f"   Prompt: [green]{escape(str(example['prompt']))}[/]")
             console.print("")
