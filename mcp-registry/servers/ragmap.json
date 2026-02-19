@@ -1,0 +1,56 @@
+{
+  "name": "ragmap",
+  "display_name": "RAGMap",
+  "description": "RAG-focused subregistry + MCP server to discover and route to retrieval-capable MCP servers using semantic search, filters, and explainable ranking.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/khalidsaidi/ragmap"
+  },
+  "homepage": "https://ragmap-api.web.app",
+  "author": {
+    "name": "Khalid Saidi",
+    "url": "https://github.com/khalidsaidi"
+  },
+  "license": "MIT",
+  "categories": ["MCP Tools", "Knowledge Base"],
+  "tags": ["MCP", "RAG", "registry", "discovery", "retrieval"],
+  "tools": [
+    {
+      "name": "rag_find_servers",
+      "description": "Search/filter RAG-related MCP servers from the RAGMap subregistry."
+    },
+    {
+      "name": "rag_get_server",
+      "description": "Get latest server record by registry name."
+    },
+    {
+      "name": "rag_list_categories",
+      "description": "List RAG categories used for filtering."
+    },
+    {
+      "name": "rag_explain_score",
+      "description": "Explain RAG relevance score for a server."
+    }
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": ["-y", "@khalidsaidi/ragmap-mcp@latest", "ragmap-mcp"],
+      "recommended": true,
+      "description": "Run RAGMap MCP locally via stdio (connects to hosted API)"
+    },
+    "http": {
+      "type": "http",
+      "url": "https://ragmap-mcp.web.app/mcp",
+      "description": "Use hosted Streamable HTTP endpoint (no install)"
+    }
+  },
+  "examples": [
+    {
+      "title": "Find RAG servers",
+      "description": "Search for retrieval-capable MCP servers by meaning or filters",
+      "prompt": "Find MCP servers that support RAG with remote (streamable HTTP) transport"
+    }
+  ]
+}
