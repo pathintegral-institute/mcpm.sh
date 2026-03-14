@@ -291,32 +291,21 @@ def edit_client(client_name, external, config_path_override, add_server, remove_
         _open_in_editor(config_path, display_name)
         return
 
-    # Load current client configuration
-    current_config = {}
-    mcpm_servers = set()  # Servers currently managed by MCPM in client config
+    # Load current client configuration using the manager (handles JSONC, etc.)
+    current_config = client_manager._load_config()
+    mcpm_servers = set()
 
-    if config_exists:
-        try:
-            with open(config_path, "r", encoding="utf-8") as f:
-                current_config = json.load(f)
+    configure_key = getattr(client_manager, "configure_key_name", "mcpServers")
+    mcp_servers = current_config.get(configure_key, {})
+    for client_server_name, server_config in mcp_servers.items():
+        if not isinstance(server_config, dict):
+            continue
+        command = server_config.get("command", "")
+        args = server_config.get("args", [])
 
-            # Find servers currently using 'mcpm run' (with mcpm_ prefix)
-            mcp_servers = current_config.get("mcpServers", {})
-            for client_server_name, server_config in mcp_servers.items():
-                command = server_config.get("command", "")
-                args = server_config.get("args", [])
-
-                # Check if this is an MCPM-managed server (prefixed with mcpm_)
-                if client_server_name.startswith("mcpm_") and (
-                    command == "mcpm" and len(args) >= 2 and args[0] == "run"
-                ):
-                    if len(args) >= 2 and args[0] == "run":
-                        # Remove mcpm_ prefix to get actual server name
-                        actual_server_name = args[1]
-                        mcpm_servers.add(actual_server_name)
-
-        except (json.JSONDecodeError, FileNotFoundError) as e:
-            console.print(f"[yellow]Warning: Could not read existing config: {e}[/]")
+        if client_server_name.startswith("mcpm_") and command == "mcpm" and len(args) >= 2 and args[0] == "run":
+            actual_server_name = args[1]
+            mcpm_servers.add(actual_server_name)
 
     # Get all MCPM global servers
     global_servers = global_config_manager.list_servers()
@@ -327,7 +316,9 @@ def edit_client(client_name, external, config_path_override, add_server, remove_
         return
 
     # Get current profiles and individual servers from client config
-    current_profiles, current_individual_servers = _get_current_client_mcpm_state(client_manager)
+    current_profiles, current_individual_servers = _get_current_client_mcpm_state(
+        client_manager, global_server_names=set(global_servers.keys())
+    )
 
     # Display current status
     console.print("[bold]Current MCPM Configuration:[/]")
@@ -375,45 +366,52 @@ def edit_client(client_name, external, config_path_override, add_server, remove_
     )
 
 
-def _get_current_client_mcpm_state(client_manager):
-    """Get current profiles and individual servers from client config."""
+def _get_current_client_mcpm_state(client_manager, global_server_names=None):
+    """Get current profiles and individual servers from client config.
+
+    Detects both mcpm-proxied entries (command=mcpm run <name>) and
+    directly-configured servers whose name matches a global MCPM server.
+    """
     profiles = []
     individual_servers = []
+    if global_server_names is None:
+        global_server_names = set()
 
     try:
         client_servers = client_manager.get_servers()
         for server_name, server_config in client_servers.items():
-            # Handle both object attributes and dictionary keys
-            if hasattr(server_config, "command"):
+            # Normalize command + args across formats:
+            #   ServerConfig object: .command (str) + .args (list)
+            #   Standard dict:      "command" (str) + "args" (list)
+            #   OpenCode dict:      "command" (list)  ← array combines both
+            if hasattr(server_config, "command") and not isinstance(server_config, dict):
                 command = server_config.command
                 args = getattr(server_config, "args", [])
             elif isinstance(server_config, dict):
-                command = server_config.get("command", "")
-                args = server_config.get("args", [])
+                raw_cmd = server_config.get("command", "")
+                if isinstance(raw_cmd, list):
+                    command = raw_cmd[0] if raw_cmd else ""
+                    args = raw_cmd[1:] if len(raw_cmd) > 1 else []
+                else:
+                    command = raw_cmd
+                    args = server_config.get("args", [])
             else:
                 continue
 
-            # Check if this is an MCPM-managed configuration
             if command == "mcpm":
                 if len(args) >= 3 and args[0] == "profile" and args[1] == "run":
-                    # This is an MCPM profile
-                    profile_name = args[2]
-                    profiles.append(profile_name)
+                    profiles.append(args[2])
                 elif len(args) >= 2 and args[0] == "run":
-                    # This is an individual MCPM server
-                    actual_server_name = args[1]
-                    individual_servers.append(actual_server_name)
-            elif server_name.startswith("mcpm_"):
-                # Legacy handling for servers with mcpm_ prefix
-                if command == "mcpm":
-                    if len(args) >= 3 and args[0] == "profile" and args[1] == "run":
-                        profile_name = args[2]
-                        profiles.append(profile_name)
-                    elif len(args) >= 2 and args[0] == "run":
-                        actual_server_name = args[1]
-                        individual_servers.append(actual_server_name)
+                    individual_servers.append(args[1])
+            elif server_name.startswith("mcpm_") and command == "mcpm":
+                if len(args) >= 3 and args[0] == "profile" and args[1] == "run":
+                    profiles.append(args[2])
+                elif len(args) >= 2 and args[0] == "run":
+                    individual_servers.append(args[1])
+            elif server_name in global_server_names:
+                individual_servers.append(server_name)
     except Exception:
-        pass  # Return empty lists if we can't read config
+        pass
 
     return profiles, individual_servers
 
@@ -1182,7 +1180,9 @@ def _edit_client_non_interactive(
         available_profiles = profile_manager.list_profiles()
 
         # Get current client state
-        current_profiles, current_individual_servers = _get_current_client_mcpm_state(client_manager)
+        current_profiles, current_individual_servers = _get_current_client_mcpm_state(
+            client_manager, global_server_names=set(global_servers.keys())
+        )
 
         # Start with current state
         final_profiles = set(current_profiles)
