@@ -312,16 +312,19 @@ def _run_update(
             continue
 
         console.print(f"  git pull [green]✓[/] ({status.commits_behind} new commit{'s' if status.commits_behind != 1 else ''})")
-        sources.mark_updated(name)
 
         # Post-update command
+        post_ok = True
         if source.post_update:
-            post_success = _run_post_update(source.post_update, repo_path)
-            if not post_success:
+            post_ok = _run_post_update(source.post_update, repo_path)
+            if not post_ok:
                 console.print(f"  [dim]Run manually: cd {source.path} && {source.post_update}[/]")
 
+        if post_ok:
+            sources.mark_updated(name)
+            success_count += 1
+
         console.print()
-        success_count += 1
 
     console.print(f"[bold green]Done.[/] {success_count} server(s) updated.")
 

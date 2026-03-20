@@ -421,7 +421,7 @@ class TestUpdateApply:
         assert "1 server(s) updated" in result.output
 
     def test_apply_with_post_update_failure(self, monkeypatch, tmp_path):
-        """Test that post_update failure is reported but pull still counted."""
+        """Test that post_update failure prevents counting as successful update."""
         sources_path = tmp_path / "sources.json"
         repo_dir = tmp_path / "repo"
         repo_dir.mkdir()
@@ -448,8 +448,8 @@ class TestUpdateApply:
 
         runner = CliRunner()
         result = runner.invoke(update, ["--force"])
-        # Post-update failed, but git pull succeeded — still counts as updated
-        assert "1 server(s) updated" in result.output
+        # Post-update failed — not counted as successful update
+        assert "0 server(s) updated" in result.output
 
     def test_apply_pull_fails(self, monkeypatch, tmp_path):
         """Test that a failed pull is reported and not counted."""
