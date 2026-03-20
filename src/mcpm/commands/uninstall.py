@@ -2,13 +2,18 @@
 Uninstall command for removing MCP servers from global configuration
 """
 
+import logging
+
 from rich.console import Console
 from rich.prompt import Confirm
 
+from mcpm.core.source import SourcesManager
 from mcpm.global_config import GlobalConfigManager
 from mcpm.utils.display import print_server_config
 from mcpm.utils.non_interactive import is_explicit_non_interactive, should_force_operation
 from mcpm.utils.rich_click_config import click
+
+logger = logging.getLogger(__name__)
 
 console = Console()
 global_config_manager = GlobalConfigManager()
@@ -76,6 +81,11 @@ def uninstall(server_name, force):
     success = global_remove_server(server_name)
 
     if success:
+        # Clean up source metadata
+        try:
+            SourcesManager().remove(server_name)
+        except Exception as e:
+            logger.debug(f"Failed to clean up source metadata for '{server_name}': {e}")
         console.print(f"[green]Successfully removed server:[/ ] {server_name}")
         console.print("[dim]Note: Server has been removed from global config. Profile tags are also cleared.[/]")
     else:
