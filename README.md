@@ -45,6 +45,7 @@ MCPM v2.0 provides a simplified approach to managing MCP servers with a global c
 - 🔍 **Server Discovery**: Browse and install from the MCP Registry
 - 🚀 **Direct Execution**: Run servers over stdio or HTTP for testing
 - 🌐 **Public Sharing**: Share servers through secure tunnels
+- 🔄 **Server Updates**: Check for and apply updates to git-based, NPX, and binary servers
 - 🎛️ **Client Integration**: Manage configurations for Claude Desktop, Cursor, Windsurf, and more
 - 🤖 **AI Agent Friendly**: Non-interactive CLI with comprehensive automation support and [llm.txt](llm.txt) guide
 - 💻 **Beautiful CLI**: Rich formatting and interactive interfaces
@@ -133,6 +134,21 @@ mcpm client edit CLIENT_NAME   # Interactive server enable/disable for a client
 mcpm client edit CLIENT_NAME -e # Open client config in external editor
 mcpm client import CLIENT_NAME  # Import server configurations from a client
 ```
+
+### 🔄 Server Updates
+
+Check for and apply updates to installed MCP servers:
+
+```bash
+mcpm update                   # Update all servers
+mcpm update SERVER_NAME       # Update a specific server
+mcpm update --check           # Dry run — check for updates without applying
+mcpm update --rebase          # Use git rebase instead of fast-forward
+mcpm update --init            # Scan servers and populate source metadata
+mcpm update --init --force    # Re-detect all source metadata
+```
+
+MCPM tracks where each server came from (git repo, npm package, HTTP remote) and can pull the latest changes automatically. Git-based servers are updated via `git pull --ff-only` by default, with `--rebase` as an opt-in alternative. NPX/UVX servers auto-update at runtime and are shown for informational purposes.
 
 ### 🛠️ System & Configuration
 
@@ -269,6 +285,8 @@ mcpm client edit cursor --add-profile web-dev --force
 - [x] Additional client support (gemini-cli, codex, etc.)
 
 ### 🔮 Future Enhancements
+- [x] Server update management (`mcpm update`)
+- [ ] GitHub release binary updates (download + replace)
 - [ ] Advanced Server access monitoring and analytics
 - [ ] Execution in docker
 - [ ] Expose MCPM functionality as an MCP server (search, install, profile management etc.)
