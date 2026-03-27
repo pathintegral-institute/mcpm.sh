@@ -3,6 +3,7 @@ Info command for MCPM - Show detailed information about a specific MCP server
 """
 
 from rich.console import Console
+from rich.markup import escape
 
 from mcpm.utils.display import print_error
 from mcpm.utils.repository import RepositoryManager
@@ -27,14 +28,14 @@ def info(server_name):
         mcpm info github            # Show details for the GitHub server
         mcpm info pinecone          # Show details for the Pinecone server
     """
-    console.print(f"[bold green]Showing information for MCP server:[/] [bold cyan]{server_name}[/]")
+    console.print(f"[bold green]Showing information for MCP server:[/] [bold cyan]{escape(server_name)}[/]")
 
     try:
         # Get the server information
         server = repo_manager.get_server_metadata(server_name)
 
         if not server:
-            console.print(f"[yellow]Server '[bold]{server_name}[/]' not found.[/]")
+            console.print(f"[yellow]Server '[bold]{escape(server_name)}[/]' not found.[/]")
             return
 
         # Display detailed information for this server
@@ -70,19 +71,20 @@ def _display_server_info(server):
     package = installation.get("package", "")
 
     # Print server header
-    console.print(f"[bold cyan]{display_name}[/] [dim]({name})[/]")
-    console.print(f"[italic]{description}[/]\n")
+    console.print(f"[bold cyan]{escape(display_name)}[/] [dim]({escape(name)})[/]")
+    console.print(f"[italic]{escape(description)}[/]\n")
 
     # Server information section
     console.print("[bold yellow]Server Information:[/]")
     if categories:
-        console.print(f"Categories: {', '.join(categories)}")
+        console.print(f"Categories: {', '.join(escape(str(c)) for c in categories)}")
     if tags:
-        console.print(f"Tags: {', '.join(tags)}")
+        console.print(f"Tags: {', '.join(escape(str(t)) for t in tags)}")
     if package:
-        console.print(f"Package: {package}")
-    console.print(f"Author: {author_name}" + (f" ({author_email})" if author_email else ""))
-    console.print(f"License: {license_info}")
+        console.print(f"Package: {escape(package)}")
+    email_part = f" ({escape(author_email)})" if author_email else ""
+    console.print(f"Author: {escape(author_name)}{email_part}")
+    console.print(f"License: {escape(str(license_info))}")
     console.print(f"Official: {is_official}")
     if is_archived:
         console.print(f"Archived: {is_archived}")
@@ -94,21 +96,21 @@ def _display_server_info(server):
     # Repository URL
     if "repository" in server and "url" in server["repository"]:
         repo_url = server["repository"]["url"]
-        console.print(f"Repository: [blue underline]{repo_url}[/]")
+        console.print(f"Repository: [blue underline]{escape(repo_url)}[/]")
 
     # Homepage URL
     if "homepage" in server:
         homepage_url = server["homepage"]
-        console.print(f"Homepage: [blue underline]{homepage_url}[/]")
+        console.print(f"Homepage: [blue underline]{escape(homepage_url)}[/]")
 
     # Documentation URL
     if "documentation" in server:
         doc_url = server["documentation"]
-        console.print(f"Documentation: [blue underline]{doc_url}[/]")
+        console.print(f"Documentation: [blue underline]{escape(doc_url)}[/]")
 
     # Author URL
     if author_url:
-        console.print(f"Author URL: [blue underline]{author_url}[/]")
+        console.print(f"Author URL: [blue underline]{escape(author_url)}[/]")
 
     console.print("")
 
@@ -120,26 +122,30 @@ def _display_server_info(server):
             description = method.get("description", f"{method_type} installation")
             recommended = " [green](recommended)[/]" if method.get("recommended", False) else ""
 
-            console.print(f"[cyan]{method_type}[/]: {description}{recommended}")
+            console.print(f"[cyan]{escape(method_type)}[/]: {escape(description)}{recommended}")
 
             # Show command if available
             if "command" in method:
                 cmd = method["command"]
                 args = method.get("args", [])
                 cmd_str = f"{cmd} {' '.join(args)}" if args else cmd
-                console.print(f"Command: [green]{cmd_str}[/]")
+                console.print(f"Command: [green]{escape(cmd_str)}[/]")
+
+            # Show URL for http installations
+            if method_type == "http" and "url" in method:
+                console.print(f"URL: [green]{escape(method['url'])}[/]")
 
             # Show dependencies if available
             dependencies = method.get("dependencies", [])
             if dependencies:
-                console.print("Dependencies: " + ", ".join(dependencies))
+                console.print(f"Dependencies: {', '.join(escape(str(d)) for d in dependencies)}")
 
             # Show environment variables if available
             env_vars = method.get("env", {})
             if env_vars:
                 console.print("Environment Variables:")
                 for key, value in env_vars.items():
-                    console.print(f'  [bold blue]{key}[/] = [green]"{value}"[/]')
+                    console.print(f'  [bold blue]{escape(str(key))}[/] = [green]"{escape(str(value))}"[/]')
             console.print("")
 
     # Examples section
@@ -148,11 +154,11 @@ def _display_server_info(server):
         console.print("[bold yellow]Examples:[/]")
         for i, example in enumerate(examples):
             if "title" in example:
-                console.print(f"[bold]{i + 1}. {example['title']}[/]")
+                console.print(f"[bold]{i + 1}. {escape(str(example['title']))}[/]")
             if "description" in example:
-                console.print(f"   {example['description']}")
+                console.print(f"   {escape(str(example['description']))}")
             if "code" in example:
-                console.print(f"   Code: [green]{example['code']}[/]")
+                console.print(f"   Code: [green]{escape(str(example['code']))}[/]")
             if "prompt" in example:
-                console.print(f"   Prompt: [green]{example['prompt']}[/]")
+                console.print(f"   Prompt: [green]{escape(str(example['prompt']))}[/]")
             console.print("")
