@@ -1,3 +1,10 @@
+# [2.14.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.13.0...v2.14.0) (2026-03-27)
+
+
+### Features
+
+* add `mcpm update` command for server update management ([#315](https://github.com/pathintegral-institute/mcpm.sh/issues/315)) ([efc2916](https://github.com/pathintegral-institute/mcpm.sh/commit/efc291619c6de7f49ba2c7eb1f313fd45063c2d4))
+
 # [2.13.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.12.1...v2.13.0) (2026-01-15)
 
 
