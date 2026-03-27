@@ -1,0 +1,57 @@
+{
+  "display_name": "Clarvia MCP Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/clarvia-project/scanner"
+  },
+  "homepage": "https://clarvia.art",
+  "author": {
+    "name": "clarvia-project"
+  },
+  "license": "MIT",
+  "tags": [
+    "mcp",
+    "model-context-protocol",
+    "aeo",
+    "ai-agents",
+    "tool-discovery",
+    "tool-scoring",
+    "mcp-quality",
+    "agent-compatibility"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "clarvia-mcp-server"
+      ],
+      "description": "Install and run using NPM/npx"
+    }
+  },
+  "examples": [
+    {
+      "title": "Check tool quality before use",
+      "description": "Gate-check an API or MCP server for agent compatibility",
+      "prompt": "Gate-check https://api.stripe.com before we use it in our agent workflow."
+    },
+    {
+      "title": "Find the best MCP server for a task",
+      "description": "Search for agent-friendly tools by use case",
+      "prompt": "Find the best MCP server for web browsing with an AEO score above 70."
+    },
+    {
+      "title": "Score your own MCP server",
+      "description": "Audit your MCP server configuration for AEO compliance",
+      "prompt": "Score my MCP server at https://myapi.example.com and suggest improvements."
+    }
+  ],
+  "name": "clarvia-mcp-server",
+  "description": "AEO (Agent Experience Optimization) scoring for 15,400+ MCP servers and AI agent tools. Gate-check APIs before using them, score your own MCP server, find agent-friendly alternatives, and search the indexed tool catalog.",
+  "categories": [
+    "AI Agents",
+    "Development Tools"
+  ],
+  "is_official": false
+}
