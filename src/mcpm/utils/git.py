@@ -144,8 +144,11 @@ def check_status(repo_path: Path, branch: Optional[str] = None, remote: str = "o
     # Get commit summaries if behind
     if status.commits_behind > 0:
         try:
+            # Limit to the first N commits to avoid excessive overhead on very behind repos
             result = _run_git(
-                repo_path, ["log", "--oneline", f"HEAD..{remote}/{branch}", "--reverse"], timeout=5
+                repo_path,
+                ["log", "--oneline", "--max-count=50", f"HEAD..{remote}/{branch}", "--reverse"],
+                timeout=5,
             )
             if result.returncode == 0:
                 status.commit_summaries = [line for line in result.stdout.strip().split("\n") if line]
