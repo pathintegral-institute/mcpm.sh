@@ -2,6 +2,7 @@
 New command - Create new server configurations with interactive and non-interactive modes
 """
 
+import logging
 import sys
 from typing import Optional
 
@@ -9,6 +10,7 @@ from rich.console import Console
 
 from mcpm.commands.edit import _create_new_server
 from mcpm.core.schema import RemoteServerConfig, STDIOServerConfig
+from mcpm.core.source import SourcesManager, detect_source
 from mcpm.global_config import GlobalConfigManager
 from mcpm.utils.display import print_error
 from mcpm.utils.non_interactive import (
@@ -18,6 +20,7 @@ from mcpm.utils.non_interactive import (
 )
 from mcpm.utils.rich_click_config import click
 
+logger = logging.getLogger(__name__)
 console = Console()
 global_config_manager = GlobalConfigManager()
 
@@ -144,6 +147,14 @@ def _create_new_server_non_interactive(
         # Save the server
         global_config_manager.add_server(server_config, force=force)
         console.print(f"[green]✅ Successfully created server '[cyan]{server_name}[/]'[/]")
+
+        # Auto-populate source metadata for update tracking
+        try:
+            sources = SourcesManager()
+            source = detect_source(server_config)
+            sources.set(server_name, source)
+        except Exception as e:
+            logger.debug(f"Failed to save source metadata for '{server_name}': {e}")
 
         return 0
 

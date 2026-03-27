@@ -25,6 +25,7 @@ from mcpm.commands import (
     run,
     search,
     uninstall,
+    update,
     usage,
 )
 from mcpm.commands.share import share
@@ -141,6 +142,7 @@ main.add_command(doctor.doctor)
 main.add_command(usage.usage)
 main.add_command(config.config)
 main.add_command(migrate.migrate)
+main.add_command(update.update)
 main.add_command(share)
 
 
