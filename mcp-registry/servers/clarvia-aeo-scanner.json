@@ -1,0 +1,39 @@
+{
+    "display_name": "Clarvia AEO Scanner",
+    "license": "MIT",
+    "tags": [
+        "mcp",
+        "aeo",
+        "quality",
+        "scanner",
+        "discovery",
+        "agent",
+        "analysis",
+        "search"
+    ],
+    "installations": {
+        "clarvia-mcp-server": {
+            "type": "npm",
+            "command": "npx",
+            "args": [
+                "-y",
+                "clarvia-mcp-server@latest"
+            ],
+            "description": "Run the Clarvia AEO Scanner MCP server \u2014 search and analyze 27,000+ MCP tools"
+        }
+    },
+    "examples": [
+        {
+            "title": "Find the best database MCP server",
+            "prompt": "Search for the highest-rated database MCP servers and tell me which has the best AEO score"
+        },
+        {
+            "title": "Check my MCP server quality",
+            "prompt": "Analyze my MCP server at github.com/myorg/my-mcp-server and give me an AEO quality score"
+        },
+        {
+            "title": "Compare two MCP servers",
+            "prompt": "Compare supabase-mcp and postgres-mcp \u2014 which has better agent discoverability?"
+        }
+    ]
+}
