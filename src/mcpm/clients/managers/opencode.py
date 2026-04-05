@@ -16,6 +16,49 @@ from mcpm.core.schema import CustomServerConfig, RemoteServerConfig, ServerConfi
 logger = logging.getLogger(__name__)
 
 
+def _strip_jsonc(text: str) -> str:
+    """Remove single-line comments and trailing commas from JSONC text.
+
+    Walks character-by-character to respect string boundaries so that
+    '//' inside quoted values (e.g. URLs) is preserved.
+    """
+    result = []
+    i = 0
+    length = len(text)
+    while i < length:
+        c = text[i]
+        if c == '"':
+            # Consume entire quoted string (respecting backslash escapes)
+            result.append(c)
+            i += 1
+            while i < length:
+                sc = text[i]
+                result.append(sc)
+                if sc == "\\" and i + 1 < length:
+                    i += 1
+                    result.append(text[i])
+                elif sc == '"':
+                    break
+                i += 1
+        elif c == "/" and i + 1 < length and text[i + 1] == "/":
+            # Skip until end of line
+            i += 1
+            while i < length and text[i] != "\n":
+                i += 1
+            continue
+        elif c == ",":
+            # Trailing comma: skip whitespace and // comments before } or ]
+            rest = text[i + 1 :]
+            if re.match(r"(\s*(//[^\n]*)?\s*)*[}\]]", rest):
+                i += 1
+                continue
+            result.append(c)
+        else:
+            result.append(c)
+        i += 1
+    return "".join(result)
+
+
 class OpenCodeManager(JSONClientManager):
     """Manages OpenCode MCP server configurations.
 
@@ -53,7 +96,7 @@ class OpenCodeManager(JSONClientManager):
         JSONClientManager uses json.load() which rejects comments, so we
         strip them first to avoid backing up a perfectly valid config.
         """
-        empty_config = {self.configure_key_name: {}}
+        empty_config = self._get_empty_config()
 
         if not os.path.exists(self.config_path):
             logger.debug(f"Client config file not found at: {self.config_path}")
@@ -62,9 +105,7 @@ class OpenCodeManager(JSONClientManager):
         try:
             with open(self.config_path, "r", encoding="utf-8") as f:
                 raw = f.read()
-            # Strip // line comments that are NOT inside strings (e.g. URLs with ://)
-            stripped = re.sub(r"(?m)^\s*//.*$", "", raw)  # full-line comments
-            stripped = re.sub(r",(\s*[}\]])", r"\1", stripped)  # trailing commas
+            stripped = _strip_jsonc(raw)
             config = json.loads(stripped)
             if self.configure_key_name not in config:
                 config[self.configure_key_name] = {}
@@ -128,10 +169,14 @@ class OpenCodeManager(JSONClientManager):
                 headers=client_config.get("headers", {}),
             )
 
-        # Local server: split command array into command + args
-        raw_command: List[str] = client_config.get("command", [])
-        command = raw_command[0] if raw_command else ""
-        args = raw_command[1:] if len(raw_command) > 1 else []
+        # Local server: command can be an array ["npx", "-y", "pkg"] or a string "npx"
+        raw_command = client_config.get("command", [])
+        if isinstance(raw_command, str):
+            command = raw_command
+            args = client_config.get("args", [])
+        else:
+            command = raw_command[0] if raw_command else ""
+            args = raw_command[1:] if len(raw_command) > 1 else []
 
         # OpenCode uses "environment"; fall back to "env" for resilience
         env = client_config.get("environment") or client_config.get("env") or {}

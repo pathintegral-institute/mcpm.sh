@@ -385,3 +385,69 @@ def test_load_jsonc_with_comments(tmp_path):
     server = mgr.get_server("test-server")
     assert server.command == "npx"
     assert server.args == ["-y", "my-server"]
+
+
+def test_jsonc_preserves_urls_with_slashes(tmp_path):
+    """Comments inside strings (e.g. URLs with ://) must not be stripped."""
+    cfg_path = str(tmp_path / "opencode.json")
+    with open(cfg_path, "w") as f:
+        f.write(
+            """{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "remote": {
+      "type": "remote",
+      "url": "https://mcp.example.com/sse"
+    }
+  }
+}"""
+        )
+
+    mgr = OpenCodeManager(config_path_override=cfg_path)
+    server = mgr.get_server("remote")
+    assert server.url == "https://mcp.example.com/sse"
+
+
+def test_from_client_format_string_command():
+    """Handle command as a plain string (not array)."""
+    config = {"type": "local", "command": "node"}
+    server = OpenCodeManager.from_client_format("str-cmd", config)
+    assert isinstance(server, STDIOServerConfig)
+    assert server.command == "node"
+    assert server.args == []
+
+
+def test_from_client_format_string_command_with_args():
+    """String command with separate args list (non-standard but defensive)."""
+    config = {"type": "local", "command": "node", "args": ["server.js", "--port=3000"]}
+    server = OpenCodeManager.from_client_format("str-with-args", config)
+    assert isinstance(server, STDIOServerConfig)
+    assert server.command == "node"
+    assert server.args == ["server.js", "--port=3000"]
+
+
+def test_jsonc_inline_comments_and_string_edge_cases(tmp_path):
+    """Inline comments and strings containing ,} or ,] must parse correctly."""
+    cfg_path = str(tmp_path / "opencode.json")
+    with open(cfg_path, "w") as f:
+        f.write(
+            """{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "anthropic/claude-sonnet-4-5", // inline comment
+  "description": "contains ,} and ,] inside string",
+  "mcp": {
+    "test-server": {
+      "type": "local",
+      "command": ["node", "server.js"], // another inline comment
+    }
+  },
+}"""
+        )
+
+    mgr = OpenCodeManager(config_path_override=cfg_path)
+    server = mgr.get_server("test-server")
+    assert server.command == "node"
+    assert server.args == ["server.js"]
+
+    config = mgr._load_config()
+    assert config["description"] == "contains ,} and ,] inside string"
