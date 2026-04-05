@@ -451,3 +451,20 @@ def test_jsonc_inline_comments_and_string_edge_cases(tmp_path):
 
     config = mgr._load_config()
     assert config["description"] == "contains ,} and ,] inside string"
+
+
+def test_from_client_format_malformed_args():
+    """Non-list args should be coerced to a list."""
+    config = {"type": "local", "command": "node", "args": "server.js"}
+    server = OpenCodeManager.from_client_format("bad-args", config)
+    assert isinstance(server, STDIOServerConfig)
+    assert server.command == "node"
+    assert server.args == ["server.js"]
+
+
+def test_from_client_format_malformed_env():
+    """Non-dict environment should fall back to empty dict."""
+    config = {"type": "local", "command": ["node"], "environment": ["not", "a", "dict"]}
+    server = OpenCodeManager.from_client_format("bad-env", config)
+    assert isinstance(server, STDIOServerConfig)
+    assert server.env == {}

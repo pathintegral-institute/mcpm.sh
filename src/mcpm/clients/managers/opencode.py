@@ -174,12 +174,19 @@ class OpenCodeManager(JSONClientManager):
         if isinstance(raw_command, str):
             command = raw_command
             args = client_config.get("args", [])
-        else:
+        elif isinstance(raw_command, list):
             command = raw_command[0] if raw_command else ""
             args = raw_command[1:] if len(raw_command) > 1 else []
+        else:
+            command = ""
+            args = []
 
-        # OpenCode uses "environment"; fall back to "env" for resilience
+        if not isinstance(args, list):
+            args = [str(args)] if args else []
+
         env = client_config.get("environment") or client_config.get("env") or {}
+        if not isinstance(env, dict):
+            env = {}
 
         return STDIOServerConfig(
             name=server_name,
