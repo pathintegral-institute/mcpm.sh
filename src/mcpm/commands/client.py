@@ -226,7 +226,18 @@ def list_clients(verbose):
 @click.option("--remove-profile", help="Comma-separated list of profile names to remove")
 @click.option("--set-profiles", help="Comma-separated list of profile names to set (replaces all)")
 @click.option("--force", is_flag=True, help="Skip confirmation prompts")
-def edit_client(client_name, external, config_path_override, add_server, remove_server, set_servers, add_profile, remove_profile, set_profiles, force):
+def edit_client(
+    client_name,
+    external,
+    config_path_override,
+    add_server,
+    remove_server,
+    set_servers,
+    add_profile,
+    remove_profile,
+    set_profiles,
+    force,
+):
     """Enable/disable MCPM-managed servers in the specified client configuration.
 
     Interactive by default, or use CLI parameters for automation.
@@ -286,7 +297,7 @@ def edit_client(client_name, external, config_path_override, add_server, remove_
         # Ensure config file exists before opening
         if not config_exists:
             console.print("[yellow]Config file does not exist. Creating basic config...[/]")
-            _create_basic_config(config_path)
+            _create_basic_config(config_path, client_manager)
 
         _open_in_editor(config_path, display_name)
         return
@@ -300,12 +311,16 @@ def edit_client(client_name, external, config_path_override, add_server, remove_
     for client_server_name, server_config in mcp_servers.items():
         if not isinstance(server_config, dict):
             continue
-        command = server_config.get("command", "")
-        args = server_config.get("args", [])
+        raw_cmd = server_config.get("command", "")
+        if isinstance(raw_cmd, list):
+            command = raw_cmd[0] if raw_cmd else ""
+            args = raw_cmd[1:] if len(raw_cmd) > 1 else []
+        else:
+            command = raw_cmd
+            args = server_config.get("args", [])
 
         if client_server_name.startswith("mcpm_") and command == "mcpm" and len(args) >= 2 and args[0] == "run":
-            actual_server_name = args[1]
-            mcpm_servers.add(actual_server_name)
+            mcpm_servers.add(args[1])
 
     # Get all MCPM global servers
     global_servers = global_config_manager.list_servers()
@@ -399,11 +414,6 @@ def _get_current_client_mcpm_state(client_manager, global_server_names=None):
                 continue
 
             if command == "mcpm":
-                if len(args) >= 3 and args[0] == "profile" and args[1] == "run":
-                    profiles.append(args[2])
-                elif len(args) >= 2 and args[0] == "run":
-                    individual_servers.append(args[1])
-            elif server_name.startswith("mcpm_") and command == "mcpm":
                 if len(args) >= 3 and args[0] == "profile" and args[1] == "run":
                     profiles.append(args[2])
                 elif len(args) >= 2 and args[0] == "run":
@@ -728,9 +738,13 @@ def _save_config_with_mcpm_servers(client_manager, config_path, current_config, 
         print_error("Error saving configuration", str(e))
 
 
-def _create_basic_config(config_path):
+def _create_basic_config(config_path, client_manager=None):
     """Create a basic MCP client config file."""
-    basic_config = {"mcpServers": {}}
+    if client_manager and hasattr(client_manager, "_get_empty_config"):
+        basic_config = client_manager._get_empty_config()
+    else:
+        configure_key = getattr(client_manager, "configure_key_name", "mcpServers") if client_manager else "mcpServers"
+        basic_config = {configure_key: {}}
 
     # Create the directory if it doesn't exist
     os.makedirs(os.path.dirname(config_path), exist_ok=True)
@@ -1176,6 +1190,7 @@ def _edit_client_non_interactive(
             return 1
 
         from mcpm.profile.profile_config import ProfileConfigManager
+
         profile_manager = ProfileConfigManager()
         available_profiles = profile_manager.list_profiles()
 
@@ -1261,7 +1276,9 @@ def _edit_client_non_interactive(
 
         # Show profile changes
         if final_profiles != set(current_profiles):
-            console.print(f"Profiles: [dim]{len(current_profiles)} profiles[/] → [cyan]{len(final_profiles)} profiles[/]")
+            console.print(
+                f"Profiles: [dim]{len(current_profiles)} profiles[/] → [cyan]{len(final_profiles)} profiles[/]"
+            )
 
             added_profiles = final_profiles - set(current_profiles)
             if added_profiles:
@@ -1275,7 +1292,9 @@ def _edit_client_non_interactive(
 
         # Show server changes
         if final_servers != set(current_individual_servers):
-            console.print(f"Servers: [dim]{len(current_individual_servers)} servers[/] → [cyan]{len(final_servers)} servers[/]")
+            console.print(
+                f"Servers: [dim]{len(current_individual_servers)} servers[/] → [cyan]{len(final_servers)} servers[/]"
+            )
 
             added_servers = final_servers - set(current_individual_servers)
             if added_servers:
@@ -1310,9 +1329,7 @@ def _edit_client_non_interactive(
             try:
                 profile_server_name = f"mcpm_profile_{profile_name}"
                 server_config = STDIOServerConfig(
-                    name=profile_server_name,
-                    command="mcpm",
-                    args=["profile", "run", profile_name]
+                    name=profile_server_name, command="mcpm", args=["profile", "run", profile_name]
                 )
                 client_manager.add_server(server_config)
             except Exception as e:
@@ -1331,11 +1348,7 @@ def _edit_client_non_interactive(
         for server_name in final_servers - set(current_individual_servers):
             try:
                 prefixed_name = f"mcpm_{server_name}"
-                server_config = STDIOServerConfig(
-                    name=prefixed_name,
-                    command="mcpm",
-                    args=["run", server_name]
-                )
+                server_config = STDIOServerConfig(name=prefixed_name, command="mcpm", args=["run", server_name])
                 client_manager.add_server(server_config)
             except Exception as e:
                 console.print(f"[red]Error adding server {server_name}: {e}[/]")

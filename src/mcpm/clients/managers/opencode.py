@@ -109,8 +109,10 @@ class OpenCodeManager(JSONClientManager):
                 entry["headers"] = server_config.headers
 
         else:
-            # CustomServerConfig — pass through raw config
-            entry = server_config.config if isinstance(server_config, CustomServerConfig) else server_config.to_dict()
+            if isinstance(server_config, CustomServerConfig):
+                entry = server_config.config
+            else:
+                entry = server_config.to_dict()
 
         return entry
 
