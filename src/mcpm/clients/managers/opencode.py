@@ -6,7 +6,6 @@ https://opencode.ai
 import json
 import logging
 import os
-import re
 import shutil
 from typing import Any, Dict, List, Optional
 
@@ -47,9 +46,18 @@ def _strip_jsonc(text: str) -> str:
                 i += 1
             continue
         elif c == ",":
-            # Trailing comma: skip whitespace and // comments before } or ]
-            rest = text[i + 1 :]
-            if re.match(r"(\s*(//[^\n]*)?\s*)*[}\]]", rest):
+            # Trailing comma: scan ahead past whitespace/comments for } or ]
+            j = i + 1
+            while j < length:
+                if text[j] in " \t\r\n":
+                    j += 1
+                elif text[j] == "/" and j + 1 < length and text[j + 1] == "/":
+                    j += 2
+                    while j < length and text[j] != "\n":
+                        j += 1
+                else:
+                    break
+            if j < length and text[j] in "}]":
                 i += 1
                 continue
             result.append(c)
