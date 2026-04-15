@@ -1,0 +1,56 @@
+{
+  "name": "elasticflow",
+  "display_name": "Elasticflow",
+  "description": "AI-native team workspace where agents and humans collaborate. Manage tables, documents, files, and publish live dashboards — all within your team's shared workspace.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/elasticflowapp/elasticflow-mcp"
+  },
+  "homepage": "https://www.elasticflow.app",
+  "author": {
+    "name": "Elasticflow",
+    "url": "https://www.elasticflow.app"
+  },
+  "license": "MIT",
+  "categories": [
+    "Productivity",
+    "Professional Apps"
+  ],
+  "tags": [
+    "workspace",
+    "tables",
+    "documents",
+    "dashboards",
+    "agents",
+    "collaboration",
+    "oauth",
+    "http"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://mcp.elasticflow.app/mcp",
+      "description": "Streamable HTTP endpoint with OAuth 2.1 (PKCE). No API key required.",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Build a sales pipeline table",
+      "description": "Create a structured table for tracking deals.",
+      "prompt": "Create a table called Pipeline with columns: company, deal size, stage, close date, owner"
+    },
+    {
+      "title": "Publish a client dashboard",
+      "description": "Build and publish a live dashboard without code.",
+      "prompt": "Build a client-facing dashboard showing project milestones for Acme Corp and publish it"
+    },
+    {
+      "title": "Search contracts",
+      "description": "Find information across all team documents.",
+      "prompt": "Search documents for all mentions of indemnification clause"
+    }
+  ],
+  "is_official": true,
+  "is_archived": false
+}
