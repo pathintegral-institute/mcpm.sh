@@ -12,8 +12,8 @@
   },
   "license": "MIT",
   "categories": [
-    "Data & Search",
-    "Business Intelligence"
+    "Web Services",
+    "Analytics"
   ],
   "tags": [
     "business-entity",
@@ -26,8 +26,8 @@
     "government-data"
   ],
   "installations": {
-    "sse": {
-      "type": "sse",
+    "http": {
+      "type": "http",
       "url": "https://mcp.apify.com/sse?tools=pink_comic/us-business-entity-search,pink_comic/building-permits-construction-leads,pink_comic/yellowpages-business-leads",
       "description": "Connect via Apify MCP gateway (SSE transport)"
     }
