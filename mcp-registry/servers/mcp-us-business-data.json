@@ -1,0 +1,122 @@
+{
+  "name": "mcp-us-business-data",
+  "display_name": "US Business Data",
+  "description": "Search US business entity registrations across 17 states, building permits in 400+ cities, and YellowPages business leads. Returns entity status, officers, registered agents, and addresses from official Secretary of State databases.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/avabuildsdata/mcp-us-business-data"
+  },
+  "homepage": "https://github.com/avabuildsdata/mcp-us-business-data#readme",
+  "author": {
+    "name": "avabuildsdata"
+  },
+  "license": "MIT",
+  "categories": [
+    "Web Services",
+    "Analytics"
+  ],
+  "tags": [
+    "business-entity",
+    "secretary-of-state",
+    "lead-generation",
+    "KYC",
+    "compliance",
+    "building-permits",
+    "yellow-pages",
+    "government-data"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://mcp.apify.com/sse?tools=pink_comic/us-business-entity-search,pink_comic/building-permits-construction-leads,pink_comic/yellowpages-business-leads",
+      "description": "Connect via Apify MCP gateway (SSE transport)"
+    }
+  },
+  "tools": [
+    {
+      "name": "search_business_entities",
+      "description": "Search Secretary of State records across 17 US states by business name",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "searchQuery": {
+            "type": "string",
+            "description": "Business name to search"
+          },
+          "states": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "State codes (NY, TX, CA, FL, etc.)"
+          },
+          "maxResults": {
+            "type": "integer",
+            "description": "Max results per state (1-300)"
+          }
+        },
+        "required": [
+          "searchQuery"
+        ]
+      }
+    },
+    {
+      "name": "search_building_permits",
+      "description": "Search building permits and contractor leads across 400+ US cities",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "description": "City name to search"
+          },
+          "permitType": {
+            "type": "string",
+            "description": "Type of permit (residential, commercial)"
+          }
+        },
+        "required": [
+          "city"
+        ]
+      }
+    },
+    {
+      "name": "search_yellowpages",
+      "description": "Search YellowPages for business contact info, phone, address, and reviews",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "searchQuery": {
+            "type": "string",
+            "description": "Business type or name"
+          },
+          "location": {
+            "type": "string",
+            "description": "City or ZIP code"
+          }
+        },
+        "required": [
+          "searchQuery",
+          "location"
+        ]
+      }
+    }
+  ],
+  "examples": [
+    {
+      "title": "Business entity lookup",
+      "description": "Search for a company across multiple states",
+      "prompt": "Find all business registrations for Tesla across US states"
+    },
+    {
+      "title": "Building permits",
+      "description": "Find recent construction permits",
+      "prompt": "Show me recent building permits in Seattle"
+    },
+    {
+      "title": "Local business search",
+      "description": "Find businesses by type and location",
+      "prompt": "Find plumbers in Austin, TX with their phone numbers and reviews"
+    }
+  ]
+}
