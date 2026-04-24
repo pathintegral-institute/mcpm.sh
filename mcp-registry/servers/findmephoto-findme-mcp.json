@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "@findmephoto/mcp",
+  "display_name": "FindMe.Photo MCP",
+  "description": "FindMe.Photo MCP is a server that uses AI to find your photos in a large gallery of images.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/findmephoto/findme-mcp"
+  },
+  "author": {
+    "name": "MCP Team"
+  },
+  "license": "MIT",
+  "categories": [
+    "AI Systems",
+    "Media Creation"
+  ],
+  "tags": [
+    "ai",
+    "photo-gallery",
+    "face-recognition"
+  ],
+  "arguments": {
+    "GALLERY_PATH": {
+      "description": "Path to the photo gallery directory.",
+      "required": true,
+      "example": "/path/to/your/photos"
+    },
+    "MODELS_PATH": {
+      "description": "Path to the directory where face recognition models will be stored.",
+      "required": true,
+      "example": "/path/to/models"
+    },
+    "PORT": {
+      "description": "Port for the server to listen on. Defaults to 3000.",
+      "required": false,
+      "example": "3000"
+    },
+    "HOST": {
+      "description": "Host for the server to bind to. Defaults to 0.0.0.0.",
+      "required": false,
+      "example": "0.0.0.0"
+    }
+  },
+  "tools": [
+    {
+      "name": "startIndexing",
+      "description": "Starts the indexing process for the photo gallery. This can take a long time and should only be run once initially or when new photos are added."
+    },
+    {
+      "name": "searchByImage",
+      "description": "Searches for a person in the indexed gallery using a provided image.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "image": {
+            "type": "string",
+            "description": "Base64 encoded image of the person to search for.",
+            "format": "byte"
+          }
+        }
+      },
+      "required": [
+        "image"
+      ]
+    }
+  ],
+  "resources": [],
+  "prompts": [],
+  "installations": {
+    "docker": {
+      "type": "docker",
+      "description": "Run using Docker (recommended). This method encapsulates all dependencies.",
+      "command": "docker",
+      "args": [
+        "run",
+        "-d",
+        "-p",
+        "3000:3000",
+        "-v",
+        "/path/to/your/photos:/app/gallery",
+        "-v",
+        "/path/to/models:/app/models",
+        "-e",
+        "GALLERY_PATH=/app/gallery",
+        "-e",
+        "MODELS_PATH=/app/models",
+        "ghcr.io/findmephoto/findme-mcp:latest"
+      ],
+      "recommended": true
+    },
+    "npm": {
+      "type": "npm",
+      "description": "Run from source using npm after cloning the repository.",
+      "package": "@findmephoto/mcp",
+      "command": "npx",
+      "args": [
+        "@findmephoto/mcp"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "title": "Search for a Person",
+      "description": "Example of how to use the /search endpoint with curl to find photos of a specific person.",
+      "prompt": "curl -X POST http://localhost:3000/search -H \"Content-Type: application/json\" -d '{\"image\": \"BASE64_ENCODED_IMAGE_STRING\"}'"
+    }
+  ],
+  "is_official": false,
+  "is_archived": false,
+  "docker_url": "ghcr.io/findmephoto/findme-mcp"
+}
