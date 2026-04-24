@@ -177,7 +177,7 @@ class OpenCodeManager(JSONClientManager):
             return RemoteServerConfig(
                 name=server_name,
                 url=client_config.get("url", ""),
-                headers=client_config.get("headers", {}),
+                headers=client_config.get("headers") or {},
                 enabled=client_config.get("enabled"),
             )
 

@@ -470,6 +470,14 @@ def test_from_client_format_malformed_env():
     assert server.env == {}
 
 
+def test_from_client_format_remote_null_headers():
+    """headers: null in config should fall back to empty dict."""
+    config = {"type": "remote", "url": "https://example.com/mcp", "headers": None}
+    server = OpenCodeManager.from_client_format("null-headers", config)
+    assert isinstance(server, RemoteServerConfig)
+    assert server.headers == {}
+
+
 # ------------------------------------------------------------------
 # enabled field
 # ------------------------------------------------------------------
