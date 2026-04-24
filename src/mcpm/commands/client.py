@@ -421,8 +421,6 @@ def _get_current_client_mcpm_state(client_manager, global_server_names=None):
                     profiles.append(args[2])
                 elif len(args) >= 2 and args[0] == "run":
                     individual_servers.append(args[1])
-            elif server_name in global_server_names:
-                individual_servers.append(server_name)
     except Exception:
         pass
 
