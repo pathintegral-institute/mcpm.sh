@@ -435,7 +435,7 @@ def test_client_edit_non_interactive_add_server(monkeypatch):
 
     assert result.exit_code == 0
     assert "Successfully updated" in result.output
-    
+
     # Verify that add_server was called with the prefixed server name
     mock_client_manager.add_server.assert_called()
     # Check that add_server was called with a server config for the prefixed server name
@@ -481,7 +481,7 @@ def test_client_edit_non_interactive_remove_server(monkeypatch):
     # The command runs without crashing and removes the server
     assert result.exit_code == 0
     assert "Cursor Configuration Management" in result.output
-    
+
     # Verify that remove_server was called with the prefixed server name
     mock_client_manager.remove_server.assert_called_with("mcpm_existing-server")
 
@@ -656,3 +656,39 @@ def test_main_client_command_help():
     assert "ls" in result.output
     assert "edit" in result.output
     assert "import" in result.output
+
+
+def test_edit_client_add_server_disabled_flag(monkeypatch, tmp_path):
+    import json
+
+    from mcpm.clients.managers.opencode import OpenCodeManager
+    from mcpm.core.schema import STDIOServerConfig
+
+    cfg_path = str(tmp_path / "opencode.json")
+
+    mock_server = STDIOServerConfig(name="context7", command="npx", args=["-y", "@upstash/context7-mcp"])
+    mock_global_config = Mock()
+    mock_global_config.list_servers.return_value = {"context7": mock_server}
+    mock_global_config.get_server.return_value = mock_server
+    monkeypatch.setattr("mcpm.commands.client.global_config_manager", mock_global_config)
+
+    manager = OpenCodeManager(config_path_override=cfg_path)
+    monkeypatch.setattr(
+        "mcpm.commands.client.ClientRegistry.get_client_manager",
+        Mock(return_value=manager),
+    )
+    monkeypatch.setattr(
+        "mcpm.commands.client.ClientRegistry.get_client_info",
+        Mock(return_value={"name": "OpenCode"}),
+    )
+
+    runner = CliRunner()
+    result = runner.invoke(edit_client, ["opencode", "--add-server", "context7", "--disabled", "--force"])
+
+    assert result.exit_code == 0
+
+    with open(cfg_path) as f:
+        data = json.load(f)
+
+    server_entry = data["mcp"].get("mcpm_context7", {})
+    assert server_entry.get("enabled") is False

@@ -468,3 +468,28 @@ def test_from_client_format_malformed_env():
     server = OpenCodeManager.from_client_format("bad-env", config)
     assert isinstance(server, STDIOServerConfig)
     assert server.env == {}
+
+
+# ------------------------------------------------------------------
+# enabled field
+# ------------------------------------------------------------------
+
+
+def test_to_client_format_disabled(manager):
+    server = STDIOServerConfig(name="disabled-server", command="npx", args=["-y", "pkg"], enabled=False)
+    result = manager.to_client_format(server)
+    assert result["enabled"] is False
+
+
+def test_to_client_format_enabled_none_not_written(manager):
+    server = STDIOServerConfig(name="default-server", command="npx", args=["-y", "pkg"])
+    result = manager.to_client_format(server)
+    assert "enabled" not in result
+
+
+def test_roundtrip_disabled(manager):
+    server = STDIOServerConfig(name="disabled-server", command="npx", args=["-y", "pkg"], enabled=False)
+    manager.add_server(server)
+    retrieved = manager.get_server("disabled-server")
+    assert isinstance(retrieved, STDIOServerConfig)
+    assert retrieved.enabled is False

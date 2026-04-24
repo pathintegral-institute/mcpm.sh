@@ -226,6 +226,7 @@ def list_clients(verbose):
 @click.option("--remove-profile", help="Comma-separated list of profile names to remove")
 @click.option("--set-profiles", help="Comma-separated list of profile names to set (replaces all)")
 @click.option("--force", is_flag=True, help="Skip confirmation prompts")
+@click.option("--disabled", is_flag=True, default=False, help="Add server as disabled (requires --add-server)")
 def edit_client(
     client_name,
     external,
@@ -237,6 +238,7 @@ def edit_client(
     remove_profile,
     set_profiles,
     force,
+    disabled,
 ):
     """Enable/disable MCPM-managed servers in the specified client configuration.
 
@@ -289,6 +291,7 @@ def edit_client(
             remove_profile=remove_profile,
             set_profiles=set_profiles,
             force=force,
+            disabled=disabled,
         )
         sys.exit(exit_code)
 
@@ -522,15 +525,29 @@ def _interactive_profile_server_selection(
             console.print("[yellow]No changes made.[/]")
             return
 
+        added_servers = new_servers_set - current_servers_set
+        disabled_servers = set()
+        if added_servers:
+            console.print("\n[bold]Set server startup state:[/]")
+            for server_name in sorted(added_servers):
+                try:
+                    should_disable = inquirer.confirm(
+                        message=f"Add '{server_name}' as disabled by default?",
+                        default=False,
+                    ).execute()
+                    if should_disable:
+                        disabled_servers.add(server_name)
+                except Exception:
+                    pass
+
         # Save the updated configuration
         _save_config_with_profiles_and_servers(
-            client_manager, config_path, current_config, selected_profiles, selected_servers, client_name
+            client_manager, config_path, current_config, selected_profiles, selected_servers, client_name, disabled_servers
         )
 
         # Show what changed
         added_profiles = new_profiles_set - current_profiles_set
         removed_profiles = current_profiles_set - new_profiles_set
-        added_servers = new_servers_set - current_servers_set
         removed_servers = current_servers_set - new_servers_set
 
         if added_profiles:
@@ -588,7 +605,7 @@ def _check_profile_server_conflicts(selected_profiles, selected_servers, availab
 
 
 def _save_config_with_profiles_and_servers(
-    client_manager, config_path, current_config, selected_profiles, selected_servers, client_name
+    client_manager, config_path, current_config, selected_profiles, selected_servers, client_name, disabled_servers=None
 ):
     """Save the client config with updated profile and server entries using the client manager."""
     try:
@@ -603,25 +620,22 @@ def _save_config_with_profiles_and_servers(
             if server_name.startswith("mcpm_"):
                 servers_to_remove.append(server_name)
             else:
-                # Check if it's an MCPM command
                 server_config = client_manager.get_server(server_name)
                 if server_config and hasattr(server_config, "command") and server_config.command == "mcpm":
                     servers_to_remove.append(server_name)
 
-        # Remove old MCPM servers and profiles
         for server_name in servers_to_remove:
             client_manager.remove_server(server_name)
 
-        # Add new MCPM profile entries
         for profile_name in selected_profiles:
             prefixed_name = f"mcpm_profile_{profile_name}"
             server_config = STDIOServerConfig(name=prefixed_name, command="mcpm", args=["profile", "run", profile_name])
             client_manager.add_server(server_config)
 
-        # Add new MCPM server entries
         for server_name in selected_servers:
             prefixed_name = f"mcpm_{server_name}"
-            server_config = STDIOServerConfig(name=prefixed_name, command="mcpm", args=["run", server_name])
+            enabled_value = False if (disabled_servers and server_name in disabled_servers) else None
+            server_config = STDIOServerConfig(name=prefixed_name, command="mcpm", args=["run", server_name], enabled=enabled_value)
             client_manager.add_server(server_config)
 
         console.print(f"[green]Successfully updated {client_name} configuration![/]")
@@ -1165,6 +1179,7 @@ def _edit_client_non_interactive(
     remove_profile: str = None,
     set_profiles: str = None,
     force: bool = False,
+    disabled: bool = False,
 ) -> int:
     """Edit client configuration non-interactively."""
     try:
@@ -1348,7 +1363,10 @@ def _edit_client_non_interactive(
         for server_name in final_servers - set(current_individual_servers):
             try:
                 prefixed_name = f"mcpm_{server_name}"
-                server_config = STDIOServerConfig(name=prefixed_name, command="mcpm", args=["run", server_name])
+                enabled_value = False if disabled else None
+                server_config = STDIOServerConfig(
+                    name=prefixed_name, command="mcpm", args=["run", server_name], enabled=enabled_value
+                )
                 client_manager.add_server(server_config)
             except Exception as e:
                 console.print(f"[red]Error adding server {server_name}: {e}[/]")

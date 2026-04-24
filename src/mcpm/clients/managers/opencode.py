@@ -163,6 +163,9 @@ class OpenCodeManager(JSONClientManager):
             else:
                 entry = server_config.to_dict()
 
+        if not isinstance(server_config, CustomServerConfig) and server_config.enabled is not None:
+            entry["enabled"] = server_config.enabled
+
         return entry
 
     @classmethod
@@ -175,6 +178,7 @@ class OpenCodeManager(JSONClientManager):
                 name=server_name,
                 url=client_config.get("url", ""),
                 headers=client_config.get("headers", {}),
+                enabled=client_config.get("enabled"),
             )
 
         # Local server: command can be an array ["npx", "-y", "pkg"] or a string "npx"
@@ -201,6 +205,7 @@ class OpenCodeManager(JSONClientManager):
             command=command,
             args=args,
             env=env,
+            enabled=client_config.get("enabled"),
         )
 
     # ------------------------------------------------------------------
