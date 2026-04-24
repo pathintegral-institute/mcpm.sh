@@ -6,6 +6,7 @@ from pydantic import BaseModel
 class BaseServerConfig(BaseModel):
     name: str
     profile_tags: List[str] = []
+    enabled: Optional[bool] = None
 
     def to_dict(self) -> Dict[str, Any]:
         return self.model_dump()
