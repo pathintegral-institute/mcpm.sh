@@ -4,6 +4,7 @@ Client manager implementations for various MCP clients
 This package contains specific implementations of client managers for MCP clients.
 """
 
+from mcpm.clients.managers.amp import AmpManager
 from mcpm.clients.managers.claude_code import ClaudeCodeManager
 from mcpm.clients.managers.claude_desktop import ClaudeDesktopManager
 from mcpm.clients.managers.cline import ClineManager
@@ -19,6 +20,7 @@ from mcpm.clients.managers.vscode import VSCodeManager
 from mcpm.clients.managers.windsurf import WindsurfManager
 
 __all__ = [
+    "AmpManager",
     "ClaudeCodeManager",
     "ClaudeDesktopManager",
     "CursorManager",
