@@ -383,7 +383,7 @@ Install an MCP server to the global configuration.
 mcpm install sqlite
 
 # Install with environment variables
-ANTHROPIC_API_KEY=sk-ant-... mcpm install claude
+ANTHROPIC_API_KEY=<your-anthropic-api-key> mcpm install claude
 
 # Force installation
 mcpm install filesystem --force
@@ -942,8 +942,8 @@ mcpm client edit cursor --remove-server "old1,old2"
 
 ```bash
 # Set API keys via environment
-export ANTHROPIC_API_KEY=sk-ant-...
-export OPENAI_API_KEY=sk-...
+export ANTHROPIC_API_KEY=<your-anthropic-api-key>
+export OPENAI_API_KEY=<your-openai-api-key>
 
 # Install servers that will use these keys
 mcpm install claude --force
