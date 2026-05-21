@@ -1,0 +1,57 @@
+{
+  "display_name": "NotFair Google Ads MCP",
+  "license": "Proprietary",
+  "tags": [
+    "google-ads",
+    "marketing",
+    "advertising",
+    "ads",
+    "ppc",
+    "campaign-management"
+  ],
+  "name": "notfair",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nowork-studio/toprank"
+  },
+  "homepage": "https://notfair.co",
+  "author": {
+    "name": "nowork-studio",
+    "url": "https://notfair.co"
+  },
+  "description": "Google Ads MCP server. Connect Claude and other AI agents to a Google Ads account: diagnose campaign performance (CPA, ROAS, search-term waste, quality scores), recommend optimizations (bids, budgets, negatives, ad copy), and execute approved changes via the Google Ads API with a built-in human-approval gate.",
+  "categories": [
+    "Professional Apps",
+    "Analytics"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://notfair.co/api/mcp/google_ads",
+      "description": "Hosted streamable-HTTP MCP server. Sign in at notfair.co to authorize a Google Ads account, then connect via this URL."
+    }
+  },
+  "examples": [
+    {
+      "title": "Account audit",
+      "description": "Quick performance and waste audit",
+      "prompt": "Audit my Google Ads account and find quick wins."
+    },
+    {
+      "title": "Search-term waste",
+      "description": "Find wasted spend on irrelevant queries",
+      "prompt": "Show me search terms with high spend and zero conversions over the last 30 days."
+    },
+    {
+      "title": "Bid optimization",
+      "description": "Adjust bids based on performance",
+      "prompt": "Recommend bid changes for my top 20 keywords by spend, then execute the approved changes."
+    },
+    {
+      "title": "Negative keyword cleanup",
+      "description": "Add negatives for wasteful queries",
+      "prompt": "Find irrelevant search terms wasting budget and add them as negative keywords."
+    }
+  ],
+  "is_official": true
+}
