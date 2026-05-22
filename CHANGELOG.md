@@ -1,3 +1,10 @@
+# [2.15.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.14.0...v2.15.0) (2026-05-22)
+
+
+### Features
+
+* add OpenCode client manager + per-server enabled/disabled flag ([#313](https://github.com/pathintegral-institute/mcpm.sh/issues/313)) ([b7c4815](https://github.com/pathintegral-institute/mcpm.sh/commit/b7c481541be672abbf193082851898d8aad74449))
+
 # [2.14.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.13.0...v2.14.0) (2026-03-27)
 
 
