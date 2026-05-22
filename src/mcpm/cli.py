@@ -3,6 +3,8 @@ MCPM CLI - Main entry point for the Model Context Protocol Manager CLI
 """
 
 # Import rich-click configuration before anything else
+import os
+from pathlib import Path
 from typing import Any, Dict
 
 from rich.console import Console
@@ -31,8 +33,6 @@ from mcpm.commands import (
 from mcpm.commands.share import share
 from mcpm.utils.logging_config import setup_logging
 from mcpm.utils.rich_click_config import click, get_header_text
-import os
-from pathlib import Path
 
 console = Console()          # stdout for regular CLI output
 err_console = Console(stderr=True)  # stderr for errors/tracebacks
