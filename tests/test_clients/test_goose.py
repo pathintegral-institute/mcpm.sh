@@ -85,3 +85,19 @@ def test_is_client_installed(goose_manager):
 
     with patch("os.path.isdir", return_value=False):
         assert not goose_manager.is_client_installed()
+
+
+def test_to_client_format_disabled(goose_manager):
+    from mcpm.core.schema import STDIOServerConfig
+
+    server = STDIOServerConfig(name="disabled-server", command="npx", args=["-y", "pkg"], enabled=False)
+    result = goose_manager.to_client_format(server)
+    assert result["enabled"] is False
+
+
+def test_to_client_format_enabled_none_defaults_true(goose_manager):
+    from mcpm.core.schema import STDIOServerConfig
+
+    server = STDIOServerConfig(name="default-server", command="npx", args=["-y", "pkg"])
+    result = goose_manager.to_client_format(server)
+    assert result["enabled"] is True
