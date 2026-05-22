@@ -1,0 +1,35 @@
+{
+  "name": "toolpipe",
+  "display_name": "ToolPipe",
+  "description": "145+ developer utility tools for AI agents via a single MCP connection, including code review, fake data generation, JSON Schema validation, security headers checking, API client generation, OpenAPI spec generation, CSV analysis, code minification, code formatting, QR codes, hashing, UUID, DNS lookup, regex testing, JWT decode, SQL formatting, XML/YAML conversion, text summarization, and more.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/COSAI-Labs/make-money-30day-challenge"
+  },
+  "homepage": "https://www.npmjs.com/package/@cosai-labs/toolpipe-mcp-server",
+  "author": {
+    "name": "COSAI-Labs"
+  },
+  "license": "MIT",
+  "categories": [
+    "Dev Tools"
+  ],
+  "tags": [
+    "developer-tools",
+    "code-review",
+    "security",
+    "devops",
+    "data-generation",
+    "api-development",
+    "text-processing",
+    "conversion"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": ["-y", "@cosai-labs/toolpipe-mcp-server"]
+    }
+  },
+  "is_official": false
+}
