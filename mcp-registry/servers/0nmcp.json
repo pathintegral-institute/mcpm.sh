@@ -1,0 +1,66 @@
+{
+  "name": "0nmcp",
+  "display_name": "0nMCP — Universal AI API Orchestrator",
+  "description": "564 tools across 26 services in 13 categories. Stripe, Slack, Discord, SendGrid, GitHub, Shopify, Gmail, Google Sheets, Jira, Zendesk, and more. Natural language AI orchestration with Vault encryption, Business Deed transfer, and Application Engine.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/0nork/0nMCP"
+  },
+  "homepage": "https://0nmcp.com",
+  "author": {
+    "name": "0nORK"
+  },
+  "license": "MIT",
+  "categories": [
+    "Dev Tools",
+    "Automation"
+  ],
+  "tags": [
+    "MCP",
+    "AI",
+    "orchestration",
+    "automation",
+    "api",
+    "stripe",
+    "slack",
+    "crm",
+    "vault",
+    "encryption"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "0nmcp"
+      ],
+      "env": {
+        "ANTHROPIC_API_KEY": {
+          "description": "Optional — enables AI-powered multi-step planning",
+          "required": false
+        }
+      },
+      "recommended": true,
+      "description": "Run the 0nMCP server using Node.js npx"
+    }
+  },
+  "examples": [
+    {
+      "title": "Multi-Service Orchestration",
+      "description": "Invoice a customer and notify a Slack channel",
+      "prompt": "Invoice john@acme.com for $500 and notify #sales on Slack when it's sent"
+    },
+    {
+      "title": "Service Connection",
+      "description": "Connect to a service with your API key",
+      "prompt": "Connect to Stripe with key sk_live_xxx"
+    },
+    {
+      "title": "CRM Management",
+      "description": "Search and manage CRM contacts",
+      "prompt": "Look up sarah@example.com in my CRM and send her a follow-up email"
+    }
+  ],
+  "is_official": true
+}
