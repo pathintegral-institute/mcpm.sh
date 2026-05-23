@@ -66,6 +66,7 @@ MCPM will support managing MCP servers for the following clients:
 - 🦢 Goose
 - 🔥 5ire
 - 🦘 Roo Code
+- 💻 OpenCode
 - ✨ More clients coming soon...
 
 ## 🔥 Command Line Interface (CLI)

@@ -184,7 +184,7 @@ class GooseClientManager(YAMLClientManager):
         result.update(
             {
                 "name": server_config.name,
-                "enabled": True,
+                "enabled": server_config.enabled if server_config.enabled is not None else True,
                 "description": server_config.name,
             }
         )
