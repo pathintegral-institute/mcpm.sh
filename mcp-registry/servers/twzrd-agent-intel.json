@@ -1,0 +1,81 @@
+{
+  "name": "twzrd-agent-intel",
+  "display_name": "TWZRD Agent Intel",
+  "description": "Trust + receipt layer for x402 agents on Solana. Free preflight tools score any Solana wallet; paid get_trust_receipt returns signed twzrd.receipt.v5 via HTTP 402 + USDC.",
+  "repository": {
+    "type": "git",
+    "url": "https://intel.twzrd.xyz"
+  },
+  "homepage": "https://intel.twzrd.xyz",
+  "author": {
+    "name": "TWZRD",
+    "url": "https://twzrd.xyz"
+  },
+  "license": "MIT",
+  "categories": [
+    "Finance",
+    "Web Services"
+  ],
+  "tags": [
+    "solana",
+    "x402",
+    "trust",
+    "identity",
+    "payments",
+    "blockchain",
+    "agents",
+    "web3"
+  ],
+  "arguments": {},
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://intel.twzrd.xyz/mcp",
+      "description": "Connect directly to the TWZRD Agent Intel MCP server (streamable-http transport). Free tools require no authentication. get_trust_receipt uses HTTP 402 + USDC micropayment (x402 protocol on Solana).",
+      "recommended": true
+    },
+    "python": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "twzrd-agent-intel"
+      ],
+      "description": "Run locally via PyPI package"
+    }
+  },
+  "tools": [
+    {
+      "name": "resolve_agent",
+      "description": "Resolve a Solana wallet address or agent identity to its canonical TWZRD profile."
+    },
+    {
+      "name": "score_agent",
+      "description": "Score a Solana wallet's trustworthiness based on on-chain signals and x402 payment history."
+    },
+    {
+      "name": "preflight_check",
+      "description": "Run a free preflight trust check on a Solana wallet before committing to a transaction."
+    },
+    {
+      "name": "verify_trust_receipt",
+      "description": "Verify a previously issued twzrd.receipt.v5 trust receipt signature."
+    },
+    {
+      "name": "get_trust_receipt",
+      "description": "Get a signed twzrd.receipt.v5 trust receipt for a Solana wallet. Paid via HTTP 402 + USDC micropayment on Solana (x402 protocol)."
+    }
+  ],
+  "examples": [
+    {
+      "title": "Check agent trustworthiness",
+      "description": "Score a Solana agent wallet before paying it",
+      "prompt": "Use TWZRD to score agent wallet GFpLvoc...ABC and tell me if I should trust it for a 10 USDC payment."
+    },
+    {
+      "title": "Get a trust receipt",
+      "description": "Obtain a signed trust receipt for an agent",
+      "prompt": "Get a twzrd trust receipt for Solana wallet D1Qkb...XYZ so I can verify it in my agent pipeline."
+    }
+  ],
+  "is_official": true
+}
