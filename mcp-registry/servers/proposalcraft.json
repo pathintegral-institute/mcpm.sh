@@ -1,0 +1,112 @@
+{
+  "name": "proposalcraft",
+  "display_name": "ProposalCraft",
+  "description": "MCP server for Claude Desktop that drafts client proposals in your voice. Save 2-3 past winning proposals as style examples; ProposalCraft provides them as context when drafting new proposals from a brief. Includes analyze_brief (extract budget signals, red flags, and key questions), draft_proposal, and load_examples for 12 bundled starter templates. Zero API key required, runs entirely locally.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jabbawocky/proposalcraft"
+  },
+  "homepage": "https://jabbawocky.github.io/proposalcraft/",
+  "author": {
+    "name": "jabbawocky"
+  },
+  "license": "MIT",
+  "categories": ["Productivity"],
+  "tags": [
+    "proposal",
+    "freelance",
+    "consulting",
+    "writing",
+    "claude-desktop",
+    "mcp-server",
+    "productivity",
+    "business"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "github:jabbawocky/proposalcraft"
+      ],
+      "description": "Run directly via npx — no global install needed"
+    }
+  },
+  "examples": [
+    {
+      "title": "Analyze a client brief",
+      "description": "Extract budget signals, red flags, scope risks, and key questions before drafting",
+      "prompt": "analyze_brief with this RFP: [paste client brief here]"
+    },
+    {
+      "title": "Draft a proposal",
+      "description": "Generate a proposal in your voice using your saved winning proposals as examples",
+      "prompt": "draft_proposal for this project: [paste project description]"
+    },
+    {
+      "title": "Load starter templates",
+      "description": "Load 12 bundled industry templates to get started without past proposals",
+      "prompt": "load_examples"
+    }
+  ],
+  "tools": [
+    {
+      "name": "draft_proposal",
+      "description": "Draft a client proposal in the user's voice using saved examples as style guides",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "brief": {
+            "type": "string",
+            "description": "The client brief or project description to draft a proposal for"
+          }
+        },
+        "required": ["brief"]
+      }
+    },
+    {
+      "name": "analyze_brief",
+      "description": "Analyze a client brief for budget signals, red flags, scope creep risks, and key questions",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "brief": {
+            "type": "string",
+            "description": "The client brief or RFP to analyze"
+          }
+        },
+        "required": ["brief"]
+      }
+    },
+    {
+      "name": "save_proposal",
+      "description": "Save a winning proposal as a style example for future drafts",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "The proposal text to save as an example"
+          },
+          "title": {
+            "type": "string",
+            "description": "A short title for this example"
+          }
+        },
+        "required": ["content"]
+      }
+    },
+    {
+      "name": "load_examples",
+      "description": "Load saved proposal examples or the 12 bundled starter templates",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": false
+}
