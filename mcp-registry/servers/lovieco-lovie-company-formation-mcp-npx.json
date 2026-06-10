@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "@lovieco/company-formation",
+  "display_name": "Lovie Company Formation",
+  "description": "An MCP server for forming companies in the US.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lovieco/lovie-company-formation-mcp-npx"
+  },
+  "homepage": "https://github.com/lovieco/lovie-company-formation-mcp-npx",
+  "author": {
+    "name": "Lovie",
+    "url": "https://lovie.co"
+  },
+  "license": "MIT",
+  "categories": [
+    "Professional Apps",
+    "Finance"
+  ],
+  "tags": [
+    "mcp-server",
+    "company-formation"
+  ],
+  "arguments": {
+    "LOVIE_API_KEY": {
+      "description": "Your Lovie API key, used to authenticate with the Lovie services.",
+      "required": true
+    },
+    "MCP_SERVER_PORT": {
+      "description": "The port for the MCP server to listen on. Defaults to 3000.",
+      "required": false,
+      "example": "3000"
+    }
+  },
+  "tools": [
+    {
+      "name": "form_company",
+      "description": "Forms a new company in the United States.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "company_name": {
+            "type": "string",
+            "description": "The name of the company to form."
+          },
+          "company_type": {
+            "type": "string",
+            "description": "The type of company to form (e.g., 'LLC', 'C-Corp')."
+          },
+          "state": {
+            "type": "string",
+            "description": "The state in which to form the company (e.g., 'DE', 'WY')."
+          },
+          "owner_name": {
+            "type": "string",
+            "description": "The full name of the company owner."
+          },
+          "owner_email": {
+            "type": "string",
+            "description": "The email address of the company owner."
+          }
+        }
+      },
+      "required": [
+        "company_name",
+        "company_type",
+        "state",
+        "owner_name",
+        "owner_email"
+      ]
+    }
+  ],
+  "installations": {
+    "docker": {
+      "type": "docker",
+      "description": "Run the server using a pre-built Docker image from GitHub Container Registry.",
+      "command": "docker",
+      "args": [
+        "run",
+        "-it",
+        "--rm",
+        "-e",
+        "LOVIE_API_KEY",
+        "-e",
+        "MCP_SERVER_PORT",
+        "-p",
+        "8008:8008",
+        "ghcr.io/lovieco/lovie-company-formation-mcp-npx:latest"
+      ],
+      "env": {
+        "LOVIE_API_KEY": "YOUR_API_KEY_HERE",
+        "MCP_SERVER_PORT": "8008"
+      }
+    }
+  },
+  "is_official": false,
+  "is_archived": false
+}
