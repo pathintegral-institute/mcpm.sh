@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "screen-pilot",
+  "display_name": "ScreenPilot",
+  "description": "A desktop-based AI agent that can operate your computer to perform tasks. It uses a vision-language model to understand the screen and execute actions through mouse and keyboard control.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Mtehabsim/ScreenPilot"
+  },
+  "homepage": "https://github.com/Mtehabsim/ScreenPilot",
+  "author": {
+    "name": "Teh-ab Sim"
+  },
+  "license": "MIT",
+  "categories": [
+    "AI Systems",
+    "Productivity",
+    "System Tools"
+  ],
+  "tags": [
+    "ai",
+    "vlm",
+    "desktop-automation"
+  ],
+  "arguments": {
+    "OPENAI_API_KEY": {
+      "description": "Your OpenAI API key, required for the vision-language model to function. This should be placed in a .env file in the root directory.",
+      "required": true,
+      "example": "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    },
+    "task": {
+      "description": "The task for the agent to perform, passed via the --task command-line argument.",
+      "required": false,
+      "example": "Open Chrome and search for the latest news on AI"
+    }
+  },
+  "tools": [],
+  "resources": [],
+  "prompts": [],
+  "installations": {
+    "source": {
+      "type": "python",
+      "command": "python",
+      "args": [
+        "main.py"
+      ],
+      "description": "Run from source after cloning the repository, creating a .env file with your OPENAI_API_KEY, and installing dependencies with `pip install -r requirements.txt`.",
+      "recommended": true,
+      "env": {
+        "OPENAI_API_KEY": "YOUR_OPENAI_API_KEY"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Perform a Web Search",
+      "description": "An example of asking ScreenPilot to open a browser and search for a topic.",
+      "prompt": "Open Chrome and search for the latest news on AI"
+    }
+  ],
+  "is_official": false,
+  "is_archived": false
+}
