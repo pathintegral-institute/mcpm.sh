@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/pathintegral-institute-mcpm-sh-badge.png)](https://mseep.ai/app/pathintegral-institute-mcpm-sh)
+
 ![Homebrew Formula Version](https://img.shields.io/homebrew/v/mcpm?style=flat-square&color=green)
 ![PyPI - Version](https://img.shields.io/pypi/v/mcpm?style=flat-square&color=green)
 ![GitHub Release](https://img.shields.io/github/v/release/pathintegral-institute/mcpm.sh?style=flat-square&color=green)
