@@ -1,7 +1,7 @@
 {
   "name": "openrouter-fusion",
   "display_name": "OpenRouter Fusion",
-  "description": "Multi-model deliberation for high-stakes answers via OpenRouter Fusion: a panel of models answers in parallel (with web search/fetch), then a judge (Opus) synthesizes consensus, contradictions and blind spots into one best answer. Ships named presets (quality, budget, research, research-eco, maths, medecine, code) with per-config reasoning effort / temperature / web-loop cap, a live per-preset cost estimate from OpenRouter prices, and an async start/poll flow so long deliberations never hit a client timeout.",
+  "description": "Multi-model deliberation for high-stakes answers via OpenRouter Fusion: a panel of models answers in parallel (with web search/fetch), then a judge (Opus) synthesizes consensus, contradictions and blind spots into one best answer. Ships named presets (quality, budget, research, research-eco, maths, medicine, code) with per-config reasoning effort / temperature / web-loop cap, a live per-preset cost estimate from OpenRouter prices, and an async start/poll flow so long deliberations never hit a client timeout.",
   "repository": {
     "type": "git",
     "url": "https://github.com/tboome33/openrouter-fusion-mcp"
@@ -55,7 +55,7 @@
       "env": {
         "OPENROUTER_API_KEY": "${OPENROUTER_API_KEY}"
       },
-      "description": "Runs the published npm package via npx. Presets 'quality' and 'budget' work out-of-the-box; the custom presets (research, research-eco, maths, medecine, code) are added as extra OPENROUTER_FUSION_<NAME> env vars — paste-ready values are in the repo's fusion-env-vars.json.",
+      "description": "Runs the published npm package via npx. Presets 'quality' and 'budget' work out-of-the-box; the custom presets (research, research-eco, maths, medicine, code) are added as extra OPENROUTER_FUSION_<NAME> env vars — paste-ready values are in the repo's fusion-env-vars.json.",
       "recommended": true
     }
   },
@@ -66,7 +66,7 @@
       "example": "sk-or-v1-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
     },
     "OPENROUTER_FUSION_RESEARCH": {
-      "description": "Optional. A named custom config, as a JSON object. One env var per config: OPENROUTER_FUSION_<SUFFIX>; the config name comes from the JSON `name` field (e.g. \"research-eco\"), falling back to the lowercased suffix. Built-in configs 'quality' and 'budget' need no env var. Fields: analysis_models (panel), judge (orchestrator), reasoning_effort (xhigh|high|medium|low|minimal|none), temperature (null = model default), max_tool_calls (1-16, caps the web loop; default 8), optional system. More ready-made presets (research-eco, maths, medecine, code) are in the repo's fusion-env-vars.json.",
+      "description": "Optional. A named custom config, as a JSON object. One env var per config: OPENROUTER_FUSION_<SUFFIX>; the config name comes from the JSON `name` field (e.g. \"research-eco\"), falling back to the lowercased suffix. Built-in configs 'quality' and 'budget' need no env var. Fields: analysis_models (panel), judge (orchestrator), reasoning_effort (xhigh|high|medium|low|minimal|none), temperature (null = model default), max_tool_calls (1-16, caps the web loop; default 8), optional system. More ready-made presets (research-eco, maths, medicine, code) are in the repo's fusion-env-vars.json.",
       "required": false,
       "example": "{\"name\":\"research\",\"analysis_models\":[\"~anthropic/claude-opus-latest\",\"openai/gpt-5.5\",\"~google/gemini-pro-latest\",\"deepseek/deepseek-v4-pro\"],\"judge\":\"~anthropic/claude-opus-latest\",\"reasoning_effort\":\"high\",\"temperature\":null,\"max_tool_calls\":8}"
     },
@@ -80,10 +80,10 @@
       "required": false,
       "example": "{\"name\":\"maths\",\"analysis_models\":[\"openai/gpt-5.5\",\"~google/gemini-pro-latest\",\"deepseek/deepseek-v4-pro\",\"z-ai/glm-5.2\"],\"judge\":\"~anthropic/claude-opus-latest\",\"reasoning_effort\":\"xhigh\",\"temperature\":null,\"max_tool_calls\":8}"
     },
-    "OPENROUTER_FUSION_MEDECINE": {
-      "description": "Optional. Ready-made \"medecine\" preset (French clinical-reasoning aid, cautious Opus judge - decision support, not a diagnosis). Full value incl. system prompt in fusion-env-vars.json.",
+    "OPENROUTER_FUSION_MEDICINE": {
+      "description": "Optional. Ready-made \"medicine\" preset (French clinical-reasoning aid, cautious Opus judge - decision support, not a diagnosis). Full value incl. system prompt in fusion-env-vars.json.",
       "required": false,
-      "example": "{\"name\":\"medecine\",\"analysis_models\":[\"~anthropic/claude-opus-latest\",\"openai/gpt-5.5\",\"~google/gemini-pro-latest\"],\"judge\":\"~anthropic/claude-opus-latest\",\"reasoning_effort\":\"high\",\"temperature\":null,\"max_tool_calls\":8}"
+      "example": "{\"name\":\"medicine\",\"analysis_models\":[\"~anthropic/claude-opus-latest\",\"openai/gpt-5.5\",\"~google/gemini-pro-latest\"],\"judge\":\"~anthropic/claude-opus-latest\",\"reasoning_effort\":\"high\",\"temperature\":null,\"max_tool_calls\":8}"
     },
     "OPENROUTER_FUSION_CODE": {
       "description": "Optional. Ready-made \"code\" preset (architecture/review, not raw code generation). Full value incl. system prompt in fusion-env-vars.json.",
