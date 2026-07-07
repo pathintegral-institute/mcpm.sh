@@ -1,7 +1,7 @@
 {
   "name": "agentservices",
-  "display_name": "AgentServices — APIs for AI Agents",
-  "description": "Remote MCP server with 50 API services for AI agents, paid via x402 (USDC on Base). Covers crypto data, technical indicators, DeFi analytics, market intelligence, portfolio intelligence, on-chain data, and AI inference. Free tier available. The tools array below highlights 11 representative tools; 50 services are available in total.",
+  "display_name": "AgentServices \u2014 APIs for AI Agents",
+  "description": "Remote MCP server with x402-paid APIs for AI agents: crypto data, technical indicators, DeFi analytics, market intelligence, portfolio intelligence, on-chain data, and AI inference. Free tier available. Tools listed below are representative highlights; full catalog at agentservices.to.",
   "repository": {
     "type": "git",
     "url": "https://github.com/vbkotecha/aiservices-api"
@@ -35,7 +35,7 @@
       "type": "http",
       "url": "https://agentservices.to/mcp",
       "recommended": true,
-      "description": "Remote MCP server with x402 payments. 11 free tools available without payment. 39 paid tools require USDC on Base via x402 protocol. See full list at agentservices.to."
+      "description": "Remote MCP server with x402 payments. Multiple free tools available without payment. Paid tools require USDC on Base via x402 protocol. See full catalog at agentservices.to."
     }
   },
   "tools": [
@@ -77,7 +77,7 @@
     },
     {
       "name": "inference",
-      "description": "LLM inference via OpenAI-compatible endpoint — GPT models proxied with x402 payment ($0.03)"
+      "description": "LLM inference via OpenAI-compatible endpoint \u2014 GPT models proxied with x402 payment ($0.03)"
     },
     {
       "name": "deep_research",
