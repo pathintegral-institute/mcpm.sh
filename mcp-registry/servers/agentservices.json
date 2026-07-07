@@ -1,0 +1,104 @@
+{
+  "name": "agentservices",
+  "display_name": "AgentServices — APIs for AI Agents",
+  "description": "Paid APIs for AI agents via x402. 50 services covering crypto data, market intelligence, DeFi analytics, on-chain data, portfolio intelligence, and AI inference. Agents discover and pay per-call using USDC micropayments.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vbkotecha/aiservices-api"
+  },
+  "homepage": "https://agentservices.to",
+  "author": {
+    "name": "Vivek Kotecha",
+    "url": "https://agentservices.to"
+  },
+  "license": "MIT",
+  "categories": [
+    "Finance",
+    "Analytics",
+    "Web Services"
+  ],
+  "tags": [
+    "x402",
+    "crypto",
+    "defi",
+    "market-data",
+    "onchain",
+    "micropayments",
+    "usdc",
+    "base",
+    "portfolio",
+    "inference",
+    "agents"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://agentservices.to/mcp",
+      "recommended": true,
+      "description": "Remote MCP server with x402 payments. Free tools available without payment. Paid tools require USDC on Base via x402 protocol."
+    }
+  },
+  "tools": [
+    {
+      "name": "crypto_prices",
+      "description": "Get current prices for any cryptocurrency (FREE)"
+    },
+    {
+      "name": "indicators",
+      "description": "Technical indicators (RSI, MACD, MA, Bollinger Bands) for any token ($0.02)"
+    },
+    {
+      "name": "defi_yields",
+      "description": "Live DeFi yield rates across protocols ($0.02)"
+    },
+    {
+      "name": "fear_greed",
+      "description": "Crypto Fear & Greed Index (FREE)"
+    },
+    {
+      "name": "search",
+      "description": "Web search optimized for agents ($0.01)"
+    },
+    {
+      "name": "market_pulse",
+      "description": "Aggregated market overview: fear-greed + trending + news + social + whales ($0.05)"
+    },
+    {
+      "name": "portfolio_intelligence",
+      "description": "Portfolio analysis: price + signal + risk + sentiment + verdict ($0.10)"
+    },
+    {
+      "name": "defi_strategy",
+      "description": "DeFi investment report: yields + TVL + comparison + risk ($0.25)"
+    },
+    {
+      "name": "onchain_overview",
+      "description": "On-chain analytics: whales + exchange flows + stablecoin flows + correlation ($0.15)"
+    },
+    {
+      "name": "deep_research",
+      "description": "Deep research: search + extract + synthesize in one call ($0.05)"
+    },
+    {
+      "name": "inference",
+      "description": "AI inference via OpenAI-compatible API ($0.03)"
+    }
+  ],
+  "examples": [
+    {
+      "title": "Check Crypto Prices",
+      "description": "Get current prices for BTC, ETH, or any token (free, no payment needed)",
+      "prompt": "What's the current price of Bitcoin?"
+    },
+    {
+      "title": "Market Intelligence Report",
+      "description": "Get a comprehensive market overview including fear-greed, trending tokens, whale activity, and news",
+      "prompt": "Give me a crypto market pulse report"
+    },
+    {
+      "title": "Portfolio Analysis",
+      "description": "Analyze a crypto holding with price, technical signals, risk assessment, and sentiment",
+      "prompt": "Analyze my BTC portfolio — is it a good time to hold or sell?"
+    }
+  ]
+}
