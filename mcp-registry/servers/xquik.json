@@ -1,0 +1,104 @@
+{
+  "name": "xquik",
+  "display_name": "Xquik MCP Server",
+  "description": "Hosted MCP server for X data, search, user lookup, monitoring, webhooks, and write actions through the Xquik API. Xquik is an independent third-party service and is not affiliated with X Corp.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Xquik-dev/x-twitter-scraper"
+  },
+  "homepage": "https://docs.xquik.com/mcp/overview",
+  "author": {
+    "name": "Xquik-dev",
+    "url": "https://github.com/Xquik-dev"
+  },
+  "license": "Proprietary",
+  "categories": [
+    "Web Services",
+    "Analytics",
+    "Messaging"
+  ],
+  "tags": [
+    "x",
+    "twitter",
+    "social media",
+    "tweet search",
+    "user lookup",
+    "monitoring",
+    "webhooks",
+    "automation",
+    "remote mcp"
+  ],
+  "arguments": {
+    "XQUIK_API_KEY": {
+      "description": "Xquik API key from https://dashboard.xquik.com/en/account",
+      "required": true,
+      "example": "xq_your_api_key"
+    }
+  },
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://xquik.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${XQUIK_API_KEY}"
+      },
+      "description": "Connect to the hosted Xquik MCP server using Streamable HTTP.",
+      "recommended": true
+    }
+  },
+  "tools": [
+    {
+      "name": "explore",
+      "description": "Search the Xquik API catalog before making live API calls. Runs against an in-memory catalog only, does not make network calls, and is limited by a 60 second execution timeout. Runtime surface: standard JavaScript built-ins plus read-only spec.endpoints.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "JavaScript async arrow function for inputSchema.properties.code that filters the Xquik endpoint catalog. Available globals are standard JavaScript built-ins and spec.endpoints. No filesystem, process, import, credential, fetch, or outbound network access is available."
+          }
+        },
+        "required": [
+          "code"
+        ]
+      }
+    },
+    {
+      "name": "xquik",
+      "description": "Execute authenticated Xquik API calls for X/Twitter data, publishing, monitors, events, webhooks, and account workflows. Runs in a restricted server-side JavaScript runtime with a 60 second execution timeout. Runtime surface: standard JavaScript built-ins, spec.endpoints, and xquik.request. Network access is limited to Xquik API requests made through xquik.request.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "JavaScript async arrow function for inputSchema.properties.code that calls xquik.request(path, options). Authentication is injected by the server. Available globals are standard JavaScript built-ins, spec.endpoints, and xquik.request. Code cannot read credentials, access the filesystem or process, import modules, call fetch directly, or contact external hosts directly; only xquik.request can reach the Xquik API."
+          }
+        },
+        "required": [
+          "code"
+        ]
+      }
+    }
+  ],
+  "resources": [],
+  "prompts": [],
+  "examples": [
+    {
+      "title": "Search Tweets",
+      "description": "Find recent X posts that match a query.",
+      "prompt": "Use Xquik to search recent tweets about MCP registries."
+    },
+    {
+      "title": "Look Up A User",
+      "description": "Fetch normalized profile data for an X user.",
+      "prompt": "Use Xquik to look up the X profile for @xquik."
+    },
+    {
+      "title": "Monitor A Keyword",
+      "description": "Create an account or keyword monitor when the API key has access.",
+      "prompt": "Use Xquik to monitor new X posts mentioning my product keyword."
+    }
+  ],
+  "is_official": false,
+  "is_archived": false
+}
