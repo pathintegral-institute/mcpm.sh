@@ -1,0 +1,115 @@
+{
+  "name": "taisly",
+  "display_name": "Taisly Social Media Posting",
+  "description": "Publish and schedule short-form videos to TikTok, Instagram Reels, YouTube Shorts, X, and Facebook through Taisly.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/taisly/agent"
+  },
+  "homepage": "https://taisly.com/en/ai-agent-kit",
+  "author": {
+    "name": "Taisly",
+    "url": "https://taisly.com/en"
+  },
+  "license": "MIT",
+  "categories": [
+    "Productivity",
+    "Web Services",
+    "Professional Apps"
+  ],
+  "tags": [
+    "social-media",
+    "video-publishing",
+    "automation",
+    "tiktok",
+    "instagram",
+    "youtube"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://app.taisly.com/mcp",
+      "description": "Hosted Streamable HTTP MCP server with OAuth. Remote publishing uses public video URLs.",
+      "recommended": true
+    },
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@taisly/agent",
+        "mcp"
+      ],
+      "package": "@taisly/agent",
+      "description": "Local stdio MCP server for agents that need to publish local video files."
+    }
+  },
+  "tools": [
+    {
+      "name": "taisly_agent_setup_start",
+      "description": "Start browser-based Taisly authentication for an AI agent."
+    },
+    {
+      "name": "taisly_agent_checkin",
+      "description": "Finish setup after the user approves authentication."
+    },
+    {
+      "name": "taisly_auth_status",
+      "description": "Check authentication and connected-account status."
+    },
+    {
+      "name": "taisly_platforms_list",
+      "description": "List connected social accounts."
+    },
+    {
+      "name": "taisly_platform_schema",
+      "description": "Get posting constraints for a destination platform."
+    },
+    {
+      "name": "taisly_platform_connect_start",
+      "description": "Start browser-based social account connection."
+    },
+    {
+      "name": "taisly_platform_connect_check",
+      "description": "Check whether a social account connection completed."
+    },
+    {
+      "name": "taisly_posts_validate",
+      "description": "Validate media, destinations, caption, and schedule."
+    },
+    {
+      "name": "taisly_posts_create",
+      "description": "Publish or schedule a confirmed video post."
+    },
+    {
+      "name": "taisly_posts_status",
+      "description": "Get status for a Taisly post."
+    },
+    {
+      "name": "taisly_posts_list",
+      "description": "List recent Taisly post history."
+    },
+    {
+      "name": "taisly_reposts_list",
+      "description": "List configured repost automations."
+    },
+    {
+      "name": "taisly_reposts_create",
+      "description": "Create a repost automation between connected accounts."
+    }
+  ],
+  "examples": [
+    {
+      "title": "Publish a confirmed video post",
+      "description": "Validate a video and destination accounts, request explicit confirmation, then publish or schedule it.",
+      "prompt": "List my connected accounts, validate this video post, and ask me to confirm before publishing it."
+    },
+    {
+      "title": "Audit recent posts",
+      "description": "Review recent publishing history and status.",
+      "prompt": "List my recent Taisly posts and summarize their current status."
+    }
+  ],
+  "is_official": true,
+  "is_archived": false
+}
