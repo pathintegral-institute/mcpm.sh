@@ -1,0 +1,616 @@
+{
+  "name": "bernstein",
+  "display_name": "Bernstein",
+  "description": "Deterministic orchestration for CLI coding agents. Bernstein runs Claude Code, Codex, Gemini CLI, Aider and 40+ other agent CLIs in parallel inside isolated git worktrees, and records every run in a replay journal with lineage tracking and an optional HMAC-chained audit log that can be verified offline. The MCP server exposes the orchestrator to any MCP client: start and stop runs, list and claim tasks, post progress updates and artifacts, approve blocked tasks, create subtasks, read cost summaries, and load skill packs. A capability resource and lineage resources are served alongside three built-in prompts.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sipyourdrink-ltd/bernstein"
+  },
+  "homepage": "https://bernstein.run",
+  "author": {
+    "name": "chernistry",
+    "url": "https://github.com/chernistry"
+  },
+  "license": "Apache-2.0",
+  "categories": [
+    "Dev Tools",
+    "AI Systems"
+  ],
+  "tags": [
+    "orchestration",
+    "coding agents",
+    "multi-agent",
+    "deterministic",
+    "git worktree",
+    "audit log",
+    "lineage",
+    "replay",
+    "provenance",
+    "cli"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "bernstein",
+        "bernstein",
+        "mcp"
+      ],
+      "description": "Run the MCP server over stdio without installing the package.",
+      "recommended": true
+    },
+    "python": {
+      "type": "python",
+      "command": "bernstein",
+      "args": [
+        "mcp"
+      ],
+      "package": "bernstein",
+      "description": "Run from an existing install (pip install bernstein). Requires Python 3.12+."
+    }
+  },
+  "examples": [
+    {
+      "title": "Start an orchestration run",
+      "description": "Hand Bernstein a goal and let it decompose and dispatch the work.",
+      "prompt": "Use bernstein to add retry with exponential backoff to the HTTP client and cover it with tests."
+    },
+    {
+      "title": "Check run status",
+      "description": "Read the current task counts for the local Bernstein server.",
+      "prompt": "What is the current status of my Bernstein tasks?"
+    },
+    {
+      "title": "Review spend",
+      "description": "Read the cost summary broken down by role.",
+      "prompt": "Show me the Bernstein cost breakdown per role so far."
+    }
+  ],
+  "tools": [
+    {
+      "name": "bernstein_health",
+      "description": "Liveness check - always succeeds if the MCP server is running.\n\nUse this to verify the Bernstein MCP connection is still alive.\n\nReturns:\n    JSON with status \"ok\".\n",
+      "inputSchema": {
+        "properties": {},
+        "title": "bernstein_healthArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "bernstein_run",
+      "description": "Start an orchestration run by posting a task to the Bernstein server.\n\nArgs:\n    goal: Description of what you want Bernstein to accomplish.\n    role: Specialist role to assign (backend, frontend, qa, security, …).\n    priority: 1=critical, 2=normal, 3=nice-to-have.\n    scope: Task scope - small, medium, or large.\n    complexity: Task complexity - low, medium, or high.\n    estimated_minutes: Rough time estimate in minutes.\n\nReturns:\n    JSON with the created task ID, title, and status.\n",
+      "inputSchema": {
+        "properties": {
+          "goal": {
+            "title": "Goal",
+            "type": "string"
+          },
+          "role": {
+            "default": "backend",
+            "title": "Role",
+            "type": "string"
+          },
+          "priority": {
+            "default": 2,
+            "title": "Priority",
+            "type": "integer"
+          },
+          "scope": {
+            "default": "medium",
+            "title": "Scope",
+            "type": "string"
+          },
+          "complexity": {
+            "default": "medium",
+            "title": "Complexity",
+            "type": "string"
+          },
+          "estimated_minutes": {
+            "default": 30,
+            "title": "Estimated Minutes",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "goal"
+        ],
+        "title": "bernstein_runArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "bernstein_status",
+      "description": "Return a summary of all task counts from the Bernstein server.\n\nReturns:\n    JSON with total, open, claimed, done, failed counts plus\n    a per-role breakdown.\n",
+      "inputSchema": {
+        "properties": {},
+        "title": "bernstein_statusArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "bernstein_tasks",
+      "description": "List tasks from the Bernstein server.\n\nArgs:\n    status: Optional filter - open, claimed, in_progress, done,\n        failed, blocked, or cancelled.\n\nReturns:\n    JSON array of task objects.\n",
+      "inputSchema": {
+        "properties": {
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          }
+        },
+        "title": "bernstein_tasksArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "bernstein_cost",
+      "description": "Return cost summary (total USD spent and per-role breakdown).\n\nReturns:\n    JSON with total_cost_usd and per-role cost breakdown.\n",
+      "inputSchema": {
+        "properties": {},
+        "title": "bernstein_costArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "bernstein_claim",
+      "description": "Claim the next eligible task and return a verifiable claim receipt.\n\nDrives the dependency-gated claim path: a task is offered only when\nevery id in its ``depends_on`` is present in ``completed_ids``. Unlike\na raw claim, the result is a signed, content-addressed **claim\nreceipt** the worker holds and can re-verify offline against the audit\nchain (``bernstein audit verify``), not a mutable task projection. A\nfilter that matches no eligible task returns a signed *refusal*\nreceipt - a claim attempt is never a silent skip.\n\nArgs:\n    claimer_id: The claiming worker's identity.\n    role: Only claim tasks for this role (e.g. ``backend``).\n    project: Only claim tasks in this project namespace.\n    capability: Only claim tasks requiring this capability.\n    completed_ids: Task ids whose dependencies are satisfied; a task\n        is eligible only when all of its ``depends_on`` are listed.\n    max_attempts: Skip tasks at or above this attempt count.\n    claimer_card_fingerprint: ``sha256:`` fingerprint of the claimer's\n        agent card key, bound into the receipt.\n\nReturns:\n    JSON of the signed claim receipt (``taskId``, ``granted``,\n    ``backlogHead``, ``filterDigest``, ``chainHead``, ``receiptHash``,\n    ``signature``, ``pollToken``, ...).\n",
+      "inputSchema": {
+        "properties": {
+          "claimer_id": {
+            "title": "Claimer Id",
+            "type": "string"
+          },
+          "role": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Role"
+          },
+          "project": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Project"
+          },
+          "capability": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Capability"
+          },
+          "completed_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Completed Ids"
+          },
+          "max_attempts": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Max Attempts"
+          },
+          "claimer_card_fingerprint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Claimer Card Fingerprint"
+          }
+        },
+        "required": [
+          "claimer_id"
+        ],
+        "title": "bernstein_claimArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "bernstein_update",
+      "description": "Post an incremental progress update as a signed journal entry.\n\nWraps the worker mailbox: the update is DLP-redacted, HMAC-chained\nonto the mailbox journal, Ed25519-signed, and mirrored to the audit\nchain (``task.mailbox_message``) before returning. The result IS the\nsigned journal entry - a worker holds a progress record it can verify\noffline against the same chain ``bernstein audit verify`` walks, not a\nbare status string.\n\nArgs:\n    task_id: The task the update is addressed to.\n    body: The progress message body (<= 4096 bytes).\n    sender: The posting worker's identity.\n    kind: Typed message kind - one of ``finding`` / ``artefact_ref``\n        / ``question``.\n    sender_card_fingerprint: ``sha256:`` fingerprint of the sender's\n        agent card key.\n\nReturns:\n    JSON of the signed mailbox journal entry (``seq``,\n    ``prev_entry_hash``, ``entry_hash``, ``signature``,\n    ``signer_public_key_pem``, ``body_hash``, ...).\n",
+      "inputSchema": {
+        "properties": {
+          "task_id": {
+            "title": "Task Id",
+            "type": "string"
+          },
+          "body": {
+            "title": "Body",
+            "type": "string"
+          },
+          "sender": {
+            "title": "Sender",
+            "type": "string"
+          },
+          "kind": {
+            "default": "finding",
+            "title": "Kind",
+            "type": "string"
+          },
+          "sender_card_fingerprint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Sender Card Fingerprint"
+          }
+        },
+        "required": [
+          "task_id",
+          "body",
+          "sender"
+        ],
+        "title": "bernstein_updateArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "bernstein_post_artifact",
+      "description": "Attach a journal-anchored artifact to a task you hold the claim for.\n\nThe artifact is stored content-addressed, sealed into the lineage\nspine, appended to the task's Merkle-chained journal, and mirrored to\nthe audit chain. The returned record IS the receipt: its identity is the\nspine entry hash, and any reviewer can re-verify the content hash offline\nagainst the same chain ``bernstein audit verify`` walks. Reposting a key\nappends a new version chained to the prior one. There is no way to set\nprogress here - progress is a chain-computed projection of journaled\nwork, never postable.\n\nArgs:\n    task_id: The task to attach the artifact to. You must hold its claim.\n    key: The artifact slot; reposting a key appends a new version.\n    artifact_type: One of ``report`` (markdown ``body``), ``table``\n        (``columns`` + ``rows``), or ``link`` (``url`` + ``link_kind``).\n    poster: Your claim identity; posting against a task you do not hold\n        is refused and the refusal is audit-recorded.\n    body: Markdown body, for ``report`` artifacts.\n    columns: Column headers, for ``table`` artifacts.\n    rows: Rows of cells, for ``table`` artifacts.\n    url: The URL, for ``link`` artifacts.\n    link_kind: The declared link kind - ``preview`` / ``dashboard`` /\n        ``document`` - for ``link`` artifacts.\n\nReturns:\n    JSON of the chain-anchored artifact record (``key``, ``version``,\n    ``content_hash``, ``spine_entry_hash``, ``journal_index``, ...).\n",
+      "inputSchema": {
+        "properties": {
+          "task_id": {
+            "title": "Task Id",
+            "type": "string"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "artifact_type": {
+            "title": "Artifact Type",
+            "type": "string"
+          },
+          "poster": {
+            "title": "Poster",
+            "type": "string"
+          },
+          "body": {
+            "default": "",
+            "title": "Body",
+            "type": "string"
+          },
+          "columns": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Columns"
+          },
+          "rows": {
+            "anyOf": [
+              {
+                "items": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Rows"
+          },
+          "url": {
+            "default": "",
+            "title": "Url",
+            "type": "string"
+          },
+          "link_kind": {
+            "default": "",
+            "title": "Link Kind",
+            "type": "string"
+          }
+        },
+        "required": [
+          "task_id",
+          "key",
+          "artifact_type",
+          "poster"
+        ],
+        "title": "bernstein_post_artifactArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "bernstein_stop",
+      "description": "Request a graceful Bernstein shutdown by writing a SHUTDOWN signal.\n\nWrites ``.sdd/runtime/signals/SHUTDOWN`` in the project directory,\nwhich the orchestrator detects and shuts down gracefully.\n\nArgs:\n    workdir: Project root directory (default: current directory).\n\nReturns:\n    Confirmation message.\n",
+      "inputSchema": {
+        "properties": {
+          "workdir": {
+            "default": ".",
+            "title": "Workdir",
+            "type": "string"
+          }
+        },
+        "title": "bernstein_stopArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "bernstein_approve",
+      "description": "Approve a pending or blocked task, marking it complete.\n\nThis is used for approval gates - when a task is awaiting human\nsign-off before proceeding.\n\nArgs:\n    task_id: ID of the task to approve.\n    note: Optional approval note recorded as the result summary.\n\nReturns:\n    JSON with the updated task status.\n",
+      "inputSchema": {
+        "properties": {
+          "task_id": {
+            "title": "Task Id",
+            "type": "string"
+          },
+          "note": {
+            "default": "Approved via MCP",
+            "title": "Note",
+            "type": "string"
+          }
+        },
+        "required": [
+          "task_id"
+        ],
+        "title": "bernstein_approveArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "bernstein_create_subtask",
+      "description": "Create a subtask linked to a parent task.\n\nAgents call this to decompose their current work into subtasks\nduring execution.  The parent task is automatically transitioned\nto WAITING_FOR_SUBTASKS status.\n\nArgs:\n    parent_task_id: ID of the parent task that this subtask belongs to.\n    goal: Description of what the subtask should accomplish.\n    role: Specialist role to assign (backend, frontend, qa, …).\n    priority: 1=critical, 2=normal, 3=nice-to-have.\n    scope: Task scope - small, medium, or large.\n    complexity: Task complexity - low, medium, or high.\n    estimated_minutes: Rough time estimate in minutes.\n\nReturns:\n    JSON with the created subtask ID, parent_task_id, title, and status.\n",
+      "inputSchema": {
+        "properties": {
+          "parent_task_id": {
+            "title": "Parent Task Id",
+            "type": "string"
+          },
+          "goal": {
+            "title": "Goal",
+            "type": "string"
+          },
+          "role": {
+            "default": "auto",
+            "title": "Role",
+            "type": "string"
+          },
+          "priority": {
+            "default": 2,
+            "title": "Priority",
+            "type": "integer"
+          },
+          "scope": {
+            "default": "medium",
+            "title": "Scope",
+            "type": "string"
+          },
+          "complexity": {
+            "default": "medium",
+            "title": "Complexity",
+            "type": "string"
+          },
+          "estimated_minutes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Estimated Minutes"
+          }
+        },
+        "required": [
+          "parent_task_id",
+          "goal"
+        ],
+        "title": "bernstein_create_subtaskArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "bernstein_task_handle",
+      "description": "Return a verifiable Tasks-extension handle for a run, by run id.\n\nThe handle's status is a pure projection of the run journal, and it\nembeds the run's audit-chain head so the client can later verify the\ntask it watched corresponds to the audited run (``bernstein audit\nverify`` or the offline verifier). Polling is stateless: any server\ninstance reprojects the same handle from the on-disk journal.\n\nArgs:\n    run_id: The run identifier whose journal to project. Must be a\n        plain identifier - path separators and traversal are refused.\n    workdir: Project root directory (default: current directory).\n\nReturns:\n    JSON of the Tasks-extension task-handle body (``taskId``,\n    ``runId``, ``status``, ``journalHead``, ``chainHead``,\n    ``receiptHash``, ``pollToken``, ...).\n",
+      "inputSchema": {
+        "properties": {
+          "run_id": {
+            "title": "Run Id",
+            "type": "string"
+          },
+          "workdir": {
+            "default": ".",
+            "title": "Workdir",
+            "type": "string"
+          }
+        },
+        "required": [
+          "run_id"
+        ],
+        "title": "bernstein_task_handleArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "bernstein_context",
+      "description": "Return the worker's context capsule, optionally verified offline.\n\nArgs:\n    task_id: The task whose capsule to read. Must be a plain identifier -\n        path separators and traversal are refused.\n    workdir: Project root directory (default: current directory).\n    verify: When true, recompute the capsule offline from the run journal\n        and audit chain and include the verdict.\n\nReturns:\n    JSON of the capsule projection (and, when verify is set, the offline\n    verification result).\n",
+      "inputSchema": {
+        "properties": {
+          "task_id": {
+            "title": "Task Id",
+            "type": "string"
+          },
+          "workdir": {
+            "default": ".",
+            "title": "Workdir",
+            "type": "string"
+          },
+          "verify": {
+            "default": false,
+            "title": "Verify",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "task_id"
+        ],
+        "title": "bernstein_contextArguments",
+        "type": "object"
+      }
+    },
+    {
+      "name": "load_skill",
+      "description": "Load a skill pack body (and optionally a reference or script).\n\nAgents receive only a compact skill index in their system prompt.\nCall this tool to fetch the full ``SKILL.md`` body for a skill\nwhen you decide it's relevant to the current task. Pass\n``reference`` to get a deeper-context file or ``script`` to read\nthe content of an executable helper.\n\nArgs:\n    name: Skill name (matches the index entry, e.g. ``\"backend\"``).\n    reference: Optional filename under ``references/`` - for\n        example ``\"python-conventions.md\"``.\n    script: Optional filename under ``scripts/`` - for example\n        ``\"lint.sh\"``. The script content is returned as text; the\n        MCP harness does not execute it.\n\nReturns:\n    JSON with ``name``, ``body``, ``available_references``,\n    ``available_scripts``, and the optional fetched content.\n",
+      "inputSchema": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "reference": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Reference"
+          },
+          "script": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Script"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "load_skillArguments",
+        "type": "object"
+      }
+    }
+  ],
+  "prompts": [
+    {
+      "name": "orchestrate_goal",
+      "description": "Plan a Bernstein orchestration run for a single goal.",
+      "arguments": [
+        {
+          "name": "goal",
+          "required": true
+        },
+        {
+          "name": "role",
+          "required": false
+        },
+        {
+          "name": "scope",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "triage_failed_tasks",
+      "description": "Triage the most recent failed tasks and propose next actions.",
+      "arguments": [
+        {
+          "name": "limit",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "cost_recap",
+      "description": "Summarise Bernstein cost by role for a stated window.",
+      "arguments": [
+        {
+          "name": "window",
+          "required": false
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "uri": "bernstein://capability",
+      "name": "bernstein_capability",
+      "description": "Runtime capability card: transports, auth, tiers, meter, spec rev.",
+      "mimeType": "application/json"
+    },
+    {
+      "uri": "lineage://stats",
+      "name": "lineage_stats",
+      "description": "Summary counts over the entire lineage log.",
+      "mimeType": "application/json"
+    }
+  ],
+  "is_official": true
+}
