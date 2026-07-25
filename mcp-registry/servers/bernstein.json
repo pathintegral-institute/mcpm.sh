@@ -490,6 +490,33 @@
       }
     },
     {
+      "name": "bernstein_context",
+      "description": "Return the worker's context capsule, optionally verified offline.\n\nArgs:\n    task_id: The task whose capsule to read. Must be a plain identifier -\n        path separators and traversal are refused.\n    workdir: Project root directory (default: current directory).\n    verify: When true, recompute the capsule offline from the run journal\n        and audit chain and include the verdict.\n\nReturns:\n    JSON of the capsule projection (and, when verify is set, the offline\n    verification result).\n",
+      "inputSchema": {
+        "properties": {
+          "task_id": {
+            "title": "Task Id",
+            "type": "string"
+          },
+          "workdir": {
+            "default": ".",
+            "title": "Workdir",
+            "type": "string"
+          },
+          "verify": {
+            "default": false,
+            "title": "Verify",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "task_id"
+        ],
+        "title": "bernstein_contextArguments",
+        "type": "object"
+      }
+    },
+    {
       "name": "load_skill",
       "description": "Load a skill pack body (and optionally a reference or script).\n\nAgents receive only a compact skill index in their system prompt.\nCall this tool to fetch the full ``SKILL.md`` body for a skill\nwhen you decide it's relevant to the current task. Pass\n``reference`` to get a deeper-context file or ``script`` to read\nthe content of an executable helper.\n\nArgs:\n    name: Skill name (matches the index entry, e.g. ``\"backend\"``).\n    reference: Optional filename under ``references/`` - for\n        example ``\"python-conventions.md\"``.\n    script: Optional filename under ``scripts/`` - for example\n        ``\"lint.sh\"``. The script content is returned as text; the\n        MCP harness does not execute it.\n\nReturns:\n    JSON with ``name``, ``body``, ``available_references``,\n    ``available_scripts``, and the optional fetched content.\n",
       "inputSchema": {
