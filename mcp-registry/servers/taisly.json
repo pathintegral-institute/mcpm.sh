@@ -29,8 +29,7 @@
     "http": {
       "type": "http",
       "url": "https://app.taisly.com/mcp",
-      "description": "Hosted Streamable HTTP MCP server with OAuth. Remote publishing uses public video URLs.",
-      "recommended": true
+      "description": "Hosted Streamable HTTP MCP server with OAuth. Remote publishing uses public video URLs."
     },
     "npm": {
       "type": "npm",
