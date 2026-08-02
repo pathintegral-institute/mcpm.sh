@@ -1,0 +1,102 @@
+{
+  "name": "talivia",
+  "display_name": "Talivia Revenue Analytics",
+  "description": "Install and verify revenue-first website analytics, track live events, and connect traffic to payment attribution through Talivia.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/talivia-group/agent"
+  },
+  "homepage": "https://talivia.com/ai-agent-kit",
+  "author": {
+    "name": "Talivia",
+    "url": "https://talivia.com"
+  },
+  "license": "MIT",
+  "categories": [
+    "Analytics",
+    "Web Services",
+    "Professional Apps"
+  ],
+  "tags": [
+    "analytics",
+    "website-analytics",
+    "revenue-attribution",
+    "marketing-attribution",
+    "payments",
+    "tracking"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://talivia.com/mcp",
+      "description": "Hosted Streamable HTTP MCP server with browser-based OAuth."
+    },
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@talivia/agent",
+        "mcp"
+      ],
+      "package": "@talivia/agent",
+      "description": "Local stdio MCP server and Agent Kit."
+    }
+  },
+  "tools": [
+    {
+      "name": "talivia_account_status",
+      "description": "Check Talivia authentication and account status."
+    },
+    {
+      "name": "talivia_websites_list",
+      "description": "List websites available in the authenticated Talivia account."
+    },
+    {
+      "name": "talivia_websites_create",
+      "description": "Create a website in Talivia after user confirmation."
+    },
+    {
+      "name": "talivia_tracking_snippet_get",
+      "description": "Get the tracking snippet for a Talivia website."
+    },
+    {
+      "name": "talivia_framework_install_plan_get",
+      "description": "Generate framework-specific tracking installation instructions."
+    },
+    {
+      "name": "talivia_setup_status_get",
+      "description": "Check analytics setup and verification status."
+    },
+    {
+      "name": "talivia_tracker_verify",
+      "description": "Verify that a website sends live tracking events to Talivia."
+    },
+    {
+      "name": "talivia_payment_connect_start",
+      "description": "Start the secure browser flow for payment attribution."
+    },
+    {
+      "name": "talivia_payment_status_get",
+      "description": "Check payment attribution connection status."
+    },
+    {
+      "name": "talivia_checkout_attribution_guide_get",
+      "description": "Get checkout attribution guidance for the selected website."
+    }
+  ],
+  "examples": [
+    {
+      "title": "Install and verify analytics",
+      "description": "Choose a website, install the correct tracking snippet, and verify live events.",
+      "prompt": "Install Talivia analytics on this website and verify that live events are arriving."
+    },
+    {
+      "title": "Connect revenue attribution",
+      "description": "Connect payments and explain which traffic sources become revenue.",
+      "prompt": "Connect payment attribution and show me which campaigns and referrers generate revenue."
+    }
+  ],
+  "is_official": true,
+  "is_archived": false
+}
