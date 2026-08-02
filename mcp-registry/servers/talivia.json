@@ -40,7 +40,8 @@
         "mcp"
       ],
       "package": "@talivia/agent",
-      "description": "Local stdio MCP server and Agent Kit."
+      "description": "Local stdio MCP server and Agent Kit.",
+      "recommended": true
     }
   },
   "tools": [
