@@ -1,0 +1,165 @@
+{
+  "name": "gen-ai-skills",
+  "display_name": "Picsart Gen AI Skills",
+  "description": "A collection of generative AI skills that can be run as standalone servers or integrated into larger applications.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PicsArt/gen-ai-skills"
+  },
+  "author": {
+    "name": "Picsart",
+    "email": "info@picsart.com",
+    "url": "https://picsart.com"
+  },
+  "license": "Apache-2.0",
+  "categories": [
+    "AI Systems",
+    "Media Creation"
+  ],
+  "tags": [
+    "generative-ai",
+    "text-to-image",
+    "docker"
+  ],
+  "arguments": {
+    "skill": {
+      "description": "The name of the skill to run (e.g., text_to_image, image_to_image, controlnet, text_to_video).",
+      "required": true,
+      "example": "text_to_image"
+    },
+    "HUGGING_FACE_HUB_TOKEN": {
+      "description": "Hugging Face Hub token required to download the models. Can be set as an environment variable.",
+      "required": true,
+      "example": "hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    },
+    "port": {
+      "description": "The port to run the server on.",
+      "required": false,
+      "example": "8080"
+    },
+    "host": {
+      "description": "The host to run the server on.",
+      "required": false,
+      "example": "0.0.0.0"
+    }
+  },
+  "tools": [
+    {
+      "name": "text_to_image",
+      "description": "Generates an image from a text prompt.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "The text prompt to generate an image from."
+          }
+        }
+      },
+      "required": [
+        "prompt"
+      ]
+    },
+    {
+      "name": "image_to_image",
+      "description": "Generates an image from a text prompt and an input image.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "The text prompt to guide the image generation."
+          },
+          "image": {
+            "type": "string",
+            "description": "Base64 encoded input image."
+          }
+        }
+      },
+      "required": [
+        "prompt",
+        "image"
+      ]
+    },
+    {
+      "name": "controlnet",
+      "description": "Generates an image from a text prompt, an input image, and a condition.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "The text prompt to guide the image generation."
+          },
+          "image": {
+            "type": "string",
+            "description": "Base64 encoded input image."
+          },
+          "condition": {
+            "type": "string",
+            "description": "The control condition for generation."
+          }
+        }
+      },
+      "required": [
+        "prompt",
+        "image",
+        "condition"
+      ]
+    },
+    {
+      "name": "text_to_video",
+      "description": "Generates a video from a text prompt.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "The text prompt to generate a video from."
+          }
+        }
+      },
+      "required": [
+        "prompt"
+      ]
+    }
+  ],
+  "installations": {
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-p",
+        "8080:8080",
+        "-e",
+        "SKILL_NAME=<skill_name>",
+        "-e",
+        "HUGGING_FACE_HUB_TOKEN=<your_token>",
+        "picsart/gen-ai-skills"
+      ],
+      "description": "Run the server in a Docker container. Build the image first with 'docker build -t picsart/gen-ai-skills .' or pull from a registry if available. Replace <skill_name> with the desired skill and <your_token> with your Hugging Face token.",
+      "recommended": true
+    },
+    "python": {
+      "type": "python",
+      "command": "python",
+      "args": [
+        "-m",
+        "gen_ai_skills.server",
+        "--skill",
+        "<skill_name>"
+      ],
+      "description": "Run the server using Python after installing with 'pip install gen-ai-skills'. Replace <skill_name> with the desired skill. Ensure HUGGING_FACE_HUB_TOKEN is set as an environment variable."
+    }
+  },
+  "examples": [
+    {
+      "title": "Generate an image from text",
+      "description": "This example uses the text_to_image skill to generate a picture of an astronaut on Mars via a cURL request to the /invoke endpoint.",
+      "prompt": "curl -X POST -H \"Content-Type: application/json\" -d '{\"prompt\": \"a photo of an astronaut riding a horse on mars\"}' http://localhost:8080/invoke"
+    }
+  ],
+  "is_official": true,
+  "is_archived": false
+}
