@@ -4,7 +4,7 @@
   "description": "Official MCP server for OpenPost. Inspect connected accounts and media, draft and review social content, schedule or publish it, and manage comments where supported.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/rodrgds/openpost"
+    "url": "https://github.com/getopenpost/openpost"
   },
   "homepage": "https://docs.openpost.social/mcp/",
   "author": {
