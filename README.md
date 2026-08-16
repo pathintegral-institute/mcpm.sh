@@ -441,4 +441,4 @@ MIT
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=pathintegral-institute/mcpm.sh&type=Date)](https://www.star-history.com/#pathintegral-institute/mcpm.sh&Date)
+[![Star History Chart](https://star-history.dera.page/svg?repos=pathintegral-institute/mcpm.sh&type=Date)](https://star-history.dera.page/#pathintegral-institute/mcpm.sh&Date)
