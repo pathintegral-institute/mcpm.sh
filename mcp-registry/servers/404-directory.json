@@ -1,0 +1,71 @@
+{
+  "name": "404-directory",
+  "display_name": "404.directory",
+  "description": "Public read-only MCP infrastructure for searching current official AI and cloud documentation, verifying live web deployments, and discovering tools with transparent trust metadata.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MM-sheng/404-directory"
+  },
+  "homepage": "https://404.directory",
+  "author": {
+    "name": "404.directory",
+    "url": "https://404.directory"
+  },
+  "license": "MIT",
+  "categories": ["Dev Tools", "Web Services", "MCP Tools"],
+  "tags": [
+    "official documentation",
+    "deployment verification",
+    "tool discovery",
+    "trust metadata",
+    "read only"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@mmvv1638/404-directory-mcp",
+        "--source",
+        "mcpm"
+      ],
+      "package": "@mmvv1638/404-directory-mcp",
+      "description": "Identity-preserving stdio bridge to the public 404.directory Streamable HTTP service. No account or API key is required.",
+      "recommended": true
+    }
+  },
+  "tools": [
+    { "name": "understand_webpage" },
+    { "name": "verify_web" },
+    { "name": "search_tools" },
+    { "name": "get_tool" },
+    { "name": "compare_tools" },
+    { "name": "get_trust_score" },
+    { "name": "recommend_tools" },
+    { "name": "list_capabilities" },
+    { "name": "get_capability_graph" },
+    { "name": "search_official_docs" },
+    { "name": "inspect_tool_server" },
+    { "name": "invoke_registered_tool" }
+  ],
+  "examples": [
+    {
+      "title": "Research current official documentation",
+      "description": "Answer a real implementation question using first-party sources.",
+      "prompt": "Use search_official_docs to find the current official guidance for MCP Streamable HTTP. Cite the first-party sources and distinguish facts from inference."
+    },
+    {
+      "title": "Verify a public deployment",
+      "description": "Check a concrete release claim using structured public evidence.",
+      "prompt": "Use verify_web to confirm that https://404.directory is reachable over HTTPS and currently exposes release 0.9.2."
+    },
+    {
+      "title": "Choose a trusted read-only tool",
+      "description": "Search and inspect tools before recommending one.",
+      "prompt": "Use search_tools, get_tool, and get_trust_score to recommend a read-only tool for verifying a public web deployment."
+    }
+  ],
+  "is_official": true,
+  "is_archived": false
+}
