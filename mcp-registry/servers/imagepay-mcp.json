@@ -1,0 +1,673 @@
+{
+  "name": "imagepay-mcp",
+  "display_name": "ImagePay",
+  "description": "x402 pay-per-call image, PDF, QR and utility micro-API marketplace for AI agents. 40 tools gated by USDC micro-payments on Base (no API key). Connect over Streamable HTTP \u2014 no install required.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/neuralmint/imagepay-mcp"
+  },
+  "homepage": "https://making-absurd-felt-tip.ngrok-free.dev",
+  "author": {
+    "name": "neuralmint"
+  },
+  "license": "MIT",
+  "categories": [
+    "Media Creation",
+    "Web Services",
+    "Finance",
+    "Dev Tools"
+  ],
+  "tags": [
+    "x402",
+    "USDC",
+    "Base",
+    "image-processing",
+    "PDF",
+    "OCR",
+    "QR",
+    "pay-per-call",
+    "micro-payments",
+    "utility",
+    "streamable-http"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://making-absurd-felt-tip.ngrok-free.dev/mcp",
+      "description": "Streamable HTTP endpoint. No install or API key required \u2014 point any MCP client at this URL. Each call is paid individually via x402 (USDC on Base) through facilitator https://facilitator.payai.network."
+    }
+  },
+  "tools": [
+    {
+      "name": "removebg",
+      "description": "Background removal -> transparent PNG (Price: $0.002 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "model"
+          },
+          "matte": {
+            "type": "string",
+            "description": "matte"
+          },
+          "backdrop": {
+            "type": "string",
+            "description": "backdrop"
+          }
+        }
+      }
+    },
+    {
+      "name": "upscale",
+      "description": "RealESR-general super-resolution x4v3 (Price: $0.003 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "scale": {
+            "type": "string",
+            "description": "scale"
+          }
+        }
+      }
+    },
+    {
+      "name": "sticker",
+      "description": "Cutout + 512px fit -> sticker-ready PNG (Price: $0.002 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "compress",
+      "description": "Re-encode image smaller (Price: $0.0005 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "q"
+          },
+          "fmt": {
+            "type": "string",
+            "description": "fmt"
+          }
+        }
+      }
+    },
+    {
+      "name": "thumb",
+      "description": "Thumbnail fit-to-width PNG (Price: $0.0005 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "w": {
+            "type": "string",
+            "description": "w"
+          }
+        }
+      }
+    },
+    {
+      "name": "filter",
+      "description": "Creative filter (Price: $0.001 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "style": {
+            "type": "string",
+            "description": "style"
+          }
+        }
+      }
+    },
+    {
+      "name": "rotate",
+      "description": "Rotate image by degrees (Price: $0.0005 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "deg": {
+            "type": "string",
+            "description": "deg"
+          }
+        }
+      }
+    },
+    {
+      "name": "flip",
+      "description": "Mirror image horizontally or vertically (Price: $0.0005 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "dir": {
+            "type": "string",
+            "description": "dir"
+          }
+        }
+      }
+    },
+    {
+      "name": "adjust",
+      "description": "Brightness / contrast / saturation / gamma correction (Price: $0.001 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "b": {
+            "type": "string",
+            "description": "b"
+          },
+          "c": {
+            "type": "string",
+            "description": "c"
+          },
+          "s": {
+            "type": "string",
+            "description": "s"
+          },
+          "g": {
+            "type": "string",
+            "description": "g"
+          }
+        }
+      }
+    },
+    {
+      "name": "meme",
+      "description": "Caption an image meme-style (Impact font, top/bottom text) (Price: $0.001 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "text"
+          }
+        }
+      }
+    },
+    {
+      "name": "qr",
+      "description": "Generate QR code PNG from text (Price: $0.0003 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "text"
+          },
+          "box_size": {
+            "type": "string",
+            "description": "box_size"
+          },
+          "border": {
+            "type": "string",
+            "description": "border"
+          }
+        }
+      }
+    },
+    {
+      "name": "qr_decode",
+      "description": "Decode all QR codes found in an image (Price: $0.0005 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "image_b64": {
+            "type": "string",
+            "description": "image_b64"
+          }
+        }
+      }
+    },
+    {
+      "name": "palette",
+      "description": "Dominant color palette of an image (k-means) (Price: $0.0005 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "image_b64": {
+            "type": "string",
+            "description": "image_b64"
+          },
+          "n": {
+            "type": "string",
+            "description": "n"
+          }
+        }
+      }
+    },
+    {
+      "name": "faces",
+      "description": "Detect faces in an image (count + bounding boxes) (Price: $0.001 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "image_b64": {
+            "type": "string",
+            "description": "image_b64"
+          }
+        }
+      }
+    },
+    {
+      "name": "phash",
+      "description": "Perceptual hash (dHash) of an image for similarity/dedupe (Price: $0.0003 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "image_b64": {
+            "type": "string",
+            "description": "image_b64"
+          }
+        }
+      }
+    },
+    {
+      "name": "phash_compare",
+      "description": "Hamming distance between two phashes (+similar verdict) (Price: $0.0003 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "h1": {
+            "type": "string",
+            "description": "h1"
+          },
+          "h2": {
+            "type": "string",
+            "description": "h2"
+          }
+        }
+      }
+    },
+    {
+      "name": "hash",
+      "description": "Hash text or bytes (md5/sha1/sha256/sha512) (Price: $0.0002 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "text"
+          },
+          "algo": {
+            "type": "string",
+            "description": "algo"
+          }
+        }
+      }
+    },
+    {
+      "name": "tokens",
+      "description": "Generate uuid4 / hex32 / base64url tokens (Price: $0.0002 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "description": "kind"
+          },
+          "n": {
+            "type": "string",
+            "description": "n"
+          }
+        }
+      }
+    },
+    {
+      "name": "fake-user",
+      "description": "Deterministic fake user identity for testing (Price: $0.0003 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "seed": {
+            "type": "string",
+            "description": "seed"
+          }
+        }
+      }
+    },
+    {
+      "name": "tz",
+      "description": "Convert a timestamp between IANA timezones (Price: $0.0003 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "iso_time": {
+            "type": "string",
+            "description": "iso_time"
+          },
+          "from_tz": {
+            "type": "string",
+            "description": "from_tz"
+          },
+          "to_tz": {
+            "type": "string",
+            "description": "to_tz"
+          }
+        }
+      }
+    },
+    {
+      "name": "md2html",
+      "description": "Markdown to HTML (fenced code + tables) (Price: $0.0005 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "md": {
+            "type": "string",
+            "description": "md"
+          }
+        }
+      }
+    },
+    {
+      "name": "ocr",
+      "description": "Text extraction from images (Tesseract OCR) (Price: $0.002 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "image_b64": {
+            "type": "string",
+            "description": "image_b64"
+          },
+          "lang": {
+            "type": "string",
+            "description": "lang"
+          },
+          "psm": {
+            "type": "string",
+            "description": "psm"
+          }
+        }
+      }
+    },
+    {
+      "name": "pdf_text",
+      "description": "Extract text from a PDF (first N pages) (Price: $0.001 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pdf_b64": {
+            "type": "string",
+            "description": "pdf_b64"
+          },
+          "max_pages": {
+            "type": "string",
+            "description": "max_pages"
+          }
+        }
+      }
+    },
+    {
+      "name": "pdf_meta",
+      "description": "PDF metadata: pages, encrypted flag, producer, title (Price: $0.001 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pdf_b64": {
+            "type": "string",
+            "description": "pdf_b64"
+          }
+        }
+      }
+    },
+    {
+      "name": "pdf_split",
+      "description": "Split a PDF into single-page PDFs (b64 list back) (Price: $0.002 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pdf_b64": {
+            "type": "string",
+            "description": "pdf_b64"
+          }
+        }
+      }
+    },
+    {
+      "name": "pdf_merge",
+      "description": "Merge multiple PDFs -> application/pdf response (Price: $0.002 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pdfs_b64": {
+            "type": "string",
+            "description": "pdfs_b64"
+          }
+        }
+      }
+    },
+    {
+      "name": "exif",
+      "description": "EXIF metadata of an image (incl. GPS IFDs) (Price: $0.0005 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "image_b64": {
+            "type": "string",
+            "description": "image_b64"
+          }
+        }
+      }
+    },
+    {
+      "name": "exif_strip",
+      "description": "Strip all EXIF metadata -> clean PNG (Price: $0.0005 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "image_b64": {
+            "type": "string",
+            "description": "image_b64"
+          }
+        }
+      }
+    },
+    {
+      "name": "resize",
+      "description": "Resize image (aspect-preserving when h omitted) (Price: $0.0005 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "image_b64": {
+            "type": "string",
+            "description": "image_b64"
+          },
+          "w": {
+            "type": "string",
+            "description": "w"
+          },
+          "h": {
+            "type": "string",
+            "description": "h"
+          }
+        }
+      }
+    },
+    {
+      "name": "crop",
+      "description": "Crop a region from an image (Price: $0.0005 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "image_b64": {
+            "type": "string",
+            "description": "image_b64"
+          },
+          "x": {
+            "type": "string",
+            "description": "x"
+          },
+          "y": {
+            "type": "string",
+            "description": "y"
+          },
+          "w": {
+            "type": "string",
+            "description": "w"
+          },
+          "h": {
+            "type": "string",
+            "description": "h"
+          }
+        }
+      }
+    },
+    {
+      "name": "watermark",
+      "description": "Text watermark overlaid on an image (Price: $0.001 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "image_b64": {
+            "type": "string",
+            "description": "image_b64"
+          },
+          "text": {
+            "type": "string",
+            "description": "text"
+          },
+          "opacity": {
+            "type": "string",
+            "description": "opacity"
+          },
+          "pos": {
+            "type": "string",
+            "description": "pos"
+          }
+        }
+      }
+    },
+    {
+      "name": "csv2json",
+      "description": "CSV -> JSON rows (Price: $0.0005 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "csv": {
+            "type": "string",
+            "description": "csv"
+          }
+        }
+      }
+    },
+    {
+      "name": "json2csv",
+      "description": "JSON rows -> CSV (text/csv response) (Price: $0.0005 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "rows": {
+            "type": "string",
+            "description": "rows"
+          }
+        }
+      }
+    },
+    {
+      "name": "xml2json",
+      "description": "XML -> JSON (Price: $0.0005 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "xml": {
+            "type": "string",
+            "description": "xml"
+          }
+        }
+      }
+    },
+    {
+      "name": "yaml2json",
+      "description": "YAML -> JSON (Price: $0.0005 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "yaml": {
+            "type": "string",
+            "description": "yaml"
+          }
+        }
+      }
+    },
+    {
+      "name": "url-meta",
+      "description": "Fetch URL title/description/OpenGraph metadata (SSRF-guarded) (Price: $0.001 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "url"
+          }
+        }
+      }
+    },
+    {
+      "name": "jwt-decode",
+      "description": "Decode JWT header+payload (NO signature verification) (Price: $0.0003 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "token"
+          }
+        }
+      }
+    },
+    {
+      "name": "cron-next",
+      "description": "Next N fire times of a cron expression (Price: $0.0003 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "expr": {
+            "type": "string",
+            "description": "expr"
+          },
+          "n": {
+            "type": "string",
+            "description": "n"
+          }
+        }
+      }
+    },
+    {
+      "name": "slugify",
+      "description": "URL-slugify text (Price: $0.0002 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "text"
+          }
+        }
+      }
+    },
+    {
+      "name": "units",
+      "description": "Unit conversion (length/mass/temp) (Price: $0.0003 USDC per call, paid via x402 on Base.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "description": "value"
+          },
+          "frm": {
+            "type": "string",
+            "description": "frm"
+          },
+          "to": {
+            "type": "string",
+            "description": "to"
+          }
+        }
+      }
+    }
+  ]
+}
