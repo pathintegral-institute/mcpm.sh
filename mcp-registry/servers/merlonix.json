@@ -31,7 +31,15 @@
       "type": "http",
       "url": "https://api.merlonix.com/mcp",
       "recommended": true,
-      "description": "Use the hosted Streamable HTTP endpoint (no install; public tools need no auth). Optional API key unlocks account tools."
+      "description": "Hosted Streamable HTTP endpoint for the public monitoring tools — no install and no API key required. For the account tools (assets/alerts on YOUR Merlonix account) use the \"http-authenticated\" option below, which adds the Authorization header."
+    },
+    "http-authenticated": {
+      "type": "http",
+      "url": "https://api.merlonix.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${MERLONIX_API_KEY}"
+      },
+      "description": "Same hosted Streamable HTTP endpoint, with an Authorization: Bearer mk_… header so the 8 account tools (list/create assets, checks, alerts) work against YOUR Merlonix account. Get the key from app.merlonix.com → Settings → API keys."
     },
     "npm": {
       "type": "npm",
@@ -41,6 +49,13 @@
         "github:cmhenry79/merlonix-mcp"
       ],
       "description": "Run the stdio bridge locally (connects to the hosted API)."
+    }
+  },
+  "arguments": {
+    "MERLONIX_API_KEY": {
+      "description": "Merlonix API key (mk_…) used as an Authorization: Bearer header by the \"http-authenticated\" install to unlock the account tools (assets, checks, alerts). Not needed for the public monitoring tools. Create one at app.merlonix.com → Settings → API keys.",
+      "required": true,
+      "example": "mk_xxxxxxxxxxxxxxxxxxxxxxxx"
     }
   },
   "tools": [
