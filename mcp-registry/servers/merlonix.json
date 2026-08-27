@@ -46,9 +46,9 @@
       "command": "npx",
       "args": [
         "-y",
-        "github:cmhenry79/merlonix-mcp#v1.0.0"
+        "github:cmhenry79/merlonix-mcp#ed36f10d463a848a32c16270800708f6f8a9bdc7"
       ],
-      "description": "Run the stdio bridge locally (connects to the hosted API). Pinned to tag v1.0.0 for reproducibility."
+      "description": "Run the stdio bridge locally (connects to the hosted API). Pinned to immutable commit ed36f10d (tag v1.0.0) for reproducibility — the SHA cannot change the installed source without a manifest update."
     }
   },
   "arguments": {
