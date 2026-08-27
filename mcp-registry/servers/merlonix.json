@@ -46,9 +46,9 @@
       "command": "npx",
       "args": [
         "-y",
-        "github:cmhenry79/merlonix-mcp"
+        "github:cmhenry79/merlonix-mcp#v1.0.0"
       ],
-      "description": "Run the stdio bridge locally (connects to the hosted API)."
+      "description": "Run the stdio bridge locally (connects to the hosted API). Pinned to tag v1.0.0 for reproducibility."
     }
   },
   "arguments": {
