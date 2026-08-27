@@ -1,0 +1,352 @@
+{
+  "name": "merlonix",
+  "display_name": "Merlonix",
+  "description": "Live website and infrastructure monitoring for AI agents and answer engines. Check any public domain SSL/TLS certificate, DNS, and registration expiry; health-check and A-F security-grade any MCP server; score a site AI agent-readiness; check email blacklists; scan broken links; and read live status for 11 major cloud vendors. 8 public tools need no signup or API key; 8 account tools manage monitored assets and alerts.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cmhenry79/merlonix-mcp"
+  },
+  "homepage": "https://merlonix.com/docs/mcp-server/",
+  "author": {
+    "name": "Merlonix",
+    "url": "https://merlonix.com"
+  },
+  "license": "MIT",
+  "categories": [
+    "Dev Tools",
+    "MCP Tools"
+  ],
+  "tags": [
+    "monitoring",
+    "ssl",
+    "dns",
+    "uptime",
+    "domain-health",
+    "mcp-health",
+    "agent-readiness",
+    "observability"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://api.merlonix.com/mcp",
+      "recommended": true,
+      "description": "Use the hosted Streamable HTTP endpoint (no install; public tools need no auth). Optional API key unlocks account tools."
+    },
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "github:cmhenry79/merlonix-mcp"
+      ],
+      "description": "Run the stdio bridge locally (connects to the hosted API)."
+    }
+  },
+  "tools": [
+    {
+      "name": "check_domain_health",
+      "description": "Check the live SSL/TLS certificate (validity + expiry + issuer), DNS records (A/AAAA/MX/NS resolution), and domain-registration (RDAP) expiry of any public hostname. Each leg fails soft and is reported independently.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "hostname": {
+            "type": "string",
+            "description": "A public hostname, e.g. example.com"
+          }
+        },
+        "required": [
+          "hostname"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "check_agent_readiness",
+      "description": "Score how ready a website is for AI agents and answer engines. Fetches /llms.txt, /robots.txt, and the homepage and returns a letter grade with per-signal findings. No browser rendering or LLM call — deterministic HTTP/parse.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "hostname": {
+            "type": "string",
+            "description": "A public hostname, e.g. example.com"
+          }
+        },
+        "required": [
+          "hostname"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "check_mcp_health",
+      "description": "Health-check a live MCP (Model Context Protocol) server by URL: performs a real JSON-RPC initialize handshake, then tools/list, and returns whether it is up/degraded/down, its protocol version, server name/version, the callable tool/resource/prompt inventory, transport, and handshake latency. Deterministic — no LLM. Use it to verify your own MCP server is alive and spec-compliant.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "The MCP endpoint URL, e.g. https://example.com/mcp"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "check_email_blacklist",
+      "description": "Check whether a domain or IP is listed on the major DNS blocklists (DNSBLs) that mail providers consult before accepting mail — the usual reason legitimate mail silently lands in spam. Returns each zone checked, whether it is listed, and the return code. Deterministic DNS lookups, no LLM.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "description": "A public domain or IP address, e.g. example.com or 203.0.113.10"
+          }
+        },
+        "required": [
+          "domain"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "check_broken_links",
+      "description": "Scan one web page for dead links (4xx/5xx/unreachable) and mixed content (http subresources on an https page). Returns each link with its status. Single-page scan, not a crawl — pass the exact page URL. Rate-limited to a few scans per minute, so batch calls will be throttled.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "The exact page URL to scan, e.g. https://example.com/pricing"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_vendor_status",
+      "description": "List the current operational status and recent incidents of every third-party vendor Merlonix monitors (e.g. Cloudflare, GitHub, Stripe). Returns each vendor's slug, current status, and 24h incident count.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_vendor_status",
+      "description": "Get the current status plus 30-day status history of one monitored vendor by slug (e.g. \"cloudflare\"). Use list_vendor_status to discover valid slugs.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Vendor slug, e.g. cloudflare"
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_plans",
+      "description": "List Merlonix subscription plans and pricing (Starter, Team, Agency, Compliance) with their monitoring limits.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_my_assets",
+      "description": "List the monitored assets (websites/domains) in YOUR Merlonix account. Returns each asset id, hostname, type, and monitoring status. Requires an API key (Authorization: Bearer mk_… from app.merlonix.com → Settings → API keys).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_asset_checks",
+      "description": "Get the latest check results (SSL, DNS, uptime, heartbeat, port) for ONE of your monitored assets, by its asset id (from list_my_assets). Requires an API key.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "asset_id": {
+            "type": "string",
+            "description": "The asset id from list_my_assets (a UUID)."
+          }
+        },
+        "required": [
+          "asset_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_my_alerts",
+      "description": "List recent alerts across YOUR monitored assets (SSL changes, downtime, DNS drift, vendor incidents, etc.) with their severity and lifecycle status. Requires an API key.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "create_asset",
+      "description": "Start monitoring a new asset (website/domain) in YOUR Merlonix account. Provide a hostname and asset_type; optionally a label and which checks to enable. Returns the created asset. Requires an API key with write scope. Subject to your plan asset quota (a full or non-paying plan returns an error).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "hostname": {
+            "type": "string",
+            "description": "The hostname to monitor, e.g. example.com"
+          },
+          "asset_type": {
+            "type": "string",
+            "enum": [
+              "domain",
+              "hostname",
+              "certificate",
+              "dns_record"
+            ],
+            "description": "Asset kind: \"hostname\" (a website/host), \"domain\", \"certificate\", or \"dns_record\"."
+          },
+          "label": {
+            "type": "string",
+            "description": "Optional human label (max 120 chars)."
+          },
+          "ssl_enabled": {
+            "type": "boolean",
+            "description": "Monitor the TLS certificate (default on for hostnames)."
+          },
+          "dns_enabled": {
+            "type": "boolean",
+            "description": "Monitor DNS records."
+          },
+          "domain_enabled": {
+            "type": "boolean",
+            "description": "Monitor domain-registration (RDAP) expiry."
+          },
+          "uptime_check_url": {
+            "type": "string",
+            "description": "Optional URL to probe for uptime (enables uptime checks)."
+          }
+        },
+        "required": [
+          "hostname",
+          "asset_type"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "update_asset",
+      "description": "Update one of YOUR monitored assets by its asset id (from list_my_assets): relabel it or toggle which checks run. Returns the updated asset. Requires an API key with write scope.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "asset_id": {
+            "type": "string",
+            "description": "The asset id from list_my_assets (a UUID)."
+          },
+          "label": {
+            "type": "string",
+            "description": "New label (max 120 chars)."
+          },
+          "ssl_enabled": {
+            "type": "boolean",
+            "description": "Enable/disable TLS-certificate monitoring."
+          },
+          "dns_enabled": {
+            "type": "boolean",
+            "description": "Enable/disable DNS monitoring."
+          },
+          "domain_enabled": {
+            "type": "boolean",
+            "description": "Enable/disable domain-registration (RDAP) monitoring."
+          }
+        },
+        "required": [
+          "asset_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "delete_asset",
+      "description": "STOP monitoring one of YOUR assets and remove it, by its asset id (from list_my_assets). This is irreversible — its check history goes too. Requires an API key with write scope.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "asset_id": {
+            "type": "string",
+            "description": "The asset id from list_my_assets (a UUID)."
+          }
+        },
+        "required": [
+          "asset_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "acknowledge_alert",
+      "description": "Acknowledge one of YOUR alerts by its alert id (from list_my_alerts) — marks it as seen/being-handled without resolving it. Optionally attach a note. Requires an API key with write scope.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "alert_id": {
+            "type": "string",
+            "description": "The alert id from list_my_alerts (a UUID)."
+          },
+          "note": {
+            "type": "string",
+            "description": "Optional note (max 500 chars)."
+          }
+        },
+        "required": [
+          "alert_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "resolve_alert",
+      "description": "Resolve one of YOUR alerts by its alert id (from list_my_alerts) — closes it. Optionally set resolution (\"fixed\" | \"false_positive\" | \"wontfix\") and a note. Requires an API key with write scope.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "alert_id": {
+            "type": "string",
+            "description": "The alert id from list_my_alerts (a UUID)."
+          },
+          "resolution": {
+            "type": "string",
+            "enum": [
+              "fixed",
+              "false_positive",
+              "wontfix"
+            ],
+            "description": "Why the alert is being closed."
+          },
+          "note": {
+            "type": "string",
+            "description": "Optional note (max 500 chars)."
+          }
+        },
+        "required": [
+          "alert_id"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ]
+}
