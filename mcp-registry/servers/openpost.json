@@ -1,0 +1,57 @@
+{
+  "name": "openpost",
+  "display_name": "OpenPost",
+  "description": "Official MCP server for OpenPost. Inspect connected accounts and media, draft and review social content, schedule or publish it, and manage comments where supported.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/getopenpost/openpost"
+  },
+  "homepage": "https://docs.openpo.st/mcp/",
+  "author": {
+    "name": "Rodrigo Dias",
+    "url": "https://rgo.pt"
+  },
+  "license": "AGPL-3.0-only",
+  "categories": [
+    "Professional Apps",
+    "Productivity"
+  ],
+  "tags": [
+    "social-media",
+    "publishing",
+    "scheduling",
+    "content-management",
+    "self-hosted"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://app.openpo.st/mcp",
+      "description": "Hosted Streamable HTTP MCP endpoint with OAuth discovery. Sign in to OpenPost and authorize a workspace when prompted.",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Review the schedule",
+      "description": "Inspect upcoming social publications before they go live.",
+      "prompt": "Show me the publications scheduled for this week and flag anything that needs attention."
+    },
+    {
+      "title": "Draft a publication",
+      "description": "Prepare content without publishing it immediately.",
+      "prompt": "Create a draft announcing our latest release for LinkedIn and Bluesky, adapted to each platform."
+    },
+    {
+      "title": "Find the next slot",
+      "description": "Use the workspace schedule to find an available publishing time.",
+      "prompt": "Find the next available slot for this campaign and schedule the approved publication there."
+    },
+    {
+      "title": "Check publication status",
+      "description": "Inspect lifecycle events and provider outcomes.",
+      "prompt": "Check whether yesterday's publication succeeded on every network and show me any failures."
+    }
+  ],
+  "is_official": true
+}
