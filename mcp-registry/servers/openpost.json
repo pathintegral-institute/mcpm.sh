@@ -6,7 +6,7 @@
     "type": "git",
     "url": "https://github.com/getopenpost/openpost"
   },
-  "homepage": "https://docs.openpost.social/mcp/",
+  "homepage": "https://docs.openpo.st/mcp/",
   "author": {
     "name": "Rodrigo Dias",
     "url": "https://rgo.pt"
@@ -26,7 +26,7 @@
   "installations": {
     "http": {
       "type": "http",
-      "url": "https://app.openpost.social/mcp",
+      "url": "https://app.openpo.st/mcp",
       "description": "Hosted Streamable HTTP MCP endpoint with OAuth discovery. Sign in to OpenPost and authorize a workspace when prompted.",
       "recommended": true
     }
