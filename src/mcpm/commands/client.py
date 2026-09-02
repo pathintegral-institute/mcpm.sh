@@ -852,6 +852,9 @@ def import_client(client_name):
         elif isinstance(server_config, dict):
             command = server_config.get("command", "")
             args = server_config.get("args", [])
+        elif getattr(server_config, "url", None):
+            command = ""
+            args = []
         else:
             continue
 
@@ -862,6 +865,14 @@ def import_client(client_name):
             if len(args) >= 2 and args[0] == "run":
                 is_mcpm_server = True
                 mcpm_servers.append((server_name, args[1]))
+        elif server_name.startswith("mcpm_"):
+            # URL-only generated entries have no `mcpm run` command.
+            url = getattr(server_config, "url", None)
+            if url is None and isinstance(server_config, dict):
+                url = server_config.get("url")
+            if url:
+                is_mcpm_server = True
+                mcpm_servers.append((server_name, server_name[len("mcpm_"):]))
 
         if not is_mcpm_server:
             non_mcpm_servers.append((server_name, server_config))
@@ -981,6 +992,18 @@ def _import_servers_to_global(selected_servers, non_mcpm_servers, client_name):
                 env = getattr(server_config, "env", {})
                 cwd = getattr(server_config, "cwd", None)
             elif isinstance(server_config, dict):
+                if server_config.get("url") and not server_config.get("command"):
+                    from mcpm.core.schema import RemoteServerConfig
+
+                    server_config_obj = RemoteServerConfig(
+                        name=server_name,
+                        url=server_config.get("url", ""),
+                        headers=server_config.get("headers") or {},
+                    )
+                    global_config_manager.add_server(server_config_obj)
+                    imported_count += 1
+                    table.add_row(server_name, server_config.get("url", "")[:30], "✅ Imported")
+                    continue
                 command = server_config.get("command", "")
                 args = server_config.get("args", [])
                 env = server_config.get("env", {})
