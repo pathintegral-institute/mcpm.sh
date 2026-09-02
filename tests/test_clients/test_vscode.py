@@ -361,3 +361,17 @@ class TestVSCodeManager:
         assert isinstance(server_config, RemoteServerConfig)
         assert server_config.url == "https://mcp.example/mcp"
         assert server_config.headers["X"] == "1"
+
+
+    def test_to_client_format_remote_omits_headers_on_http(self, vscode_manager):
+        from mcpm.core.schema import RemoteServerConfig
+
+        remote = RemoteServerConfig(
+            name="insecure",
+            url="http://mcp.example/mcp",
+            headers={"Authorization": "Bearer secret"},
+        )
+        vscode_format = vscode_manager.to_client_format(remote)
+        assert vscode_format["type"] == "http"
+        assert vscode_format["url"] == "http://mcp.example/mcp"
+        assert "headers" not in vscode_format

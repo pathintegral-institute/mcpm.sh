@@ -962,7 +962,7 @@ def import_client(client_name):
 
 def _import_servers_to_global(selected_servers, non_mcpm_servers, client_name):
     """Import selected servers to global configuration."""
-    from mcpm.core.schema import CustomServerConfig, STDIOServerConfig
+    from mcpm.core.schema import CustomServerConfig, RemoteServerConfig, STDIOServerConfig
 
     console.print(f"\n[bold green]Importing {len(selected_servers)} server(s) to global configuration...[/]")
 
@@ -986,6 +986,16 @@ def _import_servers_to_global(selected_servers, non_mcpm_servers, client_name):
 
         try:
             # Extract server configuration
+            if isinstance(server_config, RemoteServerConfig):
+                server_config_obj = RemoteServerConfig(
+                    name=server_name,
+                    url=server_config.url,
+                    headers=server_config.headers or {},
+                )
+                global_config_manager.add_server(server_config_obj)
+                imported_count += 1
+                table.add_row(server_name, server_config.url[:30], "✅ Imported")
+                continue
             if hasattr(server_config, "command"):
                 command = server_config.command
                 args = getattr(server_config, "args", [])

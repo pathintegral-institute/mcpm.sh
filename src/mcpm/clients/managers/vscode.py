@@ -124,7 +124,8 @@ class VSCodeManager(JSONClientManager):
                 "type": "sse" if "/sse" in url.lower() else "http",
                 "url": url,
             }
-            if server_config.headers:
+            # Do not copy credential headers onto cleartext http:// URLs.
+            if server_config.headers and not url.lower().startswith("http://"):
                 result["headers"] = server_config.headers
             return result
         return super().to_client_format(server_config)
