@@ -1138,11 +1138,27 @@ def _replace_client_config_with_profile(client_manager, profile_name, client_nam
         print_error("Error replacing client config with profile", str(e))
 
 
+def _client_config_for_global_server(server_name: str, prefixed_name: str):
+    """Prefer a URL client entry when servers.json already has a URL.
+
+    Stdio `mcpm run` multiplies processes across parallel MCP clients. HTTP/URL
+    servers should be wired as RemoteServerConfig so clients connect directly.
+    """
+    from mcpm.core.schema import RemoteServerConfig, STDIOServerConfig
+
+    global_cfg = global_config_manager.get_server(server_name)
+    if global_cfg is not None and isinstance(global_cfg, RemoteServerConfig):
+        return RemoteServerConfig(
+            name=prefixed_name,
+            url=global_cfg.url,
+            headers=getattr(global_cfg, "headers", {}) or {},
+        )
+    return STDIOServerConfig(name=prefixed_name, command="mcpm", args=["run", server_name])
+
+
 def _replace_client_config_with_mcpm(client_manager, selected_servers, client_name):
     """Replace client config servers with MCPM managed versions."""
     try:
-        from mcpm.core.schema import STDIOServerConfig
-
         # Remove original servers
         for server_name in selected_servers:
             try:
@@ -1153,7 +1169,7 @@ def _replace_client_config_with_mcpm(client_manager, selected_servers, client_na
         # Add MCPM managed versions
         for server_name in selected_servers:
             prefixed_name = f"mcpm_{server_name}"
-            server_config = STDIOServerConfig(name=prefixed_name, command="mcpm", args=["run", server_name])
+            server_config = _client_config_for_global_server(server_name, prefixed_name)
             client_manager.add_server(server_config)
 
         console.print(
