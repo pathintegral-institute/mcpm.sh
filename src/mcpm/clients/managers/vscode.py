@@ -99,8 +99,9 @@ class VSCodeManager(JSONClientManager):
         """Convert ServerConfig to VSCode-specific format
 
         VSCode expects a "type" field in addition to command and args.
+        Remote servers use type http/sse plus url/headers — not a model dump.
         """
-        from mcpm.core.schema import STDIOServerConfig
+        from mcpm.core.schema import RemoteServerConfig, STDIOServerConfig
 
         if isinstance(server_config, STDIOServerConfig):
             result = {
@@ -117,6 +118,28 @@ class VSCodeManager(JSONClientManager):
                 result["env"] = non_empty_env
 
             return result
-        else:
-            # For other server types, use the default implementation
-            return super().to_client_format(server_config)
+        if isinstance(server_config, RemoteServerConfig):
+            url = server_config.url or ""
+            result = {
+                "type": "sse" if "/sse" in url.lower() else "http",
+                "url": url,
+            }
+            # Do not copy credential headers onto cleartext http:// URLs.
+            if server_config.headers and not url.lower().startswith("http://"):
+                result["headers"] = server_config.headers
+            return result
+        return super().to_client_format(server_config)
+
+    @classmethod
+    def from_client_format(cls, server_name: str, client_config: dict):
+        from mcpm.core.schema import RemoteServerConfig
+
+        cfg = dict(client_config)
+        typ = cfg.pop("type", None)
+        if typ in ("http", "sse") or ("url" in cfg and "command" not in cfg):
+            return RemoteServerConfig(
+                name=server_name,
+                url=cfg.get("url", ""),
+                headers=cfg.get("headers") or {},
+            )
+        return super().from_client_format(server_name, cfg)
