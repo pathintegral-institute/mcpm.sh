@@ -1688,6 +1688,13 @@
 
                 // Add install button with click function for deeplink
                 if (isLucien) {
+                    // Only stdio/docker installations can be installed via the
+                    // deeplink (it requires command + args). HTTP-only manifests
+                    // have no command, so skip the button instead of crashing.
+                    const deeplinkInstall = Object.values(server.installations)
+                        .find(install => install && install.command && install.args);
+
+                    if (deeplinkInstall) {
                     const installButton = document.createElement('button');
                     installButton.className = 'install-button';
                     installButton.type = 'button';
@@ -1712,7 +1719,7 @@
                         params.append('name', server.name.replace(/-/g, '_'));
                         params.append('action', 'install');
                         
-                        const installInfo = Object.values(server.installations)[0];
+                        const installInfo = deeplinkInstall;
                         // No remote for now, only stdio
                         params.append('command', installInfo.command);
                         params.append('args', encodeURIComponent(installInfo.args.join(' ')));
@@ -1726,6 +1733,7 @@
                     });
                     
                     serverHeader.appendChild(installButton);
+                    }
                 }
 
                 // Add placeholder for GitHub stars in the header

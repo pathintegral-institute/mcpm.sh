@@ -1,0 +1,198 @@
+{
+  "name": "youcom-mcp",
+  "display_name": "You.com MCP",
+  "description": "You.com's hosted MCP server for web search, URL content extraction, and cited research. Provides current web search results with citations, full page contents for supplied URLs, and one-shot synthesized research answers. An API key unlocks the full toolset; a keyless free profile (https://api.you.com/mcp?profile=free) offers basic web search with no credentials.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/youdotcom-oss/agent-skills"
+  },
+  "homepage": "https://you.com/docs",
+  "author": {
+    "name": "youdotcom-oss",
+    "url": "https://github.com/youdotcom-oss"
+  },
+  "license": "MIT",
+  "categories": [
+    "Web Services"
+  ],
+  "tags": [
+    "you.com",
+    "search",
+    "web",
+    "research",
+    "content-extraction",
+    "citations"
+  ],
+  "arguments": {
+    "YDC_API_KEY": {
+      "description": "You.com API key (Bearer auth), required for the authenticated `http` installation. Without a key, use the keyless free profile installation (http-free) at https://api.you.com/mcp?profile=free for basic web search. Get a key at https://you.com/platform/api-keys.",
+      "required": true,
+      "example": "YOUR_API_KEY_HERE"
+    }
+  },
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://api.you.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${YDC_API_KEY}"
+      },
+      "description": "Hosted You.com MCP server with API key auth (default toolset: you-search, you-contents, you-research, you-answer, you-balance, you-discover)",
+      "recommended": true
+    },
+    "http-free": {
+      "type": "http",
+      "url": "https://api.you.com/mcp?profile=free",
+      "description": "Keyless free profile — basic you-search with no API key required"
+    }
+  },
+  "tools": [
+    {
+      "name": "you-search",
+      "description": "Current web search with snippets, source discovery, and freshness or domain-targeted queries. Supports livecrawl for search plus full page content.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "you-contents",
+      "description": "Reads full content from supplied URLs or promising search results before relying on exact details.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "urls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "URLs to fetch and extract content from"
+          }
+        },
+        "required": [
+          "urls"
+        ]
+      }
+    },
+    {
+      "name": "you-research",
+      "description": "One-shot cited synthesis: returns a concise researched answer with sources for queries that need multi-source evidence.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Research question to answer with citations"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "you-answer",
+      "description": "Fast, citation-backed answers from real-time web results in a single call. Supports freshness, country, language, and domain filters.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Question to answer with inline citations (max 400 characters)"
+          },
+          "freshness": {
+            "type": "string",
+            "description": "Time frame for web results: day, week, month, year, or a custom YYYY-MM-DDtoYYYY-MM-DD range"
+          },
+          "country": {
+            "type": "string",
+            "description": "Country code (e.g. US, GB, FR) for the geographical focus of results"
+          },
+          "language": {
+            "type": "string",
+            "description": "BCP 47 language tag (e.g. EN, EN-GB, FR) for the language of results"
+          },
+          "include_domains": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Limit results exclusively to these domains (max 500); cannot be combined with exclude_domains or boost_domains"
+          },
+          "exclude_domains": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Exclude results from these domains (max 500); cannot be combined with include_domains or boost_domains"
+          },
+          "boost_domains": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Prefer results from these domains without excluding others (max 500); cannot be combined with include_domains or exclude_domains"
+          },
+          "safesearch": {
+            "type": "string",
+            "description": "Explicit-content filtering: off, moderate (default), or strict"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "you-balance",
+      "description": "Return the remaining credit balance (in cents) for the API key in use, to check usage or remaining quota from inside an agent workflow.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "you-discover",
+      "description": "Find the right You.com integration path (API, MCP server, SDK, docs page, plugin, or framework) for an agentic project, with pointed recommendations.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Description of the integration goal or agent project"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "examples": [
+    {
+      "title": "Web search",
+      "description": "Search the current web and get cited sources.",
+      "prompt": "What's the current stable version of Bun? you-search the web and cite sources."
+    },
+    {
+      "title": "Read a URL",
+      "description": "Extract full page content from specific URLs.",
+      "prompt": "Read https://bun.sh/docs/install and summarize the install steps."
+    },
+    {
+      "title": "Cited research",
+      "description": "Get a one-shot synthesized answer with citations.",
+      "prompt": "Compare vector database pricing models in 2026 and cite sources."
+    }
+  ],
+  "is_official": true
+}
