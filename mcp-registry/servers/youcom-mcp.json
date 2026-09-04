@@ -25,8 +25,8 @@
   ],
   "arguments": {
     "YDC_API_KEY": {
-      "description": "You.com API key (Bearer auth). Optional — without it, use the keyless free profile installation at https://api.you.com/mcp?profile=free for basic web search. Get a key at https://you.com/platform/api-keys.",
-      "required": false,
+      "description": "You.com API key (Bearer auth), required for the authenticated `http` installation. Without a key, use the keyless free profile installation (http-free) at https://api.you.com/mcp?profile=free for basic web search. Get a key at https://you.com/platform/api-keys.",
+      "required": true,
       "example": "YOUR_API_KEY_HERE"
     }
   },
@@ -37,7 +37,7 @@
       "headers": {
         "Authorization": "Bearer ${YDC_API_KEY}"
       },
-      "description": "Hosted You.com MCP server with API key auth (full toolset: you-search, you-contents, you-research)",
+      "description": "Hosted You.com MCP server with API key auth (default toolset: you-search, you-contents, you-research, you-answer, you-balance, you-discover)",
       "recommended": true
     },
     "http-free": {
@@ -91,6 +91,47 @@
           "query": {
             "type": "string",
             "description": "Research question to answer with citations"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "you-answer",
+      "description": "Fast, citation-backed answers from real-time web results in a single call. Supports freshness, country, language, and domain filters.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Question to answer with inline citations"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "you-balance",
+      "description": "Return the remaining credit balance (in cents) for the API key in use, to check usage or remaining quota from inside an agent workflow.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "you-discover",
+      "description": "Find the right You.com integration path (API, MCP server, SDK, docs page, plugin, or framework) for an agentic project, with pointed recommendations.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Description of the integration goal or agent project"
           }
         },
         "required": [
