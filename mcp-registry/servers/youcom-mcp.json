@@ -1,0 +1,120 @@
+{
+  "name": "youcom-mcp",
+  "display_name": "You.com MCP",
+  "description": "You.com's hosted MCP server for web search, URL content extraction, and cited research. Provides current web search results with citations, full page contents for supplied URLs, and one-shot synthesized research answers. An API key unlocks the full toolset; a keyless free profile (https://api.you.com/mcp?profile=free) offers basic web search with no credentials.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/youdotcom-oss/agent-skills"
+  },
+  "homepage": "https://you.com/docs",
+  "author": {
+    "name": "youdotcom-oss",
+    "url": "https://github.com/youdotcom-oss"
+  },
+  "license": "MIT",
+  "categories": [
+    "Web Services"
+  ],
+  "tags": [
+    "you.com",
+    "search",
+    "web",
+    "research",
+    "content-extraction",
+    "citations"
+  ],
+  "arguments": {
+    "YDC_API_KEY": {
+      "description": "You.com API key (Bearer auth). Optional — without it, use the keyless free profile installation at https://api.you.com/mcp?profile=free for basic web search. Get a key at https://you.com/platform/api-keys.",
+      "required": false,
+      "example": "YOUR_API_KEY_HERE"
+    }
+  },
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://api.you.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${YDC_API_KEY}"
+      },
+      "description": "Hosted You.com MCP server with API key auth (full toolset: you-search, you-contents, you-research)",
+      "recommended": true
+    },
+    "http-free": {
+      "type": "http",
+      "url": "https://api.you.com/mcp?profile=free",
+      "description": "Keyless free profile — basic you-search with no API key required"
+    }
+  },
+  "tools": [
+    {
+      "name": "you-search",
+      "description": "Current web search with snippets, source discovery, and freshness or domain-targeted queries. Supports livecrawl for search plus full page content.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "you-contents",
+      "description": "Reads full content from supplied URLs or promising search results before relying on exact details.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "urls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "URLs to fetch and extract content from"
+          }
+        },
+        "required": [
+          "urls"
+        ]
+      }
+    },
+    {
+      "name": "you-research",
+      "description": "One-shot cited synthesis: returns a concise researched answer with sources for queries that need multi-source evidence.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Research question to answer with citations"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    }
+  ],
+  "examples": [
+    {
+      "title": "Web search",
+      "description": "Search the current web and get cited sources.",
+      "prompt": "What's the current stable version of Bun? you-search the web and cite sources."
+    },
+    {
+      "title": "Read a URL",
+      "description": "Extract full page content from specific URLs.",
+      "prompt": "Read https://bun.sh/docs/install and summarize the install steps."
+    },
+    {
+      "title": "Cited research",
+      "description": "Get a one-shot synthesized answer with citations.",
+      "prompt": "Compare vector database pricing models in 2026 and cite sources."
+    }
+  ],
+  "is_official": true
+}
