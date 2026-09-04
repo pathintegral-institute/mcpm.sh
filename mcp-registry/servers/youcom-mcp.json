@@ -106,7 +106,44 @@
         "properties": {
           "query": {
             "type": "string",
-            "description": "Question to answer with inline citations"
+            "description": "Question to answer with inline citations (max 400 characters)"
+          },
+          "freshness": {
+            "type": "string",
+            "description": "Time frame for web results: day, week, month, year, or a custom YYYY-MM-DDtoYYYY-MM-DD range"
+          },
+          "country": {
+            "type": "string",
+            "description": "Country code (e.g. US, GB, FR) for the geographical focus of results"
+          },
+          "language": {
+            "type": "string",
+            "description": "BCP 47 language tag (e.g. EN, EN-GB, FR) for the language of results"
+          },
+          "include_domains": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Limit results exclusively to these domains (max 500); cannot be combined with exclude_domains or boost_domains"
+          },
+          "exclude_domains": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Exclude results from these domains (max 500); cannot be combined with include_domains or boost_domains"
+          },
+          "boost_domains": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Prefer results from these domains without excluding others (max 500); cannot be combined with include_domains or exclude_domains"
+          },
+          "safesearch": {
+            "type": "string",
+            "description": "Explicit-content filtering: off, moderate (default), or strict"
           }
         },
         "required": [
