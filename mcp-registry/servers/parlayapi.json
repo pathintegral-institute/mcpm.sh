@@ -22,11 +22,11 @@
     "personal-research"
   ],
   "installations": {
-    "uvx-preview": {
+    "uvx": {
       "type": "uvx",
       "command": "uvx",
       "args": [
-        "parlayapi-mcp==0.3.5"
+        "parlayapi-mcp@0.3.5"
       ],
       "recommended": true,
       "description": "Keyless discovery and public previews. Requires uv. Configure your own account key later in your private MCP client settings for authenticated data."
