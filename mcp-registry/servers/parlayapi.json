@@ -1,0 +1,59 @@
+{
+  "name": "parlayapi",
+  "display_name": "ParlayAPI",
+  "description": "Sports odds tools for personal and internal research. Public discovery works without a key; authenticated data uses your own ParlayAPI account. Also exposes account signup, login-email, checkout-link and saved-book-preference tools; these should only be invoked at the user's request.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JacobiusMakes/parlay-api-mcp"
+  },
+  "homepage": "https://parlay-api.com/mcp",
+  "author": {
+    "name": "JacobiusMakes",
+    "url": "https://github.com/JacobiusMakes"
+  },
+  "license": "MIT",
+  "categories": [
+    "Analytics",
+    "Web Services"
+  ],
+  "tags": [
+    "sports",
+    "odds",
+    "personal-research"
+  ],
+  "installations": {
+    "uvx-preview": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "parlayapi-mcp==0.3.5"
+      ],
+      "recommended": true,
+      "description": "Keyless discovery and public previews. Requires uv. Add your own account key later to use authenticated data."
+    },
+    "uvx-personal-account": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "parlayapi-mcp==0.3.5"
+      ],
+      "env": {
+        "PARLAYAPI_KEY": "${PARLAYAPI_KEY}"
+      },
+      "description": "Authenticated data for your own ParlayAPI account. Requires uv and your own API key."
+    }
+  },
+  "arguments": {
+    "PARLAYAPI_KEY": {
+      "description": "Your own ParlayAPI account key. Required only for the personal-account installation option; the recommended preview option does not request a key. Do not share this value.",
+      "required": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Inspect current access options",
+      "description": "Read public pricing and coverage information before configuring an account.",
+      "prompt": "Use ParlayAPI to inspect current pricing and book coverage. Do not create an account, send an email or change preferences."
+    }
+  ]
+}
