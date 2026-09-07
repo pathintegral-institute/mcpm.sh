@@ -32,7 +32,7 @@
     "remote": {
       "type": "http",
       "url": "https://sigtap-mcp.sigtap.workers.dev/mcp",
-      "description": "SigTAP remote MCP server (Streamable HTTP). Start with the free 'catalog' tool - it lists every paid tool with live prices and zero-wallet preview URLs.",
+      "description": "SigTAP remote MCP server (Streamable HTTP). Start with the free 'catalog' tool - it lists every paid tool with live prices and zero-wallet preview URLs. Paid tools return an x402 HTTP 402 payment challenge (USDC on Base): clients without x402 payment middleware see the challenge instead of tool output - free HTTP previews at https://sigtap-outreach-api.sigtap.workers.dev/preview/<tool> return the same output shape with no wallet. Reference paid-client setup (official @x402/fetch): repo README.",
       "recommended": true
     }
   },
