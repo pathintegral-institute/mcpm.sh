@@ -17,9 +17,13 @@
   "installations": {
     "git-clone": {
       "type": "custom",
-      "command": "node",
-      "args": ["server.js"],
-      "description": "Clone https://github.com/SHARProduction/production-metadata-mcp, run npm ci, then run node server.js from the clone.",
+      "command": "npx",
+      "args": [
+        "--yes",
+        "--package=git+https://github.com/SHARProduction/production-metadata-mcp.git#4d15a752948ba841ea565998d870bfae33d2b9d2",
+        "production-metadata-mcp"
+      ],
+      "description": "Runs the pinned public Git source through npm exec. Requires Node.js 20+ and Git; the package installs from commit 4d15a752948ba841ea565998d870bfae33d2b9d2 and starts its declared production-metadata-mcp binary.",
       "recommended": true
     }
   },
