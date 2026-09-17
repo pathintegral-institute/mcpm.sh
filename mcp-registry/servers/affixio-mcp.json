@@ -1,7 +1,7 @@
 {
   "name": "affixio-mcp",
   "display_name": "AffixIO Action Attestation",
-  "description": "Local stdio MCP wrapping the affixio SDK. Host-side ACTION attestation with attest_action, verify_action, and gate_tool_call. PII stays on the host; not KYC.",
+  "description": "Local stdio MCP wrapping the affixio SDK. Host-side ACTION attestation with attest_action, verify_action, and gate_tool_call. PII stays on the host; not KYC. Works offline with defaults. Optional client env (set only if needed): AFFIX_API_KEY (default local_operator), AFFIX_MCP_HOME (default ~/.affix-mcp).",
   "repository": {
     "type": "git",
     "url": "https://github.com/AffixIO/affixio-mcp"
@@ -33,23 +33,7 @@
         "@affixio/mcp"
       ],
       "description": "Run AffixIO local ACTION attestation MCP via npx",
-      "recommended": true,
-      "env": {
-        "AFFIX_API_KEY": "${AFFIX_API_KEY}",
-        "AFFIX_MCP_HOME": "${AFFIX_MCP_HOME}"
-      }
-    }
-  },
-  "arguments": {
-    "AFFIX_API_KEY": {
-      "description": "Licence key; use local_operator for offline HMAC mode",
-      "required": false,
-      "example": "local_operator"
-    },
-    "AFFIX_MCP_HOME": {
-      "description": "State directory for local MCP proofs",
-      "required": false,
-      "example": "~/.affix-mcp"
+      "recommended": true
     }
   },
   "tools": [
