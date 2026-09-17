@@ -30,7 +30,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "@affixio/mcp"
+        "@affixio/mcp@0.1.0"
       ],
       "description": "Run AffixIO local ACTION attestation MCP via npx",
       "recommended": true,
