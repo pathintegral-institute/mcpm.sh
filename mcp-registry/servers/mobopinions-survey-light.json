@@ -1,0 +1,47 @@
+{
+  "name": "mobopinions-survey-light",
+  "display_name": "MobOpinions Survey Light",
+  "description": "Build, target, launch and analyse consumer surveys with real panel respondents from your AI assistant: 71 tools behind a remote Streamable HTTP server with OAuth 2.1 sign-in (no API key).",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/menaker/mobopinions-survey-mcp"
+  },
+  "homepage": "https://surveys.mobopinions.com/",
+  "author": {
+    "name": "MobOpinions",
+    "url": "https://mobopinions.com/"
+  },
+  "license": "MIT",
+  "categories": [
+    "Analytics",
+    "Professional Apps"
+  ],
+  "tags": [
+    "surveys",
+    "market-research",
+    "consumer-research",
+    "remote",
+    "oauth"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://surveys.mobopinions.com/light-api/mcp",
+      "description": "Remote Streamable HTTP endpoint; sign in with a surveys.mobopinions.com account through OAuth 2.1 (dynamic client registration + PKCE)",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Validate a product idea",
+      "description": "Create a short survey, target an audience and price the fieldwork",
+      "prompt": "Create a 6-question survey on oat-milk purchase drivers for 200 UK adults aged 25-45, add a grocery-shopper screener, and tell me the price before launching."
+    },
+    {
+      "title": "Read results",
+      "description": "Summarise what respondents said once fieldwork is complete",
+      "prompt": "Summarise the results of my oat-milk survey by age group and export the responses to Excel."
+    }
+  ],
+  "is_official": true
+}
