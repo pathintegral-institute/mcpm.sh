@@ -49,6 +49,14 @@
       "url": "https://mcp.videogen.io/mcp",
       "description": "Hosted Streamable HTTP. Use an OAuth-capable MCP client and sign in to VideoGen. Generation uses account credits.",
       "recommended": true
+    },
+    "http-api-key": {
+      "type": "http",
+      "url": "https://mcp.videogen.io/mcp",
+      "headers": {
+        "Authorization": "Bearer ${VIDEOGEN_API_KEY}"
+      },
+      "description": "Hosted Streamable HTTP using a caller-owned VideoGen API key instead of OAuth. Generation uses account credits."
     }
   },
   "is_official": true,
