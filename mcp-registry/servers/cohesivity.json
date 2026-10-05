@@ -1,0 +1,69 @@
+{
+  "display_name": "Cohesivity",
+  "license": "MIT",
+  "tags": [
+    "backend",
+    "postgres",
+    "hosting",
+    "email",
+    "storage",
+    "containers",
+    "llm",
+    "x402"
+  ],
+  "name": "cohesivity",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cohesivity-org/cohesivity-plugin"
+  },
+  "homepage": "https://cohesivity.ai",
+  "author": {
+    "name": "Cohesivity",
+    "url": "https://cohesivity.ai"
+  },
+  "description": "cohesivity.ai offers free agent native backend services for Codex and other coding agents. Anonymous account (no-signup) to get started through MCP or API. Hosting, postgres, email, storage, containers, LLMs, voice and third-party APIs. Includes free tiers and 5 USD/mo in AI and Search credits. Top-ups through x402.",
+  "categories": [
+    "Dev Tools",
+    "Databases"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://cohesivity.ai/mcp",
+      "recommended": true,
+      "description": "Hosted Streamable HTTP endpoint. No account or key needed to start."
+    },
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@cohesivity/mcp"
+      ],
+      "description": "Run locally via stdio (connects to the hosted service)"
+    }
+  },
+  "examples": [
+    {
+      "title": "Postgres database",
+      "description": "Provision a database for an app",
+      "prompt": "Create a Postgres database for my app and add a users table."
+    },
+    {
+      "title": "Deploy a site",
+      "description": "Host a web app",
+      "prompt": "Deploy this project and give me the live URL."
+    },
+    {
+      "title": "Transactional email",
+      "description": "Send email from an app",
+      "prompt": "Set up email so my app can send signup confirmations."
+    },
+    {
+      "title": "File storage",
+      "description": "Add object storage",
+      "prompt": "Add file uploads to my app using Cohesivity storage."
+    }
+  ],
+  "is_official": true
+}
