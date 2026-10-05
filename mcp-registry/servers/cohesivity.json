@@ -14,7 +14,7 @@
   "name": "cohesivity",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cohesivity-org/cohesivity-plugin"
+    "url": "https://github.com/cohesivity-org/cohesivity-mcp"
   },
   "homepage": "https://cohesivity.ai",
   "author": {
