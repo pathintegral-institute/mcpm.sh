@@ -1,0 +1,75 @@
+{
+  "name": "kultranz",
+  "display_name": "Kultranz",
+  "description": "US salary, cost-of-living, and take-home-pay data from BLS, BEA, Census, and IRS 2026 releases. Free hosted read-only tools including a full 50-state tax engine, BEA regional price parities across 50 metros, and BLS OEWS wage percentiles by occupation and metro.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CodePhantom-1/us-salary-cost-of-living-dataset"
+  },
+  "homepage": "https://kultranz.com",
+  "author": {
+    "name": "Kultranz",
+    "url": "https://kultranz.com"
+  },
+  "license": "CC-BY-4.0",
+  "categories": ["Finance", "Analytics"],
+  "tags": [
+    "salary",
+    "taxes",
+    "cost-of-living",
+    "take-home-pay",
+    "US government data",
+    "BLS",
+    "BEA",
+    "finance"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://api.kultranz.com/mcp",
+      "recommended": true,
+      "description": "Hosted Streamable HTTP endpoint. Free, no authentication required."
+    }
+  },
+  "examples": [
+    {
+      "title": "Compare take-home pay across states",
+      "description": "Net pay for the same gross salary in two states",
+      "prompt": "What is the take-home pay on a $95,000 salary in Texas vs California?"
+    },
+    {
+      "title": "Cost-of-living adjusted salary",
+      "description": "Equivalent salary between two metros using BEA price parities",
+      "prompt": "What salary do I need in Austin to match the purchasing power of $120,000 in San Francisco?"
+    },
+    {
+      "title": "Occupation wage percentiles",
+      "description": "Real BLS OEWS wage distribution for a job in a metro",
+      "prompt": "Show me the 10th to 90th percentile wages for registered nurses in Chicago."
+    }
+  ],
+  "tools": [
+    {
+      "name": "get_take_home_pay",
+      "description": "Calculate net (take-home) pay from a gross US salary for 2026: federal income tax, Social Security, Medicare (including the additional surcharge), and state income tax for any of the 50 states + DC."
+    },
+    {
+      "name": "compare_cost_of_living",
+      "description": "Compare the cost of living between two US metro areas using BEA Regional Price Parities and return the equivalent salary needed to hold the same purchasing power."
+    },
+    {
+      "name": "get_tax_brackets",
+      "description": "Return the 2026 IRS federal income tax brackets and standard deduction, and optionally one state's income tax rules."
+    },
+    {
+      "name": "list_metros",
+      "description": "List all 50 supported US metro areas with their BEA Regional Price Parity index, median rent, median home value, and median household income."
+    },
+    {
+      "name": "get_salary_percentiles",
+      "description": "Return BLS OEWS annual wage percentiles (10th, 25th, median, 75th, 90th) for an occupation, optionally narrowed to a metro or state, alongside cost-of-living context."
+    }
+  ],
+  "is_official": false,
+  "is_archived": false
+}

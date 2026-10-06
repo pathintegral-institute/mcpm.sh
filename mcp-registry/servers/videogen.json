@@ -1,0 +1,64 @@
+{
+  "name": "videogen",
+  "display_name": "VideoGen MCP",
+  "description": "Official VideoGen MCP server for creating and editing videos, images, voiceovers, music, and avatars, with media uploads, project edits, and video exports.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/video-gen/videogen-mcp"
+  },
+  "homepage": "https://videogen.io/videogen-mcp",
+  "author": {
+    "name": "VideoGen",
+    "email": "info@videogen.io",
+    "url": "https://videogen.io/videogen-mcp"
+  },
+  "license": "MIT",
+  "categories": [
+    "Media Creation",
+    "Productivity"
+  ],
+  "tags": [
+    "video",
+    "media",
+    "marketing",
+    "ecommerce"
+  ],
+  "arguments": {
+    "VIDEOGEN_API_KEY": {
+      "description": "VideoGen API key for local stdio or bearer authentication. Never commit your key. Generation uses account credits.",
+      "required": true,
+      "example": "YOUR_VIDEOGEN_API_KEY"
+    }
+  },
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@videogen/mcp"
+      ],
+      "package": "@videogen/mcp",
+      "env": {
+        "VIDEOGEN_API_KEY": "${VIDEOGEN_API_KEY}"
+      },
+      "description": "Local stdio. Requires Node.js 20+ and a VideoGen account with credits."
+    },
+    "http": {
+      "type": "http",
+      "url": "https://mcp.videogen.io/mcp",
+      "description": "Hosted Streamable HTTP. Use an OAuth-capable MCP client and sign in to VideoGen. Generation uses account credits.",
+      "recommended": true
+    },
+    "http-api-key": {
+      "type": "http",
+      "url": "https://mcp.videogen.io/mcp",
+      "headers": {
+        "Authorization": "Bearer ${VIDEOGEN_API_KEY}"
+      },
+      "description": "Hosted Streamable HTTP using a caller-owned VideoGen API key instead of OAuth. Generation uses account credits."
+    }
+  },
+  "is_official": true,
+  "is_archived": false
+}
