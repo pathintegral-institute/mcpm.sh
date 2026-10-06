@@ -58,8 +58,8 @@
       "prompt": "Search flights from Dubai to London on 10 December for one adult."
     },
     {
-      "title": "Prebook before booking",
-      "description": "Confirm the final price and availability before any booking",
+      "title": "Checkout link",
+      "description": "Hold the price and get a secure checkout link on book.maqami.co",
       "prompt": "Hold that room, tell me the final price and cancellation terms, and send me the checkout link."
     }
   ],
