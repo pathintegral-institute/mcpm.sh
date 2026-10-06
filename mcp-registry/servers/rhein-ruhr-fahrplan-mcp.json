@@ -87,27 +87,25 @@
       "args": [
         "rhein-ruhr-fahrplan-mcp"
       ],
-      "description": "Run directly from PyPI via uvx (stdio). Recommended.",
-      "recommended": true
+      "description": "Run via uvx from PyPI (stdio). Live-only by default; set FAHRPLAN_AGENCY_IDS for the schedule database.",
+      "recommended": true,
+      "env": {
+        "FAHRPLAN_AGENCY_IDS": "${FAHRPLAN_AGENCY_IDS}",
+        "FAHRPLAN_OPERATOR": "${FAHRPLAN_OPERATOR}",
+        "FAHRPLAN_DEFAULT_START": "${FAHRPLAN_DEFAULT_START}"
+      }
     },
     "pip": {
       "type": "python",
       "command": "rhein-ruhr-fahrplan-mcp",
       "args": [],
       "package": "rhein-ruhr-fahrplan-mcp",
-      "description": "Install via pip and run the entry point (stdio)."
-    },
-    "docker": {
-      "type": "docker",
-      "command": "docker",
-      "args": [
-        "compose",
-        "up",
-        "-d",
-        "--build"
-      ],
-      "package": "ghcr.io or build from repository",
-      "description": "Build and run as container with Streamable HTTP on :8080/mcp (network-only, no host port)."
+      "description": "Install via pip and run the entry point (stdio). Live-only by default; set FAHRPLAN_AGENCY_IDS for schedules.",
+      "env": {
+        "FAHRPLAN_AGENCY_IDS": "${FAHRPLAN_AGENCY_IDS}",
+        "FAHRPLAN_OPERATOR": "${FAHRPLAN_OPERATOR}",
+        "FAHRPLAN_DEFAULT_START": "${FAHRPLAN_DEFAULT_START}"
+      }
     }
   },
   "examples": [
