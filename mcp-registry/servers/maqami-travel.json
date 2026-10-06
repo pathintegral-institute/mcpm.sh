@@ -20,7 +20,7 @@
     "name": "MAQAMI",
     "url": "https://maqami.co"
   },
-  "description": "Official MCP server for MAQAMI, a hotel and flight booking platform with 3M+ hotels. Search hotels and flights, read hotel details and reviews, then prebook and book a chosen offer. Booking creates a real reservation, so the agent should confirm with the user first.",
+  "description": "Official MCP server for MAQAMI, a hotel and flight booking platform with 3M+ hotels. Search hotels and flights, read hotel details and reviews, then send the customer a secure checkout link on book.maqami.co for the chosen offer. The agent confirms with the user first.",
   "categories": [
     "Web Services"
   ],
@@ -60,7 +60,7 @@
     {
       "title": "Prebook before booking",
       "description": "Confirm the final price and availability before any booking",
-      "prompt": "Prebook that room and tell me the final price and cancellation terms before I decide."
+      "prompt": "Hold that room, tell me the final price and cancellation terms, and send me the checkout link."
     }
   ],
   "is_official": true
