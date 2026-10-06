@@ -1,0 +1,104 @@
+{
+  "display_name": "Court Rules",
+  "license": "MIT",
+  "tags": [
+    "legal",
+    "court-rules",
+    "standing-orders",
+    "local-rules",
+    "court-holidays",
+    "litigation",
+    "e-filing",
+    "enforcement"
+  ],
+  "name": "court-rules",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/foklepoint/court-rules-mcp"
+  },
+  "homepage": "https://www.courtrules.app/",
+  "author": {
+    "name": "Court Rules",
+    "email": "api@courtrules.app",
+    "url": "https://www.courtrules.app/"
+  },
+  "description": "Judge-level filing rules, standing orders, local rules and court holidays for U.S. federal and state courts, plus privacy enforcement actions from 21 jurisdictions. Every rule cites the court's own document. Hosted remote server: sign in through your MCP client (OAuth), or send an API key from https://console.courtrules.app as an Authorization Bearer header.",
+  "categories": [
+    "Professional Apps",
+    "Knowledge Base"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://mcp.courtrules.app/mcp",
+      "description": "Hosted streamable-HTTP MCP server. Your MCP client opens console.courtrules.app for a one-time sign-in (Google or email); no API key is needed for the sign-in flow.",
+      "recommended": true
+    }
+  },
+  "tools": [
+    {
+      "name": "list_courts",
+      "description": "List courts with their judge counts. Pass query with part of a court name or ID to find one; results come in pages."
+    },
+    {
+      "name": "search_judges",
+      "description": "Search for judges by district, name, or type. Returns judge name, slug, type, district, and status."
+    },
+    {
+      "name": "get_judge_rules",
+      "description": "Get all extracted rules for a specific judge, from standing orders and individual practices documents."
+    },
+    {
+      "name": "search_filing_rules",
+      "description": "Search extracted court filing rules: e-filing, service, filing timing, fees, courtesy copies, rejection or cure windows, and judge or courtroom preferences, with source provenance."
+    },
+    {
+      "name": "list_court_holidays",
+      "description": "List court holidays and closure dates by district, calendar year, or date range, with official source URLs."
+    },
+    {
+      "name": "check_compliance",
+      "description": "Build the parameters and a ready-to-use curl command for the Court Rules compliance check API (api.courtrules.app/api/v1/check). It does not run the check itself."
+    },
+    {
+      "name": "search_enforcement_actions",
+      "description": "Search privacy and regulatory enforcement actions by jurisdiction, date range, industry, violation type, risk level, or entity name."
+    },
+    {
+      "name": "get_enforcement_details",
+      "description": "Get full details of one enforcement action, including laws cited, remedies, source quotes, and document URLs."
+    },
+    {
+      "name": "get_enforcement_stats",
+      "description": "Get summary statistics of enforcement actions grouped by jurisdiction, violation type, risk level, or month."
+    }
+  ],
+  "examples": [
+    {
+      "title": "Page limits",
+      "description": "Look up page limits for a motion in a specific court",
+      "prompt": "What are the page limits for briefs in support of summary judgment in EDNY?"
+    },
+    {
+      "title": "E-filing rules",
+      "description": "Find state court e-filing requirements",
+      "prompt": "What Cook County e-filing rules apply to civil filings?"
+    },
+    {
+      "title": "Judge preferences",
+      "description": "Check a judge's courtesy copy rules",
+      "prompt": "What courtesy copy rules apply to Judge Reilly?"
+    },
+    {
+      "title": "Court holidays",
+      "description": "List the days a court is closed",
+      "prompt": "What holidays is EDNY closed for in 2026?"
+    },
+    {
+      "title": "Enforcement actions",
+      "description": "Search privacy enforcement actions",
+      "prompt": "What privacy enforcement actions happened in California this year?"
+    }
+  ],
+  "is_official": true
+}
