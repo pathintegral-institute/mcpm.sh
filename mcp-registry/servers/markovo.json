@@ -1,0 +1,107 @@
+{
+  "name": "markovo",
+  "display_name": "Markovo",
+  "description": "Convert PDF, DOCX, PPTX, XLSX and authorized public HTTPS pages (Google Docs, Notion, GitHub, Hacker News, YouTube) into clean, structured Markdown for agent context. Hosted Streamable HTTP endpoint with OAuth 2.1, plus a local stdio server sandboxed to a dedicated root directory.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fisher-byte/markovo"
+  },
+  "license": "MIT",
+  "homepage": "https://markovo.net",
+  "author": {
+    "name": "Markovo"
+  },
+  "categories": [
+    "Productivity"
+  ],
+  "tags": [
+    "markdown",
+    "pdf",
+    "documents",
+    "conversion",
+    "rag",
+    "remote"
+  ],
+  "arguments": {
+    "MARKOVO_API_KEY": {
+      "description": "API key created at https://markovo.net/app#developer (required for the local stdio server; the remote endpoint uses OAuth 2.1 instead)",
+      "required": true,
+      "example": "mk_your_api_key"
+    },
+    "MARKOVO_MCP_ROOT": {
+      "description": "Dedicated existing directory that bounds all local file reads and writes; file tools fail closed when it is missing",
+      "required": true,
+      "example": "/path/to/safe/project"
+    }
+  },
+  "tools": [
+    {
+      "name": "markovo_convert",
+      "description": "Convert a supported file through the account-metered Markovo API."
+    },
+    {
+      "name": "markovo_convert_url",
+      "description": "Convert one public HTTPS page after explicit consent to Markovo's isolated remote fetch."
+    },
+    {
+      "name": "markovo_job_status",
+      "description": "Fetch a remote job."
+    },
+    {
+      "name": "markovo_job_assets",
+      "description": "List manifest-verified image assets for a completed job."
+    },
+    {
+      "name": "markovo_asset_url",
+      "description": "Create a revocable 60-600 second bearer URL for one Bundle image."
+    },
+    {
+      "name": "markovo_asset_revoke",
+      "description": "Revoke a temporary asset URL before it expires."
+    },
+    {
+      "name": "markovo_usage",
+      "description": "Fetch account Credit usage."
+    },
+    {
+      "name": "markovo_capabilities",
+      "description": "Fetch the live capability registry."
+    },
+    {
+      "name": "markovo_billing",
+      "description": "Return the secure billing URL."
+    },
+    {
+      "name": "markovo_bundle_verify",
+      "description": "Verify a downloaded Markovo bundle."
+    },
+    {
+      "name": "markovo_doctor",
+      "description": "Check client, service, and API-key readiness."
+    }
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "markovo==0.1.1",
+        "markovo-mcp"
+      ],
+      "package": "markovo",
+      "env": {
+        "MARKOVO_API_KEY": "${MARKOVO_API_KEY}",
+        "MARKOVO_MCP_ROOT": "${MARKOVO_MCP_ROOT}"
+      },
+      "description": "Local stdio server via PyPI; file tools sandboxed to MARKOVO_MCP_ROOT",
+      "recommended": true
+    },
+    "remote": {
+      "type": "http",
+      "url": "https://markovo.net/mcp",
+      "description": "Hosted Streamable HTTP endpoint; MCP hosts discover OAuth 2.1 metadata automatically (scopes markovo:read / markovo:convert). Recommended."
+    }
+  },
+  "is_official": false
+}
