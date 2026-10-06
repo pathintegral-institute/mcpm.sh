@@ -1,0 +1,87 @@
+{
+  "name": "pdftomarkdown-ai",
+  "display_name": "PDFtoMarkdown.ai",
+  "description": "Converts local PDFs (plus Word, PowerPoint, Excel, images, HTML, and EPUB files supported by the API) into clean, structured Markdown with headings, tables, and OCR text preserved, through the PDFtoMarkdown.ai API. Exposes a convert_pdf_to_markdown tool for MCP clients.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/happywpco/pdftomarkdown-mcp"
+  },
+  "homepage": "https://pdftomarkdown.ai/mcp",
+  "author": {
+    "name": "HappyWP",
+    "url": "https://pdftomarkdown.ai"
+  },
+  "license": "MIT",
+  "categories": [
+    "Productivity",
+    "Dev Tools"
+  ],
+  "tags": [
+    "pdf",
+    "markdown",
+    "ocr",
+    "document conversion",
+    "rag"
+  ],
+  "arguments": {
+    "PDFTOMARKDOWN_API_KEY": {
+      "description": "API key from https://pdftomarkdown.ai/account (free tier available)",
+      "required": true,
+      "example": "your-api-key"
+    }
+  },
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@happywp/pdftomarkdown-mcp"
+      ],
+      "package": "@happywp/pdftomarkdown-mcp",
+      "env": {
+        "PDFTOMARKDOWN_API_KEY": "${PDFTOMARKDOWN_API_KEY}"
+      },
+      "description": "Local stdio server from npm (requires Node.js 18+)",
+      "recommended": true
+    }
+  },
+  "tools": [
+    {
+      "name": "convert_pdf_to_markdown",
+      "description": "Convert a local PDF file to clean, structured Markdown.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "file_path": {
+            "type": "string",
+            "description": "Absolute path to the PDF file to convert"
+          },
+          "force_ocr": {
+            "type": "boolean",
+            "description": "Enable Force OCR for scanned PDFs (default: false)"
+          }
+        },
+        "required": [
+          "file_path"
+        ]
+      },
+      "required": [
+        "file_path"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "title": "Convert a PDF",
+      "description": "Turn a local PDF into Markdown",
+      "prompt": "Convert ~/Documents/report.pdf to Markdown and summarize the key tables."
+    },
+    {
+      "title": "Scanned document",
+      "description": "Use OCR on a scanned PDF",
+      "prompt": "Convert this scanned invoice PDF to Markdown with OCR turned on."
+    }
+  ],
+  "is_official": true
+}
