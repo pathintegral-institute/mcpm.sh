@@ -1,0 +1,58 @@
+{
+  "name": "local-mcp",
+  "display_name": "LMCP (Local MCP)",
+  "description": "Connects Claude, ChatGPT, Cursor, Grok and other MCP clients to apps on macOS 13+ and Windows 10+: Mail, Calendar, iMessage, Microsoft Teams, Slack, WhatsApp, Outlook, OneDrive, Google Drive, Office, Notion and Zoom. 188+ tools that execute on the device. Tool availability varies by platform.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lanchuske/local-mcp-releases"
+  },
+  "homepage": "https://www.local-mcp.com",
+  "author": {
+    "name": "Colibird",
+    "url": "https://www.local-mcp.com"
+  },
+  "license": "Proprietary",
+  "categories": [
+    "Productivity",
+    "Messaging"
+  ],
+  "tags": [
+    "macos",
+    "windows",
+    "mail",
+    "calendar",
+    "imessage",
+    "teams",
+    "slack",
+    "whatsapp",
+    "outlook",
+    "onedrive",
+    "office"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "local-mcp@latest"
+      ],
+      "package": "local-mcp",
+      "description": "Local stdio server from npm (requires Node.js)",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Unread email summary",
+      "description": "Summarize recent unread mail",
+      "prompt": "Summarize my unread emails from today."
+    },
+    {
+      "title": "Tomorrow's calendar",
+      "description": "List upcoming calendar events",
+      "prompt": "What meetings do I have tomorrow?"
+    }
+  ],
+  "is_official": true
+}
