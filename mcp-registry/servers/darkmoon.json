@@ -1,0 +1,85 @@
+{
+  "name": "darkmoon",
+  "display_name": "Darkmoon",
+  "description": "Drive a self-hosted Darkmoon Pro instance from an MCP client: start an autonomous AI pentest run against an authorized target, poll its status, list campaigns and read findings that require human review, with severity statistics. Requires the Darkmoon Pro Dashboard API (the open source engine and CLI alone are not enough).",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ASCIT31/darkmoon-mcp-server"
+  },
+  "homepage": "https://github.com/ASCIT31/Dark-Moon",
+  "author": {
+    "name": "ASC-IT",
+    "url": "https://dark-moon.org"
+  },
+  "license": "GPL-3.0-only",
+  "categories": ["Dev Tools", "Analytics"],
+  "tags": ["security", "pentest", "penetration-testing", "vulnerability", "findings", "appsec"],
+  "arguments": {
+    "DARKMOON_BASE_URL": {
+      "description": "Base URL of your self-hosted Darkmoon Pro Dashboard API (there is no public hosted endpoint)",
+      "required": true,
+      "example": "https://darkmoon.example.internal"
+    },
+    "DARKMOON_USERNAME": {
+      "description": "Dashboard username (alternative: DARKMOON_TOKEN)",
+      "required": false,
+      "example": "your-dashboard-user"
+    },
+    "DARKMOON_PASSWORD": {
+      "description": "Dashboard password (alternative: DARKMOON_TOKEN)",
+      "required": false,
+      "example": "your-dashboard-password"
+    },
+    "DARKMOON_TOKEN": {
+      "description": "Pre-issued JWT, used instead of username and password",
+      "required": false,
+      "example": "your-jwt"
+    }
+  },
+  "tools": [
+    {
+      "name": "run_pentest",
+      "description": "Start an autonomous pentest against one authorized target and return the run_id"
+    },
+    {
+      "name": "get_run_status",
+      "description": "Report running, completed, error or unknown for a run, from its run log"
+    },
+    {
+      "name": "list_campaigns",
+      "description": "List campaigns visible to the dashboard user (read only)"
+    },
+    {
+      "name": "get_findings",
+      "description": "Vulnerabilities and severity statistics for a campaign (read only)"
+    }
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": ["-y", "@darkmoon_ai/mcp-server"],
+      "package": "@darkmoon_ai/mcp-server",
+      "env": {
+        "DARKMOON_BASE_URL": "${DARKMOON_BASE_URL}",
+        "DARKMOON_USERNAME": "${DARKMOON_USERNAME}",
+        "DARKMOON_PASSWORD": "${DARKMOON_PASSWORD}",
+        "DARKMOON_TOKEN": "${DARKMOON_TOKEN}"
+      },
+      "description": "Run the published npm package over stdio against your own Darkmoon Pro instance",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Review latest findings",
+      "description": "Summarize what the last campaign found",
+      "prompt": "List my Darkmoon campaigns and summarize the critical and high findings of the latest completed one."
+    },
+    {
+      "title": "Start a run on a staging target",
+      "description": "Launch an autonomous pentest against a system you are authorized to test",
+      "prompt": "Start a Darkmoon pentest against staging.example.com, which I am authorized to test, and tell me the run_id."
+    }
+  ]
+}
