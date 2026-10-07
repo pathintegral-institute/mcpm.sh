@@ -75,7 +75,7 @@
     {
       "title": "Convert a PDF",
       "description": "Turn a local PDF into Markdown",
-      "prompt": "Convert ~/Documents/report.pdf to Markdown and summarize the key tables."
+      "prompt": "Convert /Users/me/Documents/report.pdf to Markdown and summarize the key tables."
     },
     {
       "title": "Scanned document",
