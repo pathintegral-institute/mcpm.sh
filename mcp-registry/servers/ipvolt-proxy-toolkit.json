@@ -1,0 +1,282 @@
+{
+  "name": "ipvolt-proxy-toolkit",
+  "display_name": "ipvolt Proxy Toolkit",
+  "description": "Search reviewed proxy guides, generate tested proxy configuration templates for exact curl, Requests, HTTPX and Playwright versions, and diagnose structured proxy errors such as a 407 on CONNECT or a TLS failure. Read-only tools; no account or API key.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ipvolt/proxy-toolkit-mcp"
+  },
+  "homepage": "https://ipvolt.com/mcp",
+  "author": {
+    "name": "ipvolt",
+    "url": "https://ipvolt.com"
+  },
+  "license": "MIT",
+  "categories": [
+    "Dev Tools"
+  ],
+  "tags": [
+    "proxy",
+    "http-proxy",
+    "networking",
+    "troubleshooting",
+    "curl",
+    "httpx",
+    "playwright"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://mcp.ipvolt.com/mcp",
+      "recommended": true,
+      "description": "Hosted Streamable HTTP endpoint. No account, authentication or API key."
+    },
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "--yes",
+        "@ipvolt/proxy-toolkit-mcp@0.1.0"
+      ],
+      "package": "@ipvolt/proxy-toolkit-mcp",
+      "description": "Run locally over stdio with the bundled catalog (Node.js 24 or newer)."
+    }
+  },
+  "tools": [
+    {
+      "name": "search_proxy_docs",
+      "description": "Find reviewed ipvolt public guides and articles. Returns canonical document IDs, excerpts and content revision. Submit a short topic query, never credentials or logs.",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 200
+          },
+          "topic": {
+            "type": "string",
+            "enum": [
+              "setup",
+              "troubleshooting",
+              "concepts",
+              "countries",
+              "analysis"
+            ]
+          },
+          "limit": {
+            "default": 5,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_proxy_doc",
+      "description": "Read a bounded chunk or named section using a document ID returned by search_proxy_docs. Follow nextCursor to continue; cursors are bound to the content revision.",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "maxLength": 160,
+            "pattern": "^\\/(guides|blog)\\/[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "section": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "cursor": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{16}:\\d{1,5}$"
+          }
+        },
+        "required": [
+          "documentId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "generate_proxy_config",
+      "description": "Generate an HTTPS GET example for an exact tested curl, Requests, HTTPX or Playwright APIRequestContext version. Credentials and target are local environment placeholders. It does not execute the example or configure other agent tools.",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "client": {
+            "type": "string",
+            "enum": [
+              "curl",
+              "requests",
+              "httpx",
+              "playwright"
+            ],
+            "description": "Client whose exact tested configuration to generate."
+          },
+          "version": {
+            "type": "string",
+            "enum": [
+              "8.22.0",
+              "2.34.2",
+              "0.28.1",
+              "1.63.0"
+            ],
+            "description": "Exact tested version matching the client. Other versions are unsupported."
+          },
+          "protocol": {
+            "default": "http",
+            "description": "HTTP proxy with HTTPS CONNECT. Other proxy protocols are not tested.",
+            "type": "string",
+            "const": "http"
+          },
+          "timeoutSeconds": {
+            "default": 15,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 60
+          }
+        },
+        "required": [
+          "client",
+          "version"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "diagnose_proxy_error",
+      "description": "Use structured client/version, phase, status or exception observations to identify possible causes and the next check. Returns uncertainty and retry boundaries. Do not send raw logs, URLs or credentials.",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "client": {
+            "type": "string",
+            "enum": [
+              "curl",
+              "requests",
+              "httpx",
+              "playwright"
+            ]
+          },
+          "version": {
+            "type": "string",
+            "enum": [
+              "8.22.0",
+              "2.34.2",
+              "0.28.1",
+              "1.63.0"
+            ]
+          },
+          "phase": {
+            "type": "string",
+            "enum": [
+              "configuration",
+              "pool",
+              "proxy_connect",
+              "connect_tunnel",
+              "target_tls",
+              "request_send",
+              "response_headers",
+              "response_body",
+              "unknown"
+            ]
+          },
+          "status": {
+            "description": "Observed HTTP status; identify its responding layer separately.",
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 599
+          },
+          "exception": {
+            "description": "Normalized category, not raw exception text. HTTPX ConnectError alone does not establish a TLS error.",
+            "type": "string",
+            "enum": [
+              "proxy_error",
+              "tls_error",
+              "connect_timeout",
+              "read_timeout",
+              "write_timeout",
+              "pool_timeout",
+              "connection_refused",
+              "dns_error",
+              "connection_reset",
+              "protocol_error",
+              "timeout",
+              "invalid_configuration",
+              "unknown"
+            ]
+          },
+          "responseSource": {
+            "default": "unknown",
+            "description": "Use target/proxy only when established by response provenance, not merely the status code.",
+            "type": "string",
+            "enum": [
+              "proxy",
+              "target",
+              "unknown"
+            ]
+          },
+          "method": {
+            "default": "unknown",
+            "type": "string",
+            "enum": [
+              "GET",
+              "HEAD",
+              "OPTIONS",
+              "PUT",
+              "DELETE",
+              "POST",
+              "PATCH",
+              "unknown"
+            ]
+          },
+          "requestMayHaveBeenSent": {
+            "description": "Whether this target request may already have reached the application. Omit when unknown.",
+            "type": "boolean"
+          },
+          "retryAfterSeconds": {
+            "description": "Parsed bounded Retry-After delay, if actually observed. Never submit the raw header.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 86400
+          }
+        },
+        "required": [
+          "client",
+          "version",
+          "phase"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "examples": [
+    {
+      "title": "Proxy configuration",
+      "description": "Get a tested proxy example for a specific client version",
+      "prompt": "Generate an HTTPS-through-proxy example for HTTPX 0.28.1 that reads the proxy credentials from environment variables."
+    },
+    {
+      "title": "Diagnose a proxy error",
+      "description": "Interpret a structured proxy failure",
+      "prompt": "My Requests call through a proxy fails with a 407 during CONNECT. What are the possible causes and what should I check next?"
+    },
+    {
+      "title": "Search proxy guides",
+      "description": "Find a reviewed guide",
+      "prompt": "Find the guide for setting up a proxy with curl and show me the section on authentication."
+    }
+  ],
+  "is_official": true
+}
