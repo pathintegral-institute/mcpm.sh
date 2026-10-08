@@ -1,0 +1,77 @@
+{
+  "name": "orcareplay",
+  "display_name": "OrcaReplay",
+  "description": "Read an agent's own recorded runs: the full timeline, what caused what, and an offline replay of a past run with no provider call and no tokens spent.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Continuum-AI-Corp/OrcaReplay"
+  },
+  "homepage": "https://github.com/Continuum-AI-Corp/OrcaReplay",
+  "author": {
+    "name": "Continuum-AI-Corp"
+  },
+  "license": "Apache-2.0",
+  "categories": [
+    "Dev Tools",
+    "AI Systems"
+  ],
+  "tags": [
+    "debugging",
+    "record-replay",
+    "observability",
+    "reproducibility",
+    "agents",
+    "testing"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "orcareplay",
+        "mcp"
+      ],
+      "description": "Runs without a global install; needs Node 20+. The installed command is `orca`, so a global install (`npm install -g orcareplay`) can use `orca mcp` instead. The server reads runs already recorded in the project by `orca record ...`; with no recordings it returns an empty list rather than failing."
+    }
+  },
+  "tools": [
+    {
+      "name": "orca_list_runs",
+      "description": "List every agent run recorded in this project, newest first, with the run it was forked from where there is one. Start here when you do not already know which run to look at."
+    },
+    {
+      "name": "orca_show_run",
+      "description": "The full timeline of one run: every model turn with its token counts and stop reason, every tool call with its arguments and result, every shell command with its exit code, and every file the run changed."
+    },
+    {
+      "name": "orca_checkpoints",
+      "description": "The points in a run a fork can start from - where the conversation prefix is complete and the workspace was snapshotted. Use before orca_compare to pick a fork point."
+    },
+    {
+      "name": "orca_graph",
+      "description": "What caused what in a run, as a list of edges. Each edge says which event produced which, and whether it is `recorded` (the recorder watched it happen) or `inferred` (derived at query time from a named rule)."
+    },
+    {
+      "name": "orca_replay",
+      "description": "Re-run a recording exactly, with model-provider egress blocked and no tokens spent, and report what could not be reproduced: divergences, and requests the recording could not serve. Pass worktree to replay into a scratch copy instead of over the working tree."
+    },
+    {
+      "name": "orca_compare",
+      "description": "Fork one recorded run onto several models from the same checkpoint - same files, same conversation prefix - and grade each with a command you choose. Spends real tokens and executes the forked agents' commands for real."
+    }
+  ],
+  "examples": [
+    {
+      "title": "Explain an unexplained change",
+      "description": "Walk the causal chain to the edit rather than asking the agent to recall it.",
+      "prompt": "Why does tsconfig.json no longer have strict: true? Check the last recorded run."
+    },
+    {
+      "title": "Reproduce a failure offline",
+      "description": "Re-run a recorded session with no provider contacted, and report the verdict line.",
+      "prompt": "Replay yesterday's run in a scratch worktree and tell me whether the bug still reproduces."
+    }
+  ],
+  "is_official": false
+}
