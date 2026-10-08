@@ -1,0 +1,61 @@
+{
+  "name": "boim",
+  "display_name": "BOIM (보임)",
+  "description": "Hosted read-only MCP server for finding Korean businesses (2.7M, all industries), public-procurement vendors (75,000+) and open public bids. No auth for the free tier, which returns up to 5 results per tool plus a link to the full public list; full results need a BOIM API key.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kikiyop1101/boim-mcp"
+  },
+  "homepage": "https://boim.io/connect/",
+  "author": {
+    "name": "Public identity Co., Ltd.",
+    "email": "public-id@naver.com",
+    "url": "https://www.public-id.co.kr"
+  },
+  "license": "MIT (docs and client-config repo only; hosted server is not open source)",
+  "categories": [
+    "Web Services"
+  ],
+  "tags": [
+    "korea",
+    "business-directory",
+    "public-procurement",
+    "public-bids",
+    "remote"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://boim.io/api/mcp",
+      "description": "Hosted Streamable HTTP MCP server; no sign-in or API key for the free tier.",
+      "recommended": true
+    }
+  },
+  "is_official": true,
+  "tools": [
+    {
+      "name": "find_businesses",
+      "description": "Businesses across all industries in Korea (about 2.7M) by province, city/district (optional dong) and industry or name; name, industry and district only."
+    },
+    {
+      "name": "search_vendors",
+      "description": "Vendor cards built from Public Procurement Service data (all item categories, last 12 months of records) plus information registered by the businesses; filter by item, category group, region, name or certification."
+    },
+    {
+      "name": "get_vendor",
+      "description": "Full vendor card: records and amounts by item, main buyer agencies and regions, contract types, unit-price range, certifications, sources and update date."
+    },
+    {
+      "name": "find_public_bids",
+      "description": "Open public bids in all fields from KONEPS, Defense e-Procurement, LH, K-water and Nuri-jangteo, closest deadline first, with source links."
+    },
+    {
+      "name": "find_local_shops",
+      "description": "Neighborhood sign, advertising, print and copy shops by city, district and dong."
+    },
+    {
+      "name": "list_categories",
+      "description": "Procurement category groups and item names with vendor counts."
+    }
+  ]
+}
