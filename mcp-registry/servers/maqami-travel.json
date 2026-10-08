@@ -1,0 +1,67 @@
+{
+  "display_name": "MAQAMI Travel",
+  "license": "MIT",
+  "tags": [
+    "travel",
+    "hotels",
+    "flights",
+    "hotel-search",
+    "flight-search",
+    "booking",
+    "remote"
+  ],
+  "name": "maqami-travel",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/negm17111995/mcp-server"
+  },
+  "homepage": "https://mcp.maqami.co/",
+  "author": {
+    "name": "MAQAMI",
+    "url": "https://maqami.co"
+  },
+  "description": "Official MCP server for MAQAMI, a hotel and flight booking platform with 3M+ hotels. Search hotels and flights, read hotel details and reviews, then send the customer a secure checkout link on book.maqami.co for the chosen offer. The agent confirms with the user first.",
+  "categories": [
+    "Web Services"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://mcp.maqami.co/",
+      "recommended": true,
+      "description": "Hosted Streamable HTTP endpoint. No account or API key needed."
+    },
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "maqami-travel"
+      ],
+      "description": "Local stdio bridge to the hosted endpoint"
+    }
+  },
+  "examples": [
+    {
+      "title": "Hotel search",
+      "description": "Find hotels with live rates for given dates and guests",
+      "prompt": "Find 4-star hotels in Lisbon for 2 adults from 12 to 15 May."
+    },
+    {
+      "title": "Hotel details and reviews",
+      "description": "Read a hotel's description, amenities and guest reviews",
+      "prompt": "Show the amenities and recent guest reviews for the second hotel."
+    },
+    {
+      "title": "Flight search",
+      "description": "Search flights between two cities",
+      "prompt": "Search flights from Dubai to London on 10 December for one adult."
+    },
+    {
+      "title": "Checkout link",
+      "description": "Hold the price and get a secure checkout link on book.maqami.co",
+      "prompt": "Hold that room, tell me the final price and cancellation terms, and send me the checkout link."
+    }
+  ],
+  "is_official": true
+}
