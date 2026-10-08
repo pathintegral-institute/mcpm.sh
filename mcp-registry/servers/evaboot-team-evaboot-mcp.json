@@ -1,0 +1,84 @@
+{
+  "name": "@evaboot/mcp",
+  "display_name": "EvaBoot MCP",
+  "description": "EvaBoot MCP (Mission Control Panel) is a web interface for managing EvaBoot servers.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/evaboot-team/evaboot-mcp"
+  },
+  "homepage": "https://github.com/evaboot-team/evaboot-mcp#readme",
+  "author": {
+    "name": "EvaBoot Team",
+    "email": "team@evaboot.io",
+    "url": "https://evaboot.io"
+  },
+  "license": "MIT",
+  "categories": [
+    "MCP Tools",
+    "Dev Tools",
+    "System Tools"
+  ],
+  "tags": [
+    "mcp",
+    "server-management",
+    "web-interface"
+  ],
+  "arguments": {
+    "api-key": {
+      "description": "API key for authentication. If not provided, a random key will be generated and printed to the console.",
+      "required": false
+    },
+    "port": {
+      "description": "Port to listen on. Default: 7500.",
+      "required": false,
+      "example": "7500"
+    },
+    "data-dir": {
+      "description": "Directory to store data. Default: ./data.",
+      "required": false,
+      "example": "/data"
+    },
+    "servers-file": {
+      "description": "Path to the servers JSON file. Default: a file inside data-dir.",
+      "required": false,
+      "example": "/data/servers.json"
+    },
+    "update-channel": {
+      "description": "Update channel. Can be stable or latest. Default: stable.",
+      "required": false,
+      "example": "stable"
+    }
+  },
+  "tools": [],
+  "resources": [],
+  "prompts": [],
+  "installations": {
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-p",
+        "7500:7500",
+        "-v",
+        "mcp_data:/data",
+        "ghcr.io/evaboot-team/evaboot-mcp:latest"
+      ],
+      "description": "Run MCP using Docker (recommended).",
+      "recommended": true
+    },
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "@evaboot/mcp"
+      ],
+      "package": "@evaboot/mcp",
+      "description": "Run MCP using uvx (for uvuOS)."
+    }
+  },
+  "examples": [],
+  "is_official": false,
+  "is_archived": false,
+  "docker_url": "ghcr.io/evaboot-team/evaboot-mcp"
+}
