@@ -1,0 +1,118 @@
+{
+  "name": "aeon",
+  "display_name": "Aeon",
+  "description": "Run and manage your Aeon autonomous agent from chat: skills, runs, memory, strategy, packs and settings. Aeon is an open-source autonomous agent that runs skills on a schedule with GitHub Actions in your own repo. This hosted MCP server lets you list and run skills, follow runs and read their output, search the agent's memory, edit its strategy and voice, install skill packs and change settings. Sign in with GitHub and choose which agent the client may use. Writes are annotated and commit to your own repo; secrets are never readable over MCP.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aeonfun/aeon"
+  },
+  "license": "MIT",
+  "homepage": "https://www.aeon.fun/connect",
+  "author": {
+    "name": "Aaron Elijah Mars"
+  },
+  "categories": [
+    "AI Systems",
+    "Dev Tools"
+  ],
+  "tags": [
+    "agents",
+    "automation",
+    "github",
+    "github-actions",
+    "remote",
+    "oauth"
+  ],
+  "tools": [
+    {
+      "name": "list_skills",
+      "description": "List the skills on your Aeon agent."
+    },
+    {
+      "name": "run_skill",
+      "description": "Run a skill on your Aeon agent."
+    },
+    {
+      "name": "list_runs",
+      "description": "List recent skill runs."
+    },
+    {
+      "name": "get_run",
+      "description": "Get the status and details of a run."
+    },
+    {
+      "name": "read_output",
+      "description": "Read the output of a run."
+    },
+    {
+      "name": "update_skill",
+      "description": "Edit a skill."
+    },
+    {
+      "name": "read_memory",
+      "description": "Read the agent's memory."
+    },
+    {
+      "name": "search_memory",
+      "description": "Search the agent's memory."
+    },
+    {
+      "name": "read_strategy",
+      "description": "Read the agent's strategy."
+    },
+    {
+      "name": "update_strategy",
+      "description": "Edit the agent's strategy."
+    },
+    {
+      "name": "read_soul",
+      "description": "Read the agent's voice."
+    },
+    {
+      "name": "update_soul",
+      "description": "Edit the agent's voice."
+    },
+    {
+      "name": "list_packs",
+      "description": "List available skill packs."
+    },
+    {
+      "name": "install_pack",
+      "description": "Install a skill pack."
+    },
+    {
+      "name": "setup_status",
+      "description": "Check the agent's setup status."
+    },
+    {
+      "name": "list_instances",
+      "description": "List the Aeon agents the client may use."
+    },
+    {
+      "name": "switch_instance",
+      "description": "Switch to another Aeon agent."
+    },
+    {
+      "name": "read_instance_settings",
+      "description": "Read the agent's settings."
+    },
+    {
+      "name": "update_instance_settings",
+      "description": "Change the agent's settings."
+    },
+    {
+      "name": "open_runs",
+      "description": "Open the runs dashboard (MCP App UI)."
+    }
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://www.aeon.fun/connect/mcp",
+      "description": "Hosted Streamable HTTP endpoint. OAuth 2.1 with PKCE and dynamic client registration; sign in with GitHub, no API key.",
+      "recommended": true
+    }
+  },
+  "is_official": true,
+  "is_archived": false
+}
