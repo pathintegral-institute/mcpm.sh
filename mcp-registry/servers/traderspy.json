@@ -1,0 +1,142 @@
+{
+  "name": "traderspy",
+  "display_name": "TraderSpy",
+  "description": "Read-only crypto futures market data for AI agents: AI-generated signals, top-trader positions on Hyperliquid, Binance, Bybit and OKX, 19 technical indicators, funding and open interest, a screener and event-study backtests. No order, transfer or withdrawal tools. Not financial advice.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/target1m/traderspy-mcp"
+  },
+  "homepage": "https://traderspy.app/mcp",
+  "author": {
+    "name": "TraderSpy",
+    "email": "support@traderspy.app",
+    "url": "https://traderspy.app"
+  },
+  "license": "MIT",
+  "categories": [
+    "Finance",
+    "Analytics"
+  ],
+  "tags": [
+    "crypto",
+    "trading",
+    "market-data",
+    "technical-analysis",
+    "hyperliquid",
+    "binance",
+    "read-only",
+    "remote"
+  ],
+  "arguments": {
+    "TRADERSPY_API_KEY": {
+      "description": "Personal key from the Other clients tab at https://traderspy.app/mcp (starts with mcp_). Only needed for clients that cannot do OAuth; a free account is enough.",
+      "required": false,
+      "example": "mcp_YOUR_KEY"
+    }
+  },
+  "tools": [
+    {
+      "name": "get_signals",
+      "description": "Recent AI-generated futures signals, filterable by symbol and side: entry, TP1-TP3, stop, strength and validation score."
+    },
+    {
+      "name": "get_signal_details",
+      "description": "One signal in full: AI review, trigger conditions, every level as an absolute price, its resolution status and the live price."
+    },
+    {
+      "name": "get_signal_stats",
+      "description": "Signal history over a period: win rate, profit factor and resolution breakdown."
+    },
+    {
+      "name": "get_top_traders",
+      "description": "Ranked top traders per exchange (Binance, Hyperliquid, Bybit, OKX) by ROI, PnL or score over 24h to 30d."
+    },
+    {
+      "name": "get_elite_leaderboard",
+      "description": "Cross-exchange top 10 traders by SmartScore, with the scoring rationale."
+    },
+    {
+      "name": "get_trader_profile",
+      "description": "One trader's metrics plus their open positions."
+    },
+    {
+      "name": "get_trader_position_history",
+      "description": "One trader's closed trades, paged."
+    },
+    {
+      "name": "get_positions",
+      "description": "Open and closed smart-money positions, filterable by symbol, exchange and status."
+    },
+    {
+      "name": "get_market_stats",
+      "description": "Aggregate long/short counts, notional and PnL across tracked traders."
+    },
+    {
+      "name": "get_exchanges",
+      "description": "Which exchanges are tracked and enabled."
+    },
+    {
+      "name": "get_price",
+      "description": "Real-time price, 24h high/low, volume and change for one or many symbols."
+    },
+    {
+      "name": "get_candles",
+      "description": "OHLCV candles for 1m, 5m, 15m, 1h, 4h and 1d."
+    },
+    {
+      "name": "get_technical_indicators",
+      "description": "19 indicators (RSI, MACD, EMA, SMA, Bollinger, ATR, ADX, Ichimoku, SuperTrend and more) over up to 3 timeframes and 3 symbols, with a cross-timeframe confluence summary."
+    },
+    {
+      "name": "get_derivatives",
+      "description": "Funding rate, open interest, long/short ratios and taker flow for Binance perpetuals."
+    },
+    {
+      "name": "screen_symbols",
+      "description": "Screen the most-traded pairs against up to three conditions over 17 metrics, or compare a list of symbols."
+    },
+    {
+      "name": "backtest_condition",
+      "description": "Event study of what price did after a condition on one symbol and timeframe, against the unconditional baseline."
+    },
+    {
+      "name": "get_tracked_symbols",
+      "description": "Every symbol with real-time data available."
+    }
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://mcp.traderspy.app/mcp",
+      "description": "Hosted Streamable HTTP. Use an OAuth-capable MCP client and sign in with a free TraderSpy account.",
+      "recommended": true
+    },
+    "http-api-key": {
+      "type": "http",
+      "url": "https://mcp.traderspy.app/mcp",
+      "headers": {
+        "Authorization": "Bearer ${TRADERSPY_API_KEY}"
+      },
+      "description": "Hosted Streamable HTTP with a personal key instead of OAuth, for clients without a sign-in window."
+    }
+  },
+  "examples": [
+    {
+      "title": "Smart money",
+      "description": "Ask what top traders hold",
+      "prompt": "Which coins are the top Hyperliquid traders long right now?"
+    },
+    {
+      "title": "Screener",
+      "description": "Scan the market in one call",
+      "prompt": "Which coins are oversold on the 4h right now?"
+    },
+    {
+      "title": "Event study",
+      "description": "Look back at a condition",
+      "prompt": "How did ETH do after RSI dropped below 30 on the 4h, historically?"
+    }
+  ],
+  "is_official": true,
+  "is_archived": false
+}
