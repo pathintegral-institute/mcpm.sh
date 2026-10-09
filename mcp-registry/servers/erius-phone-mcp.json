@@ -1,0 +1,837 @@
+{
+  "name": "erius-phone-mcp",
+  "display_name": "ERIUS PHONE MCP",
+  "description": "MCP server that lets an agent drive an ERIUS PHONE hosted Android phone or tablet: read the screen as an accessibility tree or screenshot, tap, type, swipe and scroll, launch apps, install APKs, and pull crash logs. Requires an ERIUS PHONE account and API key (early access).",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Protremix/erius-phone-mcp"
+  },
+  "homepage": "https://eriusphone.com",
+  "author": {
+    "name": "ERIUS",
+    "email": "info@eriusphone.com",
+    "url": "https://eriusphone.com"
+  },
+  "license": "MIT",
+  "categories": [
+    "Dev Tools"
+  ],
+  "tags": [
+    "android",
+    "mobile",
+    "automation",
+    "testing",
+    "accessibility",
+    "screenshot"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "erius-phone-mcp"
+      ],
+      "env": {
+        "ERIUS_PHONE_API_KEY": "${ERIUS_PHONE_API_KEY}",
+        "ERIUS_PHONE_DEFAULT_DEVICE": "${ERIUS_PHONE_DEFAULT_DEVICE}"
+      }
+    }
+  },
+  "arguments": {
+    "ERIUS_PHONE_API_KEY": {
+      "description": "Your ERIUS PHONE API key. Every request is authenticated with it and scoped to your account.",
+      "required": true,
+      "example": "your-api-key"
+    },
+    "ERIUS_PHONE_DEFAULT_DEVICE": {
+      "description": "Device id to use when a tool call does not name one; list_devices shows the ids.",
+      "required": false,
+      "example": "your-device-id"
+    }
+  },
+  "tools": [
+    {
+      "name": "list_devices",
+      "description": "List every Android device your API key can access, with live status (booted, Android version, screen size). Call this first to get device ids.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      }
+    },
+    {
+      "name": "whoami",
+      "description": "Show which ERIUS PHONE account (tenant) and key id this server is using, and the device ids it can access. Handy to check the API key works.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_device",
+      "description": "Get full status of one device: boot state, Android version, screen size, and the app currently in the foreground. Omit `device` to use the default.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "device": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "snapshot",
+      "description": "Get an accessibility-tree snapshot of the current screen: every visible element with its text, role, and a `ref` id you can pass to tap/type/scroll. This is how the agent 'sees' the phone \u2014 read it before acting, and take a fresh one after any action since refs reset on every snapshot.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "device": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "max_depth": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "max_nodes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "screenshot",
+      "description": "Take a screenshot of the device screen right now (PNG at the device's native resolution, e.g. 720x1280 on a phone) and return it as an image you can look at. Tap coordinates are in the same pixels. Prefer snapshot() when you only need text and refs: it's far smaller.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "device": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "foreground",
+      "description": "Get just the foreground app: package, activity, and whether a crash dialog is showing. Cheaper than a full snapshot when you only need this.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "device": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "tap",
+      "description": "Tap an element. Prefer `ref` from a snapshot(), or `text`/`content_desc` to tap by visible label. Falls back to raw `x`,`y` pixel coordinates.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "device": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "content_desc": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "x": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "y": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "long_press",
+      "description": "Long-press an element (e.g. to open a context menu or start a drag). Targets work like tap(): `ref`, `text`/`content_desc`, or raw `x`,`y`. `ms` (hold time, default 800) only applies to the x,y form.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "device": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "content_desc": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "x": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "y": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "ms": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "type_text",
+      "description": "Type text into a field. Optionally tap a `ref` or `text_target` label first to focus the field, `clear` the existing value, or press Enter after. Keystrokes sent while the field is still opening are lost, so if tapping the field opens a new screen (e.g. a search page), tap it first, wait for it with snapshot() or wait_for_text(), then type with no target. Check the result with snapshot(). Only printable ASCII is supported (adb limitation).",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "device": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "text_target": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "clear": {
+            "default": false,
+            "type": "boolean"
+          },
+          "enter": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "press_key",
+      "description": "Press a hardware/navigation key: back, home, enter, delete, tab, escape, up, down, left, right, space, power, volup, voldown, recent, menu, wakeup.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "device": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "swipe",
+      "description": "Swipe from one point to another in device pixel coordinates.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "x1": {
+            "type": "integer"
+          },
+          "y1": {
+            "type": "integer"
+          },
+          "x2": {
+            "type": "integer"
+          },
+          "y2": {
+            "type": "integer"
+          },
+          "device": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "ms": {
+            "default": 300,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "x1",
+          "y1",
+          "x2",
+          "y2"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "scroll",
+      "description": "Scroll a list/container up, down, left, or right. `ref` must be the ref of the scrollable container itself (a ScrollView or List line in the snapshot), not of a row inside it: scrolling a single row does nothing. If the container has no ref, use swipe() instead.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "direction": {
+            "type": "string"
+          },
+          "ref": {
+            "type": "string"
+          },
+          "device": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "direction",
+          "ref"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "wait_for_text",
+      "description": "Wait until `text` appears somewhere on screen (e.g. after a slow screen transition), up to timeout_ms (max 120000). Returns the settled snapshot.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "device": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "timeout_ms": {
+            "default": 10000,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "launch_app",
+      "description": "Launch an installed app by package name (e.g. com.android.chrome). Pass `activity` only if the app has no launcher activity resolvable automatically.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "package": {
+            "type": "string"
+          },
+          "device": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "activity": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "package"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "open_url",
+      "description": "Open a URL (http/https/market) on the device, optionally forcing it into a specific app package (e.g. open a link in Chrome specifically).",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "device": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "package": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "send_intent",
+      "description": "Start an activity with an arbitrary Android intent (`am start -a ACTION`), e.g. action=\"android.settings.WIFI_SETTINGS\" to jump straight to a settings page. `component` is \"package/.Activity\"; `extras` values become string, int or boolean extras by their type. Returns ok plus the new foreground app.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "device": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "data": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "package": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "component": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "extras": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "boolean"
+                    }
+                  ]
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "stop_app",
+      "description": "Force-stop a running app by package name.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "package": {
+            "type": "string"
+          },
+          "device": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "package"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_apps",
+      "description": "List installed apps on the device. Set third_party_only=True to skip pre-installed system apps and see only user-installed ones.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "device": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "third_party_only": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "uninstall_app",
+      "description": "Uninstall an app by package name.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "package": {
+            "type": "string"
+          },
+          "device": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "package"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_crash_log",
+      "description": "Read the device's crash log buffer (logcat -b crash) \u2014 use this after an app crashes during QA testing to see the real stack trace.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "device": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "lines": {
+            "default": 200,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "install_apk",
+      "description": "Install an APK from a local file path on the machine running this MCP server (not on the phone) onto the device. Use this for APK QA testing \u2014 the real use case ERIUS PHONE is built for. Returns the parsed package info (name, version) and whether the install actually succeeded.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "apk_path": {
+            "type": "string"
+          },
+          "device": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "grant_permissions": {
+            "default": false,
+            "type": "boolean"
+          },
+          "allow_downgrade": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "apk_path"
+        ],
+        "type": "object"
+      }
+    }
+  ],
+  "examples": [
+    {
+      "title": "Open an app",
+      "description": "Find a device, go to the home screen and open an app.",
+      "prompt": "List my ERIUS devices, go to the home screen, and open Contacts."
+    }
+  ],
+  "is_official": true
+}
