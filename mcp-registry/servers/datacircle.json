@@ -5,9 +5,9 @@
     "b2b-data",
     "linkedin",
     "data-enrichment",
-    "lead-generation",
+    "data-api",
     "sales",
-    "datasets"
+    "mcp-server"
   ],
   "name": "datacircle",
   "repository": {
@@ -44,7 +44,7 @@
     },
     {
       "name": "list_files",
-      "description": "List the data files this account can download, such as the free 10M+ US B2B leads dataset, each with whether it is unlocked. Free."
+      "description": "List the data files this account can download, the daily co-op flat file, and whether each is unlocked. Listing them is free."
     },
     {
       "name": "get_download_link",
@@ -53,10 +53,6 @@
     {
       "name": "add_funds",
       "description": "Start a Stripe Checkout that adds funds to the Datacircle balance; nothing is charged until the user pays it."
-    },
-    {
-      "name": "get_invite_link",
-      "description": "Get this account's invite link and how many people signed up with it. Free."
     }
   ],
   "examples": [
@@ -71,9 +67,9 @@
       "prompt": "What's my Datacircle balance?"
     },
     {
-      "title": "Free dataset",
-      "description": "Get the free U.S. B2B leads file",
-      "prompt": "Get me a download link for Datacircle's free 10M+ U.S. B2B leads dataset."
+      "title": "Fetchin",
+      "description": "Look up a profile through Fetchin",
+      "prompt": "Look up https://www.linkedin.com/in/satyanadella with Datacircle through Fetchin."
     }
   ],
   "is_official": true
