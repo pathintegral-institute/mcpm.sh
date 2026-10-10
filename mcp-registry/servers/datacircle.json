@@ -1,0 +1,76 @@
+{
+  "display_name": "Datacircle",
+  "license": "MIT",
+  "tags": [
+    "b2b-data",
+    "linkedin",
+    "data-enrichment",
+    "data-api",
+    "sales",
+    "mcp-server"
+  ],
+  "name": "datacircle",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/waynehamadi/datacircle-plugin"
+  },
+  "homepage": "https://datacircle.dev",
+  "author": {
+    "name": "Datacircle",
+    "email": "wayne@datacircle.dev",
+    "url": "https://datacircle.dev"
+  },
+  "description": "Datacircle is a data co-op. Query your favorite B2B data APIs through us. Same request, same price, no markup. Right now we have 3 live LinkedIn profile APIs that we trust: Up2Data, HarvestAPI and Fetchin. Hosted remote server: sign in through your MCP client (OAuth, your work email and a code on datacircle.dev), or send your Datacircle API key as an Authorization Bearer header.",
+  "categories": [
+    "Professional Apps",
+    "Analytics"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://api.datacircle.dev/mcp",
+      "description": "Hosted streamable-HTTP MCP server. Your MCP client opens datacircle.dev for a one-time sign-in with your work email; a new account starts with a $5 credit.",
+      "recommended": true
+    }
+  },
+  "tools": [
+    {
+      "name": "get_linkedin_profile",
+      "description": "Fetch one person's LinkedIn profile by its URL (name, headline, location, current company and title, positions, education, skills) through Up2Data, HarvestAPI or Fetchin, at the provider's own price from the Datacircle balance, with no markup."
+    },
+    {
+      "name": "get_balance",
+      "description": "Read the Datacircle balance in USD and what it is made of. Free."
+    },
+    {
+      "name": "list_files",
+      "description": "List the data files this account can download, the daily co-op flat file, and whether each is unlocked. Listing them is free."
+    },
+    {
+      "name": "get_download_link",
+      "description": "Get a signed download link, valid one hour, for one file from list_files. Free."
+    },
+    {
+      "name": "add_funds",
+      "description": "Start a Stripe Checkout that adds funds to the Datacircle balance; nothing is charged until the user pays it."
+    }
+  ],
+  "examples": [
+    {
+      "title": "LinkedIn profile",
+      "description": "Look up one person's profile from its URL",
+      "prompt": "Look up https://www.linkedin.com/in/williamhgates with Datacircle and summarise his career."
+    },
+    {
+      "title": "Balance",
+      "description": "Check what the lookups can spend",
+      "prompt": "What's my Datacircle balance?"
+    },
+    {
+      "title": "Fetchin",
+      "description": "Look up a profile through Fetchin",
+      "prompt": "Look up https://www.linkedin.com/in/satyanadella with Datacircle through Fetchin."
+    }
+  ],
+  "is_official": true
+}
