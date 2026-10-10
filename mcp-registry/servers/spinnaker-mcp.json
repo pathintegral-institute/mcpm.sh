@@ -1,7 +1,7 @@
 {
   "name": "spinnaker-mcp",
   "display_name": "Spinnaker MCP",
-  "description": "Exposes a Spinnaker instance through its Gate API as 37 tools: applications, pipelines, executions, deployment strategies and infrastructure. Setting TOOLSETS=readonly registers only the 27 tools that read.",
+  "description": "Exposes a Spinnaker instance through its Gate API as 37 tools: applications, pipelines, executions, deployment strategies and infrastructure.",
   "repository": {
     "type": "git",
     "url": "https://github.com/GeiserX/spinnaker-mcp"
