@@ -20,7 +20,7 @@
     "email": "wayne@datacircle.dev",
     "url": "https://datacircle.dev"
   },
-  "description": "Datacircle is a data co-op. Query your favorite B2B data APIs through us. Same request, same price, no markup. Right now we have 2 live LinkedIn profile APIs that we trust: Up2Data and HarvestAPI. Hosted remote server: sign in through your MCP client (OAuth, your work email and a code on datacircle.dev), or send your Datacircle API key as an Authorization Bearer header.",
+  "description": "Datacircle is a data co-op. Query your favorite B2B data APIs through us. Same request, same price, no markup. Right now we have 3 live LinkedIn profile APIs that we trust: Up2Data, HarvestAPI and Fetchin. Hosted remote server: sign in through your MCP client (OAuth, your work email and a code on datacircle.dev), or send your Datacircle API key as an Authorization Bearer header.",
   "categories": [
     "Professional Apps",
     "Analytics"
@@ -36,7 +36,7 @@
   "tools": [
     {
       "name": "get_linkedin_profile",
-      "description": "Fetch one person's LinkedIn profile by its URL (name, headline, location, current company and title, positions, education, skills) through Up2Data or HarvestAPI, at the provider's own price from the Datacircle balance, with no markup."
+      "description": "Fetch one person's LinkedIn profile by its URL (name, headline, location, current company and title, positions, education, skills) through Up2Data, HarvestAPI or Fetchin, at the provider's own price from the Datacircle balance, with no markup."
     },
     {
       "name": "get_balance",
