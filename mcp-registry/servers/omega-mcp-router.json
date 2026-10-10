@@ -1,0 +1,69 @@
+{
+  "name": "omega-mcp-router",
+  "display_name": "Omega MCP Router",
+  "description": "One stdio MCP server that proxies many upstream MCP servers. Tool schemas load from a cache on disk, each upstream process starts only on the first tool call that needs it and closes after 15 idle minutes, and a session turns upstreams on and off for itself through router meta-tools. Upstreams are added with the bundled omega-mcp CLI.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Omega-JS-Stack/omega"
+  },
+  "homepage": "https://github.com/Omega-JS-Stack/omega/tree/main/packages/mcp-router",
+  "author": {
+    "name": "ITW Creative Works",
+    "url": "https://github.com/ITW-Creative-Works"
+  },
+  "license": "Elastic-2.0",
+  "categories": [
+    "MCP Tools"
+  ],
+  "tags": [
+    "router",
+    "proxy",
+    "aggregator",
+    "stdio",
+    "lazy-loading"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@omega.js/mcp-router"
+      ],
+      "package": "@omega.js/mcp-router",
+      "description": "Local stdio server from npm (requires Node.js)",
+      "recommended": true
+    }
+  },
+  "tools": [
+    {
+      "name": "router__list_upstreams",
+      "description": "List every upstream with its enabled state, whether it is locked, whether it is active in this session, its cached tool count, and the running child's pid and idle time."
+    },
+    {
+      "name": "router__enable_upstream",
+      "description": "Activate an upstream for this session, optionally with environment variables for its process."
+    },
+    {
+      "name": "router__disable_upstream",
+      "description": "Deactivate an upstream for this session and stop its process."
+    },
+    {
+      "name": "router__refresh_upstream",
+      "description": "Start an upstream once, re-read its tool list, and cache it."
+    }
+  ],
+  "examples": [
+    {
+      "title": "See what is available",
+      "description": "List the configured upstream servers",
+      "prompt": "Which MCP upstreams does the router have, and which are active?"
+    },
+    {
+      "title": "Turn on a server for this chat",
+      "description": "Activate an on-demand upstream",
+      "prompt": "Enable the chrome-devtools upstream for this session."
+    }
+  ],
+  "is_official": true
+}
