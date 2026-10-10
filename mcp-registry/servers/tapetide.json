@@ -1,0 +1,304 @@
+{
+  "name": "tapetide",
+  "display_name": "Tapetide",
+  "description": "Indian stock market research for about 8,200 NSE and BSE listed companies: live quotes, quarterly and annual financials, shareholding, a 326-ratio fundamental screener, technical screens, analyst ratings, FII/DII flows, end-of-day index option chains with IV, parsed company filings, IPOs, and your Tapetide portfolio and watchlist. 55 tools. Free plan included. Research data, not investment advice.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Tapetide-hq/nse-bse-indian-stock-market-data-mcp"
+  },
+  "homepage": "https://tapetide.com/mcp",
+  "author": {
+    "name": "Tapetide",
+    "url": "https://tapetide.com"
+  },
+  "license": "MIT",
+  "categories": [
+    "Finance"
+  ],
+  "tags": [
+    "stock-market",
+    "indian-stocks",
+    "nse",
+    "bse",
+    "stock-screener",
+    "fii-dii",
+    "options",
+    "fundamentals",
+    "technical-analysis",
+    "portfolio"
+  ],
+  "arguments": {
+    "TAPETIDE_TOKEN": {
+      "description": "Free personal access token from https://tapetide.com/settings/tokens",
+      "required": true,
+      "example": "tpt_rt_your_token"
+    }
+  },
+  "tools": [
+    {
+      "name": "search_stocks",
+      "description": "Search ~8,200 Indian stocks by name, symbol, BSE code, or ISIN"
+    },
+    {
+      "name": "get_company_profile",
+      "description": "Get detailed company overview — sector, about, pros/cons, fundamentals (PE, PB, market cap, ROE, ROCE, debt/equity), growth metrics, and current quote"
+    },
+    {
+      "name": "get_stock_events",
+      "description": "Get stock events — news, corporate actions, or company filings"
+    },
+    {
+      "name": "get_stock_ownership",
+      "description": "Get ownership data for a stock — dividend history and mutual fund holdings"
+    },
+    {
+      "name": "get_stock_quote",
+      "description": "Get the current/latest stock price quote — LTP, change, change %, volume, market cap, PE, PB, 52-week high/low"
+    },
+    {
+      "name": "get_batch_quotes",
+      "description": "Get current price quotes for multiple stocks at once"
+    },
+    {
+      "name": "get_price_history",
+      "description": "Get OHLCV price history as row-per-day format — date, open, high, low, close, volume, delivery %"
+    },
+    {
+      "name": "get_financials",
+      "description": "Get financial statements for one company"
+    },
+    {
+      "name": "get_shareholding",
+      "description": "Get shareholding pattern — promoter, FII, DII, public holdings over time"
+    },
+    {
+      "name": "get_forecasts",
+      "description": "Get analyst forecasts — EPS, revenue, EBITDA, net income, ROA, ROE, and price estimates"
+    },
+    {
+      "name": "get_market_pulse",
+      "description": "Get today's market snapshot — FII/DII net flows (buy/sell/net in crores), Nifty 50 valuations (PE/PB/DY), and the India VIX volatility gauge"
+    },
+    {
+      "name": "get_fii_dii_detail",
+      "description": "Get detailed FII/DII institutional flow data:\n- Daily cash market flows for last 30 trading days (buy/sell/net in crores)\n- F&O participant positioning (FII/DII"
+    },
+    {
+      "name": "get_fii_dii_flows",
+      "description": "Alias for get_fii_dii_detail"
+    },
+    {
+      "name": "get_fpi_sectors",
+      "description": "Get FPI (Foreign Portfolio Investor) sector-wise investment data"
+    },
+    {
+      "name": "get_market_news",
+      "description": "Get latest market-wide news across all categories"
+    },
+    {
+      "name": "get_market_data",
+      "description": "Get one of today's market-wide data feeds"
+    },
+    {
+      "name": "market_valuations",
+      "description": "Get index valuation metrics (PE, PB, Dividend Yield) over time"
+    },
+    {
+      "name": "market_heatmap",
+      "description": "Get a stock heatmap for an index — all constituent stocks with market cap, PE, PB, price changes (1d/1w/1m/3m/6m/1y/5y), volume, and sector.\n\nAvailable indices:"
+    },
+    {
+      "name": "screen_stocks",
+      "description": "Screen Indian stocks by fundamental criteria using 326 financial ratios (valuation, profitability, growth, balance sheet, cash flow, shareholding, with 3Y/5Y/10"
+    },
+    {
+      "name": "screen_stocks_technical",
+      "description": "Screen Indian stocks by technical indicators (RSI, MACD, moving averages, crossovers, volume, momentum) on real-time data.\nFor fundamental screening (PE, ROCE, "
+    },
+    {
+      "name": "get_screener_ratios",
+      "description": "Search or list available financial ratios for the screen_stocks tool"
+    },
+    {
+      "name": "get_trending_stocks",
+      "description": "Get trending stock summary — top gainers, losers, and high-volume stocks from Nifty 500"
+    },
+    {
+      "name": "get_options_analytics",
+      "description": "Get derivatives analytics for a stock — implied volatility (ATM IV, IV rank, IV percentile), realized volatility, put-call ratio (OI and volume), max pain strik"
+    },
+    {
+      "name": "get_stock_deals",
+      "description": "Get large-trade history for a stock — bulk deals, block deals, insider (designated-person) trades, and SAST (substantial acquisition) disclosures, with the coun"
+    },
+    {
+      "name": "get_promoter_pledge",
+      "description": "Get the promoter share-pledge history for a stock — the percentage of promoter holding pledged over recent quarters plus recent pledge creation/release events"
+    },
+    {
+      "name": "get_credit_ratings",
+      "description": "Get credit-rating actions for a company — agency, rating, action (upgrade/downgrade/reaffirm), and outlook over time"
+    },
+    {
+      "name": "get_earnings_call_summary",
+      "description": "Get AI-generated investor digests of a company's recent earnings (concall) transcripts and investor presentations — a structured summary plus key highlights, ri"
+    },
+    {
+      "name": "get_india_vix",
+      "description": "Get the India VIX — the market's expected near-term volatility (the 'fear gauge')"
+    },
+    {
+      "name": "list_company_documents",
+      "description": "Index of a company's filings parsed to text (concall transcripts, annual reports, presentations, IPO documents): doc_id, type, period, date, num_pages, flags, a"
+    },
+    {
+      "name": "get_document_summary",
+      "description": "Investor digest of ONE parsed filing: summary, highlights, risks, guidance, key metrics, plus links to the PDF and full Markdown"
+    },
+    {
+      "name": "read_document",
+      "description": "Markdown text of a parsed filing by doc_id and page range, with <!-- page N --> markers to cite"
+    },
+    {
+      "name": "get_tapetide_score",
+      "description": "Get the Tapetide Score for ONE stock — a deterministic, non-LLM 0-100 composite rating from the latest complete scoring run, plus the six pillar sub-scores (qua"
+    },
+    {
+      "name": "screen_tapetide_scores",
+      "description": "List and rank stocks by the Tapetide Score, filtered by size bucket, band, score window, sector, minimum data-confidence and symbol/name search"
+    },
+    {
+      "name": "get_option_chain",
+      "description": "Get the INDEX OPTION CHAIN with implied volatility, Greeks, bid/ask and open interest by strike"
+    },
+    {
+      "name": "get_option_iv_history",
+      "description": "Get the HISTORICAL option-analytics time series for an underlying — ATM implied volatility, IV rank, IV percentile, realised vol, put-call ratio (OI and volume)"
+    },
+    {
+      "name": "get_index_performance",
+      "description": "Rank NSE indices by RETURN over recent completed weeks or months, using official NSE index closing levels"
+    },
+    {
+      "name": "get_index_history",
+      "description": "Get the historical LEVEL series (OHLC + PE/PB/dividend yield) for a single NSE INDEX — Nifty 50, Nifty Bank, Nifty IT, Nifty Oil & Gas, India VIX, and ~140 more"
+    },
+    {
+      "name": "get_adjustment_factors",
+      "description": "Get the split/bonus adjustment-factor timeline for a stock, so a raw (unadjusted) price series can be reconstructed from the adjusted one"
+    },
+    {
+      "name": "get_observation_status",
+      "description": "For every CALENDAR day in a lookback window, get why a price is or is not present: `traded`, `weekend`, `holiday`, `pre_listing`, `delisted`, or `no_print`"
+    },
+    {
+      "name": "get_index_membership_asof",
+      "description": "Was a stock a constituent of an index on a specific historical date? Returns a FOUR-STATE answer, never a bare yes/no: `present` (proven in range), `uncertain` "
+    },
+    {
+      "name": "resolve_identifier_asof",
+      "description": "Resolve a historical symbol or ISIN to the company that held it ON a given date"
+    },
+    {
+      "name": "get_identifiers_asof",
+      "description": "The REVERSE of resolve_identifier_asof: given a stock_id and a date, return which symbol and ISIN that company held at that time"
+    },
+    {
+      "name": "read_me",
+      "description": "IMPORTANT: Call this FIRST"
+    },
+    {
+      "name": "scan_movers",
+      "description": "Alias for get_trending_stocks"
+    },
+    {
+      "name": "get_live_quote",
+      "description": "Alias for get_stock_quote"
+    },
+    {
+      "name": "get_stock_news",
+      "description": "Alias for get_stock_events with type:\"news\""
+    },
+    {
+      "name": "get_corporate_actions",
+      "description": "Alias for get_stock_events with type:\"corporate_actions\""
+    },
+    {
+      "name": "run_preset_screen",
+      "description": "Not a standalone tool"
+    },
+    {
+      "name": "get_user_portfolio",
+      "description": "Get the authenticated user's current stock portfolio with live prices"
+    },
+    {
+      "name": "add_portfolio_stocks",
+      "description": "Add one or more stocks to the user's portfolio, merging duplicates by weighted-average price"
+    },
+    {
+      "name": "update_portfolio_stock",
+      "description": "Update the quantity and/or average price of an existing stock in the user's portfolio.\n\nUse cases:\n• User says \"I bought 10 more RELIANCE at ₹1,400\" → you must "
+    },
+    {
+      "name": "remove_portfolio_stocks",
+      "description": "Remove one or more stocks from the user's portfolio entirely.\n\nUse cases:\n• User says \"Remove INFY from my portfolio\" → single delete\n• User says \"Remove all IT"
+    },
+    {
+      "name": "get_watchlist",
+      "description": "Get the user's stock watchlist — all stocks they are following"
+    },
+    {
+      "name": "add_to_watchlist",
+      "description": "Add one or more stocks to the user's watchlist"
+    },
+    {
+      "name": "remove_from_watchlist",
+      "description": "Remove one or more stocks from the user's watchlist.\n\nUse cases:\n• User says \"Stop watching INFY\" → single remove\n• User says \"Clear my watchlist\" → remove all "
+    }
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "tapetide-mcp"
+      ],
+      "package": "tapetide-mcp",
+      "env": {
+        "TAPETIDE_TOKEN": "${TAPETIDE_TOKEN}"
+      },
+      "description": "Run the published npm package over stdio",
+      "recommended": true
+    },
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "tapetide-mcp"
+      ],
+      "package": "tapetide-mcp",
+      "env": {
+        "TAPETIDE_TOKEN": "${TAPETIDE_TOKEN}"
+      },
+      "description": "Run the published Python package over stdio"
+    }
+  },
+  "examples": [
+    {
+      "title": "Company snapshot",
+      "description": "Fundamentals and price context for one stock",
+      "prompt": "Give me a snapshot of RELIANCE: latest quote, last 4 quarters of revenue and profit, and promoter holding trend."
+    },
+    {
+      "title": "Screen for quality",
+      "description": "Run a fundamental screen",
+      "prompt": "Find NSE stocks with ROCE above 20%, debt to equity below 0.5 and market cap above 5,000 crore."
+    },
+    {
+      "title": "Institutional flows",
+      "description": "Recent FII/DII activity",
+      "prompt": "Summarise FII and DII cash market flows for the last 10 trading days."
+    }
+  ]
+}
