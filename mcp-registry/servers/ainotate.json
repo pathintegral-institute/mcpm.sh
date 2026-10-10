@@ -1,0 +1,53 @@
+{
+  "name": "ainotate",
+  "display_name": "AInotate",
+  "description": "Annotated screenshots for AI agents: capture a web page or desktop window, then draw numbered steps, arrows, boxes and labels placed off the content, with best-effort automatic redaction of emails and tokens (check the image before you share it).",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dontpayfull/AInotate"
+  },
+  "homepage": "https://github.com/dontpayfull/AInotate",
+  "author": {
+    "name": "dontpayfull"
+  },
+  "license": "AGPL-3.0-or-later",
+  "categories": [
+    "Dev Tools"
+  ],
+  "tags": [
+    "screenshot",
+    "annotation",
+    "redaction",
+    "documentation",
+    "browser-automation",
+    "playwright"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "ainotate[all]",
+        "ainotate",
+        "mcp"
+      ],
+      "package": "ainotate",
+      "description": "Run with uvx (requires uv); web capture needs Chromium once: uvx --from 'ainotate[all]' playwright install chromium",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Where is it",
+      "description": "Answer with an annotated screenshot instead of directions",
+      "prompt": "Show me where to switch Wikipedia to dark mode"
+    },
+    {
+      "title": "Bug report",
+      "description": "Mark the broken element in red and redact personal data",
+      "prompt": "Take a screenshot of the checkout page, box the wrong total in red and write a bug report"
+    }
+  ],
+  "is_official": true
+}
