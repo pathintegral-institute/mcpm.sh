@@ -1,7 +1,7 @@
 {
   "name": "ainotate",
   "display_name": "AInotate",
-  "description": "Annotated screenshots for AI agents: capture a web page or desktop window, then draw numbered steps, arrows, boxes and labels placed off the content, with emails and tokens redacted automatically.",
+  "description": "Annotated screenshots for AI agents: capture a web page or desktop window, then draw numbered steps, arrows, boxes and labels placed off the content, with best-effort automatic redaction of emails and tokens (check the image before you share it).",
   "repository": {
     "type": "git",
     "url": "https://github.com/dontpayfull/AInotate"
