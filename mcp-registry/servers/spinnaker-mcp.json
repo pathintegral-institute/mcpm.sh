@@ -32,6 +32,11 @@
     "GATE_TOKEN": {
       "description": "Bearer token for Gate authentication; leave empty for a Gate without authentication",
       "required": false
+    },
+    "TOOLSETS": {
+      "description": "Tool groups to register; set readonly to register only the 27 tools that read, leave empty for all 37",
+      "required": false,
+      "example": "readonly"
     }
   },
   "tools": [
@@ -195,7 +200,8 @@
       "package": "spinnaker-mcp",
       "env": {
         "GATE_URL": "${GATE_URL}",
-        "GATE_TOKEN": "${GATE_TOKEN}"
+        "GATE_TOKEN": "${GATE_TOKEN}",
+        "TOOLSETS": "${TOOLSETS}"
       },
       "description": "Run the npm package over stdio; needs Node 18 or newer",
       "recommended": true
