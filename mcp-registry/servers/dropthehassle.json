@@ -1,7 +1,7 @@
 {
   "name": "dropthehassle",
   "display_name": "DropTheHassle",
-  "description": "Your AI puts the site it built live on a real link with HTTPS, not localhost: a free link with no account or token for the first publish. Want your own .com? It hands you a €19/$19 payment link; after you pay, the site goes live on it with no DNS. Your AI can also tell you a claimed site's visitors, leads and status. No tool spends money.",
+  "description": "Your AI puts the site it built live on a real link with HTTPS, not localhost: a free link with no account or token for the first publish. Want your own .com? It hands you a payment link for €19/$19 per year; after you pay, the site goes live on it with no DNS. Your AI can also tell you a claimed site's visitors, leads and status. No tool spends money.",
   "repository": {
     "type": "git",
     "url": "https://github.com/bosmdavid-gif/dropthehassle-mcp"
@@ -50,7 +50,7 @@
     {
       "title": "Find a .com",
       "description": "Check names and get a payment link for the human",
-      "prompt": "Find a free .com for this site and give me the payment link."
+      "prompt": "Find an available .com for this site and give me the payment link."
     },
     {
       "title": "Site status",
