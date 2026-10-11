@@ -1,0 +1,62 @@
+{
+  "name": "dropthehassle",
+  "display_name": "DropTheHassle",
+  "description": "Your AI puts the site it built live on a real link with HTTPS, not localhost: a free link with no account or token for the first publish. Want your own .com? It hands you a €19/$19 payment link; after you pay, the site goes live on it with no DNS. Your AI can also tell you a claimed site's visitors, leads and status. No tool spends money.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bosmdavid-gif/dropthehassle-mcp"
+  },
+  "homepage": "https://dropthehassle.com",
+  "author": {
+    "name": "DropTheHassle",
+    "url": "https://dropthehassle.com"
+  },
+  "license": "MIT",
+  "categories": [
+    "Dev Tools",
+    "Web Services"
+  ],
+  "tags": [
+    "deploy",
+    "hosting",
+    "publish",
+    "custom-domain",
+    "https",
+    "vibe-coding"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://dropthehassle.com/mcp",
+      "recommended": true,
+      "description": "Hosted Streamable HTTP endpoint. No account or token needed for the first publish."
+    },
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "dropthehassle-mcp@latest"
+      ],
+      "description": "Run locally via stdio (talks to the hosted service)"
+    }
+  },
+  "examples": [
+    {
+      "title": "Publish a site",
+      "description": "Make a built site live on a free HTTPS link",
+      "prompt": "Publish this folder and give me the live link."
+    },
+    {
+      "title": "Find a .com",
+      "description": "Check names and get a payment link for the human",
+      "prompt": "Find a free .com for this site and give me the payment link."
+    },
+    {
+      "title": "Site status",
+      "description": "Ask about a claimed site",
+      "prompt": "How many visitors did my site get this week, and are there new leads?"
+    }
+  ],
+  "is_official": true
+}
