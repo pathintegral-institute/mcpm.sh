@@ -26,11 +26,27 @@
     "remote"
   ],
   "is_official": true,
+  "arguments": {
+    "LOOOT_API_KEY": {
+      "description": "looot API key for Bearer authentication. Never commit your key. Calls are paid from a prepaid balance.",
+      "required": true,
+      "example": "YOUR_LOOOT_API_KEY"
+    }
+  },
   "installations": {
     "http": {
       "type": "http",
       "url": "https://api.looot.ai/mcp",
-      "description": "Hosted Streamable HTTP endpoint. Sign in with OAuth 2.1 or send Authorization: Bearer <key>."
+      "description": "Hosted Streamable HTTP endpoint. Sign in with OAuth 2.1 from an OAuth-capable MCP client.",
+      "recommended": true
+    },
+    "http-api-key": {
+      "type": "http",
+      "url": "https://api.looot.ai/mcp",
+      "headers": {
+        "Authorization": "Bearer ${LOOOT_API_KEY}"
+      },
+      "description": "Hosted Streamable HTTP using a caller-owned looot API key instead of OAuth."
     }
   },
   "examples": [
