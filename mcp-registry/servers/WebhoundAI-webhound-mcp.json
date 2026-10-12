@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "@webhound/mcp",
+  "display_name": "Webhound",
+  "description": "Webhound is an AI agent that can browse the web to answer questions and complete tasks.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WebhoundAI/webhound-mcp"
+  },
+  "homepage": "https://webhound.ai",
+  "author": {
+    "name": "WebhoundAI",
+    "email": "contact@webhound.ai",
+    "url": "https://webhound.ai"
+  },
+  "license": "MIT",
+  "categories": [
+    "AI Systems",
+    "Web Services"
+  ],
+  "tags": [
+    "ai-agent",
+    "web-browsing",
+    "mcp"
+  ],
+  "arguments": {
+    "PORT": {
+      "description": "The port for the server to listen on. Defaults to 3000.",
+      "required": false,
+      "example": "3000"
+    },
+    "ANTHROPIC_API_KEY": {
+      "description": "Your Anthropic API key.",
+      "required": true
+    },
+    "TAVILY_API_KEY": {
+      "description": "Your Tavily API key.",
+      "required": true
+    }
+  },
+  "tools": [
+    {
+      "name": "browse",
+      "description": "Browse a URL and return the content.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "The URL to browse."
+          }
+        }
+      },
+      "required": [
+        "url"
+      ]
+    },
+    {
+      "name": "search",
+      "description": "Search the web with a query.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The search query."
+          }
+        }
+      },
+      "required": [
+        "query"
+      ]
+    }
+  ],
+  "resources": [],
+  "prompts": [],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "description": "Run using npx without a global installation. Requires Node.js.",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@webhound/mcp"
+      ],
+      "env": {
+        "ANTHROPIC_API_KEY": "your-anthropic-key",
+        "TAVILY_API_KEY": "your-tavily-key"
+      },
+      "recommended": true
+    },
+    "docker": {
+      "type": "docker",
+      "description": "Run using Docker. Requires Docker to be installed.",
+      "command": "docker",
+      "args": [
+        "run",
+        "-it",
+        "--rm",
+        "-p",
+        "3000:3000",
+        "-e",
+        "ANTHROPIC_API_KEY",
+        "-e",
+        "TAVILY_API_KEY",
+        "webhound/mcp"
+      ],
+      "env": {
+        "ANTHROPIC_API_KEY": "your-anthropic-key",
+        "TAVILY_API_KEY": "your-tavily-key"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Researching a Topic",
+      "description": "Use Webhound to research the best coffee shops in San Francisco.",
+      "prompt": "What are the best coffee shops in San Francisco?"
+    },
+    {
+      "title": "Answering a Specific Question",
+      "description": "Ask Webhound a specific question that requires browsing a particular page.",
+      "prompt": "What is the mission statement of the company at example.com?"
+    }
+  ],
+  "is_official": false,
+  "is_archived": false
+}
