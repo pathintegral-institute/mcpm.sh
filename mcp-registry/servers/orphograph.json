@@ -1,0 +1,57 @@
+{
+  "name": "orphograph",
+  "display_name": "Orphograph",
+  "description": "Anchor a file, folder, or agent-generated output to the Bitcoin blockchain via OpenTimestamps and get a receipt anyone can verify independently. Hashing is local — only the fingerprint crosses the wire, never the file.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Orphograph/Orphograph"
+  },
+  "homepage": "https://orphograph.com/mcp",
+  "author": {
+    "name": "Orphograph"
+  },
+  "license": "MIT",
+  "categories": [
+    "Dev Tools"
+  ],
+  "tags": [
+    "provenance",
+    "timestamping",
+    "opentimestamps",
+    "bitcoin",
+    "audit-trail",
+    "integrity"
+  ],
+  "installations": {
+    "custom": {
+      "type": "python",
+      "command": "python3",
+      "args": [
+        "orphograph_mcp.py"
+      ],
+      "description": "Single file, Python >=3.9 standard library only, no dependencies. Download with: curl -sSL https://orphograph.com/mcp/orphograph_mcp.py -o orphograph_mcp.py"
+    }
+  },
+  "examples": [
+    {
+      "title": "Prove a file existed before a deadline",
+      "description": "Anchor a contract draft so its existence-by-date can be checked later by someone who does not trust either party's filesystem.",
+      "prompt": "_Anchor ~/contracts/draft-v3.pdf and give me the receipt id_"
+    },
+    {
+      "title": "Anchor an agent's output at the moment it is produced",
+      "description": "Commit the fingerprint of a generated result so the record cannot be revised after the fact.",
+      "prompt": "_Anchor the report you just generated, then tell me its receipt id_"
+    },
+    {
+      "title": "Anchor a whole dataset under one root",
+      "description": "Build an RFC-6962 Merkle manifest over a directory so a single anchored root covers every file in it.",
+      "prompt": "_Anchor the folder ~/datasets/training-set-v2 and show me the Merkle root_"
+    },
+    {
+      "title": "Verify a receipt someone showed you",
+      "description": "Check a receipt against the OpenTimestamps calendars and the Bitcoin chain.",
+      "prompt": "_Verify Orphograph receipt XwTULwlh76PcCst9_"
+    }
+  ]
+}
