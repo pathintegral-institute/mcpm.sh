@@ -1,0 +1,103 @@
+{
+  "name": "standupcraft",
+  "display_name": "StandupCraft",
+  "description": "MCP server that reads your git commits and GitHub activity to generate daily standups, weekly client reports, and sprint retros inside Claude Desktop. Scans local git repos and GitHub activity for a date range, then drafts structured standup notes, client-ready progress reports, or sprint retrospectives in your own words. No API key required, runs entirely locally.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jabbawocky/standupcraft"
+  },
+  "homepage": "https://github.com/jabbawocky/standupcraft",
+  "author": {
+    "name": "jabbawocky"
+  },
+  "license": "MIT",
+  "categories": ["Productivity", "Developer Tools"],
+  "tags": [
+    "standup",
+    "git",
+    "github",
+    "reports",
+    "developer-tools",
+    "claude-desktop",
+    "mcp-server",
+    "productivity",
+    "agile"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "github:jabbawocky/standupcraft"
+      ],
+      "description": "Run directly via npx — no global install needed",
+      "env": {
+        "GITHUB_TOKEN": {
+          "description": "GitHub personal access token for fetching GitHub activity (optional — git activity works without it)",
+          "required": false
+        },
+        "REPOS_DIR": {
+          "description": "Directory to scan for git repositories (default: home directory)",
+          "required": false
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Generate a daily standup",
+      "description": "Create a standup note from today's git commits and GitHub activity",
+      "prompt": "Generate my standup for today"
+    },
+    {
+      "title": "Write a weekly client report",
+      "description": "Summarize a week of commits into a client-ready progress report",
+      "prompt": "Write a weekly client report for the past 7 days"
+    },
+    {
+      "title": "Sprint retrospective",
+      "description": "Draft a sprint retro from two weeks of activity",
+      "prompt": "Draft a sprint retrospective for the past two weeks"
+    }
+  ],
+  "tools": [
+    {
+      "name": "generate_standup",
+      "description": "Generate a daily standup note from git commits and GitHub activity",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "Date to generate standup for (ISO format, defaults to today)"
+          }
+        }
+      }
+    },
+    {
+      "name": "generate_report",
+      "description": "Generate a weekly client report or sprint retrospective from git and GitHub activity",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "start_date": {
+            "type": "string",
+            "description": "Start date for the report period (ISO format)"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "End date for the report period (ISO format)"
+          },
+          "report_type": {
+            "type": "string",
+            "description": "Type of report: 'client' for client report, 'retro' for sprint retrospective"
+          }
+        }
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": false
+}
