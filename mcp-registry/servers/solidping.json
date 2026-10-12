@@ -1,7 +1,7 @@
 {
   "name": "solidping",
   "display_name": "SolidPing",
-  "description": "Uptime monitoring over MCP: create, run and diagnose checks across 43 types (HTTP, DNS, TLS, databases, queues, browser), read results and incidents, and manage status pages and maintenance windows. Hosted or self-hosted.",
+  "description": "Uptime monitoring over MCP: create, run and diagnose checks (HTTP, DNS, TLS, databases, queues, browser and more), read results and incidents, and manage status pages and maintenance windows. Hosted or self-hosted.",
   "repository": {
     "type": "git",
     "url": "https://github.com/fclairamb/solidping"
