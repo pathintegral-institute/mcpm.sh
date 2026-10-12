@@ -1,0 +1,97 @@
+{
+  "name": "getxapi",
+  "display_name": "GetXAPI MCP Server",
+  "description": "Remote MCP server for X/Twitter data, search, user lookup, and timeline retrieval through the GetXAPI API.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/getxapi/getxapi-mcp"
+  },
+  "homepage": "https://getxapi.com",
+  "author": {
+    "name": "GetXAPI",
+    "url": "https://github.com/getxapi"
+  },
+  "license": "MIT",
+  "categories": [
+    "Web Services",
+    "Analytics",
+    "Messaging"
+  ],
+  "tags": [
+    "x",
+    "twitter",
+    "social media",
+    "tweet search",
+    "user lookup",
+    "timeline",
+    "remote mcp"
+  ],
+  "arguments": {
+    "GETXAPI_API_KEY": {
+      "description": "GetXAPI API key from https://getxapi.com",
+      "required": true,
+      "example": "your_getxapi_api_key"
+    }
+  },
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://api.getxapi.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${GETXAPI_API_KEY}"
+      },
+      "description": "Connect to the hosted GetXAPI MCP server using Streamable HTTP.",
+      "recommended": true
+    }
+  },
+  "tools": [
+    {
+      "name": "search_tweets",
+      "description": "Search recent X/Twitter posts that match a query through the GetXAPI advanced search endpoint.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query string passed to the GetXAPI advanced_search endpoint."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "get_user",
+      "description": "Fetch normalized profile data for an X/Twitter user by username through the GetXAPI user endpoint.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "X/Twitter username without the leading @."
+          }
+        },
+        "required": [
+          "username"
+        ]
+      }
+    }
+  ],
+  "resources": [],
+  "prompts": [],
+  "examples": [
+    {
+      "title": "Search Tweets",
+      "description": "Find recent X posts that match a query.",
+      "prompt": "Use GetXAPI to search recent tweets about MCP registries."
+    },
+    {
+      "title": "Look Up A User",
+      "description": "Fetch normalized profile data for an X user.",
+      "prompt": "Use GetXAPI to look up the X profile for @getxapi."
+    }
+  ],
+  "is_official": false,
+  "is_archived": false
+}
