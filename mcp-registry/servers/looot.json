@@ -1,0 +1,69 @@
+{
+  "name": "looot",
+  "display_name": "looot",
+  "description": "One API key and prepaid balance for about 2,500 data endpoints from 90+ providers: work email, phone, company and people enrichment, company search, tech stack, Google SERP, web search, news and web page reading. The agent sees the price before a call and a failed call costs nothing. Hosted server with OAuth 2.1 or a Bearer key; prepaid from $5, no subscription.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/loootai/looot-mcp"
+  },
+  "homepage": "https://looot.ai",
+  "author": {
+    "name": "looot",
+    "url": "https://looot.ai"
+  },
+  "license": "MIT",
+  "categories": [
+    "Web Services",
+    "Professional Apps"
+  ],
+  "tags": [
+    "data api",
+    "enrichment",
+    "lead generation",
+    "serp",
+    "web search",
+    "email finder",
+    "remote"
+  ],
+  "is_official": true,
+  "arguments": {
+    "LOOOT_API_KEY": {
+      "description": "looot API key for Bearer authentication. Never commit your key. Calls are paid from a prepaid balance.",
+      "required": true,
+      "example": "YOUR_LOOOT_API_KEY"
+    }
+  },
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://api.looot.ai/mcp",
+      "description": "Hosted Streamable HTTP endpoint. Sign in with OAuth 2.1 from an OAuth-capable MCP client.",
+      "recommended": true
+    },
+    "http-api-key": {
+      "type": "http",
+      "url": "https://api.looot.ai/mcp",
+      "headers": {
+        "Authorization": "Bearer ${LOOOT_API_KEY}"
+      },
+      "description": "Hosted Streamable HTTP using a caller-owned looot API key instead of OAuth."
+    }
+  },
+  "examples": [
+    {
+      "title": "Find a work email",
+      "description": "Look up a contact before outreach",
+      "prompt": "Find the work email for the head of sales at stripe.com and verify it."
+    },
+    {
+      "title": "Enrich a company",
+      "description": "Pull firmographics and tech stack",
+      "prompt": "Enrich notion.so with headcount, funding and the tech stack it runs."
+    },
+    {
+      "title": "Search Google",
+      "description": "Get SERP results for a query",
+      "prompt": "Show the top Google results for 'best CRM for startups' and read the first page."
+    }
+  ]
+}
