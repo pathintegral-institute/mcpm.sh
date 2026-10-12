@@ -1,0 +1,52 @@
+{
+  "name": "solidping",
+  "display_name": "SolidPing",
+  "description": "Uptime monitoring over MCP: create, run and diagnose checks (HTTP, DNS, TLS, databases, queues, browser and more), read results and incidents, and manage status pages and maintenance windows. Hosted or self-hosted.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fclairamb/solidping"
+  },
+  "homepage": "https://www.solidping.io",
+  "author": {
+    "name": "Florent Clairambault",
+    "url": "https://github.com/fclairamb"
+  },
+  "license": "AGPL-3.0",
+  "categories": [
+    "Dev Tools",
+    "System Tools"
+  ],
+  "tags": [
+    "monitoring",
+    "uptime",
+    "incidents",
+    "status-page",
+    "self-hosted"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://solidping.io/api/v1/mcp",
+      "recommended": true,
+      "description": "Hosted Streamable HTTP endpoint. Sign-in through OAuth 2.1 (discovery and dynamic client registration), no API key to paste. Self-hosted instances serve the same endpoint at <your base URL>/api/v1/mcp."
+    }
+  },
+  "examples": [
+    {
+      "title": "Create a check",
+      "description": "Add an HTTP check",
+      "prompt": "Create an HTTP check on https://example.com every minute and alert me if it fails."
+    },
+    {
+      "title": "Diagnose a failure",
+      "description": "Find out why a check is red",
+      "prompt": "Why is my api.example.com check failing? Run it now and show the last results."
+    },
+    {
+      "title": "Open incidents",
+      "description": "Summarize current incidents",
+      "prompt": "List the open incidents and how long each one has lasted."
+    }
+  ],
+  "is_official": true
+}
