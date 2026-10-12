@@ -1,0 +1,57 @@
+{
+  "name": "dos-kernel",
+  "display_name": "DOS Kernel",
+  "description": "Deterministic trust kernel for AI-agent fleets: verify an agent's \"done\" claim against git evidence instead of self-report, arbitrate file collisions between concurrent agents, and audit commit messages against their own diffs.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anthony-chaudhary/dos-kernel"
+  },
+  "homepage": "https://github.com/anthony-chaudhary/dos-kernel",
+  "author": {
+    "name": "anthony-chaudhary"
+  },
+  "license": "MIT",
+  "categories": [
+    "Dev Tools"
+  ],
+  "tags": [
+    "verification",
+    "trust",
+    "agents",
+    "git",
+    "guardrails",
+    "multi-agent"
+  ],
+  "arguments": {},
+  "installations": {
+    "python": {
+      "type": "python",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "dos-kernel[mcp]",
+        "dos-mcp"
+      ],
+      "env": {},
+      "description": "Run the dos-mcp stdio server from PyPI via uvx (the [mcp] extra carries the MCP server framework)",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Verify a 'done' claim",
+      "description": "Check whether claimed work actually landed, from git evidence rather than the agent's say-so",
+      "prompt": "Use dos_verify to check whether the phase I just claimed finished actually shipped in this repo"
+    },
+    {
+      "title": "Arbitrate concurrent edits",
+      "description": "Decide whether two agents may safely work the same files at the same time",
+      "prompt": "Use dos_arbitrate to check whether I can take the docs lane right now"
+    },
+    {
+      "title": "Audit a commit's claim",
+      "description": "Flag a commit whose message claims work its own diff doesn't contain",
+      "prompt": "Run dos_commit_audit on HEAD and tell me if the subject is backed by the diff"
+    }
+  ]
+}
