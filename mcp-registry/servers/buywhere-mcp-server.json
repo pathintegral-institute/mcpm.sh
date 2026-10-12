@@ -1,0 +1,68 @@
+{
+  "name": "buywhere-mcp-server",
+  "display_name": "BuyWhere MCP Server",
+  "description": "Real-time product search and price comparison for Singapore and Southeast Asia. Search 260K+ products from Lazada, Shopee, FairPrice, Courts, and other major SEA merchants.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BuyWhere/buywhere-mcp"
+  },
+  "homepage": "https://buywhere.ai",
+  "author": {
+    "name": "BuyWhere"
+  },
+  "license": "MIT",
+  "tags": [
+    "mcp",
+    "model-context-protocol",
+    "e-commerce",
+    "shopping",
+    "price-comparison",
+    "singapore",
+    "southeast-asia",
+    "lazada",
+    "shopee"
+  ],
+  "categories": [
+    "E-Commerce",
+    "Shopping"
+  ],
+  "is_official": true,
+  "arguments": {
+    "BUYWHERE_API_KEY": {
+      "description": "BuyWhere API key. Get a free key at https://buywhere.ai/api-keys",
+      "required": true,
+      "example": "bw_xxxxxxxxxxxxxxxxxxxxxxxx"
+    }
+  },
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@buywhere/mcp-server"
+      ],
+      "env": {
+        "BUYWHERE_API_KEY": "${BUYWHERE_API_KEY}"
+      },
+      "description": "Install and run using NPM"
+    }
+  },
+  "examples": [
+    {
+      "title": "Find cheapest laptop in Singapore",
+      "description": "Search for the best laptop deals across SEA merchants",
+      "prompt": "Find me the cheapest laptop in Singapore under $1000 SGD."
+    },
+    {
+      "title": "Compare air purifier prices",
+      "description": "Compare prices from Lazada, Shopee, and other merchants",
+      "prompt": "Compare prices for Dyson air purifiers across Lazada and Shopee."
+    },
+    {
+      "title": "Check product availability",
+      "description": "Check if a product is in stock at specific retailers",
+      "prompt": "Is the Sony WH-1000XM5 available at Courts or FairPrice?"
+    }
+  ]
+}
