@@ -1,0 +1,111 @@
+{
+  "name": "agentservices",
+  "display_name": "AgentServices — APIs for AI Agents",
+  "description": "Remote MCP server with x402-paid APIs for AI agents: crypto data, technical indicators, DeFi analytics, market intelligence, portfolio intelligence, on-chain data, stock market, web utilities, and AI inference. Free tier available. Tools listed below are representative highlights; full catalog at agentservices.to.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vbkotecha/aiservices-api"
+  },
+  "homepage": "https://agentservices.to",
+  "author": {
+    "name": "Vivek Kotecha",
+    "url": "https://agentservices.to"
+  },
+  "license": "MIT",
+  "categories": [
+    "Finance",
+    "Analytics",
+    "Web Services"
+  ],
+  "tags": [
+    "x402",
+    "crypto",
+    "defi",
+    "market-data",
+    "onchain",
+    "micropayments",
+    "usdc",
+    "base",
+    "portfolio",
+    "inference",
+    "agents"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://agentservices.to/mcp",
+      "recommended": true,
+      "description": "Remote MCP server with x402 payments. Multiple free tools available without payment. Paid tools require USDC on Base via x402 protocol. See full catalog at agentservices.to."
+    }
+  },
+  "tools": [
+    {
+      "name": "crypto_prices",
+      "description": "Get current prices for any cryptocurrency (FREE)"
+    },
+    {
+      "name": "technical_indicators",
+      "description": "Technical indicators (RSI, MACD, MA, Bollinger Bands) for any token ($0.02)"
+    },
+    {
+      "name": "defi_yields",
+      "description": "Live DeFi yield rates across protocols ($0.02)"
+    },
+    {
+      "name": "fear_greed",
+      "description": "Crypto Fear & Greed Index (FREE)"
+    },
+    {
+      "name": "ip_geolocation",
+      "description": "Get geolocation data for an IP address (FREE)"
+    },
+    {
+      "name": "url_metadata",
+      "description": "Extract metadata from a URL — title, description, images ($0.01)"
+    },
+    {
+      "name": "web_extract",
+      "description": "Extract clean text from any URL — strips ads, nav, scripts ($0.002)"
+    },
+    {
+      "name": "stock_quote",
+      "description": "Real-time stock market quote from Yahoo Finance ($0.02)"
+    },
+    {
+      "name": "fx_rates",
+      "description": "Real-time FX/forex rates for 30+ currencies ($0.003)"
+    },
+    {
+      "name": "crypto_signals",
+      "description": "Crypto buy/sell signals from RSI, moving averages, Bollinger Bands ($0.04)"
+    },
+    {
+      "name": "market_pulse",
+      "description": "Aggregated market overview: fear-greed + trending + news + social + whales ($0.05)"
+    },
+    {
+      "name": "portfolio_intelligence",
+      "description": "Full portfolio analysis: price + technical signal + risk score + market sentiment ($0.10)"
+    },
+    {
+      "name": "defi_strategy",
+      "description": "DeFi investment report: top yields + protocol TVL + cross-chain comparison + risk assessment ($0.25)"
+    },
+    {
+      "name": "onchain_overview",
+      "description": "On-chain analytics: whale movements + exchange flows + stablecoin flows + correlation matrix ($0.15)"
+    },
+    {
+      "name": "llm_inference",
+      "description": "LLM inference via OpenAI-compatible endpoint — GPT models proxied with x402 payment ($0.03)"
+    },
+    {
+      "name": "deep_research",
+      "description": "Deep research: search + extract + synthesize in one call for comprehensive analysis ($0.05)"
+    },
+    {
+      "name": "agent_context",
+      "description": "Paste-ready multi-source market context for LLM system prompts (FREE)"
+    }
+  ]
+}
