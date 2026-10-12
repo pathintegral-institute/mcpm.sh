@@ -1,0 +1,54 @@
+{
+  "name": "dchub",
+  "display_name": "DC Hub",
+  "description": "DC Hub is the live data layer for data-center site selection. Its Data Center Power Index (DCPI) is a daily score of where data centers can get grid power, across 300+ markets. Agents can query it and cite it: live grid feeds from the seven US ISOs, interconnection queues, electricity prices, fiber and site analysis. Answers carry an as-of timestamp and a citation line.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/azmartone67/dchub-mcp-server"
+  },
+  "homepage": "https://dchub.cloud",
+  "author": {
+    "name": "DC Hub",
+    "url": "https://dchub.cloud"
+  },
+  "license": "MIT",
+  "categories": [
+    "Analytics",
+    "Knowledge Base"
+  ],
+  "tags": [
+    "data-centers",
+    "site-selection",
+    "energy",
+    "power-grid",
+    "interconnection-queue",
+    "fiber",
+    "remote"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://dchub.cloud/mcp",
+      "recommended": true,
+      "description": "Hosted Streamable HTTP endpoint. The free tier needs no key; an optional DC Hub key can be sent as an X-API-Key header."
+    }
+  },
+  "examples": [
+    {
+      "title": "Rank markets for power",
+      "description": "Compare markets by grid-power availability",
+      "prompt": "Which US markets have the best DCPI score for a 50 MW AI data center right now?"
+    },
+    {
+      "title": "Analyze a site",
+      "description": "Get a siting read for a location",
+      "prompt": "Analyze a data-center site near Abilene, Texas: power, interconnection queue and fiber."
+    },
+    {
+      "title": "Grid conditions",
+      "description": "Check live ISO data",
+      "prompt": "What are current ERCOT grid conditions and wholesale prices?"
+    }
+  ],
+  "is_official": true
+}
