@@ -30,7 +30,22 @@
       "type": "http",
       "url": "https://dchub.cloud/mcp",
       "recommended": true,
-      "description": "Hosted Streamable HTTP endpoint. The free tier needs no key; an optional DC Hub key can be sent as an X-API-Key header."
+      "description": "Hosted Streamable HTTP endpoint, keyless free tier. No key or sign-up needed."
+    },
+    "http-key": {
+      "type": "http",
+      "url": "https://dchub.cloud/mcp",
+      "headers": {
+        "X-API-Key": "${DCHUB_API_KEY}"
+      },
+      "description": "Hosted Streamable HTTP endpoint with your own DC Hub API key sent as an X-API-Key header, for higher limits. Never commit your key."
+    }
+  },
+  "arguments": {
+    "DCHUB_API_KEY": {
+      "description": "Optional DC Hub API key, used only by the http-key installation method. The keyless http method needs no key. Never commit your key.",
+      "required": false,
+      "example": "YOUR_DCHUB_API_KEY"
     }
   },
   "examples": [
