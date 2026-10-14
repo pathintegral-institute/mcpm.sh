@@ -1,0 +1,50 @@
+{
+  "name": "sendsets",
+  "display_name": "Sendsets",
+  "description": "Cold email for AI agents: connect and inspect sending mailboxes and warmup, build and launch outbound campaigns, add leads, and read and answer replies. Hosted server with OAuth 2.1; send actions go through an approval policy.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AddisonHoff/sendsets"
+  },
+  "homepage": "https://sendsetsapi.com",
+  "author": {
+    "name": "Sendsets"
+  },
+  "license": "Apache-2.0",
+  "categories": [
+    "Messaging",
+    "Professional Apps"
+  ],
+  "tags": [
+    "cold email",
+    "outbound",
+    "email campaigns",
+    "sales",
+    "warmup",
+    "remote"
+  ],
+  "is_official": true,
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://api.sendsetsapi.com/v1/mcp"
+    }
+  },
+  "examples": [
+    {
+      "title": "Check senders",
+      "description": "Inspect connected mailboxes and their warmup",
+      "prompt": "Show me my connected mailboxes and how their warmup is going."
+    },
+    {
+      "title": "Draft a campaign",
+      "description": "Build an outbound sequence without sending",
+      "prompt": "Create a draft campaign called Founder outreach with a three-step sequence for SaaS founders. Don't start it."
+    },
+    {
+      "title": "Handle replies",
+      "description": "Find replies and draft a response",
+      "prompt": "Which leads in my latest campaign replied? Draft a response to the newest reply."
+    }
+  ]
+}
