@@ -1,0 +1,42 @@
+{
+  "name": "famulor",
+  "display_name": "Famulor",
+  "description": "Hosted MCP server for operating AI assistants and omnichannel communication workflows, including conversation history, calls, campaigns, messaging, knowledge, and automations.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bekservice/Famulor-MCP"
+  },
+  "homepage": "https://www.famulor.io",
+  "author": {
+    "name": "BEK Service GmbH",
+    "url": "https://www.famulor.io"
+  },
+  "license": "Proprietary",
+  "categories": [
+    "Productivity",
+    "Messaging",
+    "Professional Apps",
+    "AI Systems"
+  ],
+  "tags": [
+    "voice-ai",
+    "assistants",
+    "communication",
+    "automation",
+    "oauth"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://app.famulor.io/mcp",
+      "description": "Hosted Streamable HTTP endpoint with browser OAuth",
+      "recommended": true
+    }
+  },
+  "tools": [],
+  "resources": [],
+  "prompts": [],
+  "examples": [],
+  "is_official": true,
+  "is_archived": false
+}
