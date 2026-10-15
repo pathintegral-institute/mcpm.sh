@@ -43,7 +43,7 @@
       "command": "uvx",
       "args": [
         "--from",
-        "git+https://github.com/huynhtanan/google-hotels-mcp.git@v0.1.1",
+        "git+https://github.com/huynhtanan/google-hotels-mcp.git@v0.1.2",
         "google-hotels-mcp"
       ],
       "env": {
@@ -62,7 +62,7 @@
     {
       "title": "Pull a 3-month daily price calendar",
       "description": "Get one row per date for a specific hotel URL.",
-      "prompt": "Pull a 3-month daily price calendar for the Hoxton Paris \u2014 I want to see which dates are under 200 EUR."
+      "prompt": "Pull a 3-month daily price calendar for the Hoxton Paris — I want to see which dates are under 200 EUR."
     },
     {
       "title": "Search vacation rentals",
@@ -73,7 +73,7 @@
   "tools": [
     {
       "name": "search_hotels",
-      "description": "Search Google Hotels for a destination and date range. Returns name, rating, review count, nightly and total price, hotel class, address, coordinates, amenities, hero photo and Google URL. Set include_provider_prices=true for per-OTA nightly rates.",
+      "description": "Search Google Hotels for a destination and date range. Returns name, rating, review count, nightly and total price, hotel class, address, coordinates, amenities, hero photo and Google URL. Set include_provider_prices=true for per-OTA nightly rates (adds one paid provider-prices call per hotel).",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -99,19 +99,42 @@
             "description": "Number of children",
             "default": 0
           },
+          "rooms": {
+            "type": "integer",
+            "description": "Number of rooms",
+            "default": 1
+          },
           "currency": {
             "type": "string",
             "description": "ISO currency code",
             "default": "USD"
           },
+          "hl": {
+            "type": "string",
+            "description": "Google interface language (en, fr, de, ...)",
+            "default": "en"
+          },
+          "gl": {
+            "type": "string",
+            "description": "Google country code (us, gb, fr, ...)",
+            "default": "us"
+          },
           "max_results": {
             "type": "integer",
-            "description": "Max hotels to return",
+            "description": "Max hotels to return per query (hard cap sent to the actor as maxHotelsPerQuery)",
             "default": 20
+          },
+          "min_rating": {
+            "type": "number",
+            "description": "Keep only hotels with guest rating >= this (0-5)"
+          },
+          "min_hotel_class": {
+            "type": "integer",
+            "description": "Keep only hotels at class >= this (2-5)"
           },
           "include_provider_prices": {
             "type": "boolean",
-            "description": "Also fetch per-OTA nightly rates (slower)",
+            "description": "Also fetch per-OTA nightly rates. Each hotel priced this way adds one paid provider-prices Apify call, so this is opt-in.",
             "default": false
           }
         },
@@ -151,9 +174,25 @@
             "type": "string",
             "default": "USD"
           },
+          "hl": {
+            "type": "string",
+            "description": "Google interface language",
+            "default": "en"
+          },
+          "gl": {
+            "type": "string",
+            "description": "Google country code",
+            "default": "us"
+          },
           "max_results": {
             "type": "integer",
+            "description": "Max rentals to return per query (hard cap sent to the actor as maxHotelsPerQuery)",
             "default": 20
+          },
+          "include_provider_prices": {
+            "type": "boolean",
+            "description": "Also fetch per-provider nightly rates. Adds one paid provider-prices call per rental, so opt-in.",
+            "default": false
           }
         },
         "required": [
@@ -165,21 +204,58 @@
     },
     {
       "name": "hotel_price_calendar",
-      "description": "Fetch a 3-month daily rate calendar for a single hotel URL. Returns one row per date with price, currency and availability.",
+      "description": "Fetch a daily rate calendar for a single hotel URL. Defaults to 90 forward dates (roughly 3 months), one row per date with hotel name, check-in/out, lowestPricePerNight, currency, availability and the full providers list.",
       "inputSchema": {
         "type": "object",
         "properties": {
           "hotel_url": {
             "type": "string",
-            "description": "A Google Hotels URL (/travel/hotels/entity/...) or googleHotelId"
+            "description": "A Google Hotels entity URL (/travel/hotels/entity/...)"
+          },
+          "start_date": {
+            "type": "string",
+            "description": "First date to price, YYYY-MM-DD"
+          },
+          "number_of_dates": {
+            "type": "integer",
+            "description": "How many forward dates to price. Default 90 returns the advertised 3-month calendar.",
+            "default": 90
+          },
+          "nights": {
+            "type": "integer",
+            "description": "Stay length to price per date (1 = per-night rate)",
+            "default": 1
           },
           "currency": {
             "type": "string",
             "default": "USD"
+          },
+          "hl": {
+            "type": "string",
+            "description": "Google interface language",
+            "default": "en"
+          },
+          "gl": {
+            "type": "string",
+            "description": "Google country code",
+            "default": "us"
+          },
+          "adults": {
+            "type": "integer",
+            "default": 2
+          },
+          "children": {
+            "type": "integer",
+            "default": 0
+          },
+          "rooms": {
+            "type": "integer",
+            "default": 1
           }
         },
         "required": [
-          "hotel_url"
+          "hotel_url",
+          "start_date"
         ]
       }
     }
