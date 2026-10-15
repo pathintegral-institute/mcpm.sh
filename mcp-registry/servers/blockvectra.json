@@ -1,0 +1,43 @@
+{
+  "name": "blockvectra",
+  "display_name": "BlockVectra MCP",
+  "description": "Hosted Streamable HTTP MCP for blockchain docs, chain discovery and permitted public EVM RPC reads; indexed Data API requires a key and applicable usage limits.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/blockvectra/mcp"
+  },
+  "homepage": "https://docs.blockvectra.com/en/guides/mcp-server/",
+  "author": {
+    "name": "BlockVectra",
+    "url": "https://blockvectra.com/"
+  },
+  "license": "MIT",
+  "categories": [
+    "Dev Tools",
+    "Web Services",
+    "Finance"
+  ],
+  "tags": [
+    "mcp",
+    "remote",
+    "streamable-http",
+    "evm",
+    "rpc",
+    "documentation"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://docs.blockvectra.com/mcp",
+      "recommended": true,
+      "description": "Hosted MCP. Start without headers for docs and allowed public RPC; configure a private x-api-key header for indexed Data API/account tools."
+    }
+  },
+  "examples": [
+    {
+      "title": "Discover a network and perform a public RPC read",
+      "description": "Choose mainnet or testnet explicitly, inspect the public method policy and report a permitted read result.",
+      "prompt": "Read the Robinhood Chain RPC guide, use list_chains to choose the required network, and check get_method_info before using rpc_call for eth_chainId with params []. Report the network and observation time. Stop if this method needs a key; do not sign or broadcast."
+    }
+  ]
+}
