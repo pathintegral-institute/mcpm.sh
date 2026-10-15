@@ -1,0 +1,80 @@
+{
+  "name": "moltnode",
+  "display_name": "MoltNode by Chord",
+  "description": "Hosted no-key MCP: read 31 blockchains over JSON-RPC (Ethereum, Base, Arbitrum, Solana, Monad, BNB Chain, Avalanche, Sui and more), get DEX swap quotes and unsigned transactions via Chord. Non-custodial: tools return unsigned transactions for the user's wallet to sign.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tuantqse90/moltnode-mcp"
+  },
+  "homepage": "https://moltnode.ag/agents",
+  "author": {
+    "name": "Chord",
+    "url": "https://moltnode.ag"
+  },
+  "license": "MIT",
+  "categories": [
+    "Finance",
+    "Web Services"
+  ],
+  "tags": [
+    "blockchain",
+    "json-rpc",
+    "evm",
+    "solana",
+    "dex",
+    "swap",
+    "crypto",
+    "remote"
+  ],
+  "tools": [
+    {
+      "name": "list_chains",
+      "description": "List every chain MoltNode serves (slug, name, chainId, family, native coin, endpoint) and which ones Chord trades on. Call this first for valid chain slugs."
+    },
+    {
+      "name": "rpc_call",
+      "description": "Call any JSON-RPC 2.0 method on a chain through MoltNode, no API key. EVM chains use eth_* methods; Solana and Sui use their own."
+    },
+    {
+      "name": "get_block_number",
+      "description": "The latest block number of an EVM chain, as a decimal integer."
+    },
+    {
+      "name": "get_balance",
+      "description": "The native-coin balance of an address on an EVM chain, in wei and in whole coins."
+    },
+    {
+      "name": "chord_find_token",
+      "description": "Find a token by symbol, name or address on a chain Chord trades on (base, monad, bnb, avalanche, arbitrum, robinhood, arc). Returns addresses, decimals and whether the token is verified; similar tickers are common, so compare addresses."
+    },
+    {
+      "name": "chord_swap_quote",
+      "description": "Best swap route from Chord (getchord.xyz) across the DEXs of the chain, with the UNSIGNED transaction to sign, the ERC-20 approval it needs (as a ready transaction) and a simulation run from the taker wallet. Amounts are integer strings in the token's smallest unit; the zero address is the native coin. Nothing is sent: sign with your own key, then send_raw_transaction."
+    },
+    {
+      "name": "send_raw_transaction",
+      "description": "Broadcast a signed transaction (0x-prefixed raw bytes) on an EVM chain through MoltNode. Returns the transaction hash and an explorer link."
+    }
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://moltnode.ag/mcp",
+      "description": "Hosted Streamable HTTP endpoint. No account or API key.",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Latest block",
+      "description": "Read the current block height of a chain",
+      "prompt": "What is the latest block number on Base?"
+    },
+    {
+      "title": "Swap quote",
+      "description": "Get the best DEX route and the unsigned transaction",
+      "prompt": "Quote a swap of 100 USDC to ETH on Arbitrum for my wallet 0x... and show the approval and simulation."
+    }
+  ],
+  "is_official": true
+}
