@@ -1,0 +1,265 @@
+{
+  "name": "google-hotels",
+  "display_name": "Google Hotels",
+  "description": "Live Google Hotels and Google Vacation Rentals price search with per-OTA nightly rates (Booking.com, Expedia, Agoda, Vrbo, Airbnb, Hotels.com and 10+ other providers) and a 3-month daily price calendar for any single hotel. Pay-per-use via Apify.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/huynhtanan/google-hotels-mcp"
+  },
+  "homepage": "https://github.com/huynhtanan/google-hotels-mcp",
+  "author": {
+    "name": "huynhtanan",
+    "url": "https://github.com/huynhtanan"
+  },
+  "license": "MIT",
+  "categories": [
+    "Web Services"
+  ],
+  "tags": [
+    "google-hotels",
+    "google-vacation-rentals",
+    "hotels",
+    "vacation-rentals",
+    "price-comparison",
+    "ota",
+    "booking",
+    "expedia",
+    "agoda",
+    "vrbo",
+    "airbnb",
+    "price-calendar",
+    "apify"
+  ],
+  "arguments": {
+    "APIFY_TOKEN": {
+      "description": "Your Apify API token (free account at https://apify.com; pay-per-event: ~$0.002/hotel, ~$0.0015/calendar date, ~$0.002/rental)",
+      "required": true,
+      "example": "apify_api_..."
+    }
+  },
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/huynhtanan/google-hotels-mcp.git@v0.1.2",
+        "google-hotels-mcp"
+      ],
+      "env": {
+        "APIFY_TOKEN": "${APIFY_TOKEN}"
+      },
+      "description": "Run via uvx (recommended; no local checkout needed)",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Search hotels in a city",
+      "description": "Search Google Hotels for a destination + date range.",
+      "prompt": "Find 4-star hotels in Paris for 3 nights from 2026-12-20, two adults, in EUR, with the Booking.com and Expedia rate for each one."
+    },
+    {
+      "title": "Pull a 3-month daily price calendar",
+      "description": "Get one row per date for a specific hotel URL.",
+      "prompt": "Pull a 3-month daily price calendar for the Hoxton Paris — I want to see which dates are under 200 EUR."
+    },
+    {
+      "title": "Search vacation rentals",
+      "description": "Search Google Vacation Rentals across Airbnb, Vrbo and Booking.com.",
+      "prompt": "Find 3-bedroom vacation rentals in Lisbon from 2026-11-10 to 2026-11-17 under 250 EUR per night."
+    }
+  ],
+  "tools": [
+    {
+      "name": "search_hotels",
+      "description": "Search Google Hotels for a destination and date range. Returns name, rating, review count, nightly and total price, hotel class, address, coordinates, amenities, hero photo and Google URL. Set include_provider_prices=true for per-OTA nightly rates (adds one paid provider-prices call per hotel).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Destination (city, neighborhood, hotel name)"
+          },
+          "check_in": {
+            "type": "string",
+            "description": "Check-in date YYYY-MM-DD"
+          },
+          "check_out": {
+            "type": "string",
+            "description": "Check-out date YYYY-MM-DD"
+          },
+          "adults": {
+            "type": "integer",
+            "description": "Number of adults",
+            "default": 2
+          },
+          "children": {
+            "type": "integer",
+            "description": "Number of children",
+            "default": 0
+          },
+          "rooms": {
+            "type": "integer",
+            "description": "Number of rooms",
+            "default": 1
+          },
+          "currency": {
+            "type": "string",
+            "description": "ISO currency code",
+            "default": "USD"
+          },
+          "hl": {
+            "type": "string",
+            "description": "Google interface language (en, fr, de, ...)",
+            "default": "en"
+          },
+          "gl": {
+            "type": "string",
+            "description": "Google country code (us, gb, fr, ...)",
+            "default": "us"
+          },
+          "max_results": {
+            "type": "integer",
+            "description": "Max hotels to return per query (hard cap sent to the actor as maxHotelsPerQuery)",
+            "default": 20
+          },
+          "min_rating": {
+            "type": "number",
+            "description": "Keep only hotels with guest rating >= this (0-5)"
+          },
+          "min_hotel_class": {
+            "type": "integer",
+            "description": "Keep only hotels at class >= this (2-5)"
+          },
+          "include_provider_prices": {
+            "type": "boolean",
+            "description": "Also fetch per-OTA nightly rates. Each hotel priced this way adds one paid provider-prices Apify call, so this is opt-in.",
+            "default": false
+          }
+        },
+        "required": [
+          "query",
+          "check_in",
+          "check_out"
+        ]
+      }
+    },
+    {
+      "name": "search_vacation_rentals",
+      "description": "Search Google Vacation Rentals (Airbnb, Vrbo, Booking.com) for a destination and date range. Same shape as search_hotels plus bedrooms/bathrooms.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "check_in": {
+            "type": "string",
+            "description": "Check-in date YYYY-MM-DD"
+          },
+          "check_out": {
+            "type": "string",
+            "description": "Check-out date YYYY-MM-DD"
+          },
+          "adults": {
+            "type": "integer",
+            "default": 2
+          },
+          "children": {
+            "type": "integer",
+            "default": 0
+          },
+          "currency": {
+            "type": "string",
+            "default": "USD"
+          },
+          "hl": {
+            "type": "string",
+            "description": "Google interface language",
+            "default": "en"
+          },
+          "gl": {
+            "type": "string",
+            "description": "Google country code",
+            "default": "us"
+          },
+          "max_results": {
+            "type": "integer",
+            "description": "Max rentals to return per query (hard cap sent to the actor as maxHotelsPerQuery)",
+            "default": 20
+          },
+          "include_provider_prices": {
+            "type": "boolean",
+            "description": "Also fetch per-provider nightly rates. Adds one paid provider-prices call per rental, so opt-in.",
+            "default": false
+          }
+        },
+        "required": [
+          "query",
+          "check_in",
+          "check_out"
+        ]
+      }
+    },
+    {
+      "name": "hotel_price_calendar",
+      "description": "Fetch a daily rate calendar for a single hotel URL. Defaults to 90 forward dates (roughly 3 months), one row per date with hotel name, check-in/out, lowestPricePerNight, currency, availability and the full providers list.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "hotel_url": {
+            "type": "string",
+            "description": "A Google Hotels entity URL (/travel/hotels/entity/...)"
+          },
+          "start_date": {
+            "type": "string",
+            "description": "First date to price, YYYY-MM-DD"
+          },
+          "number_of_dates": {
+            "type": "integer",
+            "description": "How many forward dates to price. Default 90 returns the advertised 3-month calendar.",
+            "default": 90
+          },
+          "nights": {
+            "type": "integer",
+            "description": "Stay length to price per date (1 = per-night rate)",
+            "default": 1
+          },
+          "currency": {
+            "type": "string",
+            "default": "USD"
+          },
+          "hl": {
+            "type": "string",
+            "description": "Google interface language",
+            "default": "en"
+          },
+          "gl": {
+            "type": "string",
+            "description": "Google country code",
+            "default": "us"
+          },
+          "adults": {
+            "type": "integer",
+            "default": 2
+          },
+          "children": {
+            "type": "integer",
+            "default": 0
+          },
+          "rooms": {
+            "type": "integer",
+            "default": 1
+          }
+        },
+        "required": [
+          "hotel_url",
+          "start_date"
+        ]
+      }
+    }
+  ],
+  "is_official": false,
+  "is_archived": false
+}
