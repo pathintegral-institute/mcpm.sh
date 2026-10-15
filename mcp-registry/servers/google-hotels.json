@@ -1,0 +1,189 @@
+{
+  "name": "google-hotels",
+  "display_name": "Google Hotels",
+  "description": "Live Google Hotels and Google Vacation Rentals price search with per-OTA nightly rates (Booking.com, Expedia, Agoda, Vrbo, Airbnb, Hotels.com and 10+ other providers) and a 3-month daily price calendar for any single hotel. Pay-per-use via Apify.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/huynhtanan/google-hotels-mcp"
+  },
+  "homepage": "https://github.com/huynhtanan/google-hotels-mcp",
+  "author": {
+    "name": "huynhtanan",
+    "url": "https://github.com/huynhtanan"
+  },
+  "license": "MIT",
+  "categories": [
+    "Web Services"
+  ],
+  "tags": [
+    "google-hotels",
+    "google-vacation-rentals",
+    "hotels",
+    "vacation-rentals",
+    "price-comparison",
+    "ota",
+    "booking",
+    "expedia",
+    "agoda",
+    "vrbo",
+    "airbnb",
+    "price-calendar",
+    "apify"
+  ],
+  "arguments": {
+    "APIFY_TOKEN": {
+      "description": "Your Apify API token (free account at https://apify.com; pay-per-event: ~$0.002/hotel, ~$0.0015/calendar date, ~$0.002/rental)",
+      "required": true,
+      "example": "apify_api_..."
+    }
+  },
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/huynhtanan/google-hotels-mcp.git@v0.1.1",
+        "google-hotels-mcp"
+      ],
+      "env": {
+        "APIFY_TOKEN": "${APIFY_TOKEN}"
+      },
+      "description": "Run via uvx (recommended; no local checkout needed)",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Search hotels in a city",
+      "description": "Search Google Hotels for a destination + date range.",
+      "prompt": "Find 4-star hotels in Paris for 3 nights from 2026-12-20, two adults, in EUR, with the Booking.com and Expedia rate for each one."
+    },
+    {
+      "title": "Pull a 3-month daily price calendar",
+      "description": "Get one row per date for a specific hotel URL.",
+      "prompt": "Pull a 3-month daily price calendar for the Hoxton Paris \u2014 I want to see which dates are under 200 EUR."
+    },
+    {
+      "title": "Search vacation rentals",
+      "description": "Search Google Vacation Rentals across Airbnb, Vrbo and Booking.com.",
+      "prompt": "Find 3-bedroom vacation rentals in Lisbon from 2026-11-10 to 2026-11-17 under 250 EUR per night."
+    }
+  ],
+  "tools": [
+    {
+      "name": "search_hotels",
+      "description": "Search Google Hotels for a destination and date range. Returns name, rating, review count, nightly and total price, hotel class, address, coordinates, amenities, hero photo and Google URL. Set include_provider_prices=true for per-OTA nightly rates.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Destination (city, neighborhood, hotel name)"
+          },
+          "check_in": {
+            "type": "string",
+            "description": "Check-in date YYYY-MM-DD"
+          },
+          "check_out": {
+            "type": "string",
+            "description": "Check-out date YYYY-MM-DD"
+          },
+          "adults": {
+            "type": "integer",
+            "description": "Number of adults",
+            "default": 2
+          },
+          "children": {
+            "type": "integer",
+            "description": "Number of children",
+            "default": 0
+          },
+          "currency": {
+            "type": "string",
+            "description": "ISO currency code",
+            "default": "USD"
+          },
+          "max_results": {
+            "type": "integer",
+            "description": "Max hotels to return",
+            "default": 20
+          },
+          "include_provider_prices": {
+            "type": "boolean",
+            "description": "Also fetch per-OTA nightly rates (slower)",
+            "default": false
+          }
+        },
+        "required": [
+          "query",
+          "check_in",
+          "check_out"
+        ]
+      }
+    },
+    {
+      "name": "search_vacation_rentals",
+      "description": "Search Google Vacation Rentals (Airbnb, Vrbo, Booking.com) for a destination and date range. Same shape as search_hotels plus bedrooms/bathrooms.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "check_in": {
+            "type": "string",
+            "description": "Check-in date YYYY-MM-DD"
+          },
+          "check_out": {
+            "type": "string",
+            "description": "Check-out date YYYY-MM-DD"
+          },
+          "adults": {
+            "type": "integer",
+            "default": 2
+          },
+          "children": {
+            "type": "integer",
+            "default": 0
+          },
+          "currency": {
+            "type": "string",
+            "default": "USD"
+          },
+          "max_results": {
+            "type": "integer",
+            "default": 20
+          }
+        },
+        "required": [
+          "query",
+          "check_in",
+          "check_out"
+        ]
+      }
+    },
+    {
+      "name": "hotel_price_calendar",
+      "description": "Fetch a 3-month daily rate calendar for a single hotel URL. Returns one row per date with price, currency and availability.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "hotel_url": {
+            "type": "string",
+            "description": "A Google Hotels URL (/travel/hotels/entity/...) or googleHotelId"
+          },
+          "currency": {
+            "type": "string",
+            "default": "USD"
+          }
+        },
+        "required": [
+          "hotel_url"
+        ]
+      }
+    }
+  ],
+  "is_official": false,
+  "is_archived": false
+}
