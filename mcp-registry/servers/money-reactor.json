@@ -1,0 +1,91 @@
+{
+  "display_name": "Money Reactor - funded bounty radar + honeypot scoring (x402)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/makar52nn2016-jpg/money-reactor"
+  },
+  "homepage": "https://makar52nn2016-jpg.github.io/money-reactor/",
+  "author": {
+    "name": "makar52nn2016-jpg"
+  },
+  "license": "MIT",
+  "tags": [
+    "MCP",
+    "x402",
+    "bounties",
+    "honeypot",
+    "crypto",
+    "USDC",
+    "Base",
+    "payments"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "github:makar52nn2016-jpg/money-reactor"
+      ],
+      "recommended": true,
+      "description": "Run the Money Reactor MCP server via npx from GitHub (zero install, reads the live service URL dynamically)"
+    }
+  },
+  "examples": [
+    {
+      "title": "Check live service and prices",
+      "description": "Free health check of the Money Reactor live service",
+      "prompt": "Use reactor_status to show the current live URL and prices"
+    },
+    {
+      "title": "Screen a repo before a bounty",
+      "description": "Trust score a GitHub repository for honeypot risk",
+      "prompt": "Use score_repo_trust on repo facebook/react and explain the verdict"
+    }
+  ],
+  "name": "money-reactor",
+  "description": "Paid x402 micro-APIs for AI agents: hourly funded crypto bounty radar + honeypot trust scoring (USDC on Base). Stdio MCP server resolves the live endpoint at runtime from live-url.json, so it never goes stale.",
+  "categories": [
+    "Finance",
+    "Developer Tools"
+  ],
+  "tools": [
+    {
+      "name": "reactor_status",
+      "description": "Free health check: current live base URL, x402 versions, receiver wallet, prices.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "get_bounty_feed",
+      "description": "Paid ($0.01, x402 USDC Base): hourly-refreshed feed of funded crypto bounties (escrow-backed Base USDC + GitHub radar with trust >= 50). Returns 402 payment requirements on first call; an x402-capable client settles and retries.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "score_repo_trust",
+      "description": "Paid ($0.002, x402 USDC Base): trust score 0-100 for a GitHub repository with GO/CAUTION/HONEYPOT_RISK verdict and reasons. Use before accepting any bounty.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "repo": {
+            "type": "string",
+            "description": "GitHub repository as owner/name, e.g. facebook/react"
+          }
+        },
+        "required": [
+          "repo"
+        ]
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": false
+}
