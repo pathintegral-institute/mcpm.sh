@@ -4,7 +4,7 @@
   "description": "Growth experiment framework for AI agents: check what the team already tested, write hypothesis-first ideas, score them with ICE, PIE or RICE and close each test with a measured result and a learning. Hosted server with OAuth 2.1; the server enforces the experiment stages.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/viluca94/hypotize-plugin"
+    "url": "https://github.com/hypotizeai/hypotize-plugin"
   },
   "homepage": "https://hypotize.ai/mcp",
   "author": {
