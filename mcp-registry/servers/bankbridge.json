@@ -1,0 +1,52 @@
+{
+  "name": "bankbridge",
+  "display_name": "BankBridge",
+  "description": "Read-only access to your own US bank, credit card and investment accounts at 12,000+ institutions: balances, transactions, spending by category or merchant, recurring charges, monthly cashflow and holdings. Hosted Streamable HTTP with OAuth 2.1; every call fetches live and transactions are not stored. Paid, $5/mo per connected bank.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bankbridge-money/bankbridge-plugin"
+  },
+  "homepage": "https://bankbridge.money",
+  "author": {
+    "name": "BankBridge",
+    "email": "hello@greatwork.company",
+    "url": "https://bankbridge.money"
+  },
+  "license": "Proprietary",
+  "categories": [
+    "Finance"
+  ],
+  "tags": [
+    "banking",
+    "personal-finance",
+    "transactions",
+    "budgeting",
+    "investments",
+    "read-only",
+    "remote"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://bankbridge.money/api/mcp",
+      "description": "Hosted Streamable HTTP. Use an OAuth-capable MCP client and sign in to BankBridge (dynamic client registration, no key needed). Paid, $5/mo per connected bank; a demo account with sample data is available.",
+      "recommended": true
+    }
+  },
+  "tools": [
+    { "name": "list_accounts", "description": "List connected bank, credit card and investment accounts with current balances." },
+    { "name": "get_account", "description": "Get details and balances for one account." },
+    { "name": "list_transactions", "description": "List transactions filtered by date range, amount, category or account." },
+    { "name": "search_transactions", "description": "Search transactions by merchant name or description." },
+    { "name": "get_spending_summary", "description": "Summarize spending by category, merchant, month or week." },
+    { "name": "get_recurring_charges", "description": "Find recurring charges and subscriptions." },
+    { "name": "get_monthly_cashflow", "description": "Money in versus money out per month." },
+    { "name": "get_merchant_history", "description": "Spending history at one merchant over time." },
+    { "name": "list_categories", "description": "List the transaction categories in use." },
+    { "name": "list_holdings", "description": "List investment holdings with quantity, value and cost basis." },
+    { "name": "list_investment_transactions", "description": "List buys, sells, dividends and other investment activity." },
+    { "name": "connect_bank", "description": "Return a link the user opens to connect another bank." }
+  ],
+  "is_official": true,
+  "is_archived": false
+}
