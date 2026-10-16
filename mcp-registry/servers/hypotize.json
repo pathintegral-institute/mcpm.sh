@@ -1,0 +1,50 @@
+{
+  "name": "hypotize",
+  "display_name": "Hypotize",
+  "description": "Growth experiment framework for AI agents: check what the team already tested, write hypothesis-first ideas, score them with ICE, PIE or RICE and close each test with a measured result and a learning. Hosted server with OAuth 2.1; the server enforces the experiment stages.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/viluca94/hypotize-plugin"
+  },
+  "homepage": "https://hypotize.ai/mcp",
+  "author": {
+    "name": "Hypotize"
+  },
+  "license": "MIT",
+  "categories": [
+    "Productivity",
+    "Analytics"
+  ],
+  "tags": [
+    "growth experiments",
+    "experimentation",
+    "ICE scoring",
+    "growth hacking",
+    "learnings",
+    "remote"
+  ],
+  "is_official": true,
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://api.hypotize.ai/mcp"
+    }
+  },
+  "examples": [
+    {
+      "title": "Check past tests",
+      "description": "Find what the team already tested on a topic",
+      "prompt": "What have we already tested on onboarding emails, and what did we learn?"
+    },
+    {
+      "title": "Propose an experiment",
+      "description": "Write a scored, hypothesis-first idea without duplicates",
+      "prompt": "Propose an experiment to raise trial-to-paid conversion and score it with ICE. Check the backlog for duplicates first."
+    },
+    {
+      "title": "Weekly review",
+      "description": "Find tests waiting for a verdict or past their due date",
+      "prompt": "Run a weekly review of the growth pipeline: which tests are waiting for a verdict and which are past their due date?"
+    }
+  ]
+}
