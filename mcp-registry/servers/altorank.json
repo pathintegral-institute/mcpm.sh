@@ -1,0 +1,48 @@
+{
+  "name": "altorank",
+  "display_name": "AltoRank",
+  "description": "Open-source SEO content software. Check whether search engines and AI crawlers can read a site, research keywords, read Google Search Console, and write sourced SEO drafts into a person's review queue. There is no approve or publish tool.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AltoRank/altorank"
+  },
+  "homepage": "https://altorank.co/docs/mcp/",
+  "author": {
+    "name": "AltoRank"
+  },
+  "license": "AGPL-3.0",
+  "categories": [
+    "Analytics"
+  ],
+  "tags": [
+    "seo",
+    "content",
+    "search console",
+    "keyword research",
+    "remote",
+    "oauth"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://app.altorank.co/api/mcp"
+    }
+  },
+  "examples": [
+    {
+      "title": "Readiness check",
+      "description": "Run the nine readiness checks on a domain",
+      "prompt": "Check whether AI assistants can read example.com and tell me what is failing."
+    },
+    {
+      "title": "Keyword ideas",
+      "description": "Suggest keywords for a workspace",
+      "prompt": "Suggest keywords my buyers search for, based on my site."
+    },
+    {
+      "title": "Draft an article",
+      "description": "Write a sourced draft into the review queue",
+      "prompt": "Write a draft for the top keyword in my content plan."
+    }
+  ]
+}
