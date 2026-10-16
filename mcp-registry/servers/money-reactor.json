@@ -47,7 +47,7 @@
   "description": "Paid x402 micro-APIs for AI agents: hourly funded crypto bounty radar + honeypot trust scoring (USDC on Base). Stdio MCP server resolves the live endpoint at runtime from live-url.json, so it never goes stale.",
   "categories": [
     "Finance",
-    "Developer Tools"
+    "Dev Tools"
   ],
   "tools": [
     {
