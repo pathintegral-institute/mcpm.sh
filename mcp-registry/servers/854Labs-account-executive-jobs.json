@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "account-executive-jobs",
+  "display_name": "Account Executive Jobs",
+  "description": "A simple server to list account executive jobs.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/854Labs/account-executive-jobs"
+  },
+  "author": {
+    "name": "854 Labs"
+  },
+  "license": "MIT",
+  "categories": [
+    "Web Services"
+  ],
+  "tags": [
+    "jobs",
+    "api",
+    "nodejs"
+  ],
+  "arguments": {
+    "PORT": {
+      "description": "The port the server will run on. Defaults to 3000.",
+      "required": false,
+      "example": "8080"
+    }
+  },
+  "tools": [
+    {
+      "name": "get_jobs",
+      "description": "Returns a JSON array of account executive job listings. Each job object contains title, company, location, and url.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@mcp/account-executive-jobs-server"
+      ],
+      "env": {
+        "PORT": "$PORT"
+      },
+      "recommended": true,
+      "description": "Run the server using npx. Requires Node.js and npm."
+    }
+  },
+  "is_official": false,
+  "is_archived": false
+}
