@@ -31,6 +31,16 @@
       "url": "https://docs.blockvectra.com/mcp",
       "recommended": true,
       "description": "Hosted MCP. Start without headers for docs and allowed public RPC; configure a private x-api-key header for indexed Data API/account tools."
+    },
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "--yes",
+        "@blockvectra/mcp@0.1.0"
+      ],
+      "package": "@blockvectra/mcp@0.1.0",
+      "description": "Optional stdio bridge for clients using a local command. Requires Node.js 22+ and network access to the hosted MCP; starts keyless."
     }
   },
   "examples": [
