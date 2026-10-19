@@ -1,0 +1,79 @@
+{
+  "display_name": "Whale Coupons",
+  "license": "MIT",
+  "tags": [
+    "coupons",
+    "promo-codes",
+    "discount-codes",
+    "shopping",
+    "ecommerce",
+    "deals"
+  ],
+  "name": "whale-coupons",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/whalecoupons/whale-coupons-mcp"
+  },
+  "homepage": "https://whalecoupons.co",
+  "author": {
+    "name": "Whale Coupons",
+    "url": "https://whalecoupons.co"
+  },
+  "description": "Coupon and discount codes issued by independent online stores. Look up a code by store name, website domain or product URL, search stores by product category, or list the largest discounts. Hosted, read-only remote server: no account or API key.",
+  "categories": [
+    "Web Services"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://whalecoupons.co/mcp",
+      "description": "Hosted Streamable HTTP MCP server. No sign-in or API key.",
+      "recommended": true
+    }
+  },
+  "tools": [
+    {
+      "name": "find_coupons",
+      "description": "Find the coupon code for a store by name, website domain or product URL."
+    },
+    {
+      "name": "search_stores",
+      "description": "Find stores with discount codes for a product type or shopping category, such as running shoes or skincare."
+    },
+    {
+      "name": "get_store",
+      "description": "Full code details for one store from an earlier result."
+    },
+    {
+      "name": "list_categories",
+      "description": "List store categories with links to each category page."
+    },
+    {
+      "name": "list_largest_discounts",
+      "description": "Stores with the biggest percentage-off codes, optionally within a category."
+    }
+  ],
+  "examples": [
+    {
+      "title": "Store code",
+      "description": "Find a code for a named store",
+      "prompt": "Is there a promo code for Saguaro Barefoot Shoes?"
+    },
+    {
+      "title": "Product page",
+      "description": "Find a code from a product URL",
+      "prompt": "Find a discount code for this product: <product URL>"
+    },
+    {
+      "title": "Category",
+      "description": "Find stores with codes for a product type",
+      "prompt": "Any coupon codes for pet stores?"
+    },
+    {
+      "title": "Biggest discounts",
+      "description": "List the largest percentage-off codes",
+      "prompt": "Biggest beauty discounts right now"
+    }
+  ],
+  "is_official": true
+}
