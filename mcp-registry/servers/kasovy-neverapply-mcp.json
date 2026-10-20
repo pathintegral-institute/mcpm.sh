@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "@kasovy/neverapply-mcp",
+  "display_name": "NeverApply MCP Server",
+  "description": "NeverApply MCP server is a tool that automates the process of filling out job applications on Lever, Greenhouse, and Ashby.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kasovy/neverapply-mcp"
+  },
+  "homepage": "https://github.com/kasovy/neverapply-mcp#readme",
+  "author": {
+    "name": "Karim Sovy",
+    "url": "https://github.com/kasovy"
+  },
+  "license": "MIT",
+  "categories": [
+    "Productivity",
+    "MCP Tools"
+  ],
+  "tags": [
+    "mcp-server",
+    "automation",
+    "job-application"
+  ],
+  "arguments": {
+    "OPENAI_API_KEY": {
+      "description": "Your OpenAI API key. Required if ANTHROPIC_API_KEY is not provided.",
+      "required": false,
+      "example": "sk-..."
+    },
+    "ANTHROPIC_API_KEY": {
+      "description": "Your Anthropic API key. Required if OPENAI_API_KEY is not provided.",
+      "required": false,
+      "example": "sk-ant-..."
+    },
+    "NEVERAPPLY_COOKIE": {
+      "description": "Your NeverApply cookie.",
+      "required": true,
+      "example": "session=eyJ1c2VySWQiOi..."
+    },
+    "NEVERAPPLY_EMAIL": {
+      "description": "Your NeverApply email.",
+      "required": true,
+      "example": "user@example.com"
+    },
+    "NEVERAPPLY_PASSWORD": {
+      "description": "Your NeverApply password.",
+      "required": true,
+      "example": "your_secure_password"
+    },
+    "PORT": {
+      "description": "The port to run the server on.",
+      "required": false,
+      "example": "3000"
+    }
+  },
+  "tools": [
+    {
+      "name": "apply_to_job_posting",
+      "description": "Apply to a job posting on Lever, Greenhouse, or Ashby.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "The URL of the job posting."
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    }
+  ],
+  "resources": [],
+  "prompts": [],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "package": "@kasovy/neverapply-mcp",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@kasovy/neverapply-mcp"
+      ],
+      "description": "Run using npx (recommended). Environment variables must be set.",
+      "recommended": true
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-p",
+        "3000:3000",
+        "-e",
+        "OPENAI_API_KEY=$OPENAI_API_KEY",
+        "-e",
+        "NEVERAPPLY_COOKIE=$NEVERAPPLY_COOKIE",
+        "-e",
+        "NEVERAPPLY_EMAIL=$NEVERAPPLY_EMAIL",
+        "-e",
+        "NEVERAPPLY_PASSWORD=$NEVERAPPLY_PASSWORD",
+        "ghcr.io/kasovy/neverapply-mcp:latest"
+      ],
+      "description": "Run using Docker. Requires environment variables to be set."
+    }
+  },
+  "examples": [
+    {
+      "title": "Apply for a Software Engineer position",
+      "description": "This example demonstrates how to use the apply_to_job_posting tool to apply for a software engineer position at a company using the Greenhouse applicant tracking system.",
+      "prompt": "Please apply to this software engineer job for me: https://boards.greenhouse.io/openai/jobs/4017248007"
+    }
+  ],
+  "is_official": false,
+  "is_archived": false,
+  "docker_url": "ghcr.io/kasovy/neverapply-mcp"
+}
