@@ -1,0 +1,70 @@
+{
+  "name": "browser-use",
+  "display_name": "Browser Use (official)",
+  "description": "Official Browser Use MCP server. The hosted server runs browser agent tasks on Browser Use Cloud stealth browsers with residential proxies and CAPTCHA solving; the local stdio server runs the open-source browser-use agent on your machine.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/browser-use/browser-use"
+  },
+  "homepage": "https://docs.browser-use.com/cloud/guides/mcp-server",
+  "author": {
+    "name": "Browser Use",
+    "url": "https://browser-use.com"
+  },
+  "license": "MIT",
+  "categories": [
+    "Web Services"
+  ],
+  "tags": [
+    "browser",
+    "browser-automation",
+    "web-agent",
+    "scraping"
+  ],
+  "arguments": {
+    "BROWSER_USE_API_KEY": {
+      "description": "Browser Use Cloud API key for the hosted server. Get one at https://cloud.browser-use.com/settings. Never commit your key. Tasks use account credits.",
+      "required": true,
+      "example": "YOUR_BROWSER_USE_API_KEY"
+    },
+    "OPENAI_API_KEY": {
+      "description": "LLM API key for the local stdio server only.",
+      "required": false,
+      "example": "YOUR_OPENAI_API_KEY"
+    }
+  },
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://api.browser-use.com/v3/mcp",
+      "headers": {
+        "Authorization": "Bearer ${BROWSER_USE_API_KEY}"
+      },
+      "description": "Hosted Streamable HTTP on Browser Use Cloud. Uses account credits.",
+      "recommended": true
+    },
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "browser-use[cli]",
+        "browser-use",
+        "--mcp"
+      ],
+      "env": {
+        "OPENAI_API_KEY": "${OPENAI_API_KEY}"
+      },
+      "description": "Local stdio server from the open-source browser-use package. Requires your own LLM API key."
+    }
+  },
+  "examples": [
+    {
+      "title": "Run a browser task",
+      "description": "Run a browser agent task in a cloud browser",
+      "prompt": "Use browser-use to open https://news.ycombinator.com and return the top 5 story titles."
+    }
+  ],
+  "is_official": true,
+  "is_archived": false
+}
