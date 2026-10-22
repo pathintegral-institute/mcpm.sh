@@ -1,0 +1,147 @@
+{
+  "name": "footval",
+  "display_name": "FootVal",
+  "description": "Independent football (soccer) player valuations: FootVal's own estimated transfer value next to the market value, with the factors behind the gap, plus scouting filters and rankings, live scores, match centres, league tables, team fixtures, season stat leaders and transfer news. 15 read-only tools. Hosted remote server: sign in through your MCP client (OAuth, with a Google account), or send a personal API key from https://footval.com/en/mcp as an Authorization Bearer header. Every account has a free daily allowance of tool calls.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/target1m/footval-mcp"
+  },
+  "homepage": "https://footval.com/en/mcp",
+  "author": {
+    "name": "FootVal",
+    "email": "admin@footval.com",
+    "url": "https://footval.com"
+  },
+  "license": "MIT",
+  "categories": [
+    "Analytics",
+    "Web Services"
+  ],
+  "tags": [
+    "football",
+    "soccer",
+    "sports",
+    "transfer-value",
+    "player-valuation",
+    "scouting",
+    "live-scores",
+    "league-tables",
+    "statistics",
+    "transfer-news",
+    "read-only",
+    "remote"
+  ],
+  "arguments": {
+    "FOOTVAL_API_KEY": {
+      "description": "Personal FootVal API key (starts with fvk_) from the account section of https://footval.com/en/mcp. Only needed for clients that cannot sign in with OAuth.",
+      "required": false,
+      "example": "fvk_YOUR_KEY"
+    }
+  },
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://api.footval.com/mcp",
+      "description": "Hosted streamable-HTTP MCP server. Your MCP client opens footval.com for a one-time sign-in with a Google account; no API key is needed for the sign-in flow.",
+      "recommended": true
+    },
+    "http-api-key": {
+      "type": "http",
+      "url": "https://api.footval.com/mcp",
+      "description": "The same server with a personal API key, for clients that cannot open a sign-in window.",
+      "headers": {
+        "Authorization": "Bearer ${FOOTVAL_API_KEY}"
+      }
+    }
+  },
+  "tools": [
+    {
+      "name": "get_player",
+      "description": "A player's FootVal value next to the market value, the gap and its verdict, the factor breakdown, value history, season stats, transfers, contract and similar players."
+    },
+    {
+      "name": "compare_players",
+      "description": "Two to four players side by side: values, age, position, performance percentile, every valuation factor and last-season output."
+    },
+    {
+      "name": "find_players",
+      "description": "Scout by league, club, nation, position, age, preferred foot and value range; sort by value, market value, undervalued, overvalued, youth, performance or recent rise."
+    },
+    {
+      "name": "get_rankings",
+      "description": "Most valuable, most undervalued or overvalued (EUR 10M+), biggest risers or fallers, and wonderkids (21 and under)."
+    },
+    {
+      "name": "search_football",
+      "description": "Find players, clubs, leagues and national teams by name, accents optional."
+    },
+    {
+      "name": "list_leagues",
+      "description": "Every league FootVal values, with strength tier, clubs, players and total squad value."
+    },
+    {
+      "name": "get_league",
+      "description": "A league's clubs ranked by squad value (FootVal vs market) and its most valuable players."
+    },
+    {
+      "name": "get_club",
+      "description": "A club's squad with every player's FootVal value, market value and the gap, plus totals."
+    },
+    {
+      "name": "get_national_team",
+      "description": "The strongest 26-player squad for a nation (3 GK / 8 DF / 8 MF / 7 FW by value)."
+    },
+    {
+      "name": "get_matches",
+      "description": "Live scores, results and fixtures for any date across leagues, European and domestic cups and national-team tournaments."
+    },
+    {
+      "name": "get_match",
+      "description": "One match in depth: score, event timeline, team statistics and line-ups with ratings."
+    },
+    {
+      "name": "get_team_fixtures",
+      "description": "A club's or national team's next or most recent matches."
+    },
+    {
+      "name": "get_standings",
+      "description": "A competition's table with form and qualification or relegation zones."
+    },
+    {
+      "name": "get_stat_leaders",
+      "description": "Season leaderboards (goals, assists, goals plus assists, minutes, appearances) per competition, across national-team competitions, or across all competitions combined."
+    },
+    {
+      "name": "get_transfer_news",
+      "description": "Latest confirmed transfers and rumours with fees, clubs, reliability and dates."
+    }
+  ],
+  "examples": [
+    {
+      "title": "Player value",
+      "description": "What a player is worth and why FootVal disagrees with the market",
+      "prompt": "What is Lamine Yamal really worth, and why?"
+    },
+    {
+      "title": "Compare players",
+      "description": "Every valuation factor side by side",
+      "prompt": "Compare Arda Güler, Florian Wirtz and Jamal Musiala."
+    },
+    {
+      "title": "Scouting",
+      "description": "A filtered shortlist",
+      "prompt": "Find left-footed centre-backs aged 23 or under in Serie A worth less than €30M."
+    },
+    {
+      "title": "Undervalued players",
+      "description": "Where FootVal sees more than the market",
+      "prompt": "Who are the most undervalued players in the Premier League?"
+    },
+    {
+      "title": "League table",
+      "description": "Standings with form and zones",
+      "prompt": "Show me the Süper Lig table."
+    }
+  ],
+  "is_official": true
+}
