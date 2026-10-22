@@ -1,0 +1,23 @@
+{
+  "name": "hol-guard",
+  "display_name": "HOL Guard",
+  "description": "Connect an MCP client to an existing HOL Guard CLI installation over stdio. Requires hol-guard on PATH.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hashgraph-online/hol-guard"
+  },
+  "license": "Apache-2.0",
+  "installations": {
+    "cli": {
+      "type": "cli",
+      "command": "hol-guard",
+      "args": [
+        "mcp",
+        "serve",
+        "--stdio"
+      ],
+      "description": "Uses an existing HOL Guard CLI on PATH; this configuration does not install the binary or enable enforcement.",
+      "recommended": true
+    }
+  }
+}
