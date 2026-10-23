@@ -1,0 +1,81 @@
+{
+  "display_name": "datawebot",
+  "license": "Proprietary",
+  "tags": [
+    "ecommerce",
+    "product-data",
+    "product-search",
+    "price-comparison",
+    "amazon",
+    "walmart",
+    "shopify",
+    "remote"
+  ],
+  "name": "datawebot",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/datawebot/datawebot-mcp"
+  },
+  "homepage": "https://www.datawebot.com/docs/agents",
+  "author": {
+    "name": "datawebot",
+    "email": "hello@datawebot.com",
+    "url": "https://www.datawebot.com"
+  },
+  "description": "Ecommerce product data for agents: search products for sale across online shops worldwide, list every seller's price for one product with a direct link to each shop, and run extraction Jobs on Amazon search and product pages (10 countries), Walmart US, a set of reviewed stores and an endpoint directory of over 11,000 store domains (stores added through the automated probe are labelled \"probe-qualified; live production acceptance pending\"). Results are best-effort snapshots with their retrieval time; no price history or alerts. Hosted, closed-source remote server (the linked repository is the MIT-licensed connection kit). Sign in through your MCP client with OAuth 2.1 (email approval, free), or send an API key as an Authorization Bearer header. Jobs are paid in credits; new accounts start with 200 free trial credits.",
+  "categories": [
+    "Web Services",
+    "Analytics"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://mcp.datawebot.com/mcp",
+      "description": "Hosted Streamable HTTP MCP server. Your MCP client runs the OAuth sign-in and you approve the email from datawebot; no API key is needed for that flow.",
+      "recommended": true
+    }
+  },
+  "tools": [
+    {
+      "name": "discover",
+      "description": "Lists every tool available now, including ones added after the session started. Call it first."
+    },
+    {
+      "name": "search_products",
+      "description": "Products for sale across online shops worldwide, in local languages: title, price, original price, shop, rating, review count, image, condition, link and retrieval time. Filter by country and, optionally, by shop domains."
+    },
+    {
+      "name": "get_product_offers",
+      "description": "For one product from a search: each seller's price, total with shipping, delivery note, seller rating and a direct link to the product page."
+    },
+    {
+      "name": "list_job_blueprints",
+      "description": "Lists the extraction Job contracts available, with each contract's qualification and availability."
+    },
+    {
+      "name": "submit_job",
+      "description": "Starts an extraction Job on search results or product pages for a supported site."
+    },
+    {
+      "name": "get_job",
+      "description": "Returns the status of an extraction Job."
+    },
+    {
+      "name": "get_results",
+      "description": "Returns the rows an extraction Job produced."
+    }
+  ],
+  "examples": [
+    {
+      "title": "Compare sellers",
+      "description": "Find a product and list each seller's price with links",
+      "prompt": "Use datawebot to find who sells the Sony WH-1000XM5 in the US and for how much, with links to each shop."
+    },
+    {
+      "title": "Amazon search",
+      "description": "Run an extraction Job on Amazon search results",
+      "prompt": "Use datawebot to search Amazon US for Nintendo Switch."
+    }
+  ],
+  "is_official": true
+}
