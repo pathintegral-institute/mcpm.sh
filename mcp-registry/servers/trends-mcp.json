@@ -1,0 +1,47 @@
+{
+  "name": "trends-mcp",
+  "display_name": "Trends MCP",
+  "description": "Trend data for AI assistants: search interest and growth over time from Google Trends, YouTube, TikTok, Reddit, Amazon, Wikipedia, news volume and sentiment, npm and Steam in one hosted server.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/trendsmcp-ai/Trends-MCP"
+  },
+  "homepage": "https://trendsmcp.ai",
+  "author": {
+    "name": "Trends MCP",
+    "email": "hello@trendsmcp.ai",
+    "url": "https://trendsmcp.ai"
+  },
+  "license": "MIT",
+  "categories": [
+    "Analytics",
+    "Web Services"
+  ],
+  "tags": [
+    "trends",
+    "google-trends",
+    "search-volume",
+    "market-research",
+    "seo"
+  ],
+  "arguments": {
+    "TRENDSMCP_API_KEY": {
+      "description": "Trends MCP API key, sent as a bearer token. Free key at https://trendsmcp.ai. Never commit your key.",
+      "required": true,
+      "example": "YOUR_TRENDSMCP_API_KEY"
+    }
+  },
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://api.trendsmcp.ai/mcp",
+      "headers": {
+        "Authorization": "Bearer ${TRENDSMCP_API_KEY}"
+      },
+      "description": "Hosted Streamable HTTP with a bearer API key.",
+      "recommended": true
+    }
+  },
+  "is_official": true,
+  "is_archived": false
+}
