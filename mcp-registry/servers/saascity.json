@@ -1,0 +1,53 @@
+{
+  "name": "saascity",
+  "display_name": "SaaSCity",
+  "description": "Plan a product launch from your agent: audit a homepage before launch, pick launch directories from 1,600+ with Ahrefs DR, link type and price, and list the product on SaaSCity.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nyyhao/saascity-mcp"
+  },
+  "homepage": "https://saascity.io/mcp",
+  "author": {
+    "name": "SaaSCity",
+    "url": "https://saascity.io"
+  },
+  "license": "MIT",
+  "categories": [
+    "Web Services",
+    "Productivity"
+  ],
+  "tags": [
+    "launch",
+    "directories",
+    "seo",
+    "backlinks",
+    "marketing",
+    "saas"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://saascity.io/api/mcp",
+      "recommended": true,
+      "description": "Hosted Streamable HTTP endpoint. No account or API key needed."
+    }
+  },
+  "examples": [
+    {
+      "title": "Pre-launch audit",
+      "description": "Check a homepage before launch",
+      "prompt": "Audit https://example.com before I launch it."
+    },
+    {
+      "title": "Pick directories",
+      "description": "Choose launch directories by DR and link type",
+      "prompt": "Find free dofollow launch directories with DR above 50 for my AI tool."
+    },
+    {
+      "title": "List the product",
+      "description": "Submit a product to SaaSCity",
+      "prompt": "List my product on SaaSCity."
+    }
+  ],
+  "is_official": true
+}
