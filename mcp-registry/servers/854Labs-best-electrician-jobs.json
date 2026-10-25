@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "@854/best-electrician-jobs",
+  "display_name": "Best Electrician Jobs",
+  "description": "A server to find the best electrician jobs in the United States.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/854Labs/best-electrician-jobs"
+  },
+  "author": {
+    "name": "854Labs",
+    "email": "contact@854.com"
+  },
+  "license": "Apache-2.0",
+  "categories": [
+    "Web Services"
+  ],
+  "tags": [
+    "jobs",
+    "electrician",
+    "mcp-server"
+  ],
+  "arguments": {
+    "PORT": {
+      "description": "The port to run the server on. Defaults to 3000.",
+      "required": false,
+      "example": "3000"
+    },
+    "HOST": {
+      "description": "The host to run the server on. Defaults to 0.0.0.0.",
+      "required": false,
+      "example": "0.0.0.0"
+    }
+  },
+  "tools": [
+    {
+      "name": "find_jobs",
+      "description": "Finds electrician jobs in a given location.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "description": "US city and state, e.g. 'Austin, TX'"
+          }
+        }
+      },
+      "required": [
+        "location"
+      ]
+    }
+  ],
+  "resources": [],
+  "prompts": [],
+  "installations": {
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-p",
+        "3000:3000",
+        "ghcr.io/854labs/best-electrician-jobs:latest"
+      ],
+      "env": {
+        "SERPAPI_API_KEY": "${YOUR_API_KEY_HERE}"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Find jobs in Austin, TX",
+      "description": "An example of how to use the `find_jobs` tool to find electrician jobs in Austin, TX.",
+      "prompt": "Use the find_jobs tool to find electrician jobs in Austin, TX"
+    }
+  ],
+  "is_official": false,
+  "is_archived": false,
+  "docker_url": "ghcr.io/854labs/best-electrician-jobs"
+}
