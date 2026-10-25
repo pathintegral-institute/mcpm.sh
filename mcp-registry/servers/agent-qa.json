@@ -1,0 +1,48 @@
+{
+  "name": "agent-qa",
+  "display_name": "agent-qa",
+  "description": "Natural-language web and mobile testing from vostride, with advanced memidex memory and self-improvement through learned application knowledge and replay. Author tests, run journeys, and inspect recorded evidence through MCP.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vostride/agent-qa"
+  },
+  "homepage": "https://vostride.com/docs/agent-qa/mcp",
+  "author": {
+    "name": "vostride",
+    "url": "https://vostride.com"
+  },
+  "license": "FSL-1.1-ALv2",
+  "categories": [
+    "Dev Tools"
+  ],
+  "tags": [
+    "testing",
+    "qa",
+    "web",
+    "mobile",
+    "memory"
+  ],
+  "arguments": {
+    "AGENT_QA_CONFIG": {
+      "description": "Absolute path to agent-qa.config.yaml in a project initialized with agent-qa. See https://vostride.com/docs/agent-qa/quickstart for model and browser/device setup.",
+      "required": true,
+      "example": "/path/to/project/agent-qa.config.yaml"
+    }
+  },
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "agent-qa",
+        "--config",
+        "${AGENT_QA_CONFIG}",
+        "mcp"
+      ],
+      "package": "agent-qa",
+      "description": "Requires Node.js 24+ and an initialized agent-qa project. Configure a model and browser or mobile device support before running tests. Model-provider costs may apply.",
+      "recommended": true
+    }
+  }
+}
