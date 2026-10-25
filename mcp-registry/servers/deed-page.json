@@ -25,6 +25,16 @@
     "remote"
   ],
   "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://deed.page/mcp"
+      ],
+      "description": "Connect to the hosted server through the mcp-remote bridge, for clients that only launch local stdio servers (e.g. Claude Desktop)."
+    },
     "http": {
       "type": "http",
       "url": "https://deed.page/mcp",
