@@ -1,0 +1,95 @@
+{
+  "name": "deed-page",
+  "display_name": "deed.page",
+  "description": "Hosting for AI coding agents. Publish HTML files or a whole static folder to a public HTTPS URL at https://{slug}.deed.page/, then update, version, restore or delete it with the owner token returned on the first publish. Hosted Streamable HTTP endpoint; no API key is needed to start.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/f-o-x11/deed-page-skill"
+  },
+  "license": "MIT",
+  "homepage": "https://deed.page",
+  "author": {
+    "name": "Avatar 8 LLC",
+    "url": "https://deed.page"
+  },
+  "categories": [
+    "Dev Tools",
+    "Web Services"
+  ],
+  "tags": [
+    "hosting",
+    "static-site",
+    "html",
+    "publish",
+    "deploy",
+    "remote"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://deed.page/mcp"
+      ],
+      "description": "Connect to the hosted server through the mcp-remote bridge, for clients that only launch local stdio servers (e.g. Claude Desktop)."
+    },
+    "http": {
+      "type": "http",
+      "url": "https://deed.page/mcp",
+      "description": "Hosted Streamable HTTP MCP server. The first publish_site call returns an owner token; pass it as the token input (or an Authorization Bearer header) to update or delete that site later.",
+      "recommended": true
+    }
+  },
+  "tools": [
+    {
+      "name": "publish_site",
+      "description": "Publish files to a live URL at a slug. Returns the URL, version and, on the first anonymous publish, an owner token."
+    },
+    {
+      "name": "update_site",
+      "description": "Replace the files of a slug owned by the token, or merge in only the given paths."
+    },
+    {
+      "name": "get_site",
+      "description": "Check whether a slug is live and return its URL, version, size and timestamps."
+    },
+    {
+      "name": "list_sites",
+      "description": "List every live site owned by the token."
+    },
+    {
+      "name": "delete_site",
+      "description": "Permanently remove a slug owned by the token."
+    },
+    {
+      "name": "list_versions",
+      "description": "List retained versions of a slug, newest first."
+    },
+    {
+      "name": "restore_version",
+      "description": "Create a new version whose files equal a retained version."
+    },
+    {
+      "name": "add_domain",
+      "description": "Attach a custom hostname to a slug and return the DNS records to create."
+    },
+    {
+      "name": "whoami",
+      "description": "Return the plan, limits and number of sites the token owns."
+    }
+  ],
+  "examples": [
+    {
+      "title": "Publish a page",
+      "description": "Publish a generated HTML page and get a public link",
+      "prompt": "Build a one-page launch checklist as HTML and publish it with deed.page, then give me the link."
+    },
+    {
+      "title": "Update a published site",
+      "description": "Change a site that was published earlier with the saved owner token",
+      "prompt": "Update my deed.page site launch-checklist with the new version of index.html."
+    }
+  ]
+}
