@@ -1,0 +1,62 @@
+{
+  "name": "aiagentslisting",
+  "display_name": "AI Agents Listing",
+  "description": "Find and compare MCP servers, AI agents and skills from the AI Agents Listing directory, with alternatives and trending lists.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nyyhao/aiagentslisting-mcp"
+  },
+  "homepage": "https://aiagentslisting.com/mcp",
+  "author": {
+    "name": "AI Agents Listing",
+    "url": "https://aiagentslisting.com"
+  },
+  "license": "MIT",
+  "categories": [
+    "MCP Tools",
+    "Web Services"
+  ],
+  "tags": [
+    "directory",
+    "search",
+    "discovery",
+    "mcp",
+    "agents",
+    "skills"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://aiagentslisting.com/api/mcp",
+      "recommended": true,
+      "description": "Hosted Streamable HTTP endpoint. The read tools need no account or API key; submitting a listing or review uses OAuth."
+    },
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "github:nyyhao/aiagentslisting-mcp"
+      ],
+      "description": "Local stdio bridge to the hosted endpoint."
+    }
+  },
+  "examples": [
+    {
+      "title": "Find a server",
+      "description": "Search the directory",
+      "prompt": "Find MCP servers for Postgres and compare the top two."
+    },
+    {
+      "title": "See what is trending",
+      "description": "Engagement-ranked list",
+      "prompt": "What AI agents are trending this week?"
+    },
+    {
+      "title": "Find alternatives",
+      "description": "Alternatives to a listing",
+      "prompt": "Show alternatives to Cursor in the AI agents listing."
+    }
+  ],
+  "is_official": true
+}
