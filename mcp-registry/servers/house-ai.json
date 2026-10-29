@@ -1,0 +1,51 @@
+{
+  "name": "house-ai",
+  "display_name": "House AI",
+  "description": "Official House AI MCP server for AI interior and exterior design: redesign a room, a house exterior or a yard from a photo in 100+ styles, preview wall paint and flooring, empty or virtually stage a room, and find real furniture and decor to match.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Apex-Byte-Technologies/house-ai-mcp"
+  },
+  "homepage": "https://www.houseaiapp.com/connector",
+  "author": {
+    "name": "House AI",
+    "email": "support@addictingelements.com",
+    "url": "https://www.houseaiapp.com"
+  },
+  "license": "MIT",
+  "categories": [
+    "Media Creation"
+  ],
+  "tags": [
+    "interior-design",
+    "home-design",
+    "image-generation",
+    "real-estate",
+    "furniture"
+  ],
+  "arguments": {
+    "HOUSE_AI_TOKEN": {
+      "description": "Optional personal House AI API token (create one at https://www.houseaiapp.com/app/connector) for clients that can't sign in with OAuth. Never commit your token. Designs use House AI credits.",
+      "required": false,
+      "example": "hai_YOUR_TOKEN"
+    }
+  },
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://mcp.houseaiapp.com/mcp",
+      "description": "Hosted Streamable HTTP. Use an OAuth-capable MCP client and sign in with a House AI account. Style browsing works without signing in; designs use House AI credits.",
+      "recommended": true
+    },
+    "http-api-key": {
+      "type": "http",
+      "url": "https://mcp.houseaiapp.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${HOUSE_AI_TOKEN}"
+      },
+      "description": "Hosted Streamable HTTP with a personal House AI API token instead of OAuth. Designs use House AI credits."
+    }
+  },
+  "is_official": true,
+  "is_archived": false
+}
