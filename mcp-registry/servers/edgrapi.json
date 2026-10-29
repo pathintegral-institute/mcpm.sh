@@ -1,0 +1,144 @@
+{
+  "display_name": "Edgrapi",
+  "license": "MIT-0",
+  "tags": [
+    "government-data",
+    "sam-gov",
+    "usaspending",
+    "grants",
+    "sec-edgar",
+    "insider-trading",
+    "congress-trades",
+    "finance"
+  ],
+  "name": "edgrapi",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/paperandbeyond23-gif/edgrapi-skills"
+  },
+  "homepage": "https://edgrapi.com",
+  "author": {
+    "name": "Edgrapi",
+    "email": "support@edgrapi.com",
+    "url": "https://edgrapi.com"
+  },
+  "description": "US government data as clean JSON: SAM.gov contract opportunities, USAspending awards, Grants.gov grants, House STOCK Act trades and SEC EDGAR filings (Form 4 insider trades, 8-K events, 13F holdings, 13D/G stakes, XBRL fundamentals, full-text search). Every record links back to the official source. Hosted remote server: sign in through your MCP client (OAuth 2.1), or send an API key from https://edgrapi.com as an Authorization Bearer header. Free tier: 50 one-time credits, no card.",
+  "categories": [
+    "Finance",
+    "Knowledge Base"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://api.edgrapi.com/mcp",
+      "description": "Hosted streamable-HTTP MCP server. OAuth-capable clients open a one-time sign-in; clients without OAuth can send Authorization: Bearer <your edgr_ API key> instead.",
+      "recommended": true
+    }
+  },
+  "tools": [
+    {
+      "name": "get_fundamentals",
+      "description": "Normalized income statement, balance sheet, and cash flow for a US-listed ticker, parsed from SEC EDGAR XBRL."
+    },
+    {
+      "name": "get_ratios",
+      "description": "Margins, returns (ROE/ROA), leverage and liquidity ratios for a ticker, derived from SEC EDGAR fundamentals, plus per-share figures (eps_diluted, book_value_per_share, shares_outstanding)."
+    },
+    {
+      "name": "get_company",
+      "description": "CIK, legal name, SIC industry, fiscal-year end, exchanges and website for a ticker, resolved from SEC EDGAR submissions."
+    },
+    {
+      "name": "get_filings",
+      "description": "Recent SEC filings for a ticker (10-K/10-Q/8-K) with filing/report dates and document links."
+    },
+    {
+      "name": "get_sections",
+      "description": "Narrative sections from the latest 10-K/10-Q as clean text - Risk Factors (item 1A), MD&A (item 7), Business (item 1), etc."
+    },
+    {
+      "name": "get_insider",
+      "description": "Parsed SEC Form 4 insider trades for a ticker: owner, role, transaction code (P open-market purchase, S sale, A award, M exercise, F tax withholding), shares, price, dollar value, and a 10b5-1 plan flag."
+    },
+    {
+      "name": "get_events",
+      "description": "8-K material events for a ticker as typed items (2.02 earnings, 5.02 executive change, 1.05 cybersecurity incident, 2.01 acquisition, etc.), each with a notable flag for the market-moving ones and a link to the filing."
+    },
+    {
+      "name": "get_holdings",
+      "description": "A fund's latest 13F portfolio parsed from the SEC information table: every position ranked by value, aggregated by CUSIP across sub-managers, options flagged put/call, and diffed against the prior quarter (new / added / reduced / exited)."
+    },
+    {
+      "name": "get_activist",
+      "description": "Schedule 13D/13G filings, the disclosure anyone crossing 5% of a company's voting stock must make."
+    },
+    {
+      "name": "resolve_entity",
+      "description": "Map any one of a ticker, CIK, or CUSIP to the canonical SEC entity: legal name, CIK, ticker(s), exchange, SIC industry and sector, state of incorporation, and location."
+    },
+    {
+      "name": "search_filings",
+      "description": "Search the full text of every SEC filing since 2001 (the EDGAR full-text index)."
+    },
+    {
+      "name": "get_xbrl",
+      "description": "Converts a company's XBRL to JSON: normalized statements across every reported period, plus an index of every us-gaap/dei tag it reports."
+    },
+    {
+      "name": "get_shares",
+      "description": "Common shares outstanding (latest + history) and public float for a ticker, from the SEC XBRL cover-page tags."
+    },
+    {
+      "name": "get_form_d",
+      "description": "Parsed Form D notices - the filing a company makes when it raises money in a private placement under a Regulation D exemption."
+    },
+    {
+      "name": "get_subsidiaries",
+      "description": "The company's subsidiaries and their jurisdictions of incorporation, parsed from Exhibit 21 of its latest 10-K."
+    },
+    {
+      "name": "get_opportunities",
+      "description": "Federal contract opportunities from SAM.gov - solicitations, presolicitations, sources-sought, and award notices - normalized into flat JSON."
+    },
+    {
+      "name": "get_awards",
+      "description": "Federal spending awards from USAspending.gov - contracts, grants, loans, and direct payments - normalized into flat JSON."
+    },
+    {
+      "name": "get_grants",
+      "description": "Federal grant funding opportunities from Grants.gov, normalized into flat JSON."
+    },
+    {
+      "name": "get_congress",
+      "description": "Congressional stock trades parsed from US House STOCK Act periodic transaction reports, normalized to flat JSON: member, state/district, ticker, buy or sell, the disclosed dollar range, transaction and disclosure dates, and a House disclosure PDF link."
+    }
+  ],
+  "examples": [
+    {
+      "title": "Contract opportunities",
+      "description": "Find open federal solicitations by NAICS code",
+      "prompt": "Find open SAM.gov solicitations for NAICS 541512 posted in the last two weeks."
+    },
+    {
+      "title": "Federal awards",
+      "description": "Look up who received federal contract money",
+      "prompt": "Show the largest USAspending contract awards to Lockheed Martin in the last year."
+    },
+    {
+      "title": "Grant opportunities",
+      "description": "Search open Grants.gov opportunities",
+      "prompt": "List open Grants.gov opportunities about rural broadband."
+    },
+    {
+      "title": "Congressional trades",
+      "description": "See House members' disclosed stock trades",
+      "prompt": "Which House members have disclosed trades in NVDA recently?"
+    },
+    {
+      "title": "Insider buying",
+      "description": "Check open-market insider purchases",
+      "prompt": "Show recent open-market Form 4 insider purchases at Tesla."
+    }
+  ],
+  "is_official": true
+}
