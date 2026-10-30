@@ -9,10 +9,10 @@
   "homepage": "https://www.houseaiapp.com/connector",
   "author": {
     "name": "House AI",
-    "email": "support@addictingelements.com",
+    "email": "info@houseaiapp.com",
     "url": "https://www.houseaiapp.com"
   },
-  "license": "MIT",
+  "license": "Proprietary",
   "categories": [
     "Media Creation"
   ],
@@ -25,8 +25,8 @@
   ],
   "arguments": {
     "HOUSE_AI_TOKEN": {
-      "description": "Optional personal House AI API token (create one at https://www.houseaiapp.com/app/connector) for clients that can't sign in with OAuth. Never commit your token. Designs use House AI credits.",
-      "required": false,
+      "description": "Personal House AI API token for the http-api-key installation (create one at https://www.houseaiapp.com/app/connector). Not needed for the recommended OAuth installation. Never commit your token. Designs use House AI credits.",
+      "required": true,
       "example": "hai_YOUR_TOKEN"
     }
   },
