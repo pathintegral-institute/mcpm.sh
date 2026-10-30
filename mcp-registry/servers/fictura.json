@@ -1,0 +1,53 @@
+{
+  "name": "fictura",
+  "display_name": "Fictura",
+  "description": "Official hosted MCP interface to Fictura, the AI-native growth data layer for Expo and React Native apps. Coding agents can read real SDK setup, placements, user funnels, subscriptions, A/B experiments, attribution, store analytics and production errors, and create reviewable paywall/onboarding drafts with permission. Live publishing stays in the dashboard.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Apex-Byte-Technologies/fictura-mcp"
+  },
+  "homepage": "https://docs.fictura.co/connections/outgoing/mcp-server",
+  "author": {
+    "name": "Fictura",
+    "email": "info@fictura.co",
+    "url": "https://fictura.co"
+  },
+  "license": "MIT",
+  "categories": [
+    "Analytics"
+  ],
+  "tags": [
+    "mobile-apps",
+    "expo",
+    "react-native",
+    "paywalls",
+    "subscriptions",
+    "analytics",
+    "attribution"
+  ],
+  "arguments": {
+    "FICTURA_MCP_KEY": {
+      "description": "Optional Fictura MCP key (Fictura dashboard → Setup → Coding agents) for clients that can't sign in with OAuth. Never commit your key.",
+      "required": false,
+      "example": "fk_mcp_YOUR_KEY"
+    }
+  },
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://mcp.fictura.co/mcp",
+      "description": "Hosted Streamable HTTP. Use an OAuth-capable MCP client and sign in with Fictura, then pick one app and an access level. The docs tools work without signing in.",
+      "recommended": true
+    },
+    "http-api-key": {
+      "type": "http",
+      "url": "https://mcp.fictura.co/mcp",
+      "headers": {
+        "X-API-Key": "${FICTURA_MCP_KEY}"
+      },
+      "description": "Hosted Streamable HTTP with a Fictura MCP key instead of OAuth."
+    }
+  },
+  "is_official": true,
+  "is_archived": false
+}
