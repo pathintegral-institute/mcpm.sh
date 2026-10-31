@@ -1,0 +1,32 @@
+{
+  "name": "zambo",
+  "display_name": "Zambo",
+  "description": "120 native MCP tools for AI agents over one zero-auth remote endpoint: code audit, strategy, lead generation, onchain scoring, credit discovery, prompt defense. Solo-built AI infrastructure by Brennan Zambo. Free 20 calls/tool/day, no signup.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zambodotdev/zambo-mcp"
+  },
+  "homepage": "https://zambo.dev",
+  "author": {
+    "name": "zambodotdev"
+  },
+  "license": "MIT",
+  "categories": [
+    "Dev Tools"
+  ],
+  "tags": [
+    "remote",
+    "zero-auth",
+    "code-audit",
+    "strategy",
+    "lead-generation",
+    "onchain",
+    "prompt-defense"
+  ],
+  "installations": {
+    "remote": {
+      "type": "http",
+      "url": "https://zambo.dev/api/mcp"
+    }
+  }
+}
