@@ -1,7 +1,7 @@
 {
   "name": "hol-guard",
   "display_name": "HOL Guard",
-  "description": "Connect an MCP client to an existing HOL Guard CLI installation over stdio. Requires hol-guard on PATH.",
+  "description": "Run HOL Guard MCP over stdio using the pinned Python package, or an existing HOL Guard CLI installation.",
   "repository": {
     "type": "git",
     "url": "https://github.com/hashgraph-online/hol-guard"
@@ -17,6 +17,20 @@
         "--stdio"
       ],
       "description": "Uses an existing HOL Guard CLI on PATH; this configuration does not install the binary or enable enforcement.",
+      "recommended": false
+    },
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "hol-guard==3.58.0",
+        "hol-guard",
+        "mcp",
+        "serve",
+        "--stdio"
+      ],
+      "description": "Resolves and runs the pinned HOL Guard Python package in an isolated uv tool environment when launched, downloading it if needed. Requires uv and Python 3.10+. Does not enable enforcement or install AI-agent hooks.",
       "recommended": true
     }
   }
