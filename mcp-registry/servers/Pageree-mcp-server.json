@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "@pageree/mcp-server",
+  "display_name": "MCP Server",
+  "description": "This server is a core component of the Modular Command Platform (MCP). It acts as a central hub for managing and interacting with various tools and agents.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Pageree/mcp-server"
+  },
+  "homepage": "https://github.com/Pageree/mcp-server#readme",
+  "author": {
+    "name": "Pageree",
+    "email": "contact@pageree.com"
+  },
+  "license": "MIT",
+  "categories": [
+    "Dev Tools",
+    "AI Systems",
+    "MCP Tools"
+  ],
+  "tags": [
+    "mcp",
+    "ai-agents",
+    "dev-tools"
+  ],
+  "arguments": {
+    "MCP_PORT": {
+      "description": "The port the server will listen on. Defaults to 3000.",
+      "required": false,
+      "example": "3000"
+    },
+    "MCP_LOG_LEVEL": {
+      "description": "The log level. Can be info, warn, error, debug. Defaults to info.",
+      "required": false,
+      "example": "debug"
+    },
+    "MCP_API_KEY": {
+      "description": "An optional API key for securing the server. If not set, the API is open.",
+      "required": false,
+      "example": "your-secret-api-key"
+    }
+  },
+  "tools": [],
+  "resources": [],
+  "prompts": [],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "@pageree/mcp-server"
+      ],
+      "package": "@pageree/mcp-server",
+      "description": "Run using npx without a global installation. This is the recommended method for quick setup.",
+      "recommended": true
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-p",
+        "3000:3000",
+        "-e",
+        "MCP_PORT=3000",
+        "pageree/mcp-server"
+      ],
+      "description": "Run the server using the official Docker image from Docker Hub."
+    }
+  },
+  "is_official": false,
+  "is_archived": false,
+  "docker_url": "https://hub.docker.com/r/pageree/mcp-server"
+}
