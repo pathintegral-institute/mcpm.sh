@@ -1,0 +1,45 @@
+{
+  "name": "uberllm",
+  "display_name": "UberLLM",
+  "description": "Official UberLLM MCP server: list models with current prices, quote a request before running it, generate and edit images, start video jobs and wait for them, and check the prepaid balance.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PSA-Team-source/uberllm"
+  },
+  "homepage": "https://uberllm.dev/docs/mcp",
+  "author": {
+    "name": "UberLLM",
+    "url": "https://uberllm.dev"
+  },
+  "license": "MIT",
+  "categories": [
+    "Media Creation",
+    "AI Systems"
+  ],
+  "tags": [
+    "image",
+    "video",
+    "llm",
+    "api"
+  ],
+  "arguments": {
+    "UBERLLM_API_KEY": {
+      "description": "UberLLM API key (starts with ull_). Tool calls that generate media spend prepaid credit; there is no free tier.",
+      "required": true,
+      "example": "ull_YOUR_KEY"
+    }
+  },
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://api.uberllm.dev/mcp",
+      "headers": {
+        "Authorization": "Bearer ${UBERLLM_API_KEY}"
+      },
+      "description": "Hosted Streamable HTTP with a bearer API key.",
+      "recommended": true
+    }
+  },
+  "is_official": true,
+  "is_archived": false
+}
