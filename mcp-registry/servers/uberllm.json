@@ -29,6 +29,310 @@
       "example": "ull_YOUR_KEY"
     }
   },
+  "tools": [
+    {
+      "name": "balance",
+      "description": "Your balance in US dollars: what you can spend now and what is held for requests and jobs still running.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "edit_image",
+      "description": "Change a picture you give (image_url or input_images, as https:// links or data: URIs) following a prompt, with an editing model. Spends from your balance.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "An image model id."
+          },
+          "prompt": {
+            "type": "string",
+            "description": "What to make."
+          },
+          "n": {
+            "type": "integer",
+            "description": "How many pictures, 1 to 10. Default 1."
+          },
+          "size": {
+            "type": "string",
+            "description": "Width x height, e.g. 1024x1024, when the model lists sizes."
+          },
+          "aspect_ratio": {
+            "type": "string",
+            "description": "Shape, e.g. 16:9, when the model lists aspect ratios."
+          },
+          "max_cost": {
+            "type": "number",
+            "description": "The most you will pay in US dollars; a request that can cost more is refused before anything is spent."
+          },
+          "return_image": {
+            "type": "boolean",
+            "description": "Also return the pictures themselves in the answer, so you can look at them."
+          },
+          "options": {
+            "type": "object",
+            "description": "Any other option from get_model's parameters schema.",
+            "additionalProperties": true
+          },
+          "image_url": {
+            "type": "string",
+            "description": "The picture to change: an https:// link or a data: URI."
+          },
+          "input_images": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "description": "Several pictures to work from (https:// links or data: URIs)."
+          }
+        },
+        "required": [
+          "model",
+          "prompt"
+        ],
+        "additionalProperties": false
+      },
+      "required": [
+        "model",
+        "prompt"
+      ]
+    },
+    {
+      "name": "generate_image",
+      "description": "Make pictures from a prompt. Spends from your balance; the answer carries the links and what it cost (usage.cost_usd).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "An image model id."
+          },
+          "prompt": {
+            "type": "string",
+            "description": "What to make."
+          },
+          "n": {
+            "type": "integer",
+            "description": "How many pictures, 1 to 10. Default 1."
+          },
+          "size": {
+            "type": "string",
+            "description": "Width x height, e.g. 1024x1024, when the model lists sizes."
+          },
+          "aspect_ratio": {
+            "type": "string",
+            "description": "Shape, e.g. 16:9, when the model lists aspect ratios."
+          },
+          "max_cost": {
+            "type": "number",
+            "description": "The most you will pay in US dollars; a request that can cost more is refused before anything is spent."
+          },
+          "return_image": {
+            "type": "boolean",
+            "description": "Also return the pictures themselves in the answer, so you can look at them."
+          },
+          "options": {
+            "type": "object",
+            "description": "Any other option from get_model's parameters schema.",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "model",
+          "prompt"
+        ],
+        "additionalProperties": false
+      },
+      "required": [
+        "model",
+        "prompt"
+      ]
+    },
+    {
+      "name": "get_job",
+      "description": "The status of a video or music job, its progress and, once it succeeded, the links to its files and what it cost.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "description": "The job id start_video returned."
+          }
+        },
+        "required": [
+          "job_id"
+        ],
+        "additionalProperties": false
+      },
+      "required": [
+        "job_id"
+      ]
+    },
+    {
+      "name": "get_model",
+      "description": "One model: its price, what it makes and, for an image, video, music or speech model, a JSON Schema of the options a request takes (parameters).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "The model id, e.g. bytedance/seedance-2-0-fast-image-to-video."
+          }
+        },
+        "required": [
+          "model"
+        ],
+        "additionalProperties": false
+      },
+      "required": [
+        "model"
+      ]
+    },
+    {
+      "name": "list_models",
+      "description": "Models you can call right now, with their price. Filter by type (chat, image, video, music, speech, transcription) and by words in the id or name.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Only models of this type: chat, image, video, music, speech or transcription.",
+            "enum": [
+              "chat",
+              "image",
+              "video",
+              "music",
+              "speech",
+              "transcription"
+            ]
+          },
+          "search": {
+            "type": "string",
+            "description": "Only models whose id or name contains these words, e.g. seedance or kling."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "quote",
+      "description": "Check an image, video, music or text-to-speech request against the model and price it, without making anything or spending. Returns the listed price (cost_usd: it is never billed more) and what is held while it runs (max_cost_usd).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "The model id."
+          },
+          "prompt": {
+            "type": "string",
+            "description": "What to make."
+          },
+          "options": {
+            "type": "object",
+            "description": "The rest of the request, as get_model's parameters schema describes it, e.g. {\"duration_seconds\": 5, \"image_url\": \"https://...\"}.",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "model"
+        ],
+        "additionalProperties": false
+      },
+      "required": [
+        "model"
+      ]
+    },
+    {
+      "name": "start_video",
+      "description": "Start making a video. Returns a job; call wait_job with its id until it is done. Spends from your balance when the video is made; a failed job costs nothing.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "A video model id."
+          },
+          "prompt": {
+            "type": "string",
+            "description": "What to make."
+          },
+          "image_url": {
+            "type": "string",
+            "description": "The first frame (https:// link or data: URI); needed by image-to-video models."
+          },
+          "end_image_url": {
+            "type": "string",
+            "description": "The last frame, for models that make a transition."
+          },
+          "duration_seconds": {
+            "type": "number",
+            "description": "Length in seconds; one of the lengths get_model lists."
+          },
+          "resolution": {
+            "type": "string",
+            "description": "e.g. 720p, when the model lists resolutions."
+          },
+          "aspect_ratio": {
+            "type": "string",
+            "description": "e.g. 16:9, when the model lists aspect ratios."
+          },
+          "max_cost": {
+            "type": "number",
+            "description": "The most you will pay in US dollars; a job that can cost more is refused before anything is spent."
+          },
+          "idempotency_key": {
+            "type": "string",
+            "description": "Send the same key when you retry, so a retry never starts or pays for a second video."
+          },
+          "options": {
+            "type": "object",
+            "description": "Any other option from get_model's parameters schema.",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "model",
+          "prompt"
+        ],
+        "additionalProperties": false
+      },
+      "required": [
+        "model",
+        "prompt"
+      ]
+    },
+    {
+      "name": "wait_job",
+      "description": "Wait until a video or music job ends, for at most timeout_seconds (50 at most). Returns the job; if done is false, call wait_job again.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "description": "The job id start_video returned."
+          },
+          "timeout_seconds": {
+            "type": "integer",
+            "description": "How long to wait, 1 to 50 seconds. Default 50."
+          }
+        },
+        "required": [
+          "job_id"
+        ],
+        "additionalProperties": false
+      },
+      "required": [
+        "job_id"
+      ]
+    }
+  ],
   "installations": {
     "http": {
       "type": "http",
