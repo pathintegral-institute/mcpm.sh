@@ -1,0 +1,42 @@
+{
+  "name": "parlayapi",
+  "display_name": "ParlayAPI",
+  "description": "Sports odds tools for personal and internal research. Public discovery works without a key; configure your own ParlayAPI key later in private MCP client settings for authenticated data. Also exposes account signup, login-email, checkout-link and saved-book-preference tools; invoke those only at the user's request.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JacobiusMakes/parlay-api-mcp"
+  },
+  "homepage": "https://parlay-api.com/mcp",
+  "author": {
+    "name": "JacobiusMakes",
+    "url": "https://github.com/JacobiusMakes"
+  },
+  "license": "MIT",
+  "categories": [
+    "Analytics",
+    "Web Services"
+  ],
+  "tags": [
+    "sports",
+    "odds",
+    "personal-research"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "parlayapi-mcp@0.3.6"
+      ],
+      "recommended": true,
+      "description": "Keyless discovery and public previews. Requires uv. Configure your own account key later in your private MCP client settings for authenticated data."
+    }
+  },
+  "examples": [
+    {
+      "title": "Inspect current access options",
+      "description": "Read public pricing and coverage information before configuring an account.",
+      "prompt": "Use ParlayAPI to inspect current pricing and book coverage. Do not create an account, send an email or change preferences."
+    }
+  ]
+}
