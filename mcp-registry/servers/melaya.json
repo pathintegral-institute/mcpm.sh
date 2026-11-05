@@ -1,0 +1,36 @@
+{
+  "name": "melaya",
+  "display_name": "Melaya",
+  "description": "Operate a paired Android phone and browser, and run agent pipelines reaching 6k+ tools, over a single remote OAuth endpoint",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/melaya-labs/melaya-mcp"
+  },
+  "homepage": "https://melaya.org/en/product/mcp",
+  "author": {
+    "name": "Melaya Labs",
+    "url": "https://melaya.org"
+  },
+  "license": "Apache-2.0",
+  "categories": [
+    "System Tools",
+    "AI Systems"
+  ],
+  "tags": [
+    "android",
+    "device control",
+    "browser automation",
+    "agents",
+    "pipelines",
+    "oauth",
+    "accessibility"
+  ],
+  "is_official": true,
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://api.melaya.org/mcp",
+      "description": "Remote streamable HTTP endpoint. Auth is OAuth 2.1 with PKCE and dynamic client registration (RFC 7591), so no API key or environment variables are required: the client registers itself and the user approves scopes in a browser."
+    }
+  }
+}
