@@ -1,0 +1,75 @@
+{
+  "name": "adtest-mcp",
+  "display_name": "AdTest.AI",
+  "description": "Score an image, video or text ad on 13 effectiveness dimensions before you spend on media: one `analyze_advert` tool returns the score, a section-by-section report and concrete fixes.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/menaker/adtest-mcp"
+  },
+  "homepage": "https://adtest.ai/",
+  "author": {
+    "name": "AdTest.AI",
+    "url": "https://adtest.ai/"
+  },
+  "license": "MIT",
+  "categories": [
+    "Analytics",
+    "Professional Apps"
+  ],
+  "tags": [
+    "advertising",
+    "marketing",
+    "creative-testing",
+    "ad-scoring",
+    "video",
+    "images"
+  ],
+  "arguments": {
+    "ADTEST_API_KEY": {
+      "description": "AdTest.AI developer API key (app.adtest.ai → Developer → Generate key). Each successful analysis costs 1 credit.",
+      "required": true,
+      "example": "adk_xxxxxxxxxxxxxxxxxxxxxxxx"
+    }
+  },
+  "tools": [
+    {
+      "name": "analyze_advert",
+      "description": "Run an AI-only analysis of an advert and get a detailed scoring report. Provide exactly one of url (public image/video URL), file_path (local image/video) or text (ad copy); optional brand_url improves brand detection. Video is supported and may take a few minutes.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {"type": "string", "description": "Public URL of an image or video advert"},
+          "file_path": {"type": "string", "description": "Local path to an image or video file to upload"},
+          "text": {"type": "string", "description": "Ad copy text to analyze"},
+          "brand_url": {"type": "string", "description": "Advertiser brand/website URL (optional)"}
+        }
+      }
+    }
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": ["-y", "adtest-mcp"],
+      "package": "adtest-mcp",
+      "env": {
+        "ADTEST_API_KEY": "${ADTEST_API_KEY}"
+      },
+      "description": "Run with npx (Node 18+)",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Score a video ad",
+      "description": "Analyse a public video advert and get the 13-dimension report",
+      "prompt": "Analyse this ad and tell me the three biggest fixes: https://example.com/spot.mp4"
+    },
+    {
+      "title": "Compare two headlines",
+      "description": "Score ad copy variants and pick the stronger one",
+      "prompt": "Score these two ad copies for a running-shoe launch and tell me which to run: (A) ... (B) ..."
+    }
+  ],
+  "is_official": true
+}
