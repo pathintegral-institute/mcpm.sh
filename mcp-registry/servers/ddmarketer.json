@@ -1,0 +1,43 @@
+{
+  "name": "ddmarketer",
+  "display_name": "DDMarketer",
+  "description": "Search validated SaaS opportunities mined from real user complaints across 8 public sources and scored 0-100 for commercial intent, and validate an idea you already have against the corpus.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CodePhantom-1/ddmarketer-mcp"
+  },
+  "homepage": "https://www.ddmarketer.com/mcp",
+  "author": {
+    "name": "DDMarketer",
+    "url": "https://www.ddmarketer.com"
+  },
+  "license": "MIT",
+  "categories": ["Analytics"],
+  "tags": [
+    "market-research",
+    "saas",
+    "startup-ideas",
+    "product-discovery",
+    "validation"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://www.ddmarketer.com/api/mcp",
+      "description": "Use hosted Streamable HTTP endpoint (no install). Optional 'Authorization: Bearer <key>' unlocks get_dossier."
+    }
+  },
+  "examples": [
+    {
+      "title": "Find validated gaps in a market",
+      "description": "Search the complaint corpus by keyword",
+      "prompt": "Use ddmarketer to find validated SaaS gaps around shopify accounting, and tell me which has the highest commercial intent."
+    },
+    {
+      "title": "Validate an idea you already have",
+      "description": "Score an idea against real complaints",
+      "prompt": "I want to build a tool that reconciles Shopify payouts with accounting software. Use ddmarketer's validate_idea to check whether there is real demand."
+    }
+  ],
+  "is_official": true
+}
