@@ -1,7 +1,7 @@
 {
   "name": "bankbridge",
   "display_name": "BankBridge",
-  "description": "Read-only access to your own US bank, credit card and investment accounts at 12,000+ institutions: balances, transactions, spending by category or merchant, recurring charges, monthly cashflow and holdings. Hosted Streamable HTTP with OAuth 2.1; every call fetches live and transactions are not stored. Paid, $5/mo per connected bank.",
+  "description": "Works in any MCP agent, including local models. Read-only access to your own US bank, credit card and investment accounts at 12,000+ institutions: balances, transactions, spending by category or merchant, recurring charges, monthly cashflow and holdings. Hosted Streamable HTTP with OAuth 2.1; every call fetches live and transactions are not stored. Paid, $5/mo per connected bank.",
   "repository": {
     "type": "git",
     "url": "https://github.com/bankbridge-money/bankbridge-plugin"
