@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Literal, Optional, Union
 
 from pydantic import BaseModel
 
@@ -72,12 +72,21 @@ class STDIOServerConfig(BaseServerConfig):
 class RemoteServerConfig(BaseServerConfig):
     url: str
     headers: Dict[str, Any] = {}
+    # Optional explicit mcp-proxy transport for clients that require stdio.
+    # Omission retains the proxy's existing default rather than guessing from URLs.
+    transport: Optional[Literal["sse", "streamablehttp"]] = None
+
+    def to_dict(self) -> Dict[str, Any]:
+        result = super().to_dict()
+        if self.transport is None:
+            result.pop("transport")
+        return result
 
     def to_mcp_proxy_stdio(self) -> STDIOServerConfig:
-        proxy_args = [
-            "mcp-proxy",
-            self.url,
-        ]
+        proxy_args = ["mcp-proxy"]
+        if self.transport is not None:
+            proxy_args.extend(["--transport", self.transport])
+        proxy_args.append(self.url)
         if self.headers:
             proxy_args.append("--headers")
             for key, value in self.headers.items():
