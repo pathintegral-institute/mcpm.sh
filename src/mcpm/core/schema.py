@@ -77,12 +77,14 @@ class RemoteServerConfig(BaseServerConfig):
     transport: Optional[Literal["sse", "streamablehttp"]] = None
 
     def to_dict(self) -> Dict[str, Any]:
+        """Serialize remote settings without adding an unset transport field."""
         result = super().to_dict()
         if self.transport is None:
             result.pop("transport")
         return result
 
     def to_mcp_proxy_stdio(self) -> STDIOServerConfig:
+        """Build a stdio proxy command while preserving explicit transport and headers."""
         proxy_args = ["mcp-proxy"]
         if self.transport is not None:
             proxy_args.extend(["--transport", self.transport])
