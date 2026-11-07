@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import Mock, patch
 
-from pydantic import ValidationError
+from click import ClickException
 
 from mcpm.clients.managers.claude_desktop import ClaudeDesktopManager
 from mcpm.schemas.full_server_config import FullServerConfig
@@ -80,7 +80,7 @@ class InstalledRemoteTransportTests(unittest.TestCase):
 
     def test_installer_rejects_unknown_transport(self):
         """An invalid explicit value is rejected rather than silently dropped."""
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(ClickException):
             self._install("grpc")
 
     def test_full_config_round_trip_preserves_transport(self):

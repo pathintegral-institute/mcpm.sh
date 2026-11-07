@@ -232,7 +232,8 @@
               "required": ["url"]
             },
             "else": {
-              "required": ["command", "args"]
+              "required": ["command", "args"],
+              "not": {"required": ["transport"]}
             }
           }
         ],
