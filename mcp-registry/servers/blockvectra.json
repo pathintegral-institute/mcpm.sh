@@ -28,6 +28,7 @@
   "installations": {
     "http": {
       "type": "http",
+      "transport": "streamablehttp",
       "url": "https://docs.blockvectra.com/mcp",
       "recommended": true,
       "description": "Hosted MCP. Start without headers for docs and allowed public RPC; configure a private x-api-key header for indexed Data API/account tools."
