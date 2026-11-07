@@ -4,7 +4,7 @@ from typing import Dict, List, Optional
 
 from pydantic import BaseModel, Field, model_validator
 
-from mcpm.core.schema import RemoteServerConfig, ServerConfig, STDIOServerConfig
+from mcpm.core.schema import RemoteServerConfig, RemoteTransport, ServerConfig, STDIOServerConfig
 
 
 class FullServerConfig(BaseModel):
@@ -29,6 +29,7 @@ class FullServerConfig(BaseModel):
     installation: Optional[str] = None
     url: Optional[str] = None  # For HTTP servers
     headers: Dict[str, str] = Field(default_factory=dict)  # For HTTP servers
+    transport: Optional[RemoteTransport] = None
 
     model_config = {
         "populate_by_name": True,
@@ -75,7 +76,7 @@ class FullServerConfig(BaseModel):
         if self.installation == "http":
             if not self.url:
                 raise ValueError(f"URL is required for HTTP server '{self.name}'")
-            return RemoteServerConfig(name=self.name, url=self.url, headers=self.headers)
+            return RemoteServerConfig(name=self.name, url=self.url, headers=self.headers, transport=self.transport)
         else:
             # Default to STDIO for all other cases
             # Command is required for STDIO servers

@@ -11,11 +11,12 @@ from prompt_toolkit import PromptSession
 from prompt_toolkit.formatted_text import HTML
 from prompt_toolkit.key_binding import KeyBindings
 from prompt_toolkit.styles import Style
+from pydantic import TypeAdapter, ValidationError
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.prompt import Confirm
 
-from mcpm.core.schema import ServerConfig, STDIOServerConfig
+from mcpm.core.schema import RemoteTransport, ServerConfig, STDIOServerConfig
 from mcpm.global_config import GlobalConfigManager
 from mcpm.profile.profile_config import ProfileConfigManager
 from mcpm.schemas.full_server_config import FullServerConfig
@@ -224,16 +225,6 @@ def install(server_name, force=False, alias=None):
         console.print("[yellow]Operation cancelled.[/]")
         return
 
-    # Create server directory in the MCP directory
-    base_dir = get_data_directory()
-    base_dir.mkdir(parents=True, exist_ok=True)
-
-    servers_dir = base_dir / "servers"
-    servers_dir.mkdir(parents=True, exist_ok=True)
-
-    server_dir = servers_dir / server_name
-    server_dir.mkdir(parents=True, exist_ok=True)
-
     # Extract installation information
     installations = server_metadata.get("installations", {})
 
@@ -245,6 +236,7 @@ def install(server_name, force=False, alias=None):
     package_name = None
     env_vars = {}
     required_args = {}
+    transport = None
 
     # Process installation information if available
     selected_method = None  # Initialize selected_method to None to avoid UnboundLocalError
@@ -301,6 +293,23 @@ def install(server_name, force=False, alias=None):
             env_vars = selected_method.get("env", env_vars)
 
         console.print(f"\n[green]Using [bold]{installation_method}[/] installation method[/]")
+
+    # Reject malformed selected metadata before creating any installation files.
+    if selected_method and "transport" in selected_method:
+        if installation_method != "http":
+            raise click.ClickException("Transport is only supported for HTTP installations.")
+        try:
+            transport = TypeAdapter(RemoteTransport).validate_python(selected_method["transport"])
+        except ValidationError:
+            raise click.ClickException("Invalid HTTP transport; expected 'sse' or 'streamablehttp'.") from None
+
+    # Create server directory only after installation metadata is validated.
+    base_dir = get_data_directory()
+    base_dir.mkdir(parents=True, exist_ok=True)
+    servers_dir = base_dir / "servers"
+    servers_dir.mkdir(parents=True, exist_ok=True)
+    server_dir = servers_dir / server_name
+    server_dir.mkdir(parents=True, exist_ok=True)
 
     # Configure the server
     with Progress(SpinnerColumn(), TextColumn("[bold green]{task.description}[/]"), console=console) as progress:
@@ -484,6 +493,7 @@ def install(server_name, force=False, alias=None):
         installation=installation_method,
         url=mcp_url,  # Include URL for HTTP servers
         headers=processed_headers,  # Include headers for HTTP servers
+        transport=transport,
     )
 
     # Add server to global configuration
