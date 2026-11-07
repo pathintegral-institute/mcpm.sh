@@ -484,6 +484,7 @@ def install(server_name, force=False, alias=None):
         installation=installation_method,
         url=mcp_url,  # Include URL for HTTP servers
         headers=processed_headers,  # Include headers for HTTP servers
+        transport=selected_method.get("transport") if installation_method == "http" and selected_method else None,
     )
 
     # Add server to global configuration

@@ -2,6 +2,8 @@ from typing import Any, Dict, List, Literal, Optional, Union
 
 from pydantic import BaseModel
 
+RemoteTransport = Literal["sse", "streamablehttp"]
+
 
 class BaseServerConfig(BaseModel):
     name: str
@@ -74,7 +76,7 @@ class RemoteServerConfig(BaseServerConfig):
     headers: Dict[str, Any] = {}
     # Optional explicit mcp-proxy transport for clients that require stdio.
     # Omission retains the proxy's existing default rather than guessing from URLs.
-    transport: Optional[Literal["sse", "streamablehttp"]] = None
+    transport: Optional[RemoteTransport] = None
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize remote settings without adding an unset transport field."""

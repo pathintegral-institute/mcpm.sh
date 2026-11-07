@@ -65,6 +65,8 @@ For more control over your submission:
    ```
 4. Submit a pull request
 
+For an HTTP installation, set `"transport": "streamablehttp"` when the remote server requires Streamable HTTP, or `"transport": "sse"` for an explicit SSE selection. MCPM preserves this setting through installation and stdio proxy export. Omitting it retains the existing behavior; transport is not inferred from the URL.
+
 ## 📂 Registry Structure
 
 ```
