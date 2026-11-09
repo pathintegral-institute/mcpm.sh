@@ -30,6 +30,11 @@
       "description": "API key of a Wiro project, from https://wiro.ai/panel/project. Not needed when you sign in with OAuth on the hosted server. Never commit your key.",
       "required": true,
       "example": "YOUR_WIRO_API_KEY"
+    },
+    "WIRO_API_SECRET": {
+      "description": "API secret of the same project. Only needed when the project uses signature auth; leave it empty for API key only projects.",
+      "required": false,
+      "example": "YOUR_WIRO_API_SECRET"
     }
   },
   "installations": {
@@ -56,9 +61,10 @@
       ],
       "package": "@wiro-ai/wiro-mcp",
       "env": {
-        "WIRO_API_KEY": "${WIRO_API_KEY}"
+        "WIRO_API_KEY": "${WIRO_API_KEY}",
+        "WIRO_API_SECRET": "${WIRO_API_SECRET}"
       },
-      "description": "Local stdio. Requires Node.js 20 or later. Projects that use signature auth also set WIRO_API_SECRET."
+      "description": "Local stdio. Requires Node.js 20 or later."
     }
   },
   "is_official": true,
