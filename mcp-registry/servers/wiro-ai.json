@@ -1,0 +1,66 @@
+{
+  "name": "wiro-ai",
+  "display_name": "Wiro AI",
+  "description": "Official MCP server for Wiro AI. Search, price and run 1,000+ image, video, audio and LLM models, build workflows that chain them, and deploy and message AI agents.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wiroai/Wiro-MCP"
+  },
+  "homepage": "https://wiro.ai/docs/wiro-mcp-server",
+  "author": {
+    "name": "Wiro AI",
+    "email": "support@wiro.ai",
+    "url": "https://wiro.ai"
+  },
+  "license": "MIT",
+  "categories": [
+    "Media Creation",
+    "AI Systems"
+  ],
+  "tags": [
+    "image-generation",
+    "video-generation",
+    "text-to-speech",
+    "ai-models",
+    "workflows",
+    "ai-agents"
+  ],
+  "arguments": {
+    "WIRO_API_KEY": {
+      "description": "API key of a Wiro project, from https://wiro.ai/panel/project. Not needed when you sign in with OAuth on the hosted server. Never commit your key.",
+      "required": true,
+      "example": "YOUR_WIRO_API_KEY"
+    }
+  },
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://mcp.wiro.ai/v1",
+      "description": "Hosted Streamable HTTP. Use an OAuth-capable MCP client and sign in with your Wiro account. Model runs are billed from your Wiro wallet.",
+      "recommended": true
+    },
+    "http-api-key": {
+      "type": "http",
+      "url": "https://mcp.wiro.ai/v1",
+      "headers": {
+        "Authorization": "Bearer ${WIRO_API_KEY}"
+      },
+      "description": "Hosted Streamable HTTP with a Wiro API key instead of OAuth. For a project that uses signature auth, send key:secret."
+    },
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@wiro-ai/wiro-mcp"
+      ],
+      "package": "@wiro-ai/wiro-mcp",
+      "env": {
+        "WIRO_API_KEY": "${WIRO_API_KEY}"
+      },
+      "description": "Local stdio. Requires Node.js 20 or later. Projects that use signature auth also set WIRO_API_SECRET."
+    }
+  },
+  "is_official": true,
+  "is_archived": false
+}
