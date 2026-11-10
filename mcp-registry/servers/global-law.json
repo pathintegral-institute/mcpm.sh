@@ -1,0 +1,128 @@
+{
+  "name": "global-law",
+  "display_name": "Global law",
+  "description": "The legislation of 200+ countries as a dated history: read any provision as it stood on any date, see which law changed it and when, compare dates, search a country's law, and check legal citations. Every answer links the official publisher's text. Hosted, read-only remote server: no account, no API key, no auth.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lexifina/global-law"
+  },
+  "homepage": "https://lexifina.com/api/global-law",
+  "author": {
+    "name": "Lexifina",
+    "url": "https://lexifina.com"
+  },
+  "license": "CC0-1.0",
+  "categories": [
+    "Professional Apps",
+    "Knowledge Base"
+  ],
+  "tags": [
+    "legal",
+    "law",
+    "legislation",
+    "statutes",
+    "citations",
+    "legal-research",
+    "remote"
+  ],
+  "tools": [
+    {
+      "name": "list_jurisdictions",
+      "description": "List every jurisdiction and body of law in the tree, with how far each record reaches and an example path. Start here."
+    },
+    {
+      "name": "find_provision",
+      "description": "Find the file path of a provision by its number (\"1182\", \"Art. 16a\", \"reg 13\") or words from its heading (\"debtor\", \"Asylrecht\"). Also finds an act by its name (\"Data Protection Act 2018\": its folder) and a court decision by its docket number or citation (\"1 BvR 1547/19\", \"410 U.S. 113\")."
+    },
+    {
+      "name": "read_law",
+      "description": "The text of a provision as it was in force on a date, with the law that last changed it, the next change, its history in brief, and any limit of the record that applies. Several provisions in one answer: give paths, or a folder (an act) as path."
+    },
+    {
+      "name": "world_on_date",
+      "description": "What every jurisdiction in the tree looked like on one date: the last change in force in each, and the next."
+    },
+    {
+      "name": "who_wrote",
+      "description": "Which law wrote each word (or each line) of a provision as it stood on a date, with a count of words per law."
+    },
+    {
+      "name": "compare_dates",
+      "description": "How a provision changed between two dates: a word-level diff of its text on date_a and its text on date_b, and the laws that took effect after date_a, up to and including date_b."
+    },
+    {
+      "name": "provision_history",
+      "description": "Every law that changed a provision, oldest first, with its in-force, enacted or made, and published dates."
+    },
+    {
+      "name": "laws_between",
+      "description": "Every law that took effect between two dates, both days included, across all jurisdictions or one, in the order they took effect."
+    },
+    {
+      "name": "search_law",
+      "description": "Search the text of all the law in force on a date, across every jurisdiction or one. Plain text by default."
+    },
+    {
+      "name": "changes_between",
+      "description": "Every provision whose text on date_b differs from its text on date_a, in every jurisdiction or one, with the laws that took effect after date_a, up to and including date_b."
+    },
+    {
+      "name": "list_provisions",
+      "description": "Browse a corpus: the provision files under a corpus or folder (for example united-states/federal/usc/title-11), with headings, as in force on a date. For a folder of acts or instruments, by_folder gives one row each with its title and last change; a partial name lists the folders that start with it (malta/national/acts/sl/586. for every instrument made under Cap. 586)."
+    },
+    {
+      "name": "search_changes",
+      "description": "Search the record of changes (each commit message: the law, its dates, what it did) rather than the text of the law. For example \"temporary\", \"COVID\", \"Bundesrat\". With start and end, the changes in force from start to end, both days included."
+    },
+    {
+      "name": "resolve_citations",
+      "description": "Read every citation in a piece of text (a brief, a judgment, an email) and resolve each to its provision, with its state on a date: in force or not, the law that last changed it, and the next change."
+    },
+    {
+      "name": "check_precedent",
+      "description": "The judgments the record holds for a provision, each checked: is the text the court applied still the text in force (today, or on a date), and if not, which laws changed it and how? Also checks any one decision by the day it was decided (decided)."
+    },
+    {
+      "name": "what_else_changes",
+      "description": "Which provisions rely on, cite or use the definitions of this one, on a date: those that cite it, and those that use a term it defines (for example the provisions that use \"debtor in possession\"), with the definition's scope (\"In this subchapter\"). Use it before a text search when asked what depends on a provision or its definitions; a change to this provision can change what they mean."
+    },
+    {
+      "name": "phrase_history",
+      "description": "When words came into the law and when they left it, at any date and in every jurisdiction: each change whose added or removed text contains them. Use it for things no longer in force (for example \"COVID\" in the Grundgesetz)."
+    },
+    {
+      "name": "applies_to_case",
+      "description": "For a case commenced on one date, which later changes to a provision reach it (from any scope the record holds, such as \"cases commenced on or after\"), and the text that applies to it."
+    },
+    {
+      "name": "law_details",
+      "description": "The full record of a law's change: its commit message with every trailer (enacted, in force, published, sources, scope), the provisions it changed, and what it did to each one's words (a word diff, or \"layout only\", or \"text moved between provisions\"). One call answers \"what did this law change\"; no need to compare each provision."
+    }
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://global-law.lexifina.com/mcp",
+      "description": "Hosted streamable-HTTP MCP server. No account, API key or sign-in is needed.",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Law on a date",
+      "description": "Read a provision as it stood on a past date",
+      "prompt": "What did 11 U.S.C. 1182 say on 1 January 2021, and which law last changed it?"
+    },
+    {
+      "title": "Compare dates",
+      "description": "See how a provision changed between two dates",
+      "prompt": "How did Article 16a of the German Grundgesetz change between 1990 and 2000?"
+    },
+    {
+      "title": "Check citations",
+      "description": "Resolve the citations in a piece of text and check each is in force",
+      "prompt": "Check every citation in this paragraph and tell me whether each provision is still in force today."
+    }
+  ],
+  "is_official": true
+}
