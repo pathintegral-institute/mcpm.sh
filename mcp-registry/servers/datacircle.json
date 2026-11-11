@@ -1,0 +1,54 @@
+{
+  "display_name": "Datacircle",
+  "license": "MIT",
+  "tags": [
+    "gtm",
+    "api",
+    "benchmark",
+    "data-api",
+    "sales",
+    "mcp-server"
+  ],
+  "name": "datacircle",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/waynehamadi/datacircle"
+  },
+  "homepage": "https://datacircle.dev",
+  "author": {
+    "name": "Datacircle",
+    "email": "wayne@datacircle.dev",
+    "url": "https://datacircle.dev"
+  },
+  "description": "Find the best GTM APIs. Our MCP server is open to anyone, with no key: add api.datacircle.dev/mcp to Claude, ChatGPT or Cursor. It answers from the sheet. list_apis lists the GTM APIs on it, and search_plans finds their plans by API, provider or price.",
+  "categories": [
+    "Analytics",
+    "Professional Apps"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://api.datacircle.dev/mcp",
+      "description": "Hosted streamable-HTTP MCP server. No account or key needed.",
+      "recommended": true
+    }
+  },
+  "tools": [
+    {
+      "name": "list_apis",
+      "description": "List the GTM APIs on the sheet."
+    },
+    {
+      "name": "search_plans",
+      "description": "Find plans by API, provider or price. Each comes with its score, the best first."
+    }
+  ],
+  "examples": [
+    {
+      "title": "Best API",
+      "description": "Find the best API for one job",
+      "prompt": "Which GTM API is best for finding work emails, and what does it cost per 1,000?"
+    }
+  ],
+  "is_official": true
+}
