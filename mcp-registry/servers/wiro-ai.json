@@ -1,0 +1,98 @@
+{
+  "name": "wiro-ai",
+  "display_name": "Wiro AI",
+  "description": "Official MCP server for Wiro AI. Search, price and run 1,000+ image, video, audio and LLM models, build workflows that chain them, and deploy and message AI agents.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wiroai/Wiro-MCP"
+  },
+  "homepage": "https://wiro.ai/docs/wiro-mcp-server",
+  "author": {
+    "name": "Wiro AI",
+    "email": "support@wiro.ai",
+    "url": "https://wiro.ai"
+  },
+  "license": "MIT",
+  "categories": [
+    "Media Creation",
+    "AI Systems"
+  ],
+  "tags": [
+    "image-generation",
+    "video-generation",
+    "text-to-speech",
+    "ai-models",
+    "workflows",
+    "ai-agents"
+  ],
+  "arguments": {
+    "WIRO_API_KEY": {
+      "description": "API key of a Wiro project, from https://wiro.ai/panel/project. Not needed when you sign in with OAuth on the hosted server. Never commit your key.",
+      "required": true,
+      "example": "YOUR_WIRO_API_KEY"
+    },
+    "WIRO_API_SECRET": {
+      "description": "API secret of the same project, for a project that uses signature auth. Only the npm-signature install asks for it.",
+      "required": true,
+      "example": "YOUR_WIRO_API_SECRET"
+    },
+    "WIRO_API_KEY_AND_SECRET": {
+      "description": "API key and API secret of a signature auth project, joined with a colon. Only the http-signature install asks for it.",
+      "required": true,
+      "example": "YOUR_WIRO_API_KEY:YOUR_WIRO_API_SECRET"
+    }
+  },
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@wiro-ai/wiro-mcp"
+      ],
+      "package": "@wiro-ai/wiro-mcp",
+      "env": {
+        "WIRO_API_KEY": "${WIRO_API_KEY}"
+      },
+      "description": "Local stdio for a project that uses API key only auth. Requires Node.js 20 or later."
+    },
+    "npm-signature": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@wiro-ai/wiro-mcp"
+      ],
+      "package": "@wiro-ai/wiro-mcp",
+      "env": {
+        "WIRO_API_KEY": "${WIRO_API_KEY}",
+        "WIRO_API_SECRET": "${WIRO_API_SECRET}"
+      },
+      "description": "Local stdio for a project that uses signature auth. Requires Node.js 20 or later."
+    },
+    "http": {
+      "type": "http",
+      "url": "https://mcp.wiro.ai/v1",
+      "description": "Hosted Streamable HTTP. Use an OAuth-capable MCP client and sign in with your Wiro account. Model runs are billed from your Wiro wallet.",
+      "recommended": true
+    },
+    "http-api-key": {
+      "type": "http",
+      "url": "https://mcp.wiro.ai/v1",
+      "headers": {
+        "Authorization": "Bearer ${WIRO_API_KEY}"
+      },
+      "description": "Hosted Streamable HTTP with a Wiro API key instead of OAuth, for a project that uses API key only auth."
+    },
+    "http-signature": {
+      "type": "http",
+      "url": "https://mcp.wiro.ai/v1",
+      "headers": {
+        "Authorization": "Bearer ${WIRO_API_KEY_AND_SECRET}"
+      },
+      "description": "Hosted Streamable HTTP for a project that uses signature auth. The header carries the API key and secret joined with a colon."
+    }
+  },
+  "is_official": true,
+  "is_archived": false
+}
