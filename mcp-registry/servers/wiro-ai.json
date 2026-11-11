@@ -32,9 +32,14 @@
       "example": "YOUR_WIRO_API_KEY"
     },
     "WIRO_API_SECRET": {
-      "description": "API secret of the same project. Only needed when the project uses signature auth; leave it empty for API key only projects.",
-      "required": false,
+      "description": "API secret of the same project, for a project that uses signature auth. Only the npm-signature install asks for it.",
+      "required": true,
       "example": "YOUR_WIRO_API_SECRET"
+    },
+    "WIRO_API_KEY_AND_SECRET": {
+      "description": "API key and API secret of a signature auth project, joined with a colon. Only the http-signature install asks for it.",
+      "required": true,
+      "example": "YOUR_WIRO_API_KEY:YOUR_WIRO_API_SECRET"
     }
   },
   "installations": {
@@ -47,10 +52,23 @@
       ],
       "package": "@wiro-ai/wiro-mcp",
       "env": {
+        "WIRO_API_KEY": "${WIRO_API_KEY}"
+      },
+      "description": "Local stdio for a project that uses API key only auth. Requires Node.js 20 or later."
+    },
+    "npm-signature": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@wiro-ai/wiro-mcp"
+      ],
+      "package": "@wiro-ai/wiro-mcp",
+      "env": {
         "WIRO_API_KEY": "${WIRO_API_KEY}",
         "WIRO_API_SECRET": "${WIRO_API_SECRET}"
       },
-      "description": "Local stdio. Requires Node.js 20 or later."
+      "description": "Local stdio for a project that uses signature auth. Requires Node.js 20 or later."
     },
     "http": {
       "type": "http",
@@ -70,7 +88,7 @@
       "type": "http",
       "url": "https://mcp.wiro.ai/v1",
       "headers": {
-        "Authorization": "Bearer ${WIRO_API_KEY}:${WIRO_API_SECRET}"
+        "Authorization": "Bearer ${WIRO_API_KEY_AND_SECRET}"
       },
       "description": "Hosted Streamable HTTP for a project that uses signature auth. The header carries the API key and secret joined with a colon."
     }
