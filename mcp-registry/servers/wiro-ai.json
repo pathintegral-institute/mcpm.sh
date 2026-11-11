@@ -38,20 +38,6 @@
     }
   },
   "installations": {
-    "http": {
-      "type": "http",
-      "url": "https://mcp.wiro.ai/v1",
-      "description": "Hosted Streamable HTTP. Use an OAuth-capable MCP client and sign in with your Wiro account. Model runs are billed from your Wiro wallet.",
-      "recommended": true
-    },
-    "http-api-key": {
-      "type": "http",
-      "url": "https://mcp.wiro.ai/v1",
-      "headers": {
-        "Authorization": "Bearer ${WIRO_API_KEY}"
-      },
-      "description": "Hosted Streamable HTTP with a Wiro API key instead of OAuth. For a project that uses signature auth, send key:secret."
-    },
     "npm": {
       "type": "npm",
       "command": "npx",
@@ -65,6 +51,28 @@
         "WIRO_API_SECRET": "${WIRO_API_SECRET}"
       },
       "description": "Local stdio. Requires Node.js 20 or later."
+    },
+    "http": {
+      "type": "http",
+      "url": "https://mcp.wiro.ai/v1",
+      "description": "Hosted Streamable HTTP. Use an OAuth-capable MCP client and sign in with your Wiro account. Model runs are billed from your Wiro wallet.",
+      "recommended": true
+    },
+    "http-api-key": {
+      "type": "http",
+      "url": "https://mcp.wiro.ai/v1",
+      "headers": {
+        "Authorization": "Bearer ${WIRO_API_KEY}"
+      },
+      "description": "Hosted Streamable HTTP with a Wiro API key instead of OAuth, for a project that uses API key only auth."
+    },
+    "http-signature": {
+      "type": "http",
+      "url": "https://mcp.wiro.ai/v1",
+      "headers": {
+        "Authorization": "Bearer ${WIRO_API_KEY}:${WIRO_API_SECRET}"
+      },
+      "description": "Hosted Streamable HTTP for a project that uses signature auth. The header carries the API key and secret joined with a colon."
     }
   },
   "is_official": true,
