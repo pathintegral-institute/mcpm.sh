@@ -1,7 +1,7 @@
 {
   "name": "toolbox-pod",
   "display_name": "Toolbox POD",
-  "description": "Official hosted MCP server for Toolbox POD, which prints custom shirts and hoodies in its own shop in Utah and ships them to US addresses. Your AI assistant can create shirt designs from a description or reuse saved designs, show a design on the shirt in the colors you choose, price an order, prepare an order with a locked price and give you a link to pay on toolboxpod.com (the assistant never pays for you), and show order status and tracking.",
+  "description": "Official hosted MCP server for Toolbox POD, which prints custom shirts and hoodies in its own shop in Utah and ships them to US addresses. Your AI assistant can create shirt designs from a description or reuse saved designs, show a design on the shirt in the colors you choose, price an order, prepare an order with a locked price and give you a link to pay on toolboxpod.com (the assistant pays only within a spending limit the account Owner sets; ChatGPT and the Claude apps always send the link), and show order status and tracking.",
   "repository": {
     "type": "git",
     "url": "https://github.com/Toolbox-POD/toolbox-pod-mcp"
