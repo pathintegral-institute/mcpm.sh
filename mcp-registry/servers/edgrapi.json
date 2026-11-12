@@ -27,12 +27,27 @@
     "Finance",
     "Knowledge Base"
   ],
+  "arguments": {
+    "EDGRAPI_API_KEY": {
+      "description": "Edgrapi API key (starts with edgr_) from your dashboard at https://edgrapi.com/app. Only needed for clients that cannot sign in with OAuth. Never commit your key.",
+      "required": true,
+      "example": "YOUR_EDGRAPI_API_KEY"
+    }
+  },
   "installations": {
     "http": {
       "type": "http",
       "url": "https://api.edgrapi.com/mcp",
-      "description": "Hosted streamable-HTTP MCP server. OAuth-capable clients open a one-time sign-in; clients without OAuth can send Authorization: Bearer <your edgr_ API key> instead.",
+      "description": "Hosted streamable-HTTP MCP server. OAuth-capable clients open a one-time sign-in; no API key is needed for this path.",
       "recommended": true
+    },
+    "http-api-key": {
+      "type": "http",
+      "url": "https://api.edgrapi.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${EDGRAPI_API_KEY}"
+      },
+      "description": "Hosted streamable-HTTP MCP server using your Edgrapi API key instead of OAuth, for clients without a sign-in window."
     }
   },
   "tools": [
