@@ -1,0 +1,67 @@
+{
+  "name": "taskade",
+  "display_name": "Taskade",
+  "description": "Official Taskade MCP server. Taskade: projects, tasks, AI agents and automations. Remote server with OAuth. The hosted server needs a paid Taskade plan.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/taskade/mcp"
+  },
+  "homepage": "https://www.taskade.com/docs/mcp",
+  "author": {
+    "name": "Taskade",
+    "url": "https://www.taskade.com"
+  },
+  "license": "MIT",
+  "categories": [
+    "Productivity"
+  ],
+  "tags": [
+    "taskade",
+    "projects",
+    "tasks",
+    "ai agents",
+    "automation"
+  ],
+  "arguments": {
+    "TASKADE_API_KEY": {
+      "description": "Taskade personal access token for the local stdio server. The hosted server uses OAuth and does not need it.",
+      "required": false,
+      "example": "YOUR_TASKADE_API_KEY"
+    }
+  },
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://www.taskade.com/mcp",
+      "description": "Hosted Streamable HTTP. Use an OAuth-capable MCP client and sign in to Taskade. Needs a paid Taskade plan.",
+      "recommended": true
+    },
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@taskade/mcp-server"
+      ],
+      "package": "@taskade/mcp-server",
+      "env": {
+        "TASKADE_API_KEY": "${TASKADE_API_KEY}"
+      },
+      "description": "Local stdio. Requires Node.js and a Taskade personal access token."
+    }
+  },
+  "examples": [
+    {
+      "title": "List projects",
+      "description": "Show the projects in a Taskade workspace",
+      "prompt": "List the projects in my Taskade workspace"
+    },
+    {
+      "title": "Create tasks",
+      "description": "Add tasks to a Taskade project",
+      "prompt": "Add three tasks for the launch checklist to my Taskade project"
+    }
+  ],
+  "is_official": true,
+  "is_archived": false
+}
