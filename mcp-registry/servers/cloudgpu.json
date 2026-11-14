@@ -31,18 +31,8 @@
         "cloudgpu-mcp"
       ],
       "package": "cloudgpu-mcp",
-      "env": {
-        "CLOUDGPU_API_KEY": "${CLOUDGPU_API_KEY}"
-      },
-      "description": "Run the CloudGPU MCP server from npm",
+      "description": "Run the CloudGPU MCP server from npm. No API key needed at install: the agent calls connect_account and the owner approves a key with a spending limit through a link.",
       "recommended": true
-    }
-  },
-  "arguments": {
-    "CLOUDGPU_API_KEY": {
-      "description": "Optional CloudGPU API key. Without it, the agent can call connect_account and the owner approves a key with a spending limit through a link.",
-      "required": false,
-      "example": "cgw-sk-..."
     }
   },
   "tools": [
