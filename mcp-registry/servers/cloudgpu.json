@@ -265,5 +265,22 @@
       "description": "Cancel a server batch"
     }
   ],
-  "is_official": true
+  "is_official": true,
+  "examples": [
+    {
+      "title": "Connect the account",
+      "description": "No API key at install: the agent asks for a budgeted key and the owner approves it through a link",
+      "prompt": "Connect to my CloudGPU account with connect_account, give me the approval link, then call finish_connect once I've approved it"
+    },
+    {
+      "title": "Quote a GPU job",
+      "description": "Get a server-side cost quote before renting",
+      "prompt": "Quote the cost of running a 2-hour fine-tuning job on an RTX 4090 with CloudGPU"
+    },
+    {
+      "title": "Run a job and shut down",
+      "description": "Run a job, fetch the results, and make sure the instance is stopped",
+      "prompt": "Run this Python script on a CloudGPU GPU, download the output files, then stop the instance"
+    }
+  ]
 }
