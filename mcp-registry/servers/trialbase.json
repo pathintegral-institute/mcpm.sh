@@ -1,0 +1,41 @@
+{
+  "name": "trialbase",
+  "display_name": "TrialBase",
+  "description": "Clinical trials across registries (ISRCTN, ClinicalTrials.gov, CTIS) in one normalized schema: search trials, fetch one trial by id, resolve trials by identifier and read coverage. Each field carries its registry source and licence. Keyless clients are answered from a published evaluation sample, rate-limited per IP; full access is available with a bearer token or per call via x402 (USDC on Base).",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vanja-ivancevic/dbset-mcp-servers"
+  },
+  "homepage": "https://trialbase-db.org/docs/api",
+  "author": {
+    "name": "vanja-ivancevic"
+  },
+  "license": "Proprietary",
+  "categories": ["Analytics", "Knowledge Base"],
+  "tags": ["clinical trials", "research", "registries", "provenance", "x402"],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://api.trialbase-db.org/mcp"
+    }
+  },
+  "tools": [
+    {
+      "name": "trials_search",
+      "description": "Search trials across the registered trial registries."
+    },
+    {
+      "name": "trials_get",
+      "description": "Fetch one trial in full, including its registry source and licence."
+    },
+    {
+      "name": "trials_lookup_by_ids",
+      "description": "Resolve trials by registry identifier."
+    },
+    {
+      "name": "trials_coverage",
+      "description": "Read the live coverage of the trial dataset."
+    }
+  ],
+  "is_official": true
+}

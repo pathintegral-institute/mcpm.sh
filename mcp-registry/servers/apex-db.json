@@ -1,0 +1,41 @@
+{
+  "name": "apex-db",
+  "display_name": "Apex DB",
+  "description": "EU and Israel vehicle specifications with per-field provenance: search variants by brand, model and model year, fetch one variant in full, and read the live coverage matrix. Keyless clients are answered from a published evaluation sample, rate-limited per IP; the full catalogue is available with a bearer token or per call via x402 (USDC on Base).",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vanja-ivancevic/dbset-mcp-servers"
+  },
+  "homepage": "https://apex-db.org/docs/api",
+  "author": {
+    "name": "vanja-ivancevic"
+  },
+  "license": "Proprietary",
+  "categories": ["Analytics", "Web Services"],
+  "tags": ["vehicle", "automotive", "specifications", "provenance", "x402"],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://mcp.apex-db.org/mcp"
+    }
+  },
+  "tools": [
+    {
+      "name": "apex_search_variants",
+      "description": "Search vehicle variants by brand, model, model year and other filters."
+    },
+    {
+      "name": "apex_get_variant",
+      "description": "Fetch one variant in full, including its per-field provenance."
+    },
+    {
+      "name": "apex_coverage_matrix",
+      "description": "Read the live coverage matrix for the dataset."
+    },
+    {
+      "name": "apex_lookup_by_portfolio",
+      "description": "Look up variants across a portfolio of brands or models."
+    }
+  ],
+  "is_official": true
+}
