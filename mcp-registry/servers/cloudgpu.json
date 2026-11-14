@@ -1,0 +1,286 @@
+{
+  "name": "cloudgpu",
+  "display_name": "CloudGPU",
+  "description": "Let an AI agent discover GPUs, get a cost quote, rent a GPU instance or run a job, upload and download files, read logs and shut it down, with spend, time and idle limits enforced server-side.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cloudgpu-app/cloudgpu-mcp"
+  },
+  "homepage": "https://cloudgpu.app/docs/mcp",
+  "author": {
+    "name": "CloudGPU"
+  },
+  "license": "MIT",
+  "categories": [
+    "AI Systems",
+    "Dev Tools"
+  ],
+  "tags": [
+    "gpu",
+    "compute",
+    "cloud",
+    "jobs",
+    "agents"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "cloudgpu-mcp"
+      ],
+      "package": "cloudgpu-mcp",
+      "description": "Run the CloudGPU MCP server from npm. No API key needed at install: the agent calls connect_account and the owner approves a key with a spending limit through a link.",
+      "recommended": true
+    }
+  },
+  "tools": [
+    {
+      "name": "request_top_up",
+      "description": "Request an owner payment link"
+    },
+    {
+      "name": "wait_for_funds",
+      "description": "Wait for credited account funds"
+    },
+    {
+      "name": "get_agent_readiness",
+      "description": "Read-only Agent self-check"
+    },
+    {
+      "name": "assess_task_fit",
+      "description": "Assess whether a task fits CloudGPU"
+    },
+    {
+      "name": "list_task_templates",
+      "description": "List reusable Job task drafts"
+    },
+    {
+      "name": "prepare_task_template",
+      "description": "Prepare a Job task draft"
+    },
+    {
+      "name": "compare_compute_costs",
+      "description": "Compare GPU billing periods and estimated task costs"
+    },
+    {
+      "name": "prepare_task_pipeline",
+      "description": "Prepare sequential tasks for one GPU allocation"
+    },
+    {
+      "name": "get_job_batch_receipt",
+      "description": "Read a private local batch receipt"
+    },
+    {
+      "name": "prepare_job_batch",
+      "description": "Review a bounded Job batch"
+    },
+    {
+      "name": "get_job_batch",
+      "description": "Inspect a Job batch"
+    },
+    {
+      "name": "run_job_batch",
+      "description": "Submit an approved bounded Job batch"
+    },
+    {
+      "name": "get_storage",
+      "description": "Persistent storage quota"
+    },
+    {
+      "name": "list_files",
+      "description": "List persistent files"
+    },
+    {
+      "name": "list_workspaces",
+      "description": "List Workspaces"
+    },
+    {
+      "name": "list_workspace_versions",
+      "description": "List Workspace versions"
+    },
+    {
+      "name": "get_workspace_version",
+      "description": "Read Workspace version"
+    },
+    {
+      "name": "list_workspace_instances",
+      "description": "Running GPUs for Workspace restore"
+    },
+    {
+      "name": "get_workspace_application",
+      "description": "Workspace application status"
+    },
+    {
+      "name": "quote_storage_budget",
+      "description": "Quote separate storage budget"
+    },
+    {
+      "name": "confirm_storage_budget",
+      "description": "Confirm storage budget transfer"
+    },
+    {
+      "name": "resume_artifact_upload",
+      "description": "Resume interrupted file upload"
+    },
+    {
+      "name": "apply_workspace",
+      "description": "Apply Workspace to running GPU"
+    },
+    {
+      "name": "delete_workspace_version",
+      "description": "Delete Workspace version"
+    },
+    {
+      "name": "upload_artifact",
+      "description": "Save a persistent artifact"
+    },
+    {
+      "name": "download_artifact",
+      "description": "Download a persistent file"
+    },
+    {
+      "name": "save_workspace",
+      "description": "Save a project Workspace"
+    },
+    {
+      "name": "delete_file",
+      "description": "Delete a persistent file"
+    },
+    {
+      "name": "diagnose_job",
+      "description": "Inspect Job failure and cost state"
+    },
+    {
+      "name": "save_job_output",
+      "description": "Save ended Job output tail"
+    },
+    {
+      "name": "get_compute_catalog",
+      "description": "Public GPU catalog"
+    },
+    {
+      "name": "quote_compute",
+      "description": "Server-side compute quote"
+    },
+    {
+      "name": "get_account",
+      "description": "CloudGPU account"
+    },
+    {
+      "name": "list_gpus",
+      "description": "List GPUs"
+    },
+    {
+      "name": "list_templates",
+      "description": "List templates"
+    },
+    {
+      "name": "estimate_cost",
+      "description": "Quote a rental"
+    },
+    {
+      "name": "list_models",
+      "description": "List hosted models"
+    },
+    {
+      "name": "connect_account",
+      "description": "Connect this assistant to a CloudGPU account"
+    },
+    {
+      "name": "finish_connect",
+      "description": "Finish connecting"
+    },
+    {
+      "name": "get_job",
+      "description": "Job status"
+    },
+    {
+      "name": "list_jobs",
+      "description": "List jobs"
+    },
+    {
+      "name": "get_status",
+      "description": "Instance status"
+    },
+    {
+      "name": "list_instances",
+      "description": "List instances"
+    },
+    {
+      "name": "create_instance",
+      "description": "Rent a GPU"
+    },
+    {
+      "name": "resolve_model_reference",
+      "description": "Pin a public model reference"
+    },
+    {
+      "name": "prepare_model_deployment",
+      "description": "Prepare models and a ComfyUI workflow"
+    },
+    {
+      "name": "prepare_job_rerun",
+      "description": "Prepare a successful job for rerun"
+    },
+    {
+      "name": "run_job",
+      "description": "Run a job on a GPU"
+    },
+    {
+      "name": "cancel_job",
+      "description": "Cancel a job"
+    },
+    {
+      "name": "run_command",
+      "description": "Run a command on the instance"
+    },
+    {
+      "name": "upload",
+      "description": "Upload to the instance"
+    },
+    {
+      "name": "download",
+      "description": "Download from the instance"
+    },
+    {
+      "name": "tail_logs",
+      "description": "Job logs and GPU use"
+    },
+    {
+      "name": "stop_instance",
+      "description": "Destroy an instance"
+    },
+    {
+      "name": "get_server_job_batch",
+      "description": "Read a durable server batch"
+    },
+    {
+      "name": "run_server_job_batch",
+      "description": "Atomically enqueue an approved server batch"
+    },
+    {
+      "name": "cancel_server_job_batch",
+      "description": "Cancel a server batch"
+    }
+  ],
+  "is_official": true,
+  "examples": [
+    {
+      "title": "Connect the account",
+      "description": "No API key at install: the agent asks for a budgeted key and the owner approves it through a link",
+      "prompt": "Connect to my CloudGPU account with connect_account, give me the approval link, then call finish_connect once I've approved it"
+    },
+    {
+      "title": "Quote a GPU job",
+      "description": "Get a server-side cost quote before renting",
+      "prompt": "Quote the cost of running a 2-hour fine-tuning job on an RTX 4090 with CloudGPU"
+    },
+    {
+      "title": "Run a job and shut down",
+      "description": "Run a job, fetch the results, and make sure the instance is stopped",
+      "prompt": "Run this Python script on a CloudGPU GPU, download the output files, then stop the instance"
+    }
+  ]
+}
