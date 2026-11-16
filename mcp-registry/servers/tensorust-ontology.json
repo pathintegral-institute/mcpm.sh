@@ -1,0 +1,250 @@
+{
+  "name": "tensorust-ontology",
+  "display_name": "Tensorust Ontology",
+  "description": "Who really owns and controls US organizations and property, from public records: county property rolls, state business registries, SEC subsidiary lists, FCC licensing and ownership, USAC E-Rate, federal awards and the FAA aircraft registry. Also BDC private credit loan marks from SEC 10-Q filings, federal research awards exposed to banned-vendor lists (DoD 1260H, Section 889, FCC Covered List, UFLPA, BIOSECURE), set-aside contractor performance, ROAD Act investor screening, No Surprises Act IDR outcomes and a catalog of 145 entity-level datasets with free samples. Hosted streamable-HTTP server: free answers need no key; full results take a Tensorust key as an Authorization Bearer header.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Mattbusel/tensorust-mcp"
+  },
+  "homepage": "https://shop.tensorust.com/mcp",
+  "author": {
+    "name": "Tensorust",
+    "email": "mattbusel@tensorust.com",
+    "url": "https://tensorust.com"
+  },
+  "license": "MIT",
+  "categories": [
+    "Finance",
+    "Knowledge Base"
+  ],
+  "tags": [
+    "ownership",
+    "public-records",
+    "private-credit",
+    "bdc",
+    "sec-edgar",
+    "federal-contracts",
+    "sanctions",
+    "kyb",
+    "due-diligence",
+    "datasets",
+    "remote"
+  ],
+  "arguments": {
+    "TENSORUST_API_KEY": {
+      "description": "Tensorust API key (starts with tdk_), sent as an Authorization Bearer header to unlock full=true results. Only used by the http-api-key method; the default http method needs no key.",
+      "required": true,
+      "example": "tdk_YOUR_KEY"
+    }
+  },
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://shop.tensorust.com/api/mcp",
+      "description": "Hosted streamable-HTTP MCP server. No account or key: every tool returns a free preview.",
+      "recommended": true
+    },
+    "http-api-key": {
+      "type": "http",
+      "url": "https://shop.tensorust.com/api/mcp",
+      "headers": {
+        "Authorization": "Bearer ${TENSORUST_API_KEY}"
+      },
+      "description": "Hosted streamable-HTTP MCP server with a Tensorust key, so tools called with full=true return every linked object and row."
+    }
+  },
+  "tools": [
+    {
+      "name": "query_ontology",
+      "description": "Read-only, parameterized query over the Tensorust Ontology (no query language, nothing to inject)."
+    },
+    {
+      "name": "describe_schema",
+      "description": "The Tensorust Ontology schema in one small answer: object types with counts, which types are searchable by name, every link type (from type, to type, meaning, count), the federal rules with their statuses and citations, the public data..."
+    },
+    {
+      "name": "lookup_organization",
+      "description": "Resolve a company or organization name to its Tensorust Ontology card: legal entity or control group, data sources, linked objects by type (homes owned, control group members, subsidiaries, FCC licenses, federal awards, E-Rate requests)..."
+    },
+    {
+      "name": "search_organizations",
+      "description": "Search organizations, control groups and other objects by name."
+    },
+    {
+      "name": "get_object",
+      "description": "Expand any ontology id (e.g."
+    },
+    {
+      "name": "who_owns_home",
+      "description": "Given a US street address and ZIP, return the owner of record and, if it is a business entity, its parent control group, how many homes the group holds and whether it is a large institutional investor under the ROAD Act (350+ homes)."
+    },
+    {
+      "name": "rule_coverage",
+      "description": "List the federal rules Tensorust models (ROAD Act investor ban, DoD SF 328 ownership disclosure, FCC foreign adversary attestation, Upper C-band elections, E-Rate deadlines) with counts and the first organizations each applies to."
+    },
+    {
+      "name": "aircraft_owner",
+      "description": "Look up a US turbine aircraft by N-number (or search by registered owner name): registered owner, whether it is held by an owner trustee, model, and its FCC radio altimeter rebate category and proposed rebate."
+    },
+    {
+      "name": "lender_marks",
+      "description": "Private credit marks for a US company: every BDC (business development company) fund that holds its first-lien term loan, the fair value each reported as a share of par in its 10-Q for 2026-06-30 (SEC filings), the manager (Ares, Blue..."
+    },
+    {
+      "name": "credit_disagreements",
+      "description": "US companies whose first-lien loan two or more BDC managers mark 10+ points apart at 2026-06-30 (SEC filings), widest gap first: borrower, lowest and highest manager, marks and par."
+    },
+    {
+      "name": "credit_q3_cuts",
+      "description": "Live through earnings season: BDC funds that cut a first-lien loan's mark by 5+ points from Jun 30 to Sep 30 2026, pulled from each Q3 10-Q on EDGAR the day it is filed, biggest cut first, with the holders that have not filed Q3 yet and..."
+    },
+    {
+      "name": "exposure_summary",
+      "description": "Research Exposure Ledger headline numbers: federal research awards whose 2025-26 papers name a vendor on a banned-vendor list (DoD 1260H Chinese military companies, Section 889 telecom/video, FCC Covered List, UFLPA forced-labor entity..."
+    },
+    {
+      "name": "exposure_institution",
+      "description": "For a university, hospital or other federal award recipient (name or UEI): how many of its federal awards have 2025-26 papers naming a listed vendor (BGI/MGI, Novogene, WuXi AppTec, DJI, Hikvision, Huawei and others) in methods, the..."
+    },
+    {
+      "name": "exposure_awards",
+      "description": "Search the Research Exposure Ledger's awards."
+    },
+    {
+      "name": "exposure_screen_purchases",
+      "description": "Score up to 2,000 vendor payment or purchase-order lines (vendor, description, amount, date YYYY-MM-DD, award number, funding source) against the DoD 1260H, Section 889, FCC Covered, UFLPA and BIOSECURE lists as they stood on each..."
+    },
+    {
+      "name": "exposure_workspace",
+      "description": "The exposure report for a private Exposure Ledger workspace (created at https://shop.tensorust.com/exposure/workspace): every stored vendor payment / PO line re-scored against today's lists, totals by vendor and rule, prohibited-use and..."
+    },
+    {
+      "name": "exposure_dbgap",
+      "description": "NIH controlled-access (dbGaP) human studies whose sequencing runs in ENA were made on BGI/MGI instruments (DNBSEQ, BGISEQ, MGISEQ), each joined to its NIH grant (from the dbGaP study record, or an identical-title NIH RePORTER project),..."
+    },
+    {
+      "name": "perf_summary",
+      "description": "Tensorust Performance Ledger headline: small-business set-aside contract dollars FY2025, FY2026 and FY2027 to date (USAspending/FPDS) set against each prime's own DOL Form 5500 headcount (active participants) and its FSRS subawards."
+    },
+    {
+      "name": "perf_firm",
+      "description": "One set-aside contractor (name or UEI): set-aside obligations by year, what was bought (labor, R&D, SaaS, travel, construction, products), its own Form 5500 workforce (active participants, EIN, EFAST2 ACK_ID, plan type,..."
+    },
+    {
+      "name": "perf_queue",
+      "description": "The Performance Ledger review queue: set-aside firms with $1M+/yr of labor/R&D work billing $500K+ per active Form 5500 participant."
+    },
+    {
+      "name": "perf_recent",
+      "description": "Set-aside labor/R&D actions in FY2027 to date (from Oct 1 2026, USAspending bulk pull) on awards held by firms in the Performance Ledger review queue, newest first: award, PIID, office, PSC, set-aside, FY2027 obligation, action date,..."
+    },
+    {
+      "name": "contractor_credit",
+      "description": "Private credit x federal exposure for one company (name, 12-character UEI or 9-digit EIN): the operating company behind a BDC holdco borrower (resolved through exact name, holdco-stripped name, SAM parent UEI and Form 5500 EIN, with a..."
+    },
+    {
+      "name": "contractor_credit_watch",
+      "description": "BDC-financed federal contractors with a stress signal (a lender marks the first-lien loan below 90% of par, cut it 5+ points in a quarter including Q3 2026 marks as filed, or two managers sit 10+ points apart), largest federal exposure..."
+    },
+    {
+      "name": "agency_credit_exposure",
+      "description": "Per federal agency: how many BDC-financed contractors it pays, their obligations since FY2025, and how much sits with contractors whose lenders are marking the loan down, with the names."
+    },
+    {
+      "name": "clearinghouse_precheck",
+      "description": "Validate one FCC Upper C-band claim before it is filed, against the records the Clearinghouse pays from: a lump sum election (kind=lumpsum: claimant_name, call_sign, site_id, antennas as 'ID=qty|ID=qty', antenna_type..."
+    },
+    {
+      "name": "clearinghouse_validate",
+      "description": "Free validation API for the FCC Upper C-band Clearinghouse: send one claim or a batch of up to 100 (claims: [...]), lump sum elections (kind=lumpsum: claimant_name, call_sign, site_id, antennas 'ID=qty|ID=qty', antenna_type, mvpd_site)..."
+    },
+    {
+      "name": "clearinghouse_record",
+      "description": "For an Upper C-band earth station call sign: registrant, licensee FRN, former registrants on the 2020 / Nov 2025 lists, control group (FRN plus Form 323 50%+ entity ownership) with sister licensees, other call signs filed at the same..."
+    },
+    {
+      "name": "clearinghouse_program",
+      "description": "Program-wide findings on the real records the Upper C-band Clearinghouse will pay against: call signs whose registrant changed since the 2020 / 2025 lists, control groups, dish locations filed under two or more call signs (antennas and..."
+    },
+    {
+      "name": "program_precheck",
+      "description": "Validate one claim with the Tensorust Clearinghouse program modules."
+    },
+    {
+      "name": "rip_replace_deadlines",
+      "description": "FCC rip-and-replace (SCRP) program record: 126 granted applications and 85 recipients with approved cost estimates (DA 22-774), applications grouped by RRD deadline after the May 1 and Sep 3, 2026 extension orders with the final..."
+    },
+    {
+      "name": "erate_deadline_check",
+      "description": "For an E-Rate coordinator: every funded FRN (funding year 2023 on) for one billed entity number with money still to collect (committed minus USAC authorized disbursements), its last date to invoice, whether the one-time 120-day..."
+    },
+    {
+      "name": "road_screen_purchase",
+      "description": "Screen a single-family home purchase (a title order) under the ROAD Act ban on large institutional investors (350+ homes, alone or in concert; effective Jan 7 2027; Treasury NPRM TREAS-DO-2026-0529)."
+    },
+    {
+      "name": "road_investor_group",
+      "description": "One control group by group name, any member LLC name or group id: homes held in the 17 covered counties, legal entities, largest single entity, ROAD Act status (COVERED, BUILDER_IBUYER, REVIEW, EXCLUDED, BELOW_THRESHOLD), whether a name..."
+    },
+    {
+      "name": "road_purchase_stream",
+      "description": "The purchase stream and agency case queue: recorded deeds (last sale per parcel, county rolls) into 350+ home groups, newest first."
+    },
+    {
+      "name": "road_monitor_summary",
+      "description": "Headline numbers for the ROAD Act ban: covered investor groups and homes in 17 counties, groups no single entity of which reaches 350, groups invisible to name search, deeds into covered groups since enactment and per month,..."
+    },
+    {
+      "name": "list_datasets",
+      "description": "Browse the Tensorust dataset catalog: 145 entity-level datasets built from public records (SEC, USAspending, FCC, CMS, EPA, DOL, USAC, county rolls and more), each row an organization, site, loan or filing with its own number: money..."
+    },
+    {
+      "name": "get_dataset",
+      "description": "One dataset's card by slug (from list_datasets) or exact name: who it is for, what each row holds, the headline finding, coverage, as-of date, row count, public sources, every tier with what it includes, the dataset page, the free..."
+    },
+    {
+      "name": "idr_offer",
+      "description": "Federal No Surprises Act independent dispute resolution (45 CFR 149.510), computed from the CMS Federal IDR public use file (2025 Q4, 532,542 disputes, 1.41M line items)."
+    },
+    {
+      "name": "idr_entity_pick",
+      "description": "For a CPT/HCPCS code, payer and state, every certified IDR entity that decided that cell in the CMS 2025 Q4 file, ranked by provider loss rate, with determinations, median winning multiple, 2026 single-determination fee, expected fee..."
+    },
+    {
+      "name": "idr_scorecard",
+      "description": "The Q4 2025 IDR scorecard of one filing organization (provider email domain, e.g."
+    },
+    {
+      "name": "get_dataset_sample",
+      "description": "The free sample of one dataset as CSV: the header plus up to 25 real rows, exactly the sample.csv published on its tensorust.com page, so an agent can check the fields and the joins before anyone buys."
+    }
+  ],
+  "examples": [
+    {
+      "title": "Who controls a company",
+      "description": "Resolve a company to its control group and linked records",
+      "prompt": "Use lookup_organization to show what Tensorust knows about Nexstar Media Group: its FCC licenses, PAC, lobbying firms and the federal rules that likely apply to it."
+    },
+    {
+      "title": "Private credit disagreements",
+      "description": "Find loans BDC lenders mark far apart",
+      "prompt": "Which US companies' first-lien loans do BDC managers mark 10 or more points apart, and who holds the lowest and highest marks?"
+    },
+    {
+      "title": "Banned-vendor exposure",
+      "description": "Check a university's federal awards against banned-vendor lists",
+      "prompt": "How many of Johns Hopkins University's federal awards have 2025-26 papers naming a vendor on the BIOSECURE or 1260H lists?"
+    },
+    {
+      "title": "Home owner lookup",
+      "description": "Find the owner of record and parent group for a US address",
+      "prompt": "Who owns this house (street address and ZIP), and is the owner part of a large institutional investor group under the ROAD Act?"
+    },
+    {
+      "title": "Dataset catalog",
+      "description": "Browse entity-level datasets and read a free sample",
+      "prompt": "List Tensorust datasets about E-Rate money at risk and show me the free sample of the best match."
+    }
+  ],
+  "is_official": true
+}
