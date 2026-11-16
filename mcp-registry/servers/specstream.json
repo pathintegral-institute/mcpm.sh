@@ -1,0 +1,138 @@
+{
+  "name": "specstream",
+  "display_name": "SpecStream",
+  "description": "Live web data engine for teams and agents. Includes web search (Search API), page extraction (Extract API), structured Deep Search lists with source URLs, cited research reports, and scheduled monitoring.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/specstream/specstream-tools"
+  },
+  "homepage": "https://specstream.ai",
+  "author": {
+    "name": "SpecStream",
+    "email": "support@specstream.ai",
+    "url": "https://specstream.ai"
+  },
+  "license": "MIT",
+  "categories": [
+    "Web Services"
+  ],
+  "tags": [
+    "web-search",
+    "extract",
+    "deep-search",
+    "research",
+    "scraping",
+    "remote",
+    "mcp"
+  ],
+  "arguments": {
+    "SPECSTREAM_API_KEY": {
+      "description": "SpecStream API key from https://specstream.ai/workspace (Agents & API). Required for Bearer header auth and the local stdio bridge; optional when using OAuth.",
+      "required": false,
+      "example": "YOUR_SPECSTREAM_API_KEY"
+    }
+  },
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "specstream-mcp-stdio"
+      ],
+      "package": "specstream-mcp-stdio",
+      "env": {
+        "SPECSTREAM_API_KEY": "${SPECSTREAM_API_KEY}",
+        "SPECSTREAM_MCP_URL": "https://api.specstream.ai/mcp"
+      },
+      "description": "Local stdio bridge via PyPI (specstream-mcp-stdio) forwarding to https://api.specstream.ai/mcp."
+    },
+    "http": {
+      "type": "http",
+      "url": "https://api.specstream.ai/mcp",
+      "description": "Hosted Streamable HTTP endpoint. Sign in with OAuth in OAuth-capable MCP clients.",
+      "recommended": true
+    },
+    "http-api-key": {
+      "type": "http",
+      "url": "https://api.specstream.ai/mcp",
+      "headers": {
+        "Authorization": "Bearer ${SPECSTREAM_API_KEY}"
+      },
+      "description": "Hosted Streamable HTTP endpoint using a SpecStream API key as a Bearer token."
+    }
+  },
+  "tools": [
+    {
+      "name": "search_web",
+      "description": "Search the live web for a quick answer or initial rows with source URLs."
+    },
+    {
+      "name": "read_pages",
+      "description": "Extract clean Markdown or plain text from up to 20 web pages or documents (PDF, Word, Excel)."
+    },
+    {
+      "name": "compile",
+      "description": "Parse a plain-language request for a structured web list into conditions and columns."
+    },
+    {
+      "name": "quote_new_list",
+      "description": "Price a compiled web list request before any paid work runs."
+    },
+    {
+      "name": "run_new_list",
+      "description": "Start building a quoted web list after approval of the maximum cost."
+    },
+    {
+      "name": "get_find",
+      "description": "Read the status, progress, and cost so far of a running or completed list."
+    },
+    {
+      "name": "list_find_rows",
+      "description": "Read delivered rows from a list with source URLs and read times."
+    },
+    {
+      "name": "export_find",
+      "description": "Generate a download link for a list in CSV, Excel, JSON, HTML, KML, or GeoJSON."
+    },
+    {
+      "name": "research_price",
+      "description": "Check the price of a cited research report at quick, standard, or deep depth."
+    },
+    {
+      "name": "start_research",
+      "description": "Start a cited Markdown or JSON research report from the live web."
+    },
+    {
+      "name": "get_research",
+      "description": "Read the progress or completed output and citations of a research report."
+    },
+    {
+      "name": "get_capacity_balance",
+      "description": "Read the account balance, held amount, and monthly spending limit usage."
+    }
+  ],
+  "examples": [
+    {
+      "title": "Web search",
+      "description": "Search the live web for a quick answer with sources",
+      "prompt": "Search the web for the latest stable release of PostgreSQL."
+    },
+    {
+      "title": "Read web pages",
+      "description": "Extract clean Markdown text from specific URLs",
+      "prompt": "Read https://specstream.ai/docs/mcp and summarize the connection options."
+    },
+    {
+      "title": "Build a structured list",
+      "description": "Compile and price a live web search into structured rows",
+      "prompt": "Compile a SpecStream list of active US climate-tech grants with deadlines and URLs, and show me the quote before running."
+    },
+    {
+      "title": "Cited research report",
+      "description": "Price and run a written research report with page citations",
+      "prompt": "Check the price for a quick SpecStream research report comparing EU AI Act compliance timelines."
+    }
+  ],
+  "is_official": true,
+  "is_archived": false
+}
