@@ -1,15 +1,15 @@
 {
   "name": "videodb",
   "display_name": "VideoDB",
-  "description": "Video tools for agents: watch, search, clip and caption video, and monitor live streams. A hosted MCP server that gives any agent video tools: summarize a video and answer questions about it, search one video or a library by what is said or shown, cut clips and highlight reels, add burned-in subtitles, reframe for Shorts and Reels, and connect RTSP camera feeds for alerts. Results come back as playable stream links.",
+  "description": "Video tools for agents from a hosted MCP server. Summarize a video and answer questions about it, search one video or a library by what is said or shown, cut clips and highlight reels, add burned-in subtitles, reframe for Shorts and Reels, and connect RTSP camera feeds for alerts. Results come back as playable stream links.",
   "repository": {
     "type": "git",
     "url": "https://github.com/video-db/skills"
   },
-  "homepage": "https://videodb.io/agents",
+  "homepage": "https://videodb.io/agents?utm_source=github.com/pathintegral-institute/mcpm.sh&utm_medium=directory",
   "author": {
     "name": "VideoDB",
-    "url": "https://videodb.io"
+    "url": "https://videodb.io/?utm_source=github.com/pathintegral-institute/mcpm.sh&utm_medium=directory"
   },
   "license": "MIT",
   "categories": [
@@ -26,7 +26,7 @@
     "http": {
       "type": "http",
       "url": "https://mcp.videodb.io/mcp",
-      "description": "Hosted Streamable HTTP. Use an OAuth-capable MCP client and sign in to VideoDB in the browser (OAuth 2.1), no API key needed. Free to start with $20 of credits, no credit card. Docs: https://docs.videodb.io",
+      "description": "Hosted Streamable HTTP. Use an OAuth-capable MCP client and sign in to VideoDB in the browser (OAuth 2.1), no API key needed. Docs: https://docs.videodb.io",
       "recommended": true
     }
   },
