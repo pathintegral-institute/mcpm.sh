@@ -1,0 +1,125 @@
+{
+  "name": "corescout",
+  "display_name": "CoreScout",
+  "description": "Operational memory for the machine your AI works on. CoreScout is a local-first Rust service that watches the computer and what AI tools do on it, notices what recurs, and tests promising patterns with randomized trials before it calls anything a cause. Its MCP server lets an agent ask what has failed here before, whether a verified procedure exists for an operation, and whether the machine is in an unusual state, then report outcomes back. Everything stays on the machine: no account, no server, no telemetry. Requires the CoreScout background service (corescout-service) to be installed and running.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Mattbusel/corescout"
+  },
+  "homepage": "https://github.com/Mattbusel/corescout",
+  "author": {
+    "name": "Tensorust",
+    "email": "mattbusel@tensorust.com",
+    "url": "https://tensorust.com"
+  },
+  "license": "MIT OR Apache-2.0",
+  "categories": [
+    "System Tools",
+    "Dev Tools",
+    "AI Systems"
+  ],
+  "tags": [
+    "memory",
+    "local-first",
+    "observability",
+    "agents",
+    "causal-inference",
+    "rust",
+    "claude-code"
+  ],
+  "installations": {
+    "cli": {
+      "type": "cli",
+      "command": "corescout-mcp",
+      "args": [],
+      "description": "Install with `cargo install corescout-cli corescout-service corescout-mcp`, or unpack the macOS/Linux .tar.gz from GitHub Releases onto your PATH, then start corescout-service.",
+      "recommended": true
+    },
+    "windows": {
+      "type": "custom",
+      "command": "C:\\Program Files\\CoreScout\\corescout-mcp.exe",
+      "args": [],
+      "description": "Windows: run CoreScoutSetup.exe from GitHub Releases (desktop app, background service and MCP bridge, no admin rights), which installs corescout-mcp.exe at this path."
+    }
+  },
+  "tools": [
+    {
+      "name": "corescout_status",
+      "description": "Is CoreScout running, what is connected to it, and how much it has seen."
+    },
+    {
+      "name": "corescout_briefing",
+      "description": "What CoreScout is, what it currently knows, and what it will and will not do in its present mode."
+    },
+    {
+      "name": "corescout_knowledge",
+      "description": "Everything this computer has learned, grouped by AI tool, repository and machine."
+    },
+    {
+      "name": "corescout_current_state",
+      "description": "What the machine is doing right now, and whether that state is one CoreScout recognises."
+    },
+    {
+      "name": "corescout_machine",
+      "description": "What this computer physically is, and what CoreScout can observe of it."
+    },
+    {
+      "name": "corescout_learned",
+      "description": "Learned findings as cards, each marked correlation or measured effect."
+    },
+    {
+      "name": "corescout_failures",
+      "description": "Operations that recur and go wrong on this machine, with how often and how they fail."
+    },
+    {
+      "name": "corescout_capabilities",
+      "description": "Procedures CoreScout has verified and the user has approved."
+    },
+    {
+      "name": "corescout_hypotheses",
+      "description": "What CoreScout is currently testing and cannot yet answer."
+    },
+    {
+      "name": "corescout_ask",
+      "description": "Ask CoreScout what it knows about a repository, an operation, or the machine's current state."
+    },
+    {
+      "name": "corescout_explain",
+      "description": "Why CoreScout believes one thing: the evidence and how it was obtained."
+    },
+    {
+      "name": "corescout_recent_activity",
+      "description": "What has happened recently, as CoreScout recorded it."
+    },
+    {
+      "name": "corescout_before",
+      "description": "Check before an operation: its history here, and whether a better way is known."
+    },
+    {
+      "name": "corescout_observe",
+      "description": "Report what you just did and how it went, including whether you verified the result."
+    },
+    {
+      "name": "corescout_run_capability",
+      "description": "Run a verified capability, subject to the user's autonomy mode and permissions."
+    }
+  ],
+  "examples": [
+    {
+      "title": "Before a risky operation",
+      "description": "Check an operation's history on this machine first",
+      "prompt": "Before I run the release build, ask CoreScout whether it has failed here before and whether a better way is known."
+    },
+    {
+      "title": "Recurring failures",
+      "description": "List what keeps going wrong on this machine",
+      "prompt": "What operations recur and fail on this machine, and how do they fail?"
+    },
+    {
+      "title": "Machine state",
+      "description": "Check whether the machine is in an unusual state",
+      "prompt": "What is this computer doing right now, and is that a state CoreScout recognises?"
+    }
+  ],
+  "is_official": true
+}
