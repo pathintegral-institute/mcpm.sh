@@ -1,0 +1,31 @@
+{
+  "name": "search-console-mcp",
+  "display_name": "search-console-mcp",
+  "description": "Google Search Console for any MCP client - 30-second login, no Google Cloud project.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sudomichael/search-console-mcp"
+  },
+  "homepage": "https://www.getpercy.io/search-console-mcp",
+  "author": {
+    "name": "sudomichael",
+    "url": "https://github.com/sudomichael"
+  },
+  "license": "MIT",
+  "categories": [
+    "Web Services"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "search-console-mcp-server@0.2.3"
+      ],
+      "package": "search-console-mcp-server",
+      "description": "Local stdio server (npx)",
+      "recommended": true
+    }
+  }
+}
