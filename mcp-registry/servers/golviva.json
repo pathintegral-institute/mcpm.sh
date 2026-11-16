@@ -1,0 +1,166 @@
+{
+  "name": "golviva",
+  "display_name": "Golviva",
+  "description": "Football (soccer) match predictions, season projections and player valuations: win, draw and loss chances, likeliest scores and scorers and predicted line-ups for every match of 26 leagues, the Champions League, Europa League, Conference League and senior national teams; each club's title, top-four and relegation chances; Golviva's own estimated transfer values with the reasons behind them, scouting and rankings; plus live scores, match centres, league tables, stat leaders and transfer news. 18 read-only tools. Hosted remote server: sign in through your MCP client (OAuth, with Apple or Google), or send a personal API key from https://golviva.com/mcp as an Authorization Bearer header. Every account has a free daily allowance of tool calls. Predictions are model probabilities, not betting advice.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/target1m/golviva-mcp"
+  },
+  "homepage": "https://golviva.com/mcp",
+  "author": {
+    "name": "Golviva",
+    "email": "support@golviva.com",
+    "url": "https://golviva.com"
+  },
+  "license": "MIT",
+  "categories": [
+    "Analytics",
+    "Web Services"
+  ],
+  "tags": [
+    "football",
+    "soccer",
+    "sports",
+    "match-predictions",
+    "predicted-lineups",
+    "season-projections",
+    "player-valuation",
+    "transfer-value",
+    "scouting",
+    "live-scores",
+    "league-tables",
+    "statistics",
+    "transfer-news",
+    "read-only",
+    "remote"
+  ],
+  "arguments": {
+    "GOLVIVA_API_KEY": {
+      "description": "Personal Golviva API key, created in the account section of https://golviva.com/mcp (shown once, revocable). Only the http-api-key installation uses it; the recommended installation signs in with OAuth instead.",
+      "required": true
+    }
+  },
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://api.golviva.com/mcp",
+      "description": "Hosted Streamable HTTP MCP server. Your MCP client discovers the OAuth 2.1 metadata and opens golviva.com for a one-time sign-in with Apple or Google; no API key is needed.",
+      "recommended": true
+    },
+    "http-api-key": {
+      "type": "http",
+      "url": "https://api.golviva.com/mcp",
+      "description": "The same server with a personal API key, for clients that cannot open a sign-in window.",
+      "headers": {
+        "Authorization": "Bearer ${GOLVIVA_API_KEY}"
+      }
+    }
+  },
+  "tools": [
+    {
+      "name": "get_match_prediction",
+      "description": "Golviva's prediction for one match, by match id, team (its next match) or league (its upcoming matches): home win, draw and away win chances, the likeliest scores, total goals and both teams to score, the likeliest scorers, the predicted line-ups, corners and cards and, after the final whistle, whether it came in."
+    },
+    {
+      "name": "get_season_projection",
+      "description": "A league's projected final table: the rest of the season played out 10,000 times, with each club's chance of the title, the top four and the Champions League places, Europe and relegation, and its expected points."
+    },
+    {
+      "name": "get_predictions",
+      "description": "The model's most confident calls of the day (up to 10), locked in every morning before the first kick-off, each with its probability, the likeliest score and scorer, the live or final score and whether it came in, plus the hit rate over the last 7 and 30 days."
+    },
+    {
+      "name": "get_player",
+      "description": "A player's Golviva value next to the market value, the gap and its verdict, the factor breakdown, value history, season stats, transfers, contract and similar players."
+    },
+    {
+      "name": "compare_players",
+      "description": "Two to four players side by side: values, age, position, performance percentile, every valuation factor and this season's output."
+    },
+    {
+      "name": "find_players",
+      "description": "Scout by league, club, nation, position, age, preferred foot and value range; sort by value, market value, undervalued, overvalued, youth, performance or recent rise."
+    },
+    {
+      "name": "get_rankings",
+      "description": "Most valuable, most undervalued or overvalued (EUR 10M+), biggest risers or fallers, and wonderkids (21 and under)."
+    },
+    {
+      "name": "search_football",
+      "description": "Find players, clubs, leagues and national teams by name, accents optional."
+    },
+    {
+      "name": "list_leagues",
+      "description": "Every league Golviva values, with its code, strength tier, clubs, players and total squad value."
+    },
+    {
+      "name": "get_league",
+      "description": "A league's clubs ranked by squad value (Golviva against market) and its most valuable players."
+    },
+    {
+      "name": "get_club",
+      "description": "A club's squad with every player's Golviva value, market value and the gap, plus totals."
+    },
+    {
+      "name": "get_national_team",
+      "description": "The strongest 26-player squad for a nation (3 GK, 8 DF, 8 MF, 7 FW by value)."
+    },
+    {
+      "name": "get_matches",
+      "description": "Live scores, results and fixtures (live, today, yesterday, tomorrow or any date) across leagues, European and domestic cups and national-team tournaments."
+    },
+    {
+      "name": "get_match",
+      "description": "One match in depth: score, event timeline, team statistics, line-ups with ratings and the model's chances."
+    },
+    {
+      "name": "get_team_fixtures",
+      "description": "A club's or national team's next or most recent matches."
+    },
+    {
+      "name": "get_standings",
+      "description": "A competition's table with form and qualification, promotion and relegation zones."
+    },
+    {
+      "name": "get_stat_leaders",
+      "description": "Season leaderboards (goals, assists, goals plus assists, minutes, appearances) per competition, across national-team competitions, or across all competitions combined."
+    },
+    {
+      "name": "get_transfer_news",
+      "description": "Latest confirmed transfers and rumours with fees, clubs, reliability and dates."
+    }
+  ],
+  "examples": [
+    {
+      "title": "Match prediction",
+      "description": "Chances, likeliest scorers and predicted line-ups",
+      "prompt": "Predict Real Madrid's next match: chances, likely scorers and line-ups."
+    },
+    {
+      "title": "Title race",
+      "description": "Every club's title, top-four and relegation chances",
+      "prompt": "Who will win the Premier League, and who will go down?"
+    },
+    {
+      "title": "Player value",
+      "description": "What a player is worth and why Golviva disagrees with the market",
+      "prompt": "What is Lamine Yamal really worth, and why?"
+    },
+    {
+      "title": "Compare players",
+      "description": "Every valuation factor side by side",
+      "prompt": "Compare Arda Güler, Florian Wirtz and Jamal Musiala."
+    },
+    {
+      "title": "Scouting",
+      "description": "A filtered shortlist",
+      "prompt": "Find left-footed centre-backs aged 23 or under in Serie A worth less than €30M."
+    },
+    {
+      "title": "League table",
+      "description": "Standings with form and zones",
+      "prompt": "Show me the Süper Lig table."
+    }
+  ],
+  "is_official": true
+}
