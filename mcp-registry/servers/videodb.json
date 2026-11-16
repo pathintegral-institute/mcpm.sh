@@ -1,12 +1,12 @@
 {
   "name": "videodb",
   "display_name": "VideoDB",
-  "description": "Video tools for agents from a hosted MCP server. Summarize a video and answer questions about it, search one video or a library by what is said or shown, cut clips and highlight reels, add burned-in subtitles, reframe for Shorts and Reels, and connect RTSP camera feeds for alerts. Results come back as playable stream links.",
+  "description": "VideoDB lets an AI agent watch, search and clip video. Works in Claude, ChatGPT, Claude Code, Cursor and any MCP client.",
   "repository": {
     "type": "git",
     "url": "https://github.com/video-db/skills"
   },
-  "homepage": "https://videodb.io/agents?utm_source=github.com/pathintegral-institute/mcpm.sh&utm_medium=directory",
+  "homepage": "https://videodb.io/?utm_source=github.com/pathintegral-institute/mcpm.sh&utm_medium=directory",
   "author": {
     "name": "VideoDB",
     "url": "https://videodb.io/?utm_source=github.com/pathintegral-institute/mcpm.sh&utm_medium=directory"
