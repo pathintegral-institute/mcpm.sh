@@ -161,6 +161,14 @@
       "description": "Public GPU catalog"
     },
     {
+      "name": "list_rental_regions",
+      "description": "Read-only rentable GPU catalog by supported continent; exact countries and datacenters are not selectable."
+    },
+    {
+      "name": "list_regional_offers",
+      "description": "Read-only regional compute observations, not executable quotes. Use list_rental_regions and estimate_cost for rentals by supported continent; exact countries and datacenters are not selectable."
+    },
+    {
       "name": "quote_compute",
       "description": "Server-side compute quote"
     },
