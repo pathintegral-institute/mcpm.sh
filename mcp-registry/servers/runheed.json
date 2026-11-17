@@ -1,0 +1,107 @@
+{
+  "name": "runheed",
+  "display_name": "Runheed",
+  "description": "Your app reports errors; Claude Code, Cursor or any MCP client reads the stack trace, fixes it and marks it resolved. Hosted remote server with OAuth. Paid, from $29/month with a 7-day trial.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/getrunheed/runheed-plugin"
+  },
+  "homepage": "https://runheed.com/mcp-server",
+  "author": {
+    "name": "Great Work LLC",
+    "email": "hello@greatwork.company",
+    "url": "https://runheed.com"
+  },
+  "license": "MIT",
+  "categories": [
+    "Dev Tools"
+  ],
+  "tags": [
+    "error-tracking",
+    "debugging",
+    "observability",
+    "monitoring",
+    "remote"
+  ],
+  "examples": [
+    {
+      "title": "What broke in production today?",
+      "description": "List the newest errors and their counts.",
+      "prompt": "_What broke in production today?_"
+    },
+    {
+      "title": "Look at the top error",
+      "description": "Read the stack trace for the most frequent error.",
+      "prompt": "_Show me the stack trace for the top error._"
+    },
+    {
+      "title": "Fix and resolve",
+      "description": "After a fix ships, mark the error resolved with the commit.",
+      "prompt": "_Fix it and resolve it with the commit hash._"
+    }
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://runheed.com/api/mcp",
+      "description": "Hosted Streamable HTTP. Use an OAuth-capable MCP client and sign in to Runheed (dynamic client registration, no key needed). Paid, from $29/month with a 7-day trial; a no-account demo server with sample errors is at https://runheed.com/api/mcp/demo.",
+      "recommended": true
+    }
+  },
+  "tools": [
+    {
+      "name": "runheed_search_errors",
+      "description": "Searches the workspace's error groups by text (type, message, route, file or extra data), status, project and release (including only the errors a release introduced)."
+    },
+    {
+      "name": "runheed_get_error",
+      "description": "Returns one error group in full: message, status, counts, first and last seen, environment, agent context, the top stack frames and the latest breadcrumbs."
+    },
+    {
+      "name": "runheed_get_recent",
+      "description": "Returns the error groups seen most recently, newest first, with status, type, message, route, top stack frame, event count, last-seen time and ID."
+    },
+    {
+      "name": "runheed_get_trends",
+      "description": "Returns error statistics for the last 24 hours, 7 days or 30 days: total, new and resolved counts, the most frequent errors and the hourly error rate."
+    },
+    {
+      "name": "runheed_get_error_context",
+      "description": "Returns everything recorded around an error: every breadcrumb, platform, runtime, OS, environment, release, the affected user, the agent session and extra data."
+    },
+    {
+      "name": "runheed_resolve_error",
+      "description": "Marks one error group resolved (errorId), or up to 100 at once (errorIds) for duplicates fixed by the same change, with an optional note such as the fixing commit."
+    },
+    {
+      "name": "runheed_ignore_error",
+      "description": "Marks one error group ignored (errorId), or up to 100 at once (errorIds), for known or expected errors such as browser noise, so new occurrences stop alerting."
+    },
+    {
+      "name": "runheed_merge_errors",
+      "description": "Merges error groups that are the same bug into one: their events move to the target group (targetId) and new events with their fingerprints join it too."
+    },
+    {
+      "name": "runheed_unignore_error",
+      "description": "Moves one ignored error group (errorId), or up to 100 (errorIds), back to unresolved, so new occurrences alert again."
+    },
+    {
+      "name": "runheed_get_project_health",
+      "description": "Returns a 0 to 100 health score for a project (or the whole workspace), errors in the last 24 hours, the unresolved count, the error rate, recent issues and recommendations."
+    },
+    {
+      "name": "runheed_list_projects",
+      "description": "Lists the workspace's projects with each project's ID, slug, platform and DSN (the value an app sets as RUNHEED_DSN to report errors)."
+    },
+    {
+      "name": "runheed_create_project",
+      "description": "Creates a project in the workspace and returns its DSN: the value an app sets as the RUNHEED_DSN environment variable so that runheed.init() reports its errors to this project."
+    },
+    {
+      "name": "runheed_send_test_event",
+      "description": "Sends one test error (RunheedTestEvent) to a project through the normal ingest path, which shows whether the project and its send key work."
+    }
+  ],
+  "is_official": true,
+  "is_archived": false
+}
