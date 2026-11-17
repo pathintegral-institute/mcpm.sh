@@ -1,0 +1,157 @@
+{
+  "name": "batchdata",
+  "display_name": "BatchData",
+  "description": "Official BatchData hosted MCP server for U.S. property data covering 169 million+ parcels: property lookup and search, comparables, owner skip tracing and reverse skip tracing, DNC and TCPA phone checks, address verification and geocoding, and investor buy box matching. Remote server: sign in through your MCP client (OAuth) or send a BatchData API token as an Authorization Bearer header. Requires a BatchData account.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/batchdataco/batchdata-mcp-server"
+  },
+  "homepage": "https://batchdata.io/mcp-server",
+  "author": {
+    "name": "BatchData",
+    "url": "https://batchdata.io"
+  },
+  "license": "MIT",
+  "categories": [
+    "Professional Apps",
+    "Web Services"
+  ],
+  "tags": [
+    "real-estate",
+    "property-data",
+    "skip-tracing",
+    "geocoding",
+    "address-verification",
+    "comparables",
+    "proptech"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://mcp.batchdata.com",
+      "description": "Hosted Streamable HTTP server. An OAuth-capable MCP client opens a browser sign-in with your BatchData account on first use.",
+      "recommended": true
+    },
+    "http-api-key": {
+      "type": "http",
+      "url": "https://mcp.batchdata.com",
+      "headers": {
+        "Authorization": "Bearer ${BATCHDATA_API_TOKEN}"
+      },
+      "description": "Hosted Streamable HTTP using a BatchData API token instead of OAuth."
+    }
+  },
+  "arguments": {
+    "BATCHDATA_API_TOKEN": {
+      "description": "BatchData API token, only needed for the API token installation. Never commit your token.",
+      "required": false,
+      "example": "YOUR_BATCHDATA_API_TOKEN"
+    }
+  },
+  "tools": [
+    {
+      "name": "lookup_property",
+      "description": "Returns property details for a real-estate property based on its propertyId or its address as (street + city + state + zip) or its parcel number as (countyFipsCode + APN)."
+    },
+    {
+      "name": "comparable_property_count",
+      "description": "Returns the total count of comparable properties and aggregated metrics (estimatedValue, averagePrice, averagePricePerSqft) without returning individual comparable records."
+    },
+    {
+      "name": "comparable_property_preview",
+      "description": "Returns a quick preview of the first 10 comparable properties with summary fields (address, price, sqft, beds/baths, sale date, distance), plus total count and aggregated metrics."
+    },
+    {
+      "name": "comparable_property_page",
+      "description": "Paginated access to comparable properties with full details (page size: 10)."
+    },
+    {
+      "name": "search_properties_count",
+      "description": "Returns total count of properties matching search criteria and quicklist breakdowns."
+    },
+    {
+      "name": "search_properties_preview",
+      "description": "Returns a quick preview of the first 10 properties with essential fields, plus total count."
+    },
+    {
+      "name": "search_properties_page",
+      "description": "Paginated property search with full details (page size: 10)."
+    },
+    {
+      "name": "skip_trace_property",
+      "description": "Returns contact information for the property owner and any other people associated with a real-estate property based on its address as (street + city + state + zip) or (street + city + state) or (street + zip) or its parcel number as (state + county + APN) or (countyFipsCode + APN)."
+    },
+    {
+      "name": "reverse_skip_trace",
+      "description": "Returns associated person information (name, addresses, phones, emails) for one or more phone numbers or email addresses."
+    },
+    {
+      "name": "verify_phone",
+      "description": "Returns full verification details of a phone number including reachability, DNC status, carrier info, TCPA litigator status, and more."
+    },
+    {
+      "name": "check_dnc_status",
+      "description": "Checks only the DNC (Do Not Call) status of a phone number."
+    },
+    {
+      "name": "check_tcpa_status",
+      "description": "Checks only the TCPA litigator status of a phone number."
+    },
+    {
+      "name": "verify_address",
+      "description": "Accepts a property address in the format of street + city + state + zip, or street + city + state, or street + zip and returns an address formatted to comply with USPS conventions."
+    },
+    {
+      "name": "geocode_address",
+      "description": "Accepts a property address in the format of a single text string representing the street + city + state + zip, or street + city + state, or street + zip and returns the geo-coordinates for the requested address."
+    },
+    {
+      "name": "reverse_geocode_address",
+      "description": "Accepts geo-coordinates in the form of latitude and longitude values and returns the address at those coordinates."
+    },
+    {
+      "name": "list_property_datasets",
+      "description": "Returns all available property datasets with field counts and sample fields."
+    },
+    {
+      "name": "list_property_dataset_fields",
+      "description": "Returns the full list of field paths for a specific property dataset."
+    },
+    {
+      "name": "investor_buybox_count",
+      "description": "Returns the total count of investors matching the buy box criteria and aggregate result metadata, without returning individual investor records."
+    },
+    {
+      "name": "investor_buybox_preview",
+      "description": "Returns a quick preview of the first 10 ranked investor profiles matching the buy box criteria, plus total count and aggregate result metadata."
+    },
+    {
+      "name": "investor_buybox_page",
+      "description": "Paginated access to investors matching the buy box criteria with full details (page size: 10)."
+    }
+  ],
+  "examples": [
+    {
+      "title": "Property lookup",
+      "description": "Get details for one property",
+      "prompt": "Look up the property at 123 Main Street, Los Angeles, CA."
+    },
+    {
+      "title": "Comparables",
+      "description": "Find comparable properties",
+      "prompt": "Find comparable properties for 789 Pine Road, Austin, TX."
+    },
+    {
+      "title": "Property search",
+      "description": "Search properties by criteria",
+      "prompt": "Search for vacant properties in Miami, FL."
+    },
+    {
+      "title": "Address verification",
+      "description": "Standardize an address",
+      "prompt": "Verify and standardize this address: 100 main st los angeles ca."
+    }
+  ],
+  "is_official": true,
+  "is_archived": false
+}
