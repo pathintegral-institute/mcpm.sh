@@ -1,0 +1,104 @@
+{
+  "name": "rugradar",
+  "display_name": "RugRadar",
+  "description": "Read-only Solana token rug and scam checker: 0-100 risk score with red flags (mint/freeze authority, holder concentration, dev launch history, linked insider wallets, LP lock, honeypot sell test), public wallet scans and wallet-drainer link scans. Free tier needs no key.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HOBSTER6615/rugradar-mcp"
+  },
+  "license": "MIT",
+  "homepage": "https://rugradar-bgcm.onrender.com/agents",
+  "author": {
+    "name": "HOBSTER6615"
+  },
+  "categories": [
+    "Finance"
+  ],
+  "tags": [
+    "solana",
+    "crypto",
+    "security",
+    "rug-check",
+    "scam-detection",
+    "pump-fun",
+    "remote"
+  ],
+  "arguments": {
+    "RUGRADAR_API_KEY": {
+      "description": "Optional RugRadar Pro key for unlimited checks; leave empty for the free tier",
+      "required": false,
+      "example": "rr_your_pro_key"
+    }
+  },
+  "tools": [
+    {
+      "name": "check_token",
+      "description": "Check a Solana token (mint, pump fun / DexScreener link or $TICKER) for rug-pull and scam risk: 0-100 score, red flags and a report link."
+    },
+    {
+      "name": "scan_wallet",
+      "description": "List the SPL tokens held by a public Solana wallet, riskiest first."
+    },
+    {
+      "name": "scan_link",
+      "description": "Scan a URL or pasted post text for wallet-drainer and phishing patterns."
+    },
+    {
+      "name": "get_pro_quote",
+      "description": "Get a payment quote for RugRadar Pro ($9 for 30 days, no auto-renewal)."
+    },
+    {
+      "name": "verify_payment_and_get_key",
+      "description": "Verify a Pro payment on-chain and receive a Pro API key."
+    },
+    {
+      "name": "get_pro_status",
+      "description": "Check a Pro key's validity, expiry and current limits."
+    },
+    {
+      "name": "watch_token",
+      "description": "Pro: add a token to the agent watchlist with a baseline snapshot."
+    },
+    {
+      "name": "unwatch_token",
+      "description": "Pro: remove a token from the agent watchlist."
+    },
+    {
+      "name": "get_watch_status",
+      "description": "Pro: report changes on watched tokens since their baseline (dev selling, liquidity pulled, etc.)."
+    }
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "github:HOBSTER6615/rugradar-mcp"
+      ],
+      "env": {
+        "RUGRADAR_API_KEY": "${RUGRADAR_API_KEY}"
+      },
+      "description": "Local stdio server (thin client for the RugRadar API)"
+    },
+    "remote": {
+      "type": "http",
+      "url": "https://rugradar-bgcm.onrender.com/mcp",
+      "description": "Hosted Streamable HTTP endpoint, no auth for the free tier; send a Pro key as Authorization: Bearer <key>",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Check a token",
+      "description": "Rug-risk check for a Solana token",
+      "prompt": "Is DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263 a rug?"
+    },
+    {
+      "title": "Scan a link",
+      "description": "Wallet-drainer scan",
+      "prompt": "Is https://claim-solana-rewards.xyz a drainer?"
+    }
+  ],
+  "is_official": true
+}
