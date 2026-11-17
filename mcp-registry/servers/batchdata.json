@@ -43,9 +43,8 @@
   },
   "arguments": {
     "BATCHDATA_API_TOKEN": {
-      "description": "BatchData API token, only needed for the API token installation. Never commit your token.",
-      "required": false,
-      "example": "YOUR_BATCHDATA_API_TOKEN"
+      "description": "BatchData API token for the API token installation (not needed for OAuth). Never commit your token.",
+      "required": true
     }
   },
   "tools": [
