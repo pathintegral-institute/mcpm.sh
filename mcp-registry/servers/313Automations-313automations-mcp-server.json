@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "@313automations/mcp-server",
+  "display_name": "313Automations MCP Server",
+  "description": "A Multi-purpose Conversation Platform (MCP) server with a suite of tools for various automation and data interaction tasks.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/313Automations/313automations-mcp-server"
+  },
+  "homepage": "https://github.com/313Automations/313automations-mcp-server",
+  "author": {
+    "name": "313Automations"
+  },
+  "license": "MIT",
+  "categories": [
+    "Dev Tools",
+    "System Tools"
+  ],
+  "tags": [
+    "mcp-server",
+    "automation-tools",
+    "nodejs"
+  ],
+  "arguments": {
+    "MCP_SERVER_PORT": {
+      "description": "The port on which the server will run. Defaults to 3133.",
+      "required": false,
+      "example": "3133"
+    },
+    "MCP_SERVER_HOST": {
+      "description": "The host address for the server. Defaults to 127.0.0.1.",
+      "required": false,
+      "example": "127.0.0.1"
+    },
+    "MCP_SERVER_LOG_LEVEL": {
+      "description": "The logging level. Can be `debug`, `info`, `warn`, `error`. Defaults to `info`.",
+      "required": false,
+      "example": "info"
+    },
+    "MCP_SERVER_API_KEY": {
+      "description": "A secret key for securing the server's API. If not set, the API will be open.",
+      "required": false,
+      "example": "your-secret-api-key"
+    }
+  },
+  "tools": [
+    {
+      "name": "shell",
+      "description": "Executes a shell command on the server.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string",
+            "description": "The shell command to execute."
+          }
+        }
+      },
+      "required": [
+        "command"
+      ]
+    },
+    {
+      "name": "file_read",
+      "description": "Reads the content of a file on the server.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "The path to the file to read."
+          }
+        }
+      },
+      "required": [
+        "path"
+      ]
+    },
+    {
+      "name": "file_write",
+      "description": "Writes content to a file on the server.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "The path to the file to write to."
+          },
+          "content": {
+            "type": "string",
+            "description": "The content to write to the file."
+          }
+        }
+      },
+      "required": [
+        "path",
+        "content"
+      ]
+    }
+  ],
+  "resources": [],
+  "prompts": [],
+  "installations": {
+    "npx": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "@313automations/mcp-server"
+      ],
+      "package": "@313automations/mcp-server",
+      "description": "Run the server directly using npx without cloning the repository.",
+      "recommended": true
+    },
+    "source": {
+      "type": "custom",
+      "command": "npm",
+      "args": [
+        "start"
+      ],
+      "description": "Install and run from source code after cloning the repository (`git clone ...`), installing dependencies (`npm install`), and then running this command from the project directory.",
+      "recommended": false
+    }
+  },
+  "examples": [],
+  "is_official": false,
+  "is_archived": false
+}
