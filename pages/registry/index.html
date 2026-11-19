@@ -1686,8 +1686,10 @@
 
                 serverHeader.appendChild(heading);
 
-                // Add install button with click function for deeplink
-                if (isLucien) {
+                // Add install button with click function for deeplink.
+                // The deeplink only carries stdio installs, so skip HTTP servers.
+                const firstInstall = Object.values(server.installations || {})[0];
+                if (isLucien && firstInstall && firstInstall.type !== 'http') {
                     const installButton = document.createElement('button');
                     installButton.className = 'install-button';
                     installButton.type = 'button';
