@@ -146,3 +146,29 @@ class TestFastMCPProxy:
             # Check that auth middleware WAS added
             middleware_types = [type(call[0][0]).__name__ for call in mock_proxy.add_middleware.call_args_list]
             assert "MCPMAuthMiddleware" in middleware_types
+
+    @pytest.mark.asyncio
+    async def test_proxy_forwards_instructions(self):
+        """Test that instructions are passed through to the FastMCP proxy."""
+        server = RemoteServerConfig(name="test", url="http://example.com")
+        factory = MCPMProxyFactory()
+
+        with patch("mcpm.fastmcp_integration.proxy.FastMCP") as mock_fastmcp:
+            mock_fastmcp.as_proxy.return_value = Mock()
+
+            await factory.create_proxy_for_servers([server], instructions="Use web_search for general queries.")
+
+            assert mock_fastmcp.as_proxy.call_args.kwargs["instructions"] == "Use web_search for general queries."
+
+    @pytest.mark.asyncio
+    async def test_proxy_without_instructions(self):
+        """Test that the proxy has no instructions when none are given."""
+        server = RemoteServerConfig(name="test", url="http://example.com")
+        factory = MCPMProxyFactory()
+
+        with patch("mcpm.fastmcp_integration.proxy.FastMCP") as mock_fastmcp:
+            mock_fastmcp.as_proxy.return_value = Mock()
+
+            await factory.create_proxy_for_servers([server])
+
+            assert mock_fastmcp.as_proxy.call_args.kwargs.get("instructions") is None
