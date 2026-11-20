@@ -1,0 +1,284 @@
+{
+  "name": "cubrik",
+  "display_name": "cubrik",
+  "description": "Use your cubrik account from any MCP client: create, test, start and pause AI trading agents that run on the brokers and exchanges connected to cubrik (Binance, OKX, Hyperliquid, MetaTrader and others); backtest rule-based ideas on historical candles; read balances, open positions, closed trades, results and Analytics advice; copy ready-made agents from cubrik's Library; and place, change and close orders through each connected platform's own tools (named <platform>_<tool>). 40 tools plus each platform's own, and five prompts. Hosted remote server: sign in through your MCP client (OAuth 2.1 with PKCE) and choose what it may do: read, manage agents, trade. No API key; broker keys stay in cubrik, and no tool deposits, withdraws or transfers funds. Comes with cubrik's Intermediate plan and above (paid). Not investment advice.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/target1m/cubrik-mcp"
+  },
+  "homepage": "https://cubrik.ai/en/mcp",
+  "author": {
+    "name": "cubrik",
+    "email": "help@cubrik.ai",
+    "url": "https://cubrik.ai"
+  },
+  "license": "MIT",
+  "categories": [
+    "Finance",
+    "Analytics"
+  ],
+  "tags": [
+    "trading",
+    "ai-agents",
+    "trading-agents",
+    "backtesting",
+    "portfolio",
+    "brokers",
+    "crypto",
+    "forex",
+    "binance",
+    "okx",
+    "hyperliquid",
+    "metatrader",
+    "analytics",
+    "remote",
+    "oauth"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://mcp.cubrik.ai/mcp",
+      "description": "Hosted Streamable HTTP MCP server. Your MCP client discovers the OAuth 2.1 metadata and opens cubrik's sign-in, where you choose what it may do (read, manage agents, trade); no API key is needed.",
+      "recommended": true
+    }
+  },
+  "tools": [
+    {
+      "name": "get_account",
+      "description": "The cubrik account's plan and what is left of it: credits this month and when they renew, active agents and the limit, the schedules agents may run on, and which connected platforms agents can use."
+    },
+    {
+      "name": "list_platforms",
+      "description": "The brokers and exchanges connected to the cubrik account: each one's id, status, whether agents can use it, and its last known balance. One marked demo is cubrik's Demo account, with virtual money."
+    },
+    {
+      "name": "get_portfolio",
+      "description": "Balances and open positions on every platform connected to cubrik, read from the platforms themselves."
+    },
+    {
+      "name": "get_trade_history",
+      "description": "Closed trades on the connected platforms, newest first: instrument, side, size, prices, profit or loss, and the agent that opened the trade when one did."
+    },
+    {
+      "name": "get_trading_results",
+      "description": "What the account made or lost on its connected platforms over a period: profit and loss, number of trades, win rate, and the split by agent and by account."
+    },
+    {
+      "name": "connect_platform",
+      "description": "The platforms cubrik lists, and the link to the page in cubrik where a broker or exchange is connected. Keys and sign-ins are entered there, never in the chat."
+    },
+    {
+      "name": "list_agents",
+      "description": "Every agent on the account: id, name, status (active or paused), schedule, whether it may trade, and when it runs next."
+    },
+    {
+      "name": "get_agent",
+      "description": "One agent in full: its instruction or backtest rules, schedule, platforms, limits, what its runs cost in credits, and its performance."
+    },
+    {
+      "name": "get_agent_runs",
+      "description": "An agent's most recent runs, or one run by id: how each ended, what it found and did, the trades it placed and the credits it used."
+    },
+    {
+      "name": "list_agent_templates",
+      "description": "Ready-made agent setups: each template's name, what it does, its schedule and its instruction."
+    },
+    {
+      "name": "create_agent",
+      "description": "Creates an agent and its schedule from an instruction, or from a backtest so that it runs those rules exactly as tested. It is created paused and does nothing until it is started."
+    },
+    {
+      "name": "update_agent",
+      "description": "Changes an agent's name, schedule, instruction or backtest rules, its platforms or limits. A paused agent stays paused."
+    },
+    {
+      "name": "start_agent",
+      "description": "Starts a paused agent on its schedule, optionally with a first run now. An agent allowed to trade places orders on its platform from then on."
+    },
+    {
+      "name": "pause_agent",
+      "description": "Pauses an agent until it is started again or until a given time. Positions stay open on the platform."
+    },
+    {
+      "name": "pause_all_agents",
+      "description": "Pauses every active agent on the account at once. Open positions stay open on the platforms."
+    },
+    {
+      "name": "test_agent",
+      "description": "A dry run of an agent now: it decides as on a real run but places nothing, and says what it would have done. Costs no credits."
+    },
+    {
+      "name": "run_agent_now",
+      "description": "A real run of an agent now, outside its schedule. An agent allowed to trade may place orders. Uses credits."
+    },
+    {
+      "name": "delete_agent",
+      "description": "Deletes an agent. It stops at once; positions it opened stay open on the platform."
+    },
+    {
+      "name": "run_backtest",
+      "description": "Backtests a trading idea's rules on historical candles (markets, timeframe, entry and exit conditions, stop, target, risk per trade, leverage, or a regular buy) in the background. Changes nothing on any account."
+    },
+    {
+      "name": "get_backtest",
+      "description": "A backtest by id: status and progress, then the simulated return, maximum drawdown, win rate, number of trades and the assumptions behind them."
+    },
+    {
+      "name": "check_rules_now",
+      "description": "Whether a saved strategy's entry and exit rules are true on the latest candles, per symbol."
+    },
+    {
+      "name": "search_library",
+      "description": "cubrik's Library of ready-made agents, backtested every week: each one's name, markets, style, return, drawdown and score, narrowed by name, market or style."
+    },
+    {
+      "name": "get_library_agent",
+      "description": "One Library agent in full: its instruction, markets, schedule and weekly backtest history."
+    },
+    {
+      "name": "copy_library_agent",
+      "description": "Copies a Library agent into the account as a new agent, paused."
+    },
+    {
+      "name": "get_analysis",
+      "description": "The Analytics report of one connected platform over a period: profit and loss, trades, win rate, best and worst markets, and the split by agent and by market."
+    },
+    {
+      "name": "get_advice",
+      "description": "Analytics' advice for the agents trading on one platform: what to change in each agent, why, and what it is expected to change."
+    },
+    {
+      "name": "apply_advice",
+      "description": "Writes one piece of Analytics advice onto its agent, changing that agent's rules."
+    },
+    {
+      "name": "get_price",
+      "description": "Latest price and 24-hour change for up to eight instruments."
+    },
+    {
+      "name": "get_candles",
+      "description": "OHLCV candles for one instrument and timeframe."
+    },
+    {
+      "name": "list_instruments",
+      "description": "Instruments cubrik has prices for (crypto pairs, forex, indices, commodities and stocks), searched by ticker or name."
+    },
+    {
+      "name": "get_news",
+      "description": "Recent market headlines, filtered for their likely impact, optionally narrowed to instruments."
+    },
+    {
+      "name": "get_economic_calendar",
+      "description": "Upcoming economic events (rate decisions, inflation and jobs prints, auctions) with their expected impact."
+    },
+    {
+      "name": "get_market_overview",
+      "description": "The main markets' moves, the biggest movers and the market's overall state."
+    },
+    {
+      "name": "list_notifications",
+      "description": "The account's recent notifications (agent results, risk alerts, finished backtests), newest first."
+    },
+    {
+      "name": "mark_notifications_read",
+      "description": "Marks the given notifications, or all of them, as read."
+    },
+    {
+      "name": "get_conversation",
+      "description": "The messages of one cubrik conversation, such as the thread an agent writes its runs into."
+    },
+    {
+      "name": "list_skills",
+      "description": "The account's cubrik skills: playbooks the person wrote for cubrik's chat and agents, and where each is switched on."
+    },
+    {
+      "name": "get_skill",
+      "description": "One cubrik skill in full, by name: its description and its instructions."
+    },
+    {
+      "name": "save_skill",
+      "description": "Creates a cubrik skill, or replaces the one with the same name, and sets whether cubrik's chat and which agents use it."
+    },
+    {
+      "name": "delete_skill",
+      "description": "Deletes one of the account's cubrik skills by name."
+    }
+  ],
+  "prompts": [
+    {
+      "name": "daily_brief",
+      "description": "How the account stands this morning: balances and open positions, what the agents did overnight, and what is on today's economic calendar.",
+      "arguments": []
+    },
+    {
+      "name": "new_agent",
+      "description": "Turns a trading idea into rules, backtests them, and sets the idea up as an agent.",
+      "arguments": [
+        {
+          "name": "idea",
+          "description": "The trading idea, in your own words.",
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "backtest_idea",
+      "description": "Writes an idea as rules and backtests it on historical candles.",
+      "arguments": [
+        {
+          "name": "idea",
+          "description": "The idea to test.",
+          "required": true
+        },
+        {
+          "name": "symbol",
+          "description": "The market, e.g. BTC/USDT.",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "weekly_review",
+      "description": "How the agents did this week, what Analytics advises changing, and which advice is worth applying.",
+      "arguments": []
+    },
+    {
+      "name": "emergency_stop",
+      "description": "Pauses every agent at once and lists the positions still open.",
+      "arguments": []
+    }
+  ],
+  "examples": [
+    {
+      "title": "Portfolio",
+      "description": "Balances, open positions and this month's result",
+      "prompt": "Show my balances and open positions on every platform, and how much I made this month."
+    },
+    {
+      "title": "Backtest an idea",
+      "description": "Rules run on historical candles; nothing changes on any account",
+      "prompt": "Backtest this on BTC 4h over the last year: buy when RSI goes under 30 and the price is above the 200 EMA, with a 2% stop and a 4% target."
+    },
+    {
+      "title": "Copy from the Library",
+      "description": "A ready-made agent copied into the account, paused",
+      "prompt": "Find a Library agent for gold with a drawdown under 15% and copy it to my account."
+    },
+    {
+      "title": "Agent from a backtest",
+      "description": "Created paused, then a dry run that places nothing",
+      "prompt": "Create an agent from that backtest, test it, and tell me what it would do right now."
+    },
+    {
+      "title": "Weekly review",
+      "description": "Results, Analytics and its advice per agent",
+      "prompt": "How did my agents do this week, and what does Analytics advise changing?"
+    },
+    {
+      "title": "Pause everything",
+      "description": "Every agent paused at once; open positions stay open",
+      "prompt": "Pause all my agents."
+    }
+  ],
+  "is_official": true
+}
