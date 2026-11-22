@@ -1,0 +1,63 @@
+{
+  "name": "makeaivideo",
+  "display_name": "MakeAIVideo",
+  "description": "Official MakeAIVideo MCP server for creating short-form AI videos (script, AI voiceover, AI or stock scenes, captions and music) from a prompt or script, returning the MP4, and posting or scheduling it to TikTok, Instagram, YouTube and other connected accounts.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/makeaivideo-ai/mcp"
+  },
+  "homepage": "https://makeaivideo.ai/docs/mcp",
+  "author": {
+    "name": "MakeAIVideo",
+    "url": "https://makeaivideo.ai"
+  },
+  "license": "MIT",
+  "categories": [
+    "Media Creation"
+  ],
+  "tags": [
+    "video",
+    "video-generation",
+    "social-media",
+    "tiktok",
+    "youtube-shorts"
+  ],
+  "arguments": {
+    "MAKEAIVIDEO_API_KEY": {
+      "description": "MakeAIVideo API key for local stdio or bearer authentication, from https://app.makeaivideo.ai/developers. Never commit your key. Videos use account credits.",
+      "required": true,
+      "example": "YOUR_MAKEAIVIDEO_API_KEY"
+    }
+  },
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@makeaivideo/mcp"
+      ],
+      "package": "@makeaivideo/mcp",
+      "env": {
+        "MAKEAIVIDEO_API_KEY": "${MAKEAIVIDEO_API_KEY}"
+      },
+      "description": "Local stdio. Requires Node.js 18+ and a MakeAIVideo account with credits."
+    },
+    "http": {
+      "type": "http",
+      "url": "https://mcp.makeaivideo.ai",
+      "description": "Hosted Streamable HTTP. Use an OAuth-capable MCP client and sign in to MakeAIVideo. Videos use account credits.",
+      "recommended": true
+    },
+    "http-api-key": {
+      "type": "http",
+      "url": "https://mcp.makeaivideo.ai",
+      "headers": {
+        "Authorization": "Bearer ${MAKEAIVIDEO_API_KEY}"
+      },
+      "description": "Hosted Streamable HTTP using a MakeAIVideo API key instead of OAuth. Videos use account credits."
+    }
+  },
+  "is_official": true,
+  "is_archived": false
+}
