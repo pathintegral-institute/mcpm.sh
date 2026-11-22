@@ -28,8 +28,7 @@
   "arguments": {
     "I2V_API_KEY": {
       "description": "i2v.ai API key for local stdio or bearer authentication. Create one at https://i2v.ai/dashboard/api-keys. Generation uses account credits.",
-      "required": true,
-      "example": "i2v_xxxxxxxxxxxxxxxxxxxx"
+      "required": true
     }
   },
   "installations": {
