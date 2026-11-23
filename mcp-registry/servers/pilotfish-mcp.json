@@ -1,0 +1,107 @@
+{
+  "name": "pilotfish-mcp",
+  "display_name": "pilotfish",
+  "description": "Runs a real Chrome on your own machine and gives an MCP client 17 browser tools: compact page snapshots with element refs, click/type/select/scroll, read-only page queries, and a NEEDS A PERSON handoff (browser_resume) so a human can do sign-ins, one-time codes and CAPTCHAs in the open window. Free, MIT, no account or API key.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gAI-ventures/pilotfish-mcp"
+  },
+  "homepage": "https://pilotfish.gai.ventures/docs/open",
+  "author": {
+    "name": "gAI-ventures"
+  },
+  "license": "MIT",
+  "categories": [
+    "Dev Tools",
+    "Web Services"
+  ],
+  "tags": [
+    "browser automation",
+    "web agent",
+    "chrome",
+    "human handoff"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@gaiventures/pilotfish-mcp"
+      ],
+      "package": "@gaiventures/pilotfish-mcp",
+      "description": "Run with npx; no account or API key needed",
+      "recommended": true
+    }
+  },
+  "tools": [
+    {
+      "name": "browser_navigate",
+      "description": "Open an http(s) URL in the current tab. Returns evidence and a snapshot of the visible screen."
+    },
+    {
+      "name": "browser_snapshot",
+      "description": "The current page as a compact tree of headings, text and elements with refs to act on."
+    },
+    {
+      "name": "browser_click",
+      "description": "Click an element by ref; refuses with a reason instead of clicking the wrong thing."
+    },
+    {
+      "name": "browser_type",
+      "description": "Type into an input, textarea or editable element by ref, replacing its text."
+    },
+    {
+      "name": "browser_select",
+      "description": "Choose option(s) of a <select> by label or value."
+    },
+    {
+      "name": "browser_press",
+      "description": "Press a key or shortcut on the focused element."
+    },
+    {
+      "name": "browser_scroll",
+      "description": "Scroll about one screen; returns evidence and newly visible elements."
+    },
+    {
+      "name": "browser_screenshot",
+      "description": "JPEG of the current viewport."
+    },
+    {
+      "name": "browser_get_text",
+      "description": "Readable text of the page (PDFs too), main content first, secrets masked."
+    },
+    {
+      "name": "browser_query",
+      "description": "Read just the values you need with a read-only JavaScript expression returning JSON."
+    },
+    {
+      "name": "browser_find",
+      "description": "Refs of elements anywhere on the page by the words they show or are labelled with."
+    },
+    {
+      "name": "browser_actions",
+      "description": "Several steps in order in one call; stops at the first that fails."
+    },
+    {
+      "name": "browser_resume",
+      "description": "Continue after a NEEDS A PERSON handoff: the person signs in or solves the check in the open window."
+    },
+    {
+      "name": "browser_wait",
+      "description": "Wait 0.5-10 seconds for a page still loading, then return what changed."
+    },
+    {
+      "name": "browser_tabs",
+      "description": "List the open tabs; switch_to makes another tab current."
+    },
+    {
+      "name": "browser_search",
+      "description": "Search the web without the browser: a numbered list of title, address and snippet."
+    },
+    {
+      "name": "browser_close",
+      "description": "Closes the browser; the next call starts a fresh one."
+    }
+  ]
+}
