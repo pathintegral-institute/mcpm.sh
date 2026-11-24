@@ -1,7 +1,7 @@
 {
   "name": "schemagate",
   "display_name": "schemagate",
-  "description": "Saves tokens on text-to-SQL: hands the model only the tables a question needs (about 91% fewer schema tokens on 50+ table databases) and only the ones the caller may read. #1 on the BIRD Mini-Dev leaderboard (SQLite, PostgreSQL, MySQL), 74.34 on BIRD's hidden test set; listed in LangChain's retriever integrations. Read-only.",
+  "description": "Saves tokens on text-to-SQL: hands the model only the tables a question needs (about 91% fewer schema tokens on 50+ table databases) and only the ones the caller may read. 74.34 EX on BIRD's hidden test set; listed in LangChain's retriever integrations. Read-only.",
   "repository": {
     "type": "git",
     "url": "https://github.com/ashishsinha1602/schemagate"
