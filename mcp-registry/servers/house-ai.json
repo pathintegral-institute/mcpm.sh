@@ -26,8 +26,7 @@
   "arguments": {
     "HOUSE_AI_TOKEN": {
       "description": "Personal House AI API token for the http-api-key installation (create one at https://www.houseaiapp.com/app/connector). Not needed for the recommended OAuth installation. Never commit your token. Designs use House AI credits.",
-      "required": true,
-      "example": "hai_YOUR_TOKEN"
+      "required": true
     }
   },
   "installations": {
