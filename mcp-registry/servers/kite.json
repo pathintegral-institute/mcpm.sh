@@ -1,7 +1,7 @@
 {
   "name": "kite",
   "display_name": "Kite",
-  "description": "Hosted MCP server for Kite (kite.new), a design tool your AI agents and your team share. Agents draw real, editable layers (frames, text, components, auto layout) in the same file your team edits live, and any frame can be copied as HTML, React or Tailwind. Free plan: unlimited editors, 3 files, 200 agent actions a day.",
+  "description": "Hosted MCP server for Kite (kite.new), a design tool your AI agents and your team share. Agents draw real, editable layers (frames, text, components, auto layout) in the same file your team edits live, and any frame can be copied as HTML, React or Tailwind. Free plan: unlimited editors, 3 files, 100 agent actions a day.",
   "repository": {
     "type": "git",
     "url": "https://github.com/kitedotnew/kite-agent-plugins"
