@@ -1,0 +1,37 @@
+{
+  "name": "not-human-search",
+  "display_name": "Not Human Search",
+  "description": "Discover websites and APIs ranked by machine-readable agent readiness. Search the index and inspect site details through a hosted MCP endpoint.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/unitedideas/nothumansearch"
+  },
+  "homepage": "https://nothumansearch.ai",
+  "license": "MIT",
+  "categories": [
+    "MCP Tools",
+    "Web Services"
+  ],
+  "tags": [
+    "search",
+    "agent-discovery",
+    "mcp",
+    "api",
+    "openapi"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://nothumansearch.ai/mcp",
+      "recommended": true,
+      "description": "Hosted Streamable HTTP endpoint. Search and site details do not require authentication."
+    }
+  },
+  "examples": [
+    {
+      "title": "Find browser automation services",
+      "description": "Search the index for services with agent-readable interfaces.",
+      "prompt": "Find browser automation APIs, then show the details for a relevant result."
+    }
+  ]
+}
