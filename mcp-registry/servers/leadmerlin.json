@@ -1,0 +1,103 @@
+{
+  "name": "leadmerlin",
+  "display_name": "LeadMerlin",
+  "description": "Local business leads for AI agents: search Google Maps businesses by niche and city, then get each one enriched with owner name, emails checked against the mail server, phone line type (mobile/landline/VoIP) and website tech. Paid tools need an API key; signup gives 100 free leads, no card.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HalberdLLC/leadmerlin-mcp"
+  },
+  "homepage": "https://leadmerlin.com/for-agents/",
+  "author": {
+    "name": "LeadMerlin",
+    "url": "https://leadmerlin.com"
+  },
+  "license": "MIT",
+  "categories": [
+    "Professional Apps"
+  ],
+  "tags": [
+    "lead-generation",
+    "sales",
+    "local-business",
+    "enrichment",
+    "remote"
+  ],
+  "arguments": {
+    "LEADMERLIN_API_KEY": {
+      "description": "Your LeadMerlin API key (lm_...). Sign up at app.leadmerlin.com for 100 free leads.",
+      "required": true,
+      "example": "lm_your_key"
+    }
+  },
+  "tools": [
+    {
+      "name": "find_locations",
+      "description": "Look up location codes for a city, county, state or country (free)."
+    },
+    {
+      "name": "suggest_keywords",
+      "description": "Turn a niche into matching Google business categories and sharper search keywords (free)."
+    },
+    {
+      "name": "start_search",
+      "description": "Start an async search for local businesses by keyword in up to 5 locations and enrich each one. Spends 1 credit per business with a website. Returns a job_id."
+    },
+    {
+      "name": "get_job",
+      "description": "Status and counts for a search or enrichment job."
+    },
+    {
+      "name": "get_results",
+      "description": "Enriched businesses for a job, paginated."
+    },
+    {
+      "name": "enrich_domains",
+      "description": "Enrich up to 100 businesses you already have, by website domain. Spends 1 credit per domain (recently enriched domains are free)."
+    },
+    {
+      "name": "get_usage",
+      "description": "Current plan, credit balance and phone line-type allowance."
+    },
+    {
+      "name": "check_website_tech",
+      "description": "Free, no key: detect the CMS, analytics, ad pixels, chat and booking tools a single website runs."
+    }
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://api.leadmerlin.com/mcp",
+      "headers": {
+        "x-api-key": "${LEADMERLIN_API_KEY}"
+      },
+      "description": "Hosted Streamable HTTP with your API key in the x-api-key header.",
+      "recommended": true
+    },
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "github:HalberdLLC/leadmerlin-mcp"
+      ],
+      "env": {
+        "LEADMERLIN_API_KEY": "${LEADMERLIN_API_KEY}"
+      },
+      "description": "Local stdio bridge to the hosted server. Node.js 18+, no dependencies."
+    }
+  },
+  "examples": [
+    {
+      "title": "Local leads",
+      "description": "Search a niche in a city with enrichment",
+      "prompt": "Find 25 roofing contractors in Denver, CO with an owner name and a verified email, and give me a table."
+    },
+    {
+      "title": "Website tech",
+      "description": "Free tech check for one site",
+      "prompt": "What CMS and analytics does example.com run?"
+    }
+  ],
+  "is_official": true,
+  "is_archived": false
+}
