@@ -1,0 +1,91 @@
+{
+  "name": "llmslim",
+  "display_name": "LLMSlim Memory",
+  "description": "Long-term memory for MCP clients (Claude Code, Claude Desktop, Cursor and others) with no LLM call. Stores user and assistant messages word for word in local SQLite or Postgres, recalls the ones that answer a question within a token budget, and shrinks long text to a budget. The user and agent scope is fixed when the server starts, not chosen by the model.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Thanatos9404/llmslim"
+  },
+  "homepage": "https://www.llmslim.app",
+  "author": {
+    "name": "Yashvardhan Thanvi",
+    "url": "https://github.com/Thanatos9404"
+  },
+  "license": "MIT",
+  "categories": [
+    "Knowledge Base",
+    "AI Systems"
+  ],
+  "tags": [
+    "memory",
+    "long-term-memory",
+    "sqlite",
+    "postgres",
+    "token-budget",
+    "local"
+  ],
+  "arguments": {
+    "LLMSLIM_MEMORY_DB": {
+      "description": "SQLite file that holds the memory, or a postgresql:// URL (needs llmslim[postgres]); default ~/.llmslim/memory.db",
+      "required": false,
+      "example": "~/.llmslim/memory.db"
+    },
+    "LLMSLIM_USER_ID": {
+      "description": "Whose memory this server holds (default \"default\"); fixed when the server starts, not chosen by the model",
+      "required": false,
+      "example": "default"
+    },
+    "LLMSLIM_AGENT_ID": {
+      "description": "Optional agent id, so each agent keeps its own memory",
+      "required": false,
+      "example": "claude-code"
+    }
+  },
+  "tools": [
+    {
+      "name": "remember",
+      "description": "Stores a message word for word and returns its id."
+    },
+    {
+      "name": "recall",
+      "description": "Returns the stored messages that answer a question, whole and under their dates, within a token budget."
+    },
+    {
+      "name": "list_memories",
+      "description": "Lists recent messages with their ids, newest first."
+    },
+    {
+      "name": "forget",
+      "description": "Deletes one message by id. It cannot be undone."
+    },
+    {
+      "name": "fit_context",
+      "description": "Shrinks a long text to a token budget, keeping what answers the query, in order."
+    }
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "llmslim[mcp]",
+        "llmslim",
+        "mcp"
+      ],
+      "package": "llmslim",
+      "description": "Local stdio server from PyPI (Python 3.10+)",
+      "recommended": true
+    },
+    "pip": {
+      "type": "python",
+      "command": "llmslim",
+      "args": [
+        "mcp"
+      ],
+      "package": "llmslim[mcp]",
+      "description": "Run after pip install \"llmslim[mcp]\" (Python 3.10+)"
+    }
+  },
+  "is_official": false
+}
