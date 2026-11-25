@@ -1,0 +1,53 @@
+{
+  "name": "wavegrain",
+  "display_name": "Wavegrain",
+  "description": "Hosted MCP server for Wavegrain: curated TikTok slideshows and Instagram carousels for your brand on autopilot. Agents read your brand, make slideshows in its voice with your photos, edit slides, schedule them and export, within a credit limit you set.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wavegrain/wavegrain-mcp"
+  },
+  "homepage": "https://wavegrain.com/mcp?utm_source=mcpm",
+  "author": {
+    "name": "Wavegrain",
+    "url": "https://wavegrain.com"
+  },
+  "license": "MIT",
+  "categories": [
+    "Media Creation",
+    "Productivity"
+  ],
+  "tags": [
+    "tiktok",
+    "instagram",
+    "carousel",
+    "slideshow",
+    "social media",
+    "content creation"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://wavegrain.com/api/mcp",
+      "recommended": true,
+      "description": "Hosted Streamable HTTP endpoint. Sign in with your Wavegrain account through OAuth when the client connects."
+    }
+  },
+  "examples": [
+    {
+      "title": "Make a carousel",
+      "description": "Create a slideshow from a topic in the brand's voice",
+      "prompt": "Make a 6-slide TikTok slideshow about morning routines for my brand."
+    },
+    {
+      "title": "Edit a slide",
+      "description": "Change the text of one slide",
+      "prompt": "Change the hook on slide 1 of my latest slideshow to something shorter."
+    },
+    {
+      "title": "Schedule a post",
+      "description": "Plan a slideshow on the content calendar",
+      "prompt": "Schedule my latest slideshow for Friday at 6 pm."
+    }
+  ],
+  "is_official": true
+}
