@@ -1,0 +1,35 @@
+{
+  "name": "parallel-search",
+  "display_name": "Parallel Search",
+  "description": "Search the web and fetch page content with Parallel's hosted MCP server. No account or API key is required for anonymous, rate-limited search and fetch.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/parallel-web/search-mcp"
+  },
+  "homepage": "https://docs.parallel.ai/integrations/mcp/quickstart",
+  "license": "MIT",
+  "categories": ["Web Services", "Knowledge Base"],
+  "tags": ["search", "web", "fetch"],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://mcp.parallel.ai/mcp",
+      "headers": {
+        "User-Agent": "mcpm.sh/parallel-search"
+      },
+      "description": "Hosted Streamable HTTP server. Explicitly choose it with mcpm install parallel-search, then connect your MCP client using mcpm run parallel-search. Anonymous search and fetch are rate limited; authenticated research is outside this setup.",
+      "recommended": true
+    }
+  },
+  "tools": [
+    {"name": "web_search", "description": "Search the web for current information and return source URLs with excerpts."},
+    {"name": "web_fetch", "description": "Fetch content from specific web page URLs."}
+  ],
+  "examples": [
+    {
+      "title": "Find and read documentation",
+      "description": "Search for official documentation, then fetch a relevant source page.",
+      "prompt": "Find the official Python documentation for asyncio TaskGroup and read the relevant page."
+    }
+  ]
+}
