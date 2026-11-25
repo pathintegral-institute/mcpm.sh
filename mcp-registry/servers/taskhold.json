@@ -1,0 +1,981 @@
+{
+  "name": "taskhold",
+  "display_name": "Taskhold",
+  "description": "A hosted task list you share with your coding agents. Agents pick up the next task, split it into steps, report progress on a live board and block with a question when they need you. Hosted Streamable HTTP with OAuth 2.1. Paid, $12/month with a 7-day trial.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gettaskhold/taskhold-plugin"
+  },
+  "homepage": "https://taskhold.com",
+  "author": {
+    "name": "Taskhold",
+    "email": "hello@greatwork.company",
+    "url": "https://taskhold.com"
+  },
+  "license": "Proprietary",
+  "categories": [
+    "Productivity"
+  ],
+  "tags": [
+    "task-management",
+    "todo",
+    "coding-agents",
+    "project-management",
+    "remote"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://taskhold.com/api/mcp",
+      "description": "Hosted Streamable HTTP. Use an OAuth-capable MCP client and connect to Taskhold (dynamic client registration, no key needed). Paid, $12/month with a 7-day trial.",
+      "recommended": true
+    }
+  },
+  "tools": [
+    {
+      "name": "taskhold_begin",
+      "description": "Start work in one call: files a new task (or takes an existing one with task_id), plans its steps, marks it in progress and starts the first step. Use this whenever the person asks for something: it puts the request on their board with a checklist and a progress bar. Returns the task id, the numbered steps with ids, the step now running and a cursor for taskhold_updates. Every event of the call (created, planned, started) carries the agent label. On a task already under way it appends the steps. Fails without title or task_id, on an unknown task_id (get one from taskhold_list) or on a step (begin its parent, or taskhold_start the step).",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "title": {
+            "description": "Title of the new task (the person's request, short). Omit when passing task_id.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "task_id": {
+            "description": "Begin an existing task instead of filing a new one (from taskhold_list).",
+            "type": "string",
+            "format": "uuid"
+          },
+          "project": {
+            "description": "Project name, e.g. the repo folder (\"api-server\"). Matched case-insensitively; created on first use. Use this instead of project_id.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "steps": {
+            "description": "The plan, in order, e.g. [\"Read the code\", \"Write the migration\", \"Add tests\"]. Omit for a one-step job.",
+            "maxItems": 50,
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 500
+                    },
+                    "description": {
+                      "type": "string",
+                      "maxLength": 5000
+                    }
+                  },
+                  "required": [
+                    "title"
+                  ]
+                }
+              ]
+            }
+          },
+          "description": {
+            "description": "Details (markdown), e.g. the person's request in full",
+            "type": "string",
+            "maxLength": 10000
+          },
+          "priority": {
+            "description": "Priority of a new task (default medium)",
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "urgent"
+            ]
+          },
+          "labels": {
+            "description": "Labels for a new task, e.g. [\"bug\", \"refactor\"]",
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 50
+            }
+          },
+          "agent": {
+            "description": "Who is working, shown to the person: \"<client> in <repo folder>\", e.g. \"Claude Code in api-server\". Outside a repo just \"Claude Code\".",
+            "type": "string",
+            "maxLength": 100
+          },
+          "start_first_step": {
+            "description": "Also start the first step (default true)",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    {
+      "name": "taskhold_list",
+      "description": "List top-level tasks, one line each, grouped by status. Pass project to see one repo's work. Each line has status, title, steps done, progress and id; steps aren't listed (taskhold_get shows them). An unknown project name returns no tasks and is not created.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "status": {
+            "description": "Filter by status. Default: all.",
+            "type": "string",
+            "enum": [
+              "todo",
+              "in_progress",
+              "blocked",
+              "done",
+              "all"
+            ]
+          },
+          "priority": {
+            "description": "Filter by priority",
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "urgent"
+            ]
+          },
+          "project": {
+            "description": "Project name, e.g. the repo folder (\"api-server\"). Matched case-insensitively (or a project id). An unknown name matches nothing.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "project_id": {
+            "description": "Filter by project id (project, a name, is easier)",
+            "type": "string",
+            "format": "uuid"
+          },
+          "limit": {
+            "description": "Max tasks to return (default 20)",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        }
+      }
+    },
+    {
+      "name": "taskhold_get",
+      "description": "Get one task with its full description, steps (subtasks), progress, labels and the latest notes. Returns status, priority, project, the numbered steps with ids (each with its description and, once done, its summary), up to 10 latest notes, the completion summary and what changed (files, checks, links, risks, how to verify) when it was reported. An unknown task_id fails with \"Task not found\"; get a valid id from taskhold_list (status \"all\") or taskhold_search.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The ID of the task to retrieve"
+          }
+        },
+        "required": [
+          "task_id"
+        ]
+      }
+    },
+    {
+      "name": "taskhold_get_current",
+      "description": "Get the task in progress (in this project when you pass project), with its steps and the next one to do. Call this at the start of a session. Returns the most recently active in-progress task, its numbered steps with ids (with descriptions and the summaries of done steps), the next step's id and the latest 3 notes (taskhold_get shows 10); with nothing in progress (or an unknown project) it says so and names taskhold_begin and taskhold_list.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "project": {
+            "description": "Project name, e.g. the repo folder (\"api-server\"). Matched case-insensitively (or a project id). An unknown name matches nothing.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        }
+      }
+    },
+    {
+      "name": "taskhold_search",
+      "description": "Search tasks and steps by text in the title or description (case-insensitive, up to 100 tasks scanned). Returns matching lines grouped by status, with ids (a step names the task it belongs to), or a line saying nothing matched.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Search text"
+          },
+          "status": {
+            "description": "Filter by status",
+            "type": "string",
+            "enum": [
+              "todo",
+              "in_progress",
+              "blocked",
+              "done",
+              "all"
+            ]
+          },
+          "project": {
+            "description": "Project name, e.g. the repo folder (\"api-server\"). Matched case-insensitively (or a project id). An unknown name matches nothing.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "project_id": {
+            "description": "Filter by project id (project, a name, is easier)",
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "taskhold_create",
+      "description": "File work for later: a bug, a refactor, a follow-up you aren't doing now (it lands in To Do). To file and start work at once, use taskhold_begin. Pass parent_task_id to add one step to an existing task (taskhold_plan for several). Returns the new id, status (todo) and priority. Fails if parent_task_id isn't found or is itself a step (steps don't nest), if project_id doesn't exist (pass project by name instead), or at the account's task ceiling.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500,
+            "description": "Task title"
+          },
+          "description": {
+            "description": "Details (markdown)",
+            "type": "string",
+            "maxLength": 10000
+          },
+          "priority": {
+            "description": "Priority (default medium)",
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "urgent"
+            ]
+          },
+          "project": {
+            "description": "Project name, e.g. the repo folder (\"api-server\"). Matched case-insensitively; created on first use. Use this instead of project_id.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "project_id": {
+            "description": "Project id (project, a name, is easier)",
+            "type": "string",
+            "format": "uuid"
+          },
+          "labels": {
+            "description": "Labels, e.g. [\"bug\", \"refactor\"]",
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 50
+            }
+          },
+          "parent_task_id": {
+            "description": "Make it a step (subtask) of this top-level task",
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      }
+    },
+    {
+      "name": "taskhold_plan",
+      "description": "Add ordered steps (subtasks) to a task so the person sees a checklist; the progress bar fills as steps finish. taskhold_begin already does this for new work. For an existing task: taskhold_start it, then taskhold_plan. Steps don't nest. Returns the task's whole step list with ids. Fails on an unknown task_id, on a step (plan its parent) or past 200 steps per task. Planning a done task adds todo steps but leaves it done; taskhold_start it to reopen.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The ID of the task to plan"
+          },
+          "steps": {
+            "description": "Steps in order, e.g. [\"Write the migration\", \"Update the API\", \"Add tests\"]",
+            "minItems": 1,
+            "maxItems": 50,
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 500
+                    },
+                    "description": {
+                      "type": "string",
+                      "maxLength": 5000
+                    }
+                  },
+                  "required": [
+                    "title"
+                  ]
+                }
+              ]
+            }
+          },
+          "replace": {
+            "description": "Replace steps that haven't started yet (done and in-progress steps stay). Default false: append.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "task_id",
+          "steps"
+        ]
+      }
+    },
+    {
+      "name": "taskhold_progress",
+      "description": "Move the person's progress bar during a long step or a task without steps: percent, or current and total (e.g. 12 of 40 files), plus a short message about what's happening now. On a task with steps, the steps drive the bar: numbers you send for the task go to its running step. Call at milestones, every few minutes at most. Returns the task's progress bar and, on a task with steps, which step your numbers went to. Fails without percent, total or message, on an unknown task_id, or past the per-minute limit (the error says when to retry).",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The ID of the task you are reporting on (a step, or a task without steps)"
+          },
+          "percent": {
+            "description": "0-100",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "current": {
+            "description": "Items done so far, with total",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "total": {
+            "description": "Total items",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "message": {
+            "description": "What is happening now, e.g. \"Running the test suite\"",
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "task_id"
+        ]
+      }
+    },
+    {
+      "name": "taskhold_create_from_todo",
+      "description": "Create a task from a TODO comment in code, keeping the file path and line number (label todo-from-code plus any labels you pass; priority as in taskhold_create; use taskhold_create for anything else). Returns the new task with its id and code location. Fails at the account's task ceiling or on an invalid project name.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500,
+            "description": "Task title from the TODO"
+          },
+          "file_path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500,
+            "description": "Path of the file containing the TODO"
+          },
+          "line_number": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Line number of the TODO"
+          },
+          "description": {
+            "description": "Extra context from the code",
+            "type": "string",
+            "maxLength": 10000
+          },
+          "priority": {
+            "description": "Priority (default medium; low unless it's a real bug)",
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "urgent"
+            ]
+          },
+          "labels": {
+            "description": "More labels besides todo-from-code, e.g. [\"bug\"]",
+            "maxItems": 19,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 50
+            }
+          },
+          "project": {
+            "description": "Project name, e.g. the repo folder (\"api-server\"). Matched case-insensitively; created on first use. Use this instead of project_id.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "title",
+          "file_path",
+          "line_number"
+        ]
+      }
+    },
+    {
+      "name": "taskhold_start",
+      "description": "Mark a task or step in progress when you begin it. Starting a step also starts its task. For new work, taskhold_begin files, plans and starts in one call. Returns the id, status and the next step's id when it has steps. Safe to repeat; it also resumes a blocked or done task. An unknown task_id fails with \"Task not found\".",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The ID of the task to start"
+          },
+          "agent": {
+            "description": "Who is working, shown to the person: \"<client> in <repo folder>\", e.g. \"Claude Code in api-server\". Outside a repo just \"Claude Code\".",
+            "type": "string",
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "task_id"
+        ]
+      }
+    },
+    {
+      "name": "taskhold_complete",
+      "description": "Mark a task or step done, with a summary of what you did and, optionally, a structured outcome: files changed (with +/- line counts), checks run (pass/fail/skip), links (PR, commit, branch, deploy, doc), follow-up task ids, risks and how the person can verify it. The person sees it as a What changed card; a step's outcome rolls up to its task. When the person should look at the work, pass needs_review: true with outcome.verify (how you checked it): the task lands in their Ready for review queue. Completing a step tells you the next one; start_next: true also starts it, and finish_task: true on the last open step closes the task too (with the same summary) in one call. For a step it returns steps done, the task's bar and the next step's id (or, after the last step, a reminder to complete the task). Completing a task closes its open steps. Repeating it on a task that is already done changes nothing and keeps the first summary (add more with taskhold_add_note); an unknown task_id fails with \"Task not found\", an invalid outcome fails without changing anything.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The ID of the task to complete"
+          },
+          "summary": {
+            "description": "What was done (and how you checked it). Markdown.",
+            "type": "string",
+            "maxLength": 5000
+          },
+          "start_next": {
+            "description": "When completing a step, start the next step too (default false)",
+            "type": "boolean"
+          },
+          "finish_task": {
+            "description": "When completing the last open step, also complete its task with this summary (default false)",
+            "type": "boolean"
+          },
+          "outcome": {
+            "description": "What changed, shown to the person as a What changed card (20 KB max). Every field is optional.",
+            "type": "object",
+            "properties": {
+              "files": {
+                "description": "Files changed, e.g. [{path: \"src/auth.ts\", added: 40, removed: 12}] (max 100)",
+                "maxItems": 100,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 500
+                    },
+                    "added": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "removed": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": [
+                    "path"
+                  ]
+                }
+              },
+              "checks": {
+                "description": "Checks you ran, e.g. [{name: \"bun test\", result: \"pass\", detail: \"212 tests\"}] (max 20)",
+                "maxItems": 20,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200
+                    },
+                    "result": {
+                      "type": "string",
+                      "enum": [
+                        "pass",
+                        "fail",
+                        "skip"
+                      ]
+                    },
+                    "detail": {
+                      "type": "string",
+                      "maxLength": 1000
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "result"
+                  ]
+                }
+              },
+              "links": {
+                "description": "PR, commit, branch, deploy or doc links (url may be a sha or branch name) (max 20)",
+                "maxItems": 20,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "pr",
+                        "commit",
+                        "branch",
+                        "deploy",
+                        "doc",
+                        "other"
+                      ]
+                    },
+                    "url": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 2048
+                    },
+                    "title": {
+                      "type": "string",
+                      "maxLength": 200
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "url"
+                  ]
+                }
+              },
+              "follow_ups": {
+                "description": "Ids of tasks you filed for leftover work (from taskhold_create)",
+                "maxItems": 20,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "risks": {
+                "description": "What could go wrong or still needs a look (max 5)",
+                "maxItems": 5,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                }
+              },
+              "verify": {
+                "description": "How the person can check it themselves, e.g. the command or page to open",
+                "type": "string",
+                "maxLength": 4000
+              }
+            }
+          },
+          "needs_review": {
+            "description": "Ask the person to review the work: the task goes to their Ready for review queue (it still counts as done). Needs outcome.verify, a short \"how I checked it\" line. They approve it or request changes; both arrive in taskhold_updates (default false)",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "task_id"
+        ]
+      }
+    },
+    {
+      "name": "taskhold_block",
+      "description": "Mark a task (or step) blocked when you can't continue without the person (a decision, missing info, access). Returns the question and the exact taskhold_updates call to wait with. Write the reason as one question they can answer from the board in a line, e.g. \"Decide: drop the legacy column or keep it nullable?\". When the answer is a choice, pass 2-4 short options (and recommended, the index of the one you'd pick, 0 = first): the person answers with one tap and the reply reads Reply to \"<question>\": chose \"<option>\". if_no_answer says what you'll do if nobody answers. The board shows it under Needs you and their reply arrives as a note. Then wait for it with taskhold_updates {task_id, since, wait: 50}; keep working on anything that doesn't depend on it meanwhile. If the reply doesn't settle it, block again with a narrower question; don't guess. Blocking an already-blocked task asks the new question instead, and the earlier question stays in the task's history; an unknown task_id fails with \"Task not found\".",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The ID of the task to block"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000,
+            "description": "One answerable question, e.g. \"Approve: deploy the migration to staging now?\""
+          },
+          "options": {
+            "description": "2-4 short choices shown as buttons, e.g. [\"Postgres\", \"SQLite\", \"Ask me later\"]. Omit for an open question.",
+            "minItems": 2,
+            "maxItems": 4,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            }
+          },
+          "recommended": {
+            "description": "Index into options of the one you recommend (0 = the first). Marked on the board.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "if_no_answer": {
+            "description": "What you will do if nobody answers, e.g. \"I'll use SQLite and keep going in 30 min.\"",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "task_id",
+          "reason"
+        ]
+      }
+    },
+    {
+      "name": "taskhold_unblock",
+      "description": "Move a blocked task back to todo once the blocker is resolved (taskhold_start resumes it directly). Returns the task with status todo. A task that isn't blocked is left as it is and the reply says its status; an unknown task_id fails with \"Task not found\".",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The ID of the task to unblock"
+          }
+        },
+        "required": [
+          "task_id"
+        ]
+      }
+    },
+    {
+      "name": "taskhold_release",
+      "description": "Put unfinished work back in To Do, with a note, when you stop and nobody has to answer (e.g. waiting on a captcha). Its steps go too, your label comes off, progress stays. Need the person? taskhold_block. Done tasks are refused.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The ID of the task to hand back"
+          },
+          "note": {
+            "description": "Where it stands and what's next",
+            "type": "string",
+            "maxLength": 2000
+          }
+        },
+        "required": [
+          "task_id"
+        ]
+      }
+    },
+    {
+      "name": "taskhold_update",
+      "description": "Update a task's title, description, priority or project. Only fields you pass change; status goes through taskhold_start, taskhold_complete, taskhold_block and taskhold_release. Returns the task as it is now. Fails on an unknown task_id, a project_id that doesn't exist (pass project by name instead) or an invalid project name.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The ID of the task to update"
+          },
+          "title": {
+            "description": "New title",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "description": {
+            "description": "New description",
+            "type": "string",
+            "maxLength": 10000
+          },
+          "priority": {
+            "description": "New priority",
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "urgent"
+            ]
+          },
+          "project": {
+            "description": "Project name, e.g. the repo folder (\"api-server\"). Move it to this project (matched case-insensitively, created on first use).",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "project_id": {
+            "description": "Move to project by id (null to remove)",
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "task_id"
+        ]
+      }
+    },
+    {
+      "name": "taskhold_add_note",
+      "description": "Add a note to a task: findings, decisions, what you tried. The person reads these. Notes are append-only and shown oldest first (taskhold_get shows the latest 10). Returns a one-line confirmation; an unknown task_id fails with \"Task not found\".",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The ID of the task to add a note to"
+          },
+          "note": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 5000,
+            "description": "The note"
+          }
+        },
+        "required": [
+          "task_id",
+          "note"
+        ]
+      }
+    },
+    {
+      "name": "taskhold_set_priority",
+      "description": "Change a task's priority. Returns the task title and new priority; an unknown task_id fails with \"Task not found\".",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The ID of the task to reprioritize"
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "urgent"
+            ],
+            "description": "New priority"
+          }
+        },
+        "required": [
+          "task_id",
+          "priority"
+        ]
+      }
+    },
+    {
+      "name": "taskhold_updates",
+      "description": "What the person changed since you last looked: replies (notes), new tasks, priority changes, unblocks. Call when you resume, between steps, and after blocking (with wait, to hold until the reply lands). Pass the cursor from the previous call (or from taskhold_begin / taskhold_block) as since. Your own changes are hidden unless include_agent is true. Returns one line per change, oldest first (time, who, task, what changed, task id), then the cursor for next time; with nothing new it says so and still gives a cursor. An unknown project returns no changes; an unknown task_id fails with \"Task not found\".",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "since": {
+            "description": "Cursor from the previous call. Omit the first time (you get the latest 20).",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "project": {
+            "description": "Project name, e.g. the repo folder (\"api-server\"). Matched case-insensitively (or a project id). An unknown name matches nothing.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "task_id": {
+            "description": "Only changes to this task and its steps (e.g. the one you blocked)",
+            "type": "string",
+            "format": "uuid"
+          },
+          "wait": {
+            "description": "Seconds to wait for a change when there is none yet (0-50). Use after taskhold_block.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 50
+          },
+          "include_agent": {
+            "description": "Also include changes made by agents, yours included (default: the person's changes only)",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    {
+      "name": "taskhold_list_projects",
+      "description": "List projects with their open work, one line each. You rarely need this: every tool takes project as a name. Each line has the name, open counts (working, blocked, todo) and id.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "taskhold_create_project",
+      "description": "Create a project (a group of tasks, usually one per repo). Optional: any tool that takes project creates it on first use. Returns the existing project if one has this name (case-insensitive), without changing it: the reply says if your description or color wasn't applied (taskhold_update_project changes them). Says whether it was created, restored or already existed, plus its id. Fails on an invalid name or at the account's project ceiling (the error says what to do).",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "Project name, e.g. the repo folder (\"api-server\")"
+          },
+          "description": {
+            "description": "One line about it",
+            "type": "string",
+            "maxLength": 500
+          },
+          "color": {
+            "description": "Hex color for the board, e.g. \"#2f6fdb\" (default: picked from the name)",
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    {
+      "name": "taskhold_update_project",
+      "description": "Change a project's name, description or color. Only fields you pass change. Returns the project as it is now. Fails on an unknown project (it is never created here), on a name another project already has, or with nothing to change.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "The project to change: its name (case-insensitive) or id, e.g. \"api-server\""
+          },
+          "name": {
+            "description": "New name",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "description": {
+            "description": "New one-line description (\"\" clears it)",
+            "type": "string",
+            "maxLength": 500
+          },
+          "color": {
+            "description": "New hex color, e.g. \"#2f6fdb\"",
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          }
+        },
+        "required": [
+          "project"
+        ]
+      }
+    },
+    {
+      "name": "taskhold_list_labels",
+      "description": "List the account's labels, one name per line. Labels are created by passing them to taskhold_create or taskhold_begin.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "taskhold_get_summary",
+      "description": "Task counts by status, priority and who added them (human or agent). Returns the total and one list per grouping; counts top-level tasks only, not steps.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ],
+  "is_official": true,
+  "is_archived": false
+}
