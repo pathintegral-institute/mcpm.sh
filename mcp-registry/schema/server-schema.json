@@ -232,7 +232,8 @@
               "required": ["url"]
             },
             "else": {
-              "required": ["command", "args"]
+              "required": ["command", "args"],
+              "not": {"required": ["transport"]}
             }
           }
         ],
@@ -283,6 +284,11 @@
           "url": {
             "type": "string",
             "description": "URL to fetch the server binary from (required for http type)"
+          },
+          "transport": {
+            "type": "string",
+            "enum": ["sse", "streamablehttp"],
+            "description": "Optional explicit HTTP transport, preserved through installation and stdio proxy export. Omission retains legacy behavior."
           },
           "headers": {
             "type": "object",
