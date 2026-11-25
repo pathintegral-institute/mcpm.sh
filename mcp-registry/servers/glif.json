@@ -1,0 +1,33 @@
+{
+  "name": "glif",
+  "display_name": "Glif",
+  "description": "Glif's hosted media-generation agent: generate images, video, and audio, transcribe, and chain multi-step media workflows.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/glifxyz/glif-mcp-server"
+  },
+  "homepage": "https://glif.app/mcp",
+  "author": {
+    "name": "Glif"
+  },
+  "license": "MIT",
+  "categories": [
+    "Media Creation"
+  ],
+  "tags": [
+    "image-generation",
+    "video-generation",
+    "audio-generation",
+    "transcription",
+    "media",
+    "ai"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://glif.app/api/mcp",
+      "description": "Hosted remote server with OAuth",
+      "recommended": true
+    }
+  }
+}
