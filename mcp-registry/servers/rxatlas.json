@@ -1,0 +1,41 @@
+{
+  "name": "rxatlas",
+  "display_name": "RxAtlas",
+  "description": "US drug products at FDA product-NDC grain, with per-field provenance: search drug records, fetch one record in full, resolve records by identifier and read coverage. Keyless clients are answered from a published evaluation sample, rate-limited per IP; full access is available with a bearer token or per call via x402 (USDC on Base).",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vanja-ivancevic/dbset-mcp-servers"
+  },
+  "homepage": "https://rxatlas.dev/docs/api",
+  "author": {
+    "name": "vanja-ivancevic"
+  },
+  "license": "Proprietary",
+  "categories": ["Analytics", "Knowledge Base"],
+  "tags": ["drugs", "pharma", "fda", "ndc", "provenance", "x402"],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://api.rxatlas.dev/mcp"
+    }
+  },
+  "tools": [
+    {
+      "name": "drugs_search",
+      "description": "Search drug records by name, ingredient or other attributes."
+    },
+    {
+      "name": "drugs_get",
+      "description": "Fetch one drug record in full, including its per-field provenance."
+    },
+    {
+      "name": "drugs_lookup_by_ids",
+      "description": "Resolve drug records by external identifiers."
+    },
+    {
+      "name": "drugs_coverage",
+      "description": "Read the live coverage of the drug dataset."
+    }
+  ],
+  "is_official": true
+}

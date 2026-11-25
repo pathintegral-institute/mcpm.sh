@@ -1,0 +1,37 @@
+{
+  "name": "recallradar",
+  "display_name": "RecallRadar",
+  "description": "Consumer-product recalls and safety notices from CPSC, EU Safety Gate, RappelConso, Health Canada, UK OPSS, ACCC, BSMI and Tukes: search by product, brand or hazard, fetch one recall with its remedy and source links, and list the source registers with their licences. Keyless clients are answered from a published evaluation sample, rate-limited per IP; full access is available with a bearer token or per call via x402 (USDC on Base).",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vanja-ivancevic/dbset-mcp-servers"
+  },
+  "homepage": "https://recallradar.dev/docs/api",
+  "author": {
+    "name": "vanja-ivancevic"
+  },
+  "license": "Proprietary",
+  "categories": ["Analytics", "Web Services"],
+  "tags": ["recalls", "product safety", "consumer products", "provenance", "x402"],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://api.recallradar.dev/mcp"
+    }
+  },
+  "tools": [
+    {
+      "name": "recalls_search",
+      "description": "Search recall notices by product, brand, hazard or keyword."
+    },
+    {
+      "name": "recalls_get",
+      "description": "Fetch one recall with its remedy, recalling firms and source links."
+    },
+    {
+      "name": "recalls_sources",
+      "description": "List the source registers with their licences and attribution rules."
+    }
+  ],
+  "is_official": true
+}
