@@ -1,3 +1,17 @@
+# [2.16.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.15.0...v2.16.0) (2026-11-25)
+
+
+### Bug Fixes
+
+* **ci:** run test and lint jobs on Python 3.11 ([#579](https://github.com/pathintegral-institute/mcpm.sh/issues/579)) ([159b6e9](https://github.com/pathintegral-institute/mcpm.sh/commit/159b6e9e2572c0f5fd75aa715aaf584862955ded))
+
+
+### Features
+
+* **profile:** expose profile description as MCP server instructions ([#559](https://github.com/pathintegral-institute/mcpm.sh/issues/559)) ([7923883](https://github.com/pathintegral-institute/mcpm.sh/commit/792388353c2dc10b65e7ce8cd8834f7aaa291070))
+* **registry:** add local-mcp server ([#410](https://github.com/pathintegral-institute/mcpm.sh/issues/410)) ([76fb788](https://github.com/pathintegral-institute/mcpm.sh/commit/76fb788b884297a7f4678e7ccf082d4b45cfb9f9))
+* **registry:** add Markovo MCP server ([#406](https://github.com/pathintegral-institute/mcpm.sh/issues/406)) ([936cd00](https://github.com/pathintegral-institute/mcpm.sh/commit/936cd0046a9fac692c7c7fa3e2642c11ef070ab8))
+
 # [2.15.0](https://github.com/pathintegral-institute/mcpm.sh/compare/v2.14.0...v2.15.0) (2026-05-22)
 
 
