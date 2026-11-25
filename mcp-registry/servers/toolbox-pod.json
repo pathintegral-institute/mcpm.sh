@@ -1,0 +1,55 @@
+{
+  "name": "toolbox-pod",
+  "display_name": "Toolbox POD",
+  "description": "Official hosted MCP server for Toolbox POD, which prints custom shirts and hoodies in its own shop in Utah and ships them to US addresses. Your AI assistant can create shirt designs from a description or reuse saved designs, show a design on the shirt in the colors you choose, price an order, prepare an order with a locked price and give you a link to pay on toolboxpod.com (the assistant pays only within a spending limit the account Owner sets; ChatGPT and the Claude apps always send the link), and show order status and tracking.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Toolbox-POD/toolbox-pod-mcp"
+  },
+  "homepage": "https://toolboxpod.com/mcp",
+  "author": {
+    "name": "Toolbox POD",
+    "email": "support@toolboxpod.com",
+    "url": "https://toolboxpod.com"
+  },
+  "license": "MIT",
+  "categories": [
+    "Web Services",
+    "Media Creation"
+  ],
+  "tags": [
+    "print-on-demand",
+    "custom-t-shirts",
+    "hoodies",
+    "mockups",
+    "ecommerce",
+    "remote",
+    "oauth"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://mcp.toolboxpod.com/mcp",
+      "recommended": true,
+      "description": "Hosted Streamable HTTP endpoint with OAuth 2.1 sign-in (dynamic client registration). Sign in or sign up to Toolbox POD when you connect; no API key."
+    }
+  },
+  "examples": [
+    {
+      "title": "Design a shirt",
+      "description": "Create a design from a description and see it on a shirt",
+      "prompt": "Design a retro sunset shirt for my hiking club and show me a mockup."
+    },
+    {
+      "title": "Price an order",
+      "description": "Price a garment, quantity, sizes and print sides",
+      "prompt": "How much for 24 hoodies in mixed sizes, printed front and back?"
+    },
+    {
+      "title": "Track an order",
+      "description": "Show order status and tracking",
+      "prompt": "Where is my last Toolbox POD order?"
+    }
+  ],
+  "is_official": true
+}
