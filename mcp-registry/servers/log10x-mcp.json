@@ -1,0 +1,40 @@
+{
+  "name": "log10x-mcp",
+  "display_name": "Log10x MCP",
+  "description": "Ranks log patterns by volume and cost on Splunk, Datadog, Elasticsearch, CloudWatch and ClickHouse, and plans compact, tier down or offload for the excess over each cap. Runs locally over stdio; no log data reaches log10x. Read-only against a public demo dataset without an API key.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/log-10x/log10x-mcp"
+  },
+  "homepage": "https://doc.log10x.com/apps/mcp/",
+  "author": {
+    "name": "Log10x",
+    "url": "https://www.log10x.com"
+  },
+  "license": "MIT",
+  "categories": [
+    "Dev Tools",
+    "Analytics"
+  ],
+  "tags": [
+    "logs",
+    "log cost",
+    "observability",
+    "splunk",
+    "datadog",
+    "elasticsearch",
+    "cloudwatch",
+    "clickhouse"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "log10x-mcp@latest"
+      ],
+      "recommended": true
+    }
+  }
+}
