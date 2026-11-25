@@ -1,0 +1,76 @@
+{
+  "name": "runlater",
+  "display_name": "RunLater",
+  "description": "Schedule HTTP requests from your agent: call a public URL once at an exact time or on a cron schedule, with retries and a log of every run. Hosted Streamable HTTP with OAuth 2.1. Paid plans from $15/mo with a 14-day trial.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/runlater-app/runlater-plugin"
+  },
+  "homepage": "https://runlater.app",
+  "author": {
+    "name": "RunLater",
+    "email": "hello@greatwork.company",
+    "url": "https://runlater.app"
+  },
+  "license": "MIT",
+  "categories": [
+    "Dev Tools",
+    "Productivity"
+  ],
+  "tags": [
+    "cron",
+    "scheduler",
+    "webhooks",
+    "http-requests",
+    "automation",
+    "remote"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://runlater.app/api/mcp",
+      "description": "Hosted Streamable HTTP. Use an OAuth-capable MCP client and sign in to RunLater (dynamic client registration, no key needed). Scheduling needs a paid plan (from $15/mo, 14-day trial); until then tools reply with a setup link.",
+      "recommended": true
+    }
+  },
+  "tools": [
+    {
+      "name": "schedule_get_request",
+      "description": "Schedule a GET to a public URL once at an exact time or on a cron schedule."
+    },
+    {
+      "name": "schedule_send_request",
+      "description": "Schedule a POST, PUT, PATCH or DELETE with an optional body, once or on cron."
+    },
+    {
+      "name": "list_schedules",
+      "description": "List scheduled requests with status and next run time."
+    },
+    {
+      "name": "get_schedule",
+      "description": "Get one schedule with its recent runs: status code, duration, error and response preview."
+    },
+    {
+      "name": "pause_schedule",
+      "description": "Pause a schedule until it is resumed."
+    },
+    {
+      "name": "resume_schedule",
+      "description": "Resume a paused schedule."
+    },
+    {
+      "name": "run_now",
+      "description": "Send a scheduled request once, right now, and return the status code and response."
+    },
+    {
+      "name": "delete_schedule",
+      "description": "Delete a scheduled request for good."
+    },
+    {
+      "name": "account_status",
+      "description": "Show the workspace's limits and usage this month."
+    }
+  ],
+  "is_official": true,
+  "is_archived": false
+}
