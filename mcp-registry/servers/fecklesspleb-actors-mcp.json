@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "actors-mcp",
+  "display_name": "actors-mcp",
+  "description": "A server for the Multi-agent Controllable Planner (MCP) system that provides tools for interacting with the file system.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fecklesspleb/actors-mcp"
+  },
+  "author": {
+    "name": "fecklesspleb"
+  },
+  "license": "MIT",
+  "categories": [
+    "System Tools",
+    "MCP Tools"
+  ],
+  "tags": [
+    "mcp-server",
+    "filesystem",
+    "multi-agent"
+  ],
+  "arguments": {
+    "port": {
+      "description": "The port to run the server on. Defaults to `8000`.",
+      "required": false,
+      "example": "8000"
+    },
+    "root": {
+      "description": "The root directory to serve files from. Defaults to the current working directory.",
+      "required": false,
+      "example": "/path/to/your/files"
+    }
+  },
+  "tools": [
+    {
+      "name": "readFile",
+      "description": "Reads the contents of a file.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "The path to the file to read."
+          }
+        }
+      },
+      "required": [
+        "path"
+      ]
+    },
+    {
+      "name": "writeFile",
+      "description": "Writes content to a file.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "The path to the file to write."
+          },
+          "content": {
+            "type": "string",
+            "description": "The content to write to the file."
+          }
+        }
+      },
+      "required": [
+        "path",
+        "content"
+      ]
+    },
+    {
+      "name": "listFiles",
+      "description": "Lists the files in a directory.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "The path to the directory to list."
+          }
+        }
+      },
+      "required": [
+        "path"
+      ]
+    }
+  ],
+  "resources": [],
+  "prompts": [],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--package",
+        "actors-mcp@npm",
+        "--port",
+        "8000"
+      ],
+      "package": "actors-mcp@npm",
+      "description": "Run the server using uvx, the recommended method.",
+      "recommended": true
+    },
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "actors-mcp"
+      ],
+      "package": "actors-mcp",
+      "description": "Run the server using npx."
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-p",
+        "8000:8000",
+        "ghcr.io/fecklesspleb/actors-mcp:latest"
+      ],
+      "description": "Run the server using Docker."
+    }
+  },
+  "examples": [],
+  "is_official": false,
+  "is_archived": false
+}
