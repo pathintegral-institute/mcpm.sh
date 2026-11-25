@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "sanctions-kit-mcp-plugin",
+  "display_name": "SanctionsKit MCP Plugin",
+  "description": "A MCP (My Computer, Personal) plugin for the SanctionsKit API. It allows users to perform searches and retrieve details about sanctioned entities directly from their local environment.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SanctionsKit/sanctions-kit-mcp-plugin"
+  },
+  "homepage": "https://sanctionskit.com",
+  "author": {
+    "name": "SanctionsKit",
+    "email": "support@sanctionskit.com",
+    "url": "https://sanctionskit.com"
+  },
+  "license": "MIT",
+  "categories": [
+    "Finance",
+    "Professional Apps"
+  ],
+  "tags": [
+    "sanctions",
+    "api",
+    "finance"
+  ],
+  "arguments": {
+    "SANCTIONSKIT_API_KEY": {
+      "description": "Your API key for the SanctionsKit API. You can get one from the SanctionsKit website.",
+      "required": true,
+      "example": "sk_xxxxxxxxxxxxxxxxxxxxxxxx"
+    }
+  },
+  "tools": [
+    {
+      "name": "search_entities",
+      "description": "Search for sanctioned entities based on various criteria.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "The search query. Can be a name, address, or other identifying information."
+          },
+          "countries": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "A list of 2-letter country codes to filter by."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "individual",
+              "entity",
+              "vessel",
+              "aircraft"
+            ],
+            "description": "The type of entity to search for."
+          }
+        },
+        "required": [
+          "q"
+        ]
+      },
+      "required": [
+        "q"
+      ]
+    },
+    {
+      "name": "get_entity_details",
+      "description": "Retrieve detailed information about a specific sanctioned entity by its ID.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier of the entity."
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "required": [
+        "id"
+      ]
+    }
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "https://github.com/SanctionsKit/sanctions-kit-mcp-plugin"
+      ],
+      "description": "Install and run the plugin using uvx. Requires the SANCTIONSKIT_API_KEY environment variable to be set.",
+      "recommended": true,
+      "env": {
+        "SANCTIONSKIT_API_KEY": "${YOUR_API_KEY_HERE}"
+      }
+    },
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@sanctionskit/mcp-plugin"
+      ],
+      "description": "Install and run the plugin using npx. Requires the SANCTIONSKIT_API_KEY environment variable to be set.",
+      "env": {
+        "SANCTIONSKIT_API_KEY": "${YOUR_API_KEY_HERE}"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Search for an Entity",
+      "description": "This example shows how to search for entities with the name 'John Doe'.",
+      "prompt": "Find any sanctioned individuals named John Doe."
+    }
+  ],
+  "is_official": false,
+  "is_archived": false
+}
