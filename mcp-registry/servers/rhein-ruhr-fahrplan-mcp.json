@@ -1,0 +1,129 @@
+{
+  "name": "rhein-ruhr-fahrplan-mcp",
+  "display_name": "Rhein-Ruhr Fahrplan MCP",
+  "description": "ÖPNV-Fahrplandaten für das Rhein-Ruhr-Gebiet (Deutschland): Live-Abfahrten und Ankünfte mit Echtzeitprognosen und Verspätungen, Verbindungsplanung, Störungshinweise sowie optionaler GTFS-Sollplan (monatlich automatisch aktualisiert, gefiltert auf konfigurierbare Verkehrsunternehmen). Datenbasis: VRR-OpenData (EFA + GTFS), keine API-Keys erforderlich.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MarcProe/rhein-ruhr-fahrplan-mcp"
+  },
+  "homepage": "https://github.com/MarcProe/rhein-ruhr-fahrplan-mcp",
+  "author": {
+    "name": "MarcProe"
+  },
+  "license": "MIT",
+  "categories": [
+    "Productivity"
+  ],
+  "tags": [
+    "public transport",
+    "transit",
+    "GTFS",
+    "EFA",
+    "real-time departures",
+    "trip planning",
+    "Germany",
+    "Rhein-Ruhr",
+    "VRR"
+  ],
+  "arguments": {
+    "FAHRPLAN_AGENCY_IDS": {
+      "description": "Optional: Comma-separated GTFS agency IDs to enable the schedule database (e.g. 'nia-25' for buses in the Kleve/Wesel districts). Without it, the server runs live-only (departures/connections/disruptions) and schedule tools return a configuration hint. Unfiltered import would create a ~500 MB database and is intentionally not the default.",
+      "required": false,
+      "example": "nia-25"
+    },
+    "FAHRPLAN_OPERATOR": {
+      "description": "Optional: filter live departures/arrivals by operator code (e.g. 'NIAG'). Empty = all operators.",
+      "required": false,
+      "example": "NIAG"
+    },
+    "FAHRPLAN_DEFAULT_START": {
+      "description": "Optional: default start stop (DHID like 'de:05154:35739', EFA ID or unique name). Available via the get_default_start tool.",
+      "required": false,
+      "example": "de:05154:35739"
+    }
+  },
+  "tools": [
+    {
+      "name": "find_stop",
+      "description": "Find a stop in the Rhein-Ruhr area (GTFS index with live EFA fallback). Returns stop ID, name, DHID (global ID) and coordinates."
+    },
+    {
+      "name": "get_default_start",
+      "description": "Resolve the configured default start stop (FAHRPLAN_DEFAULT_START) to its canonical DHID and name."
+    },
+    {
+      "name": "next_departures",
+      "description": "Live departures with real-time predictions: line, direction, scheduled and estimated time, delay in minutes, platform and disruption notices."
+    },
+    {
+      "name": "next_arrivals",
+      "description": "Live arrivals with real-time predictions."
+    },
+    {
+      "name": "stop_schedule",
+      "description": "Planned schedule from the GTFS feed (next departures, supports day_offset for tomorrow etc.)."
+    },
+    {
+      "name": "plan_connection",
+      "description": "Plan a connection from A to B across the whole network (optional departure_time 'YYYY-MM-DD HH:MM')."
+    },
+    {
+      "name": "line_disruptions",
+      "description": "Current disruptions/construction works/stop relocations for a stop (optionally filtered by line)."
+    },
+    {
+      "name": "sync_status",
+      "description": "GTFS feed status: version, validity range, row counts."
+    },
+    {
+      "name": "update_feed",
+      "description": "Check CKAN for a newer GTFS feed; only imports when a new resource exists (idempotent)."
+    }
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "rhein-ruhr-fahrplan-mcp"
+      ],
+      "description": "Run via uvx from PyPI (stdio). Live-only by default; set FAHRPLAN_AGENCY_IDS for the schedule database.",
+      "recommended": true,
+      "env": {
+        "FAHRPLAN_AGENCY_IDS": "${FAHRPLAN_AGENCY_IDS}",
+        "FAHRPLAN_OPERATOR": "${FAHRPLAN_OPERATOR}",
+        "FAHRPLAN_DEFAULT_START": "${FAHRPLAN_DEFAULT_START}"
+      }
+    },
+    "pip": {
+      "type": "python",
+      "command": "rhein-ruhr-fahrplan-mcp",
+      "args": [],
+      "package": "rhein-ruhr-fahrplan-mcp",
+      "description": "Install via pip and run the entry point (stdio). Live-only by default; set FAHRPLAN_AGENCY_IDS for schedules.",
+      "env": {
+        "FAHRPLAN_AGENCY_IDS": "${FAHRPLAN_AGENCY_IDS}",
+        "FAHRPLAN_OPERATOR": "${FAHRPLAN_OPERATOR}",
+        "FAHRPLAN_DEFAULT_START": "${FAHRPLAN_DEFAULT_START}"
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Next departures",
+      "description": "Live departures at a stop",
+      "prompt": "When does the next bus leave from Moers Bahnhof?"
+    },
+    {
+      "title": "Connection planning",
+      "description": "Plan a trip with a specific departure time",
+      "prompt": "Plan a connection from Kleve Bahnhof to Duisburg Hbf departing at 3pm."
+    },
+    {
+      "title": "Disruptions",
+      "description": "Current disruptions around a stop",
+      "prompt": "Are there any disruptions or construction works affecting buses at Kleve Bahnhof?"
+    }
+  ],
+  "is_official": false
+}
