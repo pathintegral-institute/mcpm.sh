@@ -1,0 +1,101 @@
+{
+  "name": "statuscraft",
+  "display_name": "StatusCraft",
+  "description": "MCP server that checks the live status of 141 major software services in real time. Ask your AI agent 'is GitHub down?' or 'what's wrong with Stripe?' and get a live answer pulled directly from official status pages, including full incident detail when something is broken. Services include AWS, Azure, Cloudflare, GitHub, Anthropic, OpenAI, Stripe, Vercel, Netlify, Linear, and more. No API key required.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jabbawocky/statuscraft"
+  },
+  "homepage": "https://github.com/jabbawocky/statuscraft",
+  "author": {
+    "name": "jabbawocky"
+  },
+  "license": "MIT",
+  "categories": ["Monitoring", "Developer Tools"],
+  "tags": [
+    "status",
+    "monitoring",
+    "devops",
+    "uptime",
+    "incident",
+    "claude-desktop",
+    "mcp-server",
+    "infrastructure",
+    "observability"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "github:jabbawocky/statuscraft"
+      ],
+      "description": "Run directly via npx — no global install needed"
+    }
+  },
+  "examples": [
+    {
+      "title": "Check if a service is down",
+      "description": "Get the live status of any tracked service",
+      "prompt": "Is GitHub down right now?"
+    },
+    {
+      "title": "Check multiple services at once",
+      "description": "Get status for several services in parallel",
+      "prompt": "Check the status of GitHub, AWS, and Stripe"
+    },
+    {
+      "title": "Get incident details",
+      "description": "When a service is non-operational, get full incident detail",
+      "prompt": "What's the current Cloudflare incident about?"
+    }
+  ],
+  "tools": [
+    {
+      "name": "get_status",
+      "description": "Check the live status of a single service — returns normalized status and incident detail when non-operational",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "service": {
+            "type": "string",
+            "description": "Service ID or name to check (e.g. 'github', 'aws', 'stripe')"
+          }
+        },
+        "required": ["service"]
+      }
+    },
+    {
+      "name": "check_multiple",
+      "description": "Check the status of multiple services in parallel",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "services": {
+            "type": "array",
+            "items": {"type": "string"},
+            "description": "List of service IDs or names to check"
+          }
+        },
+        "required": ["services"]
+      }
+    },
+    {
+      "name": "list_services",
+      "description": "List all 141 tracked services with their IDs and categories",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Optional category filter (e.g. 'cloud', 'ai', 'payments')"
+          }
+        }
+      }
+    }
+  ],
+  "prompts": [],
+  "resources": [],
+  "is_official": false
+}
