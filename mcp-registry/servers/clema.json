@@ -1,0 +1,89 @@
+{
+  "name": "clema",
+  "display_name": "Clema",
+  "description": "Official hosted MCP server for Clema (clema.ai), an AI analyst for institutional research (IR) and institutional effectiveness teams in U.S. higher education. Work the IR data request queue and query the public IPEDS and College Scorecard datasets with read-only SQL from Claude, ChatGPT, Cursor, Codex, VS Code or any MCP client. OAuth sign-in in the browser, nothing to install. Requires a paid Clema plan; a free trial is available.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wilsonbright/clema-mcp"
+  },
+  "homepage": "https://clema.ai/docs/mcp",
+  "author": {
+    "name": "Clema",
+    "url": "https://clema.ai"
+  },
+  "license": "Proprietary",
+  "categories": [
+    "Analytics",
+    "Professional Apps"
+  ],
+  "tags": [
+    "education",
+    "higher-education",
+    "ipeds",
+    "college-scorecard",
+    "institutional-research",
+    "data-analytics",
+    "sql",
+    "remote",
+    "oauth"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://mcp.clema.ai/mcp",
+      "recommended": true,
+      "description": "Hosted Streamable HTTP endpoint. OAuth 2.1 sign-in in the browser (authorization server https://oauth.clema.ai), no API key. Requires a Clema account."
+    }
+  },
+  "tools": [
+    {
+      "name": "account_details",
+      "description": "Show details of the signed-in Clema account (read-only)."
+    },
+    {
+      "name": "tickets_list",
+      "description": "List IR data request tickets (read-only)."
+    },
+    {
+      "name": "ticket_details",
+      "description": "Get the details of one data request ticket (read-only)."
+    },
+    {
+      "name": "create_ticket",
+      "description": "Create a new data request ticket (writes)."
+    },
+    {
+      "name": "update_ticket_settings",
+      "description": "Update the settings of a data request ticket (writes)."
+    },
+    {
+      "name": "data_tables",
+      "description": "List the available IPEDS and College Scorecard tables (read-only)."
+    },
+    {
+      "name": "data_dictionary_search",
+      "description": "Search the IPEDS and College Scorecard data dictionary (read-only)."
+    },
+    {
+      "name": "institution_search",
+      "description": "Search for institutions in the public datasets (read-only)."
+    },
+    {
+      "name": "data_query",
+      "description": "Run a read-only SQL SELECT against the public IPEDS and College Scorecard datasets."
+    }
+  ],
+  "examples": [
+    {
+      "title": "Check the request queue",
+      "description": "List open IR data requests",
+      "prompt": "Show me the open data request tickets in Clema."
+    },
+    {
+      "title": "Query IPEDS",
+      "description": "Look up public institution data",
+      "prompt": "Using Clema, find the fall enrollment for Ohio State University in the latest IPEDS year."
+    }
+  ],
+  "is_official": true
+}
