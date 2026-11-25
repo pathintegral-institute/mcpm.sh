@@ -1,0 +1,58 @@
+{
+  "name": "model-salt",
+  "display_name": "Model Salt",
+  "description": "An MCP server with one tool: before a creative task the model calls it and gets back a few choices to settle this time, drawn from randomness outside the model (atmospheric and quantum noise), so one prompt gives different answers that still do what was asked.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/modelsalt/model-salt"
+  },
+  "homepage": "https://modelsalt.com",
+  "author": {
+    "name": "Chris Benjaminsen"
+  },
+  "license": "MIT",
+  "categories": [
+    "Media Creation",
+    "Dev Tools",
+    "AI Systems"
+  ],
+  "tags": [
+    "mcp",
+    "creativity",
+    "randomness",
+    "llm",
+    "claude",
+    "prompt"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelsalt/model-salt"
+      ],
+      "description": "Run with npx"
+    }
+  },
+  "tools": [
+    {
+      "name": "model_salt",
+      "description": "Call before a creative task. Returns a few choices to settle this time (a palette, a pose, a name, an opening line), drawn from random.org atmospheric noise, a quantum random number generator and the drand beacon. The model then does the request as asked; only the open choices move."
+    }
+  ],
+  "examples": [
+    {
+      "title": "Varied drawings from one prompt",
+      "description": "Run the same prompt several times and get different pictures that still match it.",
+      "prompt": "Make an SVG of a pelican riding a bicycle."
+    },
+    {
+      "title": "Varied names",
+      "description": "Get a different set of names each run instead of the usual favourites.",
+      "prompt": "Suggest five names for a small coffee shop by the sea."
+    }
+  ],
+  "is_official": true,
+  "is_archived": false
+}
