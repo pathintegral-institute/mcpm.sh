@@ -1,0 +1,120 @@
+{
+  "name": "chord",
+  "display_name": "Chord",
+  "description": "Hosted no-key MCP: DEX swap quotes and unsigned txs on 7 EVM chains (Base, Monad, BNB Chain, Avalanche, Arbitrum, Robinhood Chain, Arc), token boards, candles, trades, wallet PnL, smart money, holders and LP pools (Solana data read-only). About 60 requests a minute without a key; only chord_ask needs a Chord API key. Non-custodial: swap tools return unsigned transactions.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/getchordlabs/chord"
+  },
+  "homepage": "https://getchord.xyz/docs/agents/mcp/",
+  "author": {
+    "name": "Chord",
+    "url": "https://getchord.xyz"
+  },
+  "license": "MIT",
+  "categories": [
+    "Finance",
+    "Analytics"
+  ],
+  "tags": [
+    "dex",
+    "swap",
+    "aggregator",
+    "crypto",
+    "evm",
+    "solana",
+    "market-data",
+    "remote"
+  ],
+  "tools": [
+    {
+      "name": "chord_chains",
+      "description": "The chains Chord serves, with their native asset, anchors and which capabilities each one has (overview, tokens, trades, candles, wallet PnL, smart money, holders, LP, quote, swap). Call this first when unsure what a chain supports."
+    },
+    {
+      "name": "chord_status",
+      "description": "Live health of every chain: routing engine state, how old the newest indexed trade is, and the public status page link."
+    },
+    {
+      "name": "chord_overview",
+      "description": "A chain's last 24 hours on the venues Chord indexes: volume, swaps, venue share, hourly buckets."
+    },
+    {
+      "name": "chord_tokens",
+      "description": "The chain's 24h token board: price, volume, trades, change. Sort names differ by chain; a wrong one is answered with the allowed list."
+    },
+    {
+      "name": "chord_search",
+      "description": "Find a token on one chain by symbol, name or address. Returns candidates with their addresses; similar tickers are common, so compare addresses."
+    },
+    {
+      "name": "chord_token",
+      "description": "One token on one chain: price, 24h volume and trades, pools or venues, and what the index knows about it."
+    },
+    {
+      "name": "chord_trades",
+      "description": "The newest swaps of a token, with side, size in USD, price, venue and the wallet where it is known."
+    },
+    {
+      "name": "chord_candles",
+      "description": "OHLCV candles of a token from Chord's own index."
+    },
+    {
+      "name": "chord_wallet",
+      "description": "A wallet's trading result on one chain: realised and open PnL per token. Windows differ by chain and are stated in the answer."
+    },
+    {
+      "name": "chord_wallet_trades",
+      "description": "A wallet's recent swaps on one chain. Not every chain has this; chord_chains says which."
+    },
+    {
+      "name": "chord_smart_money",
+      "description": "Wallets ranked by profit on one chain, bots removed. Not every chain has this board."
+    },
+    {
+      "name": "chord_holders",
+      "description": "Holder ledger of a token (balances by address) on the chains that keep one."
+    },
+    {
+      "name": "chord_lp_pools",
+      "description": "Pools ranked for a liquidity provider: volume, fees, TVL, fee/TVL."
+    },
+    {
+      "name": "chord_lp_positions",
+      "description": "A wallet's liquidity positions on one chain: range, value, fees, in or out of range."
+    },
+    {
+      "name": "chord_quote",
+      "description": "Best swap quote on an EVM chain. Chord's own router answers first; another aggregator only when Chord cannot route. Amounts are integer strings in the token's smallest unit; the zero address is the native asset. Returns a quoteId valid for 2 minutes."
+    },
+    {
+      "name": "chord_swap_tx",
+      "description": "The UNSIGNED transaction for a swap, plus the approval it needs and a simulation run as the taker. Nothing is sent: the taker's own wallet signs and broadcasts. Pass a quoteId from chord_quote, or the full parameters."
+    },
+    {
+      "name": "chord_ask",
+      "description": "Ask Chord's analyst a question in plain language (markets, tokens, wallets, perps, macro). Uses many data sources and takes 10 to 60 seconds. Needs an API key."
+    }
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://api.getchord.xyz/v1/mcp",
+      "description": "Hosted Streamable HTTP endpoint. No key for data and swap tools; chord_ask needs a Chord API key.",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Token board",
+      "description": "See what trades most on a chain",
+      "prompt": "Show the top tokens by 24h volume on Base."
+    },
+    {
+      "title": "Swap transaction",
+      "description": "Get the best route and the unsigned transaction",
+      "prompt": "Quote a swap of 1 MON to USDC on Monad for my wallet 0x... and give me the unsigned transaction."
+    }
+  ],
+  "is_official": true
+}
