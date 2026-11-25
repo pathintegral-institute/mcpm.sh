@@ -1,0 +1,98 @@
+{
+  "name": "callforme",
+  "display_name": "CallForMe",
+  "description": "Gives your AI agent a phone: it calls businesses in the US and Canada, works the phone menu, waits on hold, asks your agent mid-call when the business needs something and returns answers plus a transcript. Hosted Streamable HTTP with OAuth 2.1. Pay per call, $1 per answered call including the first 2 minutes.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/callforme-tel/callforme"
+  },
+  "homepage": "https://callforme.tel",
+  "author": {
+    "name": "CallForMe",
+    "email": "hello@greatwork.company",
+    "url": "https://callforme.tel"
+  },
+  "license": "Proprietary",
+  "categories": [
+    "Messaging"
+  ],
+  "tags": [
+    "phone-calls",
+    "voice",
+    "customer-service",
+    "remote",
+    "oauth"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://callforme.tel/mcp",
+      "description": "Hosted Streamable HTTP. Use an OAuth-capable MCP client and connect (dynamic client registration, nothing to enter). The first real call returns a link to add credit: $1 per answered call including the first 2 minutes; a demo line works with no account.",
+      "recommended": true
+    }
+  },
+  "tools": [
+    {
+      "name": "place_call",
+      "description": "Place a phone call to a US or Canadian business and get answers back."
+    },
+    {
+      "name": "wait_for_setup",
+      "description": "Wait while the user finishes adding credit after place_call returns a setup link."
+    },
+    {
+      "name": "get_call",
+      "description": "Follow a call: status, the business's pending question, answers, live transcript and outcome."
+    },
+    {
+      "name": "answer_question",
+      "description": "Send a message into a live call when the business asks something."
+    },
+    {
+      "name": "hang_up",
+      "description": "End a live call."
+    },
+    {
+      "name": "redial",
+      "description": "Call the same business again with changes: a missing detail, a new question, another day."
+    },
+    {
+      "name": "share_call",
+      "description": "Make a public, read-only page for a finished call, when the user asks."
+    },
+    {
+      "name": "plan_call",
+      "description": "Preview the opening line and what the business will probably ask, before placing a call."
+    },
+    {
+      "name": "call_around",
+      "description": "Call several businesses of a kind with the same goal and compare results."
+    },
+    {
+      "name": "get_batch",
+      "description": "Follow a call_around batch: totals, a results table and open questions."
+    },
+    {
+      "name": "stop_batch",
+      "description": "Stop dialing new places in a batch."
+    },
+    {
+      "name": "find_business",
+      "description": "Find a business's phone number, address, hours, local time and rating."
+    },
+    {
+      "name": "list_calls",
+      "description": "List recent calls with status, answers and outcome."
+    },
+    {
+      "name": "account",
+      "description": "Show the balance, auto-reload setting, recent spend and a link to add credit."
+    },
+    {
+      "name": "pricing",
+      "description": "Show what a call costs and how credit and auto-reload work."
+    }
+  ],
+  "is_official": true,
+  "is_archived": false
+}
