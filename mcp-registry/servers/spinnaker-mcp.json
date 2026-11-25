@@ -1,0 +1,222 @@
+{
+  "name": "spinnaker-mcp",
+  "display_name": "Spinnaker MCP",
+  "description": "Exposes a Spinnaker instance through its Gate API as 37 tools: applications, pipelines, executions, deployment strategies and infrastructure.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GeiserX/spinnaker-mcp"
+  },
+  "homepage": "https://geiserx.github.io/spinnaker-mcp/",
+  "author": {
+    "name": "GeiserX",
+    "url": "https://github.com/GeiserX"
+  },
+  "license": "GPL-3.0-or-later",
+  "categories": [
+    "Dev Tools"
+  ],
+  "tags": [
+    "spinnaker",
+    "continuous-delivery",
+    "ci-cd",
+    "deployment",
+    "pipeline",
+    "platform-engineering"
+  ],
+  "arguments": {
+    "GATE_URL": {
+      "description": "Spinnaker Gate API endpoint, without a trailing slash",
+      "required": true,
+      "example": "http://localhost:8084"
+    },
+    "GATE_TOKEN": {
+      "description": "Bearer token for Gate authentication; leave empty for a Gate without authentication",
+      "required": false
+    },
+    "TOOLSETS": {
+      "description": "Tool groups to register; set readonly to register only the 27 tools that read, leave empty for all 37",
+      "required": false,
+      "example": "readonly"
+    }
+  },
+  "tools": [
+    {
+      "name": "list_applications",
+      "description": "List all Spinnaker applications"
+    },
+    {
+      "name": "get_application",
+      "description": "Get detailed application info (accounts, clusters, attributes)"
+    },
+    {
+      "name": "list_pipelines",
+      "description": "List pipeline configurations for an application"
+    },
+    {
+      "name": "get_pipeline",
+      "description": "Get a specific pipeline's full configuration"
+    },
+    {
+      "name": "trigger_pipeline",
+      "description": "Trigger a pipeline with optional parameters"
+    },
+    {
+      "name": "save_pipeline",
+      "description": "Save/create a pipeline definition"
+    },
+    {
+      "name": "update_pipeline",
+      "description": "Update an existing pipeline definition"
+    },
+    {
+      "name": "delete_pipeline",
+      "description": "Delete a pipeline definition"
+    },
+    {
+      "name": "get_pipeline_history",
+      "description": "Get revision history for a pipeline config"
+    },
+    {
+      "name": "list_executions",
+      "description": "List recent executions, filterable by status"
+    },
+    {
+      "name": "get_execution",
+      "description": "Get full execution details (stages, outputs, timing)"
+    },
+    {
+      "name": "search_executions",
+      "description": "Rich search by trigger type, time range, status"
+    },
+    {
+      "name": "cancel_execution",
+      "description": "Cancel a running execution with optional reason"
+    },
+    {
+      "name": "pause_execution",
+      "description": "Pause a running execution at the current stage"
+    },
+    {
+      "name": "resume_execution",
+      "description": "Resume a paused execution"
+    },
+    {
+      "name": "restart_stage",
+      "description": "Restart a failed stage within an execution"
+    },
+    {
+      "name": "evaluate_expression",
+      "description": "Evaluate a SpEL expression against an execution"
+    },
+    {
+      "name": "list_strategies",
+      "description": "List deployment strategy configurations"
+    },
+    {
+      "name": "save_strategy",
+      "description": "Create or update a deployment strategy"
+    },
+    {
+      "name": "delete_strategy",
+      "description": "Delete a deployment strategy"
+    },
+    {
+      "name": "list_server_groups",
+      "description": "List server groups (deployment targets) with instance counts"
+    },
+    {
+      "name": "list_load_balancers",
+      "description": "List load balancers across all accounts and regions"
+    },
+    {
+      "name": "list_clusters",
+      "description": "List cluster names grouped by account"
+    },
+    {
+      "name": "get_cluster",
+      "description": "Get cluster details including server groups"
+    },
+    {
+      "name": "get_scaling_activities",
+      "description": "Get scaling activities for a cluster"
+    },
+    {
+      "name": "get_target_server_group",
+      "description": "Target-based server group lookup (newest, oldest, etc.)"
+    },
+    {
+      "name": "list_firewalls",
+      "description": "List all firewalls/security groups across accounts"
+    },
+    {
+      "name": "get_firewall",
+      "description": "Get firewall details by account, region, and name"
+    },
+    {
+      "name": "get_instance",
+      "description": "Get instance details (health, metadata, launch time)"
+    },
+    {
+      "name": "get_console_output",
+      "description": "Get instance console output for debugging"
+    },
+    {
+      "name": "find_images",
+      "description": "Search for machine images by tags, region, account"
+    },
+    {
+      "name": "get_image_tags",
+      "description": "List image tags for a repository"
+    },
+    {
+      "name": "list_networks",
+      "description": "List VPCs/networks by cloud provider"
+    },
+    {
+      "name": "list_subnets",
+      "description": "List subnets by cloud provider"
+    },
+    {
+      "name": "list_accounts",
+      "description": "List all configured cloud accounts/credentials"
+    },
+    {
+      "name": "get_account",
+      "description": "Get account details and permissions"
+    },
+    {
+      "name": "get_task",
+      "description": "Get orchestration task status (deploy, resize, rollback)"
+    }
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "spinnaker-mcp"
+      ],
+      "package": "spinnaker-mcp",
+      "env": {
+        "GATE_URL": "${GATE_URL}",
+        "GATE_TOKEN": "${GATE_TOKEN}",
+        "TOOLSETS": "${TOOLSETS}"
+      },
+      "description": "Run the npm package over stdio; needs Node 18 or newer",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Find failed executions",
+      "description": "List the recent executions of an application filtered by status",
+      "prompt": "List the failed pipeline executions of the application myapp in Spinnaker and summarize which stage failed in each."
+    },
+    {
+      "title": "Read a pipeline before triggering it",
+      "description": "Fetch a pipeline's configuration and explain it",
+      "prompt": "Show me the configuration of the deploy-prod pipeline of the application myapp and explain its stages."
+    }
+  ]
+}
