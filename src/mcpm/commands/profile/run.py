@@ -60,12 +60,16 @@ async def run_profile_fastmcp(
         else:
             action = "profile_run"
 
+        # Expose the profile description to clients as MCP server instructions
+        profile_metadata = profile_config_manager.get_profile_metadata(profile_name)
+
         proxy = await create_mcpm_proxy(
             servers=profile_servers,
             name=f"profile-{profile_name}",
             stdio_mode=not (http_mode or sse_mode),  # stdio_mode=False for HTTP/SSE
             action=action,
             profile_name=profile_name,
+            instructions=(profile_metadata.description or None) if profile_metadata else None,
         )
 
         logger.debug(f"FastMCP proxy initialized with: {[s.name for s in profile_servers]}")

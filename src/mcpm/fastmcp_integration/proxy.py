@@ -50,6 +50,7 @@ class MCPMProxyFactory:
         stdio_mode: bool = True,
         action: str = "proxy",
         profile_name: Optional[str] = None,
+        instructions: Optional[str] = None,
     ) -> FastMCP:
         """
         Create a FastMCP proxy that aggregates multiple MCPM servers.
@@ -58,6 +59,7 @@ class MCPMProxyFactory:
             servers: List of ServerConfig objects to aggregate
             name: Optional name for the proxy
             stdio_mode: If True, skip auth middleware (for stdio operations)
+            instructions: Optional server instructions sent to clients during initialization
 
         Returns:
             FastMCP proxy instance with MCPM middleware
@@ -112,7 +114,7 @@ class MCPMProxyFactory:
         # Create the proxy configuration dictionary directly
         proxy_config = MCPConfig(mcpServers=server_configs)
 
-        proxy = FastMCP.as_proxy(proxy_config, name=name or "mcpm-aggregated")
+        proxy = FastMCP.as_proxy(proxy_config, name=name or "mcpm-aggregated", instructions=instructions)
 
         # Add MCPM middleware
         # For single server proxies, use the server name for tracking
@@ -180,6 +182,7 @@ async def create_mcpm_proxy(
     stdio_mode: bool = True,
     action: str = "proxy",
     profile_name: Optional[str] = None,
+    instructions: Optional[str] = None,
 ) -> FastMCP:
     """
     Convenience function to create a FastMCP proxy with MCPM integration.
@@ -191,13 +194,19 @@ async def create_mcpm_proxy(
         api_key: The API key to use for authentication.
         access_monitor: Optional access monitor
         stdio_mode: If True, skip auth middleware (for stdio operations)
+        instructions: Optional server instructions sent to clients during initialization
 
     Returns:
         Configured FastMCP proxy instance
     """
     factory = MCPMProxyFactory(auth_enabled=auth_enabled, api_key=api_key, access_monitor=access_monitor)
     proxy = await factory.create_proxy_for_servers(
-        servers, name, stdio_mode=stdio_mode, action=action, profile_name=profile_name
+        servers,
+        name,
+        stdio_mode=stdio_mode,
+        action=action,
+        profile_name=profile_name,
+        instructions=instructions,
     )
 
     # Initialize the access monitor if provided
