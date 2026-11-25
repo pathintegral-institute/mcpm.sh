@@ -1,0 +1,80 @@
+{
+  "name": "qrx",
+  "display_name": "QRX",
+  "description": "Official QRX MCP server: turn a text prompt and a link into an artistic, branded QR code, checked to scan before it is returned. Codes use hosted qrx.to short links.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qrxcodes/qrx-mcp"
+  },
+  "homepage": "https://qrx.codes/developers",
+  "author": {
+    "name": "QRX",
+    "url": "https://qrx.codes"
+  },
+  "license": "MIT",
+  "categories": [
+    "Media Creation"
+  ],
+  "tags": [
+    "qr code",
+    "image generation",
+    "design",
+    "branding",
+    "remote"
+  ],
+  "arguments": {
+    "QRX_API_KEY": {
+      "description": "QRX API key for local stdio or bearer authentication, created at https://qrx.codes/developers with a free account. Never commit your key.",
+      "required": true,
+      "example": "qrx_..."
+    }
+  },
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://qrx.codes/mcp",
+      "description": "Hosted Streamable HTTP. Use an OAuth-capable MCP client and sign in to QRX.",
+      "recommended": true
+    },
+    "http-api-key": {
+      "type": "http",
+      "url": "https://qrx.codes/mcp",
+      "headers": {
+        "Authorization": "Bearer ${QRX_API_KEY}"
+      },
+      "description": "Hosted Streamable HTTP using a QRX API key instead of OAuth."
+    },
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@qrxcodes/mcp"
+      ],
+      "package": "@qrxcodes/mcp",
+      "env": {
+        "QRX_API_KEY": "${QRX_API_KEY}"
+      },
+      "description": "Local stdio bridge to the hosted server. Requires Node.js 18+."
+    }
+  },
+  "examples": [
+    {
+      "title": "Make a code",
+      "description": "Generate an art QR code for a link",
+      "prompt": "Make a QR code for https://example.com/menu that looks like a watercolour café street."
+    },
+    {
+      "title": "Find old codes",
+      "description": "List the codes on your account",
+      "prompt": "List my recent QR codes."
+    },
+    {
+      "title": "Browse styles",
+      "description": "See the available styles",
+      "prompt": "What QR code styles can I use?"
+    }
+  ],
+  "is_official": true,
+  "is_archived": false
+}
