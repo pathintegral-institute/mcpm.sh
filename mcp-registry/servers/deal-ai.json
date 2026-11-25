@@ -1,0 +1,73 @@
+{
+  "name": "deal-ai",
+  "display_name": "Deal.ai",
+  "description": "Official Deal.ai MCP server: compare every US store's price for the same product with its price history, check whether a deal is real, ask Deal.ai's shopping agent what to buy, and watch prices with an e-mail when one drops.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Famous-Labs/deal-ai-mcp"
+  },
+  "homepage": "https://deal.ai/mcp-server",
+  "author": {
+    "name": "Deal.ai",
+    "email": "support@deal.ai",
+    "url": "https://deal.ai"
+  },
+  "license": "MIT",
+  "categories": [
+    "Web Services",
+    "Productivity"
+  ],
+  "tags": [
+    "shopping",
+    "price-comparison",
+    "deals",
+    "price-tracking",
+    "ecommerce"
+  ],
+  "tools": [
+    { "name": "search_products", "description": "Searches Deal.ai's product pages, live deals, buying guides and comparisons, with their latest prices." },
+    { "name": "get_product_prices", "description": "Every store's current price for one product, cheapest first, with a link to buy at each, and its price history." },
+    { "name": "get_product_details", "description": "A product's description, specs, fact sheet from stores' pages, rating, photos, sizes and best price." },
+    { "name": "compare_products", "description": "Two to four products side by side: specs, ratings and each one's best price." },
+    { "name": "get_deals", "description": "Live deals by search, category, store, discount or price, biggest saving first." },
+    { "name": "check_deal", "description": "Checks a product link from any store, or a product's name, and the price offered: it finds the exact item at every big US store right now." },
+    { "name": "get_deal_check", "description": "The verdict (cheaper elsewhere, the lowest price, the only store), each store's price with a link, and whether the \"was\" price holds up." },
+    { "name": "ask_deal_ai", "description": "Asks Deal.ai's shopping agent, which researches the request and recommends picks with every store's price. Follow-up questions continue the same search." },
+    { "name": "get_deal_ai_answer", "description": "The agent's answer: its picks, why, where each is cheapest, and the search's page on Deal.ai." },
+    { "name": "watch_price", "description": "Saves a product to your Deal.ai wish list, which e-mails you when its price drops." },
+    { "name": "list_watched", "description": "The products you're watching, with their price now and when you saved them." },
+    { "name": "stop_watching", "description": "Removes a product from your wish list." }
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://deal.ai/mcp",
+      "description": "Hosted Streamable HTTP. Use an OAuth-capable MCP client and sign in with a free Deal.ai account; no API key.",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Best pick under a budget",
+      "description": "Ask the shopping agent what to buy",
+      "prompt": "Ask Deal.ai for the best noise cancelling headphones under $300."
+    },
+    {
+      "title": "Check a deal",
+      "description": "See whether a price is really the lowest",
+      "prompt": "Is $199 a good price for AirPods Pro 3? Check it with Deal.ai."
+    },
+    {
+      "title": "Compare products",
+      "description": "Specs, ratings and best prices side by side",
+      "prompt": "Compare the Sony WH-1000XM6 and Bose QuietComfort Ultra on Deal.ai."
+    },
+    {
+      "title": "Watch a price",
+      "description": "Price history and a drop alert",
+      "prompt": "What's the lowest price Deal.ai has tracked for the Ninja Creami? Watch it for me."
+    }
+  ],
+  "is_official": true,
+  "is_archived": false
+}
