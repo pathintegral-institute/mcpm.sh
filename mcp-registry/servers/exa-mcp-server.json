@@ -77,7 +77,7 @@
     }
   ],
   "name": "exa-mcp-server",
-  "description": "A Model Context Protocol (MCP) server lets AI assistants like Claude use the Exa AI Search API for web searches. This setup allows AI models to get real-time web information in a safe and controlled way.",
+  "description": "A Model Context Protocol (MCP) server lets AI assistants like Claude use Exa, the fastest and most accurate web search API for AI. This setup allows AI models to get real-time web information in a safe and controlled way.",
   "categories": [
     "Web Services"
   ],
