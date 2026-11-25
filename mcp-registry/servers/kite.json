@@ -1,0 +1,49 @@
+{
+  "name": "kite",
+  "display_name": "Kite",
+  "description": "Hosted MCP server for Kite (kite.new), a design tool your AI agents and your team share. Agents draw real, editable layers (frames, text, components, auto layout) in the same file your team edits live, and any frame can be copied as HTML, React or Tailwind. Free plan: unlimited editors, 3 files, 100 agent actions a day.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kitedotnew/kite-agent-plugins"
+  },
+  "homepage": "https://kite.new",
+  "author": {
+    "name": "Kite",
+    "url": "https://kite.new"
+  },
+  "license": "Proprietary",
+  "categories": [
+    "Professional Apps",
+    "Media Creation"
+  ],
+  "tags": [
+    "design",
+    "ui",
+    "figma-alternative",
+    "canvas",
+    "react",
+    "tailwind",
+    "remote"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://kite.new/api/mcp",
+      "recommended": true,
+      "description": "Hosted Streamable HTTP endpoint with OAuth sign-in. Requires a Kite account (free plan available)."
+    }
+  },
+  "examples": [
+    {
+      "title": "Design a screen",
+      "description": "Draw an editable UI in a shared file",
+      "prompt": "Create a pricing page in my Kite file with three plan cards using auto layout."
+    },
+    {
+      "title": "Export to code",
+      "description": "Turn a frame into code",
+      "prompt": "Copy the Settings frame from Kite as React with Tailwind classes."
+    }
+  ],
+  "is_official": true
+}
