@@ -1,0 +1,2601 @@
+{
+  "name": "futureweb-intervals-mcp",
+  "display_name": "Futureweb Intervals MCP",
+  "description": "Self-hosted MCP server for your own Intervals.icu training data: activities with all custom fields and streams, intervals, wellness, planned versus executed workouts, training load, intensity distribution, recovery, fueling and durability analysis, plus Garmin metrics forwarded by the Garmin Intervals Bridge. Read-only by default; write tools only when enabled. Continuation of mvilanova/intervals-mcp-server; not affiliated with Intervals.icu or Garmin.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/futureweb/intervals-mcp-server"
+  },
+  "homepage": "https://github.com/futureweb/intervals-mcp-server",
+  "author": {
+    "name": "Futureweb",
+    "url": "https://www.futureweb.at/"
+  },
+  "license": "GPL-3.0",
+  "categories": [
+    "Analytics"
+  ],
+  "tags": [
+    "intervals.icu",
+    "training",
+    "cycling",
+    "running",
+    "triathlon",
+    "endurance",
+    "garmin",
+    "wellness",
+    "sports analytics",
+    "self-hosted"
+  ],
+  "arguments": {
+    "API_KEY": {
+      "description": "Intervals.icu API key (Settings > Developer Settings)",
+      "required": true,
+      "example": "your-intervals-api-key"
+    },
+    "ATHLETE_ID": {
+      "description": "Intervals.icu athlete ID",
+      "required": true,
+      "example": "i123456"
+    },
+    "MCP_PERMISSIONS": {
+      "description": "Enabled tool classes: read (default, read-only), read,write, or all (adds destructive and admin tools)",
+      "required": false,
+      "example": "read"
+    },
+    "MCP_TOOLSET": {
+      "description": "full (every tool of the enabled classes, default) or core (curated coaching set)",
+      "required": false,
+      "example": "full"
+    },
+    "ATHLETE_TIMEZONE": {
+      "description": "Time zone for 'today' and default date ranges; default: the Intervals.icu athlete profile",
+      "required": false,
+      "example": "Europe/Vienna"
+    }
+  },
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--prerelease",
+        "allow",
+        "futureweb-intervals-mcp"
+      ],
+      "package": "futureweb-intervals-mcp",
+      "env": {
+        "API_KEY": "${API_KEY}",
+        "ATHLETE_ID": "${ATHLETE_ID}"
+      },
+      "description": "Local stdio server from PyPI (requires uv)",
+      "recommended": true
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "API_KEY",
+        "-e",
+        "ATHLETE_ID",
+        "ghcr.io/futureweb/intervals-mcp-server:1.0.0b1"
+      ],
+      "env": {
+        "API_KEY": "${API_KEY}",
+        "ATHLETE_ID": "${ATHLETE_ID}"
+      },
+      "description": "Local stdio server from the GHCR image"
+    }
+  },
+  "examples": [
+    {
+      "title": "Last workout review",
+      "description": "Planned versus executed for the latest activity",
+      "prompt": "Compare my last workout with what was planned and summarise the differences per interval."
+    },
+    {
+      "title": "Training load check",
+      "description": "Load, intensity distribution and recovery",
+      "prompt": "How did my training load and intensity distribution develop over the last six weeks, and how is my recovery looking?"
+    },
+    {
+      "title": "Wellness trends",
+      "description": "Wellness against personal baselines",
+      "prompt": "Show my HRV, resting heart rate and sleep for the last 14 days against my 42-day baseline."
+    }
+  ],
+  "is_official": false,
+  "tools": [
+    {
+      "name": "get_gear_list",
+      "description": "Use to find gear ids and get an overview of the athlete's bikes, shoes and components (read-only).\n\nOne row per item: id, type, name, default-for, activity count, distance in km and retired\nflag. Details of one item (components, reminders, filters): get_gear_details; activities on\na gear: get_activities(gear_id=...).",
+      "inputSchema": {
+        "properties": {
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          },
+          "refresh": {
+            "default": false,
+            "description": "Re-fetch instead of using the 30-minute cache",
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_gear_details",
+      "description": "Use for the details of one gear item (bike, shoes, component; read-only).\n\nDistance, time and activity count, purchase and retirement dates, notes, the bike a\ncomponent belongs to, the activity type filters that assign activities automatically,\nmaintenance reminders with their usage, and for a bike its components (frame, power meter,\nchain, tyres ...) with their own mileage. Which power meter recorded an activity is not\nderived from gear: get_activity_details shows the power meter and serial from the device\nfile. Activities on this gear: get_activities(gear_id=...).",
+      "inputSchema": {
+        "properties": {
+          "gear_id": {
+            "description": "Gear id from get_gear_list, e.g. \"b12472159\" (bike) or \"30303\" (component)",
+            "type": "string"
+          },
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          },
+          "refresh": {
+            "default": false,
+            "description": "Re-fetch the gear catalog instead of using the 30-minute cache",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "gear_id"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_athlete_profile",
+      "description": "Use for who the athlete is: name, sex, date of birth, location, time zone, units, weight, height, resting HR, bikes and shoes, training plan and coach (read-only).\n\nAlso one line per sport setting (FTP, indoor FTP, LTHR, max HR, threshold pace). Only\ncoaching-relevant fields: account internals such as e-mail, API keys or OAuth scopes are\nnever returned. The profile's time zone defines \"today\" for all tools. Details:\nget_sport_settings, get_training_zones, get_gear_list.",
+      "inputSchema": {
+        "properties": {
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          },
+          "output_format": {
+            "default": "text",
+            "description": "json = machine-readable, all fields",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          },
+          "refresh": {
+            "default": false,
+            "description": "Re-fetch instead of using the 10-minute cache",
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_sport_settings",
+      "description": "Use for the current thresholds and settings per sport (a group of activity types such as Ride, GravelRide/MountainBikeRide or Run/TrailRun; read-only).\n\nPer sport setting: FTP and indoor FTP, W', Pmax, the latest Intervals.icu eFTP estimate,\nLTHR and max HR, threshold pace with pace units, load models, default outdoor/indoor gear,\nwarm-up/cool-down times and the power, HR and pace zones with absolute ranges. The\nthresholds in force for a past activity are in get_activity_details (snapshot stored with\nthe activity). Zones only: get_training_zones; change thresholds: update_sport_settings.",
+      "inputSchema": {
+        "properties": {
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          },
+          "sport_type": {
+            "type": "string",
+            "description": "Only the setting that covers this activity type, e.g. \"GravelRide\""
+          },
+          "output_format": {
+            "default": "text",
+            "description": "json = machine-readable, all fields",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          },
+          "refresh": {
+            "default": false,
+            "description": "Re-fetch instead of using the 10-minute cache",
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_training_zones",
+      "description": "Use for the power, heart rate and pace zones of each sport setting (read-only).\n\nPower zones in % of FTP with watts from the current FTP and the sweet spot range, HR zones\nin bpm, pace zones in % of threshold speed with the pace from the threshold pace; each zone\nhas its name, bounds and absolute range. Current settings only. Thresholds and other\nsettings: get_sport_settings.",
+      "inputSchema": {
+        "properties": {
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          },
+          "sport_type": {
+            "type": "string",
+            "description": "Only the setting that covers this activity type, e.g. \"Run\"; default all"
+          },
+          "zone_type": {
+            "default": "all",
+            "description": "Zone kind; all = power, HR and pace",
+            "enum": [
+              "all",
+              "power",
+              "hr",
+              "pace"
+            ],
+            "type": "string"
+          },
+          "output_format": {
+            "default": "text",
+            "description": "json = machine-readable, all fields",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          },
+          "refresh": {
+            "default": false,
+            "description": "Re-fetch the sport settings instead of using the 10-minute cache",
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_custom_items",
+      "description": "Use to list the athlete's custom items (charts, custom activity, interval and wellness fields, streams, zones ...) with id, name, type and description (read-only).\n\nAlso refreshes the cached definitions the other tools use to label custom fields. Full\ndefinition of one item: get_custom_item_by_id.",
+      "inputSchema": {
+        "properties": {
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_custom_item_by_id",
+      "description": "Use for the full definition of one custom item: name, type, description, visibility, index and its content configuration as JSON (code, value type, units, options, aggregate ...; read-only).\n\nIds: get_custom_items.",
+      "inputSchema": {
+        "properties": {
+          "item_id": {
+            "description": "Custom item id (get_custom_items)",
+            "type": "integer"
+          },
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          }
+        },
+        "required": [
+          "item_id"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_activities",
+      "description": "Use to find activities and their ids in a date range (default the last 30 days up to today, 10 per page), e.g. all rides on one bike over a season.\n\nReturns one summary block per activity (Intervals.icu load, power, HR, feel/RPE, gear), one\nline each with detail_level=compact, or JSON records with units and local/UTC start. Filters:\nsport types, gear, power meter name. Any filter, sort, offset, compact or json gives a paged\nlisting with the total and the next offset. Unnamed activities are hidden unless\ninclude_unnamed; nothing outside the date range is listed. Read-only. One activity in depth:\nget_activity_report. Method: intervals://methods/activity-data (get_guide).",
+      "inputSchema": {
+        "properties": {
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          },
+          "start_date": {
+            "type": "string",
+            "description": "First day YYYY-MM-DD; default 30 days before the earlier of end_date and today"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "Last day YYYY-MM-DD; default today"
+          },
+          "limit": {
+            "default": 10,
+            "description": "Activities per page",
+            "type": "integer"
+          },
+          "include_unnamed": {
+            "default": false,
+            "description": "Also list activities without a name",
+            "type": "boolean"
+          },
+          "sport_types": {
+            "type": "string",
+            "description": "Comma-separated activity types, e.g. \"Ride,GravelRide\""
+          },
+          "gear_id": {
+            "type": "string",
+            "description": "Only activities on this gear id (get_gear_list)"
+          },
+          "sort_by": {
+            "default": "date_desc",
+            "description": "Newest or oldest first, or largest distance, moving time or load first",
+            "enum": [
+              "date_desc",
+              "date_asc",
+              "distance",
+              "moving_time",
+              "load"
+            ],
+            "type": "string"
+          },
+          "offset": {
+            "default": 0,
+            "description": "Matching activities to skip (pagination)",
+            "type": "integer"
+          },
+          "detail_level": {
+            "default": "summary",
+            "description": "summary = text block per activity; compact = one line each",
+            "enum": [
+              "summary",
+              "compact"
+            ],
+            "type": "string"
+          },
+          "output_format": {
+            "default": "text",
+            "description": "text, or json (records with units, local and UTC start, paging)",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          },
+          "power_meter": {
+            "type": "string",
+            "description": "Only activities whose power meter name contains this text, e.g. Rally; others excluded"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_activity_details",
+      "description": "Use when one activity's full summary, thresholds or device custom fields are needed beyond get_activity_report.\n\nReturns the summary (time, distance, Intervals.icu load, power, HR, cadence, feel/RPE, FTP and\nthresholds used, device and power meter), fueling, weather, W′ balance and source, plus every\ncustom activity field with a value (device metrics such as training effect, recovery time,\nstamina, sweat loss), read from the athlete's own definitions with name, code, value and\nunits; 'no value' = null/NaN on Intervals.icu. full adds time in zones, running dynamics and\nother raw fields. Read-only. Method: intervals://methods/activity-data (get_guide).",
+      "inputSchema": {
+        "properties": {
+          "activity_id": {
+            "description": "Activity id, e.g. i123456789",
+            "type": "string"
+          },
+          "include_custom_fields": {
+            "default": true,
+            "description": "List the athlete's custom activity fields that have a value",
+            "type": "boolean"
+          },
+          "include_all_fields": {
+            "default": false,
+            "description": "Also list every other non-empty payload field (same as detail_level=full)",
+            "type": "boolean"
+          },
+          "output_format": {
+            "default": "text",
+            "description": "text, or json (raw activity, start times, gear name, thresholds, custom fields with status)",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          },
+          "detail_level": {
+            "default": "standard",
+            "description": "compact = ~8 lines: key numbers, thresholds, sport-assigned custom fields, data quality; standard = full summary; full adds every other payload field",
+            "enum": [
+              "compact",
+              "standard",
+              "full"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "activity_id"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_activity_intervals",
+      "description": "Use for per-interval numbers of one activity (laps or detected efforts): power, HR, cadence, speed, intensity, custom interval fields and groups.\n\nCadence follows the sport: steps per minute on foot (2 x the stored per-leg value), rpm\notherwise. stream_types adds start/end/min/max/mean/delta of any stream per interval from the\nrecorded samples, e.g. stamina drop or a second power meter (list_activity_streams shows what\nexists). include_planned_types shows the planned step matched to each interval and the time\nbeyond the plan; the Intervals.icu type is kept. Without intervals use analyze_climbs.\nRead-only; 2 API calls, +1 for streams, +1 for a paired event. Methods:\nintervals://methods/activity-data, intervals://methods/execution (get_guide).",
+      "inputSchema": {
+        "properties": {
+          "activity_id": {
+            "description": "Activity id, e.g. i123456789",
+            "type": "string"
+          },
+          "stream_types": {
+            "type": "string",
+            "description": "Comma-separated streams to evaluate per interval, e.g. Stamina,secondary_power; custom = custom streams + secondary_power; all = every stream"
+          },
+          "include_custom_fields": {
+            "default": true,
+            "description": "List the athlete's custom interval fields per interval",
+            "type": "boolean"
+          },
+          "output_format": {
+            "default": "text",
+            "description": "text, or json (raw intervals and groups with custom fields, stream statistics, planned step)",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          },
+          "detail_level": {
+            "default": "standard",
+            "description": "compact = one line per interval; standard = full block per interval; full adds every custom stream when stream_types is empty",
+            "enum": [
+              "compact",
+              "standard",
+              "full"
+            ],
+            "type": "string"
+          },
+          "include_planned_types": {
+            "default": false,
+            "description": "Show the planned step matched to each interval (paired event or planned_workout_doc)",
+            "type": "boolean"
+          },
+          "planned_workout_doc": {
+            "additionalProperties": true,
+            "type": "object",
+            "description": "Workout document {\"steps\": [...]} to match against; implies include_planned_types"
+          }
+        },
+        "required": [
+          "activity_id"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_activity_streams",
+      "description": "Use for the raw time-series samples of one activity (power, HR, cadence, altitude or any custom stream such as Stamina) when summaries are not enough.\n\nDefault output is a per-stream summary (units, statistics, first/last values); full gives a\nCSV table, json one object with arrays (empty/null = no value). Default streams: time, watts,\nheartrate, cadence, altitude, distance, velocity_smooth; \"all\" = every stream. full/json return\nat most max_points samples (default 2000) and say where to continue; slice by index or time,\ndownsample keeps every n-th sample. time = seconds since start, pauses appear as jumps.\nRead-only. Discover streams with list_activity_streams. Method:\nintervals://methods/activity-data (get_guide).",
+      "inputSchema": {
+        "properties": {
+          "activity_id": {
+            "description": "Activity id, e.g. i123456789",
+            "type": "string"
+          },
+          "stream_types": {
+            "type": "string",
+            "description": "Comma-separated stream types (standard or custom codes) or all; default time,watts,heartrate,cadence,altitude,distance,velocity_smooth"
+          },
+          "output_format": {
+            "default": "summary",
+            "description": "summary = per-stream units, statistics, preview; full = CSV row per sample; json = one object with arrays and next_start_index",
+            "enum": [
+              "summary",
+              "full",
+              "json"
+            ],
+            "type": "string"
+          },
+          "start_index": {
+            "type": "integer",
+            "description": "First sample index (full/json); same indices as get_activity_intervals"
+          },
+          "end_index": {
+            "type": "integer",
+            "description": "Sample index to stop before (exclusive; full/json)"
+          },
+          "start_time": {
+            "type": "integer",
+            "description": "Only samples with time >= this, seconds since start (full/json)"
+          },
+          "end_time": {
+            "type": "integer",
+            "description": "Only samples with time < this, seconds since start (full/json)"
+          },
+          "downsample": {
+            "default": 1,
+            "description": "Keep every n-th sample in full/json (skipped, never averaged)",
+            "type": "integer"
+          },
+          "max_points": {
+            "default": 2000,
+            "description": "Max samples in full/json, at most 20000; longer output is cut with a continue hint",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "activity_id"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_activity_streams",
+      "description": "Use before get_activity_streams or get_activity_intervals(stream_types=...) to see which data streams one activity has.\n\nLists the standard streams and the athlete's custom streams present on the activity (e.g.\nstamina, potential stamina, performance condition, grade adjusted speed, gear selection,\nbattery) with type code, display name, units and description, plus the power fields of the\nfile. include_stats downloads the streams and adds per-stream sample counts and\nstart/end/min/max/mean. Read-only. Method: intervals://methods/activity-data (get_guide).",
+      "inputSchema": {
+        "properties": {
+          "activity_id": {
+            "description": "Activity id, e.g. i123456789",
+            "type": "string"
+          },
+          "include_stats": {
+            "default": false,
+            "description": "Also download the streams for sample counts and start/end/min/max/mean per stream",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "activity_id"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_activity_messages",
+      "description": "Use to read the notes and comments on one activity: author, time, type and text of each message (read-only).",
+      "inputSchema": {
+        "properties": {
+          "activity_id": {
+            "description": "Activity id, e.g. i123456789",
+            "type": "string"
+          }
+        },
+        "required": [
+          "activity_id"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_events",
+      "description": "Use to see the athlete's calendar: planned workouts, races, notes and other events of a date range (default today to 30 days ahead).\n\nEach event shows its category (Workout, Race A/B/C, Note ...), sport (Ride, Run ...), planned time and load, and the paired activity once it has been done. Full workout steps: get_event_by_id. Plan phases and weekly targets: get_training_plan.",
+      "inputSchema": {
+        "properties": {
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          },
+          "start_date": {
+            "type": "string",
+            "description": "First day YYYY-MM-DD; default today"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "Last day YYYY-MM-DD; default 30 days ahead"
+          },
+          "categories": {
+            "type": "string",
+            "description": "Comma-separated categories, e.g. \"WORKOUT\" or \"RACE_A,RACE_B,RACE_C,NOTE\"; default all"
+          },
+          "output_format": {
+            "default": "text",
+            "description": "text or json (events with technical fields)",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_event_by_id",
+      "description": "Use to read one calendar event completely, e.g. to read back a workout right after writing it.\n\nReturns category and sport, planned time and load, the paired activity and the full workout document (steps, planned time in zones).",
+      "inputSchema": {
+        "properties": {
+          "event_id": {
+            "description": "Intervals.icu event id (get_events)",
+            "type": "string"
+          },
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          },
+          "output_format": {
+            "default": "text",
+            "description": "text or json (complete event incl. workout_doc)",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          },
+          "resolve_targets": {
+            "default": false,
+            "description": "Resolve %FTP / %LTHR / pace targets of the steps to W, bpm and m/s",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "event_id"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_training_plan",
+      "description": "Use for the season view: the assigned training plan, plan phases, weekly targets, races with priority and events that set the fitness model (read-only).\n\nReads the training plan assigned to the athlete and the calendar entries of the annual plan: PLAN (phases/blocks), TARGET (weekly load, time or distance targets), RACE_A/B/C, SEASON_START, and set eFTP / set fitness and fatigue / fitness days. Default range: 30 days back to 180 days ahead. Single workouts: get_events.",
+      "inputSchema": {
+        "properties": {
+          "start_date": {
+            "type": "string",
+            "description": "First day YYYY-MM-DD; default 30 days ago"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "Last day YYYY-MM-DD; default 180 days ahead"
+          },
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          },
+          "output_format": {
+            "default": "text",
+            "description": "json = machine-readable, all fields",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_athlete_power_curves",
+      "description": "Use for an athlete's best power per duration over whole periods: season bests, progress between seasons or date ranges.\n\nReturns watts and W/kg per duration for this season, last season and/or a custom range,\neach with the activity that set it. Defaults: Ride, 5 s to 60 min, both seasons;\ndurations that are not curve points are left out. Read-only, one API call. One activity:\nget_best_efforts; HR and pace: get_hr_curves, get_pace_curves. Method:\nintervals://methods/comparisons (get_guide).",
+      "inputSchema": {
+        "properties": {
+          "activity_type": {
+            "default": "Ride",
+            "description": "Activity type of the curves, e.g. Ride, VirtualRide, Run",
+            "type": "string"
+          },
+          "durations": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "description": "Durations in seconds as a JSON array of integers, e.g. [5, 60, 300, 1200]; default 5 s to 60 min"
+          },
+          "indoor_outdoor": {
+            "enum": [
+              "indoor",
+              "outdoor"
+            ],
+            "type": "string",
+            "description": "Only indoor or outdoor activities; omit for both"
+          },
+          "start_date": {
+            "type": "string",
+            "description": "First day YYYY-MM-DD of an extra custom-range curve; needs end_date"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "Last day YYYY-MM-DD of the custom-range curve, after start_date"
+          },
+          "this_season": {
+            "default": true,
+            "description": "Include this season's curve (s0)",
+            "type": "boolean"
+          },
+          "last_season": {
+            "default": true,
+            "description": "Include last season's curve (s1)",
+            "type": "boolean"
+          },
+          "include_normalised": {
+            "default": true,
+            "description": "Include W/kg values",
+            "type": "boolean"
+          },
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_hr_curves",
+      "description": "Use for the highest average heart rate an athlete sustained per duration over one or more periods (e.g. comparing periods; with get_pace_curves the same pace at a lower HR).\n\nReturns bpm per duration for each curve (default the last 90 days) with the activity that\nset it; durations without data are listed as not available. Read-only, one API call.\nPower: get_athlete_power_curves. Method: intervals://methods/comparisons (get_guide).",
+      "inputSchema": {
+        "properties": {
+          "activity_type": {
+            "default": "Run",
+            "description": "Activity type of the curves, e.g. Run, Ride, Swim",
+            "type": "string"
+          },
+          "durations": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "description": "Durations in seconds as a JSON array of integers, e.g. [60, 300, 1200]; default 5 s to 60 min"
+          },
+          "curves": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "description": "Curve ids as a JSON array of strings, e.g. [\"90d\", \"1y\"], \"s0\" this season, \"s1\" last season, \"r.2026-01-01.2026-03-01\" a range; default [\"90d\"]"
+          },
+          "start_date": {
+            "type": "string",
+            "description": "First day YYYY-MM-DD of an extra custom-range curve; needs end_date"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "Last day YYYY-MM-DD of the custom-range curve, after start_date"
+          },
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_pace_curves",
+      "description": "Use for an athlete's best times per distance over one or more periods: PBs, comparing periods, progress in running or swimming.\n\nReturns the best time and pace (min/km; min/100 m for Swim and OpenWaterSwim) per\ndistance for each curve (default the last 90 days) with the activity that set it;\noptionally gradient-adjusted pace. Distances not on the curve are listed as not\navailable. Read-only, one API call. HR side: get_hr_curves. Method:\nintervals://methods/comparisons (get_guide).",
+      "inputSchema": {
+        "properties": {
+          "activity_type": {
+            "default": "Run",
+            "description": "Activity type of the curves, e.g. Run, TrailRun, Swim",
+            "type": "string"
+          },
+          "distances": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array",
+            "description": "Distances in metres as a JSON array of numbers, e.g. [1000, 5000, 21097.5]; default 400 m to marathon, swims 50-400 m"
+          },
+          "curves": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "description": "Curve ids as a JSON array of strings, e.g. [\"90d\", \"1y\"], \"s0\" this season, \"s1\" last season, \"r.2026-01-01.2026-03-01\" a range; default [\"90d\"]"
+          },
+          "start_date": {
+            "type": "string",
+            "description": "First day YYYY-MM-DD of an extra custom-range curve; needs end_date"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "Last day YYYY-MM-DD of the custom-range curve, after start_date"
+          },
+          "gap": {
+            "default": false,
+            "description": "Gradient-adjusted pace (GAP) instead of raw pace",
+            "type": "boolean"
+          },
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_best_efforts",
+      "description": "Use for the peak efforts of one activity: best average power, HR or speed over durations (s) or distances (m), e.g. peak 5 s to 20 min power or the fastest km of a run (velocity_smooth with distances).\n\nReturns per effort the average (W, bpm or m/s with pace) and its position as elapsed\nh:mm:ss and sample indices (usable as start_index / end_index); windows spanning a\nrecording pause are flagged. Default durations 5 s to 60 min; longer than the activity =\nnot available. Read-only; one API call per duration or distance plus 1-2. Several\nactivities: compare_best_efforts; period bests: get_athlete_power_curves. Method:\nintervals://methods/comparisons (get_guide).",
+      "inputSchema": {
+        "properties": {
+          "activity_id": {
+            "description": "Activity id, e.g. i123456789",
+            "type": "string"
+          },
+          "stream": {
+            "default": "watts",
+            "description": "Stream, e.g. watts, heartrate, velocity_smooth (speed), cadence",
+            "type": "string"
+          },
+          "durations": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": "5,30,60,300,1200,3600",
+            "description": "Comma-separated seconds; \"\" for distances only"
+          },
+          "distances": {
+            "type": "string",
+            "description": "Comma-separated metres, e.g. \"1000,5000\" (added to durations)"
+          },
+          "count": {
+            "default": 1,
+            "description": "Non-overlapping best efforts per duration or distance, 1-20",
+            "type": "integer"
+          },
+          "exclude_intervals": {
+            "default": false,
+            "description": "Ignore samples inside detected intervals",
+            "type": "boolean"
+          },
+          "start_index": {
+            "type": "integer",
+            "description": "First sample index searched"
+          },
+          "end_index": {
+            "type": "integer",
+            "description": "Sample index to stop before"
+          },
+          "output_format": {
+            "default": "text",
+            "description": "json = machine-readable, all fields",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "activity_id"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "compare_best_efforts",
+      "description": "Use to compare peak efforts (e.g. 1 / 5 / 20 min power) of several activities side by side: development over a block, races, or whether a new bike or power meter reads differently.\n\nReturns a matrix of activities (date, sport, gear, FTP at the time) by duration with the\nbest average of the stream, and the best activity per duration. Activities come from\nactivity_ids or a date range (default the last 90 days), filtered by sport and gear; newest\nfirst, limit 10 (max 25), at most 10 durations. Power meters of different bikes are not\ncalibrated against each other; no verdict. Read-only; one API call per activity and\nduration (up to 250) plus the list and gear calls. One activity in detail: get_best_efforts.\nMethod: intervals://methods/comparisons (get_guide).",
+      "inputSchema": {
+        "properties": {
+          "activity_ids": {
+            "type": "string",
+            "description": "Comma-separated activity ids; otherwise the date range is used"
+          },
+          "start_date": {
+            "type": "string",
+            "description": "First day YYYY-MM-DD; without activity_ids default 90 days before end_date"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "Last day YYYY-MM-DD; default today"
+          },
+          "sport_types": {
+            "type": "string",
+            "description": "Comma-separated activity types, e.g. \"Ride,GravelRide\""
+          },
+          "gear_id": {
+            "type": "string",
+            "description": "Only activities on this gear id (get_gear_list)"
+          },
+          "stream": {
+            "default": "watts",
+            "description": "Stream, e.g. watts, heartrate, velocity_smooth",
+            "type": "string"
+          },
+          "durations": {
+            "default": "60,300,1200",
+            "description": "Comma-separated seconds, at most 10, e.g. \"60,300,1200\"",
+            "type": "string"
+          },
+          "limit": {
+            "default": 10,
+            "description": "Maximum activities, newest first; capped to 1-25",
+            "type": "integer"
+          },
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          },
+          "output_format": {
+            "default": "text",
+            "description": "json = machine-readable, all fields",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "find_similar_intervals",
+      "description": "Use to find earlier activities with intervals of a given length and intensity (% of FTP), or like the main set of a reference activity, ranked by comparability.\n\nPass min/max_secs and min/max_intensity, or reference_activity_id (window from its main\nset: length ±25 %, intensity ±8 points of FTP; explicit values win; only the 365 days\nbefore it unless start_date is given). Returns per activity date, sport, interval summary,\nload, FTP at the time, gear, power meter, compliance and a comparability score 0-100 with\nreasons. Sport defaults to one family (other families are counted, \"all\" keeps every\nsport); watts of different power meters are not comparable, use % of FTP. Read-only; one\nAPI call (+2 with a reference, +1 gear catalog). Details: get_activity_intervals; same\nworkout over time: compare_workouts. Method: intervals://methods/comparisons (get_guide).",
+      "inputSchema": {
+        "properties": {
+          "min_secs": {
+            "type": "integer",
+            "description": "Shortest interval (s); required without reference_activity_id"
+          },
+          "max_secs": {
+            "type": "integer",
+            "description": "Longest interval (s); required without reference_activity_id"
+          },
+          "min_intensity": {
+            "type": "number",
+            "description": "Lowest % of FTP, 0-300 (rounded down)"
+          },
+          "max_intensity": {
+            "type": "number",
+            "description": "Highest % of FTP, 0-300 (rounded up)"
+          },
+          "target": {
+            "enum": [
+              "POWER",
+              "HR",
+              "PACE"
+            ],
+            "type": "string",
+            "description": "Workout target type (not the sport); omit for any"
+          },
+          "min_reps": {
+            "type": "integer",
+            "description": "Minimum matching repetitions per activity"
+          },
+          "max_reps": {
+            "type": "integer",
+            "description": "Maximum matching repetitions per activity"
+          },
+          "limit": {
+            "default": 20,
+            "description": "Maximum activities returned",
+            "type": "integer"
+          },
+          "start_date": {
+            "type": "string",
+            "description": "First day YYYY-MM-DD; default 365 days before the reference, else no limit"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "Last day YYYY-MM-DD; default no limit"
+          },
+          "sport_types": {
+            "type": "string",
+            "description": "Comma-separated activity types or \"all\"; default the sport family of the reference or of most results"
+          },
+          "gear_id": {
+            "type": "string",
+            "description": "Only activities on this gear id (get_gear_list)"
+          },
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          },
+          "output_format": {
+            "default": "text",
+            "description": "json = machine-readable, all fields",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          },
+          "reference_activity_id": {
+            "type": "string",
+            "description": "Activity whose main work set defines the search window and the ranking"
+          },
+          "ftp_range": {
+            "type": "string",
+            "description": "Only activities with FTP at the time in \"low-high\" W, e.g. \"225-240\""
+          },
+          "ftp_tolerance_pct": {
+            "default": 5.0,
+            "description": "FTP difference in % to the reference or newest result flagged as other FTP context",
+            "type": "number"
+          },
+          "sort_by": {
+            "enum": [
+              "comparability",
+              "date"
+            ],
+            "type": "string",
+            "description": "Default comparability with a reference, else date (newest first)"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_activity_histogram",
+      "description": "Use for the time distribution of one activity independent of zone definitions: how polarised a ride was, time above FTP, the pace spread of a run.\n\nReturns the seconds and % of recorded time in each power (W), heart rate (bpm), pace or\ngrade-adjusted pace bucket, as computed by Intervals.icu; pace and GAP buckets are speeds\nin m/s shown with the pace range. bucket_size applies to power and hr only. Read-only,\none API call. Method: intervals://methods/comparisons (get_guide).",
+      "inputSchema": {
+        "properties": {
+          "activity_id": {
+            "description": "Activity id, e.g. i123456789",
+            "type": "string"
+          },
+          "metric": {
+            "default": "power",
+            "description": "power (W), hr (bpm), pace or gap (grade-adjusted pace); pace and gap buckets are m/s",
+            "enum": [
+              "power",
+              "hr",
+              "pace",
+              "gap"
+            ],
+            "type": "string"
+          },
+          "bucket_size": {
+            "type": "integer",
+            "description": "Bucket width in W (power, default 25) or bpm (hr, default 5); not for pace or gap"
+          },
+          "output_format": {
+            "default": "text",
+            "description": "json = machine-readable, all fields",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "activity_id"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "compare_workouts",
+      "description": "Use to compare repeated executions of the same workout over time (e.g. every 3 x 10 min threshold session) on truly comparable work intervals.\n\nActivities by name search (query), activity_ids or a date range (default the last 90\ndays); limit 8 (max 12). WORK intervals are split into main set (similar length and\nintensity), surges, other and excluded; the main set gets time-weighted power, NP, HR, max\nHR, cadence, W/bpm. Only activities matching the reference pattern (reference_activity_id,\nelse the newest; length ±25 %, intensity ±8 points of FTP) are compared; trends first ->\nlast with n (< 3 not reliable). RPE is whole-activity only; gear and power meter\ndifferences are flagged; no verdict. Read-only; one API call per activity plus 1-3 (one\nmore per id with activity_ids). Method: intervals://methods/comparisons (get_guide).",
+      "inputSchema": {
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Text in activity names, or \"#tag\" for an exact tag"
+          },
+          "activity_ids": {
+            "type": "string",
+            "description": "Comma-separated activity ids (query is then ignored)"
+          },
+          "start_date": {
+            "type": "string",
+            "description": "First day YYYY-MM-DD; default 90 days before end_date (name search: none, or 365 days before the reference)"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "Last day YYYY-MM-DD; default today"
+          },
+          "sport_types": {
+            "type": "string",
+            "description": "Comma-separated activity types or \"all\"; default the sport family of the reference or newest"
+          },
+          "limit": {
+            "default": 8,
+            "description": "Maximum activities, newest first; capped to 1-12",
+            "type": "integer"
+          },
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          },
+          "output_format": {
+            "default": "text",
+            "description": "json = machine-readable, all fields",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          },
+          "reference_activity_id": {
+            "type": "string",
+            "description": "Activity whose main set defines the pattern; default the newest"
+          },
+          "gear_id": {
+            "type": "string",
+            "description": "Only activities on this gear id (get_gear_list)"
+          },
+          "min_interval_secs": {
+            "type": "integer",
+            "description": "Only WORK intervals at least this long (s); shorter ones under 2 min are surges"
+          },
+          "max_interval_secs": {
+            "type": "integer",
+            "description": "Only WORK intervals at most this long (s)"
+          },
+          "min_intensity": {
+            "type": "number",
+            "description": "Only WORK intervals at or above this % of FTP (replaces the 70 % floor)"
+          },
+          "max_intensity": {
+            "type": "number",
+            "description": "Only WORK intervals at or below this % of FTP"
+          },
+          "min_reps": {
+            "type": "integer",
+            "description": "Only main sets with at least this many intervals"
+          },
+          "max_reps": {
+            "type": "integer",
+            "description": "Only main sets with at most this many intervals"
+          },
+          "ftp_range": {
+            "type": "string",
+            "description": "Only activities with FTP at the time in \"low-high\" W, e.g. \"225-240\""
+          },
+          "include_rpe": {
+            "default": true,
+            "description": "Show whole-activity RPE and its trend",
+            "type": "boolean"
+          },
+          "comparable_only": {
+            "default": true,
+            "description": "Table only activities matching the pattern; false tables all, with the reason",
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_power_hr_efficiency",
+      "description": "Use to track power-to-heart-rate efficiency (W per bpm at the same power) over weeks.\n\nPuts every WORK interval of at least min_interval_secs with power and HR into the power\nband of its average power; returns per activity and band the count and time-weighted W,\nHR and W/bpm, and per band the oldest vs the newest group of activities (each counts once;\nat least 3 per group, else not reliable) compared with the day-to-day SD. Default the\nlast 90 days of rides, limit 30 (max 60); trends per gear when several power meters are\ninvolved; filters for gear, indoor/outdoor and interval start time. Heat, fatigue,\ncadence and sensors move the ratio: statistics only, no fitness verdict. Read-only; one API\ncall per activity plus 2. Method: intervals://methods/comparisons (get_guide).",
+      "inputSchema": {
+        "properties": {
+          "start_date": {
+            "type": "string",
+            "description": "First day YYYY-MM-DD; default 90 days before end_date"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "Last day YYYY-MM-DD; default today"
+          },
+          "sport_types": {
+            "default": "Ride,GravelRide,VirtualRide",
+            "description": "Comma-separated activity types, e.g. \"Ride,VirtualRide\"",
+            "type": "string"
+          },
+          "power_bands": {
+            "default": "150-200,200-250,250-300",
+            "description": "Comma-separated non-overlapping bands in W as \"low-high\"; low <= W < high",
+            "type": "string"
+          },
+          "min_interval_secs": {
+            "default": 300,
+            "description": "Shortest WORK interval counted, in seconds",
+            "type": "integer"
+          },
+          "limit": {
+            "default": 30,
+            "description": "Maximum activities, newest first; capped to 1-60",
+            "type": "integer"
+          },
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          },
+          "output_format": {
+            "default": "text",
+            "description": "json = machine-readable, all fields",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          },
+          "gear_id": {
+            "type": "string",
+            "description": "Only activities on this gear id (get_gear_list)"
+          },
+          "environment": {
+            "enum": [
+              "indoor",
+              "outdoor"
+            ],
+            "type": "string",
+            "description": "Only indoor (trainer, virtual) or outdoor sessions; omit for both"
+          },
+          "min_start_minutes": {
+            "default": 0.0,
+            "description": "Only intervals starting at least this many minutes into the activity",
+            "type": "number"
+          },
+          "max_start_minutes": {
+            "type": "number",
+            "description": "Only intervals starting at most this many minutes into the activity"
+          },
+          "min_activities_per_group": {
+            "default": 3,
+            "description": "Independent activities needed in the oldest and in the newest group for a trend, >= 1",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_fatigue_resistance",
+      "description": "Use for fatigue resistance: best power fresh vs after the athlete's work thresholds kJ0 / kJ1 (Intervals.icu fatigued power curves).\n\nReads the sport settings first. When they hold no kJ thresholds no fatigued values are\nshown: the tool explains the setting and (suggest_thresholds) proposes thresholds from\nbody mass and recent rides, never saved. Otherwise returns watts per duration fresh and\nafter kJ0 / kJ1 with the change in %, for one activity or for athlete curves (default\n42d); a fatigued curve without data is reported as missing, one equal to fresh as\nidentical, without a change. Read-only, 2-5 API calls. Within one long ride:\nget_long_ride_fatigue_profile. Method: intervals://methods/comparisons (get_guide).",
+      "inputSchema": {
+        "properties": {
+          "activity_id": {
+            "type": "string",
+            "description": "Activity whose curves are compared; omit for the athlete curves"
+          },
+          "activity_type": {
+            "default": "Ride",
+            "description": "Activity type of the curves and kJ thresholds, e.g. Ride, VirtualRide",
+            "type": "string"
+          },
+          "durations": {
+            "default": "60,300,1200",
+            "description": "Comma-separated seconds, e.g. \"60,300,1200\"",
+            "type": "string"
+          },
+          "curves": {
+            "default": "42d",
+            "description": "Comma-separated athlete curve ids, e.g. \"42d,90d,1y,s0\"; ignored with activity_id",
+            "type": "string"
+          },
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          },
+          "output_format": {
+            "default": "text",
+            "description": "json = machine-readable, all fields",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          },
+          "suggest_thresholds": {
+            "default": true,
+            "description": "Suggest kJ0/kJ1 when not both are configured; a suggestion only, nothing is saved",
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "compare_power_streams",
+      "description": "Use to compare two power meters recorded on the same ride (watts vs secondary_power by default), on one ride or across several rides.\n\nOne ride (activity_id): offset in W and % (secondary - primary), per power band, in stable 30/60\ns windows, drift over the ride quarters, lag, best efforts of each stream and the samples\nexcluded as coasting, missing or outliers. Several rides (no activity_id, or activity_ids): the\nrides that carry the second stream (default 180 days to end_date, newest first, limit 10, max\n20), each compared on its own and summarised per bike and power meter with median,\nbetween-ride SD and range. No calibration and no correction factor; sensors are named only\nfrom the file's device data. Read-only. Method: intervals://methods/power-meters (get_guide).",
+      "inputSchema": {
+        "properties": {
+          "activity_id": {
+            "type": "string",
+            "description": "One ride, e.g. i123456789; omit (or give activity_ids) to compare several rides"
+          },
+          "primary": {
+            "default": "watts",
+            "description": "Stream type of the reference power source",
+            "type": "string"
+          },
+          "secondary": {
+            "default": "secondary_power",
+            "description": "Stream type of the compared power source",
+            "type": "string"
+          },
+          "start_index": {
+            "type": "integer",
+            "description": "First sample index to compare (one ride only)"
+          },
+          "end_index": {
+            "type": "integer",
+            "description": "Sample index to stop before (exclusive; one ride only)"
+          },
+          "output_format": {
+            "default": "text",
+            "description": "json = machine-readable, all fields",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          },
+          "activity_ids": {
+            "type": "string",
+            "description": "Comma-separated activity ids to compare as several rides (duplicates ignored, cut to limit)"
+          },
+          "start_date": {
+            "type": "string",
+            "description": "Several rides: first day YYYY-MM-DD; default 179 days before end_date (180 days)"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "Several rides: last day YYYY-MM-DD; default today"
+          },
+          "limit": {
+            "default": 10,
+            "description": "Several rides: at most this many, newest first, 1-20",
+            "type": "integer"
+          },
+          "detail_level": {
+            "default": "standard",
+            "description": "Several rides: compact = summary only; standard adds one line per ride; full adds power bins and device data per ride",
+            "enum": [
+              "compact",
+              "standard",
+              "full"
+            ],
+            "type": "string"
+          },
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "analyze_workout_execution",
+      "description": "Use to check how a planned workout was executed, or without a plan to evaluate each detected interval of one activity.\n\nThe plan comes from planned_workout_doc, event_id or the event paired with the activity.\nPlanned steps (repeats expanded) are aligned with the intervals by order, duration or distance\nand target intensity, never by names; laps that split one effort are merged. Per step: planned\nvs actual moving time, target (W, bpm or pace) vs actual, time in target, HR response, cadence,\nfade, Pw:HR drift (work steps of 10 min or more) and custom stream changes, with deviation notes\nand an alignment confidence. Time past a step's plan and training after the plan are reported\napart. Unpaired: up to three candidate events, nothing is paired. Read-only. Method:\nintervals://methods/execution (get_guide).",
+      "inputSchema": {
+        "properties": {
+          "activity_id": {
+            "description": "Activity id, e.g. i123456789",
+            "type": "string"
+          },
+          "event_id": {
+            "type": "string",
+            "description": "Planned workout event to compare against; default the event paired with the activity"
+          },
+          "planned_workout_doc": {
+            "additionalProperties": true,
+            "type": "object",
+            "description": "Workout document {\"steps\": [...]} (format of add_or_update_event), e.g. when the event was deleted"
+          },
+          "suggest_matches": {
+            "default": true,
+            "description": "Unpaired activity without plan: list candidate events of the same days (read-only)",
+            "type": "boolean"
+          },
+          "output_format": {
+            "default": "text",
+            "description": "json = machine-readable, all fields",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          },
+          "detail_level": {
+            "default": "standard",
+            "description": "compact = one line per step plus summary; standard; full adds counter and other-sport custom streams",
+            "enum": [
+              "compact",
+              "standard",
+              "full"
+            ],
+            "type": "string"
+          },
+          "duration_tolerance_pct": {
+            "type": "number",
+            "description": "Step length deviation in % of the step (at least 30 s) before it is split or flagged; default 10"
+          },
+          "start_tolerance_s": {
+            "type": "number",
+            "description": "Flag steps starting further than this from the plan timeline, seconds; default 120"
+          },
+          "pause_tolerance_s": {
+            "type": "number",
+            "description": "Recording pause per step that is not flagged, seconds; default 60"
+          }
+        },
+        "required": [
+          "activity_id"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "analyze_climbs",
+      "description": "Use for activities without useful intervals (tours, mountain hikes, trail runs) to split the recording into climbs, descents, sections in between and pauses.\n\nPer segment: time and sample indices, moving time, distance, gain/loss, average and steepest\ngrade, VAM, speed, power, NP, HR, cadence and start/end/min/max/mean/delta of every custom\nstream. Defaults follow the sport (foot vs bike); implausible grades are flagged and each\nsegment gets a grade confidence. Slow scrambling counts as moving, real pauses as pause. Climb\ngains are not the activity's total elevation gain. Text lists up to max_segments segments.\nRead-only, 2 API calls (activity, all streams). Method: intervals://methods/climbs (get_guide).",
+      "inputSchema": {
+        "properties": {
+          "activity_id": {
+            "description": "Activity id, e.g. i123456789",
+            "type": "string"
+          },
+          "min_climb_gain_m": {
+            "default": 30.0,
+            "description": "Minimum elevation gain of a climb, metres",
+            "type": "number"
+          },
+          "min_descent_loss_m": {
+            "default": 30.0,
+            "description": "Minimum elevation loss of a descent, metres",
+            "type": "number"
+          },
+          "min_grade_pct": {
+            "default": 2.0,
+            "description": "Minimum average grade of climbs and descents, %",
+            "type": "number"
+          },
+          "pause_min_secs": {
+            "default": 60,
+            "description": "Minimum length of a reported stationary period, seconds",
+            "type": "integer"
+          },
+          "extra_stream_types": {
+            "type": "string",
+            "description": "Comma-separated standard streams to evaluate per segment besides the custom ones, e.g. temp,respiration,left_right_balance"
+          },
+          "max_segments": {
+            "default": 40,
+            "description": "Segments listed in text output",
+            "type": "integer"
+          },
+          "output_format": {
+            "default": "text",
+            "description": "json = machine-readable, all fields",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          },
+          "show_raw_grade": {
+            "default": false,
+            "description": "Also report the grade of the unsmoothed altitude (windows of at least min_grade_distance_m)",
+            "type": "boolean"
+          },
+          "grade_window_m": {
+            "type": "number",
+            "description": "Distance window of the steepest grade, metres; default 50 on foot, 100 otherwise"
+          },
+          "min_grade_distance_m": {
+            "type": "number",
+            "description": "No grade below this horizontal distance, metres; default 30 on foot, 50 otherwise"
+          },
+          "stationary_speed_m_s": {
+            "type": "number",
+            "description": "Pause candidate below this speed, m/s; default 0.3 on foot, 0.5 otherwise"
+          }
+        },
+        "required": [
+          "activity_id"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_training_load",
+      "description": "Use for acute and chronic training load in detail: acute (default 7 d) and chronic (28 d) Intervals.icu load, acute:chronic ratio (coupled daily means), Foster monotony and strain, deload-like weeks, per sport family with the primary sport, ISO weeks, and CTL/ATL/form/ramp at the end date (read-only).\n\nRest days count as 0; sessions without a load are counted, not added. Device loads (custom\nfields such as a Garmin training load) are listed apart on their own scale, never added. With\nthe default end date and nothing recorded today yet, the windows end yesterday. Reference\nranges (ACWR 0.8-1.3, monotony > 2.0) are shown with sources as context; small samples are\nflagged; no verdict. Overview: get_coach_context; planned load: get_load_projection.\nMethod: intervals://methods/load (get_guide).",
+      "inputSchema": {
+        "properties": {
+          "end_date": {
+            "type": "string",
+            "description": "Last day YYYY-MM-DD; default today; not in the future"
+          },
+          "acute_days": {
+            "default": 7,
+            "description": "Acute window in days, 3-28",
+            "type": "integer"
+          },
+          "chronic_days": {
+            "default": 28,
+            "description": "Chronic window in days, 14-120, longer than acute_days",
+            "type": "integer"
+          },
+          "weeks": {
+            "default": 4,
+            "description": "ISO weeks in the weekly table, 1-26",
+            "type": "integer"
+          },
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          },
+          "output_format": {
+            "default": "text",
+            "description": "json = machine-readable, all fields",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          },
+          "detail_level": {
+            "default": "standard",
+            "description": "compact = windows, ratio, monotony, fitness, top 3 sports; standard adds all sports, ISO weeks, device loads; full adds daily loads and definitions",
+            "enum": [
+              "compact",
+              "standard",
+              "full"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_load_projection",
+      "description": "Use for future fitness: CTL, ATL and form projected over the planned workouts in the calendar, or a what-if scenario (sessions or weekly templates not in the calendar) against the calendar plan (read-only, nothing is written).\n\nStarts from Intervals.icu's CTL/ATL at the end of yesterday plus today's completed load;\nplanned workouts without a load are reported, not guessed. Returns end values, lowest form,\nhighest ramp, ISO weeks with plan statistics, race days, Intervals.icu's own projection, a\nmodel check and weeks outside commonly cited ranges (ramp 5-8 CTL/week, monotony > 2.0, no rest\nday). With target_date, target_form or a scenario: the target day (default the next RACE_A)\nat the start of the day; target_form adds a search for the load of the last taper_days that\nreaches it. Arithmetic, not a forecast; no verdict. Method and scenario format:\nintervals://methods/load (get_guide).",
+      "inputSchema": {
+        "properties": {
+          "end_date": {
+            "type": "string",
+            "description": "Last day YYYY-MM-DD, max 180 days ahead; default 28 days ahead, extended to the target and scenario"
+          },
+          "ctl_days": {
+            "default": 42,
+            "description": "CTL time constant in days; atl_days < ctl_days <= 365",
+            "type": "integer"
+          },
+          "atl_days": {
+            "default": 7,
+            "description": "ATL time constant in days, at least 1",
+            "type": "integer"
+          },
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          },
+          "output_format": {
+            "default": "text",
+            "description": "json = machine-readable, all fields",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          },
+          "detail_level": {
+            "default": "standard",
+            "description": "compact = start, end, lowest form, races, target; standard adds ISO weeks and plan checks; full adds days (JSON: days always, with a scenario only at full)",
+            "enum": [
+              "compact",
+              "standard",
+              "full"
+            ],
+            "type": "string"
+          },
+          "scenario": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "items": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "What-if plan not in the calendar, object or JSON text: {\"calendar\": \"add\"|\"replace\"|\"none\", \"sessions\": [{\"date\", \"load\" or \"duration_min\"+\"intensity_factor\"}], \"weekly\": [{\"start\", \"weeks\", \"load\" or \"hours\"+\"intensity_factor\", \"sessions\" or \"days\"}]}; a list = sessions. Full format: intervals://methods/load"
+          },
+          "target_date": {
+            "type": "string",
+            "description": "Target day YYYY-MM-DD, today or later (form at the start of that day); default the next RACE_A event"
+          },
+          "target_form": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Form range at the start of the target day: \"5,15\" (CTL - ATL) or \"5%,20%\" (of CTL); starts the search for the load before it"
+          },
+          "taper_days": {
+            "default": 7,
+            "description": "Days before the target varied by the search, 1-42",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_activity_data_audit",
+      "description": "Use to check where an activity's data came from and what is missing, or without activity_id how complete the data of a period is.\n\nOne activity: source (sync, upload, Strava stub), upload and analysis times, filtered\nduplicates, recording stops, FIT laps vs intervals and edits, sensors, streams vs those usual\nfor the sport with coverage, custom fields with value / zero placeholder / none, fields the\nGarmin Intervals Bridge could fill. Period (default 28 days to end_date): per sport how many\nactivities have power, HR, GPS, weather, custom streams and fields. Facts and counts, no\nverdict; read-only, 1-3 API requests. Method: intervals://methods/activity-data (get_guide).",
+      "inputSchema": {
+        "properties": {
+          "activity_id": {
+            "type": "string",
+            "description": "Activity to audit, e.g. i123456789; omit for the coverage of a period"
+          },
+          "start_date": {
+            "type": "string",
+            "description": "Period: first day YYYY-MM-DD; default 27 days before end_date; max 366 days"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "Period: last day YYYY-MM-DD; default today"
+          },
+          "sport_types": {
+            "type": "string",
+            "description": "Comma-separated activity types, e.g. \"Ride,GravelRide\""
+          },
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          },
+          "output_format": {
+            "default": "text",
+            "description": "json = machine-readable, all fields",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          },
+          "detail_level": {
+            "default": "standard",
+            "description": "compact = no stream download, shorter lists; full = every stream, gap and field",
+            "enum": [
+              "compact",
+              "standard",
+              "full"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_activity_report",
+      "description": "Use first for any question about one activity: overview, plan vs execution, power meter check, climbs and data quality in one call (read-only, 3-4 API requests).\n\nThe overview has thresholds, device, sport-assigned custom fields, fueling, weather and W′\nbalance. With a paired event or planned_workout_doc the plan-vs-execution analysis follows\n(as analyze_workout_execution), otherwise the intervals; a second-power-meter check only with\nenough valid paired samples; climbs without intervals or above 500 m gain; then data-quality\nnotes. compact = core numbers and up to 5 key findings. Full detail: get_activity_details,\nanalyze_workout_execution, compare_power_streams, analyze_climbs, get_activity_data_audit.\nMethods: intervals://methods/activity-data, intervals://methods/execution (get_guide).",
+      "inputSchema": {
+        "properties": {
+          "activity_id": {
+            "description": "Activity id, e.g. i123456789",
+            "type": "string"
+          },
+          "planned_workout_doc": {
+            "additionalProperties": true,
+            "type": "object",
+            "description": "Workout document {\"steps\": [...]} to compare against, e.g. when the event was deleted"
+          },
+          "include_climbs": {
+            "type": "boolean",
+            "description": "Force (true) or suppress (false) the climbs; default only without intervals or above 500 m gain"
+          },
+          "output_format": {
+            "default": "text",
+            "description": "json = machine-readable, all fields",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          },
+          "detail_level": {
+            "default": "standard",
+            "description": "compact = core numbers, up to 5 key findings, data-quality flags; standard = full analysis, at most 30 interval lines; full = everything, all custom fields and streams",
+            "enum": [
+              "compact",
+              "standard",
+              "full"
+            ],
+            "type": "string"
+          },
+          "duration_tolerance_pct": {
+            "type": "number",
+            "description": "Step duration tolerance in % before a step is split or flagged short; default 10"
+          },
+          "start_tolerance_s": {
+            "type": "number",
+            "description": "Plan timeline shift before a step is flagged, seconds; default 120"
+          },
+          "pause_tolerance_s": {
+            "type": "number",
+            "description": "Recording pause per step before it is flagged, seconds; default 60"
+          },
+          "include_route_history": {
+            "default": false,
+            "description": "Add earlier activities on the same Intervals.icu route (2 extra requests)",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "activity_id"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_fueling_analysis",
+      "description": "Use for carbohydrate, fluid and sodium intake of one activity (activity_id) or of the long sessions of a period (default the last 90 days, sessions of at least min_minutes; read-only).\n\nCarbs used (Intervals.icu estimate) and ingested (logged total) in g and g/h, the ingested\nshare of used, kcal and kJ, and fluid intake, sodium and sweat loss per hour where custom\nfields exist (found by units and name). One activity also gets the intake per hour from a\ncustom intake stream, if there is one. Period: statistics per sport family, by duration and\nby intensity, Spearman correlations from 8 sessions, with sample sizes. Not logged is never\n0; used minus ingested is no 1:1 energy deficit; no targets.\nMethod: intervals://methods/fueling (get_guide).",
+      "inputSchema": {
+        "properties": {
+          "activity_id": {
+            "type": "string",
+            "description": "One activity, e.g. i123456789; omit for the period mode"
+          },
+          "start_date": {
+            "type": "string",
+            "description": "First day YYYY-MM-DD (period mode); default 89 days before end_date; max 366 days"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "Last day YYYY-MM-DD (period mode); default today"
+          },
+          "sport_types": {
+            "type": "string",
+            "description": "Comma-separated activity types (period mode), e.g. \"Ride,GravelRide\""
+          },
+          "min_minutes": {
+            "default": 90,
+            "description": "Minimum moving time in minutes (period mode), not negative",
+            "type": "number"
+          },
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          },
+          "output_format": {
+            "default": "text",
+            "description": "json = machine-readable, all fields",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          },
+          "detail_level": {
+            "default": "standard",
+            "description": "period: compact = per sport family; standard adds duration/IF buckets, correlations, 15 sessions; full lists all sessions. One activity: compact omits notes",
+            "enum": [
+              "compact",
+              "standard",
+              "full"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_recovery_snapshot",
+      "description": "Use for the recovery and readiness context of one day in one call (default today; read-only, numbers only, no readiness verdict).\n\nFor the day and days_back days before: native wellness values, CTL/ATL/form/ramp rate,\nsubjective scores, custom wellness fields with a value (e.g. Body Battery or skin\ntemperature from a sync bridge), missing values and the record's update time; personal\nbaselines of baseline_metrics (7-day and 42-day mean, median, SD, latest value vs baseline\nwith z-score; small samples flagged); the activities of those days with loads and device\nfields; the planned events of the day. Today is flagged preliminary and a line (JSON\ntoday_completeness) names the usual fields not yet in today's record, grouped by when they\nusually arrive: not yet available, not normal. Trends: get_wellness_trends.\nMethod: intervals://methods/wellness (get_guide).",
+      "inputSchema": {
+        "properties": {
+          "date_str": {
+            "type": "string",
+            "description": "The day YYYY-MM-DD; default today"
+          },
+          "days_back": {
+            "default": 3,
+            "description": "Days before date_str to include, 0-14",
+            "type": "integer"
+          },
+          "baseline_metrics": {
+            "default": "hrv,restingHR,avgSleepingHR,sleepScore,readiness,respiration,spO2",
+            "description": "Comma-separated wellness field codes (native or custom) for the baseline block",
+            "type": "string"
+          },
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          },
+          "output_format": {
+            "default": "text",
+            "description": "json = machine-readable, all fields",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          },
+          "detail_level": {
+            "default": "standard",
+            "description": "compact = no custom fields; standard = up to 20 custom fields per day; full = all",
+            "enum": [
+              "compact",
+              "standard",
+              "full"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_wellness_trends",
+      "description": "Use for multi-day wellness trends against the athlete's own baseline (default the 42 days ending today; read-only, statistics only).\n\nPer metric with units: the daily values of the last 14 days with trailing means, period\nstatistics, a personal baseline (the 42 days ending at end_date), the latest value vs that\nbaseline (difference, %, z-score), rolling means, the last 7 days vs the 7 before and\noutliers (|z| >= 2.5). Missing days are never filled in; for physiological metrics a stored 0\ncounts as missing. Small samples are flagged (baseline under 14 values, correlation under 30\npaired days). Weight adds a 7/14/28-day slope in kg per week. Optional correlations\n(Pearson, Spearman, with lag) are associations, not causes. One day in context:\nget_recovery_snapshot. Method: intervals://methods/wellness (get_guide).",
+      "inputSchema": {
+        "properties": {
+          "start_date": {
+            "type": "string",
+            "description": "First day YYYY-MM-DD; default 41 days before end_date (42 days)"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "Last day YYYY-MM-DD; default today"
+          },
+          "metrics": {
+            "default": "hrv,restingHR,avgSleepingHR,sleepScore,readiness,respiration,spO2,weight",
+            "description": "Comma-separated, at most 16: native codes (hrv, restingHR, weight, ctl ...), custom field codes, eftp_<Type>",
+            "type": "string"
+          },
+          "windows": {
+            "default": "7,14,42",
+            "description": "Comma-separated rolling windows in days, 2-365",
+            "type": "string"
+          },
+          "correlations": {
+            "type": "string",
+            "description": "Comma-separated pairs \"a:b\" or \"a:b:lag_days\" (b lag days later), e.g. \"hrv:readiness,restingHR:sleepScore:1\""
+          },
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          },
+          "output_format": {
+            "default": "text",
+            "description": "json = machine-readable, all fields",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_nutrition_summary",
+      "description": "Use for food intake, calorie balance and weight trend over a period (default the 28 days ending today; read-only).\n\nPer day: logged kcal, carbohydrates, protein and fat, the device's total and active burn and\nbalance (custom wellness fields, codes configurable) and weight. Per window (default 7/14/28\ndays): intake totals and means over logged days only, days without logged intake, burn mean,\nbalance total and mean on logged days, weight change and slope in kg per week. A day without\nlogged intake is never 0 kcal; the device burn is an estimate; a calorie balance does not\nmeasure fat change. Optionally the Intervals.icu training load per day.\nMethod: intervals://methods/wellness (get_guide).",
+      "inputSchema": {
+        "properties": {
+          "start_date": {
+            "type": "string",
+            "description": "First day YYYY-MM-DD; default 27 days before end_date (28 days)"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "Last day YYYY-MM-DD; default today"
+          },
+          "windows": {
+            "default": "7,14,28",
+            "description": "Comma-separated windows in days, 2-365",
+            "type": "string"
+          },
+          "burn_field": {
+            "default": "GarminTotalCalories",
+            "description": "Custom wellness field code of the total daily burn (kcal)",
+            "type": "string"
+          },
+          "active_field": {
+            "default": "GarminActiveCalories",
+            "description": "Custom wellness field code of the active burn (kcal)",
+            "type": "string"
+          },
+          "balance_field": {
+            "default": "GarminKcalBalance",
+            "description": "Custom wellness field code of a device balance; where missing, intake minus burn",
+            "type": "string"
+          },
+          "include_training_load": {
+            "default": true,
+            "description": "Add the Intervals.icu training load per day",
+            "type": "boolean"
+          },
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          },
+          "output_format": {
+            "default": "text",
+            "description": "json = machine-readable, all fields",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_training_summary",
+      "description": "Use for training totals of a period grouped by ISO week, month, sport (activity type), gear or in total, including custom activity fields (read-only).\n\nPer group and in total: sessions, moving/elapsed time, distance, elevation, Intervals.icu load\nwith the power/HR/pace load sums, time-weighted intensity, CTL/ATL/form/ramp at the end of the\ngroup's week or month, time in power (sweet spot apart) and HR zones, sport and gear splits,\nfeel and RPE, sessions of 3 h or more, the longest session, trainer sessions. Numeric custom\nfields are aggregated by units and meaning: additive values summed, device loads summed apart\nfrom the Intervals.icu load, estimates as latest value and change, per-activity values as\nmean/median/range. Missing values are skipped, never counted as 0. Per-week view in one\ncall: get_weekly_summary. Method: intervals://methods/summary (get_guide).",
+      "inputSchema": {
+        "properties": {
+          "start_date": {
+            "description": "First day YYYY-MM-DD",
+            "type": "string"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "Last day YYYY-MM-DD; default today"
+          },
+          "group_by": {
+            "default": "week",
+            "description": "week = ISO weeks from Monday; month; sport = activity type; gear; total = one group",
+            "enum": [
+              "week",
+              "month",
+              "sport",
+              "gear",
+              "total"
+            ],
+            "type": "string"
+          },
+          "sport_types": {
+            "type": "string",
+            "description": "Comma-separated activity types, e.g. \"Ride,GravelRide\""
+          },
+          "include_gear": {
+            "default": true,
+            "description": "Per-gear split inside each group (text, standard and full)",
+            "type": "boolean"
+          },
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          },
+          "output_format": {
+            "default": "text",
+            "description": "text (readable) or json (the parts of an explicit detail_level, else all fields)",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          },
+          "detail_level": {
+            "description": "compact = totals, loads, fitness, sessions per sport, device loads; standard (text default) adds zones, gear, feel/RPE, custom fields; full adds the aggregation reason per custom field",
+            "enum": [
+              "compact",
+              "standard",
+              "full"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "start_date"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_intensity_distribution",
+      "description": "Use for the training intensity distribution of a period (default the last 4 weeks, read-only): Intervals.icu's time in zones of each activity mapped to the three-zone model (Z1 below the first threshold, Z2 between, Z3 above the second).\n\nReturns Z1/Z2/Z3 shares and hours, the polarization index (Treff et al. 2019), the class\n(Base, Polarized, Pyramidal, Threshold, HIT) and hard sessions and days for the period, per\nsport family and per ISO week, and the drift between the two halves. The mapping depends on\nthe zone basis and the zone count of the athlete's model. Activities without zone data are\nnever counted as easy; the coverage is reported. Statistics only, no verdict. Overview:\nget_coach_context. Method: intervals://methods/intensity (get_guide).",
+      "inputSchema": {
+        "properties": {
+          "start_date": {
+            "type": "string",
+            "description": "First day YYYY-MM-DD; default 27 days before end_date (4 weeks); max 366 days"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "Last day YYYY-MM-DD; default today"
+          },
+          "zone_basis": {
+            "default": "auto",
+            "description": "auto = power for cycling, else HR, then pace, then power; or one basis for all",
+            "enum": [
+              "auto",
+              "power",
+              "hr",
+              "pace"
+            ],
+            "type": "string"
+          },
+          "sport_types": {
+            "type": "string",
+            "description": "Comma-separated activity types, e.g. \"Ride,GravelRide\""
+          },
+          "threshold_as": {
+            "default": "moderate",
+            "description": "Power zone Z4 (91-105 % FTP) counts as moderate (three-zone Z2) or high (Z3)",
+            "enum": [
+              "moderate",
+              "high"
+            ],
+            "type": "string"
+          },
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          },
+          "output_format": {
+            "default": "text",
+            "description": "json = machine-readable, all fields",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          },
+          "detail_level": {
+            "default": "standard",
+            "description": "compact = period, sports, drift; standard adds ISO weeks, zone mapping and rules; full adds every session",
+            "enum": [
+              "compact",
+              "standard",
+              "full"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_durability",
+      "description": "Use for aerobic durability: Intervals.icu's aerobic decoupling (power:HR, or pace:HR for runs without power; drift between the halves in %) of steady long cycling and running sessions and the efficiency factor trend (read-only, default the last 6 weeks).\n\nSessions pass a quality filter (min_minutes moving, few stops, HR, rides with power,\nvariability index up to max_vi, temperature up to max_temp_c, optionally indoor or outdoor\nonly); excluded ones are counted per reason. Per sport family: median, range, quartiles,\nsessions above drift_threshold_pct (5 % commonly cited) and the last recent_days against the\nwindow. Fewer than 8 qualifying sessions are flagged as a small sample; mixed indoor/outdoor,\nbikes/shoes or power meters are noted. Statistics only, no verdict. Per interval and bike:\nget_power_hr_efficiency. Method: intervals://methods/durability (get_guide).",
+      "inputSchema": {
+        "properties": {
+          "start_date": {
+            "type": "string",
+            "description": "First day YYYY-MM-DD; default 41 days before end_date (6 weeks); max 366 days"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "Last day YYYY-MM-DD; default today"
+          },
+          "sport_types": {
+            "type": "string",
+            "description": "Comma-separated activity types, e.g. \"Ride,VirtualRide\"; default every cycling and running type"
+          },
+          "min_minutes": {
+            "default": 60,
+            "description": "Minimum moving time in minutes, above 0",
+            "type": "number"
+          },
+          "max_vi": {
+            "default": 1.2,
+            "description": "Maximum variability index (steadiness), at least 1",
+            "type": "number"
+          },
+          "max_temp_c": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": 25.0,
+            "description": "Maximum average temperature in °C; null = no limit; a missing temperature passes"
+          },
+          "drift_threshold_pct": {
+            "default": 5.0,
+            "description": "Decoupling in % above which sessions are counted",
+            "type": "number"
+          },
+          "recent_days": {
+            "default": 7,
+            "description": "Recent window in days compared with the whole period",
+            "type": "integer"
+          },
+          "environment": {
+            "enum": [
+              "indoor",
+              "outdoor"
+            ],
+            "type": "string",
+            "description": "Only indoor (trainer, virtual) or outdoor sessions; omit for both"
+          },
+          "temperature_source": {
+            "default": "device",
+            "description": "Temperature for max_temp_c: device sensor, Intervals.icu weather or its feels-like",
+            "enum": [
+              "device",
+              "weather",
+              "feels_like"
+            ],
+            "type": "string"
+          },
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          },
+          "output_format": {
+            "default": "text",
+            "description": "json = machine-readable, all fields",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          },
+          "detail_level": {
+            "default": "standard",
+            "description": "compact = per-sport summary; standard adds the qualifying sessions and the reference; full adds the excluded sessions",
+            "enum": [
+              "compact",
+              "standard",
+              "full"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_long_ride_fatigue_profile",
+      "description": "Use to see how long rides change at matched power as work accumulates: HR, W/bpm, cadence and Garmin stamina in steady segments of a power band (default 75-85 % FTP) before vs after work thresholds.\n\nPhases by work (default 750 / 1,500 kJ, or kJ/kg) are compared with the phase before the\nfirst threshold. Threshold crossings and climbs carry the prior work (kJ, kJ/kg, kJ and\ntime above FTP, efforts above FTP). Rides from activity_ids or the long rides of a period\n(default 180 days, reaching the highest threshold; limit 6, max 12). Across rides: median\nand range of the changes with n, small samples flagged. Statistics only, no verdict.\nRead-only; one stream call per ride plus 1-4 (one more per id with activity_ids). Fresh vs\nfatigued power curves: get_fatigue_resistance. Method: intervals://methods/fatigue\n(get_guide).",
+      "inputSchema": {
+        "properties": {
+          "activity_ids": {
+            "type": "string",
+            "description": "Comma-separated activity ids (capped to limit); default the long rides of the period"
+          },
+          "start_date": {
+            "type": "string",
+            "description": "First day YYYY-MM-DD; default 180 days before end_date"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "Last day YYYY-MM-DD; default today"
+          },
+          "sport_types": {
+            "default": "Ride,GravelRide",
+            "description": "Comma-separated activity types of the period search",
+            "type": "string"
+          },
+          "power_bands": {
+            "type": "string",
+            "description": "Comma-separated non-overlapping bands in W as \"low-high\", e.g. \"180-200\"; default 75-85 % FTP"
+          },
+          "work_thresholds": {
+            "default": "750,1500",
+            "description": "1-3 comma-separated positive values in threshold_unit, e.g. \"750,1500\"",
+            "type": "string"
+          },
+          "threshold_unit": {
+            "default": "kj",
+            "description": "kj = absolute work; kj_per_kg = kJ per kg body mass",
+            "enum": [
+              "kj",
+              "kj_per_kg"
+            ],
+            "type": "string"
+          },
+          "min_segment_secs": {
+            "default": 120,
+            "description": "Minimum steady segment length in seconds, >= 90",
+            "type": "integer"
+          },
+          "climb_after_hours": {
+            "default": 2.0,
+            "description": "Climbs starting after this many hours are marked late, >= 0",
+            "type": "number"
+          },
+          "min_climb_gain_m": {
+            "default": 100.0,
+            "description": "Minimum climb elevation gain in metres, > 0",
+            "type": "number"
+          },
+          "limit": {
+            "default": 6,
+            "description": "Rides analysed, newest first; capped to 1-12",
+            "type": "integer"
+          },
+          "output_format": {
+            "default": "text",
+            "description": "json = machine-readable, all fields",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          },
+          "detail_level": {
+            "default": "standard",
+            "description": "compact = ride totals, changes, climb count; standard adds thresholds, phases, climbs, method; full adds every segment",
+            "enum": [
+              "compact",
+              "standard",
+              "full"
+            ],
+            "type": "string"
+          },
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_submax_test_trends",
+      "description": "Use to follow the submaximal fatigue tests Intervals.icu detects (#SFT) over the weeks: which are valid benchmarks and how HR responds.\n\nLists the tests of the period (default 180 days; limit 30, max 60) with target, average,\nCV, end HR, efficiency factor and HR recovery (HRRc; not measured is never 0). Valid: on\ntarget, steady, not ignored and (check_context) not inside a longer work interval, not\ncontinued, not after hard riding; excluded tests carry the reason. Valid tests are\ntrended per sport family and test type (power and pace never pooled) and ISO week: n,\nchange, slope, SD. Statistics only, no verdict. Read-only; 2 API calls plus 2 per power\ntest with check_context. Method: intervals://methods/fatigue (get_guide).",
+      "inputSchema": {
+        "properties": {
+          "start_date": {
+            "type": "string",
+            "description": "First day YYYY-MM-DD; default 180 days before end_date"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "Last day YYYY-MM-DD; default today"
+          },
+          "sport_types": {
+            "type": "string",
+            "description": "Comma-separated activity types, e.g. \"Ride,Run\"; omit for all"
+          },
+          "tolerance_pct": {
+            "type": "number",
+            "description": "Allowed deviation of the average from the target in %, 0-50; default the test's own"
+          },
+          "require_recovery": {
+            "default": false,
+            "description": "Exclude tests without an HR recovery (HRRc) part",
+            "type": "boolean"
+          },
+          "check_context": {
+            "default": true,
+            "description": "Check intervals and streams around each power test (2 API calls each)",
+            "type": "boolean"
+          },
+          "limit": {
+            "default": 30,
+            "description": "Tests, newest first; capped to 1-60",
+            "type": "integer"
+          },
+          "output_format": {
+            "default": "text",
+            "description": "json = machine-readable, all fields",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          },
+          "detail_level": {
+            "default": "standard",
+            "description": "compact = counts, exclusion reasons, HR/EF/HRRc trends; standard adds each test, stream trends, ISO weeks; full adds context notes",
+            "enum": [
+              "compact",
+              "standard",
+              "full"
+            ],
+            "type": "string"
+          },
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_coach_context",
+      "description": "Use first for a weekly or general training review: load, intensity, recovery, durability and plan for one end date in one compact call (read-only, about 2-3k characters).\n\nCombines 7/28-day Intervals.icu load with acute:chronic ratio, monotony, strain and\nCTL/ATL/form; the three-zone intensity of 7 and 28 days; recovery markers (HRV, resting HR,\nsleep) against personal baselines with a z-score (numbers only); durability; top sessions;\nand, when the end date is today, planned workouts of the next 7 days and the next race. For\ntoday it names wellness fields not yet recorded (not yet available, not normal). A method\nline states windows and rules; small samples are flagged; missing values are never 0; no\nverdict. Details: get_training_load, get_intensity_distribution, get_durability,\nget_recovery_snapshot, get_load_projection. Method: intervals://methods/load (get_guide).",
+      "inputSchema": {
+        "properties": {
+          "end_date": {
+            "type": "string",
+            "description": "Last day YYYY-MM-DD; default today; not in the future"
+          },
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          },
+          "output_format": {
+            "default": "text",
+            "description": "text (readable) or json (the parts of an explicit detail_level, else the full structure)",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          },
+          "detail_level": {
+            "description": "compact = load, fitness, intensity, recovery, durability, method; standard (text default) adds sports, drift, top sessions, plan, coverage; full adds 4 ISO weeks and references",
+            "enum": [
+              "compact",
+              "standard",
+              "full"
+            ],
+            "type": "string"
+          },
+          "threshold_as": {
+            "default": "moderate",
+            "description": "Power zone Z4 (91-105 % FTP) counts as moderate (three-zone Z2) or high (Z3)",
+            "enum": [
+              "moderate",
+              "high"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "preview_workout",
+      "description": "Use to show the athlete how a drafted workout will look before writing it: renders the workout document as Intervals.icu workout text with its totals (no API call, nothing written).\n\nExpands repeats, sums planned duration and distance, counts steps with targets and open-ended steps, and shows the text add_or_update_event would send. Full check list: validate_workout.",
+      "inputSchema": {
+        "properties": {
+          "workout_doc": {
+            "additionalProperties": true,
+            "description": "Workout document with steps, as for add_or_update_event. Format: intervals://workout-syntax",
+            "type": "object"
+          },
+          "workout_type": {
+            "default": "Ride",
+            "description": "Sport of the workout, e.g. Ride, GravelRide, Run",
+            "type": "string"
+          },
+          "moving_time": {
+            "type": "integer",
+            "description": "Expected moving time in seconds, compared with the step sum"
+          },
+          "output_format": {
+            "default": "text",
+            "description": "json = machine-readable, all fields",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "workout_doc"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "validate_workout",
+      "description": "Use before every workout write (add_or_update_event, add_events_bulk, create_library_workout) to check a drafted workout document; read-only, nothing is written.\n\nChecks durations or distances per step, repeat blocks, target units per sport and plausible values, ramps and ranges, warm-up and cool-down, the step sum against moving_time and the sport; with start_date it lists the events already on that day and flags a same-name event as a possible duplicate. Format: intervals://workout-syntax (get_guide). Show the result to the athlete before writing.",
+      "inputSchema": {
+        "properties": {
+          "workout_doc": {
+            "additionalProperties": true,
+            "description": "Workout document with steps, as for add_or_update_event. Format: intervals://workout-syntax",
+            "type": "object"
+          },
+          "workout_type": {
+            "description": "Sport of the workout, e.g. Ride, GravelRide, Run, Swim",
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "description": "Planned event name, for the duplicate check"
+          },
+          "start_date": {
+            "type": "string",
+            "description": "Planned day YYYY-MM-DD, for the calendar check"
+          },
+          "moving_time": {
+            "type": "integer",
+            "description": "Expected moving time in seconds, compared with the step sum"
+          },
+          "check_calendar": {
+            "default": true,
+            "description": "Look up the events already on start_date",
+            "type": "boolean"
+          },
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          },
+          "output_format": {
+            "default": "text",
+            "description": "json = machine-readable, all fields",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "workout_doc",
+          "workout_type"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_server_status",
+      "description": "Use to check the connection when tools are missing or fail: server version, enabled permission classes and tool set, registered and hidden tools, whether Intervals.icu answers, and the athlete's custom field and stream counts. The API key is never shown.",
+      "inputSchema": {
+        "properties": {
+          "output_format": {
+            "default": "text",
+            "description": "json = machine-readable, all fields",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_guide",
+      "description": "Use when the short tool descriptions are not enough: read the workout syntax before writing a workout, or how an analysis works (method, windows, filters, caveats).\n\nReturns the same Markdown as the resources intervals://guide, intervals://workout-syntax and intervals://methods/<topic>. Static text, no athlete data.",
+      "inputSchema": {
+        "properties": {
+          "topic": {
+            "default": "usage",
+            "description": "usage = tool overview; workout-syntax = workout format; others = method of that analysis",
+            "enum": [
+              "usage",
+              "workout-syntax",
+              "activity-data",
+              "execution",
+              "climbs",
+              "power-meters",
+              "load",
+              "intensity",
+              "durability",
+              "summary",
+              "comparisons",
+              "fatigue",
+              "wellness",
+              "fueling"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_weekly_summary",
+      "description": "Use for a quick per-week overview from Intervals.icu's athlete summary (read-only, one API call).\n\nPer ISO week (from Monday): sessions, moving time, distance and training load, a split per\nsport category, time in HR zones (non-zero zones only) and CTL/ATL/form/ramp at the end of\nthe week (the latest day with data for the current week). Sessions without HR (e.g.\nstrength) are counted. Rows of other (followed or coached) athletes are ignored. Grouping by\nmonth, sport or gear, separate power/HR/pace loads and custom fields: get_training_summary.\nMethod: intervals://methods/summary (get_guide).",
+      "inputSchema": {
+        "properties": {
+          "start_date": {
+            "description": "First day YYYY-MM-DD",
+            "type": "string"
+          },
+          "end_date": {
+            "description": "Last day YYYY-MM-DD",
+            "type": "string"
+          },
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          }
+        },
+        "required": [
+          "start_date",
+          "end_date"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_plan_compliance",
+      "description": "Use to compare planned workouts with the activities done in a date range (read-only, two API calls).\n\nPlanned workouts (calendar WORKOUT events) are linked to activities by the event's\npaired_activity_id or the activity's paired_event_id; each pair shows planned vs actual\nduration and load with the deviation in %. An activity counts for one event only. Unlinked\npast workouts are missed, those of today or later upcoming (athlete's local date).\nActivities without a planned workout are unplanned; those linked to a workout outside the\nrange are listed apart. Completion = completed / (completed + missed). NOTE events with\ntraining availability, allowed sports or a maximum training time are listed too.\nMethod: intervals://methods/summary (get_guide).",
+      "inputSchema": {
+        "properties": {
+          "start_date": {
+            "description": "First day YYYY-MM-DD",
+            "type": "string"
+          },
+          "end_date": {
+            "description": "Last day YYYY-MM-DD",
+            "type": "string"
+          },
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          }
+        },
+        "required": [
+          "start_date",
+          "end_date"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_workout_library",
+      "description": "Use to list the athlete's workout library: folders and plans with their workouts and ids (read-only). One workout in detail: get_library_workout.",
+      "inputSchema": {
+        "properties": {
+          "folder": {
+            "type": "string",
+            "description": "Only this folder or plan: name (case-insensitive) or id"
+          },
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_library_workout",
+      "description": "Use to read one library workout (steps, planned time, load, targets), e.g. to reuse it with add_or_update_event or validate_workout. Ids: get_workout_library.",
+      "inputSchema": {
+        "properties": {
+          "workout_id": {
+            "description": "Library workout id (get_workout_library); small numbers such as 1 are normal",
+            "type": "string"
+          },
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          },
+          "output_format": {
+            "default": "text",
+            "description": "text or json (complete workout incl. workout_doc)",
+            "enum": [
+              "text",
+              "json"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "workout_id"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_wellness_data",
+      "description": "Use for the raw daily wellness records of a date range (default the last 30 days; read-only).\n\nPer day as stored: CTL/ATL and eFTP per sport, vitals (weight, resting HR, HRV, SpO2 ...),\nsleep, subjective scores, nutrition, steps and comments; include_all_fields adds every other\nfield, custom wellness fields labelled with name and units. When the range includes today, a\nline names the usual fields not yet in today's record, grouped by when they usually arrive:\nnot yet available, not normal. Long ranges are paged by day: a note gives the start_date to\ncontinue with. Baselines and trends: get_recovery_snapshot, get_wellness_trends,\nget_nutrition_summary.\nMethod: intervals://methods/wellness (get_guide).",
+      "inputSchema": {
+        "properties": {
+          "athlete_id": {
+            "type": "string",
+            "description": "Default: the configured athlete"
+          },
+          "start_date": {
+            "type": "string",
+            "description": "First day YYYY-MM-DD; default 30 days before the earlier of end_date and today"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "Last day YYYY-MM-DD; default today"
+          },
+          "include_all_fields": {
+            "default": false,
+            "description": "Also list every other field, custom wellness fields with name and units",
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      }
+    }
+  ]
+}
