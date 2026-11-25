@@ -1,0 +1,65 @@
+{
+  "name": "curlshot",
+  "display_name": "CurlShot",
+  "description": "Hosted MCP server for CurlShot. Takes screenshots of any public web page as PNG, JPEG, WebP, PDF or a scrolling video (MP4, WebM, GIF), with device presets, full-page capture, dark mode, element selectors and ad and cookie banner blocking.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SergiuPogor/curlshot-mcp"
+  },
+  "homepage": "https://curlshot.com/docs/guides/ai-agents",
+  "author": {
+    "name": "CurlShot"
+  },
+  "license": "MIT",
+  "categories": [
+    "Web Services"
+  ],
+  "tags": [
+    "screenshot",
+    "website",
+    "image",
+    "pdf",
+    "browser"
+  ],
+  "arguments": {
+    "CURLSHOT_API_KEY": {
+      "description": "CurlShot API key. The free plan includes 100 screenshots a month, no card needed: https://curlshot.com/register",
+      "required": true,
+      "example": "YOUR_API_KEY"
+    }
+  },
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://curlshot.com/api/mcp",
+      "headers": {
+        "Authorization": "Bearer ${CURLSHOT_API_KEY}"
+      },
+      "description": "Hosted streamable HTTP endpoint with Bearer auth",
+      "recommended": true
+    }
+  },
+  "tools": [
+    {
+      "name": "take_screenshot",
+      "description": "Renders a public web page and returns it as an image, a PDF, or a video of the page scrolling."
+    },
+    {
+      "name": "list_devices",
+      "description": "Lists the device presets (phones, tablets, desktops) that take_screenshot accepts in viewport_device."
+    }
+  ],
+  "examples": [
+    {
+      "title": "Screenshot a website",
+      "description": "Capture the first screen of a page and return it as an image",
+      "prompt": "Take a screenshot of https://example.com"
+    },
+    {
+      "title": "Mobile full-page capture",
+      "description": "Render the whole page on a phone preset",
+      "prompt": "Take a full-page screenshot of https://example.com on an iPhone 15 Pro"
+    }
+  ],
+  "is_official": true
+}
