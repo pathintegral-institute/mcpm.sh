@@ -1,0 +1,65 @@
+{
+  "name": "corpusiq",
+  "display_name": "CorpusIQ",
+  "description": "Remote MCP server for business data. Ask one question in plain language and get a single answer drawn from the systems a business already runs, including QuickBooks, Stripe, Shopify, HubSpot, Google Analytics 4, Google Ads and Search Console. Connected platforms are queried on demand with read-only access and every answer carries its sources.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CorpusIQ/mcp-manifest"
+  },
+  "homepage": "https://www.corpusiq.io",
+  "author": {
+    "name": "CorpusIQ",
+    "url": "https://www.corpusiq.io"
+  },
+  "license": "Proprietary",
+  "categories": [
+    "Analytics",
+    "Finance",
+    "Professional Apps"
+  ],
+  "tags": [
+    "business-data",
+    "analytics",
+    "quickbooks",
+    "stripe",
+    "shopify",
+    "hubspot",
+    "google-analytics",
+    "google-ads",
+    "search-console",
+    "oauth",
+    "remote"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://mcp2.corpusiq.io/mcp",
+      "description": "Hosted streamable HTTP server. Sign in with OAuth 2.1 (dynamic client registration and PKCE, no pre-registration needed), connect the accounts you want to query, then ask questions across them.",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Cross-source revenue check",
+      "description": "Reconcile the same period across payments, store and accounting",
+      "prompt": "What did I collect last month across Stripe and Shopify, and does that match what QuickBooks reports for the same period?"
+    },
+    {
+      "title": "Campaign to order",
+      "description": "Connect ad spend to actual orders rather than clicks",
+      "prompt": "Which Google Ads campaigns produced the most Shopify orders last quarter, and what did they cost per order?"
+    },
+    {
+      "title": "Monthly summary with sources",
+      "description": "One page pulled from several systems at once",
+      "prompt": "Summarise last month: revenue, top acquisition channel and churn, and cite the system each number came from."
+    },
+    {
+      "title": "Connection health",
+      "description": "Find stale or broken data connections before trusting a number",
+      "prompt": "Which connected accounts have not returned fresh data in the last 7 days?"
+    }
+  ],
+  "is_official": true,
+  "is_archived": false
+}
