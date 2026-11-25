@@ -1,0 +1,36 @@
+{
+  "name": "keenable-search",
+  "display_name": "Keenable Search",
+  "description": "Search the web and read pages as clean markdown with Keenable's hosted MCP server. No account or API key is required for anonymous, rate-limited search and fetch; an optional X-API-Key header raises the limits.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/keenableai/keenable-cli"
+  },
+  "homepage": "https://docs.keenable.ai/mcp-server",
+  "author": {
+    "name": "Keenable",
+    "url": "https://keenable.ai"
+  },
+  "license": "[NOT GIVEN]",
+  "categories": ["Web Services", "Knowledge Base"],
+  "tags": ["search", "web", "fetch"],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://api.keenable.ai/mcp-public",
+      "description": "Hosted Streamable HTTP server. No account or key needed; anonymous access is rate limited. Add an X-API-Key header for higher limits.",
+      "recommended": true
+    }
+  },
+  "tools": [
+    {"name": "search_web_pages", "description": "Search the web and return relevant pages with snippets, with optional site, excluded-domain, and publish-date filters."},
+    {"name": "fetch_page_content", "description": "Fetch a URL as clean markdown, optionally extracting only the part that answers a prompt."}
+  ],
+  "examples": [
+    {
+      "title": "Find and read documentation",
+      "description": "Search for official documentation, then fetch a relevant source page.",
+      "prompt": "Find the official Python documentation for asyncio TaskGroup and read the relevant page."
+    }
+  ]
+}
