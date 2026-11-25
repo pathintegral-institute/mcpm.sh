@@ -1,0 +1,65 @@
+{
+  "name": "cueston",
+  "display_name": "Cueston",
+  "description": "Build, preview and publish in-app product tours, tooltips, banners, checklists, surveys and announcements on your SaaS app, and read their analytics (76 tools, OAuth).",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/andreycretsu/cueston-mcp"
+  },
+  "homepage": "https://cueston.com/docs/mcp",
+  "author": {
+    "name": "Cueston",
+    "url": "https://cueston.com"
+  },
+  "license": "MIT",
+  "categories": [
+    "Productivity",
+    "Professional Apps",
+    "Analytics"
+  ],
+  "tags": [
+    "product-tours",
+    "onboarding",
+    "product-adoption",
+    "in-app-guidance",
+    "surveys",
+    "saas",
+    "oauth"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://app.cueston.com/api/mcp",
+      "recommended": true,
+      "description": "Hosted Streamable HTTP endpoint. Sign in with OAuth 2.1 (PKCE, dynamic client registration) and choose read, write or publish access."
+    },
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "cueston",
+        "mcp"
+      ],
+      "description": "Local stdio bridge. Run `npx cueston login` once, or set CUESTON_API_KEY."
+    }
+  },
+  "examples": [
+    {
+      "title": "Onboarding tour",
+      "description": "Build a draft product tour on real pages",
+      "prompt": "Create a 4-step onboarding tour on our dashboard page and send me a preview link."
+    },
+    {
+      "title": "Feature announcement",
+      "description": "Announce a new feature",
+      "prompt": "Draft an announcement banner for our new reports feature, shown to admins only."
+    },
+    {
+      "title": "Guide analytics",
+      "description": "Read how guidance performs",
+      "prompt": "Which of our tours have the lowest completion rate, and where do users drop off?"
+    }
+  ],
+  "is_official": true
+}
