@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "@concord-ai/mcp",
+  "display_name": "Concord",
+  "description": "Concord is a self-hosted platform that allows you to easily connect your data sources to any AI model and build powerful AI-driven workflows.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Get-Concord-AI/concord-mcp"
+  },
+  "homepage": "https://getconcord.ai",
+  "author": {
+    "name": "Concord AI",
+    "url": "https://getconcord.ai"
+  },
+  "license": "MIT",
+  "categories": [
+    "AI Systems",
+    "Dev Tools",
+    "MCP Tools"
+  ],
+  "tags": [
+    "ai",
+    "llm",
+    "self-hosted"
+  ],
+  "arguments": {
+    "CONCORD_PORT": {
+      "description": "The port to run the Concord server on. Defaults to 8787.",
+      "required": false,
+      "example": "8787"
+    },
+    "CONCORD_CONFIG_PATH": {
+      "description": "The path to the Concord config file. Defaults to ./config.yml.",
+      "required": false,
+      "example": "./config.yml"
+    },
+    "CONCORD_DB_URL": {
+      "description": "The URL of the database to use. Defaults to file:./concord.db.",
+      "required": false,
+      "example": "file:./concord.db"
+    },
+    "CONCORD_LOG_LEVEL": {
+      "description": "The log level to use. Defaults to info.",
+      "required": false,
+      "example": "info"
+    },
+    "CONCORD_DEFAULT_MODEL": {
+      "description": "The default model to use for AI tasks. Defaults to openai:gpt-4o-mini.",
+      "required": false,
+      "example": "openai:gpt-4o-mini"
+    },
+    "CONCORD_ALLOW_ANONYMOUS_TELEMETRY": {
+      "description": "Whether to allow anonymous telemetry. Defaults to true.",
+      "required": false,
+      "example": "true"
+    }
+  },
+  "tools": [],
+  "resources": [],
+  "prompts": [],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "@concord-ai/mcp"
+      ],
+      "description": "Run Concord using uvx, the Universal CLI.",
+      "recommended": true
+    },
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@concord-ai/mcp"
+      ],
+      "package": "@concord-ai/mcp",
+      "description": "Run Concord using npx."
+    },
+    "docker": {
+      "type": "docker",
+      "command": "docker",
+      "args": [
+        "run",
+        "-it",
+        "--rm",
+        "-p",
+        "8989:8989",
+        "ghcr.io/get-concord-ai/concord-mcp:latest"
+      ],
+      "description": "Run Concord using Docker."
+    }
+  },
+  "is_official": true,
+  "is_archived": false
+}
