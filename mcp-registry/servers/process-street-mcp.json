@@ -1,0 +1,36 @@
+{
+  "name": "process-street-mcp",
+  "display_name": "Process Street MCP Server",
+  "description": "Connect AI agents to Process Street workflows, tasks, runs, data sets, and operational records.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/process-street/process-street-mcp"
+  },
+  "homepage": "https://www.process.st/help/docs/mcp-server/",
+  "author": {
+    "name": "Process Street",
+    "url": "https://www.process.st/"
+  },
+  "license": "[NOT FOUND]",
+  "categories": [
+    "Productivity",
+    "Professional Apps"
+  ],
+  "tags": [
+    "process street",
+    "workflow management",
+    "task management",
+    "business process management",
+    "remote mcp"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://mcp.process.st/",
+      "description": "Connect to the official hosted Streamable HTTP endpoint. Authentication is completed interactively; API-key bearer tokens are supported where documented.",
+      "recommended": true
+    }
+  },
+  "is_official": true,
+  "is_archived": false
+}
