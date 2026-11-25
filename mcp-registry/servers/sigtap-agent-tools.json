@@ -1,0 +1,93 @@
+{
+  "name": "sigtap-agent-tools",
+  "display_name": "SigTAP Agent Tools",
+  "description": "13 x402-paid AI outreach and utility micro-tools as a remote MCP server: cold-email generation, 12-point email grading, SPF/DKIM/DMARC deliverability audits, plus hash/UUID/JWT/slug/JSON/regex/crypto-price/domain-age/weather. Free catalog preview of every tool; paid calls settle in USDC on Base ($0.001-$0.01 per call) - no API keys, your wallet is the account.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/unnamedaiagent/sigtap-agent-tools"
+  },
+  "homepage": "https://sigtap-outreach-api.sigtap.workers.dev/",
+  "author": {
+    "name": "sigtap"
+  },
+  "license": "MIT",
+  "categories": [
+    "Web Services",
+    "Dev Tools",
+    "Productivity"
+  ],
+  "tags": [
+    "x402",
+    "mcp",
+    "usdc",
+    "base",
+    "outreach",
+    "cold-email",
+    "deliverability",
+    "email",
+    "agent-payments",
+    "remote"
+  ],
+  "installations": {
+    "remote": {
+      "type": "http",
+      "url": "https://sigtap-mcp.sigtap.workers.dev/mcp",
+      "description": "SigTAP remote MCP server (Streamable HTTP). Start with the free 'catalog' tool - it lists every paid tool with live prices and zero-wallet preview URLs. Paid tools return an x402 HTTP 402 payment challenge (USDC on Base): clients without x402 payment middleware see the challenge instead of tool output - free HTTP previews at https://sigtap-outreach-api.sigtap.workers.dev/preview/<tool> return the same output shape with no wallet. Reference paid-client setup (official @x402/fetch): repo README.",
+      "recommended": true
+    }
+  },
+  "tools": [
+    {
+      "name": "catalog",
+      "description": "List all 12 paid tools with live prices + free preview routes (FREE, no payment)"
+    },
+    {
+      "name": "deliverability_audit",
+      "description": "SPF/DKIM/DMARC deliverability audit for a sending domain ($0.003 USDC on Base)"
+    },
+    {
+      "name": "email_grade",
+      "description": "12-point cold email score with concrete fixes ($0.005 USDC on Base)"
+    },
+    {
+      "name": "email_template",
+      "description": "Personalized cold email from proven templates ($0.01 USDC on Base)"
+    },
+    {
+      "name": "hash_text",
+      "description": "SHA-256/384/512, hex, base64, base64url and CRC32 of a UTF-8 string ($0.001 USDC on Base)"
+    },
+    {
+      "name": "jwt_decode",
+      "description": "Decode a JWT header+payload with safety flags, never verifies the signature ($0.001 USDC on Base)"
+    },
+    {
+      "name": "uuid_batch",
+      "description": "Batch random IDs: UUIDv4, UUIDv7, ULID or nanoid ($0.001 USDC on Base)"
+    },
+    {
+      "name": "slugify",
+      "description": "Unicode-aware url-safe slug, latin + Cyrillic transliteration ($0.001 USDC on Base)"
+    },
+    {
+      "name": "json_tools",
+      "description": "Flatten JSON to dot paths or convert rows to CSV ($0.001 USDC on Base)"
+    },
+    {
+      "name": "regex_test",
+      "description": "Regex matches with groups, count and a backtracking-risk heuristic ($0.001 USDC on Base)"
+    },
+    {
+      "name": "crypto_price",
+      "description": "Coinbase spot/buy/sell price with spread percent ($0.002 USDC on Base)"
+    },
+    {
+      "name": "domain_age",
+      "description": "Domain registration date, age in days and registrar via RDAP ($0.003 USDC on Base)"
+    },
+    {
+      "name": "weather",
+      "description": "Current weather + next 3h temperatures via open-meteo ($0.001 USDC on Base)"
+    }
+  ]
+}
