@@ -1,0 +1,52 @@
+{
+  "name": "agentpixel",
+  "display_name": "AgentPixel",
+  "description": "Most website visitors leave without filling out a form. AgentPixel turns the ones who click Accept into contacts your AI agent reads. 30-day trial, no card.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/byron-allsourcedata/agentpixel-mcp"
+  },
+  "homepage": "https://agentpixel.io",
+  "author": {
+    "name": "AllSource",
+    "url": "https://agentpixel.io"
+  },
+  "license": "MIT",
+  "categories": [
+    "Professional Apps",
+    "Analytics"
+  ],
+  "tags": [
+    "marketing",
+    "lead-generation",
+    "website-visitors",
+    "consent",
+    "pixel",
+    "contacts"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://agentpixel.io/mcp?src=mcpm",
+      "description": "Hosted streamable-HTTP MCP server. Sign in with OAuth or an API key; try_sample and signup work without auth."
+    }
+  },
+  "examples": [
+    {
+      "title": "See sample contacts",
+      "description": "Preview the output before signing up",
+      "prompt": "Show me the AgentPixel sample."
+    },
+    {
+      "title": "Set up the pixel",
+      "description": "Create a pixel with a consent bar and install it",
+      "prompt": "Start an AgentPixel trial, create a pixel for mysite.com, configure consent and add the snippet to my site layout."
+    },
+    {
+      "title": "Read new contacts",
+      "description": "Visitors click Accept to be identified",
+      "prompt": "Show today's AgentPixel contacts."
+    }
+  ],
+  "is_official": true
+}
