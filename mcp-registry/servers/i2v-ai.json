@@ -1,0 +1,66 @@
+{
+  "name": "i2v-ai",
+  "display_name": "I2v.ai",
+  "description": "Official i2v.ai MCP server for image generation and text-to-video or image-to-video across 12 image and 16 video models, with a USD quote before every paid task and a caller-set spending ceiling.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/i2v-ai/i2v-mcp"
+  },
+  "homepage": "https://i2v.ai/mcp",
+  "author": {
+    "name": "i2v.ai",
+    "email": "support@i2v.ai",
+    "url": "https://i2v.ai"
+  },
+  "license": "MIT",
+  "categories": [
+    "Media Creation",
+    "AI Systems"
+  ],
+  "tags": [
+    "image-generation",
+    "video-generation",
+    "text-to-video",
+    "image-to-video",
+    "media",
+    "official"
+  ],
+  "arguments": {
+    "I2V_API_KEY": {
+      "description": "i2v.ai API key for local stdio or bearer authentication. Create one at https://i2v.ai/dashboard/api-keys. Generation uses account credits.",
+      "required": true
+    }
+  },
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://i2v.ai/api/mcp",
+      "description": "Hosted Streamable HTTP with OAuth 2.1 (PKCE, mcp:read / mcp:write). Every paid task returns a USD quote first and accepts a caller-set maxCostUsd ceiling.",
+      "recommended": true
+    },
+    "http-api-key": {
+      "type": "http",
+      "url": "https://i2v.ai/api/mcp",
+      "headers": {
+        "Authorization": "Bearer ${I2V_API_KEY}"
+      },
+      "description": "Hosted Streamable HTTP using a caller-owned i2v.ai API key instead of OAuth."
+    },
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@i2v-ai/cli",
+        "mcp"
+      ],
+      "package": "@i2v-ai/cli",
+      "env": {
+        "I2V_API_KEY": "${I2V_API_KEY}"
+      },
+      "description": "Local stdio server. Requires Node.js 20+ and an i2v.ai API key."
+    }
+  },
+  "is_official": true,
+  "is_archived": false
+}
