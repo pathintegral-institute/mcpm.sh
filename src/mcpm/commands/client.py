@@ -852,6 +852,9 @@ def import_client(client_name):
         elif isinstance(server_config, dict):
             command = server_config.get("command", "")
             args = server_config.get("args", [])
+        elif getattr(server_config, "url", None):
+            command = ""
+            args = []
         else:
             continue
 
@@ -862,6 +865,14 @@ def import_client(client_name):
             if len(args) >= 2 and args[0] == "run":
                 is_mcpm_server = True
                 mcpm_servers.append((server_name, args[1]))
+        elif server_name.startswith("mcpm_"):
+            # URL-only generated entries have no `mcpm run` command.
+            url = getattr(server_config, "url", None)
+            if url is None and isinstance(server_config, dict):
+                url = server_config.get("url")
+            if url:
+                is_mcpm_server = True
+                mcpm_servers.append((server_name, server_name[len("mcpm_"):]))
 
         if not is_mcpm_server:
             non_mcpm_servers.append((server_name, server_config))
@@ -951,7 +962,7 @@ def import_client(client_name):
 
 def _import_servers_to_global(selected_servers, non_mcpm_servers, client_name):
     """Import selected servers to global configuration."""
-    from mcpm.core.schema import CustomServerConfig, STDIOServerConfig
+    from mcpm.core.schema import CustomServerConfig, RemoteServerConfig, STDIOServerConfig
 
     console.print(f"\n[bold green]Importing {len(selected_servers)} server(s) to global configuration...[/]")
 
@@ -975,12 +986,34 @@ def _import_servers_to_global(selected_servers, non_mcpm_servers, client_name):
 
         try:
             # Extract server configuration
+            if isinstance(server_config, RemoteServerConfig):
+                server_config_obj = RemoteServerConfig(
+                    name=server_name,
+                    url=server_config.url,
+                    headers=server_config.headers or {},
+                )
+                global_config_manager.add_server(server_config_obj)
+                imported_count += 1
+                table.add_row(server_name, server_config.url[:30], "✅ Imported")
+                continue
             if hasattr(server_config, "command"):
                 command = server_config.command
                 args = getattr(server_config, "args", [])
                 env = getattr(server_config, "env", {})
                 cwd = getattr(server_config, "cwd", None)
             elif isinstance(server_config, dict):
+                if server_config.get("url") and not server_config.get("command"):
+                    from mcpm.core.schema import RemoteServerConfig
+
+                    server_config_obj = RemoteServerConfig(
+                        name=server_name,
+                        url=server_config.get("url", ""),
+                        headers=server_config.get("headers") or {},
+                    )
+                    global_config_manager.add_server(server_config_obj)
+                    imported_count += 1
+                    table.add_row(server_name, server_config.get("url", "")[:30], "✅ Imported")
+                    continue
                 command = server_config.get("command", "")
                 args = server_config.get("args", [])
                 env = server_config.get("env", {})
@@ -1138,11 +1171,27 @@ def _replace_client_config_with_profile(client_manager, profile_name, client_nam
         print_error("Error replacing client config with profile", str(e))
 
 
+def _client_config_for_global_server(server_name: str, prefixed_name: str):
+    """Prefer a URL client entry when servers.json already has a URL.
+
+    Stdio `mcpm run` multiplies processes across parallel MCP clients. HTTP/URL
+    servers should be wired as RemoteServerConfig so clients connect directly.
+    """
+    from mcpm.core.schema import RemoteServerConfig, STDIOServerConfig
+
+    global_cfg = global_config_manager.get_server(server_name)
+    if global_cfg is not None and isinstance(global_cfg, RemoteServerConfig):
+        return RemoteServerConfig(
+            name=prefixed_name,
+            url=global_cfg.url,
+            headers=getattr(global_cfg, "headers", {}) or {},
+        )
+    return STDIOServerConfig(name=prefixed_name, command="mcpm", args=["run", server_name])
+
+
 def _replace_client_config_with_mcpm(client_manager, selected_servers, client_name):
     """Replace client config servers with MCPM managed versions."""
     try:
-        from mcpm.core.schema import STDIOServerConfig
-
         # Remove original servers
         for server_name in selected_servers:
             try:
@@ -1153,7 +1202,7 @@ def _replace_client_config_with_mcpm(client_manager, selected_servers, client_na
         # Add MCPM managed versions
         for server_name in selected_servers:
             prefixed_name = f"mcpm_{server_name}"
-            server_config = STDIOServerConfig(name=prefixed_name, command="mcpm", args=["run", server_name])
+            server_config = _client_config_for_global_server(server_name, prefixed_name)
             client_manager.add_server(server_config)
 
         console.print(
