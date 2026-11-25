@@ -1,0 +1,99 @@
+{
+  "name": "bestax-mcp",
+  "display_name": "Bestax",
+  "description": "Build Bulma v1 React apps with Bestax. Gives coding agents the component props, examples, CSS variables and Agent Skills for @allxsmith/bestax-bulma from an index that ships in the package, so it works offline and needs no API key.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/allxsmith/bestax"
+  },
+  "homepage": "https://bestax.io/docs/guides/llms#mcp-server",
+  "author": {
+    "name": "Alex Smith",
+    "url": "https://github.com/allxsmith"
+  },
+  "license": "MIT",
+  "categories": [
+    "Dev Tools"
+  ],
+  "tags": [
+    "bulma",
+    "react",
+    "typescript",
+    "components",
+    "css",
+    "bestax"
+  ],
+  "tools": [
+    {
+      "name": "list_components",
+      "description": "List every component with a one-line purpose, grouped by category"
+    },
+    {
+      "name": "search_bestax",
+      "description": "Search components, props, examples, CSS variables and skills in one ranked list"
+    },
+    {
+      "name": "get_component",
+      "description": "Import, summary and props for a component, with optional examples, CSS variables, accessibility notes and related components"
+    },
+    {
+      "name": "get_props",
+      "description": "One prop table, including compound sub-parts like Navbar.Brand"
+    },
+    {
+      "name": "get_examples",
+      "description": "Working tsx examples from a component's docs page"
+    },
+    {
+      "name": "get_css_variables",
+      "description": "The --bulma-* custom properties a component reads, with Sass names and defaults"
+    },
+    {
+      "name": "get_helper_props",
+      "description": "Spacing, color, typography, flexbox and visibility props to use instead of inline styles"
+    },
+    {
+      "name": "lookup_bulma_classes",
+      "description": "The bestax component and props for a Bulma class string like button is-primary"
+    },
+    {
+      "name": "list_skills",
+      "description": "List the bestax Agent Skills"
+    },
+    {
+      "name": "get_skill",
+      "description": "A skill's instructions, or one of its reference documents"
+    }
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "bestax-mcp@1"
+      ],
+      "package": "bestax-mcp",
+      "description": "Local stdio server from npm (requires Node.js 22 or later)",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Sign-up form",
+      "description": "Build a form from bestax form components",
+      "prompt": "Build a sign-up form with email, password and a terms checkbox using bestax-bulma, with validation messages."
+    },
+    {
+      "title": "Convert Bulma classes",
+      "description": "Swap raw Bulma markup for bestax components",
+      "prompt": "Which bestax components and props replace <button class=\"button is-primary is-large\">?"
+    },
+    {
+      "title": "Dark mode",
+      "description": "Theme an app with Bulma CSS variables",
+      "prompt": "Add dark mode and a custom primary color to my bestax-bulma app."
+    }
+  ],
+  "is_official": true
+}
