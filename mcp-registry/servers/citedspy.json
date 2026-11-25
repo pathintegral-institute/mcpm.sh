@@ -1,0 +1,33 @@
+{
+  "name": "citedspy",
+  "display_name": "CitedSpy",
+  "description": "Connect AI tools to your CitedSpy workspace to read brands, prompts, runs, citations, and analytics.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/citedspy/citedspy"
+  },
+  "homepage": "https://mcp.citedspy.com/mcp",
+  "author": {
+    "name": "CitedSpy"
+  },
+  "license": "MIT",
+  "categories": [
+    "Analytics",
+    "Productivity"
+  ],
+  "tags": [
+    "citedspy",
+    "analytics",
+    "citations",
+    "prompts",
+    "brands"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://mcp.citedspy.com/mcp",
+      "description": "Connect to the CitedSpy MCP endpoint over streamable HTTP. Authentication uses a one-time browser OAuth flow and an API key.",
+      "recommended": true
+    }
+  }
+}
