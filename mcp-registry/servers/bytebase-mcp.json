@@ -1,0 +1,100 @@
+{
+  "name": "bytebase-mcp",
+  "display_name": "Bytebase MCP",
+  "description": "Official MCP server for Bytebase, the open-source database governance platform. Query data, inspect schemas and propose database changes through your Bytebase instance, under its approval flow, access control, data masking and audit logging.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bytebase/bytebase-mcp"
+  },
+  "homepage": "https://docs.bytebase.com/integrations/mcp",
+  "author": {
+    "name": "bytebase"
+  },
+  "license": "MIT",
+  "categories": [
+    "Databases"
+  ],
+  "tags": [
+    "Database Governance",
+    "Schema Change",
+    "Access Control",
+    "Data Masking",
+    "PostgreSQL",
+    "MySQL"
+  ],
+  "installations": {
+    "npx": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@bytebase/bytebase-mcp"
+      ],
+      "env": {
+        "BYTEBASE_URL": "${BYTEBASE_URL}"
+      }
+    }
+  },
+  "arguments": {
+    "BYTEBASE_URL": {
+      "description": "External URL of your Bytebase instance. Sign-in is OAuth in the browser, so there is no API key.",
+      "required": true,
+      "example": "https://bytebase.example.com"
+    }
+  },
+  "tools": [
+    {
+      "name": "administer_workspace",
+      "description": "Make a workspace administration change that the user confirms in this client first."
+    },
+    {
+      "name": "call_api",
+      "description": "Execute a Bytebase API endpoint."
+    },
+    {
+      "name": "decide_issue",
+      "description": "Approve or reject a Bytebase issue at its current approval step."
+    },
+    {
+      "name": "get_gitops_workflow",
+      "description": "Return the workflow files that set up GitOps for a project."
+    },
+    {
+      "name": "get_schema",
+      "description": "Inspect a Bytebase database's schema."
+    },
+    {
+      "name": "grant_masking_exemption",
+      "description": "Exempt one member from data masking in a Bytebase project, for one database (optionally one schema, table, or columns of one table) or for every database in the project."
+    },
+    {
+      "name": "propose_database_change",
+      "description": "Run DDL/DML changes (ALTER TABLE, CREATE TABLE, INSERT, UPDATE, migrations) against a Bytebase database."
+    },
+    {
+      "name": "query_database",
+      "description": "Execute a SQL query against a Bytebase database."
+    },
+    {
+      "name": "reauthorize",
+      "description": "Log out the current MCP OAuth connection so the client can run OAuth again."
+    },
+    {
+      "name": "request_access_grant",
+      "description": "Request an access grant: time-boxed permission to run one read-only statement on one Bytebase database, optionally with results unmasked or exported."
+    },
+    {
+      "name": "revoke_masking_exemption",
+      "description": "Remove one member's masking exemption in a Bytebase project."
+    },
+    {
+      "name": "search_api",
+      "description": "Discover Bytebase API endpoints."
+    },
+    {
+      "name": "set_just_in_time_access",
+      "description": "Turn just-in-time access on or off for one Bytebase project."
+    }
+  ],
+  "is_official": true
+}
