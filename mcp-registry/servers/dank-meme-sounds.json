@@ -1,0 +1,91 @@
+{
+  "name": "dank-meme-sounds",
+  "display_name": "DankMachine Meme Sounds",
+  "description": "Meme soundboard for AI agents: 38,000+ meme sound effects with metadata on what each sound is and when to use it. Describe a moment to get a fitting reaction sound, search by name, mood or use case, see what is trending, and play sounds on your speakers. Read-only, free, no API key.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HalberdLLC/dank-meme-sounds"
+  },
+  "homepage": "https://dankmachine.com/developers/",
+  "author": {
+    "name": "Halberd LLC",
+    "email": "support@dankmachine.com",
+    "url": "https://dankmachine.com"
+  },
+  "license": "MIT",
+  "categories": [
+    "Media Creation"
+  ],
+  "tags": [
+    "audio",
+    "sound-effects",
+    "memes",
+    "soundboard",
+    "entertainment",
+    "remote"
+  ],
+  "arguments": {},
+  "tools": [
+    {
+      "name": "find_reaction_sound",
+      "description": "Describe a moment (\"my code finally compiled\", \"awkward silence\") and get fitting meme sounds with what each means and when to use it."
+    },
+    {
+      "name": "search_sounds",
+      "description": "Search meme sounds by name, alias, tag, mood or use case."
+    },
+    {
+      "name": "get_trending_sounds",
+      "description": "What people are playing on DankMachine right now (1h, 24h, 7d)."
+    },
+    {
+      "name": "random_sound",
+      "description": "A random sound, optionally from one category or with one vibe."
+    },
+    {
+      "name": "get_sound",
+      "description": "Full metadata for one sound by slug or best match."
+    },
+    {
+      "name": "list_categories",
+      "description": "Sound categories with counts."
+    },
+    {
+      "name": "play_sound",
+      "description": "Local server only: plays a sound on the user's speakers."
+    }
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "dank-meme-sounds"
+      ],
+      "package": "dank-meme-sounds",
+      "env": {},
+      "description": "Local stdio server with play_sound for playback on macOS, Windows and Linux. Requires Node.js 20+."
+    },
+    "http": {
+      "type": "http",
+      "url": "https://dankmachine.com/mcp",
+      "description": "Hosted Streamable HTTP, no sign-in or API key. All tools except play_sound.",
+      "recommended": true
+    }
+  },
+  "examples": [
+    {
+      "title": "Reaction sound",
+      "description": "Find a sound for a moment",
+      "prompt": "Find me a sound for when my tests finally pass."
+    },
+    {
+      "title": "Trending",
+      "description": "See what is popular right now",
+      "prompt": "What are the top 5 trending meme sounds today?"
+    }
+  ],
+  "is_official": true,
+  "is_archived": false
+}
