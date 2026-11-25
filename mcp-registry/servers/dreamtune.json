@@ -1,0 +1,41 @@
+{
+  "name": "dreamtune",
+  "display_name": "Dreamtune",
+  "description": "Model requests, tool APIs, GPU jobs and request traces with a scoped workspace key. Paid operations require workspace credit and the key's permissions.",
+  "repository": {
+    "type": "npm",
+    "url": "https://www.npmjs.com/package/@dreamtune/sdk"
+  },
+  "homepage": "https://docs.dreamtunelabs.com/connect/mcp",
+  "author": { "name": "Dreamtune", "url": "https://dreamtunelabs.com" },
+  "license": "MIT SDK; proprietary hosted service",
+  "categories": ["AI Systems", "Dev Tools"],
+  "tags": ["models", "tools", "gpu", "compute", "observability"],
+  "arguments": {
+    "DREAMTUNE_API_KEY": {
+      "description": "Production workspace API key from the Dreamtune API keys dashboard. Enable only required model, tool or compute permissions.",
+      "required": true
+    }
+  },
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://mcp.dreamtunelabs.com/mcp",
+      "headers": { "X-Dreamtune-API-Key": "${DREAMTUNE_API_KEY}" },
+      "description": "Hosted Streamable HTTP. Sends your workspace key in the documented custom header; no browser OAuth.",
+      "recommended": true
+    },
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": ["-y", "--package=@dreamtune/sdk@0.1.2", "dreamtune-mcp"],
+      "package": "@dreamtune/sdk@0.1.2",
+      "env": {
+        "DREAMTUNE_API_KEY": "${DREAMTUNE_API_KEY}",
+        "DREAMTUNE_API_ORIGIN": "https://api.dreamtunelabs.com",
+        "DREAMTUNE_REQUEST_TIMEOUT_MS": "120000"
+      },
+      "description": "Local stdio adapter. Requires Node.js 22.20 or later; selects the executable explicitly because the package has two binaries."
+    }
+  }
+}
