@@ -1,10 +1,10 @@
 {
   "name": "local-mcp",
   "display_name": "LMCP (Local MCP)",
-  "description": "Connects Claude, ChatGPT, Cursor, Grok and other MCP clients to apps on macOS 13+ and Windows 10+: Mail, Calendar, iMessage, Microsoft Teams, Slack, WhatsApp, Outlook, OneDrive, Google Drive, Office, Notion and Zoom. 188+ tools that execute on the device. Tool availability varies by platform.",
+  "description": "Local tools that let your AI use Mail, Calendar, Contacts, Teams, Slack, WhatsApp, OneDrive, Google Drive, Notion, Outlook and Office files on Mac and Windows. Runs on your computer.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/lanchuske/local-mcp-releases"
+    "url": "https://github.com/colibird-ai/local-mcp-releases"
   },
   "homepage": "https://www.local-mcp.com",
   "author": {
