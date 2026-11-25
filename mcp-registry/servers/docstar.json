@@ -1,0 +1,36 @@
+{
+  "name": "docstar",
+  "display_name": "DocStar",
+  "description": "DocStar turns your product's API into published docs that your users' AI assistants can read and call.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/swayammaheshwari/docstar-mcp"
+  },
+  "license": "MIT",
+  "homepage": "https://docstar.io",
+  "author": {
+    "name": "Walkover"
+  },
+  "categories": [
+    "Dev Tools"
+  ],
+  "tags": [
+    "api-docs",
+    "documentation",
+    "api",
+    "remote"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://mcp.docstar.io/mcp",
+      "recommended": true
+    }
+  },
+  "tools": [],
+  "resources": [],
+  "prompts": [],
+  "examples": [],
+  "is_official": true,
+  "is_archived": false
+}
