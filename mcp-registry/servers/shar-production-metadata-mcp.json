@@ -1,0 +1,48 @@
+{
+  "name": "shar-production-metadata-mcp",
+  "display_name": "SHAR Production Metadata MCP",
+  "description": "Read-only MCP server that validates rights-aware production metadata manifests. It checks required project metadata, production stage, and declared rights status, returning a releasability result without reading files, calling networks, or publishing data.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SHARProduction/production-metadata-mcp"
+  },
+  "homepage": "https://sharprod.com/",
+  "author": {
+    "name": "SHAR Production",
+    "url": "https://sharprod.com/"
+  },
+  "license": "MIT",
+  "categories": ["Media Creation", "AI Systems", "MCP Tools"],
+  "tags": ["production-metadata", "rights-aware", "metadata-validation", "video-production", "read-only"],
+  "installations": {
+    "git-clone": {
+      "type": "custom",
+      "command": "npx",
+      "args": [
+        "--yes",
+        "--package=git+https://github.com/SHARProduction/production-metadata-mcp.git#4d15a752948ba841ea565998d870bfae33d2b9d2",
+        "production-metadata-mcp"
+      ],
+      "description": "Runs the pinned public Git source through npm exec. Requires Node.js 20+ and Git; the package installs from commit 4d15a752948ba841ea565998d870bfae33d2b9d2 and starts its declared production-metadata-mcp binary.",
+      "recommended": true
+    }
+  },
+  "tools": [
+    {
+      "name": "validate_production_manifest",
+      "description": "Validates project metadata, production stage, and declared rights status in a manifest object, returning a releasability result and validation errors.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "manifest": {
+            "type": "object",
+            "description": "Production metadata manifest to validate."
+          }
+        },
+        "required": ["manifest"]
+      }
+    }
+  ],
+  "is_official": true,
+  "is_archived": false
+}
