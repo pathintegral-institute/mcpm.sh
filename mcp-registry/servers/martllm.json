@@ -1,15 +1,15 @@
 {
-  "name": "uberllm",
-  "display_name": "UberLLM",
-  "description": "Official UberLLM MCP server: list models with current prices, quote a request before running it, generate and edit images, start video jobs and wait for them, and check the prepaid balance.",
+  "name": "martllm",
+  "display_name": "MartLLM",
+  "description": "Official MartLLM MCP server: list models with current prices, quote a request before running it, generate and edit images, start video jobs and wait for them, and check the prepaid balance.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/PSA-Team-source/uberllm"
+    "url": "https://github.com/PSA-Team-source/martllm"
   },
-  "homepage": "https://uberllm.dev/docs/mcp",
+  "homepage": "https://martllm.com/docs/mcp",
   "author": {
-    "name": "UberLLM",
-    "url": "https://uberllm.dev"
+    "name": "MartLLM",
+    "url": "https://martllm.com"
   },
   "license": "MIT",
   "categories": [
@@ -23,8 +23,8 @@
     "api"
   ],
   "arguments": {
-    "UBERLLM_API_KEY": {
-      "description": "UberLLM API key (starts with ull_). Tool calls that generate media spend prepaid credit; there is no free tier.",
+    "MARTLLM_API_KEY": {
+      "description": "MartLLM API key (starts with ull_). Tool calls that generate media spend prepaid credit; there is no free tier.",
       "required": true,
       "example": "ull_YOUR_KEY"
     }
@@ -336,9 +336,9 @@
   "installations": {
     "http": {
       "type": "http",
-      "url": "https://api.uberllm.dev/mcp",
+      "url": "https://api.martllm.com/mcp",
       "headers": {
-        "Authorization": "Bearer ${UBERLLM_API_KEY}"
+        "Authorization": "Bearer ${MARTLLM_API_KEY}"
       },
       "description": "Hosted Streamable HTTP with a bearer API key.",
       "recommended": true
