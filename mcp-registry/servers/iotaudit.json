@@ -1,0 +1,77 @@
+{
+  "name": "iotaudit",
+  "display_name": "iotaudit",
+  "description": "Audit smart home devices on your own network: domains and countries they contact, unencrypted traffic, open ports, default logins, UPnP port forwards and an A-F grade per device, with a local HTML report. Runs locally, no telemetry.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/emirmrkaljevic/iotaudit"
+  },
+  "license": "MIT",
+  "homepage": "https://emirmrkaljevic.github.io/iotaudit/",
+  "author": {
+    "name": "emirmrkaljevic",
+    "url": "https://github.com/emirmrkaljevic"
+  },
+  "categories": [
+    "System Tools"
+  ],
+  "tags": [
+    "iot",
+    "smart-home",
+    "security",
+    "privacy",
+    "network",
+    "pcap"
+  ],
+  "tools": [
+    {
+      "name": "analyze_pcap",
+      "description": "Analyse a pcap of your own network: per-device destinations, plaintext vs TLS, A-F grade, safety verdict and optional HTML report."
+    },
+    {
+      "name": "capture",
+      "description": "Live-capture on an interface of a network you own (needs root, requires ownership confirmation)."
+    },
+    {
+      "name": "scan_device",
+      "description": "nmap open-port scan of one private LAN device you own."
+    },
+    {
+      "name": "default_credential_check",
+      "description": "Opt-in, rate-limited check whether one device you own still accepts a well-known default login."
+    },
+    {
+      "name": "diff_results",
+      "description": "Compare two saved iotaudit JSON audits and report new destinations, countries, ports and grade changes."
+    },
+    {
+      "name": "upnp_port_mappings",
+      "description": "List the port forwards the LAN router opened via UPnP IGD (read-only)."
+    }
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "iotaudit[mcp]",
+        "iotaudit-mcp"
+      ],
+      "package": "iotaudit",
+      "description": "Local stdio server from PyPI",
+      "recommended": true
+    },
+    "python": {
+      "type": "python",
+      "command": "python",
+      "args": [
+        "-m",
+        "iotaudit.mcp_server"
+      ],
+      "package": "iotaudit[mcp]",
+      "description": "Run with pip install \"iotaudit[mcp]\""
+    }
+  },
+  "is_official": true
+}
