@@ -1,0 +1,102 @@
+{
+  "display_name": "RestoSignals",
+  "license": "MIT",
+  "tags": [
+    "restaurants",
+    "lead-generation",
+    "liquor-license",
+    "public-records",
+    "new-business",
+    "sales-intelligence",
+    "hospitality"
+  ],
+  "name": "restosignals",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/paperandbeyond23-gif/restosignals-mcp"
+  },
+  "homepage": "https://restosignals.com",
+  "author": {
+    "name": "RestoSignals",
+    "email": "support@restosignals.com",
+    "url": "https://restosignals.com"
+  },
+  "description": "US restaurants and bars 1-6 months before they open. Fuses public liquor-license applications, food-service permits and new-business filings into one deduplicated venue, scored 0-100 for how close it is to opening, with the owner contact from those filings. Also looks up liquor licenses (type, status, expiration) from state records. Hosted remote server: sign in through your MCP client (OAuth 2.1), or send an API key from https://restosignals.com as an Authorization Bearer header. 100 free credits on sign-up, no card; the coverage tool needs no key.",
+  "categories": [
+    "Analytics",
+    "Knowledge Base"
+  ],
+  "arguments": {
+    "RESTOSIGNALS_API_KEY": {
+      "description": "RestoSignals API key (starts with pk_) from https://restosignals.com. Only needed for clients that cannot sign in with OAuth. Never commit your key.",
+      "required": true,
+      "example": "YOUR_RESTOSIGNALS_API_KEY"
+    }
+  },
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://api.restosignals.com/mcp",
+      "description": "Hosted streamable-HTTP MCP server. OAuth-capable clients open a one-time sign-in; no API key is needed for this path.",
+      "recommended": true
+    },
+    "http-api-key": {
+      "type": "http",
+      "url": "https://api.restosignals.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${RESTOSIGNALS_API_KEY}"
+      },
+      "description": "Hosted streamable-HTTP MCP server using your RestoSignals API key instead of OAuth, for clients without a sign-in window."
+    }
+  },
+  "tools": [
+    {
+      "name": "coverage",
+      "description": "List the states RestoSignals currently has data for and how many scored venues each holds, with a count of hot leads (opening_score >= 80). Free and needs no API key; call it first."
+    },
+    {
+      "name": "new_openings",
+      "description": "Find restaurants and bars about to open in a state, ranked by opening_score (0-100), fused from liquor licenses, food permits and new-business filings. Each lead has a contact block (owner name from the filing, plus phone or owner mailing address where public records carry them). 1 credit per returned lead."
+    },
+    {
+      "name": "watch_area",
+      "description": "Register a webhook that fires when a new matching venue appears in an area. criteria = {state, city, signal_type, min_opening_score}. Paid accounts only."
+    },
+    {
+      "name": "lookup_liquor_license",
+      "description": "Look up liquor licenses in TX, CA, NY, VA, FL, OR, CO or the City of Chicago by business name, owner name, premises address or license number. Returns license number, type, status and expiration date from the state's own records. 1 credit per returned license."
+    },
+    {
+      "name": "venue_signals",
+      "description": "Return the raw liquor, permit and business filings that were fused into one venue, for transparency. 1 credit."
+    }
+  ],
+  "examples": [
+    {
+      "title": "New openings",
+      "description": "Restaurants about to open in a state",
+      "prompt": "Which restaurants and bars in Texas are most likely to open in the next few months?"
+    },
+    {
+      "title": "Hot leads in a city",
+      "description": "High-score venues in one city",
+      "prompt": "Show venues in Chicago with an opening score of 80 or higher, with owner contact."
+    },
+    {
+      "title": "Coverage",
+      "description": "See which states have data",
+      "prompt": "Which states does RestoSignals cover, and how many hot leads does each have?"
+    },
+    {
+      "title": "Liquor license lookup",
+      "description": "Check a license's status and expiration",
+      "prompt": "Look up the liquor license for Chuy's in Texas and tell me when it expires."
+    },
+    {
+      "title": "Why a venue scored high",
+      "description": "See the filings behind a lead",
+      "prompt": "Show the underlying filings for the top new opening in New York."
+    }
+  ],
+  "is_official": true
+}
