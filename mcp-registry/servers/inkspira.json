@@ -1,0 +1,109 @@
+{
+  "name": "inkspira",
+  "display_name": "Inkspira",
+  "description": "Plan a tattoo: list supported styles, placements and colours, build a prefilled generator link, and return actual-size printable samples and a photo placement preview.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TJLDC/inkspira-mcp"
+  },
+  "homepage": "https://inkspira.de/tattoo-generator/",
+  "author": {
+    "name": "Inkspira",
+    "url": "https://inkspira.de"
+  },
+  "license": "MIT",
+  "categories": [
+    "Media Creation"
+  ],
+  "tags": [
+    "tattoo",
+    "design",
+    "printables",
+    "read-only"
+  ],
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "inkspira-mcp"
+      ],
+      "package": "inkspira-mcp",
+      "description": "Run locally over stdio with npx",
+      "recommended": true
+    },
+    "http": {
+      "type": "http",
+      "url": "https://inkspira-mcp.743078294ldc.workers.dev/mcp",
+      "description": "Hosted Streamable HTTP endpoint, no authentication"
+    }
+  },
+  "examples": [
+    {
+      "title": "Check supported options",
+      "description": "Lists the style, placement and colour values the generator accepts.",
+      "prompt": "Which tattoo styles and placements does Inkspira support?"
+    },
+    {
+      "title": "Prepare a preview link",
+      "description": "Builds a generator URL from a non-identifying motif.",
+      "prompt": "Make me an Inkspira preview link for a fine-line fern on the forearm in black and grey."
+    },
+    {
+      "title": "Find printable sizes",
+      "description": "Returns the actual-size A4 samples and the photo placement preview.",
+      "prompt": "Where can I compare 3 cm and 5 cm tattoos at actual size?"
+    }
+  ],
+  "tools": [
+    {
+      "name": "list_tattoo_options",
+      "description": "Return the style, placement and color identifiers accepted by the Inkspira generator.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "create_tattoo_preview_link",
+      "description": "Build a prefilled Inkspira generator link from a non-identifying tattoo motif. Image generation happens only after the user signs in and chooses to generate.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "Tattoo motif and composition without identifying details (max 300 characters)."
+          },
+          "style": {
+            "type": "string",
+            "description": "One of the styles returned by list_tattoo_options."
+          },
+          "placement": {
+            "type": "string",
+            "description": "One of the placements returned by list_tattoo_options."
+          },
+          "color": {
+            "type": "string",
+            "enum": [
+              "sw",
+              "farbig"
+            ],
+            "description": "sw for black and grey, farbig for colour."
+          }
+        },
+        "required": [
+          "prompt"
+        ]
+      }
+    },
+    {
+      "name": "list_tattoo_planning_resources",
+      "description": "Return the public Inkspira links for actual-size printable examples and the photo placement preview.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ]
+}
