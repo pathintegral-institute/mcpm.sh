@@ -1,0 +1,323 @@
+{
+  "name": "branching-story-mcp",
+  "display_name": "Branching Story MCP",
+  "description": "Zero-dependency MCP server exposing a deterministic branching-story state kernel (graph validation, guarded choice stepping, memory log, SHA-256 trace hash) and the CC-BY-4.0 2026 Consumer AI Story Continuity Benchmark (doi:10.7910/DVN/YEBHQR). Four read-only tools and two resources; stdio, no credentials, no network.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ouba-studio/branching-story-mcp"
+  },
+  "homepage": "https://github.com/ouba-studio/branching-story-mcp#readme",
+  "author": {
+    "name": "Ouba Studio",
+    "url": "https://www.ouba.art/"
+  },
+  "license": "MIT",
+  "categories": [
+    "Media Creation",
+    "Knowledge Base"
+  ],
+  "tags": [
+    "mcp",
+    "model-context-protocol",
+    "interactive-fiction",
+    "branching-narrative",
+    "visual-novel",
+    "story-engine",
+    "story-state",
+    "benchmark",
+    "llm-evaluation",
+    "state-drift"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "branching-story-mcp"
+      ],
+      "description": "Run the PyPI package branching-story-mcp with uv (no install step, zero runtime dependencies)",
+      "recommended": true
+    },
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@ouba-studio/branching-story-mcp"
+      ],
+      "description": "Run the npm package @ouba-studio/branching-story-mcp (zero dependencies)"
+    }
+  },
+  "tools": [
+    {
+      "name": "validate_story_graph",
+      "description": "Validate a branching-story-kit JSON scene graph. Checks the schema, detects missing choice targets, unreachable scenes, dead-end loops and invalid guard predicates, and returns structured diagnostics with issue codes, stats and a pass/fail verdict.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "story": {
+            "type": "object",
+            "description": "A branching-story-kit v1 story graph: {id?, title?, startScene (or legacy start), initialState?, scenes}. Scenes map id -> {title, body, ending?, choices?}. Choices carry label, next (or href), optional requires {key: minimum} and optional effects {key: value | {op: set|add|append|delete, value}}."
+          },
+          "scenes": {
+            "type": "object",
+            "description": "Alternative to `story`: the scenes map."
+          },
+          "startScene": {
+            "type": "string",
+            "description": "Alternative to `story`: the start scene id."
+          },
+          "initialState": {
+            "type": "object",
+            "description": "Alternative to `story`: the initial state vector."
+          }
+        },
+        "required": [],
+        "additionalProperties": true
+      },
+      "required": []
+    },
+    {
+      "name": "step_story_state",
+      "description": "Run the deterministic story-state reducer for one or more player choices. Evaluates `requires` guards, applies `set` / `add` / `append` effects through a single write path, and returns the next scene, updated state, fired guards, available choices and a turn-stamped memory trace with a verifiable SHA-256 trace hash.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "story": {
+            "type": "object",
+            "description": "A branching-story-kit v1 story graph (see validate_story_graph)."
+          },
+          "choices": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "object"
+                }
+              ]
+            },
+            "description": "Ordered player choices. Each entry is an integer index into the current scene's choices, a case-insensitive choice label, or {index}/{label}."
+          },
+          "state": {
+            "type": "object",
+            "description": "Optional state overrides applied on top of initialState."
+          },
+          "memory": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "object"
+                }
+              ]
+            },
+            "description": "Optional prior memory log: strings or {turn, fact} objects."
+          },
+          "remember": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "object"
+                }
+              ]
+            },
+            "description": "Facts to plant in the turn-stamped memory log before stepping."
+          },
+          "startScene": {
+            "type": "string",
+            "description": "Optional override for the entry scene."
+          }
+        },
+        "required": [
+          "story",
+          "choices"
+        ],
+        "additionalProperties": true
+      },
+      "required": [
+        "story",
+        "choices"
+      ]
+    },
+    {
+      "name": "query_ai_story_benchmark",
+      "description": "Query the verified Nov 15 2026 10-Platform Consumer AI Story Continuity Benchmark (doi:10.7910/DVN/YEBHQR) with an optional `platform` or `status` filter. Returns structured JSON plus full APA/BibTeX citation and the interactive benchmark explorer URL.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "platform": {
+            "type": "string",
+            "description": "Platform name or alias, e.g. 'Character.AI', 'talkie', 'ai-dungeon'."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pass",
+              "fail",
+              "right_censored",
+              "untestable",
+              "tested"
+            ],
+            "description": "Optional outcome filter."
+          }
+        },
+        "required": [],
+        "additionalProperties": true
+      },
+      "required": []
+    },
+    {
+      "name": "detect_state_drift",
+      "description": "Given a planted fact {key, expected_value, planted_turn} and a transcript of turns, check deterministic recall / contradiction / omission and classify the session against the five-mode silent state drift taxonomy (F1 silent state loss, F2 session non-persistence, F3 gating censoring, F4 transient service degradation, F5 platform delisting) from doi:10.5281/zenodo.24549412.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "fact": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string",
+                "description": "State key, e.g. 'cat_name'."
+              },
+              "expected_value": {
+                "type": "string",
+                "description": "The planted value, e.g. 'Marmalade'."
+              },
+              "planted_turn": {
+                "type": "integer",
+                "description": "1-based turn where the fact was planted."
+              },
+              "wrong_values": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Values that would contradict the planted fact."
+              },
+              "aliases": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Accepted spellings of the expected value."
+              },
+              "contradiction_mode": {
+                "type": "string",
+                "enum": [
+                  "wrong_values",
+                  "key_mention_without_value"
+                ],
+                "description": "How contradictions are detected (default: wrong_values)."
+              }
+            },
+            "required": [
+              "key",
+              "expected_value"
+            ],
+            "additionalProperties": true
+          },
+          "transcript": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "turn": {
+                      "type": "integer"
+                    },
+                    "speaker": {
+                      "type": "string"
+                    },
+                    "text": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "text"
+                  ]
+                }
+              ]
+            },
+            "description": "Conversation turns, oldest first."
+          },
+          "probe_turn": {
+            "type": "integer",
+            "description": "Turn at which recall is probed (default: last turn)."
+          },
+          "min_gap": {
+            "type": "integer",
+            "description": "Minimum turns after planting before a session counts as probed (default 2)."
+          },
+          "delisted": {
+            "type": "boolean",
+            "description": "Set true when the platform was delisted (forces F5)."
+          }
+        },
+        "required": [
+          "fact",
+          "transcript"
+        ],
+        "additionalProperties": true
+      },
+      "required": [
+        "fact",
+        "transcript"
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "uri": "ouba://benchmark/2026-10-platform-matrix",
+      "name": "2026-10-platform-matrix",
+      "description": "Full CC-BY-4.0 per-platform matrix (evaluation date 2026-11-15, doi:10.7910/DVN/YEBHQR): status, turns completed, turn-15 recall, TTFS, latency, ads, signup gate, failure mode and notes for all 10 platforms.",
+      "mimeType": "application/json"
+    },
+    {
+      "uri": "ouba://schema/story-graph-v1",
+      "name": "story-graph-v1",
+      "description": "Canonical JSON Schema for branching-story-kit scene graphs (scenes, startScene, initialState).",
+      "mimeType": "application/schema+json"
+    }
+  ],
+  "examples": [
+    {
+      "title": "Validate a branching story",
+      "description": "Check a story graph for missing targets and unreachable scenes",
+      "prompt": "Validate this branching story graph and list any errors or warnings."
+    },
+    {
+      "title": "Step a story",
+      "description": "Apply reader choices and return the resulting state and trace hash",
+      "prompt": "Apply the choices Hold his gaze, then Ask about the folio, to this story and show the final state and available choices."
+    },
+    {
+      "title": "Query the benchmark",
+      "description": "Look up which platforms failed turn-15 recall in the 2026 benchmark",
+      "prompt": "Which platforms in the 2026 Consumer AI Story Continuity Benchmark failed the turn-15 recall probe?"
+    },
+    {
+      "title": "Detect state drift",
+      "description": "Classify a transcript against a planted fact",
+      "prompt": "Check this transcript for drift of the fact that my cat is called Marmalade, planted at turn 2 and probed at turn 4."
+    }
+  ],
+  "is_official": false,
+  "is_archived": false
+}
