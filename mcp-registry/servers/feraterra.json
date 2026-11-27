@@ -1,0 +1,175 @@
+{
+  "name": "feraterra",
+  "display_name": "FeraTerra (Arena Exchange)",
+  "description": "Headless trading, market data, and risk MCP server for FeraTerra (Arena Exchange): inspect Spot, Perpetual, FormulaPerp, BoundedClaim, and SpreadBook L2/L3 orderbooks, OHLCV candles, Gladiator Leaderboard standings, stateless POST /order/preview margin simulations, zero-capital flash arbitrage, and L2 Clearinghouse Merkle solvency proofs.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FeraTerra/feraterra-sdk"
+  },
+  "homepage": "https://feraterra.app",
+  "author": {
+    "name": "FeraTerra",
+    "url": "https://feraterra.app"
+  },
+  "license": "MIT",
+  "categories": [
+    "Finance",
+    "Analytics"
+  ],
+  "tags": [
+    "cryptocurrency",
+    "exchange",
+    "trading",
+    "perpetuals",
+    "orderbook",
+    "defi",
+    "market-data",
+    "ccxt",
+    "arbitrage"
+  ],
+  "arguments": {
+    "ARENA_API_KEY": {
+      "description": "Optional Arena Exchange API key for authenticated trading (not required for read-only market data, orderbooks, leaderboard, solvency verification, or order previews)",
+      "required": false,
+      "example": "ak_testnet_example"
+    },
+    "ARENA_API_SECRET": {
+      "description": "Optional Arena Exchange HMAC API secret for authenticated trading",
+      "required": false,
+      "example": "as_testnet_example"
+    }
+  },
+  "tools": [
+    {
+      "name": "arena_health_and_manifest",
+      "description": "Check Arena Exchange daemon health, conservation status, WAL sequence, and public manifest."
+    },
+    {
+      "name": "arena_list_markets",
+      "description": "List Arena Exchange markets (Spot, LinearPerpetual, FormulaPerpetual, BoundedClaim, SpreadBook) with exact tick/lot pricing and BBOs."
+    },
+    {
+      "name": "arena_get_orderbook",
+      "description": "Fetch live L2/L3 orderbook snapshot for an Arena market by symbol (e.g. BTC/USD:USD or BTC-USD-PERP) or market_id."
+    },
+    {
+      "name": "arena_get_trades_and_candles",
+      "description": "Fetch recent trades and OHLCV candles for an Arena market."
+    },
+    {
+      "name": "arena_get_leaderboard",
+      "description": "Fetch the public Gladiator Leaderboard ranking active accounts by equity, PnL, maker BBO streak, volume, or ROI."
+    },
+    {
+      "name": "arena_get_account_portfolio",
+      "description": "Inspect account USD balances, physical Spot collateral, perp/claim positions, equity, IMR/MMR, drawdown stop, builder binding, and open orders."
+    },
+    {
+      "name": "arena_verify_ledger_tip",
+      "description": "Fetch GET /ledger/tip and cryptographically verify its ARENA_LEDGER_TIP_V2_1 Keccak-256 + secp256k1 operator signature."
+    },
+    {
+      "name": "arena_get_withdrawals_and_escape_proof",
+      "description": "Fetch account withdrawal vouchers and optionally verify an off-chain or L1 log-reconstructed Merkle emergency escape proof."
+    },
+    {
+      "name": "arena_login_wallet",
+      "description": "Authenticate an Ethereum wallet via EIP-191 challenge/signature into this MCP session (secrets are bound internally and never echoed back)."
+    },
+    {
+      "name": "arena_configure_risk_guardrails",
+      "description": "Configure agent risk limits: portfolio drawdown kill-switch, per-position Knock-Out barrier, Rolling MMP, and TCP Cancel-on-Disconnect."
+    },
+    {
+      "name": "arena_manage_prime_subaccount",
+      "description": "Link, unlink (max_guaranty=-2), or execute 0-bps internal USD/base transfers between Prime master and sub-accounts."
+    },
+    {
+      "name": "arena_bind_builder",
+      "description": "Bind a trader account to a Builder / Order-Flow Router account and protocol cut share (0..5000 bps)."
+    },
+    {
+      "name": "arena_place_order",
+      "description": "Submit a limit/market/pegged/IOC/FOK/PostOnly/reduce-only order using exact USD/base or fixed-point tick/lot units over HTTP or 64B TCP wire."
+    },
+    {
+      "name": "arena_replace_two_sided_quote",
+      "description": "Atomically replace both resting Bid and Ask quotes on a market via HTTP POST /quote or 64-byte TCP TwoSidedQuoteReplace."
+    },
+    {
+      "name": "arena_modify_order",
+      "description": "Modify an existing resting order price and/or quantity with optional FIFO keep_priority."
+    },
+    {
+      "name": "arena_cancel_orders",
+      "description": "Cancel a specific resting order by order_id or batch-cancel orders by market, side, client_tag_filter, or market_bitmask."
+    },
+    {
+      "name": "arena_execute_atomic_basket",
+      "description": "Execute an all-or-nothing 2..4-leg atomic cross-market basket / spread trade via POST /basket."
+    },
+    {
+      "name": "arena_portfolio_delta_hedge",
+      "description": "Execute a 1-frame Jacobian residual delta-neutralizing hedge via POST /auto_delta_hedge."
+    },
+    {
+      "name": "arena_request_withdrawal",
+      "description": "Request an off-chain debit + operator-signed ARENA_WITHDRAW_V1_4 voucher (blocked unless --allow-withdrawals is explicitly enabled)."
+    },
+    {
+      "name": "arena_subscribe_express_port",
+      "description": "Purchase or extend a Native Colocation Express Port lease (epochs) for priority wire tie-break and max Core 1 ingress batching."
+    },
+    {
+      "name": "arena_preview_order",
+      "description": "Stateless dry-run order simulation via POST /order/preview (zero WAL, L3 book, or balance mutation). Returns estimated fills, resting lots, net fee/rebate, and pre/post Eigen-SPAN IMR/MMR/free margin."
+    },
+    {
+      "name": "arena_flash_arbitrage",
+      "description": "Execute zero-pre-margin intra-tick atomic Flash Arbitrage (mint+sell or buy+burn/redeem) on a Bonding-Curve Spot or BoundedClaim market via POST /flash_arb or 64B TCP wire."
+    },
+    {
+      "name": "arena_auto_liquidate",
+      "description": "Execute an autonomous zero-capital liquidation & backstop bounty sweep across underwater accounts via POST /auto_liquidate."
+    },
+    {
+      "name": "arena_onboard_and_deposit",
+      "description": "Self-service AI agent onboarding: logs in or generates an ephemeral EIP-191 wallet, optionally requests testnet collateral from POST /faucet, and optionally deposits ERC-20 margin on-chain into Clearinghouse."
+    }
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://mcp.feraterra.app/mcp",
+      "description": "Zero-install hosted Streamable HTTP endpoint for public read-only market data, L2/L3 orderbooks, OHLCV candles, Gladiator Leaderboard, ECDSA ledger-tip verification, and stateless order previews (no API key required).",
+      "recommended": true
+    },
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "feraterra-sdk",
+        "--testnet"
+      ],
+      "package": "feraterra-sdk",
+      "env": {
+        "ARENA_API_KEY": "${ARENA_API_KEY}",
+        "ARENA_API_SECRET": "${ARENA_API_SECRET}"
+      },
+      "description": "Run the full MCP gateway locally over stdio via uvx against the public Base Sepolia testnet (https://testnet.feraterra.app)."
+    }
+  },
+  "examples": [
+    {
+      "title": "Inspect BTC perpetual orderbook and preview a limit order",
+      "description": "Fetch live L2 orderbook depth and run a stateless margin simulation with zero ledger mutation",
+      "prompt": "Fetch the top 10 levels of the BTC/USD:USD orderbook on FeraTerra and preview a post-only limit buy of 0.05 BTC at best bid."
+    },
+    {
+      "title": "Check Gladiator Leaderboard and verify ledger-tip solvency",
+      "description": "Query top trading accounts by equity and verify the operator ECDSA ledger signature",
+      "prompt": "Show the top 10 accounts on the FeraTerra Gladiator Leaderboard sorted by equity and verify the current sovereign ledger tip signature."
+    }
+  ],
+  "is_official": true
+}
