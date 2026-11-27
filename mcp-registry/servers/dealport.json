@@ -1,0 +1,3335 @@
+{
+  "name": "dealport",
+  "display_name": "Dealport",
+  "description": "The SMB knowledge layer for agents and humans: search 28M+ US private companies and commercial buildings with primary public-filing cited Records, size markets for $0.00 with preview_companies, match CSV lists, score living Projects and Playbooks, resolve verified human owner contacts, and request double-opt-in introductions through Avery (Dealport's AI outreach specialist, who always discloses she is an AI).",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Dealport-HQ/dealport"
+  },
+  "homepage": "https://dealport.com",
+  "author": {
+    "name": "Dealport",
+    "email": "support@dealport.com",
+    "url": "https://dealport.com"
+  },
+  "license": "MIT",
+  "categories": [
+    "Knowledge Base",
+    "Analytics",
+    "Professional Apps"
+  ],
+  "tags": [
+    "dealport",
+    "smb",
+    "private-companies",
+    "commercial-real-estate",
+    "public-filings",
+    "origination",
+    "mcp"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://app.dealport.com/api/mcp",
+      "description": "Hosted Streamable HTTP MCP server. Supports keyless tool discovery and rate-limited preview_companies ($0.00), OAuth 2.1 browser sign-in, or Authorization Bearer API keys ($5.00 free starting balance, pay as you go).",
+      "recommended": true
+    },
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "dealport",
+        "mcp",
+        "serve"
+      ],
+      "package": "dealport",
+      "env": {
+        "DP_API_KEY": "${DP_API_KEY}"
+      },
+      "description": "Local stdio MCP bridge connecting to Dealport via npx dealport mcp serve."
+    }
+  },
+  "arguments": {
+    "DP_API_KEY": {
+      "description": "Dealport workspace API key (dp_live_... from https://app.dealport.com/connect?tab=keys) required for authenticated local npm stdio calls.",
+      "required": true
+    }
+  },
+  "tools": [
+    {
+      "name": "list_projects",
+      "description": "This workspace's Projects: each one's playbook, how many records it has looked at, how many qualified, and how many await review. Start here when someone asks about their leads, targets, or Projects. $0.00 (free).",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "project_leads",
+      "description": "One of this workspace's Projects' leads, ranked as its Owners tab ranks them: qualified first, best first, each with its tier and score, its key answers (who, phone, email, licence) and its rules in words (Meets, Not, Unknown, Flagged, Bonus). Or those awaiting review, or all. $0.00 (free); get_record gives one in full.",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "project_id": {
+            "type": "string",
+            "description": "A project_id from list_projects"
+          },
+          "show": {
+            "description": "qualified (the default), review or all",
+            "type": "string",
+            "enum": [
+              "qualified",
+              "review",
+              "all"
+            ]
+          },
+          "limit": {
+            "description": "Maximum leads to return (1 to 100, default 10)",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "offset": {
+            "description": "Pagination offset (default 0)",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        },
+        "required": [
+          "project_id"
+        ]
+      }
+    },
+    {
+      "name": "preview_companies",
+      "description": "Size a US company buy-box for $0.00 before spending anything: returns matching_count (up to 10,000+), up to 5 sample companies (id, name, city, state, industry, revenue and employee bands, independent flag), and a Project search link. Call preview_companies to tune filters for $0.00 before unlocking paid records.",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "state": {
+            "description": "Two-letter US state code, e.g. OH",
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 2
+          },
+          "counties": {
+            "description": "Counties within state, e.g. ['Lucas', 'Montgomery']",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "cities": {
+            "description": "Cities within state, e.g. ['Toledo', 'Dayton']",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "markets": {
+            "description": "Additional states or county markets",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "state": {
+                  "type": "string",
+                  "minLength": 2,
+                  "maxLength": 2,
+                  "description": "Two-letter US state code, e.g. IN"
+                },
+                "counties": {
+                  "description": "Optional county names within that state",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "state"
+              ]
+            }
+          },
+          "name_starts_with": {
+            "description": "Prefix of the company's name (at least 2 letters)",
+            "type": "string",
+            "minLength": 2
+          },
+          "domain": {
+            "description": "A company's website domain or URL, e.g. acme.com (needs no state or name)",
+            "type": "string"
+          },
+          "naics": {
+            "description": "2-to-6 digit NAICS codes, e.g. ['238220', '332710']",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^\\d{2,6}$"
+            }
+          },
+          "min_revenue": {
+            "description": "Minimum annual revenue in USD",
+            "type": "number"
+          },
+          "max_revenue": {
+            "description": "Maximum annual revenue in USD",
+            "type": "number"
+          },
+          "filed_revenue_only": {
+            "description": "Only revenue filed on a cost report or PPP loan, not modeled",
+            "type": "boolean"
+          },
+          "min_employees": {
+            "description": "Minimum headcount",
+            "type": "number"
+          },
+          "max_employees": {
+            "description": "Maximum headcount",
+            "type": "number"
+          },
+          "size_unknown": {
+            "description": "Keep companies whose headcount/revenue is unknown alongside those inside the range",
+            "type": "boolean"
+          },
+          "independent": {
+            "description": "Only privately held, independent companies (excludes SEC filers, nonprofits, government, HOAs)",
+            "type": "boolean"
+          },
+          "owner_businesses": {
+            "description": "Only companies whose owner is named on at least this many businesses (e.g. 2, 3, or 5)",
+            "type": "integer",
+            "minimum": 2,
+            "maximum": 25
+          },
+          "medicare": {
+            "description": "Only Medicare-enrolled agencies",
+            "type": "boolean"
+          },
+          "owner_operated": {
+            "description": "Only Medicare agencies their owners run, from CMS filings",
+            "type": "boolean"
+          },
+          "owner_contact": {
+            "description": "Only companies with an owner's phone or email already on file",
+            "type": "boolean"
+          },
+          "licensed": {
+            "description": "Only companies holding an active state health licence",
+            "type": "boolean"
+          },
+          "care_type": {
+            "description": "Healthcare organizations of these care types, by their NPI registration",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "home_care",
+                "home_health",
+                "hospice",
+                "nursing_home",
+                "assisted_living",
+                "behavioral_health",
+                "hospital",
+                "clinic",
+                "physician_practice",
+                "dental",
+                "therapy",
+                "pharmacy",
+                "laboratory",
+                "medical_equipment",
+                "ambulance",
+                "other"
+              ]
+            }
+          },
+          "care_types": {
+            "description": "Alias for care_type: healthcare organizations by NPI care type",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "home_care",
+                "home_health",
+                "hospice",
+                "nursing_home",
+                "assisted_living",
+                "behavioral_health",
+                "hospital",
+                "clinic",
+                "physician_practice",
+                "dental",
+                "therapy",
+                "pharmacy",
+                "laboratory",
+                "medical_equipment",
+                "ambulance",
+                "other"
+              ]
+            }
+          },
+          "adviser": {
+            "description": "Only SEC-registered investment advisers (Form ADV)",
+            "type": "boolean"
+          },
+          "wealth_adviser": {
+            "description": "Only wealth advisers to individuals (no private funds and at least 20 clients)",
+            "type": "boolean"
+          },
+          "online_store": {
+            "description": "Only companies running an online store",
+            "type": "boolean"
+          },
+          "sells": {
+            "description": "Online store product categories",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "pet",
+                "beauty",
+                "supplements",
+                "apparel",
+                "home",
+                "food",
+                "jewelry",
+                "baby",
+                "outdoor",
+                "shoes",
+                "bags",
+                "kitchen",
+                "coffee_tea",
+                "toys",
+                "fitness",
+                "health",
+                "electronics",
+                "auto",
+                "crafts",
+                "books",
+                "gifts",
+                "garden",
+                "tools",
+                "cbd",
+                "services",
+                "other"
+              ]
+            }
+          },
+          "store_words": {
+            "description": "Keywords on the online store's name, products, or description",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "min_reviews": {
+            "description": "Minimum online store product reviews",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "order": {
+            "description": "Sort order for online store searches",
+            "type": "string",
+            "enum": [
+              "reviews",
+              "products",
+              "match"
+            ]
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "search_companies",
+      "description": "Search Dealport's 28M+ US company records across state, counties, cities, NAICS codes, revenue, headcount, independence, multi-business owners, healthcare care types, advisers, online stores, or domain. $0.01 per fresh company returned ($0.00 repeat within 30 days). Use preview_companies first to size at $0.00.",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "state": {
+            "description": "Two-letter US state code, e.g. OH",
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 2
+          },
+          "counties": {
+            "description": "Counties within state, e.g. ['Lucas', 'Montgomery']",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "cities": {
+            "description": "Cities within state, e.g. ['Toledo', 'Dayton']",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "markets": {
+            "description": "Additional states or county markets",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "state": {
+                  "type": "string",
+                  "minLength": 2,
+                  "maxLength": 2,
+                  "description": "Two-letter US state code, e.g. IN"
+                },
+                "counties": {
+                  "description": "Optional county names within that state",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "state"
+              ]
+            }
+          },
+          "name_starts_with": {
+            "description": "Prefix of the company's name (at least 2 letters)",
+            "type": "string",
+            "minLength": 2
+          },
+          "domain": {
+            "description": "A company's website domain or URL, e.g. acme.com (needs no state or name)",
+            "type": "string"
+          },
+          "naics": {
+            "description": "2-to-6 digit NAICS codes, e.g. ['238220', '332710']",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^\\d{2,6}$"
+            }
+          },
+          "min_revenue": {
+            "description": "Minimum annual revenue in USD",
+            "type": "number"
+          },
+          "max_revenue": {
+            "description": "Maximum annual revenue in USD",
+            "type": "number"
+          },
+          "filed_revenue_only": {
+            "description": "Only revenue filed on a cost report or PPP loan, not modeled",
+            "type": "boolean"
+          },
+          "min_employees": {
+            "description": "Minimum headcount",
+            "type": "number"
+          },
+          "max_employees": {
+            "description": "Maximum headcount",
+            "type": "number"
+          },
+          "size_unknown": {
+            "description": "Keep companies whose headcount/revenue is unknown alongside those inside the range",
+            "type": "boolean"
+          },
+          "independent": {
+            "description": "Only privately held, independent companies (excludes SEC filers, nonprofits, government, HOAs)",
+            "type": "boolean"
+          },
+          "owner_businesses": {
+            "description": "Only companies whose owner is named on at least this many businesses (e.g. 2, 3, or 5)",
+            "type": "integer",
+            "minimum": 2,
+            "maximum": 25
+          },
+          "medicare": {
+            "description": "Only Medicare-enrolled agencies",
+            "type": "boolean"
+          },
+          "owner_operated": {
+            "description": "Only Medicare agencies their owners run, from CMS filings",
+            "type": "boolean"
+          },
+          "owner_contact": {
+            "description": "Only companies with an owner's phone or email already on file",
+            "type": "boolean"
+          },
+          "licensed": {
+            "description": "Only companies holding an active state health licence",
+            "type": "boolean"
+          },
+          "care_type": {
+            "description": "Healthcare organizations of these care types, by their NPI registration",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "home_care",
+                "home_health",
+                "hospice",
+                "nursing_home",
+                "assisted_living",
+                "behavioral_health",
+                "hospital",
+                "clinic",
+                "physician_practice",
+                "dental",
+                "therapy",
+                "pharmacy",
+                "laboratory",
+                "medical_equipment",
+                "ambulance",
+                "other"
+              ]
+            }
+          },
+          "care_types": {
+            "description": "Alias for care_type: healthcare organizations by NPI care type",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "home_care",
+                "home_health",
+                "hospice",
+                "nursing_home",
+                "assisted_living",
+                "behavioral_health",
+                "hospital",
+                "clinic",
+                "physician_practice",
+                "dental",
+                "therapy",
+                "pharmacy",
+                "laboratory",
+                "medical_equipment",
+                "ambulance",
+                "other"
+              ]
+            }
+          },
+          "adviser": {
+            "description": "Only SEC-registered investment advisers (Form ADV)",
+            "type": "boolean"
+          },
+          "wealth_adviser": {
+            "description": "Only wealth advisers to individuals (no private funds and at least 20 clients)",
+            "type": "boolean"
+          },
+          "online_store": {
+            "description": "Only companies running an online store",
+            "type": "boolean"
+          },
+          "sells": {
+            "description": "Online store product categories",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "pet",
+                "beauty",
+                "supplements",
+                "apparel",
+                "home",
+                "food",
+                "jewelry",
+                "baby",
+                "outdoor",
+                "shoes",
+                "bags",
+                "kitchen",
+                "coffee_tea",
+                "toys",
+                "fitness",
+                "health",
+                "electronics",
+                "auto",
+                "crafts",
+                "books",
+                "gifts",
+                "garden",
+                "tools",
+                "cbd",
+                "services",
+                "other"
+              ]
+            }
+          },
+          "store_words": {
+            "description": "Keywords on the online store's name, products, or description",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "min_reviews": {
+            "description": "Minimum online store product reviews",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "order": {
+            "description": "Sort order for online store searches",
+            "type": "string",
+            "enum": [
+              "reviews",
+              "products",
+              "match"
+            ]
+          },
+          "limit": {
+            "description": "Maximum companies to return (1 to 50, default 25)",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          },
+          "offset": {
+            "description": "Pagination offset (default 0)",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "search_buildings",
+      "description": "NYC multifamily and mixed-use buildings in a borough, from Dealport's records: the owner of record, units, class and year built, rent-stabilized units, and who holds the current loan with the year it likely comes due. $0.01 per property ($0.00 repeat within 30 days); get_record with a property's BBL gives it in full.",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "borough": {
+            "type": "string",
+            "enum": [
+              "MN",
+              "BK",
+              "QN",
+              "BX",
+              "SI"
+            ],
+            "description": "MN, BK, QN, BX or SI"
+          },
+          "min_units": {
+            "description": "At least this many homes; 10 by default",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "address_or_owner": {
+            "description": "Part of the address or the owner's name",
+            "type": "string"
+          },
+          "loan_due_by": {
+            "description": "Only properties whose current loan likely comes due by the end of this year, soonest first",
+            "type": "integer",
+            "minimum": 1990,
+            "maximum": 2100
+          },
+          "loan_holder": {
+            "description": "agency (Fannie Mae or Freddie Mac), cmbs or bank",
+            "type": "string",
+            "enum": [
+              "agency",
+              "cmbs",
+              "bank"
+            ]
+          },
+          "signal": {
+            "description": "rent_stabilized, dob_penalties, housing_court, tax_lien or ll97",
+            "type": "string",
+            "enum": [
+              "rent_stabilized",
+              "dob_penalties",
+              "housing_court",
+              "tax_lien",
+              "ll97",
+              "section8_expiring",
+              "tax_credit_ending",
+              "failing_inspection"
+            ]
+          },
+          "limit": {
+            "description": "Maximum properties to return (1 to 50, default 25)",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          },
+          "offset": {
+            "description": "Pagination offset (default 0)",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        },
+        "required": [
+          "borough"
+        ]
+      }
+    },
+    {
+      "name": "find_contact",
+      "description": "Resolve a company's human owner, verified direct phones and emails (do-not-call and shared-desk filtered), and rich professional profile (LinkedIn URL, headline, summary, location, seniority, department, career roles, education, skills, and certifications). $0.09 strictly when a verified phone or email is found; $0.00 on miss or 30-day repeat. Takes up to two minutes.",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "company_id": {
+            "type": "string",
+            "description": "A Dealport company id, from search_companies or preview_companies"
+          },
+          "person": {
+            "description": "Whom to look up; by default the human owner Dealport resolves",
+            "type": "string"
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        },
+        "required": [
+          "company_id"
+        ]
+      }
+    },
+    {
+      "name": "find_owner",
+      "description": "Resolves the human principal behind a company (stripping Registered Agents), finds their verified direct mobile/direct phones and work/personal emails, and returns their rich professional profile (LinkedIn URL, headline, summary, location, seniority, department, career roles, education, skills, and certifications). $0.09 strictly on verified hit; $0.00 on miss or 30-day repeat.",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "company_id": {
+            "type": "string",
+            "description": "A Dealport company id, from search_companies or preview_companies"
+          },
+          "person": {
+            "description": "Whom to look up; by default the human owner Dealport resolves",
+            "type": "string"
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        },
+        "required": [
+          "company_id"
+        ]
+      }
+    },
+    {
+      "name": "get_record",
+      "description": "One company (its Dealport uuid) or NYC property (its BBL) in full: every fact with its basis, date and source; the owner and people with their contacts; identifiers; and every source cited. $0.01 ($0.00 repeat within 30 days).",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "A Dealport company id (uuid) or a 10-digit NYC BBL"
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "research_company",
+      "description": "Dealport's full Company research on one company: what it does, when founded, employees and revenue, who owns it and how (owner-operated, family, private equity, public or subsidiary), and the owner's direct phone and email with cited sources. $0.50 ($0.00 repeat within 30 days). Returns a research_id; poll with get_research.",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "company_id": {
+            "type": "string",
+            "description": "A Dealport company id, from search_companies"
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        },
+        "required": [
+          "company_id"
+        ]
+      }
+    },
+    {
+      "name": "get_research",
+      "description": "Read a Company research started with research_company: \"running\" until done, then each field with its value, basis, and numbered sources. $0.00 (free).",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "research_id": {
+            "type": "string",
+            "description": "The research_id research_company returned"
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        },
+        "required": [
+          "research_id"
+        ]
+      }
+    },
+    {
+      "name": "watch_companies",
+      "description": "Pin target companies into a Project checked weekly for ownership, leadership, headcount, filing, licence, and news signals. $0.05 per newly watched company per calendar month ($0.00 if already watched this month).",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "company_ids": {
+            "minItems": 1,
+            "maxItems": 200,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Dealport company uuids to watch in the Project"
+          },
+          "project_id": {
+            "description": "Existing Project id; omit to use or create one",
+            "type": "string"
+          },
+          "project_name": {
+            "description": "Name for a new or matching Project",
+            "type": "string",
+            "maxLength": 120
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        },
+        "required": [
+          "company_ids"
+        ]
+      }
+    },
+    {
+      "name": "what_changed",
+      "description": "Read weekly exit, leadership, staff, filing, licence, and news signals across this workspace's watched companies, with cited sources and Project links. $0.00 (free).",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "project_id": {
+            "description": "Optional Project id; omit to check all watched Projects",
+            "type": "string"
+          },
+          "days": {
+            "description": "Lookback window in days (default 7)",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 90
+          },
+          "limit": {
+            "description": "Maximum signals to return (default 100)",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "account_balance",
+      "description": "This workspace's plain-USD balance, available funds, monthly spend caps, plan mode, and per-action USD rate card. $0.00 (free).",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "avery_status",
+      "description": "Read Avery's current mandate brief, funnel counts (contacted, in Q&A, ready for your call, introduced), monthly outreach allowance, open owner suggestions, and On-Offer owners who said YES ($0.02 an email Avery sends, $25.00 warm intro; $0.00 per action on Enterprise). Free.",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "avery_reach_out",
+      "description": "Queue outreach from Avery (Dealport's AI outreach specialist) directly by Dealport company_id or open suggestion_id (from a Dealport mailbox, without naming you, or from your connected inbox in as_me mode) or send mandate instructions to Avery. Obtain explicit human confirmation of the target company, owner, and outreach cost from the user before calling avery_reach_out, even when outreach will wait for a balance top-up before starting. Supports acquisition (default M&A) as well as commercial and supplier partnership outreach. Enforces workspace NDA/CRM/portfolio exclusions before queuing or charging. Self-Serve: $0.02 for each email Avery sends (the first note and each follow-up, charged as it goes; nothing to queue; up to 150 owners/mo, 1 active mandate). Until the workspace's first top-up, the ask is queued with waiting_for_top_up: true and Avery starts once money is added: relay its message and billing_url. Enterprise: $0.00 per action.",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "company_id": {
+            "description": "Dealport company_id UUID to queue direct outreach (accepted without suggestion_id)",
+            "type": "string"
+          },
+          "suggestion_id": {
+            "description": "Optional suggestion_id from avery_status.open_suggestions (omit when passing company_id)",
+            "type": "string"
+          },
+          "mode": {
+            "description": "avery (default: from a Dealport mailbox, without naming you) or as_me (from your connected mailbox)",
+            "type": "string",
+            "enum": [
+              "avery",
+              "as_me"
+            ]
+          },
+          "intent": {
+            "description": "acquisition (default M&A buy-side) or commercial / supplier (B2B customer, dealer, or supply partnership; reaches metadata.xyz commercial-only owners)",
+            "type": "string",
+            "enum": [
+              "acquisition",
+              "commercial",
+              "supplier"
+            ]
+          },
+          "message": {
+            "description": "Optional plain-English refinement or instruction for Avery's mandate brief",
+            "type": "string",
+            "maxLength": 2000
+          },
+          "domain": {
+            "description": "Optional company domain for pre-flight NDA/CRM blocklist check",
+            "type": "string"
+          },
+          "company_name": {
+            "description": "Optional company name for pre-flight NDA/CRM blocklist check",
+            "type": "string"
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "avery_accept_intro",
+      "description": "Accept an On-Offer owner who replied positively ('Yes, happy to chat') and trigger the 3-way mutual email introduction. A positive owner reply makes the offer available to present to the user, not pre-authorized to accept: always present the offer and obtain explicit human confirmation of the target company, owner, and $25.00 self-serve cost before calling avery_accept_intro. Self-Serve: $25.00 per Warm Yes intro (if available balance is under $25.00, keeps the warm lead safe on offer and returns a top-up link). Enterprise: $0.00 per action.",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "conversation_id": {
+            "type": "string",
+            "description": "A conversation_id from avery_status.ready_offers"
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        },
+        "required": [
+          "conversation_id"
+        ]
+      }
+    },
+    {
+      "name": "list_blocklist",
+      "description": "List this workspace's active Anti-Collision Shield exclusions (NDA, portfolio companies, active CRM deals, dead deals, and manual exclusions) checked before Avery or Projects touch a target. $0.00 (free).",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "reason": {
+            "description": "Optional filter: nda, portfolio, crm, dead_deal, or manual",
+            "type": "string",
+            "enum": [
+              "nda",
+              "portfolio",
+              "crm",
+              "dead_deal",
+              "manual"
+            ]
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "add_blocklist",
+      "description": "Idempotently add domains, URLs, emails, CSV lines, or company names to this workspace's Anti-Collision Shield (NDA, portfolio, CRM, dead_deal, or manual) so Avery never contacts them. Requires workspace_owner or admin. $0.00 (free).",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "entries": {
+            "minItems": 1,
+            "maxItems": 500,
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4000,
+                  "description": "Domain, URL, email address, or CSV line to exclude"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "domain": {
+                      "description": "Company domain, URL, or email (e.g. acme.com)",
+                      "type": "string"
+                    },
+                    "company_name": {
+                      "description": "Company legal or operating name",
+                      "type": "string"
+                    },
+                    "company_id": {
+                      "description": "Optional canonical Dealport company UUID",
+                      "type": "string"
+                    },
+                    "reason": {
+                      "description": "nda, portfolio, crm, dead_deal, or manual",
+                      "type": "string",
+                      "enum": [
+                        "nda",
+                        "portfolio",
+                        "crm",
+                        "dead_deal",
+                        "manual"
+                      ]
+                    }
+                  },
+                  "description": "Structured company exclusion entry",
+                  "anyOf": [
+                    {
+                      "required": [
+                        "domain"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "company_name"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "company_id"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "description": "Domains, URLs, CSV rows, or { domain?, company_name?, reason? } entries to block"
+          },
+          "default_reason": {
+            "description": "Default reason when an entry omits reason: nda (default), portfolio, crm, dead_deal, or manual",
+            "type": "string",
+            "enum": [
+              "nda",
+              "portfolio",
+              "crm",
+              "dead_deal",
+              "manual"
+            ]
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        },
+        "required": [
+          "entries"
+        ]
+      }
+    },
+    {
+      "name": "remove_blocklist",
+      "description": "Remove an exclusion from this workspace's Anti-Collision Shield by block_id or domain. Requires workspace_owner or integration_admin. $0.00 (free).",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "block_id": {
+            "description": "UUID block_id from list_blocklist",
+            "type": "string"
+          },
+          "domain": {
+            "description": "Domain or URL to unblock, e.g. acme.com",
+            "type": "string"
+          },
+          "company_name": {
+            "description": "Optional exact company name to unblock",
+            "type": "string"
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "list_watch_webhooks",
+      "description": "List this workspace's HMAC-SHA256 signed HTTPS Project watch webhooks and recent delivery attempts for watch.signal and avery.warm_yes events. $0.00 (free).",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "project_id": {
+            "description": "Optional Project UUID context for the returned Project link",
+            "type": "string"
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "create_watch_webhook",
+      "description": "Register an HMAC-SHA256 signed HTTPS Project watch webhook that wakes your agent with precomputed factual structured_diff deltas on watch.signal and avery.warm_yes events. Returns the one-time signing_secret for X-Dealport-Signature verification. $0.00 (free).",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "target_url": {
+            "type": "string",
+            "description": "Public https:// endpoint URL that receives signed POST webhook events"
+          },
+          "name": {
+            "description": "Optional human-readable listener label (up to 120 characters)",
+            "type": "string",
+            "maxLength": 120
+          },
+          "project_id": {
+            "description": "Optional Project UUID filter; omit to listen across all watched Projects",
+            "type": "string"
+          },
+          "event_types": {
+            "description": "Optional event filter: watch.signal and/or avery.warm_yes",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "watch.signal",
+                "avery.warm_yes"
+              ]
+            }
+          },
+          "signal_categories": {
+            "description": "Optional signal delta_kind filter: leadership, headcount, filing, website, and/or news",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "leadership",
+                "headcount",
+                "filing",
+                "website",
+                "news"
+              ]
+            }
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        },
+        "required": [
+          "target_url"
+        ]
+      }
+    },
+    {
+      "name": "toggle_watch_webhook",
+      "description": "Pause, resume, or update an existing Project watch webhook's active state, label, Project filter, event_types, or signal_categories. Omitting active always flips the current delivery state, so pass active explicitly (using the webhook's current active boolean from list_watch_webhooks) when updating only name or filters without changing delivery state. Re-enabling an auto-paused webhook resets its failure counter. $0.00 (free).",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "webhook_id": {
+            "type": "string",
+            "description": "Webhook UUID from list_watch_webhooks or create_watch_webhook"
+          },
+          "active": {
+            "description": "Set true to enable or false to pause. Omitting active always flips the current delivery state, even when updating name or filters—pass active explicitly to preserve the current state during metadata-only updates.",
+            "type": "boolean"
+          },
+          "name": {
+            "description": "Optional updated listener label (up to 120 characters)",
+            "type": "string",
+            "maxLength": 120
+          },
+          "project_id": {
+            "description": "Optional Project UUID filter, or null to listen across all watched Projects",
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "event_types": {
+            "description": "Optional updated event filter: watch.signal and/or avery.warm_yes",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "watch.signal",
+                "avery.warm_yes"
+              ]
+            }
+          },
+          "signal_categories": {
+            "description": "Optional updated signal delta_kind filter: leadership, headcount, filing, website, and/or news",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "leadership",
+                "headcount",
+                "filing",
+                "website",
+                "news"
+              ]
+            }
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        },
+        "required": [
+          "webhook_id"
+        ]
+      }
+    },
+    {
+      "name": "test_watch_webhook",
+      "description": "Send a signed webhook.test ping with X-Dealport-Signature to an existing Project watch webhook endpoint and return the HTTP delivery status. $0.00 (free).",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "webhook_id": {
+            "type": "string",
+            "description": "Webhook UUID from list_watch_webhooks or create_watch_webhook"
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        },
+        "required": [
+          "webhook_id"
+        ]
+      }
+    },
+    {
+      "name": "delete_watch_webhook",
+      "description": "Permanently delete a Project watch webhook and stop future event deliveries to its endpoint. $0.00 (free).",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "webhook_id": {
+            "type": "string",
+            "description": "Webhook UUID from list_watch_webhooks to delete"
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        },
+        "required": [
+          "webhook_id"
+        ]
+      }
+    },
+    {
+      "name": "annotate_companies",
+      "description": "Save workspace-private rubric evaluations (score 0..100, verdict: priority | qualified | watch | pass, rationale, and up to 12 flat scalar custom_fields) onto 1 to 100 Dealport companies and attach them to a ranked Dealport Project (project_name or project_id, defaulting to 'AI Scored Targets' without starting weekly watch billing unless watch: true).",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "items": {
+            "description": "Batch of 1..100 company annotations to upsert",
+            "minItems": 1,
+            "maxItems": 100,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "company_id": {
+                  "type": "string",
+                  "description": "Canonical Dealport company UUID"
+                },
+                "score": {
+                  "description": "Optional rubric score from 0 to 100",
+                  "anyOf": [
+                    {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "verdict": {
+                  "description": "Optional verdict: priority, qualified, watch, or pass",
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "priority",
+                        "qualified",
+                        "watch",
+                        "pass"
+                      ]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "rationale": {
+                  "description": "Concise thesis fit rationale (up to 2,000 characters)",
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "maxLength": 2000
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "custom_fields": {
+                  "description": "Optional flat scalar rubric columns (up to 12 keys, string/number/boolean/null), e.g. { iso_9001: true, miles_from_hq: 38 }",
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
+                  "additionalProperties": {
+                    "type": [
+                      "string",
+                      "number",
+                      "boolean",
+                      "null"
+                    ]
+                  },
+                  "maxProperties": 12
+                },
+                "agent_label": {
+                  "description": "Optional agent attribution label, e.g. 'Claude Cowork'",
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "maxLength": 120
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "company_id"
+              ]
+            }
+          },
+          "company_id": {
+            "description": "Single-company shorthand UUID when items is omitted",
+            "type": "string"
+          },
+          "score": {
+            "description": "Single-company rubric score from 0 to 100 when items is omitted",
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "verdict": {
+            "description": "Single-company verdict (priority, qualified, watch, or pass) when items is omitted",
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "priority",
+                  "qualified",
+                  "watch",
+                  "pass"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "rationale": {
+            "description": "Single-company thesis fit rationale (up to 2,000 characters) when items is omitted",
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "custom_fields": {
+            "description": "Optional flat scalar rubric columns when items is omitted",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {
+              "type": [
+                "string",
+                "number",
+                "boolean",
+                "null"
+              ]
+            },
+            "maxProperties": 12
+          },
+          "agent_label": {
+            "description": "Optional agent attribution label applied to the batch, e.g. 'Claude Cowork'",
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "project_id": {
+            "description": "Optional Dealport Project UUID to attach these scored companies to",
+            "type": "string"
+          },
+          "project_name": {
+            "description": "Optional Dealport Project name to create or update (e.g. 'Midwest Commercial HVAC')",
+            "type": "string",
+            "maxLength": 120
+          },
+          "watch": {
+            "description": "Optional: false (default) saves to your ranked Project for free without weekly watch billing",
+            "type": "boolean"
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_annotations",
+      "description": "Read this workspace's private agent rubric annotations across companies, filtered by company_ids, verdict, or min_score.",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "company_ids": {
+            "description": "Optional Dealport company UUIDs to filter by",
+            "maxItems": 200,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "verdict": {
+            "description": "Optional filter: priority, qualified, watch, or pass",
+            "type": "string",
+            "enum": [
+              "priority",
+              "qualified",
+              "watch",
+              "pass"
+            ]
+          },
+          "min_score": {
+            "description": "Optional minimum rubric score (0..100)",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "limit": {
+            "description": "Maximum annotations to return (default 100, max 200)",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "flag_company_fact",
+      "description": "Submit a curator fact flag when a research or sourcing agent discovers a stale, missing, or changed company fact (acquired_or_merged, owner_changed_or_retired, wrong_contact, closed_or_inactive, capability_or_size_mismatch, or other) with optional field_name, suggested_fix, and cited https:// source_url. Enqueues into Dealport's curator queue without mutating canonical records directly. Requires only 'read' key scope so read-only research swarm workers can report findings safely. $0.00 (free).",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "company_id": {
+            "type": "string",
+            "description": "Canonical Dealport company UUID"
+          },
+          "flag_type": {
+            "type": "string",
+            "enum": [
+              "acquired_or_merged",
+              "owner_changed_or_retired",
+              "wrong_contact",
+              "closed_or_inactive",
+              "capability_or_size_mismatch",
+              "other"
+            ],
+            "description": "Fact discrepancy kind: acquired_or_merged, owner_changed_or_retired, wrong_contact, closed_or_inactive, capability_or_size_mismatch, or other"
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 1000,
+            "description": "Concise explanation of the stale or changed fact (3 to 1,000 characters)"
+          },
+          "field_name": {
+            "description": "Optional field name affected, e.g. 'owner_name', 'ownership_status', 'phone', or 'employees'",
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "suggested_fix": {
+            "description": "Optional proposed updated value or correction (up to 1,000 characters)",
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "source_url": {
+            "description": "Optional public http:// or https:// URL citing the discrepancy",
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "agent_label": {
+            "description": "Optional agent attribution label, e.g. 'Claude Research Worker'",
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        },
+        "required": [
+          "company_id",
+          "flag_type",
+          "summary"
+        ]
+      }
+    },
+    {
+      "name": "list_company_flags",
+      "description": "Read this workspace's submitted company fact flags in the curator queue, including curator verification resolution_note, resolved_by, curator_evidence, and resolved_at, optionally filtered by company_id, flag_type, or status (open, promoted, dismissed). $0.00 (free).",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "company_id": {
+            "description": "Optional Dealport company UUID to filter flags for a single business",
+            "type": "string"
+          },
+          "flag_type": {
+            "description": "Optional filter by flag_type",
+            "type": "string",
+            "enum": [
+              "acquired_or_merged",
+              "owner_changed_or_retired",
+              "wrong_contact",
+              "closed_or_inactive",
+              "capability_or_size_mismatch",
+              "other"
+            ]
+          },
+          "status": {
+            "description": "Optional filter by status: open, promoted, or dismissed",
+            "type": "string",
+            "enum": [
+              "open",
+              "promoted",
+              "dismissed"
+            ]
+          },
+          "limit": {
+            "description": "Maximum flags to return (default 50, max 200)",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "fetch_company_pages",
+      "description": "Read compact, high-signal Markdown directly from 1 to 10 SMB websites (default paths: /, /about, /services, /capabilities; capped at 12,000 characters per company) so your AI can verify niche capabilities, certifications, service areas, or customer segments directly. Served from Dealport's 30-day page cache at $0.00 when fresh; $0.01 per company on a new live fetch that returns content ($0.00 on unreachable or miss).",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "company_ids": {
+            "description": "1 to 10 Dealport company UUIDs whose websites should be read as clean Markdown",
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "domains": {
+            "description": "1 to 10 public company domains or website URLs, e.g. ['kowalskimechanical.com']",
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "paths": {
+            "description": "Optional relative URL paths starting with '/' (max 5; defaults to /, /about, /services, /capabilities)",
+            "minItems": 1,
+            "maxItems": 5,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "force_refresh": {
+            "description": "Set true to bypass the 30-day page cache and fetch live HTML now",
+            "type": "boolean"
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "match_company_list",
+      "description": "Match 1 to 250 companies from a legacy ERP export, CRM export, or territory CSV against Dealport's 28M+ US company records using exact indexed domain matching plus fuzzy legal-name + state matching, returning canonical company_id, NAICS/industry, and any cached verified human owner at $0.00. Optionally pass watch: true to pin all matched companies onto a Project for weekly monitoring at $0.05/company/mo.",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "items": {
+            "description": "1 to 250 structured company rows ({ name, domain, city, state, external_id })",
+            "minItems": 1,
+            "maxItems": 250,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "description": "Company or account name from your ERP, CRM, or territory sheet",
+                  "type": "string",
+                  "maxLength": 300
+                },
+                "domain": {
+                  "description": "Company website or domain, e.g. kowalskimechanical.com",
+                  "type": "string",
+                  "maxLength": 300
+                },
+                "city": {
+                  "description": "Optional city hint for disambiguating common names",
+                  "type": "string",
+                  "maxLength": 120
+                },
+                "state": {
+                  "description": "Optional two-letter US state code, e.g. OH",
+                  "type": "string",
+                  "maxLength": 40
+                },
+                "external_id": {
+                  "description": "Optional caller ERP/CRM account identifier echoed back",
+                  "type": "string",
+                  "maxLength": 160
+                }
+              }
+            }
+          },
+          "csv": {
+            "description": "Raw CSV text (up to 250 rows) auto-detecting headers name|company|company_name|account, domain|website|url, city, state|st, external_id|id",
+            "type": "string",
+            "maxLength": 250000
+          },
+          "watch": {
+            "description": "Set true to watch matched companies weekly in a Project ($0.05/company/mo; requires 'watch' scope)",
+            "type": "boolean"
+          },
+          "project_id": {
+            "description": "Optional existing Project id when watch is true",
+            "type": "string"
+          },
+          "project_name": {
+            "description": "Optional Project name when watch is true, e.g. 'Midwest Territory Accounts'",
+            "type": "string",
+            "maxLength": 120
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "add_to_project",
+      "description": "Put companies, NYC buildings (10-digit BBLs), national properties, or people into one of this workspace's Projects without researching them. With no project, companies and people go to the workspace's Unsorted Project and buildings go to Saved buildings. In a Project whose watching is on, each new company is watched for changes at $0.05 a company a month ($0.00 if already watched this month); if the balance cannot cover it they are added unwatched and the answer says so; watch: false adds them unwatched and free. Buildings and people are added unresearched at $0.00. Records already in the Project are left as they are. To add companies from a file of names or websites, match it first with match_company_list.",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "company_ids": {
+            "description": "Dealport company ids, from search_companies, preview_companies or match_company_list",
+            "minItems": 1,
+            "maxItems": 250,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "bbls": {
+            "description": "NYC 10-digit BBLs from search_buildings to hold in a building Project",
+            "minItems": 1,
+            "maxItems": 50,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "property_keys": {
+            "description": "Property keys such as nyc:1008350041 or hud:800012345",
+            "minItems": 1,
+            "maxItems": 50,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "people": {
+            "description": "People ({ name, role?, company?, location?, profile_url?, email?, phone? }) to add to the Project",
+            "minItems": 1,
+            "maxItems": 250,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 160,
+                  "description": "Person's full name"
+                },
+                "role": {
+                  "description": "Role or title",
+                  "type": "string",
+                  "maxLength": 160
+                },
+                "company": {
+                  "description": "Company or firm name",
+                  "type": "string",
+                  "maxLength": 200
+                },
+                "location": {
+                  "description": "City and state",
+                  "type": "string",
+                  "maxLength": 160
+                },
+                "profile_url": {
+                  "description": "Public profile URL if known",
+                  "type": "string",
+                  "maxLength": 300
+                },
+                "email": {
+                  "description": "Direct email if known",
+                  "type": "string",
+                  "maxLength": 200
+                },
+                "phone": {
+                  "description": "Direct phone if known",
+                  "type": "string",
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          },
+          "project_id": {
+            "description": "A Project id from list_projects; omit for Unsorted / Saved buildings",
+            "type": "string"
+          },
+          "project_name": {
+            "description": "A Project by name instead of id; made when there is none",
+            "type": "string",
+            "maxLength": 120
+          },
+          "watch": {
+            "description": "false adds companies unwatched and free; omit it to let the Project's watching decide",
+            "type": "boolean"
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "log_touch",
+      "description": "Log a call, email, text, letter, meeting or note you (or your user) had with an owner, on this workspace's record of their company, building or person, so it shows in Dealport's Outreach as theirs. Use it after an email you sent, a call you made or a reply that came in. The record must be in one of the workspace's Projects. Pass an idempotency_key to make a retry safe: sent again, the same key returns the first touch. Needs the 'watch' key scope. $0.00 (free).",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "record": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300,
+            "description": "The company id, the building (a BBL such as 1012340001, or a property key such as hud:800012345), or the person's page key, as Dealport gave it"
+          },
+          "how": {
+            "type": "string",
+            "enum": [
+              "call",
+              "email",
+              "text",
+              "letter",
+              "meeting",
+              "note"
+            ],
+            "description": "What it was"
+          },
+          "direction": {
+            "description": "For a call, email, text or letter: out to the owner (the default) or in from them",
+            "type": "string",
+            "enum": [
+              "out",
+              "in"
+            ]
+          },
+          "said": {
+            "description": "What was said, in a line or two",
+            "type": "string",
+            "maxLength": 2000
+          },
+          "person": {
+            "description": "Who it was with, when not the owner the record names",
+            "type": "string",
+            "maxLength": 200
+          },
+          "when": {
+            "description": "When it happened, ISO 8601; now when left out",
+            "type": "string"
+          },
+          "idempotency_key": {
+            "description": "Your own id for this touch: sent again, it returns the first touch and logs nothing more",
+            "type": "string",
+            "maxLength": 120
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        },
+        "required": [
+          "record",
+          "how"
+        ]
+      }
+    },
+    {
+      "name": "run_project",
+      "description": "Run a Project's playbook on the next records of its saved search (its next buildings, or its next companies), up to 500 at once, in the background. Each record costs $0.05 (a playbook check; a playbook of Dealport's records alone, the most an owner's contact costs, $0.09). Call it first without confirm_max_usd: that is a free quote of how many it runs, the price each, and the total. Present the quoted total to the user and wait for their explicit approval before calling run_project again with confirm_max_usd at or above the total to start the batch; it returns a batch_id at once, and project_run_status reads its progress. The whole total must fit the balance and the monthly spending limits before anything starts; each record is charged once, as it starts. Pass an idempotency_key to make a retry safe: the same key returns the batch it started. Needs the 'watch' key scope.",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "project_id": {
+            "type": "string",
+            "description": "A Project id from list_projects"
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500,
+            "description": "How many of its next records to run, 1 to 500"
+          },
+          "confirm_max_usd": {
+            "description": "The most you agree to spend, in US dollars; omit for a free quote",
+            "type": "number",
+            "minimum": 0
+          },
+          "idempotency_key": {
+            "description": "Your own id for this run: sent again, it returns the batch it started and starts nothing more",
+            "type": "string",
+            "maxLength": 120
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        },
+        "required": [
+          "project_id",
+          "count"
+        ]
+      }
+    },
+    {
+      "name": "project_run_status",
+      "description": "How far a batch run_project started has got: how many it asked for, started, finished, qualified and left out, whether it has finished, and why it stopped when it stopped early. $0.00 (free).",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "project_id": {
+            "type": "string",
+            "description": "The Project id"
+          },
+          "batch_id": {
+            "type": "string",
+            "maxLength": 400,
+            "description": "The batch_id run_project returned"
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        },
+        "required": [
+          "project_id",
+          "batch_id"
+        ]
+      }
+    },
+    {
+      "name": "list_playbooks",
+      "description": "List Dealport's library playbooks (for companies, buildings, and buyers) and this workspace's own published playbooks, including their qualifying rules, ranking factors, schema_fields, version change notes, and default search filters. Pass playbook_id (a template_key or solution_version_id) to inspect one playbook's full rule_ids, factor_ids, and schema_fields. $0.00 (free).",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "playbook_id": {
+            "description": "Optional template_key (e.g. industrial_manufacturer_owners) or solution_version_id to read one playbook",
+            "type": "string"
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "save_playbook",
+      "description": "Create a workspace playbook from a library template (such as company_research or loans_coming_due) or update one of this workspace's playbooks with custom qualifying rules, ranking factors, research schema fields, deterministic numeric/USD field_checks, a version change_note, and optional apply_to_project_id upgrade. Publishes a new solution_version_id ready for create_project or save_project_search. $0.00 (free).",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "name": {
+            "description": "Playbook title",
+            "type": "string",
+            "maxLength": 120
+          },
+          "purpose": {
+            "description": "Short description of what this playbook looks for",
+            "type": "string",
+            "maxLength": 1000
+          },
+          "template_key": {
+            "description": "Base library template key when creating a new playbook (defaults to industrial_manufacturer_owners when rules, ranking_factors, or field_checks are supplied; else company_research)",
+            "type": "string"
+          },
+          "solution_version_id": {
+            "description": "Existing workspace playbook solution_version_id when updating rules, fields, or ranking factors",
+            "type": "string"
+          },
+          "rules": {
+            "description": "Qualifying or disqualifying rules to add, change, or remove",
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "op": {
+                  "description": "Default add",
+                  "type": "string",
+                  "enum": [
+                    "add",
+                    "change",
+                    "remove"
+                  ]
+                },
+                "rule_id": {
+                  "description": "Rule id when op is change or remove",
+                  "type": "string"
+                },
+                "question": {
+                  "description": "Qualifying or disqualifying question",
+                  "type": "string"
+                },
+                "guidance": {
+                  "description": "How research should judge the rule",
+                  "type": "string"
+                },
+                "effect": {
+                  "description": "Default require",
+                  "type": "string",
+                  "enum": [
+                    "require",
+                    "disqualify",
+                    "hard_disqualify"
+                  ]
+                }
+              }
+            }
+          },
+          "ranking_factors": {
+            "description": "Ranking factors to add, change, or remove",
+            "maxItems": 12,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "op": {
+                  "description": "Default add",
+                  "type": "string",
+                  "enum": [
+                    "add",
+                    "change",
+                    "remove"
+                  ]
+                },
+                "factor_id": {
+                  "description": "Factor id when op is change or remove",
+                  "type": "string"
+                },
+                "label": {
+                  "description": "Ranking factor name",
+                  "type": "string"
+                },
+                "weight": {
+                  "description": "Factor weight from 1 to 5",
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 5
+                },
+                "guidance": {
+                  "description": "What earns points on this factor",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "fields": {
+            "description": "Custom research facts to add to the playbook schema",
+            "maxItems": 8,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 120,
+                  "description": "Research fact name to collect on each record, e.g. Fleet trucks"
+                },
+                "field_type": {
+                  "description": "Fact value type (default text)",
+                  "type": "string",
+                  "enum": [
+                    "text",
+                    "yes_no",
+                    "count",
+                    "money_range",
+                    "percent_range",
+                    "date",
+                    "choice"
+                  ]
+                },
+                "options": {
+                  "description": "Allowed option labels when field_type is choice (at least 2)",
+                  "maxItems": 12,
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "guidance": {
+                  "description": "How research should find and cite this fact",
+                  "type": "string",
+                  "maxLength": 600
+                }
+              },
+              "required": [
+                "label"
+              ],
+              "description": "Custom research fact to collect on each record"
+            }
+          },
+          "field_checks": {
+            "description": "Deterministic USD or count range checks on schema fields",
+            "maxItems": 8,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 120,
+                  "description": "Schema field label or field_id from list_playbooks schema_fields"
+                },
+                "field_type": {
+                  "type": "string",
+                  "enum": [
+                    "money_range",
+                    "count"
+                  ],
+                  "description": "Numeric field type on the playbook schema: money_range or count"
+                },
+                "label": {
+                  "description": "Optional display label for the range rule, e.g. Revenue",
+                  "type": "string",
+                  "maxLength": 120
+                },
+                "low": {
+                  "description": "Minimum allowed amount or count (inclusive)",
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "high": {
+                  "description": "Maximum allowed amount or count (inclusive)",
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "field",
+                "field_type"
+              ],
+              "description": "Deterministic numeric or USD range gate on a researched record field"
+            }
+          },
+          "change_note": {
+            "description": "Optional version note recording why this playbook version changed",
+            "type": "string",
+            "maxLength": 500
+          },
+          "apply_to_project_id": {
+            "description": "Optional active workspace Project UUID to upgrade onto the newly published playbook version",
+            "type": "string"
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "create_project",
+      "description": "Create a new Project in this workspace from a library playbook (template_key from list_playbooks), a workspace playbook (solution_version_id), custom rules/fields/field_checks, or as a plain folder when neither is given. Optionally save its company_search or property_search, weekly/monthly schedule, and monthly spending limit at the same time. Then call run_project to quote and run it. $0.00 (free).",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "description": "Name of the Project"
+          },
+          "goal": {
+            "description": "Optional mandate note or goal",
+            "type": "string",
+            "maxLength": 500
+          },
+          "template_key": {
+            "description": "Library playbook key from list_playbooks, e.g. industrial_manufacturer_owners or loans_coming_due",
+            "type": "string"
+          },
+          "solution_version_id": {
+            "description": "Published workspace playbook solution_version_id",
+            "type": "string"
+          },
+          "rules": {
+            "description": "Optional custom qualifying rules for a bespoke playbook",
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "op": {
+                  "description": "Default add",
+                  "type": "string",
+                  "enum": [
+                    "add",
+                    "change",
+                    "remove"
+                  ]
+                },
+                "rule_id": {
+                  "description": "Rule id when op is change or remove",
+                  "type": "string"
+                },
+                "question": {
+                  "description": "Qualifying or disqualifying question",
+                  "type": "string"
+                },
+                "guidance": {
+                  "description": "How research should judge the rule",
+                  "type": "string"
+                },
+                "effect": {
+                  "description": "Default require",
+                  "type": "string",
+                  "enum": [
+                    "require",
+                    "disqualify",
+                    "hard_disqualify"
+                  ]
+                }
+              }
+            }
+          },
+          "ranking_factors": {
+            "description": "Optional custom ranking factors",
+            "maxItems": 12,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "op": {
+                  "description": "Default add",
+                  "type": "string",
+                  "enum": [
+                    "add",
+                    "change",
+                    "remove"
+                  ]
+                },
+                "factor_id": {
+                  "description": "Factor id when op is change or remove",
+                  "type": "string"
+                },
+                "label": {
+                  "description": "Ranking factor name",
+                  "type": "string"
+                },
+                "weight": {
+                  "description": "Factor weight from 1 to 5",
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 5
+                },
+                "guidance": {
+                  "description": "What earns points on this factor",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "fields": {
+            "description": "Optional custom research facts to collect on each record",
+            "maxItems": 8,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 120,
+                  "description": "Research fact name to collect on each record, e.g. Fleet trucks"
+                },
+                "field_type": {
+                  "description": "Fact value type (default text)",
+                  "type": "string",
+                  "enum": [
+                    "text",
+                    "yes_no",
+                    "count",
+                    "money_range",
+                    "percent_range",
+                    "date",
+                    "choice"
+                  ]
+                },
+                "options": {
+                  "description": "Allowed option labels when field_type is choice (at least 2)",
+                  "maxItems": 12,
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "guidance": {
+                  "description": "How research should find and cite this fact",
+                  "type": "string",
+                  "maxLength": 600
+                }
+              },
+              "required": [
+                "label"
+              ],
+              "description": "Custom research fact to collect on each record"
+            }
+          },
+          "field_checks": {
+            "description": "Optional deterministic USD or count range checks",
+            "maxItems": 8,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 120,
+                  "description": "Schema field label or field_id from list_playbooks schema_fields"
+                },
+                "field_type": {
+                  "type": "string",
+                  "enum": [
+                    "money_range",
+                    "count"
+                  ],
+                  "description": "Numeric field type on the playbook schema: money_range or count"
+                },
+                "label": {
+                  "description": "Optional display label for the range rule, e.g. Revenue",
+                  "type": "string",
+                  "maxLength": 120
+                },
+                "low": {
+                  "description": "Minimum allowed amount or count (inclusive)",
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "high": {
+                  "description": "Maximum allowed amount or count (inclusive)",
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "field",
+                "field_type"
+              ],
+              "description": "Deterministic numeric or USD range gate on a researched record field"
+            }
+          },
+          "company_search": {
+            "description": "Optional saved company search filters for this Project",
+            "type": "object",
+            "properties": {
+              "q": {
+                "description": "Company name prefix",
+                "type": "string"
+              },
+              "state": {
+                "description": "Two-letter US state code, e.g. OH",
+                "type": "string"
+              },
+              "counties": {
+                "description": "County names inside state",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "cities": {
+                "description": "City names inside state",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "markets": {
+                "description": "Additional states or state county slices",
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "state": {
+                      "type": "string",
+                      "description": "Two-letter US state code, e.g. IN"
+                    },
+                    "counties": {
+                      "description": "Optional county names within that state",
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "state"
+                  ]
+                }
+              },
+              "naics": {
+                "description": "2 to 6 digit NAICS codes",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "min_revenue": {
+                "description": "Minimum annual revenue in USD, e.g. 2000000",
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "max_revenue": {
+                "description": "Maximum annual revenue in USD, e.g. 25000000",
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "filed_revenue": {
+                "description": "true to require filed revenue only",
+                "type": "boolean"
+              },
+              "min_employees": {
+                "description": "Minimum headcount",
+                "type": "number"
+              },
+              "max_employees": {
+                "description": "Maximum headcount",
+                "type": "number"
+              },
+              "size_unknown": {
+                "description": "Include companies whose size is not yet reported",
+                "type": "boolean"
+              },
+              "independent": {
+                "description": "Exclude public companies, subsidiaries, and nonprofits",
+                "type": "boolean"
+              },
+              "owner_operated": {
+                "description": "Owner-operated businesses only",
+                "type": "boolean"
+              },
+              "owner_contact": {
+                "description": "Require an owner phone or email on file",
+                "type": "boolean"
+              },
+              "owner_businesses": {
+                "description": "Owner runs at least 2, 3, or 5 businesses",
+                "type": "number"
+              },
+              "licensed": {
+                "description": "Require an active state license",
+                "type": "boolean"
+              },
+              "medicare": {
+                "description": "Enrolled in Medicare",
+                "type": "boolean"
+              },
+              "adviser": {
+                "description": "SEC-registered investment adviser",
+                "type": "boolean"
+              },
+              "wealth_adviser": {
+                "description": "SEC-registered wealth adviser to individuals",
+                "type": "boolean"
+              },
+              "online_store": {
+                "description": "Operates an online direct-to-consumer store",
+                "type": "boolean"
+              },
+              "care_types": {
+                "description": "Healthcare care types such as home_care, home_health, dental",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "property_search": {
+            "description": "Optional saved property search filters for this Project",
+            "type": "object",
+            "properties": {
+              "state": {
+                "description": "Two-letter US state code, e.g. NY",
+                "type": "string"
+              },
+              "place": {
+                "description": "City or 5-digit ZIP code",
+                "type": "string"
+              },
+              "q": {
+                "description": "Words in the address, owner, or building name",
+                "type": "string"
+              },
+              "min_units": {
+                "description": "Minimum residential units",
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "max_units": {
+                "description": "Maximum residential units",
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "sources": {
+                "description": "Property datasets such as nyc, hud, phl, cook, fl, dallas, harris, dc",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "why": {
+                "description": "Signals such as loan, section8, tax_credit, inspection, violations, tax",
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "section8",
+                    "loan",
+                    "tax_credit",
+                    "inspection",
+                    "violations",
+                    "tax"
+                  ]
+                }
+              },
+              "loan_due_by": {
+                "description": "Loan maturity year, e.g. 2027",
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "holder": {
+                "description": "Mortgage holder category: bank, fannie_mae, freddie_mac, hud, cmbs, or lender",
+                "type": "string",
+                "enum": [
+                  "bank",
+                  "fannie_mae",
+                  "freddie_mac",
+                  "hud",
+                  "cmbs",
+                  "lender"
+                ]
+              },
+              "no_coops": {
+                "description": "Exclude co-ops and condos",
+                "type": "boolean"
+              },
+              "for_profit": {
+                "description": "Exclude public and nonprofit owners",
+                "type": "boolean"
+              },
+              "boroughs": {
+                "description": "NYC boroughs",
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "MN",
+                    "BK",
+                    "QN",
+                    "BX",
+                    "SI"
+                  ]
+                }
+              },
+              "districts": {
+                "description": "NYC 3-digit community district codes such as 101, 301",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "zips": {
+                "description": "5-digit ZIP codes",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "classes": {
+                "description": "Building classes",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "held_years": {
+                "description": "Minimum years held since last sale",
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "built_before": {
+                "description": "Built before year",
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              }
+            }
+          },
+          "enabled": {
+            "description": "true to turn on scheduled automatic runs (default false)",
+            "type": "boolean"
+          },
+          "weekly_quota": {
+            "description": "New matches per scheduled run (default 20)",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500
+          },
+          "cadence": {
+            "description": "Schedule cadence: weekly or monthly",
+            "type": "string",
+            "enum": [
+              "weekly",
+              "monthly"
+            ]
+          },
+          "monday_of_month": {
+            "description": "Which Monday of the month (1 to 4) when cadence is monthly",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4
+          },
+          "recheck": {
+            "description": "Whether scheduled runs also re-check qualified records after 30 days",
+            "type": "boolean"
+          },
+          "monthly_budget_usd": {
+            "description": "Monthly USD spending limit for this Project's runs, or null for no Project limit",
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "idempotency_key": {
+            "description": "Optional idempotency key so retries create only one Project",
+            "type": "string",
+            "maxLength": 120
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    {
+      "name": "save_project_search",
+      "description": "Save or update a Project's company_search or property_search, switch or upgrade its playbook version (solution_version_id), turn its weekly or monthly schedule on or off, toggle monthly re-checking of qualified records, and set or clear its monthly USD spending limit (monthly_budget_usd: number to set, null to clear). $0.00 (free).",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "project_id": {
+            "type": "string",
+            "description": "The Project id"
+          },
+          "solution_version_id": {
+            "description": "Optional published playbook solution_version_id to switch or upgrade this Project onto",
+            "type": "string"
+          },
+          "company_search": {
+            "description": "Optional saved company search filters for this Project",
+            "type": "object",
+            "properties": {
+              "q": {
+                "description": "Company name prefix",
+                "type": "string"
+              },
+              "state": {
+                "description": "Two-letter US state code, e.g. OH",
+                "type": "string"
+              },
+              "counties": {
+                "description": "County names inside state",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "cities": {
+                "description": "City names inside state",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "markets": {
+                "description": "Additional states or state county slices",
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "state": {
+                      "type": "string",
+                      "description": "Two-letter US state code, e.g. IN"
+                    },
+                    "counties": {
+                      "description": "Optional county names within that state",
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "state"
+                  ]
+                }
+              },
+              "naics": {
+                "description": "2 to 6 digit NAICS codes",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "min_revenue": {
+                "description": "Minimum annual revenue in USD, e.g. 2000000",
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "max_revenue": {
+                "description": "Maximum annual revenue in USD, e.g. 25000000",
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "filed_revenue": {
+                "description": "true to require filed revenue only",
+                "type": "boolean"
+              },
+              "min_employees": {
+                "description": "Minimum headcount",
+                "type": "number"
+              },
+              "max_employees": {
+                "description": "Maximum headcount",
+                "type": "number"
+              },
+              "size_unknown": {
+                "description": "Include companies whose size is not yet reported",
+                "type": "boolean"
+              },
+              "independent": {
+                "description": "Exclude public companies, subsidiaries, and nonprofits",
+                "type": "boolean"
+              },
+              "owner_operated": {
+                "description": "Owner-operated businesses only",
+                "type": "boolean"
+              },
+              "owner_contact": {
+                "description": "Require an owner phone or email on file",
+                "type": "boolean"
+              },
+              "owner_businesses": {
+                "description": "Owner runs at least 2, 3, or 5 businesses",
+                "type": "number"
+              },
+              "licensed": {
+                "description": "Require an active state license",
+                "type": "boolean"
+              },
+              "medicare": {
+                "description": "Enrolled in Medicare",
+                "type": "boolean"
+              },
+              "adviser": {
+                "description": "SEC-registered investment adviser",
+                "type": "boolean"
+              },
+              "wealth_adviser": {
+                "description": "SEC-registered wealth adviser to individuals",
+                "type": "boolean"
+              },
+              "online_store": {
+                "description": "Operates an online direct-to-consumer store",
+                "type": "boolean"
+              },
+              "care_types": {
+                "description": "Healthcare care types such as home_care, home_health, dental",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "property_search": {
+            "description": "Optional saved property search filters for this Project",
+            "type": "object",
+            "properties": {
+              "state": {
+                "description": "Two-letter US state code, e.g. NY",
+                "type": "string"
+              },
+              "place": {
+                "description": "City or 5-digit ZIP code",
+                "type": "string"
+              },
+              "q": {
+                "description": "Words in the address, owner, or building name",
+                "type": "string"
+              },
+              "min_units": {
+                "description": "Minimum residential units",
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "max_units": {
+                "description": "Maximum residential units",
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "sources": {
+                "description": "Property datasets such as nyc, hud, phl, cook, fl, dallas, harris, dc",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "why": {
+                "description": "Signals such as loan, section8, tax_credit, inspection, violations, tax",
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "section8",
+                    "loan",
+                    "tax_credit",
+                    "inspection",
+                    "violations",
+                    "tax"
+                  ]
+                }
+              },
+              "loan_due_by": {
+                "description": "Loan maturity year, e.g. 2027",
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "holder": {
+                "description": "Mortgage holder category: bank, fannie_mae, freddie_mac, hud, cmbs, or lender",
+                "type": "string",
+                "enum": [
+                  "bank",
+                  "fannie_mae",
+                  "freddie_mac",
+                  "hud",
+                  "cmbs",
+                  "lender"
+                ]
+              },
+              "no_coops": {
+                "description": "Exclude co-ops and condos",
+                "type": "boolean"
+              },
+              "for_profit": {
+                "description": "Exclude public and nonprofit owners",
+                "type": "boolean"
+              },
+              "boroughs": {
+                "description": "NYC boroughs",
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "MN",
+                    "BK",
+                    "QN",
+                    "BX",
+                    "SI"
+                  ]
+                }
+              },
+              "districts": {
+                "description": "NYC 3-digit community district codes such as 101, 301",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "zips": {
+                "description": "5-digit ZIP codes",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "classes": {
+                "description": "Building classes",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "held_years": {
+                "description": "Minimum years held since last sale",
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "built_before": {
+                "description": "Built before year",
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              }
+            }
+          },
+          "enabled": {
+            "description": "true to run automatically on schedule; false to pause automatic runs",
+            "type": "boolean"
+          },
+          "weekly_quota": {
+            "description": "New matches per scheduled batch",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500
+          },
+          "cadence": {
+            "description": "weekly (every Monday) or monthly",
+            "type": "string",
+            "enum": [
+              "weekly",
+              "monthly"
+            ]
+          },
+          "monday_of_month": {
+            "description": "Monday of the month (1 to 4) when cadence is monthly",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4
+          },
+          "recheck": {
+            "description": "true to re-check qualified records older than 30 days",
+            "type": "boolean"
+          },
+          "monthly_budget_usd": {
+            "description": "Monthly USD limit for this Project's runs, or null to clear the limit",
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        },
+        "required": [
+          "project_id"
+        ]
+      }
+    },
+    {
+      "name": "research_building_owners",
+      "description": "Quote or research the human owners behind 1 to 50 NYC buildings (by 10-digit BBL) and their direct phone and email into a building Project. Call without confirm_max_usd first for a $0.00 quote of how many distinct owners need research ($0.05 per owner, $0.00 for owners already researched in that Project); then call again with confirm_max_usd at or above total_usd after the user confirms.",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "bbls": {
+            "minItems": 1,
+            "maxItems": 50,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "1 to 50 NYC 10-digit BBLs, e.g. [\"1008350041\"]"
+          },
+          "project_id": {
+            "description": "Existing building Project id; omit to use project_name or create one",
+            "type": "string"
+          },
+          "project_name": {
+            "description": "Building Project name (used or created when project_id is omitted)",
+            "type": "string",
+            "maxLength": 120
+          },
+          "confirm_max_usd": {
+            "description": "Omit for a $0.00 quote; set at or above total_usd to start research",
+            "type": "number",
+            "minimum": 0
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        },
+        "required": [
+          "bbls"
+        ]
+      }
+    },
+    {
+      "name": "set_record_stage",
+      "description": "Set the pipeline stage on a company, building, or person in one of this workspace's Projects (contacted, no_answer, replied, meeting, nda, cim, ioi, loi, closed_won, or dead with an optional reason), and/or set or clear its next follow-up date (follow_up_on: YYYY-MM-DD, or null to clear). Marking a record dead also holds Avery's unsent first emails and follow-ups on that record. $0.00 (free).",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "run_id": {
+            "description": "Run id from project_leads, if known",
+            "type": "string"
+          },
+          "project_id": {
+            "description": "Project id when identifying by company_id or record",
+            "type": "string"
+          },
+          "company_id": {
+            "description": "Dealport company UUID",
+            "type": "string"
+          },
+          "record": {
+            "description": "Company UUID, NYC 10-digit BBL, national property key (e.g. hud:800012345), or person key",
+            "type": "string"
+          },
+          "stage": {
+            "description": "New pipeline stage",
+            "type": "string",
+            "enum": [
+              "contacted",
+              "no_answer",
+              "replied",
+              "meeting",
+              "nda",
+              "cim",
+              "ioi",
+              "loi",
+              "closed_won",
+              "dead"
+            ]
+          },
+          "reason": {
+            "description": "Reason when stage is dead",
+            "type": "string",
+            "enum": [
+              "not_selling",
+              "price",
+              "timing",
+              "wrong_fit",
+              "unreachable",
+              "other"
+            ]
+          },
+          "note": {
+            "description": "Optional note recorded with the stage change",
+            "type": "string",
+            "maxLength": 2000
+          },
+          "occurred_at": {
+            "description": "Optional ISO 8601 timestamp when the stage happened",
+            "type": "string"
+          },
+          "follow_up_on": {
+            "description": "Next follow-up date as YYYY-MM-DD (today or later), or null to clear",
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "follow_up_reason": {
+            "description": "Short reminder note for follow_up_on",
+            "type": "string",
+            "maxLength": 200
+          },
+          "idempotency_key": {
+            "description": "Optional idempotency key so retries record once",
+            "type": "string",
+            "maxLength": 200
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "correct_record_fact",
+      "description": "Save a workspace-scoped correction for a wrong owner, owner phone, owner email, or business phone on a company, building, or person (the same action as 'This is wrong' in the app), or withdraw an earlier correction. Marking a phone or email wrong without right_value also looks for another contact at $0.00 unless look_again is false. $0.00 (free).",
+      "inputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "properties": {
+          "company_id": {
+            "description": "Company UUID when correcting a company record",
+            "type": "string"
+          },
+          "bbl": {
+            "description": "10-digit NYC BBL when correcting a person on a building",
+            "type": "string"
+          },
+          "person_name": {
+            "description": "Person's name when correcting a building party or person page",
+            "type": "string",
+            "maxLength": 160
+          },
+          "person_page": {
+            "description": "Person page key when known",
+            "type": "string",
+            "maxLength": 200
+          },
+          "fact": {
+            "description": "Which fact is wrong: owner, owner_phone, owner_email, or phone (company main line)",
+            "type": "string",
+            "enum": [
+              "owner",
+              "owner_phone",
+              "owner_email",
+              "phone"
+            ]
+          },
+          "wrong_value": {
+            "description": "The wrong name, phone, or email currently shown",
+            "type": "string",
+            "maxLength": 200
+          },
+          "right_value": {
+            "description": "The replacement owner name, phone, or email, if known",
+            "type": "string",
+            "maxLength": 200
+          },
+          "right_role": {
+            "description": "Optional title/role when fact is owner and right_value is given",
+            "type": "string",
+            "maxLength": 120
+          },
+          "how": {
+            "description": "How you verified the correction",
+            "type": "string",
+            "enum": [
+              "spoke",
+              "website",
+              "filing",
+              "other"
+            ]
+          },
+          "note": {
+            "description": "Optional context note",
+            "type": "string",
+            "maxLength": 2000
+          },
+          "look_again": {
+            "description": "Look for another phone or email at $0.00 when wrong_value is given without right_value (default true)",
+            "type": "boolean"
+          },
+          "withdraw_correction_id": {
+            "description": "Pass an existing correction_id to undo it",
+            "type": "string"
+          },
+          "workspace": {
+            "description": "Which of your Dealport workspaces, by name: only when your sign-in did not choose one. A connection made for one workspace uses that one only",
+            "type": "string"
+          }
+        }
+      }
+    }
+  ],
+  "examples": [
+    {
+      "title": "Free market sizing",
+      "description": "Size a US private-company universe for $0.00 before opening paid Records",
+      "prompt": "Use preview_companies to count independent commercial HVAC contractors in Ohio with at least 15 employees."
+    },
+    {
+      "title": "Cited company Record",
+      "description": "Open a company Record with primary public-filing citations",
+      "prompt": "Use preview_companies to size Ohio commercial HVAC companies for $0.00, then call search_companies with limit: 1 and open the top Record with its primary public-filing sources."
+    },
+    {
+      "title": "Commercial building search",
+      "description": "Find multifamily buildings with upcoming loan maturities",
+      "prompt": "Search Brooklyn multifamily buildings with 20+ units and mortgages maturing by 2027."
+    },
+    {
+      "title": "Verified human owner lookup",
+      "description": "Resolve the verified founder or principal behind a private company",
+      "prompt": "Check our workspace blocklist and find the verified human owner phone and email for this company Record."
+    }
+  ],
+  "is_official": true
+}
