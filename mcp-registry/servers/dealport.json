@@ -4,7 +4,7 @@
   "description": "The SMB knowledge layer for agents and humans: search 28M+ US private companies and commercial buildings with primary public-filing cited Records, size markets for $0.00 with preview_companies, match CSV lists, score living Projects and Playbooks, resolve verified human owner contacts, and request double-opt-in introductions through Avery (Dealport's AI outreach specialist, who always discloses she is an AI).",
   "repository": {
     "type": "git",
-    "url": "https://github.com/rkmasiello/dealport"
+    "url": "https://github.com/Dealport-HQ/dealport"
   },
   "homepage": "https://dealport.com",
   "author": {
@@ -48,6 +48,12 @@
         "DP_API_KEY": "${DP_API_KEY}"
       },
       "description": "Local stdio MCP bridge connecting to Dealport via npx dealport mcp serve."
+    }
+  },
+  "arguments": {
+    "DP_API_KEY": {
+      "description": "Dealport workspace API key (dp_live_... from https://app.dealport.com/connect?tab=keys) required for authenticated local npm stdio calls.",
+      "required": true
     }
   },
   "tools": [
@@ -109,7 +115,7 @@
     },
     {
       "name": "preview_companies",
-      "description": "Size a US company buy-box for $0.00 before spending anything: returns matching_count (up to 10,000+), up to 5 sample companies (name, city, state, revenue and employee bands, independent flag), and a Project search link. Call preview_companies to tune filters for $0.00 before unlocking paid records.",
+      "description": "Size a US company buy-box for $0.00 before spending anything: returns matching_count (up to 10,000+), up to 5 sample companies (id, name, city, state, industry, revenue and employee bands, independent flag), and a Project search link. Call preview_companies to tune filters for $0.00 before unlocking paid records.",
       "inputSchema": {
         "type": "object",
         "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -896,7 +902,7 @@
     },
     {
       "name": "avery_reach_out",
-      "description": "Queue outreach from Avery (Dealport's AI outreach specialist) directly by Dealport company_id or open suggestion_id (from a Dealport mailbox, without naming you, or from your connected inbox in as_me mode) or send mandate instructions to Avery. Supports acquisition (default M&A) as well as commercial and supplier partnership outreach. Enforces workspace NDA/CRM/portfolio exclusions before queuing or charging. Self-Serve: $0.02 for each email Avery sends (the first note and each follow-up, charged as it goes; nothing to queue; up to 150 owners/mo, 1 active mandate). Until the workspace's first top-up, the ask is queued with waiting_for_top_up: true and Avery starts once money is added: relay its message and billing_url. Enterprise: $0.00 per action.",
+      "description": "Queue outreach from Avery (Dealport's AI outreach specialist) directly by Dealport company_id or open suggestion_id (from a Dealport mailbox, without naming you, or from your connected inbox in as_me mode) or send mandate instructions to Avery. Obtain explicit human confirmation of the target company, owner, and outreach cost from the user before calling avery_reach_out, even when outreach will wait for a balance top-up before starting. Supports acquisition (default M&A) as well as commercial and supplier partnership outreach. Enforces workspace NDA/CRM/portfolio exclusions before queuing or charging. Self-Serve: $0.02 for each email Avery sends (the first note and each follow-up, charged as it goes; nothing to queue; up to 150 owners/mo, 1 active mandate). Until the workspace's first top-up, the ask is queued with waiting_for_top_up: true and Avery starts once money is added: relay its message and billing_url. Enterprise: $0.00 per action.",
       "inputSchema": {
         "type": "object",
         "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -948,7 +954,7 @@
     },
     {
       "name": "avery_accept_intro",
-      "description": "Accept an On-Offer owner who replied positively ('Yes, happy to chat') and trigger the 3-way mutual email introduction. Self-Serve: $25.00 per Warm Yes intro (if available balance is under $25.00, keeps the warm lead safe on offer and returns a top-up link). Enterprise: $0.00 per action.",
+      "description": "Accept an On-Offer owner who replied positively ('Yes, happy to chat') and trigger the 3-way mutual email introduction. A positive owner reply makes the offer available to present to the user, not pre-authorized to accept: always present the offer and obtain explicit human confirmation of the target company, owner, and $25.00 self-serve cost before calling avery_accept_intro. Self-Serve: $25.00 per Warm Yes intro (if available balance is under $25.00, keeps the warm lead safe on offer and returns a top-up link). Enterprise: $0.00 per action.",
       "inputSchema": {
         "type": "object",
         "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -1038,7 +1044,24 @@
                       ]
                     }
                   },
-                  "description": "Structured company exclusion entry"
+                  "description": "Structured company exclusion entry",
+                  "anyOf": [
+                    {
+                      "required": [
+                        "domain"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "company_name"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "company_id"
+                      ]
+                    }
+                  ]
                 }
               ]
             },
@@ -1166,7 +1189,7 @@
     },
     {
       "name": "toggle_watch_webhook",
-      "description": "Pause, resume, or update an existing Project watch webhook's active state, label, Project filter, event_types, or signal_categories. Re-enabling an auto-paused webhook resets its failure counter. $0.00 (free).",
+      "description": "Pause, resume, or update an existing Project watch webhook's active state, label, Project filter, event_types, or signal_categories. Omitting active always flips the current delivery state, so pass active explicitly (using the webhook's current active boolean from list_watch_webhooks) when updating only name or filters without changing delivery state. Re-enabling an auto-paused webhook resets its failure counter. $0.00 (free).",
       "inputSchema": {
         "type": "object",
         "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -1176,7 +1199,7 @@
             "description": "Webhook UUID from list_watch_webhooks or create_watch_webhook"
           },
           "active": {
-            "description": "Set true to enable, false to pause, or omit to flip the current active state",
+            "description": "Set true to enable or false to pause. Omitting active always flips the current delivery state, even when updating name or filters—pass active explicitly to preserve the current state during metadata-only updates.",
             "type": "boolean"
           },
           "name": {
@@ -1339,7 +1362,15 @@
                   "propertyNames": {
                     "type": "string"
                   },
-                  "additionalProperties": {}
+                  "additionalProperties": {
+                    "type": [
+                      "string",
+                      "number",
+                      "boolean",
+                      "null"
+                    ]
+                  },
+                  "maxProperties": 12
                 },
                 "agent_label": {
                   "description": "Optional agent attribution label, e.g. 'Claude Cowork'",
@@ -1411,7 +1442,15 @@
             "propertyNames": {
               "type": "string"
             },
-            "additionalProperties": {}
+            "additionalProperties": {
+              "type": [
+                "string",
+                "number",
+                "boolean",
+                "null"
+              ]
+            },
+            "maxProperties": 12
           },
           "agent_label": {
             "description": "Optional agent attribution label applied to the batch, e.g. 'Claude Cowork'",
@@ -1903,7 +1942,7 @@
     },
     {
       "name": "run_project",
-      "description": "Run a Project's playbook on the next records of its saved search (its next buildings, or its next companies), up to 500 at once, in the background. Each record costs $0.05 (a playbook check; a playbook of Dealport's records alone, the most an owner's contact costs, $0.09). Call it first without confirm_max_usd: that is a free quote of how many it runs, the price each and the total. Then call it again with confirm_max_usd at or above the total to start it; it returns a batch_id at once, and project_run_status reads its progress. The whole total must fit the balance and the monthly spending limits before anything starts; each record is charged once, as it starts. Pass an idempotency_key to make a retry safe: the same key returns the batch it started. Needs the 'watch' key scope.",
+      "description": "Run a Project's playbook on the next records of its saved search (its next buildings, or its next companies), up to 500 at once, in the background. Each record costs $0.05 (a playbook check; a playbook of Dealport's records alone, the most an owner's contact costs, $0.09). Call it first without confirm_max_usd: that is a free quote of how many it runs, the price each, and the total. Present the quoted total to the user and wait for their explicit approval before calling run_project again with confirm_max_usd at or above the total to start the batch; it returns a batch_id at once, and project_run_status reads its progress. The whole total must fit the balance and the monthly spending limits before anything starts; each record is charged once, as it starts. Pass an idempotency_key to make a retry safe: the same key returns the batch it started. Needs the 'watch' key scope.",
       "inputSchema": {
         "type": "object",
         "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -3279,7 +3318,7 @@
     {
       "title": "Cited company Record",
       "description": "Open a company Record with primary public-filing citations",
-      "prompt": "Search Ohio HVAC companies in Dealport and open the top Record with its primary public-filing sources."
+      "prompt": "Use preview_companies to size Ohio commercial HVAC companies for $0.00, then call search_companies with limit: 1 and open the top Record with its primary public-filing sources."
     },
     {
       "title": "Commercial building search",
