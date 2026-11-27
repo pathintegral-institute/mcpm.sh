@@ -1,7 +1,7 @@
 {
   "name": "saascity",
   "display_name": "SaaSCity",
-  "description": "Plan a product launch from your agent: audit a homepage before launch, pick launch directories from 1,600+ with Ahrefs DR, link type and price, and list the product on SaaSCity.",
+  "description": "Plan a product launch from your agent: audit a homepage before launch, pick launch directories from 1,600+ with Ahrefs DR, link type and price, and draft a SaaSCity listing (human confirms via claim link before publication).",
   "repository": {
     "type": "git",
     "url": "https://github.com/nyyhao/saascity-mcp"
@@ -44,9 +44,9 @@
       "prompt": "Find free dofollow launch directories with DR above 50 for my AI tool."
     },
     {
-      "title": "List the product",
-      "description": "Submit a product to SaaSCity",
-      "prompt": "List my product on SaaSCity."
+      "title": "Draft a SaaSCity listing",
+      "description": "Create a draft listing on SaaSCity for human review and confirmation via claim link",
+      "prompt": "Draft a SaaSCity listing for my product and return the claim link so I can review and publish it."
     }
   ],
   "is_official": true
