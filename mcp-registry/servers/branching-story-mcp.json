@@ -1,0 +1,187 @@
+{
+  "name": "branching-story-mcp",
+  "display_name": "Branching Story MCP",
+  "description": "Zero-dependency MCP server exposing a deterministic branching-story state kernel (graph validation, guarded choice stepping, save/restore, memory log) and the CC-BY-4.0 2026 Consumer AI Story Continuity Benchmark (doi:10.7910/DVN/YEBHQR). Four read-only tools and two resources; stdio, no credentials, no network.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ouba-studio/branching-story-mcp"
+  },
+  "homepage": "https://github.com/ouba-studio/branching-story-mcp#readme",
+  "author": {
+    "name": "Ouba Studio",
+    "url": "https://www.ouba.art/"
+  },
+  "license": "MIT",
+  "categories": [
+    "Media Creation",
+    "Knowledge Base"
+  ],
+  "tags": [
+    "mcp",
+    "model-context-protocol",
+    "interactive-fiction",
+    "branching-narrative",
+    "visual-novel",
+    "story-engine",
+    "story-state",
+    "benchmark",
+    "llm-evaluation",
+    "state-drift"
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": [
+        "branching-story-mcp"
+      ],
+      "description": "Run the PyPI package branching-story-mcp with uv (no install step, zero runtime dependencies)",
+      "recommended": true
+    },
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@ouba-studio/branching-story-mcp"
+      ],
+      "description": "Run the npm package @ouba-studio/branching-story-mcp (zero dependencies)"
+    }
+  },
+  "tools": [
+    {
+      "name": "validate_story_graph",
+      "description": "Validate a branching-story-kit scene graph before prose is written: schema checks, missing targets, invalid guards/effects, plus unreachable, dead-end and loop-trap warnings.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "story": {
+            "type": "object",
+            "description": "Story graph with id, startScene, initialState and scenes"
+          },
+          "scenes": {
+            "type": "object",
+            "description": "Alternative top-level scenes map"
+          },
+          "startScene": {
+            "type": "string",
+            "description": "Alternative top-level start scene id"
+          },
+          "initialState": {
+            "type": "object",
+            "description": "Alternative top-level initial state"
+          }
+        }
+      },
+      "required": []
+    },
+    {
+      "name": "step_story_state",
+      "description": "Run the deterministic reducer for one or more player choices and return final scene, state, history, per-step trace, available choices and a sha256 trace hash for drift verification.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "story": {
+            "type": "object",
+            "description": "Story graph (same shape as validate_story_graph)"
+          },
+          "choices": {
+            "type": "array",
+            "description": "Choice indexes (integers) or case-insensitive labels to apply in order"
+          },
+          "state": {
+            "type": "object",
+            "description": "Overrides initialState"
+          },
+          "remember": {
+            "type": "array",
+            "description": "Facts to seed the memory log"
+          }
+        }
+      },
+      "required": []
+    },
+    {
+      "name": "query_ai_story_benchmark",
+      "description": "Query the Nov 15, 2026 10-platform Consumer AI Story Continuity Benchmark (CC-BY-4.0, doi:10.7910/DVN/YEBHQR) by platform and/or status, returning results plus APA/BibTeX citation metadata.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "platform": {
+            "type": "string",
+            "description": "Platform name or alias (e.g. Character.AI, talkie, ai-dungeon)"
+          },
+          "status": {
+            "type": "string",
+            "description": "pass, fail, right_censored, untestable or the aggregate tested"
+          }
+        }
+      },
+      "required": []
+    },
+    {
+      "name": "detect_state_drift",
+      "description": "Check a transcript against a planted fact and classify the session with the five-mode silent state drift taxonomy (PASS/F0, F1 contradiction or omission, F2 session non-persistence, F3 gating/censoring, F4 transient degradation, F5 platform delisting).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "fact": {
+            "type": "object",
+            "description": "Planted fact: key, expected_value, planted_turn, optional wrong_values, aliases, contradiction_mode"
+          },
+          "transcript": {
+            "type": "array",
+            "description": "Turn strings or {turn, speaker, text} objects"
+          },
+          "probe_turn": {
+            "type": "integer",
+            "description": "Turn at which the fact is probed"
+          },
+          "min_gap": {
+            "type": "integer",
+            "description": "Minimum turns between planting and probe"
+          }
+        }
+      },
+      "required": []
+    }
+  ],
+  "resources": [
+    {
+      "uri": "ouba://benchmark/2026-10-platform-matrix",
+      "name": "ai-story-benchmark-2026-matrix",
+      "description": "Full CC-BY-4.0 result matrix for all 10 platforms plus benchmark{} and citation{} metadata",
+      "mimeType": "application/json"
+    },
+    {
+      "uri": "ouba://schema/story-graph-v1",
+      "name": "story-graph-schema-v1",
+      "description": "Canonical JSON Schema (draft 2020-12) for branching-story-kit story graphs",
+      "mimeType": "application/schema+json"
+    }
+  ],
+  "examples": [
+    {
+      "title": "Validate a branching story",
+      "description": "Check a story graph for missing targets and unreachable scenes",
+      "prompt": "Validate this branching story graph and list any errors or warnings."
+    },
+    {
+      "title": "Step a story",
+      "description": "Apply reader choices and return the resulting state and trace hash",
+      "prompt": "Apply the choices Hold his gaze, then Ask about the folio, to this story and show the final state and available choices."
+    },
+    {
+      "title": "Query the benchmark",
+      "description": "Look up which platforms failed turn-15 recall in the 2026 benchmark",
+      "prompt": "Which platforms in the 2026 Consumer AI Story Continuity Benchmark failed the turn-15 recall probe?"
+    },
+    {
+      "title": "Detect state drift",
+      "description": "Classify a transcript against a planted fact",
+      "prompt": "Check this transcript for drift of the fact that my cat is called Marmalade, planted at turn 2 and probed at turn 4."
+    }
+  ],
+  "is_official": false,
+  "is_archived": false
+}
