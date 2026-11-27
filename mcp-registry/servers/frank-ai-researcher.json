@@ -1,0 +1,103 @@
+{
+  "name": "frank-ai-researcher",
+  "display_name": "Frank AI Researcher",
+  "description": "Remote MCP server for Frank, which runs AI-moderated voice interviews with your own customers in 50+ languages. Create and publish interview studies, then read transcripts and themes. Also available as an app in ChatGPT. Requires a Frank account (free plan available); sign-in is OAuth.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nar-vardanyan/frank-mcp"
+  },
+  "homepage": "https://www.hifrank.ai/?utm_source=mcpm&utm_medium=directory&utm_campaign=mcp",
+  "author": {
+    "name": "Prelaunch Group, Inc.",
+    "url": "https://www.hifrank.ai"
+  },
+  "license": "MIT",
+  "categories": [
+    "Professional Apps"
+  ],
+  "tags": [
+    "customer research",
+    "user interviews",
+    "voice",
+    "remote",
+    "oauth"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://api.hifrank.ai/mcp",
+      "description": "Hosted Streamable HTTP endpoint with OAuth sign-in",
+      "recommended": true
+    }
+  },
+  "tools": [
+    {
+      "name": "create_research",
+      "description": "Create a new interview study with goals and questions (always a draft)"
+    },
+    {
+      "name": "get_research",
+      "description": "Read a study and its full interview guide"
+    },
+    {
+      "name": "edit_research",
+      "description": "Edit a study's setup, topics and questions"
+    },
+    {
+      "name": "publish_research",
+      "description": "Publish a study and get its interviewer link"
+    },
+    {
+      "name": "link_product",
+      "description": "Attach a product to a study"
+    },
+    {
+      "name": "list_products",
+      "description": "List products in the account"
+    },
+    {
+      "name": "create_product",
+      "description": "Create a product for studies to reference"
+    },
+    {
+      "name": "list_researches",
+      "description": "List studies, newest first, with status and interviewer link"
+    },
+    {
+      "name": "list_interviews",
+      "description": "List a study's interviews with status and completion"
+    },
+    {
+      "name": "get_interview",
+      "description": "Get one interview's transcript"
+    },
+    {
+      "name": "list_embeds",
+      "description": "List website-widget formats for a study"
+    },
+    {
+      "name": "get_embed",
+      "description": "Get one widget's settings and install snippet"
+    },
+    {
+      "name": "configure_embed",
+      "description": "Change widget settings"
+    },
+    {
+      "name": "ping",
+      "description": "Confirm the server is reachable"
+    }
+  ],
+  "examples": [
+    {
+      "title": "Create a study",
+      "description": "Draft a customer interview study",
+      "prompt": "Create a Frank study to interview churned customers about why they cancelled."
+    },
+    {
+      "title": "Read interviews",
+      "description": "Summarize completed interviews",
+      "prompt": "List the completed interviews in my latest Frank study and summarize the main themes."
+    }
+  ]
+}
