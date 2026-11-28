@@ -1,0 +1,59 @@
+{
+  "name": "lantern-works-gpu-prices",
+  "display_name": "Lantern Works GPU Prices",
+  "description": "MCP server (local uvx package read-only; hosted endpoint adds optional price watches and alerts) that compares cloud GPU rental prices (H100, H200, A100, L40S, RTX 4090/5090 and more) across tracked providers, cheapest first, with each price's vendor source page and check time, price history, recent price changes and GPU job cost estimates. Free, no API key.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/connormatthewdouglas/agent-work-stack-deals"
+  },
+  "homepage": "https://thelanternworks.com/?ref=mcpm",
+  "author": {
+    "name": "Lantern Works",
+    "url": "https://thelanternworks.com"
+  },
+  "license": "MIT",
+  "categories": [
+    "Finance",
+    "Dev Tools"
+  ],
+  "tags": [
+    "gpu",
+    "gpu-prices",
+    "cloud-gpu",
+    "pricing",
+    "h100",
+    "cost-estimation"
+  ],
+  "tools": [
+    {"name": "compare_gpu_prices", "description": "Hourly rental prices for a GPU model across tracked providers, cheapest first, each with source_url and check time."},
+    {"name": "get_price_changes", "description": "GPU price moves among tracked providers since a date, newest first."},
+    {"name": "estimate_job_cost", "description": "Cost of one GPU job among tracked providers, cheapest first, with assumptions and missing costs."},
+    {"name": "optimize_stack", "description": "Cheapest tracked plan per usage line, with sources."},
+    {"name": "optimize_agent_stack", "description": "Cheapest cited option per component from a plain-text agent description."},
+    {"name": "rebuild_quote", "description": "Reopen a past quote receipt and revalidate it against today's feed."},
+    {"name": "search_deals", "description": "Search the AI-infra deals feed by text, category, offer type, price and tags."},
+    {"name": "compare_deals", "description": "Compare 2-5 deals by id."},
+    {"name": "get_deal", "description": "Return the full public record for one deal id."}
+  ],
+  "installations": {
+    "uvx": {
+      "type": "uvx",
+      "command": "uvx",
+      "args": ["lantern-works-deals-mcp"],
+      "package": "lantern-works-deals-mcp",
+      "description": "Run locally over stdio from PyPI",
+      "recommended": true
+    },
+    "http": {
+      "type": "http",
+      "url": "https://lantern-works-mcp.lantern-works.workers.dev/mcp?ref=mcpm",
+      "description": "Hosted Streamable HTTP endpoint; no install or key. Has the same read-only lookup tools plus optional price-watch and alert tools (create_watch_key, watch_price, list_watches, delete_watch, create_alert, check_alerts, delete_alert) that store watch/alert state"
+    }
+  },
+  "examples": [
+    {"title": "Cheapest H100", "description": "Compare H100 rental prices", "prompt": "What is the cheapest H100 to rent per hour right now? Show sources."},
+    {"title": "Job cost", "description": "Estimate a GPU job", "prompt": "Estimate the cost of 100 hours on one A100 80GB, cheapest first."},
+    {"title": "Price changes", "description": "See what moved", "prompt": "Which GPU rental prices changed in the last 7 days?"}
+  ],
+  "is_official": true
+}
