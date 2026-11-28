@@ -1,0 +1,55 @@
+{
+  "name": "ipgeolocation-io-mcp",
+  "display_name": "IPGeolocation.io MCP Server",
+  "description": "Look up IP geolocation and check IP security signals for VPNs, proxies, Tor, bots, hosting and spam. Find company details, ASN and network data, and abuse contacts. The server also covers time zones, astronomy, currency data and user-agent parsing. Read cached result pages without another API call. Available data depends on your plan.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/IPGeolocation/ipgeolocation-io-mcp"
+  },
+  "homepage": "https://ipgeolocation.io/integrations/ipgeolocation-io-mcp",
+  "author": {
+    "name": "IPGeolocation.io",
+    "url": "https://ipgeolocation.io"
+  },
+  "license": "MIT",
+  "is_official": true,
+  "categories": ["Web Services", "Dev Tools"],
+  "tags": ["ip-geolocation", "ip-security", "asn", "network-data"],
+  "arguments": {
+    "MCPM_IPGEOLOCATION_SETUP_KEY": {
+      "description": "Enter your IPGeolocation.io API key in a private interactive terminal. Basic terminals can show what you type. MCPM saves the key locally.",
+      "required": true
+    }
+  },
+  "installations": {
+    "npm": {
+      "type": "npm",
+      "command": "npx",
+      "args": ["-y", "ipgeolocation-io-mcp@latest"],
+      "package": "ipgeolocation-io-mcp",
+      "env": {
+        "IPGEOLOCATION_API_KEY": "${MCPM_IPGEOLOCATION_SETUP_KEY}"
+      },
+      "description": "Run 17 tools locally over stdio with Node.js 22 or later and your API key.",
+      "recommended": true
+    },
+    "http": {
+      "type": "http",
+      "url": "https://mcp.ipgeolocation.io/mcp",
+      "headers": {
+        "X-IPGeolocation-API-Key": "${MCPM_IPGEOLOCATION_SETUP_KEY}"
+      },
+      "description": "Connect to 16 hosted tools over Streamable HTTP with your API key."
+    },
+    "npm-keyless": {
+      "type": "npm",
+      "command": "npx",
+      "args": ["-y", "ipgeolocation-io-mcp@latest"],
+      "package": "ipgeolocation-io-mcp",
+      "env": {
+        "IPGEOLOCATION_API_KEY": ""
+      },
+      "description": "Run locally with Node.js 22 or later to try get_my_ip without an API key."
+    }
+  }
+}
