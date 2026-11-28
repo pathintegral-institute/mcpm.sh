@@ -48,7 +48,7 @@
     "http": {
       "type": "http",
       "url": "https://lantern-works-mcp.lantern-works.workers.dev/mcp?ref=mcpm",
-      "description": "Hosted Streamable HTTP endpoint, same read-only tools; no install or key"
+      "description": "Hosted Streamable HTTP endpoint; no install or key. Has the same read-only lookup tools plus optional price-watch and alert tools (create_watch_key, watch_price, list_watches, delete_watch, create_alert, check_alerts, delete_alert) that store watch/alert state"
     }
   },
   "examples": [
