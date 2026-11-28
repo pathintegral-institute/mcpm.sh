@@ -1,0 +1,36 @@
+{
+  "name": "embarko",
+  "display_name": "Embarko",
+  "description": "A shared workspace to publish, use and improve anything built with AI.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/walkover-mcp/embarko"
+  },
+  "license": "MIT",
+  "homepage": "https://embarko.ai",
+  "author": {
+    "name": "Walkover"
+  },
+  "categories": [
+    "Dev Tools"
+  ],
+  "tags": [
+    "deployment",
+    "hosting",
+    "web-apps",
+    "remote"
+  ],
+  "installations": {
+    "http": {
+      "type": "http",
+      "url": "https://mcp.embarko.ai/mcp",
+      "recommended": true
+    }
+  },
+  "tools": [],
+  "resources": [],
+  "prompts": [],
+  "examples": [],
+  "is_official": true,
+  "is_archived": false
+}
