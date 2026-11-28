@@ -16,7 +16,7 @@ Built with ❤️ by Path Integral Institute
 ```
 
 # 🌟 MCPM - Model Context Protocol Manager
-- [Insomnia Security MCP](https://github.com/vulnz/insomnia-mcp) - All-in-one offensive security, multi-language SAST/taint, live secret validation, SCA/SBOM, Web DAST, OSINT, 21,100+ 1-Day CVE verification, and 29-protocol network enumeration MCP server (160 tools; zero-install Streamable HTTP at `https://mcp.insom.ai/mcp` + `npx`/`uvx` bridge, 50 free credits).
+- [Insomnia Security MCP](https://github.com/CQR-Cybersecurity-LLC/insomnia-mcp) - All-in-one offensive security, multi-language SAST/taint, live secret validation, SCA/SBOM, Web DAST, OSINT, 21,100+ 1-Day CVE verification, and 29-protocol network enumeration MCP server (160 tools; zero-install Streamable HTTP at `https://mcp.insom.ai/mcp` + `npx`/`uvx` bridge, 50 free credits).
 
 MCPM is an open source CLI tool for managing MCP servers. It provides a simplified global configuration approach where you install servers once and organize them with profiles, then integrate them into any MCP client. Features include server discovery through a central registry, direct execution, sharing capabilities, and client integration tools.
 
