@@ -1,7 +1,7 @@
 {
   "name": "embarko",
   "display_name": "Embarko",
-  "description": "Deploy and host AI-built apps and websites, and get a live URL without any DevOps setup.",
+  "description": "A shared workspace to publish, use and improve anything built with AI.",
   "repository": {
     "type": "git",
     "url": "https://github.com/walkover-mcp/embarko"
